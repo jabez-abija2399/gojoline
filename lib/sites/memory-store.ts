@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import type { Site, SiteStore } from "./types";
 
 export class MemorySiteStore implements SiteStore {
@@ -15,6 +15,7 @@ export class MemorySiteStore implements SiteStore {
     this.sites.set(projectId, {
       id: randomUUID(), projectId, ownerId, slug, provider, providerProjectId: null, url: null, status: "pending",
       publishedVersion: null, lastDeploymentId: null, customDomain: null, publishedAt: null, takenDownReason: null,
+      siteKey: randomBytes(18).toString("base64url"),
     });
     return true;
   }
@@ -25,11 +26,14 @@ export class MemorySiteStore implements SiteStore {
     site.customDomain = domain;
     return true;
   }
-  async savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain">) {
+  all() {
+    return this.sites.values();
+  }
+  async savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain" | "siteKey">) {
     const existing = this.sites.get(input.projectId);
     if (existing && existing.ownerId !== ownerId) throw new Error("Not your site");
     if (existing?.status === "taken_down") throw new Error("Site is taken down");
-    const site: Site = { id: existing?.id ?? randomUUID(), ownerId, status: "published", takenDownReason: null, customDomain: existing?.customDomain ?? null, ...input };
+    const site: Site = { id: existing?.id ?? randomUUID(), ownerId, status: "published", takenDownReason: null, customDomain: existing?.customDomain ?? null, siteKey: existing?.siteKey ?? randomBytes(18).toString("base64url"), ...input };
     this.sites.set(input.projectId, site);
     return site;
   }

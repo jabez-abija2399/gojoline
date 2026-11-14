@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { and, eq, ne } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { sites } from "@/lib/db/schema";
@@ -19,7 +20,7 @@ export class DbSiteStore implements SiteStore {
   async reserve(ownerId: string, projectId: string, slug: string, provider: string): Promise<boolean> {
     try {
       // Unique slug and project_id make this the atomic claim.
-      await this.db.insert(sites).values({ projectId, ownerId, slug, provider, status: "pending" });
+      await this.db.insert(sites).values({ projectId, ownerId, slug, provider, status: "pending", siteKey: randomBytes(18).toString("base64url") });
       return true;
     } catch {
       return false;
@@ -39,7 +40,7 @@ export class DbSiteStore implements SiteStore {
     }
   }
 
-  async savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain">): Promise<Site> {
+  async savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain" | "siteKey">): Promise<Site> {
     const values = { ...input, ownerId, status: "published" as const, updatedAt: new Date() };
     const existing = await this.getByProject(ownerId, input.projectId);
     if (existing) {
@@ -48,7 +49,7 @@ export class DbSiteStore implements SiteStore {
       const [row] = await this.db.update(sites).set(values).where(and(eq(sites.id, existing.id), eq(sites.ownerId, ownerId))).returning();
       return row!;
     }
-    const [row] = await this.db.insert(sites).values(values).returning();
+    const [row] = await this.db.insert(sites).values({ ...values, siteKey: randomBytes(18).toString("base64url") }).returning();
     return row!;
   }
 }

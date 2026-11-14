@@ -11,6 +11,8 @@ export interface Site {
   publishedVersion: number | null;
   lastDeploymentId: string | null;
   customDomain: string | null;
+  /** Public key sent by the published site's forms. */
+  siteKey: string | null;
   publishedAt: Date | null;
   takenDownReason: string | null;
 }
@@ -23,5 +25,5 @@ export interface SiteStore {
   reserve(ownerId: string, projectId: string, slug: string, provider: string): Promise<boolean>;
   /** Null clears it. Returns false when another site already uses the domain. */
   setCustomDomain(ownerId: string, projectId: string, domain: string | null): Promise<boolean>;
-  savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain">): Promise<Site>;
+  savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain" | "siteKey">): Promise<Site>;
 }

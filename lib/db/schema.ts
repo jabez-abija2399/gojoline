@@ -1,4 +1,6 @@
-import { bigint, boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { bigint, boolean, customType, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+
+const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
 
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 const updatedAt = () => timestamp("updated_at", { withTimezone: true }).notNull().defaultNow();
@@ -175,10 +177,67 @@ export const sites = pgTable(
     publishedVersion: integer("published_version"),
     lastDeploymentId: text("last_deployment_id"),
     customDomain: text("custom_domain").unique(),
+    /** Public key the published site sends with form submissions (identifies the site, not a secret). */
+    siteKey: text("site_key"),
     publishedAt: timestamp("published_at", { withTimezone: true }),
     takenDownReason: text("taken_down_reason"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [index("sites_owner_idx").on(t.ownerId)],
+);
+
+/** Form definitions captured from site.json at publish time; submissions are checked against them. */
+export const siteForms = pgTable(
+  "site_forms",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    siteId: uuid("site_id")
+      .notNull()
+      .references(() => sites.id, { onDelete: "cascade" }),
+    formKey: text("form_key").notNull(),
+    kind: text("kind").notNull(),
+    definition: jsonb("definition").$type<Record<string, unknown>>().notNull(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [uniqueIndex("site_forms_key_uq").on(t.siteId, t.formKey)],
+);
+
+export const formSubmissions = pgTable(
+  "form_submissions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    siteId: uuid("site_id")
+      .notNull()
+      .references(() => sites.id, { onDelete: "cascade" }),
+    projectId: uuid("project_id").notNull(),
+    ownerId: text("owner_id").notNull(),
+    formKey: text("form_key").notNull(),
+    kind: text("kind").notNull(),
+    data: jsonb("data").$type<Record<string, string>>().notNull(),
+    lang: text("lang"),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("form_submissions_owner_idx").on(t.ownerId, t.projectId, t.createdAt)],
+);
+
+/** Owner-uploaded photos (re-encoded WebP). Stored here until R2 is set up. */
+export const projectAssets = pgTable(
+  "project_assets",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    ownerId: text("owner_id").notNull(),
+    name: text("name").notNull(),
+    mime: text("mime").notNull(),
+    width: integer("width").notNull(),
+    height: integer("height").notNull(),
+    size: integer("size").notNull(),
+    data: bytea("data").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("project_assets_name_uq").on(t.projectId, t.name)],
 );

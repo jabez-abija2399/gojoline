@@ -23,6 +23,9 @@ import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { VercelPublishProvider } from "@/lib/providers/publish/vercel";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
+import { DbCloudStore } from "@/lib/cloud/db-store";
+import { MemoryCloudStore } from "@/lib/cloud/memory-store";
+import type { CloudStore, SubmissionNotifier } from "@/lib/cloud/types";
 
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
@@ -83,8 +86,9 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   if (!builder) return null;
   const db = getDb(env);
   const sites = db ? new DbSiteStore(db) : new MemorySiteStore();
+  const cloud: CloudStore = db ? new DbCloudStore(db) : new MemoryCloudStore(sites as MemorySiteStore);
   const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, sites, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined };
+  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined };
   if (isE2E(env)) return { ...base, publisher: new MemoryPublishProvider() };
   if (!env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID) return null;
   return { ...base, publisher: new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) };
@@ -94,6 +98,10 @@ interface Services {
   waitlist: WaitlistStore;
   rateLimiter: RateLimiter;
   usage: UsageLogger;
+  /** Gojoline Cloud data (forms, submissions); null when publishing is unavailable. */
+  cloud: CloudStore | null;
+  /** Tells owners about new submissions (Telegram, Slice 5). */
+  notifier: SubmissionNotifier | null;
   /** Plan limits per user (billing replaces the free default in Slice 6). */
   entitlements: EntitlementsResolver;
   /** null when hosting credentials are missing. */
@@ -115,8 +123,12 @@ export function services(): Services {
       builder: pickBuilder(process.env, usage),
       publish: null,
       entitlements: freeForEveryone,
+      cloud: null,
+      notifier: null,
     };
-    globalForServices.gojoServices.publish = pickPublish(process.env, globalForServices.gojoServices.builder);
+    const svc = globalForServices.gojoServices;
+    svc.publish = pickPublish(process.env, svc.builder);
+    svc.cloud = svc.publish?.cloud ?? null;
   }
   return globalForServices.gojoServices;
 }

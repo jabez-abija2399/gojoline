@@ -1,4 +1,6 @@
 import "server-only";
+import { extractForms } from "@/lib/cloud/forms";
+import type { CloudStore } from "@/lib/cloud/types";
 import type { Lock } from "@/lib/lock";
 import type { ProjectStore } from "@/lib/projects/types";
 import type { PublishFile, PublishProvider } from "@/lib/providers/publish/types";
@@ -19,8 +21,11 @@ export interface PublishDeps {
   publisher: PublishProvider;
   lock: Lock;
   appUrl: string;
+  /** Origin of the public Data API the site's forms post to (defaults to the app's origin). */
   dataApiOrigin?: string;
   guards?: PublishGuard[];
+  /** Where form definitions are stored at publish time. */
+  cloud?: CloudStore;
 }
 
 export type PublishError =
@@ -83,20 +88,23 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
   const token = await deps.lock.acquire(`project:${projectId}`, 6 * 60_000);
   if (!token) return { ok: false, error: "busy" };
   try {
+    const reserved = existing ?? (await deps.sites.getByProject(user.id, projectId));
+    const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
     const url = deps.publisher.urlFor(slug);
     const sandbox = await deps.sandboxes.open(projectId, latest.files);
     const build = await sandbox.buildForPublish({
       VITE_SITE_URL: url,
       VITE_SITE_ID: projectId,
       VITE_REPORT_URL: `${deps.appUrl.replace(/\/$/, "")}/${project.locale}/report?site=${encodeURIComponent(slug)}`,
-      ...(deps.dataApiOrigin ? { VITE_DATA_API_URL: deps.dataApiOrigin } : {}),
+      VITE_DATA_API_URL: apiOrigin,
+      ...(reserved?.siteKey ? { VITE_SITE_KEY: reserved.siteKey } : {}),
     });
     if (!build.ok) {
       console.warn("publish build failed", projectId, build.output.slice(-1500));
       return { ok: false, error: "build_failed" };
     }
 
-    const issues = scanBuiltSite(build.files, { allowedFormOrigins: deps.dataApiOrigin ? [deps.dataApiOrigin] : [] });
+    const issues = scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] });
     if (issues.length) return { ok: false, error: "blocked", issues };
     for (const guard of deps.guards ?? []) {
       const verdict = await guard.check({ files: build.files, projectId, ownerId: user.id });
@@ -106,7 +114,7 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
     const result = await deps.publisher.publish({
       slug,
       files: build.files,
-      headers: publishedSiteHeaders({ dataApiOrigin: deps.dataApiOrigin }),
+      headers: publishedSiteHeaders({ dataApiOrigin: apiOrigin }),
       providerProjectId: existing?.providerProjectId ?? null,
     });
     const site = await deps.sites.savePublished(user.id, {
@@ -119,6 +127,8 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
       lastDeploymentId: result.deploymentId,
       publishedAt: new Date(),
     });
+    // Forms on the live site accept answers only in the shape published here.
+    await deps.cloud?.saveForms(site.id, extractForms(latest.files["src/site.json"] ?? ""));
     return { ok: true, site };
   } catch (error) {
     const msg = error instanceof Error ? error.message : "unknown";
