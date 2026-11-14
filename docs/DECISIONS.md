@@ -75,3 +75,6 @@
 | 2026-11-14 | Bot checks (honeypot, timing) run before the site's daily answer limit; IPv6 visitors limited per /64; 30 answers per visitor per day | Junk traffic must not lock real customers out (security review) |
 | 2026-11-14 | Per-user photo storage quota (150 MB) and unchanged list edits skip build/republish; list edits limited to 20/hour | Storage and deploy quota abuse (security review) |
 | 2026-11-14 | Header actions become icon buttons with labels under 640 px | Everything fits at 360 px without overlapping touch targets |
+| 2026-11-14 | Telegram linking via one-time deep-link codes (hashed, 15 min, single use) from the dashboard; private chats only | No typing of codes; a group can never receive answers or control a site |
+| 2026-11-14 | Webhook verified with Telegram's secret-token header, idempotent by update_id, work done with `after()` | Telegram retries; agent edits take ~30 s and must not block the reply |
+| 2026-11-14 | Bot edits reuse the builder agent and republish live sites; 20 edits/hour per owner | Same quality and safety checks as the web builder |

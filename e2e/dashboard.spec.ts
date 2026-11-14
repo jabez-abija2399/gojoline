@@ -47,6 +47,7 @@ test("dashboard: answers, prices that update the live site, and photos", async (
 test("another owner can't see a dashboard", async ({ page, browser }) => {
   await signIn(page);
   await page.getByRole("button", { name: "Start a new site" }).click();
+  await page.waitForURL(/\/build\/[0-9a-f-]{36}$/);
   const id = page.url().split("/").pop()!;
   const other = await browser.newPage();
   await signIn(other);

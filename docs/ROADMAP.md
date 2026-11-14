@@ -37,8 +37,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Owner dashboard (submissions, list editing), owner login
 
 ## Slice 5: Telegram
-- [ ] Bot: link owner chat, form notifications
-- [ ] Bot edits: text, prices, photos through the agent
+- [x] Bot: link owner chat, form notifications
+- [x] Bot edits: text, prices, photos through the agent
 
 ## Slice 6: Billing
 - [ ] Plans, credits ledger, metering per AI edit
@@ -69,6 +69,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Database: Neon project `gojoline` (purple-brook-23584048, Frankfurt), database `gojoline`, migration `0000_init` applied. Set `DATABASE_URL` in the Vercel project (pooled connection string from the Neon console). Without it, dev and e2e use memory stores.
 - Production needs `BETTER_AUTH_SECRET` (32+ chars) and `BETTER_AUTH_URL`.
 - Builder needs `SAYSITE_ANTHROPIC_API_KEY`, `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, `SANDBOX_SNAPSHOT_ID` and `CSP_FRAME_ORIGINS=https://*.vercel.run`.
+
+- Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
 - Vercel plan: Hobby allows 10 sandboxes at a time (each owner editing uses one for up to 15 minutes). For more than ~10 owners editing at once, the team needs Vercel Pro. Plan changes are the founder's decision.

@@ -27,6 +27,9 @@ import { DbCloudStore } from "@/lib/cloud/db-store";
 import { MemoryCloudStore } from "@/lib/cloud/memory-store";
 import type { CloudStore, SubmissionNotifier } from "@/lib/cloud/types";
 import { DbAssetStore, MemoryAssetStore } from "@/lib/cloud/assets";
+import { BotApiClient, MemoryTelegramClient, type TelegramClient } from "@/lib/telegram/client";
+import { TelegramNotifier } from "@/lib/telegram/notifier";
+import { DbTelegramStore, MemoryTelegramStore, type TelegramStore } from "@/lib/telegram/store";
 
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
@@ -97,6 +100,14 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   return { ...base, publisher: new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) };
 }
 
+function pickTelegram(env: Env): Services["telegram"] {
+  const db = getDb(env);
+  const username = env.TELEGRAM_BOT_USERNAME || "gojoline_bot";
+  if (isE2E(env)) return { store: new MemoryTelegramStore(), client: new MemoryTelegramClient(), username };
+  if (!env.TELEGRAM_BOT_TOKEN) return null;
+  return { store: db ? new DbTelegramStore(db) : new MemoryTelegramStore(), client: new BotApiClient(env.TELEGRAM_BOT_TOKEN), username };
+}
+
 interface Services {
   waitlist: WaitlistStore;
   rateLimiter: RateLimiter;
@@ -105,6 +116,8 @@ interface Services {
   cloud: CloudStore | null;
   /** Tells owners about new submissions (Telegram, Slice 5). */
   notifier: SubmissionNotifier | null;
+  /** Telegram bot (null without TELEGRAM_BOT_TOKEN, except in e2e). */
+  telegram: { store: TelegramStore; client: TelegramClient; username: string } | null;
   /** Plan limits per user (billing replaces the free default in Slice 6). */
   entitlements: EntitlementsResolver;
   /** null when hosting credentials are missing. */
@@ -128,10 +141,13 @@ export function services(): Services {
       entitlements: freeForEveryone,
       cloud: null,
       notifier: null,
+      telegram: null,
     };
     const svc = globalForServices.gojoServices;
     svc.publish = pickPublish(process.env, svc.builder);
     svc.cloud = svc.publish?.cloud ?? null;
+    svc.telegram = pickTelegram(process.env);
+    if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);
   }
   return globalForServices.gojoServices;
 }
