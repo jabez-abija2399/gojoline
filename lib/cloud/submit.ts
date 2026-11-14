@@ -41,6 +41,13 @@ export function siteOrigins(site: Pick<PublicSite, "url" | "customDomain">): str
   return out;
 }
 
+/** IPv6 visitors usually control a whole /64, so they count as one. */
+export function ipBucket(ip: string): string {
+  if (!ip.includes(":")) return ip;
+  const parts = ip.split("::")[0]!.split(":");
+  return `${parts.slice(0, 4).join(":")}::/64`;
+}
+
 function sameKey(a: string, b: string) {
   const x = Buffer.from(a);
   const y = Buffer.from(b);
@@ -57,18 +64,21 @@ export async function handleSubmission(deps: SubmitDeps, input: SubmitInput): Pr
   if (!allowOrigin) return deny(403, "origin");
   if (!site.siteKey || !input.siteKey || !sameKey(input.siteKey, site.siteKey)) return deny(403, "key", allowOrigin);
 
-  const perIp = deps.limits?.perIpPerMinute ?? 5;
-  const perDay = deps.limits?.perSitePerDay ?? 300;
-  const [byIp, bySite] = await Promise.all([
-    deps.limiter.hit(`form:ip:${site.siteId}:${input.ip}`, perIp, 60_000),
-    deps.limiter.hit(`form:site:${site.siteId}`, perDay, 86_400_000),
-  ]);
-  if (!byIp.allowed || !bySite.allowed) return deny(429, "too_many", allowOrigin);
-
   const body = (input.body && typeof input.body === "object" ? input.body : {}) as Record<string, unknown>;
-  // Bots fill the hidden field or submit instantly: accept silently, store nothing.
+  // Bots fill the hidden field or submit instantly: accept silently, store nothing, and
+  // don't let them use up the site's daily allowance.
   const elapsed = typeof body._ms === "number" ? body._ms : 0;
   if ((typeof body._hp === "string" && body._hp !== "") || elapsed < 1500) return { status: 200, body: { ok: true }, allowOrigin };
+
+  const ip = ipBucket(input.ip);
+  const perIp = deps.limits?.perIpPerMinute ?? 5;
+  const perDay = deps.limits?.perSitePerDay ?? 300;
+  const [byIp, byIpDay, bySite] = await Promise.all([
+    deps.limiter.hit(`form:ip:${site.siteId}:${ip}`, perIp, 60_000),
+    deps.limiter.hit(`form:ipday:${site.siteId}:${ip}`, 30, 86_400_000),
+    deps.limiter.hit(`form:site:${site.siteId}`, perDay, 86_400_000),
+  ]);
+  if (!byIp.allowed || !byIpDay.allowed || !bySite.allowed) return deny(429, "too_many", allowOrigin);
 
   const form = await deps.cloud.getForm(site.siteId, input.formKey);
   if (!form) return deny(404, "form_not_found", allowOrigin);

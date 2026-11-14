@@ -53,7 +53,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
           ))}
         </nav>
         {tab === "answers" && <AnswersPanel t={t.dashboard} locale={lang} projectId={id} />}
-        {tab === "lists" && <ListsPanel t={t.dashboard} projectId={id} />}
+        {tab === "lists" && <ListsPanel t={t.dashboard} locale={lang} projectId={id} />}
         {tab === "photos" && <PhotosPanel t={t.dashboard} projectId={id} />}
       </main>
     </>

@@ -46,7 +46,7 @@ export class DbSiteStore implements SiteStore {
     if (existing) {
       // A site that was taken down stays down; only an admin can restore it.
       if (existing.status === "taken_down") throw new Error("Site is taken down");
-      const [row] = await this.db.update(sites).set(values).where(and(eq(sites.id, existing.id), eq(sites.ownerId, ownerId))).returning();
+      const [row] = await this.db.update(sites).set({ ...values, ...(existing.siteKey ? {} : { siteKey: randomBytes(18).toString("base64url") }) }).where(and(eq(sites.id, existing.id), eq(sites.ownerId, ownerId))).returning();
       return row!;
     }
     const [row] = await this.db.insert(sites).values({ ...values, siteKey: randomBytes(18).toString("base64url") }).returning();

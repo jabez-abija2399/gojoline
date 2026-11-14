@@ -46,6 +46,9 @@ const ui = {
     formError: "Something went wrong. Please try again or call us.",
     formPreview: "This form starts working when your site is published.",
     fieldRequired: "Please fill this in.",
+    fieldEmail: "Please enter an email like name@example.com.",
+    fieldPhone: "Please enter a phone number like 0911 234 567.",
+    fieldNumber: "Please enter a number.",
   },
   am: {
     call: "ይደውሉልን",
@@ -66,6 +69,9 @@ const ui = {
     formError: "የሆነ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ ወይም ይደውሉልን።",
     formPreview: "ይህ ቅጽ ድረ-ገጽዎ ሲታተም መሥራት ይጀምራል።",
     fieldRequired: "እባክዎ ይህን ይሙሉ።",
+    fieldEmail: "እባክዎ እንደ name@example.com ያለ ኢሜይል ያስገቡ።",
+    fieldPhone: "እባክዎ እንደ 0911 234 567 ያለ ስልክ ቁጥር ያስገቡ።",
+    fieldNumber: "እባክዎ ቁጥር ያስገቡ።",
   },
 } as const;
 

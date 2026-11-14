@@ -68,6 +68,17 @@ describe("handleSubmission", () => {
     expect(await cloud.listSubmissions("alice", projectId)).toEqual([]);
   });
 
+  it("doesn't count bot hits against the site's allowance", async () => {
+    deps.limits = { perSitePerDay: 2, perIpPerMinute: 100 };
+    for (let i = 0; i < 5; i++) await call({ body: { ...good(), _hp: "x" }, ip: `9.9.9.${i}` });
+    expect((await call()).status).toBe(201);
+  });
+
+  it("treats an IPv6 /64 as one visitor", async () => {
+    for (let i = 0; i < 5; i++) expect((await call({ ip: `2001:db8:1:2::${i}` })).status).toBe(201);
+    expect((await call({ ip: "2001:db8:1:2::ff" })).status).toBe(429);
+  });
+
   it("rate limits per visitor", async () => {
     for (let i = 0; i < 5; i++) expect((await call()).status).toBe(201);
     expect((await call()).status).toBe(429);

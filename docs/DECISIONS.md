@@ -72,3 +72,6 @@
 | 2026-11-14 | Owner photos are re-encoded to WebP (max 1600 px, metadata stripped) with sharp and stored in Postgres until R2 exists | Uploaded bytes are never served as-is; small sites fit easily |
 | 2026-11-14 | Owner dashboard is the same account as the builder (no separate owner login) | One login for non-technical owners |
 | 2026-11-14 | CSV export prefixes cells starting with = + - @ and adds a BOM | Prevents spreadsheet formula injection from visitor answers; Excel shows Amharic correctly |
+| 2026-11-14 | Bot checks (honeypot, timing) run before the site's daily answer limit; IPv6 visitors limited per /64; 30 answers per visitor per day | Junk traffic must not lock real customers out (security review) |
+| 2026-11-14 | Per-user photo storage quota (150 MB) and unchanged list edits skip build/republish; list edits limited to 20/hour | Storage and deploy quota abuse (security review) |
+| 2026-11-14 | Header actions become icon buttons with labels under 640 px | Everything fits at 360 px without overlapping touch targets |

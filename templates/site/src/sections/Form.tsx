@@ -1,30 +1,62 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { SectionTitle } from "../components/SectionTitle";
-import { uiText } from "../lib/i18n";
+import { uiText, type UiKey } from "../lib/i18n";
 import { useSite } from "../lib/context";
 import { publishMeta } from "../lib/meta";
-import type { FormSection } from "../lib/types";
+import type { FormField, FormSection } from "../lib/types";
 
 type Status = "idle" | "sending" | "sent" | "error";
+
+const checks: Partial<Record<FormField["type"], { re: RegExp; message: UiKey }>> = {
+  email: { re: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, message: "fieldEmail" },
+  tel: { re: /^[+\d][\d\s\-()]{5,20}$/, message: "fieldPhone" },
+  number: { re: /^-?\d{1,9}(\.\d{1,2})?$/, message: "fieldNumber" },
+};
 
 /** Sends answers to Gojoline Cloud; the owner sees them in the dashboard and on Telegram. */
 export function Form({ section }: { section: FormSection }) {
   const { text, lang } = useSite();
   const [status, setStatus] = useState<Status>("idle");
+  const [errors, setErrors] = useState<Record<string, UiKey>>({});
   const [startedAt] = useState(() => Date.now());
+  const formRef = useRef<HTMLFormElement>(null);
+  const doneRef = useRef<HTMLParagraphElement>(null);
   const live = Boolean(publishMeta.dataApiUrl && publishMeta.siteId && publishMeta.siteKey);
   const idPrefix = `f-${section.id}`;
+
+  useEffect(() => {
+    if (status === "sent") doneRef.current?.focus();
+  }, [status]);
+
+  function validate(data: FormData): Record<string, UiKey> {
+    const found: Record<string, UiKey> = {};
+    for (const f of section.fields) {
+      const v = String(data.get(f.name) ?? "").trim();
+      if (!v) {
+        if (f.required) found[f.name] = "fieldRequired";
+        continue;
+      }
+      const c = checks[f.type];
+      if (c && !c.re.test(v)) found[f.name] = c.message;
+    }
+    return found;
+  }
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (status === "sending") return;
-    const form = e.currentTarget;
-    if (!form.reportValidity()) return;
+    const data = new FormData(e.currentTarget);
+    const found = validate(data);
+    setErrors(found);
+    const first = section.fields.find((f) => found[f.name]);
+    if (first) {
+      formRef.current?.querySelector<HTMLElement>(`#${idPrefix}-${first.name}`)?.focus();
+      return;
+    }
     if (!live) {
       setStatus("sent");
       return;
     }
-    const data = new FormData(form);
     const answers: Record<string, string> = {};
     for (const f of section.fields) answers[f.name] = String(data.get(f.name) ?? "").slice(0, 2000);
     setStatus("sending");
@@ -50,14 +82,22 @@ export function Form({ section }: { section: FormSection }) {
           {!live && <p className="text-muted">{uiText("formPreview", lang)}</p>}
         </div>
         {status === "sent" ? (
-          <p role="status" tabIndex={-1} className="rounded-site border border-line bg-primary-soft p-6 text-lg font-semibold">
+          <p ref={doneRef} role="status" tabIndex={-1} className="rounded-site border border-line bg-primary-soft p-6 text-lg font-semibold">
             {text(section.successMessage)}
           </p>
         ) : (
-          <form onSubmit={submit} className="flex flex-col gap-4 rounded-site border border-line bg-surface p-6" noValidate={false}>
+          <form ref={formRef} onSubmit={submit} noValidate className="relative flex flex-col gap-4 rounded-site border border-line bg-surface p-6">
             {section.fields.map((f) => {
               const id = `${idPrefix}-${f.name}`;
-              const common = { id, name: f.name, required: f.required, className: "min-h-11 w-full rounded-site border border-line bg-white px-3 py-2 text-base" };
+              const err = errors[f.name];
+              const common = {
+                id,
+                name: f.name,
+                "aria-required": f.required || undefined,
+                "aria-invalid": err ? true : undefined,
+                "aria-describedby": err ? `${id}-error` : undefined,
+                className: "min-h-11 w-full rounded-site border border-line bg-white px-3 py-2 text-base aria-[invalid=true]:border-2 aria-[invalid=true]:border-current",
+              } as const;
               return (
                 <div key={f.name} className="flex flex-col gap-1">
                   <label htmlFor={id} className="font-medium">
@@ -79,8 +119,13 @@ export function Form({ section }: { section: FormSection }) {
                       type={f.type}
                       maxLength={f.type === "number" ? undefined : 300}
                       autoComplete={f.type === "email" ? "email" : f.type === "tel" ? "tel" : f.name === "name" ? "name" : undefined}
-                      inputMode={f.type === "tel" ? "tel" : undefined}
+                      inputMode={f.type === "tel" ? "tel" : f.type === "number" ? "decimal" : undefined}
                     />
+                  )}
+                  {err && (
+                    <p id={`${id}-error`} className="font-medium">
+                      {uiText(err, lang)}
+                    </p>
                   )}
                 </div>
               );

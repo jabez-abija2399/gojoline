@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { projectAssets } from "@/lib/db/schema";
 
@@ -22,7 +22,11 @@ export interface AssetStore {
   files(ownerId: string, projectId: string): Promise<{ path: string; data: Buffer }[]>;
   add(ownerId: string, projectId: string, a: { name: string; mime: string; width: number; height: number; data: Buffer }): Promise<Asset>;
   remove(ownerId: string, projectId: string, name: string): Promise<void>;
+  /** Bytes stored by this owner across all projects (quota). */
+  totalBytes(ownerId: string): Promise<number>;
 }
+
+export const MAX_ASSET_BYTES_PER_USER = 150 * 1024 * 1024;
 
 export const MAX_ASSETS_PER_PROJECT = 60;
 
@@ -44,6 +48,9 @@ export class MemoryAssetStore implements AssetStore {
     const item = { ...a, id: randomUUID(), ownerId, projectId, size: a.data.length, createdAt: new Date() };
     this.items.push(item);
     return toAsset(item);
+  }
+  async totalBytes(ownerId: string) {
+    return this.items.filter((a) => a.ownerId === ownerId).reduce((n, a) => n + a.size, 0);
   }
   async remove(ownerId: string, projectId: string, name: string) {
     this.items = this.items.filter((a) => !(a.ownerId === ownerId && a.projectId === projectId && a.name === name));
@@ -80,6 +87,10 @@ export class DbAssetStore implements AssetStore {
   async add(ownerId: string, projectId: string, a: { name: string; mime: string; width: number; height: number; data: Buffer }) {
     const [row] = await this.db.insert(projectAssets).values({ ...a, ownerId, projectId, size: a.data.length }).returning(listCols);
     return row!;
+  }
+  async totalBytes(ownerId: string) {
+    const [row] = await this.db.select({ n: sql<number>`coalesce(sum(${projectAssets.size}), 0)::bigint` }).from(projectAssets).where(eq(projectAssets.ownerId, ownerId));
+    return Number(row?.n ?? 0);
   }
   async remove(ownerId: string, projectId: string, name: string) {
     await this.db.delete(projectAssets).where(and(this.where(ownerId, projectId), eq(projectAssets.name, name)));

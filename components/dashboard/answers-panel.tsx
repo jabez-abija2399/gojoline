@@ -15,6 +15,7 @@ interface Answer {
 
 export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"]; locale: Locale; projectId: string }) {
   const [rows, setRows] = useState<Answer[] | null>(null);
+  const [forms, setForms] = useState<Record<string, { heading: Record<string, string>; labels: Record<string, Record<string, string>> }>>({});
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
@@ -22,7 +23,11 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
     let cancelled = false;
     fetch(`/api/projects/${projectId}/submissions`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("load"))))
-      .then((d: { submissions: Answer[] }) => !cancelled && setRows(d.submissions))
+      .then((d: { submissions: Answer[]; forms?: typeof forms }) => {
+        if (cancelled) return;
+        setRows(d.submissions);
+        setForms(d.forms ?? {});
+      })
       .catch(() => !cancelled && setError(true));
     return () => {
       cancelled = true;
@@ -68,15 +73,21 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
         {rows.map((r) => (
           <li key={r.id} className="rounded-xl border border-line bg-white p-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-semibold capitalize">{r.formKey}</span>
+              <span className="font-semibold">{forms[r.formKey]?.heading[locale] || forms[r.formKey]?.heading.en || forms[r.formKey]?.heading.am || r.formKey}</span>
               {!r.readAt && <span className="rounded-full bg-clay-soft px-2 py-0.5 font-medium text-ink">{t.answersNew}</span>}
               <span className="ms-auto text-ink-muted">{fmt.format(new Date(r.createdAt))}</span>
             </div>
-            <dl className="mt-2 grid gap-x-4 gap-y-1 sm:grid-cols-[max-content_1fr]">
+            <dl className="mt-2 grid min-w-0 gap-x-4 gap-y-1 sm:grid-cols-[max-content_1fr]">
               {Object.entries(r.data).map(([k, v]) => (
                 <div key={k} className="contents">
-                  <dt className="font-medium text-ink-muted">{k}</dt>
-                  <dd className="break-words">{k === "phone" ? <a className="text-teal underline underline-offset-4" href={`tel:${v.replace(/[^\d+]/g, "")}`}>{v}</a> : v}</dd>
+                  <dt className="font-medium text-ink-muted">{forms[r.formKey]?.labels[k]?.[locale] || forms[r.formKey]?.labels[k]?.en || k}</dt>
+                  <dd className="min-w-0 [overflow-wrap:anywhere]">
+                    {/^[+\d][\d\s\-()]{5,20}$/.test(v) ? (
+                      <a className="inline-flex min-h-11 items-center text-teal underline underline-offset-4" href={`tel:${v.replace(/[^\d+]/g, "")}`}>{v}</a>
+                    ) : (
+                      v
+                    )}
+                  </dd>
                 </div>
               ))}
             </dl>

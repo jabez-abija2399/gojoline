@@ -29,6 +29,13 @@
       "when": 1794698093118,
       "tag": "0003_cloud",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794698725027,
+      "tag": "0004_telegram",
+      "breakpoints": true
     }
   ]
 }

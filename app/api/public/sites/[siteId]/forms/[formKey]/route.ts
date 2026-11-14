@@ -34,6 +34,7 @@ export async function POST(request: Request, ctx: Ctx) {
   const params = ids.safeParse(await ctx.params);
   const cloud = services().cloud;
   if (!params.success || !cloud) return Response.json({ error: "not_found" }, { status: 404 });
+  if (Number(request.headers.get("content-length") ?? 0) > 20_000) return Response.json({ error: "too_large" }, { status: 413 });
   const raw = await request.text();
   if (raw.length > 20_000) return Response.json({ error: "too_large" }, { status: 413 });
   let body: unknown = null;

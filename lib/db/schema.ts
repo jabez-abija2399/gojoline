@@ -241,3 +241,33 @@ export const projectAssets = pgTable(
   },
   (t) => [uniqueIndex("project_assets_name_uq").on(t.projectId, t.name)],
 );
+
+/** An owner's Telegram chat, linked through a one-time code from the dashboard. */
+export const telegramLinks = pgTable("telegram_links", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  chatId: text("chat_id").notNull().unique(),
+  username: text("username"),
+  locale: text("locale", { enum: ["en", "am"] }).notNull(),
+  /** Which site bot edits apply to (the owner picks with /sites). */
+  activeProjectId: uuid("active_project_id"),
+  linkedAt: createdAt(),
+});
+
+export const telegramLinkCodes = pgTable("telegram_link_codes", {
+  /** SHA-256 of the code; the code itself is only in the deep link. */
+  codeHash: text("code_hash").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  locale: text("locale", { enum: ["en", "am"] }).notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+});
+
+/** Telegram may deliver an update more than once; each is handled once. */
+export const telegramUpdates = pgTable("telegram_updates", {
+  updateId: bigint("update_id", { mode: "number" }).primaryKey(),
+  receivedAt: createdAt(),
+});

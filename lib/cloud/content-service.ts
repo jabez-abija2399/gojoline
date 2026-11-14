@@ -25,6 +25,8 @@ export async function saveListEdit(
   const applied = applyListEdit(latest.files["src/site.json"], edit);
   if (!applied.ok) return { ok: false, error: applied.error === "not_found" ? "invalid" : applied.error };
 
+  // Nothing changed: no build, no version, no republish.
+  if (applied.json === latest.files["src/site.json"]) return { ok: true, versionNumber: latest.number, republished: false, url: null };
   const files = { ...latest.files, "src/site.json": applied.json };
   const token = await deps.lock.acquire(`project:${projectId}`, 6 * 60_000);
   if (!token) return { ok: false, error: "busy" };

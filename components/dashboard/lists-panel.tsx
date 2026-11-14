@@ -1,17 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n/config";
 
 type Lang = "en" | "am";
 type Text = Partial<Record<Lang, string>>;
 interface Item { ref: number | null; name: Text; description: Text; priceMinor: number | null }
 interface List { key: string; kind: "menu" | "services"; title: Text; items: Item[] }
+/** Price is kept as the text the owner typed; it becomes minor units only when saving. */
+interface Row extends Omit<Item, "priceMinor"> { id: number; price: string }
 
-const langName: Record<Lang, string> = { en: "English", am: "አማርኛ" };
+const PRICE = /^\d{0,9}(\.\d{0,2})?$/;
 
-export function ListsPanel({ t, projectId }: { t: Messages["dashboard"]; projectId: string }) {
+let rowSeq = 0;
+const next = () => ++rowSeq;
+
+function toRows(items: Item[]): Row[] {
+  return items.map((i) => ({ id: next(), ref: i.ref, name: i.name, description: i.description, price: i.priceMinor === null ? "" : String(i.priceMinor / 100) }));
+}
+
+export function ListsPanel({ t, locale, projectId }: { t: Messages["dashboard"]; locale: Locale; projectId: string }) {
   const [data, setData] = useState<{ languages: Lang[]; lists: List[] } | null>(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -47,72 +57,102 @@ export function ListsPanel({ t, projectId }: { t: Messages["dashboard"]; project
     <div className="flex flex-col gap-6">
       <p className="text-ink-muted">{t.listsHint}</p>
       {data.lists.map((l) => (
-        <ListEditor key={l.key} t={t} projectId={projectId} languages={data.languages} list={l} />
+        <ListEditor key={l.key} t={t} locale={locale} projectId={projectId} languages={data.languages} list={l} />
       ))}
     </div>
   );
 }
 
-function ListEditor({ t, projectId, languages, list }: { t: Messages["dashboard"]; projectId: string; languages: Lang[]; list: List }) {
-  const [items, setItems] = useState<Item[]>(list.items);
+function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["dashboard"]; locale: Locale; projectId: string; languages: Lang[]; list: List }) {
+  const [rows, setRows] = useState<Row[]>(() => toRows(list.items));
   const [state, setState] = useState<{ kind: "idle" | "saving" | "saved" | "error"; message?: string }>({ kind: "idle" });
-  const title = list.title.en || list.title.am || "";
+  const focusId = useRef<string | null>(null);
+  const addRef = useRef<HTMLButtonElement>(null);
+  const title = list.title[locale] || list.title.en || list.title.am || "";
+  const pick = (x: Text) => x[locale] || x.en || x.am || "";
 
-  const update = (i: number, patch: Partial<Item>) => setItems((xs) => xs.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+  useEffect(() => {
+    if (!focusId.current) return;
+    document.getElementById(focusId.current)?.focus();
+    focusId.current = null;
+  }, [rows]);
+
+  const update = (id: number, patch: Partial<Row>) => setRows((xs) => xs.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  const remove = (index: number) => {
+    const after = rows[index + 1] ?? rows[index - 1];
+    focusId.current = after ? `${list.key}-${after.id}-name-${languages[0]}` : null;
+    setRows((xs) => xs.filter((_, j) => j !== index));
+    if (!after) requestAnimationFrame(() => addRef.current?.focus());
+  };
+  const add = () => {
+    const id = next();
+    focusId.current = `${list.key}-${id}-name-${languages[0]}`;
+    setRows((xs) => [...xs, { id, ref: null, name: {}, description: {}, price: "" }]);
+  };
+
   const save = async () => {
     if (state.kind === "saving") return;
+    if (rows.some((r) => !PRICE.test(r.price))) return setState({ kind: "error", message: t.listErrors.invalid });
     setState({ kind: "saving" });
-    const res = await fetch(`/api/projects/${projectId}/lists`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key: list.key, items }),
-    }).catch(() => null);
+    const items = rows.map((r) => ({ ref: r.ref, name: r.name, description: r.description, priceMinor: r.price === "" ? null : Math.round(Number(r.price) * 100) }));
+    const res = await fetch(`/api/projects/${projectId}/lists`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: list.key, items }) }).catch(() => null);
     const d = res ? await res.json().catch(() => ({})) : {};
     if (res?.ok) setState({ kind: "saved", message: d.republished ? t.savedLive : t.saved });
     else setState({ kind: "error", message: (t.listErrors as Record<string, string>)[d.error] ?? t.listErrors.failed });
   };
 
+  const inLang = (lang: Lang) => (languages.length > 1 ? ` · ${t.itemLang.replace("{lang}", t.languageNames[lang])}` : "");
+
   return (
     <section aria-label={title} className="flex flex-col gap-4 rounded-xl border border-line bg-white p-4 sm:p-6">
       <h2 className="text-xl font-bold">{title}</h2>
       <ol className="flex flex-col gap-4">
-        {items.map((it, i) => (
-          <li key={i} className="flex flex-col gap-3 rounded-lg border border-line p-3">
-            {languages.map((lang) => (
-              <div key={lang} className="grid gap-2 sm:grid-cols-2" lang={lang}>
-                <label className="flex flex-col gap-1">
-                  <span className="font-medium">{t.itemName}{languages.length > 1 ? ` · ${t.itemLang.replace("{lang}", langName[lang])}` : ""}</span>
-                  <input value={it.name[lang] ?? ""} maxLength={300} onChange={(e) => update(i, { name: { ...it.name, [lang]: e.target.value } })} className="min-h-11 rounded-lg border border-input px-3 text-base" />
-                </label>
-                <label className="flex flex-col gap-1">
-                  <span className="font-medium">{t.itemDescription}{languages.length > 1 ? ` · ${t.itemLang.replace("{lang}", langName[lang])}` : ""}</span>
-                  <input value={it.description[lang] ?? ""} maxLength={300} onChange={(e) => update(i, { description: { ...it.description, [lang]: e.target.value } })} className="min-h-11 rounded-lg border border-input px-3 text-base" />
-                </label>
+        {rows.map((it, i) => {
+          const base = `${list.key}-${it.id}`;
+          const priceOk = PRICE.test(it.price);
+          return (
+            <li key={it.id} className="flex flex-col gap-3 rounded-lg border border-line p-3">
+              {languages.map((lang) => (
+                <div key={lang} className="grid gap-2 sm:grid-cols-2">
+                  <label htmlFor={`${base}-name-${lang}`} className="flex flex-col gap-1">
+                    <span className="font-medium">{t.itemName}{inLang(lang)}</span>
+                    <input id={`${base}-name-${lang}`} lang={lang} value={it.name[lang] ?? ""} maxLength={300} onChange={(e) => update(it.id, { name: { ...it.name, [lang]: e.target.value } })} className="min-h-11 rounded-lg border border-input px-3 text-base" />
+                  </label>
+                  <label htmlFor={`${base}-desc-${lang}`} className="flex flex-col gap-1">
+                    <span className="font-medium">{t.itemDescription}{inLang(lang)}</span>
+                    <input id={`${base}-desc-${lang}`} lang={lang} value={it.description[lang] ?? ""} maxLength={300} onChange={(e) => update(it.id, { description: { ...it.description, [lang]: e.target.value } })} className="min-h-11 rounded-lg border border-input px-3 text-base" />
+                  </label>
+                </div>
+              ))}
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div className="flex flex-col gap-1">
+                  <label htmlFor={`${base}-price`} className="font-medium">{t.itemPrice}</label>
+                  <input
+                    id={`${base}-price`}
+                    inputMode="decimal"
+                    value={it.price}
+                    onChange={(e) => update(it.id, { price: e.target.value.replace(/[^\d.]/g, "") })}
+                    aria-invalid={!priceOk || undefined}
+                    aria-describedby={!priceOk ? `${base}-price-error` : undefined}
+                    className="min-h-11 w-40 rounded-lg border border-input px-3 text-base"
+                  />
+                  {!priceOk && <p id={`${base}-price-error`} className="text-destructive">{t.priceInvalid}</p>}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => remove(i)}
+                  aria-label={t.itemRemoveNamed.replace("{name}", pick(it.name) || String(i + 1))}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-destructive hover:bg-clay-soft"
+                >
+                  <Trash2 aria-hidden="true" className="size-4" /> {t.itemRemove}
+                </button>
               </div>
-            ))}
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <label className="flex flex-col gap-1">
-                <span className="font-medium">{t.itemPrice}</span>
-                <input
-                  inputMode="decimal"
-                  value={it.priceMinor === null ? "" : String(it.priceMinor / 100)}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/[^\d.]/g, "");
-                    const n = Number(v);
-                    update(i, { priceMinor: v === "" || !Number.isFinite(n) ? null : Math.round(n * 100) });
-                  }}
-                  className="min-h-11 w-40 rounded-lg border border-input px-3 text-base"
-                />
-              </label>
-              <button type="button" onClick={() => setItems((xs) => xs.filter((_, j) => j !== i))} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-destructive hover:bg-clay-soft">
-                <Trash2 aria-hidden="true" className="size-4" /> {t.itemRemove}
-              </button>
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ol>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <button type="button" onClick={() => setItems((xs) => [...xs, { ref: null, name: {}, description: {}, priceMinor: null }])} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line px-4 font-medium hover:border-teal-mid">
+        <button ref={addRef} type="button" onClick={add} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line px-4 font-medium hover:border-teal-mid">
           <Plus aria-hidden="true" className="size-4" /> {t.itemAdd}
         </button>
         <button type="button" onClick={save} aria-disabled={state.kind === "saving"} className="min-h-11 rounded-lg bg-teal px-5 font-medium text-white hover:bg-teal-deep aria-disabled:opacity-50">

@@ -16,7 +16,7 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/projects/[i
 
 export async function POST(request: Request, ctx: RouteContext<"/api/projects/[id]/lists">) {
   const { id } = await ctx.params;
-  const r = await ownerRoute(id, { mutating: true, limit: { name: "list-edit", perHour: 60 } });
+  const r = await ownerRoute(id, { mutating: true, limit: { name: "list-edit", perHour: 20 } });
   if (!r.ok) return r.response;
   const parsed = listEditSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return json(400, { error: "invalid" });

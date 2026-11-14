@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { LayoutDashboard, LogOut } from "lucide-react";
 import type { Locale } from "@/lib/i18n/config";
 import type { Messages } from "@/lib/i18n";
 import { LanguageSwitch } from "@/components/site/language-switch";
@@ -23,21 +24,23 @@ export function BuilderHeader({
 }) {
   const other: Locale = locale === "en" ? "am" : "en";
   return (
-    <header className="flex items-center justify-between gap-3 border-b border-line bg-white px-4 py-2">
+    <header className="flex items-center justify-between gap-2 border-b border-line bg-white px-3 py-2 sm:px-4">
       <div className="flex min-w-0 items-center gap-3">
         <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center">
           <Image src="/brand/mark.svg" alt={t.common.logoAlt} width={36} height={36} className="size-9" />
         </Link>
         {backHref && (
-          <Link href={backHref} className="inline-flex min-h-11 items-center truncate rounded-lg px-2 font-medium text-ink hover:bg-sand">
-            ← {backLabel}
+          <Link href={backHref} aria-label={backLabel} className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg px-2 font-medium text-ink hover:bg-sand">
+            <span aria-hidden="true">←</span>
+            <span className="ms-1 hidden sm:inline">{backLabel}</span>
           </Link>
         )}
       </div>
       <div className="flex items-center gap-1 sm:gap-2">
         {navLink && (
-          <Link href={navLink.href} className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-teal hover:bg-sand">
-            {navLink.label}
+          <Link href={navLink.href} className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-2 font-medium text-teal hover:bg-sand sm:px-3">
+            <LayoutDashboard aria-hidden="true" className="size-5 sm:hidden" />
+            <span className="sr-only sm:not-sr-only">{navLink.label}</span>
           </Link>
         )}
         {user && (
@@ -46,9 +49,10 @@ export function BuilderHeader({
             <button
               type="submit"
               title={t.auth.signedInAs.replace("{who}", user.name || user.phone || user.email || "")}
-              className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-ink-muted hover:bg-sand"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center whitespace-nowrap rounded-lg px-2 font-medium text-ink-muted hover:bg-sand sm:px-3"
             >
-              {t.auth.signOut}
+              <LogOut aria-hidden="true" className="size-5 sm:hidden" />
+              <span className="sr-only sm:not-sr-only">{t.auth.signOut}</span>
             </button>
           </form>
         )}

@@ -22,11 +22,13 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   await page.getByRole("link", { name: "Prices and lists" }).click();
   const firstPrice = page.getByLabel("Price in Birr (optional)").first();
   await expect(firstPrice).toHaveValue("40");
-  await firstPrice.fill("45");
+  // Typing a decimal keeps what was typed (it used to jump to 405).
+  await firstPrice.fill("45.5");
+  await expect(firstPrice).toHaveValue("45.5");
   await page.getByRole("button", { name: "Save" }).first().click();
   await expect(page.getByText("Saved and updated on your live site.")).toBeVisible();
   await page.reload();
-  await expect(page.getByLabel("Price in Birr (optional)").first()).toHaveValue("45");
+  await expect(page.getByLabel("Price in Birr (optional)").first()).toHaveValue("45.5");
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 
@@ -35,9 +37,10 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   await page.locator('input[type="file"]').setInputFiles("e2e/fixtures/fake.jpg");
   await expect(page.getByText("That file isn't a photo we can use")).toBeVisible();
   await page.locator('input[type="file"]').setInputFiles("e2e/fixtures/photo.jpg");
-  await expect(page.getByText("/images/photo.webp")).toBeVisible();
-  await expect(page.getByRole("img", { name: "photo.webp" })).toBeVisible();
-  await page.getByRole("button", { name: "Remove" }).click();
+  await expect(page.getByText("Photo added.")).toBeVisible();
+  await expect(page.getByRole("img", { name: "Photo 1" })).toBeVisible();
+  await page.getByRole("button", { name: "Remove photo 1" }).click();
+  await expect(page.getByText("Photo removed.")).toBeVisible();
   await expect(page.getByText("No photos yet.")).toBeVisible();
 });
 
