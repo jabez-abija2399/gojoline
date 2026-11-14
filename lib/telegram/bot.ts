@@ -14,7 +14,7 @@ export interface BotDeps {
   builder: BuilderDeps | null;
   publish: PublishDeps | null;
   limiter: RateLimiter;
-  /** Accounts are verified (OTP) by construction; true for every linked user today. */
+  /** Publishing needs a verified account; without this check the bot never republishes. */
   isVerified?: (userId: string) => Promise<boolean>;
 }
 
@@ -48,6 +48,8 @@ export async function handleUpdate(deps: BotDeps, raw: unknown): Promise<void> {
     const code = text.slice(6).trim();
     if (!code) return say(botText[link?.locale ?? "en"].welcome);
     if (!/^[\w-]{10,64}$/.test(code)) return say(botText.en.badCode);
+    // Never silently move a chat from one account to another (someone could send you their link).
+    if (link) return say(botText[link.locale].otherAccount);
     const claim = await deps.store.consumeLinkCode(code);
     if (!claim) return say(botText.en.badCode);
     await deps.store.link({ userId: claim.userId, chatId, username: msg.from?.username ?? null, locale: claim.locale });
@@ -77,10 +79,10 @@ export async function handleUpdate(deps: BotDeps, raw: unknown): Promise<void> {
   }
 
   const project = projects.find((p) => p.id === link.activeProjectId) ?? projects[0]!;
-  const limit = await deps.limiter.hit(`tg-edit:${link.userId}`, 20, 3_600_000);
-  if (!limit.allowed) return say(t.tooMany);
 
   if (msg.photo?.length) {
+    // Same per-owner limits as the web dashboard and builder.
+    if (!(await deps.limiter.hit(`upload:o:${link.userId}`, 60, 3_600_000)).allowed) return say(t.tooMany);
     const photo = [...msg.photo].sort((a, b) => b.width * b.height - a.width * a.height)[0]!;
     const saved = await savePhoto(deps, link, project.id, photo.file_id);
     if (!saved) return say(t.photoBad);
@@ -90,6 +92,8 @@ export async function handleUpdate(deps: BotDeps, raw: unknown): Promise<void> {
   if (!text || text.startsWith("/")) return say(t.help);
   return edit(deps, link, project.id, text, say);
 }
+
+/** Runs the edit and always tells the owner how it ended. */
 
 async function savePhoto(deps: BotDeps, link: TelegramLink, projectId: string, fileId: string): Promise<string | null> {
   const assets = deps.builder?.assets;
@@ -106,7 +110,18 @@ async function savePhoto(deps: BotDeps, link: TelegramLink, projectId: string, f
 
 /** Runs the owner's request through the builder agent, then republishes if the site is live. */
 async function edit(deps: BotDeps, link: TelegramLink, projectId: string, request: string, say: (html: string) => Promise<void>) {
+  try {
+    await runEdit(deps, link, projectId, request, say);
+  } catch (error) {
+    console.error("telegram edit failed", error instanceof Error ? error.message : "unknown");
+    await say(botText[link.locale].failed).catch(() => undefined);
+  }
+}
+
+async function runEdit(deps: BotDeps, link: TelegramLink, projectId: string, request: string, say: (html: string) => Promise<void>) {
   const t = botText[link.locale];
+  // Bot edits share the web builder's per-owner AI limit (no separate allowance).
+  if (!(await deps.limiter.hit(`ai-message:o:${link.userId}`, Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR) || 40, 3_600_000)).allowed) return say(t.tooMany);
   await say(t.working);
   let outcome: { status?: string; reply?: string; error?: string } = {};
   await sendOwnerMessage(deps.builder!, {
@@ -123,8 +138,8 @@ async function edit(deps: BotDeps, link: TelegramLink, projectId: string, reques
   const reply = escapeHtml(outcome.reply ?? "");
   if (outcome.status === "changed" && deps.publish) {
     const site = await deps.publish.sites.getByProject(link.userId, projectId);
-    if (site?.status === "published") {
-      const verified = (await deps.isVerified?.(link.userId)) ?? true;
+    if (site?.status === "published" && (await deps.limiter.hit(`publish:o:${link.userId}`, Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR) || 20, 3_600_000)).allowed) {
+      const verified = deps.isVerified ? await deps.isVerified(link.userId) : false;
       const r = await publishSite(deps.publish, { id: link.userId, verified }, projectId, site.slug);
       if (r.ok) return say(fill(t.doneLive, { reply }));
     }

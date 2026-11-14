@@ -45,7 +45,7 @@ beforeEach(() => {
     assets: new MemoryAssetStore(),
   };
   publish = { store: projects, sites: new MemorySiteStore(), sandboxes: builder.sandboxes, publisher: new MemoryPublishProvider(), lock: builder.lock, appUrl: "https://gojoline.com", assets: builder.assets };
-  deps = { store, client, builder, publish, limiter: new MemoryRateLimiter() };
+  deps = { store, client, builder, publish, limiter: new MemoryRateLimiter(), isVerified: async () => true };
 });
 
 async function linked(locale: "en" | "am" = "en") {
@@ -62,6 +62,22 @@ describe("telegram bot", () => {
     await handleUpdate(deps, msg(`/start ${code}`, {}, 99));
     expect(last()).toContain("expired");
     expect(await store.byChat("99")).toBeNull();
+  });
+
+  it("won't move a connected chat to another account", async () => {
+    await linked();
+    const other = await store.createLinkCode("mallory", "en");
+    await handleUpdate(deps, msg(`/start ${other}`));
+    expect(last()).toContain("already connected");
+    expect((await store.byChat("42"))?.userId).toBe("alice");
+  });
+
+  it("tells the owner when an edit fails unexpectedly", async () => {
+    await linked();
+    await builder.store.createProject("alice", { name: "A", locale: "en" });
+    deps.builder = { ...builder, sandboxes: { open: async () => { throw new Error("boom"); } } };
+    await handleUpdate(deps, msg("make it blue"));
+    expect(last()).toContain("couldn't make that change");
   });
 
   it("ignores repeated updates and group chats", async () => {

@@ -23,7 +23,9 @@ export class TelegramNotifier implements SubmissionNotifier {
       return f?.label[lang] ?? f?.label.en ?? f?.label.am ?? name;
     };
     const title = fill(botText[lang].newAnswer, { kind: kindNames[lang][form.kind], site: project?.name || form.id });
-    const lines = Object.entries(s.data).map(([k, v]) => `<b>${escapeHtml(label(k))}:</b> ${escapeHtml(v)}`);
+    // Shorten before escaping so a cut never splits an entity or tag.
+    const short = (v: string, n: number) => (v.length > n ? `${v.slice(0, n)}…` : v);
+    const lines = Object.entries(s.data).slice(0, 15).map(([k, v]) => `<b>${escapeHtml(short(label(k), 60))}:</b> ${escapeHtml(short(v, 200))}`);
     await this.client.sendMessage(link.chatId, [`<b>${escapeHtml(title)}</b>`, ...lines].join("\n"));
   }
 }

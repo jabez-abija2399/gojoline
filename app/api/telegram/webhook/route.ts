@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { after } from "next/server";
+import { isUserVerified } from "@/lib/auth/verified";
 import { handleUpdate } from "@/lib/telegram/bot";
 import { services } from "@/lib/server/services";
 
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
   after(async () => {
     try {
       await handleUpdate(
-        { store: telegram.store, client: telegram.client, builder: svc.builder, publish: svc.publish, limiter: svc.rateLimiter },
+        { store: telegram.store, client: telegram.client, builder: svc.builder, publish: svc.publish, limiter: svc.rateLimiter, isVerified: isUserVerified },
         update,
       );
     } catch (error) {

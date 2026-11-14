@@ -271,3 +271,68 @@ export const telegramUpdates = pgTable("telegram_updates", {
   updateId: bigint("update_id", { mode: "number" }).primaryKey(),
   receivedAt: createdAt(),
 });
+
+/** The plan a user pays for. No row = Free. */
+export const subscriptions = pgTable("subscriptions", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  plan: text("plan", { enum: ["starter", "business"] }).notNull(),
+  period: text("period", { enum: ["month", "year"] }).notNull(),
+  currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }).notNull(),
+  updatedAt: updatedAt(),
+});
+
+/** AI edit credits: balance = sum(delta). Grants are idempotent per (user, reason, ref). */
+export const creditLedger = pgTable(
+  "credit_ledger",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    delta: integer("delta").notNull(),
+    reason: text("reason", { enum: ["monthly_grant", "topup", "ai_edit", "refund", "admin"] }).notNull(),
+    ref: text("ref").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("credit_ledger_ref_uq").on(t.userId, t.reason, t.ref), index("credit_ledger_user_idx").on(t.userId)],
+);
+
+/** Manual Birr payments (Telebirr / bank transfer) waiting for or after admin review. */
+export const payments = pgTable(
+  "payments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    product: text("product", { enum: ["starter_month", "starter_year", "business_month", "business_year", "topup"] }).notNull(),
+    amountMinor: integer("amount_minor").notNull(),
+    currency: text("currency", { enum: ["ETB"] }).notNull(),
+    method: text("method", { enum: ["telebirr", "cbe", "other"] }).notNull(),
+    reference: text("reference").notNull(),
+    receipt: bytea("receipt"),
+    status: text("status", { enum: ["pending", "approved", "rejected"] }).notNull(),
+    reviewedBy: text("reviewed_by"),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    note: text("note"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("payments_status_idx").on(t.status, t.createdAt), uniqueIndex("payments_reference_uq").on(t.method, t.reference)],
+);
+
+/** Who did what, for money and moderation actions. Append-only. */
+export const auditLog = pgTable(
+  "audit_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    actorId: text("actor_id").notNull(),
+    action: text("action").notNull(),
+    targetType: text("target_type").notNull(),
+    targetId: text("target_id").notNull(),
+    data: jsonb("data").$type<Record<string, unknown>>(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("audit_log_target_idx").on(t.targetType, t.targetId)],
+);
