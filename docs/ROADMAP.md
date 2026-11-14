@@ -8,7 +8,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [ ] i18n (en, am) with language switch; Amharic layout check
 - [ ] Favicon, app icons, manifest and social image from `brand/`
 - [ ] Landing page in brand (EN + AM) with waitlist form
-- [ ] GitHub Actions CI: typecheck, lint, test
+- [ ] GitHub Actions CI: typecheck, lint, test, npm audit, Lighthouse CI budgets
+- [ ] Security headers and CSP middleware; Dependabot config
+- [ ] Playwright + axe accessibility checks wired into e2e
 
 ## Slice 1: Core loop (prompt → site → preview → edit)
 - [ ] `templates/site/` Vite + React template with sections library (hero, about, menu/services, gallery, contact, map, footer)

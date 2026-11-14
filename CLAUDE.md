@@ -2,7 +2,7 @@
 
 Gojoline ("gojo" ጎጆ = home + online) is an AI builder that turns a chat in Amharic or English into a live website or simple web app, paid in Birr. Ethiopia first, built to serve everyone.
 
-Read before working: `docs/PRD.md` (what), `docs/ARCHITECTURE.md` (how), `docs/ROADMAP.md` (what next), `brand/README.md` (look).
+Read before working: `docs/PRD.md` (what), `docs/ARCHITECTURE.md` (how), `docs/ROADMAP.md` (what next), `docs/QUALITY.md` (the bar every slice must meet), `brand/README.md` (look).
 
 ## How to work (autonomous mode)
 
@@ -11,6 +11,7 @@ Read before working: `docs/PRD.md` (what), `docs/ARCHITECTURE.md` (how), `docs/R
 - Never fake results. If a service or secret is missing, build behind an interface, write the test with a clear skip message, and note it in `docs/ROADMAP.md` under "Blocked".
 - Work on a feature branch (`build/<slice>`); push with `git push -u origin <branch>`. Keep `main` deployable.
 - Before ticking a task: `npm run typecheck`, `npm run lint`, `npm test` pass, and for UI work `npm run e2e` (Playwright, `--trace off`) passes. Fix failures; never disable checks to get green.
+- At the end of each slice, run the `design-reviewer`, `performance-reviewer` and `security-reviewer` agents (`.claude/agents/`), fix what they find, and only then tick the slice.
 - Small commits with clear messages. Update docs in the same commit as the code.
 
 ## Stack (fixed: do not swap without a decision entry)
