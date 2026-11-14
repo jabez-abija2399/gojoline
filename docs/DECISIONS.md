@@ -29,3 +29,11 @@
 | 2026-11-14 | Template uses system font stacks plus the bundled Ethiopic subset; no web fonts for Latin | Zero font downloads for Latin on slow networks; QUALITY allows at most 2 fonts |
 | 2026-11-14 | Published sites are prerendered per page and language (`/`, `/am/...`) and hydrated (77 KB gzip JS) | Static, SEO-friendly, and interactive enough for forms later; under the 100 KB budget |
 | 2026-11-14 | Map section links to the maps app instead of embedding a third-party iframe | Keeps sites fast and private; no third-party scripts |
+| 2026-11-14 | Manual agent loop (not the SDK tool runner) with tools list_files, read_file, write_file, search_replace, run_build | Full control over sandbox calls, the 3-attempt auto-fix cap, revert on failure and per-request cost logging |
+| 2026-11-14 | Agent model `claude-opus-5-5` at effort `medium` with server-side refusal fallback (`fallbacks: "default"`) | Default model per CLAUDE.md; first live run built a bilingual site in 32 s for $0.064. Cheaper models only after evals measure cost per task |
+| 2026-11-14 | AI cost stored as integer nano-USD | Money rule (no floats); cache-read prices are fractions of a micro-dollar per token |
+| 2026-11-14 | Agent may write only `src/**` (ts, tsx, css) and `public/**` images; template core, package.json and configs are locked | No new dependencies or build-script changes from AI code (supply chain and sandbox escape surface) |
+| 2026-11-14 | Each owner request starts a fresh model conversation with the current `site.ts` and a short text history | Avoids replaying long tool transcripts (cost) and history-editing problems with preserved thinking |
+| 2026-11-14 | Vercel project `gojoline` created (team jabezabija2399's projects) for sandboxes and deployment | Separate from existing projects; Hobby plan has no sandbox failover regions |
+| 2026-11-14 | Sandboxes start from a base snapshot and switch to `deny-all` network after setup | Preview ready in ~2.5 s; AI-written code can't reach the internet or our services |
+| 2026-11-14 | Builder CSP allows frames from `https://*.vercel.run` (set via `CSP_FRAME_ORIGINS`) | Preview URLs are random per sandbox; they only ever come from our server, never user input |

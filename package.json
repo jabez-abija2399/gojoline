@@ -15,9 +15,11 @@
     "brand:sync": "node scripts/sync-brand.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
     "@radix-ui/react-slot": "^1.5.0",
     "@upstash/ratelimit": "^2.2.1",
     "@upstash/redis": "^1.41.0",
+    "@vercel/sandbox": "^4.0.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
     "lucide-react": "^1.73.0",

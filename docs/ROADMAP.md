@@ -14,9 +14,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Slice 1: Core loop (prompt → site → preview → edit)
 - [x] `templates/site/` Vite + React template with sections library (hero, about, menu/services, gallery, contact, map, footer)
-- [ ] `LLMProvider` (Anthropic SDK, streaming, prompt caching, cost logging)
-- [ ] Agent loop with file tools and capped auto-fix
-- [ ] `SandboxProvider` (Vercel Sandbox) with pre-installed snapshot and preview URL
+- [x] `LLMProvider` (Anthropic SDK, streaming, prompt caching, cost logging)
+- [x] Agent loop with file tools and capped auto-fix
+- [x] `SandboxProvider` (Vercel Sandbox) with pre-installed snapshot and preview URL
 - [ ] Builder UI: chat, live preview iframe, code view, mobile layout
 - [ ] Version history and restore
 - [ ] Eval set (30 prompts EN + AM) and runner reporting success, cost, time
