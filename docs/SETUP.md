@@ -29,10 +29,9 @@ Open the cloud environment menu in the session's title bar, then **Edit**. Add t
 
 | Name | Where to get it | Needed for |
 | --- | --- | --- |
-| `ANTHROPIC_API_KEY` | console.anthropic.com → API keys | The AI builder and evals (required) |
-| `VERCEL_TOKEN` | vercel.com → Account → Tokens | Vercel Sandbox previews |
-| `TELEGRAM_BOT_TOKEN` | Telegram → @BotFather → /newbot | Notifications and bot edits |
-| `CHAPA_SECRET_KEY` | dashboard.chapa.co (test mode) | Payment button (sandbox) |
+| `SAYSITE_ANTHROPIC_API_KEY` | console.anthropic.com → API keys | The AI builder and evals (required) ✅ set |
+| `VERCEL_TOKEN` | vercel.com → Account → Tokens | Vercel Sandbox previews ✅ set |
+| `TELEGRAM_BOT_TOKEN` | Telegram → @BotFather → /newbot | Notifications and bot edits (@gojoline_bot) ✅ set |
 | `CLOUDFLARE_API_TOKEN`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_ACCOUNT_ID` | dash.cloudflare.com → R2 / API tokens | Storage and publishing |
 
 `DATABASE_URL`, Upstash keys and Vercel IDs can be created by Claude through the connectors and stored in the Vercel project. A new session picks up new secrets.
@@ -41,7 +40,7 @@ Open the cloud environment menu in the session's title bar, then **Edit**. Add t
 
 Same environment settings → **Network access**. Choose **Full**, or **Limited** with these allowed domains (keep "Allow package managers" ticked):
 
-`api.anthropic.com`, `*.neon.tech`, `*.vercel.com`, `*.vercel.app`, `api.vercel.com`, `*.upstash.io`, `api.telegram.org`, `api.chapa.co`, `*.cloudflare.com`, `*.r2.cloudflarestorage.com`, `fonts.googleapis.com`, `fonts.gstatic.com`, `*.sentry.io`
+`api.anthropic.com`, `*.neon.tech`, `*.vercel.com`, `*.vercel.app`, `api.vercel.com`, `*.upstash.io`, `api.telegram.org`, `*.cloudflare.com`, `*.r2.cloudflarestorage.com`, `fonts.googleapis.com`, `fonts.gstatic.com`, `*.sentry.io`
 
 ## 5. Setup script (optional, speeds up new sessions)
 

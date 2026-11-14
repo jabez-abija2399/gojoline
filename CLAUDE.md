@@ -18,7 +18,7 @@ Read before working: `docs/PRD.md` (what), `docs/ARCHITECTURE.md` (how), `docs/R
 - Builder app: Next.js (App Router) + TypeScript strict, Tailwind, shadcn/ui, deployed on Vercel.
 - Database: Neon Postgres + Drizzle ORM. Migrations via `drizzle-kit`.
 - Auth: Better Auth (email + phone).
-- AI: Anthropic TypeScript SDK (`@anthropic-ai/sdk`), tool use, prompt caching, streaming. Default model `claude-opus-5-5`; measure cost per task before adding cheaper models (`claude-sonnet-5-5`, `claude-haiku-5-5`).
+- AI: Anthropic TypeScript SDK (`@anthropic-ai/sdk`), tool use, prompt caching, streaming. API key env var is `SAYSITE_ANTHROPIC_API_KEY` (pass it as `apiKey`; the SDK does not read that name by itself). Default model `claude-opus-5-5`; measure cost per task before adding cheaper models (`claude-sonnet-5-5`, `claude-haiku-5-5`).
 - Sandbox: Vercel Sandbox behind `SandboxProvider`.
 - Jobs and rate limits: Upstash (QStash/Workflow + Redis).
 - Files and snapshots: Cloudflare R2 (S3 API) behind `StorageProvider`.
@@ -40,6 +40,8 @@ Read before working: `docs/PRD.md` (what), `docs/ARCHITECTURE.md` (how), `docs/R
 
 - Never delete Neon projects, branches or databases, Upstash databases, or Vercel projects. Never buy domains. Never change paid plans.
 - Never commit secrets. Read them from env vars listed in `.env.example`.
+- Telegram bot: @gojoline_bot (token in `TELEGRAM_BOT_TOKEN`).
+- Chapa is postponed: keep `PaymentProvider` with the manual provider only; do not build Chapa until the roadmap says so.
 - Abuse protection is part of Phase 1, not optional: content checks before publish, verification, report-abuse link.
 
 ## Commands

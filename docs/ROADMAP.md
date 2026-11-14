@@ -41,7 +41,6 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 ## Slice 6: Billing
 - [ ] Plans, credits ledger, metering per AI edit
 - [ ] Manual payments: receipt upload, admin approval, audit log
-- [ ] `PaymentProvider` with Chapa (sandbox) + Chapa button in templates
 
 ## Slice 7: Trust and safety + admin
 - [ ] Content checks on prompts and pages before publish
@@ -54,5 +53,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [ ] Privacy policy and terms pages (to be reviewed by a lawyer)
 - [ ] Eval targets met (see PRD)
 
+## Later (postponed by the founder)
+- [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
+
 ## Blocked (needs the founder)
-- (none yet)
+- Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider
+- Publishing domain (`gojoline.site` or similar): until bought, publish under a free subdomain
