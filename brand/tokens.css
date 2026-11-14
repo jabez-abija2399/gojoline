@@ -1,0 +1,30 @@
+/* Gojoline brand tokens. Import once at the root of any Gojoline app or site. */
+:root {
+  /* Core palette (Terracotta Earth) */
+  --gojo-clay: #C2410C;        /* main: buttons, links, "line", the globe */
+  --gojo-clay-hover: #9A3412;
+  --gojo-clay-bright: #F97316; /* accents on dark backgrounds */
+  --gojo-clay-light: #FDBA74;  /* "line" on dark backgrounds */
+  --gojo-clay-soft: #FDE7DA;   /* tinted surfaces, badges */
+
+  --gojo-teal: #0E3B43;        /* partner: door, dark sections, footer */
+  --gojo-teal-mid: #4F8A91;
+  --gojo-teal-soft: #CDE3E5;
+  --gojo-teal-deep: #082429;
+
+  --gojo-ink: #1C1917;         /* headings and body text */
+  --gojo-ink-muted: #57534E;   /* secondary text */
+  --gojo-line: #E7E5E4;        /* borders, dividers */
+  --gojo-sand: #FFF7F0;        /* page background */
+  --gojo-white: #FFFFFF;       /* cards */
+
+  /* Typography */
+  --gojo-font-display: "Outfit", system-ui, sans-serif;
+  --gojo-font-body: "Inter", system-ui, sans-serif;
+  --gojo-font-ethiopic: "Noto Sans Ethiopic", "Inter", sans-serif;
+
+  /* Shape */
+  --gojo-radius-sm: 8px;
+  --gojo-radius-md: 12px;
+  --gojo-radius-lg: 20px;
+}
