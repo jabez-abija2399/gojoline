@@ -13,7 +13,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Playwright + axe accessibility checks wired into e2e
 
 ## Slice 1: Core loop (prompt → site → preview → edit)
-- [ ] `templates/site/` Vite + React template with sections library (hero, about, menu/services, gallery, contact, map, footer)
+- [x] `templates/site/` Vite + React template with sections library (hero, about, menu/services, gallery, contact, map, footer)
 - [ ] `LLMProvider` (Anthropic SDK, streaming, prompt caching, cost logging)
 - [ ] Agent loop with file tools and capped auto-fix
 - [ ] `SandboxProvider` (Vercel Sandbox) with pre-installed snapshot and preview URL

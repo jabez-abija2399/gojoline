@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+/*
+ * Theme colours come from site.theme and are written as CSS variables on <html>
+ * by src/lib/theme.ts. Use these utilities in sections: bg-primary, text-primary,
+ * bg-accent, bg-surface, text-muted, border-line, rounded-site ...
+ */
+@theme inline {
+  --color-primary: var(--site-primary);
+  --color-on-primary: var(--site-on-primary);
+  --color-primary-soft: var(--site-primary-soft);
+  --color-accent: var(--site-accent);
+  --color-on-accent: var(--site-on-accent);
+  --color-background: var(--site-background);
+  --color-surface: var(--site-surface);
+  --color-text: var(--site-text);
+  --color-muted: var(--site-muted);
+  --color-line: var(--site-line);
+  --radius-site: var(--site-radius);
+  --font-heading: var(--site-font-heading);
+  --font-body: var(--site-font-body);
+}
+
+@font-face {
+  font-family: "Noto Sans Ethiopic";
+  src: url("/fonts/noto-sans-ethiopic-core.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+1200-137F;
+}
+
+@layer base {
+  html {
+    font-family: var(--site-font-body);
+    background: var(--site-background);
+    color: var(--site-text);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--site-font-heading);
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  :lang(am) {
+    line-height: 1.8;
+  }
+  :lang(am) :is(h1, h2, h3) {
+    line-height: 1.4;
+  }
+  a {
+    color: inherit;
+  }
+  :focus-visible {
+    outline: 3px solid var(--site-focus);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  .container-site {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 72rem;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-site {
+      padding-inline: 1.5rem;
+    }
+  }
+  .btn {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--site-radius);
+    padding: 0.625rem 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: filter 150ms;
+  }
+  .btn:hover {
+    filter: brightness(0.92);
+  }
+  .btn-primary {
+    background: var(--site-primary);
+    color: var(--site-on-primary);
+  }
+  .btn-outline {
+    border: 2px solid currentColor;
+  }
+  .section {
+    padding-block: 4rem;
+  }
+  .section-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+  }
+}

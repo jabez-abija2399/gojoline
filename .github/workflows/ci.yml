@@ -61,3 +61,25 @@ jobs:
       - run: npm run build
       - name: Lighthouse CI (mobile budgets from docs/QUALITY.md)
         run: npx lhci autorun
+
+  site-template:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: templates/site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: templates/site/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - run: npm run build
+      - name: JS budget (100 KB gzip)
+        run: |
+          size=$(cat dist/assets/*.js | gzip -9 | wc -c)
+          echo "site JS gzip: $size bytes"
+          test "$size" -le 102400

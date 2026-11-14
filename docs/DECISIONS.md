@@ -25,3 +25,7 @@
 | 2026-11-14 | Builder frames nothing unless `CSP_FRAME_ORIGINS` lists the preview origin | A wildcard like `*.vercel.run` would allow framing anyone's sandbox |
 | 2026-11-14 | GitHub Actions pinned to major tags (not SHAs) for now; Dependabot watches them | Workflow has read-only permissions and no secrets; revisit when deploy secrets are added |
 | 2026-11-14 | Direct `@radix-ui/react-slot` instead of the `radix-ui` barrel; plain `<label>` | Cut first-load JS from 201 KB to 179 KB gzip (budget 200 KB) |
+| 2026-11-14 | Site template is data-driven: the agent mainly edits a typed `src/site.ts`, validated by Zod + contrast checks | Fewer AI mistakes, small diffs (cheap edits), validation messages name the exact field to fix |
+| 2026-11-14 | Template uses system font stacks plus the bundled Ethiopic subset; no web fonts for Latin | Zero font downloads for Latin on slow networks; QUALITY allows at most 2 fonts |
+| 2026-11-14 | Published sites are prerendered per page and language (`/`, `/am/...`) and hydrated (77 KB gzip JS) | Static, SEO-friendly, and interactive enough for forms later; under the 100 KB budget |
+| 2026-11-14 | Map section links to the maps app instead of embedding a third-party iframe | Keeps sites fast and private; no third-party scripts |
