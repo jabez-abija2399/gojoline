@@ -6,7 +6,7 @@ import { pathToFileURL } from "node:url";
 const root = process.cwd();
 const dist = join(root, "dist");
 const template = readFileSync(join(dist, "index.html"), "utf8");
-const { render, routes, site } = await import(pathToFileURL(join(root, "dist-ssr", "entry-server.js")).href);
+const { render, routes, siteUrl } = await import(pathToFileURL(join(root, "dist-ssr", "entry-server.js")).href);
 
 const escapeAttr = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 const urls = routes();
@@ -22,7 +22,7 @@ for (const url of urls) {
   writeFileSync(file, html);
 }
 
-const base = site.meta?.url?.replace(/\/$/, "");
+const base = siteUrl();
 if (base) {
   const entries = urls.map((u) => `  <url><loc>${base}${u === "/" ? "/" : u}</loc></url>`).join("\n");
   writeFileSync(join(dist, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`);

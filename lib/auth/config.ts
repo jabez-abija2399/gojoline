@@ -6,6 +6,25 @@ import type { OtpSender } from "@/lib/providers/notify/otp";
 /** Placeholder email for phone-only accounts (never sent to; .invalid is a reserved TLD). */
 export const phoneEmail = (phone: string) => `${phone.replace(/\D/g, "")}@phone.gojoline.invalid`;
 
+export const OTP_HTTP_PATHS = [
+  "/sign-up/email",
+  "/sign-in/email",
+  "/email-otp/send-verification-otp",
+  "/email-otp/check-verification-otp",
+  "/email-otp/verify-email",
+  "/sign-in/email-otp",
+  "/email-otp/request-password-reset",
+  "/forget-password/email-otp",
+  "/email-otp/reset-password",
+  "/email-otp/request-email-change",
+  "/email-otp/change-email",
+  "/sign-in/phone-number",
+  "/phone-number/send-otp",
+  "/phone-number/verify",
+  "/phone-number/request-password-reset",
+  "/phone-number/reset-password",
+];
+
 export interface AuthConfig {
   database: Parameters<typeof betterAuth>[0]["database"];
   secret: string;
@@ -24,8 +43,10 @@ export function createAuth(c: AuthConfig) {
     database: c.database,
     advanced: { cookiePrefix: "gojo", useSecureCookies: c.secureCookies },
     session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
-    // Server actions add per-contact and per-IP limits on top of Better Auth's own.
     rateLimit: { enabled: true, window: 60, max: 30 },
+    // Codes are only sent and checked through our server actions (shared Upstash rate limits);
+    // the matching public HTTP routes are switched off. Server-side auth.api calls still work.
+    disabledPaths: OTP_HTTP_PATHS,
     plugins: [
       emailOTP({
         otpLength: 6,

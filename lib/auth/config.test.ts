@@ -20,6 +20,20 @@ async function setup() {
 }
 
 describe("Better Auth on Postgres", () => {
+  it("does not expose the OTP routes over HTTP", async () => {
+    const { auth } = await setup();
+    for (const path of ["/phone-number/send-otp", "/email-otp/send-verification-otp", "/sign-in/email-otp"]) {
+      const res = await auth.handler(
+        new Request(`http://localhost:3000/api/auth${path}`, {
+          method: "POST",
+          headers: { "content-type": "application/json", origin: "http://localhost:3000" },
+          body: JSON.stringify({ phoneNumber: "+251911234567", email: "a@b.co", type: "sign-in", otp: "123456" }),
+        }),
+      );
+      expect(res.status, path).toBe(404);
+    }
+  }, 30_000);
+
   it("signs up and in with an email code; codes are stored hashed", async () => {
     const { db, sender, auth } = await setup();
     const email = `abebe-${Date.now()}@example.com`;

@@ -22,7 +22,7 @@ export interface Workspace {
 /** Editable surface for the agent. Everything else (package.json, configs, scripts) is locked. */
 const EDITABLE = [/^src\/(?:[\w-]+\/)*[\w-]+\.(?:tsx?|css)$/, /^public\/(?:[\w-]+\/)*[\w.-]+\.(?:svg|webp|png|jpe?g|avif|ico|txt)$/];
 const READABLE_EXTRA = [/^TEMPLATE\.md$/, /^index\.html$/, /^package\.json$/, /^vite\.config\.ts$/];
-const LOCKED = [/^src\/lib\/(types|schema|color|i18n|theme|context)\.tsx?$/, /^src\/(main|entry-server)\.tsx$/];
+const LOCKED = [/^src\/lib\//, /^src\/(main|entry-server)\.tsx$/, /^src\/vite-env\.d\.ts$/];
 
 export const MAX_FILE_BYTES = 200_000;
 

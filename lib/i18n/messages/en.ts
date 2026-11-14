@@ -110,6 +110,8 @@ export const en = {
     codeLabel: "6-digit code",
     verify: "Continue",
     verifying: "Checking...",
+    resend: "Send the code again",
+    joinWaitlist: "Join the waitlist",
     changeContact: "Use a different phone or email",
     signOut: "Sign out",
     signedInAs: "Signed in as {who}",

@@ -109,9 +109,11 @@ export const am: Messages = {
     codeLabel: "ባለ 6 አሃዝ ኮድ",
     verify: "ይቀጥሉ",
     verifying: "በማረጋገጥ ላይ...",
+    resend: "ኮዱን እንደገና ይላኩ",
+    joinWaitlist: "የመጠባበቂያ ዝርዝሩን ይቀላቀሉ",
     changeContact: "ሌላ ስልክ ወይም ኢሜይል ይጠቀሙ",
     signOut: "ይውጡ",
-    signedInAs: "የገቡት እንደ {who}",
+    signedInAs: "በ{who} ገብተዋል",
     errors: {
       contactInvalid: "እባክዎ ትክክለኛ የኢትዮጵያ ስልክ ቁጥር ወይም ኢሜይል ያስገቡ።",
       codeInvalid: "ኮዱ ትክክል አይደለም ወይም ጊዜው አልፏል። እባክዎ እንደገና ይሞክሩ።",

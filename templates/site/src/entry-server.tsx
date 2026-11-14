@@ -3,6 +3,7 @@ import { App, findPage } from "./App";
 import { localePath, parsePath, t } from "./lib/i18n";
 import { styleString, themeVariables } from "./lib/theme";
 import type { Lang } from "./lib/types";
+import { publishMeta } from "./lib/meta";
 import { site } from "./site";
 
 export interface RenderedPage {
@@ -29,7 +30,7 @@ export function render(url: string): RenderedPage | null {
   const html = renderToString(<App site={site} page={page} lang={lang} />);
   const title = page.path === "/" ? t(site.name, lang, site) : `${t(page.title, lang, site)} · ${t(site.name, lang, site)}`;
   const description = t(page.description ?? site.tagline, lang, site);
-  const base = site.meta?.url?.replace(/\/$/, "");
+  const base = siteUrl();
   const alternates = site.languages
     .map((l) => (base ? `<link rel="alternate" hreflang="${l}" href="${base}${localePath(page.path, l, site)}">` : ""))
     .join("");
@@ -53,6 +54,11 @@ export function render(url: string): RenderedPage | null {
     head,
     htmlAttrs: { lang, style: styleString(themeVariables(site.theme, lang)) },
   };
+}
+
+/** Public URL of the published site (set at publish time), if any. */
+export function siteUrl(): string | undefined {
+  return publishMeta.url ?? site.meta?.url?.replace(/\/$/, "");
 }
 
 export { site };

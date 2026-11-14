@@ -1,5 +1,6 @@
 import { uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
+import { publishMeta } from "../lib/meta";
 
 export function Footer() {
   const { site, lang, text } = useSite();
@@ -15,13 +16,13 @@ export function Footer() {
           </p>
         </div>
         <div className="flex flex-col gap-1 sm:items-end">
-          {site.meta?.badge !== false && (
+          {publishMeta.badge && site.meta?.badge !== false && (
             <a href="https://gojoline.com" className="flex min-h-11 items-center underline underline-offset-4">
               {uiText("madeWith", lang)}
             </a>
           )}
           {/* Always present (Phase 1 trust rule); Gojoline fills the exact URL at publish time. */}
-          <a href={site.meta?.reportUrl ?? "https://gojoline.com/report"} rel="nofollow" className="flex min-h-11 items-center underline underline-offset-4">
+          <a href={publishMeta.reportUrl} rel="nofollow" className="flex min-h-11 items-center underline underline-offset-4">
             {uiText("report", lang)}
           </a>
         </div>

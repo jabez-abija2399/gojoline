@@ -53,3 +53,6 @@
 | 2026-11-14 | Code delivery behind `OtpSender`; real SMS/email provider blocked on founder | Never fake delivery; dev prints codes, e2e reads them through a route that only exists with `E2E=1` |
 | 2026-11-14 | Versions stored as jsonb in Postgres until R2 is set up | R2 credentials are blocked; small sites fit easily |
 | 2026-11-14 | Builder access code removed; builder requires a signed-in account | Real accounts replace the Slice 1 stopgap |
+| 2026-11-14 | Better Auth's public OTP/password HTTP routes are disabled; codes go only through our server actions | Those actions carry the shared (Upstash) per-IP and per-contact limits; the built-in limiter is per instance (security review) |
+| 2026-11-14 | Code verify limits keyed on contact+IP, with a looser per-contact ceiling | Strangers guessing must not lock the real owner out |
+| 2026-11-14 | Auth instance created lazily; in production without DATABASE_URL/BETTER_AUTH_SECRET accounts are simply unavailable | Builds and CI never need secrets; no insecure defaults in production |

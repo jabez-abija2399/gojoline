@@ -1,7 +1,7 @@
 import "server-only";
 import { headers } from "next/headers";
 import { cache } from "react";
-import { auth } from "./server";
+import { getAuth } from "./server";
 
 export interface CurrentUser {
   id: string;
@@ -13,6 +13,8 @@ export interface CurrentUser {
 
 /** The signed-in user for this request, or null. */
 export const currentUser = cache(async (): Promise<CurrentUser | null> => {
+  const auth = getAuth();
+  if (!auth) return null;
   const session = await auth.api.getSession({ headers: await headers() }).catch(() => null);
   if (!session) return null;
   const u = session.user as typeof session.user & { phoneNumber?: string | null; phoneNumberVerified?: boolean | null };

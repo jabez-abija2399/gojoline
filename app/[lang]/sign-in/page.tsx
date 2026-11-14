@@ -22,8 +22,6 @@ export default async function SignInPage({ params, searchParams }: PageProps<"/[
     <>
       <BuilderHeader locale={lang} t={t} />
       <main id="main" className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-4 py-12">
-        <h1 className="text-3xl font-bold">{t.auth.title}</h1>
-        <p className="text-ink-muted">{t.auth.body}</p>
         <SignInForm locale={lang} t={t.auth} next={next} />
       </main>
     </>
