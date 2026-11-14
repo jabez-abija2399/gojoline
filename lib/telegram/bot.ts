@@ -16,6 +16,8 @@ export interface BotDeps {
   limiter: RateLimiter;
   /** Publishing needs a verified account; without this check the bot never republishes. */
   isVerified?: (userId: string) => Promise<boolean>;
+  /** Editing by Telegram is a Business feature; without this check it's allowed. */
+  canEditByTelegram?: (userId: string) => Promise<boolean>;
 }
 
 /** Only the parts of a Telegram update we use; everything else is ignored. */
@@ -79,6 +81,7 @@ export async function handleUpdate(deps: BotDeps, raw: unknown): Promise<void> {
   }
 
   const project = projects.find((p) => p.id === link.activeProjectId) ?? projects[0]!;
+  if (deps.canEditByTelegram && !(await deps.canEditByTelegram(link.userId))) return say(t.planEdits);
 
   if (msg.photo?.length) {
     // Same per-owner limits as the web dashboard and builder.

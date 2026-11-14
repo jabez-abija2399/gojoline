@@ -69,6 +69,16 @@ describe("publishSite", () => {
     expect(publisher.published.size).toBe(0);
   });
 
+  it("keeps to the plan's number of live sites", async () => {
+    const a = await projectWithVersion();
+    const b = await projectWithVersion();
+    deps.entitlements = async () => ({ plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100 });
+    expect((await publishSite(deps, alice, a.id, "site-one")).ok).toBe(true);
+    expect(await publishSite(deps, alice, b.id, "site-two")).toEqual({ ok: false, error: "plan_limit" });
+    // Republishing the existing site is always fine.
+    expect((await publishSite(deps, alice, a.id, "site-one")).ok).toBe(true);
+  });
+
   it("refuses while another change is running", async () => {
     const p = await projectWithVersion();
     await deps.lock.acquire(`project:${p.id}`, 60_000);

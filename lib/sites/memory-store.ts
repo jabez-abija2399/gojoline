@@ -10,6 +10,9 @@ export class MemorySiteStore implements SiteStore {
   async slugTaken(slug: string, exceptProjectId: string) {
     return [...this.sites.values()].some((s) => s.slug === slug && s.projectId !== exceptProjectId);
   }
+  async countPublished(ownerId: string, exceptProjectId: string) {
+    return [...this.sites.values()].filter((s) => s.ownerId === ownerId && s.projectId !== exceptProjectId && s.status === "published").length;
+  }
   async reserve(ownerId: string, projectId: string, slug: string, provider: string) {
     if (this.sites.has(projectId) || (await this.slugTaken(slug, projectId))) return false;
     this.sites.set(projectId, {

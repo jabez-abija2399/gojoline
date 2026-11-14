@@ -21,6 +21,8 @@ export interface SiteStore {
   getByProject(ownerId: string, projectId: string): Promise<Site | null>;
   /** True when another project already uses this slug. */
   slugTaken(slug: string, exceptProjectId: string): Promise<boolean>;
+  /** Live sites this owner has, not counting the given project. */
+  countPublished(ownerId: string, exceptProjectId: string): Promise<number>;
   /** Claims the address for this project before the first deploy. False when it's taken. */
   reserve(ownerId: string, projectId: string, slug: string, provider: string): Promise<boolean>;
   /** Null clears it. Returns false when another site already uses the domain. */

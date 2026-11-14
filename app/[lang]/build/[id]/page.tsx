@@ -32,6 +32,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
           locale={lang}
           projectId={id}
           t={t.builder}
+          noCreditsText={t.billing.noCredits}
           initialMessages={messages.map((m) => ({
             id: m.id,
             role: m.role,

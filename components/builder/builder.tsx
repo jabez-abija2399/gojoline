@@ -14,6 +14,7 @@ type Tab = "chat" | "preview" | "versions" | "code";
 type Step = "reading" | "editing" | "checking" | "fixing" | null;
 
 interface Props {
+  noCreditsText: string;
   locale: Locale;
   projectId: string;
   t: Messages["builder"];
@@ -24,7 +25,7 @@ interface Props {
 let localId = 0;
 const nextId = () => `local-${++localId}`;
 
-export function Builder({ locale, projectId, t, initialMessages, initialVersions }: Props) {
+export function Builder({ locale, projectId, t, initialMessages, initialVersions, noCreditsText }: Props) {
   const [messages, setMessages] = useState<UiMessage[]>(initialMessages);
   const [versions, setVersions] = useState<UiVersion[]>(initialVersions);
   const [current, setCurrent] = useState<number | null>(initialVersions[0]?.number ?? null);
@@ -118,7 +119,7 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
               }
               case "error":
                 finished = true;
-                addAssistant(event.code === "busy" ? t.busy : t.failed, { tone: "error" });
+                addAssistant(event.code === "busy" ? t.busy : event.code === "no_credits" ? noCreditsText : t.failed, { tone: "error" });
                 break;
             }
           }
@@ -132,7 +133,7 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
         setStreamText("");
       }
     },
-    [projectId, t, addAssistant],
+    [projectId, t, addAssistant, noCreditsText],
   );
 
   const restore = useCallback(

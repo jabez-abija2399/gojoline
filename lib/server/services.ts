@@ -18,7 +18,9 @@ import { templateFiles } from "@/lib/template/files";
 import { MemoryLock, RedisLock, type Lock } from "@/lib/lock";
 import { MemoryWaitlistStore, type WaitlistStore } from "@/lib/waitlist/store";
 import type { PublishDeps } from "@/lib/publish/service";
-import { freeForEveryone, type EntitlementsResolver } from "@/lib/billing/entitlements";
+import type { EntitlementsResolver } from "@/lib/billing/entitlements";
+import { Billing } from "@/lib/billing/service";
+import { DbBillingStore, MemoryBillingStore } from "@/lib/billing/store";
 import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { VercelPublishProvider } from "@/lib/providers/publish/vercel";
 import { DbSiteStore } from "@/lib/sites/db-store";
@@ -118,7 +120,9 @@ interface Services {
   notifier: SubmissionNotifier | null;
   /** Telegram bot (null without TELEGRAM_BOT_TOKEN, except in e2e). */
   telegram: { store: TelegramStore; client: TelegramClient; username: string } | null;
-  /** Plan limits per user (billing replaces the free default in Slice 6). */
+  /** Plans, credits and manual payments. */
+  billing: Billing;
+  /** Plan limits per user. */
   entitlements: EntitlementsResolver;
   /** null when hosting credentials are missing. */
   publish: PublishDeps | null;
@@ -132,19 +136,23 @@ export function services(): Services {
   if (!globalForServices.gojoServices) {
     const db = getDb(process.env);
     const usage = db ? new DbUsageLogger(db) : new MemoryUsageLogger();
+    const billing = new Billing(db ? new DbBillingStore(db) : new MemoryBillingStore());
     globalForServices.gojoServices = {
       waitlist: db ? new DbWaitlistStore(db) : new MemoryWaitlistStore(),
       rateLimiter: pickRateLimiter(process.env),
       usage,
       builder: pickBuilder(process.env, usage),
       publish: null,
-      entitlements: freeForEveryone,
+      billing,
+      entitlements: billing.entitlements,
       cloud: null,
       notifier: null,
       telegram: null,
     };
     const svc = globalForServices.gojoServices;
+    if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r) };
     svc.publish = pickPublish(process.env, svc.builder);
+    if (svc.publish) svc.publish.entitlements = billing.entitlements;
     svc.cloud = svc.publish?.cloud ?? null;
     svc.telegram = pickTelegram(process.env);
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);

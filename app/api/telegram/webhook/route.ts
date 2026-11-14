@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   after(async () => {
     try {
       await handleUpdate(
-        { store: telegram.store, client: telegram.client, builder: svc.builder, publish: svc.publish, limiter: svc.rateLimiter, isVerified: isUserVerified },
+        { store: telegram.store, client: telegram.client, builder: svc.builder, publish: svc.publish, limiter: svc.rateLimiter, isVerified: isUserVerified, canEditByTelegram: async (u) => (await svc.entitlements(u)).telegramEdits },
         update,
       );
     } catch (error) {

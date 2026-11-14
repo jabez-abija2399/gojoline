@@ -3,6 +3,7 @@ import { extractForms } from "@/lib/cloud/forms";
 import type { CloudStore } from "@/lib/cloud/types";
 import type { Lock } from "@/lib/lock";
 import type { AssetStore } from "@/lib/cloud/assets";
+import type { EntitlementsResolver } from "@/lib/billing/entitlements";
 import type { ProjectStore } from "@/lib/projects/types";
 import type { PublishFile, PublishProvider } from "@/lib/providers/publish/types";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
@@ -28,6 +29,8 @@ export interface PublishDeps {
   /** Where form definitions are stored at publish time. */
   cloud?: CloudStore;
   assets?: AssetStore;
+  /** Plan limits (site count, badge). Without it: Free limits. */
+  entitlements?: EntitlementsResolver;
 }
 
 export type PublishError =
@@ -41,6 +44,7 @@ export type PublishError =
   | "taken_down"
   | "build_failed"
   | "blocked"
+  | "plan_limit"
   | "failed";
 
 export type PublishOutcome =
@@ -84,6 +88,10 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
 
   const latest = await deps.store.latestVersion(user.id, projectId);
   if (!latest) return { ok: false, error: "no_version" };
+  const plan = deps.entitlements ? await deps.entitlements(user.id) : null;
+  if ((existing?.status ?? "pending") !== "published" && (await deps.sites.countPublished(user.id, projectId)) >= (plan?.maxSites ?? 1)) {
+    return { ok: false, error: "plan_limit" };
+  }
   // Claim the address in our database before anything is deployed (atomic, unique).
   if (!existing && !(await deps.sites.reserve(user.id, projectId, slug, deps.publisher.name))) return { ok: false, error: "slug_taken" };
 
@@ -100,6 +108,7 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
       VITE_SITE_ID: projectId,
       VITE_REPORT_URL: `${deps.appUrl.replace(/\/$/, "")}/${project.locale}/report?site=${encodeURIComponent(slug)}`,
       VITE_DATA_API_URL: apiOrigin,
+      VITE_BADGE: plan && !plan.badge ? "0" : "1",
       ...(reserved?.siteKey ? { VITE_SITE_KEY: reserved.siteKey } : {}),
     });
     if (!build.ok) {

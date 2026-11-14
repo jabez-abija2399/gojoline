@@ -18,13 +18,15 @@ export interface BuilderDeps {
   model: string;
   lock: Lock;
   assets?: AssetStore;
+  /** AI edit credits; when set, each request costs one credit, refunded if the change fails. */
+  credits?: { consume(userId: string, ref: string): Promise<boolean>; refund(userId: string, ref: string): Promise<void> };
 }
 
 export type BuilderEvent =
   | AgentEvent
   | { type: "preview"; url: string }
   | { type: "done"; message: ChatMessage; previewUrl: string }
-  | { type: "error"; code: "busy" | "not_found" | "failed" };
+  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" };
 
 const HISTORY_MESSAGES = 8;
 /** Longer than the longest agent run (route maxDuration is 300 s). */
@@ -73,9 +75,14 @@ export async function sendOwnerMessage(
   if (!project) return input.onEvent({ type: "error", code: "not_found" });
   const token = await deps.lock.acquire(`project:${project.id}`, LOCK_TTL_MS);
   if (!token) return input.onEvent({ type: "error", code: "busy" });
+  let chargedRef: string | null = null;
   try {
     const previous = await store.listMessages(input.ownerId, project.id, 50);
-    await store.addMessage(input.ownerId, { projectId: project.id, role: "owner", text: input.text });
+    const ownerMsg = await store.addMessage(input.ownerId, { projectId: project.id, role: "owner", text: input.text });
+    if (deps.credits && !(await deps.credits.consume(input.ownerId, ownerMsg.id))) {
+      return input.onEvent({ type: "error", code: "no_credits" });
+    }
+    chargedRef = ownerMsg.id;
 
     const latest = await store.latestVersion(input.ownerId, project.id);
     // Boot the sandbox while the model reads the request; tools wait for it.
@@ -115,6 +122,10 @@ export async function sendOwnerMessage(
         if (name) await store.renameProject(input.ownerId, project.id, name);
       }
     }
+    if (result.status === "failed" && chargedRef) {
+      await deps.credits?.refund(input.ownerId, chargedRef);
+      chargedRef = null;
+    }
     const message = await store.addMessage(input.ownerId, {
       projectId: project.id,
       role: "assistant",
@@ -123,8 +134,10 @@ export async function sendOwnerMessage(
       versionNumber,
     });
     input.onEvent({ type: "done", message, previewUrl: sandbox.previewUrl });
+    chargedRef = null;
   } catch (error) {
     console.error("builder.sendOwnerMessage failed", error instanceof Error ? error.message : "unknown");
+    if (chargedRef) await deps.credits?.refund(input.ownerId, chargedRef).catch(() => undefined);
     input.onEvent({ type: "error", code: "failed" });
   } finally {
     await deps.lock.release(`project:${project.id}`, token);

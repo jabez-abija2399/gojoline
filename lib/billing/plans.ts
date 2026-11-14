@@ -12,10 +12,10 @@ export const PRODUCTS = {
 export type Product = keyof typeof PRODUCTS;
 export const TOPUP_CREDITS = 50;
 
-export const PLAN_FEATURES: Record<Entitlements["plan"], Entitlements & { monthlyEdits: number; telegramEdits: boolean }> = {
-  free: { plan: "free", customDomain: false, maxSites: 1, badge: true, monthlyEdits: 15, telegramEdits: false },
-  starter: { plan: "starter", customDomain: true, maxSites: 1, badge: false, monthlyEdits: 50, telegramEdits: false },
-  business: { plan: "business", customDomain: true, maxSites: 3, badge: false, monthlyEdits: 150, telegramEdits: true },
+export const PLAN_FEATURES: Record<Entitlements["plan"], Entitlements & { monthlyEdits: number }> = {
+  free: { plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, monthlyEdits: 15 },
+  starter: { plan: "starter", customDomain: true, maxSites: 1, badge: false, telegramNotify: true, telegramEdits: false, answersPerMonth: 2000, monthlyEdits: 50 },
+  business: { plan: "business", customDomain: true, maxSites: 3, badge: false, telegramNotify: true, telegramEdits: true, answersPerMonth: 10000, monthlyEdits: 150 },
 };
 
 /** Unused monthly edits roll over, up to two months' worth. */

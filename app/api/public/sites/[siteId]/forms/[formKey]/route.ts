@@ -44,7 +44,7 @@ export async function POST(request: Request, ctx: Ctx) {
     body = null;
   }
   const result = await handleSubmission(
-    { cloud, limiter: services().rateLimiter, notifier: services().notifier ?? undefined },
+    { cloud, limiter: services().rateLimiter, notifier: services().notifier ?? undefined, entitlements: services().entitlements },
     {
       projectId: params.data.siteId,
       formKey: params.data.formKey,

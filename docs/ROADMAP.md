@@ -41,8 +41,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Bot edits: text, prices, photos through the agent
 
 ## Slice 6: Billing
-- [ ] Plans, credits ledger, metering per AI edit
-- [ ] Manual payments: receipt upload, admin approval, audit log
+- [x] Plans, credits ledger, metering per AI edit
+- [x] Manual payments: receipt upload, admin approval, audit log
 
 ## Slice 7: Trust and safety + admin
 - [ ] Content checks on prompts and pages before publish
@@ -73,6 +73,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
+- Payment details: set `PAYMENT_TELEBIRR_NUMBER`, `PAYMENT_CBE_ACCOUNT`, `PAYMENT_ACCOUNT_NAME` (until set, the Plan page says payments are coming soon) and the admin list `ADMIN_EMAILS` / `ADMIN_PHONES`. Prices in `lib/billing/plans.ts` are placeholders for the founder to confirm.
 - Vercel plan: Hobby allows 10 sandboxes at a time (each owner editing uses one for up to 15 minutes). For more than ~10 owners editing at once, the team needs Vercel Pro. Plan changes are the founder's decision.
 - Sign-in code delivery: choose an SMS gateway for Ethiopian numbers (e.g. AfroMessage, Geez SMS) and/or an email service (e.g. Resend) and add its key. Until then production sign-in shows "not open yet" (`OtpSender` interface in `lib/providers/notify/otp.ts`; development prints codes in the server log).
 - Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider

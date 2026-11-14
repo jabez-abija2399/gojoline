@@ -78,3 +78,7 @@
 | 2026-11-14 | Telegram linking via one-time deep-link codes (hashed, 15 min, single use) from the dashboard; private chats only | No typing of codes; a group can never receive answers or control a site |
 | 2026-11-14 | Webhook verified with Telegram's secret-token header, idempotent by update_id, work done with `after()` | Telegram retries; agent edits take ~30 s and must not block the reply |
 | 2026-11-14 | Bot edits reuse the builder agent and republish live sites; 20 edits/hour per owner | Same quality and safety checks as the web builder |
+| 2026-11-14 | Plans Free / Starter / Business with monthly edit credits in a ledger (idempotent grants, rollover capped at 2 months); one credit per AI edit, refunded when the edit fails | Simple to explain; owners never pay for a failed change |
+| 2026-11-14 | Manual payments: owner sends the Telebirr/bank transaction number (+ optional receipt photo); admins approve or reject; every decision audited; a reference can be used once | Chapa is postponed; this works today with no gateway |
+| 2026-11-14 | Admins are set by env (`ADMIN_EMAILS`/`ADMIN_PHONES`) and must be verified; the admin page answers 404 to everyone else | No admin role table to manage yet; nothing to discover for attackers |
+| 2026-11-14 | Plan limits enforced in the server: live sites per plan at publish, monthly form answers per site, Telegram notifications (Starter+) and Telegram edits (Business) | Limits can't be bypassed from the client |

@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { and, eq, ne } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { sites } from "@/lib/db/schema";
 import type { Site, SiteStore } from "./types";
@@ -15,6 +15,14 @@ export class DbSiteStore implements SiteStore {
   async slugTaken(slug: string, exceptProjectId: string): Promise<boolean> {
     const rows = await this.db.select({ id: sites.id }).from(sites).where(and(eq(sites.slug, slug), ne(sites.projectId, exceptProjectId))).limit(1);
     return rows.length > 0;
+  }
+
+  async countPublished(ownerId: string, exceptProjectId: string): Promise<number> {
+    const [row] = await this.db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(sites)
+      .where(and(eq(sites.ownerId, ownerId), ne(sites.projectId, exceptProjectId), eq(sites.status, "published")));
+    return Number(row?.n ?? 0);
   }
 
   async reserve(ownerId: string, projectId: string, slug: string, provider: string): Promise<boolean> {

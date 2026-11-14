@@ -9,6 +9,8 @@ export interface SubmitDeps {
   notifier?: SubmissionNotifier;
   /** Per IP per site per minute (default 5) and per site per day (default 300). */
   limits?: { perIpPerMinute?: number; perSitePerDay?: number };
+  /** Monthly answer allowance and Telegram notifications by the owner's plan. */
+  entitlements?: (userId: string) => Promise<{ answersPerMonth: number; telegramNotify: boolean }>;
 }
 
 export interface SubmitInput {
@@ -79,11 +81,15 @@ export async function handleSubmission(deps: SubmitDeps, input: SubmitInput): Pr
     deps.limiter.hit(`form:site:${site.siteId}`, perDay, 86_400_000),
   ]);
   if (!byIp.allowed || !byIpDay.allowed || !bySite.allowed) return deny(429, "too_many", allowOrigin);
+  const plan = deps.entitlements ? await deps.entitlements(site.ownerId) : null;
 
   const form = await deps.cloud.getForm(site.siteId, input.formKey);
   if (!form) return deny(404, "form_not_found", allowOrigin);
   const checked = checkSubmission(form, body.answers);
   if (!checked.ok) return { status: 422, body: { error: "invalid", field: checked.field }, allowOrigin };
+  if (plan && !(await deps.limiter.hit(`form:month:${site.siteId}`, plan.answersPerMonth, 30 * 86_400_000)).allowed) {
+    return deny(429, "plan_limit", allowOrigin);
+  }
 
   const lang = body.lang === "am" || body.lang === "en" ? body.lang : null;
   const submission = await deps.cloud.addSubmission({
@@ -95,6 +101,6 @@ export async function handleSubmission(deps: SubmitDeps, input: SubmitInput): Pr
     data: checked.data,
     lang,
   });
-  await deps.notifier?.notify(submission, form).catch((e: unknown) => console.error("notify failed", e instanceof Error ? e.message : "unknown"));
+  if (plan?.telegramNotify ?? true) await deps.notifier?.notify(submission, form).catch((e: unknown) => console.error("notify failed", e instanceof Error ? e.message : "unknown"));
   return { status: 201, body: { ok: true }, allowOrigin };
 }

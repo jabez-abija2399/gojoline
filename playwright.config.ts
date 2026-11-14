@@ -22,6 +22,6 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         timeout: 240_000,
         // Every test shares one IP; keep per-IP limits out of the way of the suite.
-        env: { E2E: "1", WAITLIST_RATE_LIMIT_PER_MIN: "1000", OTP_SEND_PER_IP_PER_HOUR: "1000", BUILDER_RATE_LIMIT_PER_HOUR: "1000", TELEGRAM_WEBHOOK_SECRET: "e2e-telegram-secret-0123456789" },
+        env: { E2E: "1", WAITLIST_RATE_LIMIT_PER_MIN: "1000", OTP_SEND_PER_IP_PER_HOUR: "1000", BUILDER_RATE_LIMIT_PER_HOUR: "1000", TELEGRAM_WEBHOOK_SECRET: "e2e-telegram-secret-0123456789", PAYMENT_TELEBIRR_NUMBER: "0911000000", PAYMENT_ACCOUNT_NAME: "Gojoline", ADMIN_EMAILS: "admin-e2e-mobile@example.com,admin-e2e-desktop@example.com" },
       },
 });
