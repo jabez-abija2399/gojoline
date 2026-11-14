@@ -56,3 +56,9 @@
 | 2026-11-14 | Better Auth's public OTP/password HTTP routes are disabled; codes go only through our server actions | Those actions carry the shared (Upstash) per-IP and per-contact limits; the built-in limiter is per instance (security review) |
 | 2026-11-14 | Code verify limits keyed on contact+IP, with a looser per-contact ceiling | Strangers guessing must not lock the real owner out |
 | 2026-11-14 | Auth instance created lazily; in production without DATABASE_URL/BETTER_AUTH_SECRET accounts are simply unavailable | Builds and CI never need secrets; no insecure defaults in production |
+| 2026-11-14 | Publish fallback: Vercel static deployments, one Vercel project per site (`gojo-<slug>.vercel.app`), Vercel login wall off | R2/Cloudflare and the publishing domain are blocked; sites stay on a domain separate from the builder |
+| 2026-11-14 | Every publish is scanned (no inline/third-party scripts, frames, `javascript:` links, outside form actions, password fields, eval) and served with a strict CSP | AI-written code must not turn into phishing or malware pages |
+| 2026-11-14 | Site address can't change after the first publish; reserved words (bank, telebirr, admin...) refused | Saved links keep working; fewer impersonation addresses |
+| 2026-11-14 | Publish requires a verified account and takes the project lock | Phase 1 verification rule; no publish in the middle of an edit |
+| 2026-11-14 | Publish-time settings (site URL, report link) passed as `VITE_*` build env to a locked template file | The agent can't remove the report link or fake the canonical URL |
+| 2026-11-14 | Custom domains via the site's Vercel project with DNS instructions (A for apex, CNAME for subdomains, TXT when verification is needed); gated by plan entitlements | Paid feature per PRD; free for nobody until billing exists |

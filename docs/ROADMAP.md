@@ -27,9 +27,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Persist projects, messages, versions, AI usage
 
 ## Slice 3: Publish
-- [ ] `PublishProvider`: build and publish static site to `name.gojoline.site`
-- [ ] SEO basics in template (prerender, meta, sitemap)
-- [ ] Custom domains (paid)
+- [x] `PublishProvider`: build and publish static site to `name.gojoline.site` (Vercel fallback on `gojo-<name>.vercel.app` until Cloudflare credentials and the domain exist)
+- [x] SEO basics in template (prerender, meta, sitemap)
+- [x] Custom domains (paid; switched on per plan once billing lands in Slice 6)
 
 ## Slice 4: Gojoline Cloud (simple full-stack)
 - [ ] Public Data API for forms, lists, uploads with per-site keys and rate limits
@@ -61,7 +61,6 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 ## Follow-ups
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 - Edit cost median $0.031 vs $0.03 target: re-run evals after the search_replace prompt change.
-- Before publishing (Slice 3/7): scan built `dist/` for scripts, iframes, `javascript:` links and outside form actions; serve published sites with a strict CSP (security review, Slice 1).
 
 ## Notes for deployment
 - Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
@@ -72,4 +71,4 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 ## Blocked (needs the founder)
 - Sign-in code delivery: choose an SMS gateway for Ethiopian numbers (e.g. AfroMessage, Geez SMS) and/or an email service (e.g. Resend) and add its key. Until then production sign-in shows "not open yet" (`OtpSender` interface in `lib/providers/notify/otp.ts`; development prints codes in the server log).
 - Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider
-- Publishing domain (`gojoline.site` or similar): until bought, publish under a free subdomain
+- Publishing domain (`gojoline.site` or similar): until bought, sites publish to `https://gojo-<name>.vercel.app` (one Vercel project per site)

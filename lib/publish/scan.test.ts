@@ -24,6 +24,13 @@ describe("scanBuiltSite", () => {
     expect(issues.map((i) => i.rule)).toContain(rule);
   });
 
+  it("allows JSON-LD data blocks but not other inline scripts", () => {
+    const html = good.replace("<body>", `<body><script type="application/ld+json">{"@type":"LocalBusiness"}</script>`);
+    expect(scanBuiltSite([f("index.html", html)])).toEqual([]);
+    const sneaky = good.replace("<body>", `<body><script type="text/javascript">alert(1)</script>`);
+    expect(scanBuiltSite([f("index.html", sneaky)]).map((i) => i.rule)).toContain("inline-script");
+  });
+
   it("allows forms that post to the Data API", () => {
     const html = good.replace("<body>", `<body><form action="https://api.gojoline.com/sites/1/forms"></form>`);
     expect(scanBuiltSite([f("index.html", html)], { allowedFormOrigins: ["https://api.gojoline.com"] })).toEqual([]);

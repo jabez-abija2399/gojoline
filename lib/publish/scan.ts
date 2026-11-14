@@ -27,6 +27,8 @@ function scanHtml(file: string, html: string, opts: ScanOptions, issues: ScanIss
   for (const m of html.matchAll(/<script\b([^>]*)>/gi)) {
     const attrs = m[1] ?? "";
     const src = /\bsrc\s*=\s*["']([^"']*)["']/i.exec(attrs)?.[1];
+    // Structured data blocks are not executed (and CSP blocks inline scripts anyway).
+    if (!src && /\btype\s*=\s*["']application\/ld\+json["']/i.test(attrs)) continue;
     if (!src) add("inline-script", m.index!);
     else if (!/^\/assets\/[\w.-]+\.js$/.test(src)) add("external-script", m.index!);
   }

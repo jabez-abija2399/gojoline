@@ -38,6 +38,18 @@ describe("render", () => {
   it("formats non-Birr prices with the right symbol", () => {
     expect(formatPrice({ amountMinor: 1250, currency: "USD" }, "en")).toBe("$12.50");
   });
+  it("adds LocalBusiness structured data on the home page, safely escaped", () => {
+    const head = render("/")!.head;
+    const json = /<script type="application\/ld\+json">(.*?)<\/script>/.exec(head)?.[1];
+    expect(JSON.parse(json!)).toMatchObject({ "@type": "LocalBusiness", name: "Bole Buna House", telephone: "+251 911 234 567" });
+    const original = site.name.en;
+    site.name.en = "</script><script>alert(1)</script>";
+    try {
+      expect(render("/")!.head).not.toContain("</script><script>");
+    } finally {
+      site.name.en = original;
+    }
+  });
   it("returns null for unknown pages", () => {
     expect(render("/nope")).toBeNull();
   });

@@ -155,3 +155,29 @@ export const waitlist = pgTable("waitlist", {
   createdAt: createdAt(),
 });
 
+
+/** A project's public site. One per project; slug is the public address part. */
+export const sites = pgTable(
+  "sites",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id")
+      .notNull()
+      .unique()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    ownerId: text("owner_id").notNull(),
+    slug: text("slug").notNull().unique(),
+    provider: text("provider").notNull(),
+    providerProjectId: text("provider_project_id"),
+    url: text("url"),
+    status: text("status", { enum: ["published", "taken_down"] }).notNull(),
+    publishedVersion: integer("published_version"),
+    lastDeploymentId: text("last_deployment_id"),
+    customDomain: text("custom_domain").unique(),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    takenDownReason: text("taken_down_reason"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("sites_owner_idx").on(t.ownerId)],
+);

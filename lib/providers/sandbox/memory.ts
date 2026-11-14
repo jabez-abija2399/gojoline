@@ -39,4 +39,11 @@ class MemorySiteSandbox extends MemoryWorkspace implements SiteSandbox {
     for (const [p, c] of Object.entries(files)) if (isVersionedPath(p)) this.files.set(p, c);
   }
   async stop() {}
+  async buildForPublish(env: Record<string, string>) {
+    const build = await this.runBuild();
+    if (!build.ok) return { ...build, files: [] };
+    const name = /en: "([^"]*)"/.exec(this.files.get("src/site.ts") ?? "")?.[1] ?? "Site";
+    const html = `<!doctype html><html lang="en"><head><title>${name.replace(/[<>&"]/g, "")}</title><script type="module" src="/assets/index-test.js"></script></head><body><h1>${name.replace(/[<>&"]/g, "")}</h1><a href="${env.VITE_REPORT_URL ?? ""}">Report</a></body></html>`;
+    return { ...build, files: [{ path: "index.html", data: Buffer.from(html) }, { path: "assets/index-test.js", data: Buffer.from("console.log(1)") }] };
+  }
 }

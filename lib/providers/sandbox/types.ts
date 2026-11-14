@@ -1,4 +1,5 @@
-import type { Workspace } from "@/lib/agent/workspace";
+import type { BuildResult, Workspace } from "@/lib/agent/workspace";
+import type { PublishFile } from "@/lib/providers/publish/types";
 
 /** A running copy of one project's site, with a live preview. */
 export interface SiteSandbox extends Workspace {
@@ -10,6 +11,8 @@ export interface SiteSandbox extends Workspace {
   /** Replaces the project's editable files with a saved version. */
   restoreFiles(files: Record<string, string>): Promise<void>;
   stop(): Promise<void>;
+  /** Production build with publish-time settings (VITE_* env); returns the built files. */
+  buildForPublish(env: Record<string, string>): Promise<BuildResult & { files: PublishFile[] }>;
 }
 
 export interface SandboxProvider {

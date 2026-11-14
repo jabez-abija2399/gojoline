@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/i18n/config";
 import { ChatPanel, type UiMessage } from "./chat-panel";
 import { CodePanel } from "./code-panel";
 import { PreviewPanel } from "./preview-panel";
+import { PublishBar } from "./publish-bar";
 import { TabList } from "./tab-list";
 import { VersionsPanel, type UiVersion } from "./versions-panel";
 
@@ -176,6 +177,7 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      <PublishBar t={t} projectId={projectId} hasVersion={versions.length > 0} disabled={working} />
       <TabList tabs={["chat", "preview", "versions", "code"] as const} labels={tabLabels} active={mobileTab} onChange={setMobileTab} label={t.viewsLabel} idPrefix="tab-m" className="flex lg:hidden" />
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <section id="panel-chat" role="tabpanel" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-r lg:border-line`}>

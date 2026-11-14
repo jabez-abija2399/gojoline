@@ -17,6 +17,12 @@ import { DenyAllRateLimiter, UpstashRateLimiter } from "@/lib/rate-limit/upstash
 import { templateFiles } from "@/lib/template/files";
 import { MemoryLock, RedisLock, type Lock } from "@/lib/lock";
 import { MemoryWaitlistStore, type WaitlistStore } from "@/lib/waitlist/store";
+import type { PublishDeps } from "@/lib/publish/service";
+import { freeForEveryone, type EntitlementsResolver } from "@/lib/billing/entitlements";
+import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
+import { VercelPublishProvider } from "@/lib/providers/publish/vercel";
+import { DbSiteStore } from "@/lib/sites/db-store";
+import { MemorySiteStore } from "@/lib/sites/memory-store";
 
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
@@ -73,10 +79,25 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
   };
 }
 
+function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null {
+  if (!builder) return null;
+  const db = getDb(env);
+  const sites = db ? new DbSiteStore(db) : new MemorySiteStore();
+  const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, sites, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined };
+  if (isE2E(env)) return { ...base, publisher: new MemoryPublishProvider() };
+  if (!env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID) return null;
+  return { ...base, publisher: new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) };
+}
+
 interface Services {
   waitlist: WaitlistStore;
   rateLimiter: RateLimiter;
   usage: UsageLogger;
+  /** Plan limits per user (billing replaces the free default in Slice 6). */
+  entitlements: EntitlementsResolver;
+  /** null when hosting credentials are missing. */
+  publish: PublishDeps | null;
   /** null when AI or sandbox credentials are missing. */
   builder: BuilderDeps | null;
 }
@@ -92,7 +113,10 @@ export function services(): Services {
       rateLimiter: pickRateLimiter(process.env),
       usage,
       builder: pickBuilder(process.env, usage),
+      publish: null,
+      entitlements: freeForEveryone,
     };
+    globalForServices.gojoServices.publish = pickPublish(process.env, globalForServices.gojoServices.builder);
   }
   return globalForServices.gojoServices;
 }

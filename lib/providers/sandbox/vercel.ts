@@ -137,6 +137,22 @@ class VercelSiteSandbox implements SiteSandbox {
     return { ok: res.exitCode === 0, output: tail(output, 6000), durationMs: Date.now() - started };
   }
 
+  async buildForPublish(env: Record<string, string>) {
+    const started = Date.now();
+    await this.syncLocked();
+    const res = await this.sandbox.runCommand({ cmd: "npm", args: ["run", "build", "--silent"], cwd: ROOT, env });
+    const output = tail(`${await res.stdout()}\n${await res.stderr()}`.trim(), 6000);
+    if (res.exitCode !== 0) return { ok: false, output, durationMs: Date.now() - started, files: [] };
+    const list = await this.sandbox.runCommand({ cmd: "find", args: ["dist", "-type", "f"], cwd: ROOT });
+    const paths = (await list.stdout()).split("\n").map((s) => s.trim()).filter(Boolean).slice(0, 500);
+    const files = [];
+    for (const p of paths) {
+      const data = await this.sandbox.readFileToBuffer({ path: p, cwd: ROOT });
+      if (data) files.push({ path: p.replace(/^dist\//, ""), data });
+    }
+    return { ok: true, output, durationMs: Date.now() - started, files };
+  }
+
   async snapshotFiles() {
     const files: Record<string, string> = {};
     for (const path of await this.listFiles()) {

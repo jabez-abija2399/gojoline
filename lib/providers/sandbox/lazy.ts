@@ -39,6 +39,9 @@ export class LazySiteSandbox implements SiteSandbox {
   async restoreFiles(files: Record<string, string>) {
     return (await this.ready).restoreFiles(files);
   }
+  async buildForPublish(env: Record<string, string>) {
+    return (await this.ready).buildForPublish(env);
+  }
   async stop() {
     return (await this.ready).stop();
   }

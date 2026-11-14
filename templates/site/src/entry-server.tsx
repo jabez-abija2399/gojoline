@@ -43,6 +43,7 @@ export function render(url: string): RenderedPage | null {
     base ? `<link rel="canonical" href="${base}${localePath(page.path, lang, site)}">` : "",
     alternates,
     `<meta name="theme-color" content="${escapeHtml(site.theme.primary)}">`,
+    page.path === "/" ? `<script type="application/ld+json">${jsonLd(lang, base)}</script>` : "",
     lang === "am" ? `<link rel="preload" href="/fonts/noto-sans-ethiopic-core.woff2" as="font" type="font/woff2" crossorigin>` : "",
   ]
     .filter(Boolean)
@@ -54,6 +55,23 @@ export function render(url: string): RenderedPage | null {
     head,
     htmlAttrs: { lang, style: styleString(themeVariables(site.theme, lang)) },
   };
+}
+
+/** schema.org LocalBusiness data for search engines (only facts the owner gave). */
+function jsonLd(lang: Lang, base: string | undefined): string {
+  const b = site.business;
+  const data: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: t(site.name, lang, site),
+    ...(site.tagline ? { description: t(site.tagline, lang, site) } : {}),
+    ...(base ? { url: base } : {}),
+    ...(b.phone ? { telephone: b.phone } : {}),
+    ...(b.email ? { email: b.email } : {}),
+    ...(b.address ? { address: t(b.address, lang, site) } : {}),
+  };
+  // Escape "<" so the JSON can never close the script element.
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
 /** Public URL of the published site (set at publish time), if any. */
