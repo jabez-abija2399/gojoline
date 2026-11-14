@@ -15,7 +15,7 @@ const app = (
   </StrictMode>
 );
 
-if (container.hasChildNodes()) {
+if (container.firstElementChild) {
   // Prerendered page (published site).
   hydrateRoot(container, app);
 } else {

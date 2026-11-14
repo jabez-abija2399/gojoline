@@ -17,8 +17,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] `LLMProvider` (Anthropic SDK, streaming, prompt caching, cost logging)
 - [x] Agent loop with file tools and capped auto-fix
 - [x] `SandboxProvider` (Vercel Sandbox) with pre-installed snapshot and preview URL
-- [ ] Builder UI: chat, live preview iframe, code view, mobile layout
-- [ ] Version history and restore
+- [x] Builder UI: chat, live preview iframe, code view, mobile layout
+- [x] Version history and restore
 - [ ] Eval set (30 prompts EN + AM) and runner reporting success, cost, time
 
 ## Slice 2: Accounts and data
@@ -60,7 +60,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Notes for deployment
 - Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
-- Waitlist entries are kept in memory until Slice 2 adds the database store.
+- Waitlist entries, projects, messages and versions are kept in memory until Slice 2 adds the database store.
+- Until accounts exist (Slice 2) the builder is closed in production unless `BUILDER_ACCESS_CODE` is set; owners are an anonymous cookie.
+- Builder needs `SAYSITE_ANTHROPIC_API_KEY`, `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, `SANDBOX_SNAPSHOT_ID` and `CSP_FRAME_ORIGINS=https://*.vercel.run`.
 
 ## Blocked (needs the founder)
 - Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider

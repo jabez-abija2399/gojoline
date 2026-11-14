@@ -50,6 +50,8 @@ export class VercelSandboxProvider implements SandboxProvider {
 
     const site = new VercelSiteSandbox(sandbox);
     if (fresh && !this.config.snapshotId) await site.installTemplate();
+    // The snapshot provides node_modules; template files always come from this deployment.
+    else if (fresh) await site.syncTemplate();
     if (files) await site.restoreFiles(files);
     await sandbox.updateNetworkPolicy("deny-all");
     await site.ensureDevServer();
@@ -76,6 +78,12 @@ class VercelSiteSandbox implements SiteSandbox {
     );
     const install = await this.sandbox.runCommand({ cmd: "npm", args: ["ci", "--no-audit", "--no-fund"], cwd: ROOT });
     if (install.exitCode !== 0) throw new Error(`Template install failed: ${(await install.stderr()).slice(-500)}`);
+  }
+
+  async syncTemplate() {
+    await this.sandbox.writeFiles(
+      templateFiles().map((f) => ({ path: `${ROOT}/${f.path}`, content: typeof f.content === "string" ? f.content : new Uint8Array(f.content) })),
+    );
   }
 
   async ensureDevServer() {

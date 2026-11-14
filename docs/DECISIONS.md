@@ -37,3 +37,7 @@
 | 2026-11-14 | Vercel project `gojoline` created (team jabezabija2399's projects) for sandboxes and deployment | Separate from existing projects; Hobby plan has no sandbox failover regions |
 | 2026-11-14 | Sandboxes start from a base snapshot and switch to `deny-all` network after setup | Preview ready in ~2.5 s; AI-written code can't reach the internet or our services |
 | 2026-11-14 | Builder CSP allows frames from `https://*.vercel.run` (set via `CSP_FRAME_ORIGINS`) | Preview URLs are random per sandbox; they only ever come from our server, never user input |
+| 2026-11-14 | Builder gated by `BUILDER_ACCESS_CODE` + anonymous owner cookie until Better Auth (Slice 2) | Slice 1 ships before accounts; an open builder would let anyone spend AI and sandbox credits |
+| 2026-11-14 | Agent progress streamed to the browser as NDJSON from a route handler (`maxDuration` 300 s) | Simple, works through Vercel functions, no extra realtime service |
+| 2026-11-14 | Versions are full snapshots of editable files; restoring creates a new version | History is never rewritten; restore is one write |
+| 2026-11-14 | Fresh sandboxes copy the deployed template over the base snapshot | Snapshot only needs rebuilding when template dependencies change |

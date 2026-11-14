@@ -1,0 +1,197 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { Messages } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n/config";
+import { ChatPanel, type UiMessage } from "./chat-panel";
+import { CodePanel } from "./code-panel";
+import { PreviewPanel } from "./preview-panel";
+import { VersionsPanel, type UiVersion } from "./versions-panel";
+
+type Tab = "chat" | "preview" | "versions" | "code";
+type Step = "reading" | "editing" | "checking" | "fixing" | null;
+
+interface Props {
+  locale: Locale;
+  projectId: string;
+  t: Messages["builder"];
+  initialMessages: UiMessage[];
+  initialVersions: UiVersion[];
+}
+
+let localId = 0;
+const nextId = () => `local-${++localId}`;
+
+export function Builder({ locale, projectId, t, initialMessages, initialVersions }: Props) {
+  const [messages, setMessages] = useState<UiMessage[]>(initialMessages);
+  const [versions, setVersions] = useState<UiVersion[]>(initialVersions);
+  const [current, setCurrent] = useState<number | null>(initialVersions[0]?.number ?? null);
+  const [working, setWorking] = useState(false);
+  const [step, setStep] = useState<Step>(null);
+  const [streamText, setStreamText] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [mobileTab, setMobileTab] = useState<Tab>("chat");
+  const [deskTab, setDeskTab] = useState<Exclude<Tab, "chat">>("preview");
+  const lastBuildFailed = useRef(false);
+
+  // Wake the sandbox for an existing site so the preview shows straight away.
+  useEffect(() => {
+    if (initialVersions.length === 0) return;
+    let cancelled = false;
+    fetch(`/api/projects/${projectId}/preview`, { method: "POST" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { url: string | null } | null) => {
+        if (!cancelled && data?.url) setPreviewUrl(data.url);
+      })
+      .catch(() => undefined)
+      .finally(() => !cancelled && setPreviewLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [projectId, initialVersions.length]);
+
+  const addAssistant = useCallback((text: string, extra: Partial<UiMessage> = {}) => {
+    setMessages((m) => [...m, { id: nextId(), role: "assistant", text, ...extra }]);
+  }, []);
+
+  const send = useCallback(
+    async (text: string) => {
+      setMessages((m) => [...m, { id: nextId(), role: "owner", text }]);
+      setWorking(true);
+      setStep(null);
+      setStreamText("");
+      lastBuildFailed.current = false;
+      try {
+        const res = await fetch(`/api/projects/${projectId}/messages`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+        if (res.status === 429) return addAssistant(t.tooMany, { tone: "error" });
+        if (!res.ok || !res.body) return addAssistant(t.failed, { tone: "error" });
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let finished = false;
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          let nl: number;
+          while ((nl = buffer.indexOf("\n")) >= 0) {
+            const line = buffer.slice(0, nl).trim();
+            buffer = buffer.slice(nl + 1);
+            if (!line) continue;
+            const event = JSON.parse(line);
+            switch (event.type) {
+              case "preview":
+                setPreviewUrl(event.url);
+                setPreviewLoading(false);
+                break;
+              case "text":
+                setStreamText((s) => s + event.delta);
+                break;
+              case "tool":
+                setStep(event.name === "run_build" ? "checking" : event.name === "read_file" || event.name === "list_files" ? "reading" : lastBuildFailed.current ? "fixing" : "editing");
+                break;
+              case "build":
+                lastBuildFailed.current = !event.ok;
+                if (event.ok) setReloadKey((k) => k + 1);
+                break;
+              case "done": {
+                finished = true;
+                const m = event.message;
+                if (m.status === "failed") addAssistant(t.reverted, { tone: "error" });
+                else addAssistant(m.text, { versionNumber: m.versionNumber });
+                if (m.versionNumber) {
+                  setVersions((v) => [{ number: m.versionNumber, summary: text.slice(0, 140), createdAt: new Date().toISOString() }, ...v]);
+                  setCurrent(m.versionNumber);
+                  setReloadKey((k) => k + 1);
+                }
+                break;
+              }
+              case "error":
+                finished = true;
+                addAssistant(event.code === "busy" ? t.busy : t.failed, { tone: "error" });
+                break;
+            }
+          }
+        }
+        if (!finished) addAssistant(t.failed, { tone: "error" });
+      } catch {
+        addAssistant(t.failed, { tone: "error" });
+      } finally {
+        setWorking(false);
+        setStep(null);
+        setStreamText("");
+      }
+    },
+    [projectId, t, addAssistant],
+  );
+
+  const restore = useCallback(
+    async (number: number): Promise<boolean> => {
+      const res = await fetch(`/api/projects/${projectId}/versions/${number}/restore`, { method: "POST" });
+      if (!res.ok) return false;
+      const data: { version: { number: number }; versions: UiVersion[] } = await res.json();
+      setVersions(data.versions.map((v) => ({ ...v, createdAt: String(v.createdAt) })));
+      setCurrent(data.version.number);
+      setReloadKey((k) => k + 1);
+      addAssistant(t.versionRestoredFrom.replace("{n}", String(number)), { versionNumber: data.version.number });
+      return true;
+    },
+    [projectId, t, addAssistant],
+  );
+
+  const stepLabel = step === "reading" ? t.stepReading : step === "editing" ? t.stepEditing : step === "checking" ? t.stepChecking : step === "fixing" ? t.stepFixing : null;
+
+  const chat = <ChatPanel t={t} locale={locale} messages={messages} working={working} stepLabel={stepLabel} streamText={streamText} onSend={send} />;
+  const preview = <PreviewPanel t={t} url={previewUrl} loading={previewLoading || (working && !previewUrl)} reloadKey={reloadKey} />;
+  const versionsPanel = <VersionsPanel t={t} versions={versions} current={current} disabled={working} onRestore={restore} />;
+  const code = <CodePanel t={t} projectId={projectId} refreshKey={current ?? 0} />;
+  const panels: Record<Exclude<Tab, "chat">, React.ReactNode> = { preview, versions: versionsPanel, code };
+  const tabLabels: Record<Tab, string> = { chat: t.tabChat, preview: t.tabPreview, versions: t.tabVersions, code: t.tabCode };
+
+  const tabButton = (tab: Tab, active: boolean, onClick: () => void) => (
+    <button
+      key={tab}
+      type="button"
+      role="tab"
+      aria-selected={active}
+      aria-controls={`panel-${tab}`}
+      onClick={onClick}
+      className="min-h-11 shrink-0 rounded-lg px-3 font-medium text-ink-muted aria-selected:bg-teal aria-selected:text-white"
+    >
+      {tabLabels[tab]}
+    </button>
+  );
+
+  // Each panel renders once; CSS decides what shows (mobile: one tab, desktop: chat + one tab).
+  const panelClass = (tab: Tab) =>
+    `min-h-0 flex-1 flex-col ${mobileTab === tab ? "max-lg:flex" : "max-lg:hidden"} ${tab === "chat" || deskTab === tab ? "lg:flex" : "lg:hidden"}`;
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div role="tablist" aria-label={t.tabChat} className="flex gap-1 overflow-x-auto border-b border-line bg-white p-2 lg:hidden">
+        {(["chat", "preview", "versions", "code"] as Tab[]).map((tab) => tabButton(tab, mobileTab === tab, () => setMobileTab(tab)))}
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <section id="panel-chat" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-r lg:border-line`}>
+          {chat}
+        </section>
+        <div className="flex min-h-0 flex-1 flex-col max-lg:contents">
+          <div role="tablist" aria-label={t.tabPreview} className="hidden gap-1 border-b border-line bg-white p-2 lg:flex">
+            {(["preview", "versions", "code"] as const).map((tab) => tabButton(tab, deskTab === tab, () => setDeskTab(tab)))}
+          </div>
+          {(["preview", "versions", "code"] as const).map((tab) => (
+            <section key={tab} id={`panel-${tab}`} aria-label={tabLabels[tab]} className={panelClass(tab)}>
+              {panels[tab]}
+            </section>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
