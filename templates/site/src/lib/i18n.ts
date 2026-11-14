@@ -41,6 +41,11 @@ const ui = {
     phone: "Phone",
     email: "Email",
     mapTitle: "Map",
+    required: "required",
+    sending: "Sending...",
+    formError: "Something went wrong. Please try again or call us.",
+    formPreview: "This form starts working when your site is published.",
+    fieldRequired: "Please fill this in.",
   },
   am: {
     call: "ይደውሉልን",
@@ -56,6 +61,11 @@ const ui = {
     phone: "ስልክ",
     email: "ኢሜይል",
     mapTitle: "ካርታ",
+    required: "የግድ",
+    sending: "በመላክ ላይ...",
+    formError: "የሆነ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ ወይም ይደውሉልን።",
+    formPreview: "ይህ ቅጽ ድረ-ገጽዎ ሲታተም መሥራት ይጀምራል።",
+    fieldRequired: "እባክዎ ይህን ይሙሉ።",
   },
 } as const;
 

@@ -5,4 +5,5 @@ interface ImportMetaEnv {
   readonly VITE_REPORT_URL?: string;
   readonly VITE_DATA_API_URL?: string;
   readonly VITE_BADGE?: string;
+  readonly VITE_SITE_KEY?: string;
 }

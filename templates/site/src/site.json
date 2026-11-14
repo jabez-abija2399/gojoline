@@ -178,6 +178,64 @@
           ]
         },
         {
+          "type": "form",
+          "id": "booking",
+          "kind": "booking",
+          "heading": {
+            "en": "Book a table",
+            "am": "ጠረጴዛ ያስይዙ"
+          },
+          "intro": {
+            "en": "Tell us when you are coming. We will confirm by phone.",
+            "am": "መቼ እንደሚመጡ ይንገሩን። በስልክ እናረጋግጥልዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": {
+                "en": "Date",
+                "am": "ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "guests",
+              "label": {
+                "en": "Number of people",
+                "am": "የሰዎች ብዛት"
+              },
+              "type": "number"
+            }
+          ],
+          "submitLabel": {
+            "en": "Book now",
+            "am": "አሁን ያስይዙ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will call you to confirm.",
+            "am": "እናመሰግናለን! ለማረጋገጥ እንደውልልዎታለን።"
+          }
+        },
+        {
           "type": "contact",
           "heading": {
             "en": "Visit or call us",

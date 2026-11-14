@@ -119,6 +119,29 @@ export interface TestimonialsSection {
   items: { quote: Text; name: string }[];
 }
 
+export interface FormField {
+  /** Key for the answer: lowercase letters, numbers, underscores (e.g. "phone", "guests"). */
+  name: string;
+  label: Text;
+  type: "text" | "email" | "tel" | "date" | "time" | "number" | "select" | "textarea";
+  required?: boolean;
+  /** For "select": the choices. */
+  options?: Text[];
+}
+
+/** A form visitors fill in; answers go to the owner's dashboard and Telegram. */
+export interface FormSection {
+  type: "form";
+  /** Unique form key on the site, e.g. "booking" (lowercase, dashes). Required. */
+  id: string;
+  kind: "contact" | "booking" | "order" | "registration";
+  heading: Text;
+  intro?: Text;
+  fields: FormField[];
+  submitLabel: Text;
+  successMessage: Text;
+}
+
 export type Section =
   | HeroSection
   | AboutSection
@@ -127,7 +150,8 @@ export type Section =
   | GallerySection
   | ContactSection
   | MapSection
-  | TestimonialsSection;
+  | TestimonialsSection
+  | FormSection;
 
 export interface Page {
   /** "/" for the home page, otherwise "/menu", "/about" (lowercase, no trailing slash) */

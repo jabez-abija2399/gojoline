@@ -6,7 +6,8 @@ import type { SandboxProvider, SiteSandbox } from "./types";
 
 const PORT = 5173;
 const ROOT = "/vercel/sandbox/site";
-const IDLE_TIMEOUT_MS = 30 * 60_000;
+// Short idle life: the Hobby plan allows 10 sandboxes at once.
+const IDLE_TIMEOUT_MS = 15 * 60_000;
 
 export interface VercelSandboxConfig {
   teamId: string;

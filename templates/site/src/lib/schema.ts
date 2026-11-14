@@ -33,6 +33,30 @@ const price = z.object({ amountMinor: z.number().int().nonnegative().max(1_000_0
 const id = z.string().regex(/^[a-z][a-z0-9-]{0,40}$/).optional();
 const icon = z.enum(["coffee", "utensils", "bed", "stethoscope", "school", "shopping-bag", "church", "calendar", "heart", "home", "map", "scissors", "car", "star", "phone", "check"]);
 
+export const formFieldSchema = z
+  .object({
+    name: z.string().regex(/^[a-z][a-z0-9_]{0,30}$/, "Field name: lowercase letters, numbers, underscores"),
+    label: text,
+    type: z.enum(["text", "email", "tel", "date", "time", "number", "select", "textarea"]),
+    required: z.boolean().optional(),
+    options: z.array(text).min(1).max(30).optional(),
+  })
+  .strict()
+  .refine((f) => f.type !== "select" || (f.options?.length ?? 0) > 0, "A select field needs options");
+
+export const formSectionSchema = z
+  .object({
+    type: z.literal("form"),
+    id: z.string().regex(/^[a-z][a-z0-9-]{1,40}$/, "Form id: lowercase letters, numbers, dashes"),
+    kind: z.enum(["contact", "booking", "order", "registration"]),
+    heading: text,
+    intro: text.optional(),
+    fields: z.array(formFieldSchema).min(1).max(15).refine((f) => new Set(f.map((x) => x.name)).size === f.length, "Field names must be unique"),
+    submitLabel: text,
+    successMessage: text,
+  })
+  .strict();
+
 const section = z.discriminatedUnion("type", [
   z.object({ type: z.literal("hero"), id, variant: z.enum(["split", "centered", "banner"]).optional(), eyebrow: text.optional(), heading: text, subheading: text.optional(), image: image.optional(), primaryAction: link.optional(), secondaryAction: link.optional() }).strict(),
   z.object({ type: z.literal("about"), id, heading: text, body: text, image: image.optional(), highlights: z.array(z.object({ value: text, label: text }).strict()).max(6).optional() }).strict(),
@@ -42,6 +66,7 @@ const section = z.discriminatedUnion("type", [
   z.object({ type: z.literal("contact"), id, heading: text, intro: text.optional() }).strict(),
   z.object({ type: z.literal("map"), id, heading: text, query: z.string().max(200).optional() }).strict(),
   z.object({ type: z.literal("testimonials"), id, heading: text, items: z.array(z.object({ quote: text, name: z.string().min(1).max(80) }).strict()).min(1).max(12) }).strict(),
+  formSectionSchema,
 ]);
 
 const hex = z.string().refine((v) => parseHex(v) !== null, "Colour must be a hex value like #8A4B24");
@@ -82,6 +107,8 @@ export const siteSchema = z
     const paths = site.pages.map((p) => p.path);
     if (!paths.includes("/")) ctx.addIssue({ code: "custom", message: 'There must be a home page with path "/"', path: ["pages"] });
     if (new Set(paths).size !== paths.length) ctx.addIssue({ code: "custom", message: "Page paths must be unique", path: ["pages"] });
+    const formIds = site.pages.flatMap((p) => p.sections.flatMap((s) => (s.type === "form" ? [s.id] : [])));
+    if (new Set(formIds).size !== formIds.length) ctx.addIssue({ code: "custom", message: "Form ids must be unique across the site", path: ["pages"] });
     for (const p of paths) {
       if (site.languages.some((l) => p === `/${l}` || p.startsWith(`/${l}/`))) {
         ctx.addIssue({ code: "custom", message: `Page path ${p} clashes with a language prefix`, path: ["pages"] });

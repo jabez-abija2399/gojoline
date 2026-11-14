@@ -7,6 +7,8 @@ type Status = { status: "active" | "pending"; records: { type: string; name: str
 
 export function DomainSection({ t, projectId }: { t: Messages["builder"]; projectId: string }) {
   const [entitled, setEntitled] = useState<boolean | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [domain, setDomain] = useState("");
   const [status, setStatus] = useState<Status | null>(null);
   const [busy, setBusy] = useState(false);
@@ -15,20 +17,30 @@ export function DomainSection({ t, projectId }: { t: Messages["builder"]; projec
   useEffect(() => {
     let cancelled = false;
     fetch(`/api/projects/${projectId}/domain`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d: { entitled: boolean; domain?: string; status?: Status } | null) => {
-        if (cancelled || !d) return;
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("domain"))))
+      .then((d: { entitled: boolean; domain?: string; status?: Status }) => {
+        if (cancelled) return;
         setEntitled(d.entitled);
         if (d.domain) setDomain(d.domain);
         if (d.status) setStatus(d.status);
       })
-      .catch(() => undefined);
+      .catch(() => !cancelled && setLoadFailed(true));
     return () => {
       cancelled = true;
     };
-  }, [projectId]);
+  }, [projectId, attempt]);
 
-  if (entitled === null) return null;
+  if (loadFailed) {
+    return (
+      <div role="alert" className="flex flex-wrap items-center gap-3 border-t border-line pt-4 text-ink-muted">
+        <p>{t.loadError}</p>
+        <button type="button" onClick={() => { setLoadFailed(false); setAttempt((a) => a + 1); }} className="min-h-11 rounded-lg border border-line px-4 font-medium text-ink">
+          {t.retry}
+        </button>
+      </div>
+    );
+  }
+  if (entitled === null) return <div aria-hidden="true" className="h-12 animate-pulse rounded-lg bg-line" />;
 
   const submit = async (method: "GET" | "POST") => {
     setBusy(true);
@@ -74,7 +86,7 @@ export function DomainSection({ t, projectId }: { t: Messages["builder"]; projec
               {status.status === "pending" && (
                 <>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
+                    <table className="w-full text-left">
                       <thead>
                         <tr><th className="py-1 pe-3">{t.domainRecordType}</th><th className="py-1 pe-3">{t.domainRecordName}</th><th className="py-1">{t.domainRecordValue}</th></tr>
                       </thead>

@@ -1,5 +1,17 @@
 # Agent eval results
 
+## 2026-11-14 (later) · after moving content to `site.json` and locking code · 6-case subset
+
+| Metric | Result |
+| --- | --- |
+| Success (cases that got a sandbox) | 4/4 first try; edits 4/4 |
+| Median cost, first generation | $0.140 (JSON is more verbose than TS; starter now includes a booking form) |
+| Median cost, edit | $0.034 |
+| Median time to first preview | 41.5 s |
+| Median time to first token | 6.9 s (first token is usually the tool call; the UI shows progress steps immediately) |
+
+2 of 6 cases could not start: Vercel Sandbox Hobby plan allows 10 sandboxes at once (see ROADMAP "Blocked"). Not an agent failure.
+
 Run with `npm run evals` (real model, real Vercel Sandboxes; costs money). Full outputs, including every generated `site.ts` for Amharic review, are saved in `evals/.runs/` (not committed).
 
 ## 2026-11-14 · claude-opus-5-5 (effort medium) · 30 cases (15 EN, 15 AM), 10 with a follow-up edit

@@ -37,6 +37,9 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 | `contact` | Call / Telegram buttons, phone, address, hours (from `business`) | `heading`, `intro` |
 | `map` | Location card that opens the maps app | `heading`, `query` (defaults to the English address) |
 | `testimonials` | Customer quotes (only real ones the owner gave) | `items[]` (`quote`, `name`) |
+| `form` | Contact, booking, order or registration forms. Answers reach the owner's dashboard and Telegram | `id` (required, e.g. `"booking"`), `kind`, `heading`, `intro`, `fields[]`, `submitLabel`, `successMessage` |
+
+Form fields: `{ "name": "phone", "label": {...}, "type": "tel", "required": true }`. Types: text, email, tel, date, time, number, select (with `options`), textarea. Keep forms short (2 to 6 fields). Never ask for passwords, PINs, card numbers, bank details or ID numbers. Add a form when the owner wants bookings, orders, registrations or messages; link to it with `"#<id>"` (for example a hero button to `"#booking"`).
 
 Icons for `services`: coffee, utensils, bed, stethoscope, school, shopping-bag, church, calendar, heart, home, map, scissors, car, star, phone, check.
 

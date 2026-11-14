@@ -71,6 +71,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Builder needs `SAYSITE_ANTHROPIC_API_KEY`, `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, `SANDBOX_SNAPSHOT_ID` and `CSP_FRAME_ORIGINS=https://*.vercel.run`.
 
 ## Blocked (needs the founder)
+- Vercel plan: Hobby allows 10 sandboxes at a time (each owner editing uses one for up to 15 minutes). For more than ~10 owners editing at once, the team needs Vercel Pro. Plan changes are the founder's decision.
 - Sign-in code delivery: choose an SMS gateway for Ethiopian numbers (e.g. AfroMessage, Geez SMS) and/or an email service (e.g. Resend) and add its key. Until then production sign-in shows "not open yet" (`OtpSender` interface in `lib/providers/notify/otp.ts`; development prints codes in the server log).
 - Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider
 - Publishing domain (`gojoline.site` or similar): until bought, sites publish to `https://gojo-<name>.vercel.app` (one Vercel project per site)

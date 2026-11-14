@@ -19,17 +19,21 @@ test("publish a site, then publish changes to the same address", async ({ page }
   await address.fill("telebirr");
   await dialog.getByRole("button", { name: "Publish now" }).click();
   await expect(dialog.getByRole("alert")).toContainText("reserved");
+  await expect(address).toBeFocused();
 
   const slug = `bole-bakery-${Date.now().toString(36)}`;
   await address.fill(slug);
   await dialog.getByRole("button", { name: "Publish now" }).click();
   await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeVisible();
   await expect(page.getByText(`https://${slug}.sites.example`).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeFocused();
+  await expectNoSeriousA11yIssues(page);
   await page.getByRole("button", { name: "Close" }).click();
   await expect(page.getByText("Live at")).toBeVisible();
 
   await page.getByRole("button", { name: "Publish", exact: true }).click();
-  await expect(page.getByLabel("Your site's address")).toHaveAttribute("readonly", "");
+  await expect(page.getByLabel("Your site's address")).toHaveCount(0);
+  await expect(page.getByRole("dialog").getByText(`https://${slug}.sites.example`)).toBeVisible();
   await page.getByRole("button", { name: "Publish my latest changes" }).click();
   await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeVisible();
 });

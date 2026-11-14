@@ -4,6 +4,7 @@ import type { Lang, Page, Section, Site } from "./lib/types";
 import { About } from "./sections/About";
 import { Contact } from "./sections/Contact";
 import { Footer } from "./sections/Footer";
+import { Form } from "./sections/Form";
 import { Gallery } from "./sections/Gallery";
 import { Header } from "./sections/Header";
 import { Hero } from "./sections/Hero";
@@ -30,6 +31,8 @@ function renderSection(section: Section, index: number) {
       return <MapEmbed key={index} section={section} />;
     case "testimonials":
       return <Testimonials key={index} section={section} />;
+    case "form":
+      return <Form key={index} section={section} />;
   }
 }
 
