@@ -2,6 +2,7 @@ import "server-only";
 import { extractForms } from "@/lib/cloud/forms";
 import type { CloudStore } from "@/lib/cloud/types";
 import type { Lock } from "@/lib/lock";
+import type { AssetStore } from "@/lib/cloud/assets";
 import type { ProjectStore } from "@/lib/projects/types";
 import type { PublishFile, PublishProvider } from "@/lib/providers/publish/types";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
@@ -26,6 +27,7 @@ export interface PublishDeps {
   guards?: PublishGuard[];
   /** Where form definitions are stored at publish time. */
   cloud?: CloudStore;
+  assets?: AssetStore;
 }
 
 export type PublishError =
@@ -92,6 +94,7 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
     const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
     const url = deps.publisher.urlFor(slug);
     const sandbox = await deps.sandboxes.open(projectId, latest.files);
+    if (deps.assets) await sandbox.writeAssets(await deps.assets.files(user.id, projectId));
     const build = await sandbox.buildForPublish({
       VITE_SITE_URL: url,
       VITE_SITE_ID: projectId,

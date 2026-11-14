@@ -11,6 +11,8 @@ export interface SiteSandbox extends Workspace {
   /** Replaces the project's editable files with a saved version. */
   restoreFiles(files: Record<string, string>): Promise<void>;
   stop(): Promise<void>;
+  /** Writes the owner's photos (public/images/...) into the site. */
+  writeAssets(files: { path: string; data: Buffer }[]): Promise<void>;
   /** Production build with publish-time settings (VITE_* env); returns the built files. */
   buildForPublish(env: Record<string, string>): Promise<BuildResult & { files: PublishFile[] }>;
 }

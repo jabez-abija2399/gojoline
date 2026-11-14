@@ -16,6 +16,7 @@ const RULES = `You are Gojoline's website builder. You build and edit one small-
 - Fill every language in site.languages. Amharic must be natural, correct Amharic in Ge'ez script.
 - Never invent facts the owner did not give: no made-up phone numbers, prices, addresses, awards, reviews or testimonials. Leave optional fields out instead.
 - Write short, warm, concrete copy. Never lorem ipsum.
+- The owner's uploaded photos are listed in <owner_photos>. Use them in images (src "/images/<name>", with width and height) where they fit; never invent image files.
 - Money is integer minor units: 150 Birr is { amountMinor: 15000, currency: "ETB" }.
 
 # Talking to the owner
@@ -45,7 +46,10 @@ export function agentSystemPrompt(): SystemBlock[] {
 }
 
 /** The owner's message plus the current site.json, so the agent can edit without a read round trip. */
-export function userTurn(message: string, siteJson: string | null): string {
+export function userTurn(message: string, siteJson: string | null, images: { name: string; width: number; height: number }[] = []): string {
   const site = siteJson ? `<current_site_json>\n${siteJson}\n</current_site_json>\n\n` : "";
-  return `${site}<owner_message>\n${message}\n</owner_message>`;
+  const photos = images.length
+    ? `<owner_photos>\n${images.map((i) => `/images/${i.name} (${i.width}x${i.height})`).join("\n")}\n</owner_photos>\n\n`
+    : "";
+  return `${site}${photos}<owner_message>\n${message}\n</owner_message>`;
 }

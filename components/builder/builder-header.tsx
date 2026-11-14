@@ -6,7 +6,21 @@ import { LanguageSwitch } from "@/components/site/language-switch";
 import type { CurrentUser } from "@/lib/auth/session";
 import { signOut } from "@/lib/auth/actions";
 
-export function BuilderHeader({ locale, t, backHref, backLabel, user }: { locale: Locale; t: Messages; backHref?: string; backLabel?: string; user?: CurrentUser | null }) {
+export function BuilderHeader({
+  locale,
+  t,
+  backHref,
+  backLabel,
+  user,
+  navLink,
+}: {
+  locale: Locale;
+  t: Messages;
+  backHref?: string;
+  backLabel?: string;
+  user?: CurrentUser | null;
+  navLink?: { href: string; label: string };
+}) {
   const other: Locale = locale === "en" ? "am" : "en";
   return (
     <header className="flex items-center justify-between gap-3 border-b border-line bg-white px-4 py-2">
@@ -20,7 +34,12 @@ export function BuilderHeader({ locale, t, backHref, backLabel, user }: { locale
           </Link>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
+        {navLink && (
+          <Link href={navLink.href} className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-teal hover:bg-sand">
+            {navLink.label}
+          </Link>
+        )}
         {user && (
           <form action={signOut}>
             <input type="hidden" name="lang" value={locale} />

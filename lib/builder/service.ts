@@ -4,6 +4,7 @@ import { agentSystemPrompt, userTurn } from "@/lib/agent/prompt";
 import type { LLMProvider, MessageParam } from "@/lib/providers/llm/types";
 import type { UsageLogger } from "@/lib/providers/llm/usage-log";
 import type { Lock } from "@/lib/lock";
+import type { AssetStore } from "@/lib/cloud/assets";
 import { LazySiteSandbox } from "@/lib/providers/sandbox/lazy";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
 import { templateFiles } from "@/lib/template/files";
@@ -16,6 +17,7 @@ export interface BuilderDeps {
   usage: UsageLogger;
   model: string;
   lock: Lock;
+  assets?: AssetStore;
 }
 
 export type BuilderEvent =
@@ -77,7 +79,11 @@ export async function sendOwnerMessage(
 
     const latest = await store.latestVersion(input.ownerId, project.id);
     // Boot the sandbox while the model reads the request; tools wait for it.
-    const opening = deps.sandboxes.open(project.id, latest?.files ?? null);
+    const photos = (await deps.assets?.list(input.ownerId, project.id)) ?? [];
+    const opening = deps.sandboxes.open(project.id, latest?.files ?? null).then(async (sb) => {
+      if (deps.assets && photos.length) await sb.writeAssets(await deps.assets.files(input.ownerId, project.id));
+      return sb;
+    });
     opening.then((sb) => input.onEvent({ type: "preview", url: sb.previewUrl })).catch(() => undefined);
     const lazy = new LazySiteSandbox(opening, project.id);
     const siteJson = latest?.files["src/site.json"] ?? starterSiteJson();
@@ -87,7 +93,7 @@ export async function sendOwnerMessage(
       workspace: lazy,
       system: agentSystemPrompt(),
       history: historyFrom(previous),
-      userContent: userTurn(input.text, siteJson),
+      userContent: userTurn(input.text, siteJson, photos),
       model: deps.model,
       usage: deps.usage,
       context: { userId: input.ownerId, projectId: project.id },

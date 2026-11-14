@@ -26,6 +26,7 @@ import { MemorySiteStore } from "@/lib/sites/memory-store";
 import { DbCloudStore } from "@/lib/cloud/db-store";
 import { MemoryCloudStore } from "@/lib/cloud/memory-store";
 import type { CloudStore, SubmissionNotifier } from "@/lib/cloud/types";
+import { DbAssetStore, MemoryAssetStore } from "@/lib/cloud/assets";
 
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
@@ -62,8 +63,9 @@ function starterFiles(): Record<string, string> {
 function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
   const db = getDb(env);
   const store = db ? new DbProjectStore(db) : new MemoryProjectStore();
+  const assets = db ? new DbAssetStore(db) : new MemoryAssetStore();
   if (isE2E(env)) {
-    return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock() };
+    return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock(), assets };
   }
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
   if (!key || !env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID || !env.VERCEL_PROJECT_ID) return null;
@@ -79,6 +81,7 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
     usage,
     model: env.AGENT_MODEL || DEFAULT_MODEL,
     lock: pickLock(env),
+    assets,
   };
 }
 
@@ -88,7 +91,7 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   const sites = db ? new DbSiteStore(db) : new MemorySiteStore();
   const cloud: CloudStore = db ? new DbCloudStore(db) : new MemoryCloudStore(sites as MemorySiteStore);
   const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined };
+  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, assets: builder.assets, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined };
   if (isE2E(env)) return { ...base, publisher: new MemoryPublishProvider() };
   if (!env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID) return null;
   return { ...base, publisher: new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) };

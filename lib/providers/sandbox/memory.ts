@@ -39,6 +39,10 @@ class MemorySiteSandbox extends MemoryWorkspace implements SiteSandbox {
     for (const [p, c] of Object.entries(files)) if (isVersionedPath(p)) this.files.set(p, c);
   }
   async stop() {}
+  readonly assets = new Map<string, Buffer>();
+  async writeAssets(files: { path: string; data: Buffer }[]) {
+    for (const f of files) this.assets.set(f.path, f.data);
+  }
   async buildForPublish(env: Record<string, string>) {
     const build = await this.runBuild();
     if (!build.ok) return { ...build, files: [] };

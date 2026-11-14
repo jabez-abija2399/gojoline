@@ -67,3 +67,8 @@
 | 2026-11-14 | Published sites: strict file-path allowlist, `vercel.json`/`api/` dropped by the provider, `img-src 'self' data:` | No server functions or routing rules from site output; no data leaving through image URLs |
 | 2026-11-14 | Address reserved in our database before the first deploy; hosting projects reused only by saved ID; live URL read from the host | Two owners can't race for one address; never deploy over someone else's project |
 | 2026-11-14 | `sites.project_id` is ON DELETE RESTRICT | A project with a live site can't vanish and leave an untraceable site online |
+| 2026-11-14 | Data API: public endpoint only for form answers; lists stay static and are edited in the owner dashboard, which saves a version and republishes | Lists render in prerendered HTML (fast, no client fetching per QUALITY); price changes still go live in seconds |
+| 2026-11-14 | Form answers checked against the form definition captured at publish, plus site key, exact site origin, honeypot, timing and per-visitor/per-site limits | A public endpoint must not accept arbitrary data or become a spam relay |
+| 2026-11-14 | Owner photos are re-encoded to WebP (max 1600 px, metadata stripped) with sharp and stored in Postgres until R2 exists | Uploaded bytes are never served as-is; small sites fit easily |
+| 2026-11-14 | Owner dashboard is the same account as the builder (no separate owner login) | One login for non-technical owners |
+| 2026-11-14 | CSV export prefixes cells starting with = + - @ and adds a BOM | Prevents spreadsheet formula injection from visitor answers; Excel shows Amharic correctly |

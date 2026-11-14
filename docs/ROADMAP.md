@@ -32,9 +32,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Custom domains (paid; switched on per plan once billing lands in Slice 6)
 
 ## Slice 4: Gojoline Cloud (simple full-stack)
-- [ ] Public Data API for forms, lists, uploads with per-site keys and rate limits
-- [ ] Template components: contact/booking/order forms, editable lists
-- [ ] Owner dashboard (submissions, list editing), owner login
+- [x] Public Data API for forms, lists, uploads with per-site keys and rate limits
+- [x] Template components: contact/booking/order forms, editable lists
+- [x] Owner dashboard (submissions, list editing), owner login
 
 ## Slice 5: Telegram
 - [ ] Bot: link owner chat, form notifications

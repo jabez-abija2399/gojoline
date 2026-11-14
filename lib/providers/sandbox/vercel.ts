@@ -154,6 +154,11 @@ class VercelSiteSandbox implements SiteSandbox {
     return { ok: true, output, durationMs: Date.now() - started, files };
   }
 
+  async writeAssets(files: { path: string; data: Buffer }[]) {
+    const safe = files.filter((f) => /^public\/images\/[\w.-]+\.webp$/.test(f.path));
+    if (safe.length) await this.sandbox.writeFiles(safe.map((f) => ({ path: `${ROOT}/${f.path}`, content: new Uint8Array(f.data) })));
+  }
+
   async snapshotFiles() {
     const files: Record<string, string> = {};
     for (const path of await this.listFiles()) {

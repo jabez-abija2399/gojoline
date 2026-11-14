@@ -25,7 +25,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <BuilderHeader locale={lang} t={t} user={user} backHref={`/${lang}/build`} backLabel={t.builder.back} />
+      <BuilderHeader locale={lang} t={t} user={user} backHref={`/${lang}/build`} backLabel={t.builder.back} navLink={{ href: `/${lang}/dashboard/${id}`, label: t.dashboard.link }} />
       <main id="main" className="flex min-h-0 flex-1 flex-col">
         <h1 className="sr-only">{project.name || t.builder.untitled}</h1>
         <Builder

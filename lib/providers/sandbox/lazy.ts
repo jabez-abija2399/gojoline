@@ -42,6 +42,9 @@ export class LazySiteSandbox implements SiteSandbox {
   async buildForPublish(env: Record<string, string>) {
     return (await this.ready).buildForPublish(env);
   }
+  async writeAssets(files: { path: string; data: Buffer }[]) {
+    return (await this.ready).writeAssets(files);
+  }
   async stop() {
     return (await this.ready).stop();
   }
