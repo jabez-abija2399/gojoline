@@ -18,11 +18,19 @@ describe.skipIf(!enabled)("publish (live)", () => {
     // A version is the full set of editable files, like the builder saves.
     const starter = Object.fromEntries(templateFiles().flatMap((f) => (isVersionedPath(f.path) && typeof f.content === "string" ? [[f.path, f.content]] : [])));
     await store.addVersion("itest", { projectId: project.id, summary: "starter", files: starter });
+    // Reuse this test's own hosting project (found once by name, then by ID like production).
+    const lookup = await fetch(`https://api.vercel.com/v9/projects/gojo-itest-starter?teamId=${env.VERCEL_TEAM_ID}`, { headers: { Authorization: `Bearer ${env.VERCEL_TOKEN}` } });
+    const existingId = lookup.ok ? ((await lookup.json()) as { id: string }).id : null;
+    const sites = new MemorySiteStore();
+    if (existingId) {
+      await sites.reserve("itest", project.id, "itest-starter", "vercel");
+      await sites.savePublished("itest", { projectId: project.id, slug: "itest-starter", provider: "vercel", providerProjectId: existingId, url: null, publishedVersion: null, lastDeploymentId: null, publishedAt: null });
+    }
     const t0 = Date.now();
     const result = await publishSite(
       {
         store,
-        sites: new MemorySiteStore(),
+        sites,
         sandboxes: new VercelSandboxProvider({ teamId: env.VERCEL_TEAM_ID!, projectId: env.VERCEL_PROJECT_ID!, token: env.VERCEL_TOKEN!, snapshotId: env.SANDBOX_SNAPSHOT_ID }),
         publisher: new VercelPublishProvider({ token: env.VERCEL_TOKEN!, teamId: env.VERCEL_TEAM_ID! }),
         lock: new MemoryLock(),

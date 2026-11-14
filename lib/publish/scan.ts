@@ -16,7 +16,19 @@ export interface ScanOptions {
 
 const MAX_FILE_BYTES = 2_000_000;
 const MAX_TOTAL_BYTES = 15_000_000;
-const ALLOWED_EXT = /\.(html|js|css|svg|png|jpe?g|webp|avif|ico|woff2?|txt|xml|json|webmanifest)$/i;
+/**
+ * The only files a published site may contain. Anything else (api/, vercel.json, middleware,
+ * config or data files) could turn into server code or routing rules on the host.
+ */
+const ALLOWED_PATHS = [
+  /^(?:[a-z0-9-]+\/)*index\.html$/,
+  /^assets\/[\w.-]+\.(?:js|css)$/,
+  /^fonts\/[\w.-]+\.woff2$/,
+  /^images\/[\w.-]+\.(?:webp|png|jpe?g|avif)$/,
+  /^favicon\.svg$/,
+  /^sitemap\.xml$/,
+  /^robots\.txt$/,
+];
 
 function snippet(text: string, index: number) {
   return text.slice(Math.max(0, index - 20), index + 60).replace(/\s+/g, " ");
@@ -51,6 +63,8 @@ function scanJs(file: string, js: string, issues: ScanIssue[]) {
     ["password-field", /type\s*:\s*["']password["']/],
     ["eval", /\beval\s*\(|new\s+Function\s*\(/],
     ["remote-script", /createElement\(\s*["']script["']\s*\)/],
+    // Assignments only (React itself compares `location.href == ...`).
+    ["redirect", /\blocation\s*(?:\.\s*href)?\s*=(?!=)|\blocation\.(?:assign|replace)\(|\bwindow\.open\(/],
   ];
   for (const [rule, re] of rules) {
     const m = re.exec(js);
@@ -65,7 +79,7 @@ export function scanBuiltSite(files: { path: string; data: Buffer }[], opts: Sca
   for (const f of files) {
     total += f.data.length;
     if (f.path.includes("..") || f.path.startsWith("/")) issues.push({ file: f.path, rule: "bad-path", detail: "" });
-    if (!ALLOWED_EXT.test(f.path)) issues.push({ file: f.path, rule: "file-type", detail: "" });
+    if (!ALLOWED_PATHS.some((re) => re.test(f.path))) issues.push({ file: f.path, rule: "file-type", detail: "" });
     if (f.data.length > MAX_FILE_BYTES) issues.push({ file: f.path, rule: "file-too-large", detail: String(f.data.length) });
     if (f.path.endsWith(".html")) scanHtml(f.path, f.data.toString("utf8"), opts, issues);
     else if (f.path.endsWith(".js")) scanJs(f.path, f.data.toString("utf8"), issues);
@@ -84,7 +98,8 @@ export function publishedSiteHeaders(opts: { dataApiOrigin?: string } = {}) {
     "default-src 'self'",
     "script-src 'self'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
+    // No outside images: they could carry typed-in data away (an image URL is a request).
+    "img-src 'self' data:",
     "font-src 'self'",
     `connect-src 'self'${api}`,
     `form-action 'self'${api}`,

@@ -62,3 +62,8 @@
 | 2026-11-14 | Publish requires a verified account and takes the project lock | Phase 1 verification rule; no publish in the middle of an edit |
 | 2026-11-14 | Publish-time settings (site URL, report link) passed as `VITE_*` build env to a locked template file | The agent can't remove the report link or fake the canonical URL |
 | 2026-11-14 | Custom domains via the site's Vercel project with DNS instructions (A for apex, CNAME for subdomains, TXT when verification is needed); gated by plan entitlements | Paid feature per PRD; free for nobody until billing exists |
+| 2026-11-14 | Site content moved from `src/site.ts` to `src/site.json` (typed by a locked loader) | One source of truth that the agent, the owner dashboard, Telegram edits and the publish step can all read safely without running code |
+| 2026-11-14 | The agent may edit only `src/site.json`, `src/styles.css` and owner images; all code is locked and re-synced before every build | Agent-written components ran at build time and could emit server code or host config (security review, critical); every script on a published site is now our template code |
+| 2026-11-14 | Published sites: strict file-path allowlist, `vercel.json`/`api/` dropped by the provider, `img-src 'self' data:` | No server functions or routing rules from site output; no data leaving through image URLs |
+| 2026-11-14 | Address reserved in our database before the first deploy; hosting projects reused only by saved ID; live URL read from the host | Two owners can't race for one address; never deploy over someone else's project |
+| 2026-11-14 | `sites.project_id` is ON DELETE RESTRICT | A project with a live site can't vanish and leave an untraceable site online |

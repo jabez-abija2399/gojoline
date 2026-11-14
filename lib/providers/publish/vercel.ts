@@ -46,17 +46,31 @@ export class VercelPublishProvider implements PublishProvider {
     return { status: res.status, data };
   }
 
-  private async ensureProject(name: string): Promise<string> {
-    const existing = await this.call<{ id?: string }>("GET", `/v9/projects/${encodeURIComponent(name)}`);
-    if (existing.status === 200 && existing.data.id) return existing.data.id;
+  /** Uses the saved project by ID, or creates a new one. Never adopts a project found by name. */
+  private async ensureProject(name: string, savedId: string | null | undefined): Promise<string> {
+    if (savedId) {
+      const existing = await this.call<{ id?: string; name?: string }>("GET", `/v9/projects/${encodeURIComponent(savedId)}`);
+      if (existing.status === 200 && existing.data.id === savedId) return savedId;
+      throw new Error("Hosting project is missing");
+    }
     // Published sites are public: no Vercel login wall in front of them.
-    const created = await this.call<{ id?: string; error?: { message?: string } }>("POST", "/v11/projects", {
+    const created = await this.call<{ id?: string; error?: { code?: string; message?: string } }>("POST", "/v11/projects", {
       name,
       framework: null,
       ssoProtection: null,
     });
+    if (created.status === 409 || created.data.error?.code === "conflict") throw new Error("slug_taken");
     if (!created.data.id) throw new Error(`Could not create hosting project (${created.status}): ${created.data.error?.message ?? ""}`);
     return created.data.id;
+  }
+
+  /** The address Vercel actually gave the project (it may differ if the name was taken). */
+  private async productionUrl(projectId: string, name: string): Promise<string> {
+    const domains = await this.call<{ domains?: { name: string }[] }>("GET", `/v9/projects/${encodeURIComponent(projectId)}/domains`);
+    const names = (domains.data.domains ?? []).map((d) => d.name).filter((d) => d.endsWith(".vercel.app"));
+    const chosen = names.find((d) => d === `${name}.vercel.app`) ?? names[0];
+    if (!chosen) throw new Error("No public address assigned");
+    return `https://${chosen}`;
   }
 
   private async domainStatus(projectId: string, domain: string, info: ProjectDomain): Promise<DomainStatus> {
@@ -89,13 +103,15 @@ export class VercelPublishProvider implements PublishProvider {
     return this.domainStatus(projectId, domain, info);
   }
 
-  async publish(input: { slug: string; files: PublishFile[]; headers: { key: string; value: string }[] }): Promise<PublishResult> {
+  async publish(input: { slug: string; files: PublishFile[]; headers: { key: string; value: string }[]; providerProjectId?: string | null }): Promise<PublishResult> {
     if (!/^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])$/.test(input.slug)) throw new Error("Invalid slug");
     const name = `${this.prefix}${input.slug}`;
-    const projectId = await this.ensureProject(name);
+    const projectId = await this.ensureProject(name, input.providerProjectId);
+    // Defence in depth: the scanner already refuses these; the host config is always ours.
+    const safeFiles = input.files.filter((f) => !/^(?:vercel\.json|api\/|\.vercel\/|middleware\.)/i.test(f.path));
     const vercelJson = { cleanUrls: true, trailingSlash: false, headers: [{ source: "/(.*)", headers: input.headers }] };
     const files = [
-      ...input.files.map((f) => ({ file: f.path, data: f.data.toString("base64"), encoding: "base64" })),
+      ...safeFiles.map((f) => ({ file: f.path, data: f.data.toString("base64"), encoding: "base64" })),
       { file: "vercel.json", data: Buffer.from(JSON.stringify(vercelJson)).toString("base64"), encoding: "base64" },
     ];
     const created = await this.call<{ id?: string; error?: { message?: string } }>("POST", "/v13/deployments?skipAutoDetectionConfirmation=1", {
@@ -110,7 +126,7 @@ export class VercelPublishProvider implements PublishProvider {
 
     for (let i = 0; i < 60; i++) {
       const d = await this.call<{ readyState?: string; errorMessage?: string }>("GET", `/v13/deployments/${id}`);
-      if (d.data.readyState === "READY") return { url: this.urlFor(input.slug), deploymentId: id, providerProjectId: projectId };
+      if (d.data.readyState === "READY") return { url: await this.productionUrl(projectId, name), deploymentId: id, providerProjectId: projectId };
       if (d.data.readyState === "ERROR" || d.data.readyState === "CANCELED") throw new Error(`Publish failed: ${d.data.errorMessage ?? d.data.readyState}`);
       await new Promise((r) => setTimeout(r, 1000));
     }

@@ -8,7 +8,7 @@ export function CodePanel({ t, projectId, refreshKey }: { t: Messages["builder"]
   const [files, setFiles] = useState<Record<string, string> | null>(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
-  const [selected, setSelected] = useState("src/site.ts");
+  const [selected, setSelected] = useState("src/site.json");
 
   useEffect(() => {
     let cancelled = false;

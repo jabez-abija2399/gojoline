@@ -19,10 +19,13 @@ export interface Workspace {
   runBuild(): Promise<BuildResult>;
 }
 
-/** Editable surface for the agent. Everything else (package.json, configs, scripts) is locked. */
-const EDITABLE = [/^src\/(?:[\w-]+\/)*[\w-]+\.(?:tsx?|css)$/, /^public\/(?:[\w-]+\/)*[\w.-]+\.(?:svg|webp|png|jpe?g|avif|ico|txt)$/];
-const READABLE_EXTRA = [/^TEMPLATE\.md$/, /^index\.html$/, /^package\.json$/, /^vite\.config\.ts$/];
-const LOCKED = [/^src\/lib\//, /^src\/(main|entry-server)\.tsx$/, /^src\/vite-env\.d\.ts$/];
+/**
+ * Editable surface for the agent: content (site.json), styles and images only. No code: every
+ * script in a published site is Gojoline's own template code, so AI output can't add logic.
+ */
+const EDITABLE = [/^src\/site\.json$/, /^src\/styles\.css$/, /^public\/images\/[\w.-]+\.(?:webp|png|jpe?g|avif)$/];
+const READABLE_EXTRA = [/^TEMPLATE\.md$/, /^index\.html$/, /^src\/(?:[\w-]+\/)*[\w-]+\.tsx?$/];
+const LOCKED: RegExp[] = [];
 
 export const MAX_FILE_BYTES = 200_000;
 
@@ -50,7 +53,7 @@ export function checkWritePath(raw: string): PathCheck {
     return { ok: false, reason: `${read.path} is part of the template core and can't be changed` };
   }
   if (!EDITABLE.some((re) => re.test(read.path))) {
-    return { ok: false, reason: `Only files under src/ (ts, tsx, css) and public/ (images) can be changed` };
+    return { ok: false, reason: `Only src/site.json, src/styles.css and images in public/images/ can be changed` };
   }
   return read;
 }

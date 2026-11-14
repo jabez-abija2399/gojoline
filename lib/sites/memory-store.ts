@@ -10,6 +10,14 @@ export class MemorySiteStore implements SiteStore {
   async slugTaken(slug: string, exceptProjectId: string) {
     return [...this.sites.values()].some((s) => s.slug === slug && s.projectId !== exceptProjectId);
   }
+  async reserve(ownerId: string, projectId: string, slug: string, provider: string) {
+    if (this.sites.has(projectId) || (await this.slugTaken(slug, projectId))) return false;
+    this.sites.set(projectId, {
+      id: randomUUID(), projectId, ownerId, slug, provider, providerProjectId: null, url: null, status: "pending",
+      publishedVersion: null, lastDeploymentId: null, customDomain: null, publishedAt: null, takenDownReason: null,
+    });
+    return true;
+  }
   async setCustomDomain(ownerId: string, projectId: string, domain: string | null) {
     const site = await this.getByProject(ownerId, projectId);
     if (!site) return false;

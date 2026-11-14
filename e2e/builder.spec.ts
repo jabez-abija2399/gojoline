@@ -35,7 +35,7 @@ test("create a site, edit it by chat, see versions and restore", async ({ page }
   await expectNoSeriousA11yIssues(page);
 
   await page.getByRole("tab", { name: "Files" }).filter({ visible: true }).click();
-  await expect(page.locator("pre:visible")).toContainText('en: "Selam Coffee"');
+  await expect(page.locator("pre:visible")).toContainText('"en": "Selam Coffee"');
 
   // The project is named after the site.
   await page.goto("/en/build");

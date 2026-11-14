@@ -7,11 +7,19 @@ const RESERVED = new Set([
   "dashboard", "static", "assets", "cdn", "test", "root", "official", "verify", "update",
 ]);
 
+/** Banks, telecoms and payment brands people could be tricked by, matched inside words too. */
+const BRANDS = new Set([
+  "gojoline", "telebirr", "ethiotelecom", "safaricom", "mpesa", "cbebirr", "commercialbank", "dashen", "awash",
+  "abyssinia", "bunna", "zemen", "nibbank", "wegagen", "hibret", "chapa", "paypal", "visa", "mastercard",
+]);
+
 export type SlugProblem = "format" | "reserved";
 
 export function checkSlug(slug: string): SlugProblem | null {
   if (!SLUG_RE.test(slug) || slug.includes("--")) return "format";
-  if (RESERVED.has(slug) || [...RESERVED].some((r) => r.length > 3 && slug.startsWith(`${r}-`))) return "reserved";
+  // Reserved words anywhere (as a dash-separated part, or inside longer words for brand names).
+  const parts = slug.split("-");
+  if (parts.some((p) => RESERVED.has(p)) || [...BRANDS].some((b) => slug.includes(b))) return "reserved";
   return null;
 }
 

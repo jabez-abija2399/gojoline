@@ -6,7 +6,9 @@ const good = `<!doctype html><html><head><script type="module" crossorigin src="
 
 describe("scanBuiltSite", () => {
   it("accepts a normal built site", () => {
-    expect(scanBuiltSite([f("index.html", good), f("assets/index-AbC1.js", "console.log(1)"), f("robots.txt", "")])).toEqual([]);
+    expect(
+      scanBuiltSite([f("index.html", good), f("menu/index.html", good), f("assets/index-AbC1.js", "console.log(1)"), f("assets/index.css", "a{}"), f("fonts/noto.woff2", ""), f("robots.txt", ""), f("sitemap.xml", ""), f("favicon.svg", "<svg></svg>")]),
+    ).toEqual([]);
   });
 
   it.each([
@@ -41,10 +43,23 @@ describe("scanBuiltSite", () => {
       f("index.html", good),
       f("assets/a.js", `createElement("input",{type:"password"})`),
       f("assets/b.js", `eval("x")`),
-      f("logo.svg", `<svg onload="alert(1)"></svg>`),
+      f("favicon.svg", `<svg onload="alert(1)"></svg>`),
       f("run.php", "<?php ?>"),
     ]).map((i) => i.rule);
     expect(rules).toEqual(expect.arrayContaining(["password-field", "eval", "svg-script", "file-type"]));
+  });
+
+  it.each(["vercel.json", "api/x.js", "middleware.js", ".vercel/output/config.json", "data.json", "assets/../x.js", "sub/page.js"])("only allows known file paths: rejects %s", (path) => {
+    const rules = scanBuiltSite([f("index.html", good), f(path, "{}")]).map((i) => i.rule);
+    expect(rules).toContain(path.includes("..") ? "bad-path" : "file-type");
+  });
+
+  it("does not mistake comparisons for redirects", () => {
+    expect(scanBuiltSite([f("index.html", good), f("assets/a.js", "n=typeof t.contentWindow.location.href==`string`")])).toEqual([]);
+  });
+
+  it("flags redirects in the bundle", () => {
+    expect(scanBuiltSite([f("index.html", good), f("assets/a.js", 'window.location.href="https://evil.example"')]).map((i) => i.rule)).toContain("redirect");
   });
 
   it("requires an index page", () => {

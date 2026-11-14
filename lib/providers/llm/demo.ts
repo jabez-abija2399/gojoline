@@ -13,7 +13,7 @@ export class DemoLLMProvider implements LLMProvider {
     const lastText = typeof last?.content === "string" ? last.content : "";
     const isToolResult = Array.isArray(last?.content) && last.content.some((c) => c.type === "tool_result");
     const owner = /<owner_message>\n([\s\S]*?)\n<\/owner_message>/.exec(lastText)?.[1] ?? "";
-    const current = /<current_site_ts>\n([\s\S]*?)\n<\/current_site_ts>/.exec(lastText)?.[1] ?? "";
+    const current = /<current_site_json>\n([\s\S]*?)\n<\/current_site_json>/.exec(lastText)?.[1] ?? "";
 
     let content;
     if (isToolResult || !owner) {
@@ -21,12 +21,12 @@ export class DemoLLMProvider implements LLMProvider {
     } else if (owner.toLowerCase().includes("question")) {
       content = [textBlock("What is your business called?")];
     } else if (owner.toLowerCase().includes("break it")) {
-      content = [toolUseBlock("write_file", { path: "src/site.ts", content: "BROKEN" }), toolUseBlock("run_build", {})];
+      content = [toolUseBlock("write_file", { path: "src/site.json", content: "BROKEN" }), toolUseBlock("run_build", {})];
     } else {
       const name = owner.replace(/["\\\n]/g, "").slice(0, 40);
-      const match = /name: \{ en: "([^"]*)"/.exec(current);
+      const match = /"name": \{\s*"en": "([^"]*)"/.exec(current);
       content = match
-        ? [toolUseBlock("search_replace", { path: "src/site.ts", old_string: match[0], new_string: `name: { en: "${name}"` }), toolUseBlock("run_build", {})]
+        ? [toolUseBlock("search_replace", { path: "src/site.json", old_string: match[0], new_string: match[0].replace(match[1]!, name) }), toolUseBlock("run_build", {})]
         : [textBlock("I could not find the site name.")];
     }
     req.onText?.(content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join(""));

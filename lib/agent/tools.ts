@@ -20,13 +20,13 @@ export type ToolName = keyof typeof schemas;
 
 const descriptions: Record<ToolName, string> = {
   list_files: "List the project's files.",
-  read_file: "Read a file. Use before editing any file other than src/site.ts (whose current content you already have).",
+  read_file: "Read a file. Use before editing any file other than src/site.json (whose current content you already have).",
   write_file:
     "Create or fully replace a file. Prefer search_replace for small edits to existing files; use write_file for new files or when most of a file changes.",
   search_replace:
     "Replace one exact occurrence of old_string with new_string in a file. old_string must match the file exactly (including indentation) and occur exactly once; include enough surrounding lines to make it unique.",
   run_build:
-    "Type-check, validate src/site.ts and build the site. Run after your edits; fix every reported problem, then run it again.",
+    "Type-check, validate src/site.json and build the site. Run after your edits; fix every reported problem, then run it again.",
 };
 
 export const agentTools: ToolDefinition[] = (Object.keys(schemas) as ToolName[]).map((name) => {

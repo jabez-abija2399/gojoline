@@ -62,6 +62,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 - Edit cost median $0.031 vs $0.03 target: re-run evals after the search_replace prompt change.
 
+- Custom domains: release a domain claim that stays unverified for more than 7 days (squatting), before plans with custom domains go on sale.
+
 ## Notes for deployment
 - Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
 - Database: Neon project `gojoline` (purple-brook-23584048, Frankfurt), database `gojoline`, migration `0000_init` applied. Set `DATABASE_URL` in the Vercel project (pooled connection string from the Neon console). Without it, dev and e2e use memory stores.

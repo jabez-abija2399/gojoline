@@ -1,16 +1,17 @@
 # Gojoline site template: guide for the builder agent
 
-Every Gojoline site is this Vite + React + Tailwind project. **Almost every change is an edit to `src/site.ts`.** The page structure, theme, texts, prices and contact details all live there, typed by `src/lib/types.ts`.
+Every Gojoline site is this Vite + React + Tailwind project. **Every change is an edit to `src/site.json`** (or, rarely, extra CSS in `src/styles.css`). The page structure, theme, texts, prices and contact details all live in that JSON file, whose shape is `Site` in `src/lib/types.ts`. Keep it valid JSON (double quotes, no comments, no trailing commas).
 
 ## Files
 
 | File | Purpose | Edit? |
 | --- | --- | --- |
-| `src/site.ts` | All content: name, languages, theme, business details, pages and their sections | Yes, this is the main file |
+| `src/site.json` | All content: name, languages, theme, business details, pages and their sections | Yes, this is the main file |
+| `src/site.ts` | Loads site.json with its type | No |
 | `src/lib/types.ts` | The content model (`Site`, `Page`, `Section`, `Text`, `Price`) | Read only |
-| `src/sections/*.tsx` | Section components (Hero, About, Menu, Services, Gallery, Contact, MapEmbed, Testimonials, Header, Footer) | Only for layout changes the content model can't express |
-| `src/styles.css` | Tailwind setup, theme utilities, `.btn`, `.section`, `.container-site` | Rarely |
-| `public/` | Images (`/images/...webp`), favicon | Add uploaded images here |
+| `src/sections/*.tsx` | Section components (Hero, About, Menu, Services, Gallery, Contact, MapEmbed, Testimonials, Header, Footer) | No (read them to see what each field does) |
+| `src/styles.css` | Tailwind setup, theme utilities, `.btn`, `.section`, `.container-site` | Rarely, for small style tweaks |
+| `public/images/` | Photos the owner uploaded | Reference them as `/images/<name>` |
 
 ## Content rules
 
@@ -48,8 +49,8 @@ Icons for `services`: coffee, utensils, bed, stethoscope, school, shopping-bag, 
 
 ## Checking your work
 
-`npm run build` runs the type check, validates `site.ts` (schema + contrast) and prerenders every page. Fix every reported problem; messages name the exact field (`site.pages.0.sections.2.heading: ...`).
+`npm run build` runs the type check, validates `site.json` (JSON syntax, schema and contrast) and prerenders every page. Fix every reported problem; messages name the exact field (`site.pages.0.sections.2.heading: ...`).
 
 ## Quality bar
 
-Mobile first (360 px), 16 px minimum text, 44 px touch targets (`.btn` already is), real headings in order, alt text on photos, no horizontal scroll. Keep JavaScript small: no new npm packages without a strong reason.
+Mobile first (360 px), 16 px minimum text, 44 px touch targets (`.btn` already is), real headings in order, alt text on photos, no horizontal scroll. Code and packages are fixed; you only change content and styles.

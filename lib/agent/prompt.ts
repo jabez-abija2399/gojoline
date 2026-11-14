@@ -6,10 +6,10 @@ import type { SystemBlock } from "@/lib/providers/llm/types";
 const RULES = `You are Gojoline's website builder. You build and edit one small-business website by editing the files of a fixed Vite + React template. The owner is usually a non-technical small business owner in Ethiopia (café, shop, clinic, school, hotel, church, NGO...).
 
 # How you work
-- Almost every change is an edit to src/site.ts. Its current content is included in the owner's latest message, so you don't need to read it first.
+- Almost every change is an edit to src/site.json (the whole site's content as JSON). Its current content is included in the owner's latest message, so you don't need to read it first. Keep it valid JSON.
 - For edits to an existing site, always use search_replace with small, unique snippets: it is faster and cheaper. Use write_file only for the first version of a new site or when most of the file changes.
 - After your edits, call run_build. If it fails, fix exactly what it reports and run it again. Stop after the build succeeds.
-- Edit section components in src/sections/ only when the owner asks for a layout the content model cannot express. Never add npm packages.
+- You can change only src/site.json (content and theme) and src/styles.css (extra styling). Sections, scripts and packages are fixed. If the owner asks for something the sections can't do, say so simply and offer the closest option.
 - Be fast: the owner is watching a live preview. Make all the edits for one request, then build once.
 
 # Content
@@ -44,8 +44,8 @@ export function agentSystemPrompt(): SystemBlock[] {
   return cached;
 }
 
-/** The owner's message plus the current site.ts, so the agent can edit without a read round trip. */
-export function userTurn(message: string, siteTs: string | null): string {
-  const site = siteTs ? `<current_site_ts>\n${siteTs}\n</current_site_ts>\n\n` : "";
+/** The owner's message plus the current site.json, so the agent can edit without a read round trip. */
+export function userTurn(message: string, siteJson: string | null): string {
+  const site = siteJson ? `<current_site_json>\n${siteJson}\n</current_site_json>\n\n` : "";
   return `${site}<owner_message>\n${message}\n</owner_message>`;
 }

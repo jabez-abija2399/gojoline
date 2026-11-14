@@ -161,16 +161,17 @@ export const sites = pgTable(
   "sites",
   {
     id: uuid("id").primaryKey().defaultRandom(),
+    // restrict: a project with a site can't vanish while its site stays online (takedown/audit).
     projectId: uuid("project_id")
       .notNull()
       .unique()
-      .references(() => projects.id, { onDelete: "cascade" }),
+      .references(() => projects.id, { onDelete: "restrict" }),
     ownerId: text("owner_id").notNull(),
     slug: text("slug").notNull().unique(),
     provider: text("provider").notNull(),
     providerProjectId: text("provider_project_id"),
     url: text("url"),
-    status: text("status", { enum: ["published", "taken_down"] }).notNull(),
+    status: text("status", { enum: ["pending", "published", "taken_down"] }).notNull(),
     publishedVersion: integer("published_version"),
     lastDeploymentId: text("last_deployment_id"),
     customDomain: text("custom_domain").unique(),

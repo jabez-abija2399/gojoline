@@ -26,7 +26,11 @@ export interface PublishProvider {
   readonly name: string;
   /** Public address a slug will get (shown before publishing). */
   urlFor(slug: string): string;
-  publish(input: { slug: string; files: PublishFile[]; headers: { key: string; value: string }[] }): Promise<PublishResult>;
+  /**
+   * Deploys the files. `providerProjectId` is the hosting project saved from an earlier publish;
+   * without it a new project is created (and an existing one with the same name is never reused).
+   */
+  publish(input: { slug: string; files: PublishFile[]; headers: { key: string; value: string }[]; providerProjectId?: string | null }): Promise<PublishResult>;
   /** Attaches the owner's domain to the site and says which DNS records it needs. */
   addDomain(providerProjectId: string, domain: string): Promise<DomainStatus>;
   checkDomain(providerProjectId: string, domain: string): Promise<DomainStatus>;

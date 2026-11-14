@@ -77,6 +77,8 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
 
   const latest = await deps.store.latestVersion(user.id, projectId);
   if (!latest) return { ok: false, error: "no_version" };
+  // Claim the address in our database before anything is deployed (atomic, unique).
+  if (!existing && !(await deps.sites.reserve(user.id, projectId, slug, deps.publisher.name))) return { ok: false, error: "slug_taken" };
 
   const token = await deps.lock.acquire(`project:${projectId}`, 6 * 60_000);
   if (!token) return { ok: false, error: "busy" };
@@ -105,6 +107,7 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
       slug,
       files: build.files,
       headers: publishedSiteHeaders({ dataApiOrigin: deps.dataApiOrigin }),
+      providerProjectId: existing?.providerProjectId ?? null,
     });
     const site = await deps.sites.savePublished(user.id, {
       projectId,
@@ -118,8 +121,9 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
     });
     return { ok: true, site };
   } catch (error) {
-    console.error("publish failed", error instanceof Error ? error.message : "unknown");
-    return { ok: false, error: "failed" };
+    const msg = error instanceof Error ? error.message : "unknown";
+    console.error("publish failed", msg);
+    return { ok: false, error: msg === "slug_taken" ? "slug_taken" : "failed" };
   } finally {
     await deps.lock.release(`project:${projectId}`, token);
   }

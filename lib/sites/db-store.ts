@@ -16,6 +16,16 @@ export class DbSiteStore implements SiteStore {
     return rows.length > 0;
   }
 
+  async reserve(ownerId: string, projectId: string, slug: string, provider: string): Promise<boolean> {
+    try {
+      // Unique slug and project_id make this the atomic claim.
+      await this.db.insert(sites).values({ projectId, ownerId, slug, provider, status: "pending" });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async setCustomDomain(ownerId: string, projectId: string, domain: string | null): Promise<boolean> {
     try {
       const rows = await this.db

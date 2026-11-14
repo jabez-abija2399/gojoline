@@ -51,7 +51,7 @@ interface CaseResult {
 function check(siteTs: string, must: string[], languages?: string[]): string[] {
   const missing = must.filter((m) => !new RegExp(m, "i").test(siteTs));
   if (languages) {
-    const declared = /languages:\s*\[([^\]]*)\]/.exec(siteTs)?.[1] ?? "";
+    const declared = /"languages":\s*\[([^\]]*)\]/.exec(siteTs)?.[1] ?? "";
     for (const l of languages) if (!declared.includes(`"${l}"`)) missing.push(`languages:${l}`);
   }
   return missing;
@@ -73,12 +73,12 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
         workspace: site,
         system: agentSystemPrompt(),
         history,
-        userContent: userTurn(prompt, await site.readFile("src/site.ts")),
+        userContent: userTurn(prompt, await site.readFile("src/site.json")),
         model: env.AGENT_MODEL || DEFAULT_MODEL,
         usage,
         context: { userId: null, projectId: `eval-${c.id}` },
       });
-      const siteTs = (await site.readFile("src/site.ts")) ?? "";
+      const siteTs = (await site.readFile("src/site.json")) ?? "";
       const vague = c.industry === "unknown";
       const missing = vague ? [] : check(siteTs, must, languages);
       // A vague prompt should get questions, not a made-up site.
@@ -108,7 +108,7 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
       ];
       edit = (await step(c.edit.prompt, history, c.edit.mustContain)).result;
     }
-    return { id: c.id, lang: c.lang, industry: c.industry, first: first.result, edit, siteTs: (await site.readFile("src/site.ts")) ?? "", previewOpenMs };
+    return { id: c.id, lang: c.lang, industry: c.industry, first: first.result, edit, siteTs: (await site.readFile("src/site.json")) ?? "", previewOpenMs };
   } finally {
     await site.stop().catch(() => undefined);
   }

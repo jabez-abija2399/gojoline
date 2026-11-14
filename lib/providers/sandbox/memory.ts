@@ -26,7 +26,7 @@ class MemorySiteSandbox extends MemoryWorkspace implements SiteSandbox {
     readonly id: string,
     files: Record<string, string>,
   ) {
-    super(files, (f) => (f.get("src/site.ts")?.includes("BROKEN") ? { ok: false, output: "site.name: broken" } : { ok: true, output: "" }));
+    super(files, (f) => (f.get("src/site.json")?.includes("BROKEN") ? { ok: false, output: "site.name: broken" } : { ok: true, output: "" }));
   }
   get previewUrl() {
     return `about:blank#${this.id}`;
@@ -42,7 +42,7 @@ class MemorySiteSandbox extends MemoryWorkspace implements SiteSandbox {
   async buildForPublish(env: Record<string, string>) {
     const build = await this.runBuild();
     if (!build.ok) return { ...build, files: [] };
-    const name = /en: "([^"]*)"/.exec(this.files.get("src/site.ts") ?? "")?.[1] ?? "Site";
+    const name = /"en": "([^"]*)"/.exec(this.files.get("src/site.json") ?? "")?.[1] ?? "Site";
     const html = `<!doctype html><html lang="en"><head><title>${name.replace(/[<>&"]/g, "")}</title><script type="module" src="/assets/index-test.js"></script></head><body><h1>${name.replace(/[<>&"]/g, "")}</h1><a href="${env.VITE_REPORT_URL ?? ""}">Report</a></body></html>`;
     return { ...build, files: [{ path: "index.html", data: Buffer.from(html) }, { path: "assets/index-test.js", data: Buffer.from("console.log(1)") }] };
   }

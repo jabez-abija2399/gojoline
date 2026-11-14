@@ -45,16 +45,20 @@ function historyFrom(messages: ChatMessage[]): MessageParam[] {
   return out;
 }
 
-/** Reads the business name from site.ts so the project list shows it. */
-export function siteName(siteTs: string, locale: "en" | "am"): string | null {
-  const block = /\bname:\s*\{([^}]*)\}/.exec(siteTs)?.[1] ?? "";
-  const pick = (lang: string) => new RegExp(`\\b${lang}:\\s*"([^"\\n]{1,80})"`).exec(block)?.[1];
-  return pick(locale) ?? pick(locale === "en" ? "am" : "en") ?? null;
+/** Reads the business name from site.json so the project list shows it. */
+export function siteName(siteJson: string, locale: "en" | "am"): string | null {
+  try {
+    const name = (JSON.parse(siteJson) as { name?: { en?: unknown; am?: unknown } }).name ?? {};
+    const pick = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 80) : null);
+    return pick(name[locale]) ?? pick(name[locale === "en" ? "am" : "en"]);
+  } catch {
+    return null;
+  }
 }
 
 let starter: string | null = null;
-function starterSiteTs(): string {
-  starter ??= String(templateFiles().find((f) => f.path === "src/site.ts")?.content ?? "");
+function starterSiteJson(): string {
+  starter ??= String(templateFiles().find((f) => f.path === "src/site.json")?.content ?? "");
   return starter;
 }
 
@@ -76,14 +80,14 @@ export async function sendOwnerMessage(
     const opening = deps.sandboxes.open(project.id, latest?.files ?? null);
     opening.then((sb) => input.onEvent({ type: "preview", url: sb.previewUrl })).catch(() => undefined);
     const lazy = new LazySiteSandbox(opening, project.id);
-    const siteTs = latest?.files["src/site.ts"] ?? starterSiteTs();
+    const siteJson = latest?.files["src/site.json"] ?? starterSiteJson();
 
     const result = await runAgent({
       llm: deps.llm,
       workspace: lazy,
       system: agentSystemPrompt(),
       history: historyFrom(previous),
-      userContent: userTurn(input.text, siteTs),
+      userContent: userTurn(input.text, siteJson),
       model: deps.model,
       usage: deps.usage,
       context: { userId: input.ownerId, projectId: project.id },
@@ -101,7 +105,7 @@ export async function sendOwnerMessage(
       });
       versionNumber = version.number;
       if (!project.name) {
-        const name = siteName(version.files["src/site.ts"] ?? "", project.locale);
+        const name = siteName(version.files["src/site.json"] ?? "", project.locale);
         if (name) await store.renameProject(input.ownerId, project.id, name);
       }
     }
