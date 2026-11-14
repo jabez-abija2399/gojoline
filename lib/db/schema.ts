@@ -1,0 +1,157 @@
+import { bigint, boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+
+const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
+const updatedAt = () => timestamp("updated_at", { withTimezone: true }).notNull().defaultNow();
+
+// ---------------------------------------------------------------------------
+// Better Auth tables (field names must match Better Auth's model; columns are snake_case).
+// ---------------------------------------------------------------------------
+export const user = pgTable("users", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  image: text("image"),
+  phoneNumber: text("phone_number").unique(),
+  phoneNumberVerified: boolean("phone_number_verified").default(false),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+
+export const session = pgTable(
+  "sessions",
+  {
+    id: text("id").primaryKey(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    token: text("token").notNull().unique(),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("sessions_user_idx").on(t.userId)],
+);
+
+export const account = pgTable(
+  "accounts",
+  {
+    id: text("id").primaryKey(),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at", { withTimezone: true }),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { withTimezone: true }),
+    scope: text("scope"),
+    password: text("password"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("accounts_user_idx").on(t.userId)],
+);
+
+export const verification = pgTable(
+  "verifications",
+  {
+    id: text("id").primaryKey(),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("verifications_identifier_idx").on(t.identifier)],
+);
+
+// ---------------------------------------------------------------------------
+// Gojoline data. Every row that belongs to a customer carries owner_id; queries filter on it.
+// ---------------------------------------------------------------------------
+export const projects = pgTable(
+  "projects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull().default(""),
+    locale: text("locale", { enum: ["en", "am"] }).notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("projects_owner_idx").on(t.ownerId, t.updatedAt)],
+);
+
+export const messages = pgTable(
+  "messages",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    ownerId: text("owner_id").notNull(),
+    role: text("role", { enum: ["owner", "assistant"] }).notNull(),
+    text: text("text").notNull(),
+    status: text("status", { enum: ["changed", "answered", "failed"] }),
+    versionNumber: integer("version_number"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("messages_project_idx").on(t.projectId, t.createdAt)],
+);
+
+/** Each AI change is a full snapshot of the editable files (R2 later; jsonb until R2 is set up). */
+export const projectVersions = pgTable(
+  "project_versions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    ownerId: text("owner_id").notNull(),
+    number: integer("number").notNull(),
+    summary: text("summary").notNull(),
+    files: jsonb("files").$type<Record<string, string>>().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("project_versions_number_uq").on(t.projectId, t.number)],
+);
+
+export const aiUsage = pgTable(
+  "ai_usage",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id"),
+    projectId: uuid("project_id"),
+    purpose: text("purpose").notNull(),
+    model: text("model").notNull(),
+    inputTokens: integer("input_tokens").notNull(),
+    outputTokens: integer("output_tokens").notNull(),
+    cacheReadTokens: integer("cache_read_tokens").notNull(),
+    cacheWriteTokens: integer("cache_write_tokens").notNull(),
+    /** Integer nano-USD (1e-9 USD). */
+    costNanoUsd: bigint("cost_nano_usd", { mode: "number" }).notNull(),
+    durationMs: integer("duration_ms").notNull(),
+    firstTokenMs: integer("first_token_ms"),
+    stopReason: text("stop_reason"),
+    ok: boolean("ok").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("ai_usage_user_idx").on(t.userId, t.createdAt), index("ai_usage_project_idx").on(t.projectId)],
+);
+
+export const waitlist = pgTable("waitlist", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  contactKind: text("contact_kind", { enum: ["phone", "email"] }).notNull(),
+  contactValue: text("contact_value").notNull().unique(),
+  business: text("business"),
+  locale: text("locale", { enum: ["en", "am"] }).notNull(),
+  createdAt: createdAt(),
+});
+

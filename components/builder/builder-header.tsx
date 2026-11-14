@@ -3,8 +3,10 @@ import Link from "next/link";
 import type { Locale } from "@/lib/i18n/config";
 import type { Messages } from "@/lib/i18n";
 import { LanguageSwitch } from "@/components/site/language-switch";
+import type { CurrentUser } from "@/lib/auth/session";
+import { signOut } from "@/lib/auth/actions";
 
-export function BuilderHeader({ locale, t, backHref, backLabel }: { locale: Locale; t: Messages; backHref?: string; backLabel?: string }) {
+export function BuilderHeader({ locale, t, backHref, backLabel, user }: { locale: Locale; t: Messages; backHref?: string; backLabel?: string; user?: CurrentUser | null }) {
   const other: Locale = locale === "en" ? "am" : "en";
   return (
     <header className="flex items-center justify-between gap-3 border-b border-line bg-white px-4 py-2">
@@ -18,7 +20,21 @@ export function BuilderHeader({ locale, t, backHref, backLabel }: { locale: Loca
           </Link>
         )}
       </div>
-      <LanguageSwitch target={other} label={t.common.languageSwitch} ariaLabel={t.common.languageSwitchLabel} />
+      <div className="flex items-center gap-2">
+        {user && (
+          <form action={signOut}>
+            <input type="hidden" name="lang" value={locale} />
+            <button
+              type="submit"
+              title={t.auth.signedInAs.replace("{who}", user.name || user.phone || user.email || "")}
+              className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-ink-muted hover:bg-sand"
+            >
+              {t.auth.signOut}
+            </button>
+          </form>
+        )}
+        <LanguageSwitch target={other} label={t.common.languageSwitch} ariaLabel={t.common.languageSwitchLabel} />
+      </div>
     </header>
   );
 }

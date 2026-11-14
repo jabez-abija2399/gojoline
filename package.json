@@ -13,7 +13,9 @@
     "e2e": "playwright test --trace off",
     "format": "prettier --write .",
     "brand:sync": "node scripts/sync-brand.mjs",
-    "evals": "vitest run --config vitest.evals.config.mts --silent=false"
+    "evals": "vitest run --config vitest.evals.config.mts --silent=false",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.8.0",

@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { Plus } from "lucide-react";
 import { BuilderHeader } from "@/components/builder/builder-header";
 import { Button } from "@/components/ui/button";
-import { hasBuilderAccess, ownerId } from "@/lib/builder/access";
+import { currentUser } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
@@ -18,17 +18,17 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/build">): 
 export default async function ProjectsPage({ params, searchParams }: PageProps<"/[lang]/build">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
-  if (!(await hasBuilderAccess())) redirect(`/${lang}/build/access`);
+  const user = await currentUser();
+  if (!user) redirect(`/${lang}/sign-in?next=/${lang}/build`);
   const t = getMessages(lang);
   const builder = services().builder;
-  const owner = await ownerId(false);
-  const projects = builder && owner ? await builder.store.listProjects(owner) : [];
+  const projects = builder ? await builder.store.listProjects(user.id) : [];
   const tooMany = (await searchParams).error === "too_many";
   const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
 
   return (
     <>
-      <BuilderHeader locale={lang} t={t} />
+      <BuilderHeader locale={lang} t={t} user={user} />
       <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-3xl font-bold">{t.builder.title}</h1>

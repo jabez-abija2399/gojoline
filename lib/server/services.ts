@@ -1,7 +1,11 @@
 import "server-only";
 import { Redis } from "@upstash/redis";
 import type { BuilderDeps } from "@/lib/builder/service";
+import { getDb } from "@/lib/db/client";
+import { DbProjectStore } from "@/lib/projects/db-store";
 import { MemoryProjectStore } from "@/lib/projects/memory-store";
+import { DbUsageLogger } from "@/lib/providers/llm/db-usage-log";
+import { DbWaitlistStore } from "@/lib/waitlist/db-store";
 import { AnthropicLLMProvider } from "@/lib/providers/llm/anthropic";
 import { DemoLLMProvider } from "@/lib/providers/llm/demo";
 import { DEFAULT_MODEL } from "@/lib/providers/llm/pricing";
@@ -47,7 +51,8 @@ function starterFiles(): Record<string, string> {
 }
 
 function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
-  const store = new MemoryProjectStore();
+  const db = getDb(env);
+  const store = db ? new DbProjectStore(db) : new MemoryProjectStore();
   if (isE2E(env)) {
     return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock() };
   }
@@ -80,9 +85,10 @@ const globalForServices = globalThis as unknown as { gojoServices?: Services };
 
 export function services(): Services {
   if (!globalForServices.gojoServices) {
-    const usage = new MemoryUsageLogger();
+    const db = getDb(process.env);
+    const usage = db ? new DbUsageLogger(db) : new MemoryUsageLogger();
     globalForServices.gojoServices = {
-      waitlist: new MemoryWaitlistStore(),
+      waitlist: db ? new DbWaitlistStore(db) : new MemoryWaitlistStore(),
       rateLimiter: pickRateLimiter(process.env),
       usage,
       builder: pickBuilder(process.env, usage),

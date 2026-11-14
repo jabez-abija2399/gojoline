@@ -22,9 +22,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Eval set (30 prompts EN + AM) and runner reporting success, cost, time
 
 ## Slice 2: Accounts and data
-- [ ] Neon + Drizzle schema and migrations
-- [ ] Better Auth (email + phone), projects list
-- [ ] Persist projects, messages, versions, AI usage
+- [x] Neon + Drizzle schema and migrations
+- [x] Better Auth (email + phone), projects list
+- [x] Persist projects, messages, versions, AI usage
 
 ## Slice 3: Publish
 - [ ] `PublishProvider`: build and publish static site to `name.gojoline.site`
@@ -65,10 +65,11 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Notes for deployment
 - Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
-- Waitlist entries, projects, messages and versions are kept in memory until Slice 2 adds the database store.
-- Until accounts exist (Slice 2) the builder is closed in production unless `BUILDER_ACCESS_CODE` is set; owners are an anonymous cookie.
+- Database: Neon project `gojoline` (purple-brook-23584048, Frankfurt), database `gojoline`, migration `0000_init` applied. Set `DATABASE_URL` in the Vercel project (pooled connection string from the Neon console). Without it, dev and e2e use memory stores.
+- Production needs `BETTER_AUTH_SECRET` (32+ chars) and `BETTER_AUTH_URL`.
 - Builder needs `SAYSITE_ANTHROPIC_API_KEY`, `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, `SANDBOX_SNAPSHOT_ID` and `CSP_FRAME_ORIGINS=https://*.vercel.run`.
 
 ## Blocked (needs the founder)
+- Sign-in code delivery: choose an SMS gateway for Ethiopian numbers (e.g. AfroMessage, Geez SMS) and/or an email service (e.g. Resend) and add its key. Until then production sign-in shows "not open yet" (`OtpSender` interface in `lib/providers/notify/otp.ts`; development prints codes in the server log).
 - Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider
 - Publishing domain (`gojoline.site` or similar): until bought, publish under a free subdomain

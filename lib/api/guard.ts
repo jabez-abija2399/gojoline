@@ -17,7 +17,7 @@ export async function guardBuilder(opts: { mutating: boolean; limit?: { name: st
   if (!(await hasBuilderAccess())) return { ok: false, response: json(401, { error: "access" }) };
   const builder = services().builder;
   if (!builder) return { ok: false, response: json(503, { error: "unavailable" }) };
-  const owner = await ownerId(opts.mutating);
+  const owner = await ownerId();
   if (!owner) return { ok: false, response: json(401, { error: "access" }) };
   if (opts.limit) {
     const override = Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR);

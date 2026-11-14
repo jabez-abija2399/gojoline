@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
 // Runs against the deterministic demo AI and in-memory sandbox (E2E=1): no cost, no network.
-async function newSite(page: import("@playwright/test").Page, lang = "en") {
+async function newSite(page: import("@playwright/test").Page, lang: "en" | "am" = "en", signedIn = false) {
+  if (!signedIn) await signIn(page, { lang });
   await page.goto(`/${lang}/build`);
   await page.getByRole("button", { name: lang === "en" ? "Start a new site" : "አዲስ ድረ-ገጽ ይጀምሩ" }).click();
   await expect(page).toHaveURL(new RegExp(`/${lang}/build/[0-9a-f-]{36}$`));
@@ -35,6 +36,10 @@ test("create a site, edit it by chat, see versions and restore", async ({ page }
 
   await page.getByRole("tab", { name: "Files" }).filter({ visible: true }).click();
   await expect(page.locator("pre:visible")).toContainText('en: "Selam Coffee"');
+
+  // The project is named after the site.
+  await page.goto("/en/build");
+  await expect(page.getByRole("link", { name: /Selam Coffee/ })).toBeVisible();
 });
 
 test("a change that breaks the site is undone", async ({ page }) => {
@@ -62,9 +67,9 @@ test("projects are private to their owner", async ({ page, browser, request }) =
   const id = url.split("/").pop()!;
   const other = await browser.newContext();
   const stranger = await other.newPage();
-  // Without a cookie the stranger lands on their own (empty) list.
+  // Signed out, the stranger is sent to sign in.
   await stranger.goto(url);
-  await expect(stranger).not.toHaveURL(url);
+  await expect(stranger).toHaveURL(/\/en\/sign-in/);
   // With their own account they get a 404 for someone else's project.
   await newSite(stranger);
   const res = await stranger.goto(url);
