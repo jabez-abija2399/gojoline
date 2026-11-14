@@ -1,3 +1,4 @@
+import { SectionTitle } from "../components/SectionTitle";
 import { Icon } from "../components/Icon";
 import { uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
@@ -11,7 +12,7 @@ export function Contact({ section }: { section: ContactSection }) {
     <section id={section.id ?? "contact"} className="section">
       <div className="container-site grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
-          <h2 className="section-title">{text(section.heading)}</h2>
+          <SectionTitle>{text(section.heading)}</SectionTitle>
           {section.intro && <p className="max-w-[60ch] text-muted">{text(section.intro)}</p>}
           <div className="flex flex-col gap-3 sm:flex-row">
             {tel && (
@@ -32,7 +33,7 @@ export function Contact({ section }: { section: ContactSection }) {
             <div>
               <dt className="font-semibold">{uiText("phone", lang)}</dt>
               <dd className="text-muted">
-                <a href={`tel:${tel}`} className="underline underline-offset-4">{b.phone}</a>
+                <a href={`tel:${tel}`} className="inline-flex min-h-11 items-center underline underline-offset-4">{b.phone}</a>
               </dd>
             </div>
           )}
@@ -40,7 +41,7 @@ export function Contact({ section }: { section: ContactSection }) {
             <div>
               <dt className="font-semibold">{uiText("email", lang)}</dt>
               <dd className="text-muted">
-                <a href={`mailto:${b.email}`} className="underline underline-offset-4">{b.email}</a>
+                <a href={`mailto:${b.email}`} className="inline-flex min-h-11 items-center underline underline-offset-4 break-all">{b.email}</a>
               </dd>
             </div>
           )}

@@ -60,7 +60,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run build
       - name: Lighthouse CI (mobile budgets from docs/QUALITY.md)
-        run: npx lhci autorun
+        run: npx --yes @lhci/cli@0.16.1 autorun
 
   site-template:
     runs-on: ubuntu-latest

@@ -41,3 +41,8 @@
 | 2026-11-14 | Agent progress streamed to the browser as NDJSON from a route handler (`maxDuration` 300 s) | Simple, works through Vercel functions, no extra realtime service |
 | 2026-11-14 | Versions are full snapshots of editable files; restoring creates a new version | History is never rewritten; restore is one write |
 | 2026-11-14 | Fresh sandboxes copy the deployed template over the base snapshot | Snapshot only needs rebuilding when template dependencies change |
+| 2026-11-14 | Locked template files are re-written before every build; only editable paths are saved in versions | Build-time code (site.ts is imported during validation) could otherwise change the schema or scripts (security review) |
+| 2026-11-14 | Per-project lock in Redis (memory fallback) around agent runs and restores | Two serverless instances must not run two agents on one sandbox |
+| 2026-11-14 | Sandbox boots in parallel with the first model call (`LazySiteSandbox`) | Cuts time to first token on cold sandboxes (performance review) |
+| 2026-11-14 | `@lhci/cli` runs through an exact-pinned `npx` in CI, not a devDependency; `zod` overridden to ^4.6.7 | Keeps `npm audit` free of high findings |
+| 2026-11-14 | Template: the first section heading is the page's h1 when there is no hero; report-abuse link always shown | One h1 per page; Phase 1 trust rule |

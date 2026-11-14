@@ -61,6 +61,10 @@
     outline: 3px solid var(--site-focus);
     outline-offset: 2px;
   }
+  /* On dark accent bands the accent-coloured ring would vanish. */
+  .bg-accent :focus-visible {
+    outline-color: var(--site-on-accent);
+  }
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;

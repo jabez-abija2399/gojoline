@@ -1,3 +1,4 @@
+import { SectionTitle } from "../components/SectionTitle";
 import { Picture } from "../components/Picture";
 import { useSite } from "../lib/context";
 import type { GallerySection } from "../lib/types";
@@ -7,7 +8,7 @@ export function Gallery({ section }: { section: GallerySection }) {
   return (
     <section id={section.id ?? "gallery"} className="section bg-surface">
       <div className="container-site flex flex-col gap-8">
-        <h2 className="section-title">{text(section.heading)}</h2>
+        <SectionTitle>{text(section.heading)}</SectionTitle>
         <ul className="grid grid-cols-2 gap-3 md:grid-cols-3">
           {section.images.map((image, i) => (
             <li key={i}>

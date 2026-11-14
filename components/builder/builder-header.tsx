@@ -9,7 +9,7 @@ export function BuilderHeader({ locale, t, backHref, backLabel }: { locale: Loca
   return (
     <header className="flex items-center justify-between gap-3 border-b border-line bg-white px-4 py-2">
       <div className="flex min-w-0 items-center gap-3">
-        <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 shrink-0 items-center">
+        <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center">
           <Image src="/brand/mark.svg" alt={t.common.logoAlt} width={36} height={36} className="size-9" />
         </Link>
         {backHref && (

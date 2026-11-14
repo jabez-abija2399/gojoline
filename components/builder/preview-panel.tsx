@@ -8,10 +8,12 @@ interface Props {
   t: Messages["builder"];
   url: string | null;
   loading: boolean;
+  error: boolean;
+  onRetry: () => void;
   reloadKey: number;
 }
 
-export function PreviewPanel({ t, url, loading, reloadKey }: Props) {
+export function PreviewPanel({ t, url, loading, error, onRetry, reloadKey }: Props) {
   const [device, setDevice] = useState<"phone" | "desktop">("phone");
   const isHttp = !!url && url.startsWith("https://");
   return (
@@ -55,6 +57,13 @@ export function PreviewPanel({ t, url, loading, reloadKey }: Props) {
                 <div aria-hidden="true" className="h-64 w-full animate-pulse rounded-xl bg-line" />
                 <p>{t.previewLoading}</p>
               </>
+            ) : error ? (
+              <div role="alert" className="flex flex-col items-center gap-3">
+                <p>{t.previewError}</p>
+                <button type="button" onClick={onRetry} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-teal-mid">
+                  {t.retry}
+                </button>
+              </div>
             ) : (
               <p>{t.previewEmpty}</p>
             )}

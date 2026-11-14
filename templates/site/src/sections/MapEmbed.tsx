@@ -1,3 +1,4 @@
+import { SectionTitle } from "../components/SectionTitle";
 import { Icon } from "../components/Icon";
 import { uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
@@ -15,7 +16,7 @@ export function MapEmbed({ section }: { section: MapSection }) {
   return (
     <section id={section.id ?? "map"} className="section bg-surface">
       <div className="container-site flex flex-col gap-6">
-        <h2 className="section-title">{text(section.heading)}</h2>
+        <SectionTitle>{text(section.heading)}</SectionTitle>
         <a
           href={url}
           rel="noopener"
@@ -30,7 +31,7 @@ export function MapEmbed({ section }: { section: MapSection }) {
             <span className="flex size-14 items-center justify-center rounded-full bg-primary text-on-primary">
               <Icon name="map" />
             </span>
-            <span className="font-semibold">{query}</span>
+            <span className="font-semibold">{text(site.business.address) || query}</span>
             <span className="underline underline-offset-4">{uiText("openMap", lang)}</span>
           </span>
         </a>

@@ -12,16 +12,20 @@
     "test:watch": "vitest",
     "e2e": "playwright test --trace off",
     "format": "prettier --write .",
-    "brand:sync": "node scripts/sync-brand.mjs"
+    "brand:sync": "node scripts/sync-brand.mjs",
+    "evals": "vitest run --config vitest.evals.config.mts --silent=false"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.8.0",
+    "@neondatabase/serverless": "^1.2.1",
     "@radix-ui/react-slot": "^1.5.0",
     "@upstash/ratelimit": "^2.2.1",
     "@upstash/redis": "^1.41.0",
     "@vercel/sandbox": "^4.0.0",
+    "better-auth": "^1.7.25",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
+    "drizzle-orm": "^0.45.4",
     "lucide-react": "^1.73.0",
     "next": "16.4.6",
     "react": "19.3.0",
@@ -32,7 +36,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
-    "@lhci/cli": "^0.16.1",
+    "@electric-sql/pglite": "^0.5.16",
     "@playwright/test": "1.63.0",
     "@tailwindcss/turbopack": "4.3.3",
     "@testing-library/dom": "^10.4.2",
@@ -41,6 +45,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.3.0",
+    "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "jsdom": "^31.0.1",
@@ -51,6 +56,7 @@
     "vitest": "^5.1.0"
   },
   "overrides": {
-    "playwright-core": "1.63.0"
+    "playwright-core": "1.63.0",
+    "zod": "^4.6.7"
   }
 }

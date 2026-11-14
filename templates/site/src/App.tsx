@@ -1,3 +1,4 @@
+import { HeadingLevel } from "./components/SectionTitle";
 import { SiteProvider } from "./lib/context";
 import type { Lang, Page, Section, Site } from "./lib/types";
 import { About } from "./sections/About";
@@ -33,18 +34,22 @@ function renderSection(section: Section, index: number) {
 }
 
 export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }) {
-  const hasH1 = page.sections[0]?.type === "hero";
+  // A hero renders its own h1; otherwise the first section's heading becomes the h1.
+  const firstIsHero = page.sections[0]?.type === "hero";
   return (
     <SiteProvider site={site} page={page} lang={lang}>
       <div className="flex min-h-screen flex-col">
         <Header />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
-          {!hasH1 && (
-            <div className="container-site pt-12">
-              <h1 className="text-4xl font-bold">{page.title[lang] ?? page.title.en ?? page.title.am}</h1>
-            </div>
+          {page.sections.map((section, i) =>
+            i === 0 && !firstIsHero ? (
+              <HeadingLevel.Provider key={i} value={1}>
+                {renderSection(section, i)}
+              </HeadingLevel.Provider>
+            ) : (
+              renderSection(section, i)
+            ),
           )}
-          {page.sections.map(renderSection)}
         </main>
         <Footer />
       </div>

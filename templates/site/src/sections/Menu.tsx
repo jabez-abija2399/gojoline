@@ -1,3 +1,4 @@
+import { SectionTitle } from "../components/SectionTitle";
 import { formatPrice } from "../lib/i18n";
 import { useSite } from "../lib/context";
 import type { MenuSection } from "../lib/types";
@@ -8,7 +9,7 @@ export function Menu({ section }: { section: MenuSection }) {
     <section id={section.id ?? "menu"} className="section">
       <div className="container-site flex flex-col gap-8">
         <div className="flex flex-col gap-3">
-          <h2 className="section-title">{text(section.heading)}</h2>
+          <SectionTitle>{text(section.heading)}</SectionTitle>
           {section.intro && <p className="max-w-[60ch] text-muted">{text(section.intro)}</p>}
         </div>
         <div className="grid gap-8 md:grid-cols-2">

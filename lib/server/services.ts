@@ -11,6 +11,7 @@ import { VercelSandboxProvider } from "@/lib/providers/sandbox/vercel";
 import { MemoryRateLimiter, type RateLimiter } from "@/lib/rate-limit";
 import { DenyAllRateLimiter, UpstashRateLimiter } from "@/lib/rate-limit/upstash";
 import { templateFiles } from "@/lib/template/files";
+import { MemoryLock, RedisLock, type Lock } from "@/lib/lock";
 import { MemoryWaitlistStore, type WaitlistStore } from "@/lib/waitlist/store";
 
 // The single place that picks service implementations from the environment.
@@ -30,6 +31,17 @@ function pickRateLimiter(env: Env): RateLimiter {
   return new MemoryRateLimiter();
 }
 
+function redisFrom(env: Env): Redis | null {
+  return env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
+    ? new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN })
+    : null;
+}
+
+function pickLock(env: Env): Lock {
+  const redis = redisFrom(env);
+  return redis ? new RedisLock(redis) : new MemoryLock();
+}
+
 function starterFiles(): Record<string, string> {
   return Object.fromEntries(templateFiles().flatMap((f) => (typeof f.content === "string" ? [[f.path, f.content]] : [])));
 }
@@ -37,7 +49,7 @@ function starterFiles(): Record<string, string> {
 function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
   const store = new MemoryProjectStore();
   if (isE2E(env)) {
-    return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL };
+    return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock() };
   }
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
   if (!key || !env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID || !env.VERCEL_PROJECT_ID) return null;
@@ -52,6 +64,7 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
     llm: new AnthropicLLMProvider(key),
     usage,
     model: env.AGENT_MODEL || DEFAULT_MODEL,
+    lock: pickLock(env),
   };
 }
 

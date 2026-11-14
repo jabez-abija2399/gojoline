@@ -20,11 +20,10 @@ export function Footer() {
               {uiText("madeWith", lang)}
             </a>
           )}
-          {site.meta?.reportUrl && (
-            <a href={site.meta.reportUrl} rel="nofollow" className="flex min-h-11 items-center underline underline-offset-4">
-              {uiText("report", lang)}
-            </a>
-          )}
+          {/* Always present (Phase 1 trust rule); Gojoline fills the exact URL at publish time. */}
+          <a href={site.meta?.reportUrl ?? "https://gojoline.com/report"} rel="nofollow" className="flex min-h-11 items-center underline underline-offset-4">
+            {uiText("report", lang)}
+          </a>
         </div>
       </div>
     </footer>

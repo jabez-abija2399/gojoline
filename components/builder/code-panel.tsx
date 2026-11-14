@@ -6,18 +6,34 @@ import type { Messages } from "@/lib/i18n";
 /** Read-only view of the site's files (for the curious; edits happen through chat). */
 export function CodePanel({ t, projectId, refreshKey }: { t: Messages["builder"]; projectId: string; refreshKey: number }) {
   const [files, setFiles] = useState<Record<string, string> | null>(null);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [selected, setSelected] = useState("src/site.ts");
 
   useEffect(() => {
     let cancelled = false;
     fetch(`/api/projects/${projectId}/files`)
-      .then((r) => (r.ok ? r.json() : { files: {} }))
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("files"))))
       .then((data: { files: Record<string, string> }) => !cancelled && setFiles(data.files))
-      .catch(() => !cancelled && setFiles({}));
+      .catch(() => !cancelled && setError(true));
     return () => {
       cancelled = true;
     };
-  }, [projectId, refreshKey]);
+  }, [projectId, refreshKey, attempt]);
+
+  if (error) {
+    return (
+      <div role="alert" className="m-4 flex flex-col items-center gap-3 rounded-xl border border-line bg-white p-6 text-center text-ink-muted">
+        <p>{t.loadError}</p>
+        <button type="button" onClick={() => {
+            setError(false);
+            setAttempt((a) => a + 1);
+          }} className="min-h-11 rounded-lg border border-line px-4 font-medium text-ink hover:border-teal-mid">
+          {t.retry}
+        </button>
+      </div>
+    );
+  }
 
   if (files === null) {
     return (

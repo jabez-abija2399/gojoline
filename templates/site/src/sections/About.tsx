@@ -1,3 +1,4 @@
+import { SectionTitle } from "../components/SectionTitle";
 import { Picture } from "../components/Picture";
 import { useSite } from "../lib/context";
 import type { AboutSection } from "../lib/types";
@@ -9,7 +10,7 @@ export function About({ section }: { section: AboutSection }) {
       <div className="container-site grid items-center gap-10 md:grid-cols-2">
         <Picture image={section.image} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[4/3] w-full rounded-site" />
         <div className="flex flex-col gap-4">
-          <h2 className="section-title">{text(section.heading)}</h2>
+          <SectionTitle>{text(section.heading)}</SectionTitle>
           {text(section.body)
             .split(/\n{2,}/)
             .map((para, i) => (

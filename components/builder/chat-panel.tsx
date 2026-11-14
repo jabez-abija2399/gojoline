@@ -42,7 +42,7 @@ export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend 
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div ref={listRef} className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4" aria-live="polite" aria-relevant="additions">
+      <div ref={listRef} role="log" tabIndex={0} aria-label={t.tabChat} className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4" aria-live="polite" aria-relevant="additions">
         <Bubble role="assistant" label={t.assistant} text={t.welcome} />
         {messages.map((m) => (
           <Bubble

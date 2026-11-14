@@ -33,6 +33,7 @@ const ui = {
     hours: "Opening hours",
     address: "Address",
     menu: "Menu",
+    pages: "Pages",
     openMap: "Open in maps",
     skip: "Skip to content",
     report: "Report this site",
@@ -47,6 +48,7 @@ const ui = {
     hours: "የሥራ ሰዓት",
     address: "አድራሻ",
     menu: "ማውጫ",
+    pages: "ገጾች",
     openMap: "በካርታ ይክፈቱ",
     skip: "ወደ ዋናው ይዘት ይሂዱ",
     report: "ይህን ገጽ ሪፖርት ያድርጉ",
@@ -67,10 +69,10 @@ export const languageNames: Record<Lang, string> = { en: "English", am: "አማ�
 
 export function formatPrice(price: Price, lang: Lang): string {
   const major = price.amountMinor / 100;
-  const amount = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: Number.isInteger(major) ? 0 : 2,
-    maximumFractionDigits: 2,
-  }).format(major);
-  if (price.currency === "ETB") return lang === "am" ? `${amount} ብር` : `${amount} Birr`;
-  return `$${amount}`;
+  const digits = Number.isInteger(major) ? 0 : 2;
+  if (price.currency === "ETB") {
+    const amount = new Intl.NumberFormat("en-US", { minimumFractionDigits: digits, maximumFractionDigits: 2 }).format(major);
+    return lang === "am" ? `${amount} ብር` : `${amount} Birr`;
+  }
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: price.currency, minimumFractionDigits: digits }).format(major);
 }

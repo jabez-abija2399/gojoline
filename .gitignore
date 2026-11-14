@@ -1,8 +1,8 @@
 node_modules/
 .next/
-out/
-dist/
-build/
+/out/
+/dist/
+/build/
 coverage/
 playwright-report/
 test-results/

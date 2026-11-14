@@ -1,7 +1,7 @@
 import "server-only";
 import { Sandbox } from "@vercel/sandbox";
 import type { BuildResult } from "@/lib/agent/workspace";
-import { isVersionedPath, templateFiles } from "@/lib/template/files";
+import { isVersionedPath, lockedTemplateFiles, templateFiles } from "@/lib/template/files";
 import type { SandboxProvider, SiteSandbox } from "./types";
 
 const PORT = 5173;
@@ -41,19 +41,23 @@ export class VercelSandboxProvider implements SandboxProvider {
         ports: [PORT],
         timeout: IDLE_TIMEOUT_MS,
         resources: { vcpus: 2 },
+        // With a snapshot nothing needs the network, so it is closed from the start.
         ...(this.config.snapshotId
-          ? { source: { type: "snapshot" as const, snapshotId: this.config.snapshotId } }
+          ? { source: { type: "snapshot" as const, snapshotId: this.config.snapshotId }, networkPolicy: "deny-all" as const }
           : { runtime: "node22" }),
         tags: { app: "gojoline", project: projectId.slice(0, 60) },
       });
     }
 
     const site = new VercelSiteSandbox(sandbox);
-    if (fresh && !this.config.snapshotId) await site.installTemplate();
-    // The snapshot provides node_modules; template files always come from this deployment.
-    else if (fresh) await site.syncTemplate();
-    if (files) await site.restoreFiles(files);
-    await sandbox.updateNetworkPolicy("deny-all");
+    try {
+      if (fresh && !this.config.snapshotId) await site.installTemplate();
+      // The snapshot provides node_modules; template files always come from this deployment.
+      else if (fresh) await site.syncTemplate();
+      if (files) await site.restoreFiles(files);
+    } finally {
+      await sandbox.updateNetworkPolicy("deny-all");
+    }
     await site.ensureDevServer();
     return site;
   }
@@ -67,7 +71,9 @@ class VercelSiteSandbox implements SiteSandbox {
   }
 
   get previewUrl() {
-    return this.sandbox.domain(PORT);
+    const url = this.sandbox.domain(PORT);
+    if (!/^https:\/\/[a-z0-9-]+\.vercel\.run$/.test(url)) throw new Error("Unexpected preview URL");
+    return url;
   }
 
   /** Slow path when no snapshot exists: copy the template and install dependencies. */
@@ -116,8 +122,16 @@ class VercelSiteSandbox implements SiteSandbox {
     return (await res.stdout()).split("\n").map((s) => s.trim()).filter(Boolean).sort();
   }
 
+  /** Puts back every locked template file (configs, scripts, schema), in case build-time code changed them. */
+  async syncLocked() {
+    await this.sandbox.writeFiles(
+      lockedTemplateFiles().map((f) => ({ path: `${ROOT}/${f.path}`, content: typeof f.content === "string" ? f.content : new Uint8Array(f.content) })),
+    );
+  }
+
   async runBuild(): Promise<BuildResult> {
     const started = Date.now();
+    await this.syncLocked();
     const res = await this.sandbox.runCommand({ cmd: "npm", args: ["run", "build", "--silent"], cwd: ROOT });
     const output = `${await res.stdout()}\n${await res.stderr()}`.trim();
     return { ok: res.exitCode === 0, output: tail(output, 6000), durationMs: Date.now() - started };

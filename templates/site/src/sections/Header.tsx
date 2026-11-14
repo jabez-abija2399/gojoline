@@ -38,17 +38,28 @@ export function Header() {
         <a href={href("/")} className="flex min-h-11 items-center font-heading text-xl font-bold">
           {text(site.name)}
         </a>
-        <nav aria-label={uiText("menu", lang)} className="hidden items-center gap-1 md:flex">
+        <nav aria-label={uiText("pages", lang)} className="hidden items-center gap-1 md:flex">
           {links}
           {switcher}
         </nav>
         {(navPages.length > 0 || otherLangs.length > 0) && (
-          <details className="group relative md:hidden">
+          <details
+            className="group relative md:hidden"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                e.currentTarget.open = false;
+                e.currentTarget.querySelector("summary")?.focus();
+              }
+            }}
+          >
             <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-site border border-line px-3 font-medium [&::-webkit-details-marker]:hidden">
-              <span>{uiText("menu", lang)}</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="me-2 size-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <span>{uiText("pages", lang)}</span>
             </summary>
             <nav
-              aria-label={uiText("menu", lang)}
+              aria-label={uiText("pages", lang)}
               className="absolute right-0 mt-2 flex w-56 flex-col gap-1 rounded-site border border-line bg-surface p-2 shadow-lg"
             >
               {links}

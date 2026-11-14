@@ -30,6 +30,14 @@ describe("render", () => {
     expect(page.html.match(/<h1/g)).toHaveLength(1);
     expect(page.html).toContain("በየማለዳው የሚቆላ ቡና");
   });
+  it("promotes the first heading to h1 on pages without a hero", () => {
+    const html = render("/menu")!.html;
+    expect(html.match(/<h1/g)).toHaveLength(1);
+    expect(html).toMatch(/<h1[^>]*>Our menu<\/h1>/);
+  });
+  it("formats non-Birr prices with the right symbol", () => {
+    expect(formatPrice({ amountMinor: 1250, currency: "USD" }, "en")).toBe("$12.50");
+  });
   it("returns null for unknown pages", () => {
     expect(render("/nope")).toBeNull();
   });

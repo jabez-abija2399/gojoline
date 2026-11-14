@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/i18n/config";
 import { ChatPanel, type UiMessage } from "./chat-panel";
 import { CodePanel } from "./code-panel";
 import { PreviewPanel } from "./preview-panel";
+import { TabList } from "./tab-list";
 import { VersionsPanel, type UiVersion } from "./versions-panel";
 
 type Tab = "chat" | "preview" | "versions" | "code";
@@ -31,6 +32,8 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
   const [streamText, setStreamText] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
+  const [previewError, setPreviewError] = useState(false);
+  const [previewAttempt, setPreviewAttempt] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
   const [mobileTab, setMobileTab] = useState<Tab>("chat");
   const [deskTab, setDeskTab] = useState<Exclude<Tab, "chat">>("preview");
@@ -41,16 +44,16 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
     if (initialVersions.length === 0) return;
     let cancelled = false;
     fetch(`/api/projects/${projectId}/preview`, { method: "POST" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data: { url: string | null } | null) => {
-        if (!cancelled && data?.url) setPreviewUrl(data.url);
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("preview"))))
+      .then((data: { url: string | null }) => {
+        if (!cancelled && data.url) setPreviewUrl(data.url);
       })
-      .catch(() => undefined)
+      .catch(() => !cancelled && setPreviewError(true))
       .finally(() => !cancelled && setPreviewLoading(false));
     return () => {
       cancelled = true;
     };
-  }, [projectId, initialVersions.length]);
+  }, [projectId, initialVersions.length, previewAttempt]);
 
   const addAssistant = useCallback((text: string, extra: Partial<UiMessage> = {}) => {
     setMessages((m) => [...m, { id: nextId(), role: "assistant", text, ...extra }]);
@@ -148,25 +151,24 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
   const stepLabel = step === "reading" ? t.stepReading : step === "editing" ? t.stepEditing : step === "checking" ? t.stepChecking : step === "fixing" ? t.stepFixing : null;
 
   const chat = <ChatPanel t={t} locale={locale} messages={messages} working={working} stepLabel={stepLabel} streamText={streamText} onSend={send} />;
-  const preview = <PreviewPanel t={t} url={previewUrl} loading={previewLoading || (working && !previewUrl)} reloadKey={reloadKey} />;
+  const preview = (
+    <PreviewPanel
+      t={t}
+      url={previewUrl}
+      loading={previewLoading || (working && !previewUrl)}
+      error={previewError && !previewUrl}
+      onRetry={() => {
+        setPreviewError(false);
+        setPreviewLoading(true);
+        setPreviewAttempt((a) => a + 1);
+      }}
+      reloadKey={reloadKey}
+    />
+  );
   const versionsPanel = <VersionsPanel t={t} versions={versions} current={current} disabled={working} onRestore={restore} />;
   const code = <CodePanel t={t} projectId={projectId} refreshKey={current ?? 0} />;
   const panels: Record<Exclude<Tab, "chat">, React.ReactNode> = { preview, versions: versionsPanel, code };
   const tabLabels: Record<Tab, string> = { chat: t.tabChat, preview: t.tabPreview, versions: t.tabVersions, code: t.tabCode };
-
-  const tabButton = (tab: Tab, active: boolean, onClick: () => void) => (
-    <button
-      key={tab}
-      type="button"
-      role="tab"
-      aria-selected={active}
-      aria-controls={`panel-${tab}`}
-      onClick={onClick}
-      className="min-h-11 shrink-0 rounded-lg px-3 font-medium text-ink-muted aria-selected:bg-teal aria-selected:text-white"
-    >
-      {tabLabels[tab]}
-    </button>
-  );
 
   // Each panel renders once; CSS decides what shows (mobile: one tab, desktop: chat + one tab).
   const panelClass = (tab: Tab) =>
@@ -174,19 +176,15 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div role="tablist" aria-label={t.tabChat} className="flex gap-1 overflow-x-auto border-b border-line bg-white p-2 lg:hidden">
-        {(["chat", "preview", "versions", "code"] as Tab[]).map((tab) => tabButton(tab, mobileTab === tab, () => setMobileTab(tab)))}
-      </div>
+      <TabList tabs={["chat", "preview", "versions", "code"] as const} labels={tabLabels} active={mobileTab} onChange={setMobileTab} label={t.viewsLabel} idPrefix="tab-m" className="flex lg:hidden" />
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <section id="panel-chat" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-r lg:border-line`}>
+        <section id="panel-chat" role="tabpanel" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-r lg:border-line`}>
           {chat}
         </section>
         <div className="flex min-h-0 flex-1 flex-col max-lg:contents">
-          <div role="tablist" aria-label={t.tabPreview} className="hidden gap-1 border-b border-line bg-white p-2 lg:flex">
-            {(["preview", "versions", "code"] as const).map((tab) => tabButton(tab, deskTab === tab, () => setDeskTab(tab)))}
-          </div>
+          <TabList tabs={["preview", "versions", "code"] as const} labels={tabLabels} active={deskTab} onChange={setDeskTab} label={t.viewsLabel} idPrefix="tab-d" className="hidden lg:flex" />
           {(["preview", "versions", "code"] as const).map((tab) => (
-            <section key={tab} id={`panel-${tab}`} aria-label={tabLabels[tab]} className={panelClass(tab)}>
+            <section key={tab} id={`panel-${tab}`} role="tabpanel" aria-label={tabLabels[tab]} className={panelClass(tab)}>
               {panels[tab]}
             </section>
           ))}
