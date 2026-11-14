@@ -3,14 +3,14 @@
 Work top to bottom. Each task is a vertical slice: build it, test it, tick it, commit, push. Record choices in `docs/DECISIONS.md`.
 
 ## Slice 0: Foundation
-- [ ] Next.js App Router + TypeScript strict + Tailwind + shadcn/ui, brand tokens and fonts (Outfit, Inter, Noto Sans Ethiopic)
-- [ ] Scripts: dev, build, typecheck, lint, test (Vitest), e2e (Playwright)
-- [ ] i18n (en, am) with language switch; Amharic layout check
-- [ ] Favicon, app icons, manifest and social image from `brand/`
-- [ ] Landing page in brand (EN + AM) with waitlist form
-- [ ] GitHub Actions CI: typecheck, lint, test, npm audit, Lighthouse CI budgets
-- [ ] Security headers and CSP middleware; Dependabot config
-- [ ] Playwright + axe accessibility checks wired into e2e
+- [x] Next.js App Router + TypeScript strict + Tailwind + shadcn/ui, brand tokens and fonts (Outfit, Inter, Noto Sans Ethiopic)
+- [x] Scripts: dev, build, typecheck, lint, test (Vitest), e2e (Playwright)
+- [x] i18n (en, am) with language switch; Amharic layout check
+- [x] Favicon, app icons, manifest and social image from `brand/`
+- [x] Landing page in brand (EN + AM) with waitlist form
+- [x] GitHub Actions CI: typecheck, lint, test, npm audit, Lighthouse CI budgets
+- [x] Security headers and CSP middleware; Dependabot config
+- [x] Playwright + axe accessibility checks wired into e2e
 
 ## Slice 1: Core loop (prompt → site → preview → edit)
 - [ ] `templates/site/` Vite + React template with sections library (hero, about, menu/services, gallery, contact, map, footer)
@@ -57,6 +57,10 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
+
+## Notes for deployment
+- Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
+- Waitlist entries are kept in memory until Slice 2 adds the database store.
 
 ## Blocked (needs the founder)
 - Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider

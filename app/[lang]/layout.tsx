@@ -54,7 +54,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       <body className="flex min-h-full flex-col">
         <a
           href="#main"
-          className="sr-only z-50 rounded-md bg-teal px-4 py-3 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+          className="sr-only z-50 rounded-md bg-teal px-4 py-3 text-white focus:not-sr-only focus:fixed focus:min-h-11 focus:px-4 focus:py-3 focus:top-2 focus:left-2"
         >
           {t.common.skipToContent}
         </a>

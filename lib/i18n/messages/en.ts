@@ -1,3 +1,5 @@
+import { errorMessages } from "./errors";
+
 /**
  * English catalog: the source of truth for message keys.
  * `am.ts` must have exactly the same shape (enforced by the `Messages` type).
@@ -27,7 +29,8 @@ export const en = {
       chatUser:
         "We are a small café in Bole. Coffee, breakfast and fresh juice, open 7 am to 9 pm.",
       chatBotLabel: "Gojoline",
-      chatBot: "Your site is ready: menu, opening hours, map and a table booking form.",
+      chatBot:
+        "Your site is ready: menu, opening hours, map and a table booking form.",
     },
     steps: {
       title: "How it works",
@@ -87,7 +90,8 @@ export const en = {
     privacy: "We only use your details to contact you about Gojoline.",
     errors: {
       nameRequired: "Please enter your name.",
-      contactInvalid: "Please enter a valid Ethiopian phone number or an email address.",
+      contactInvalid:
+        "Please enter a valid Ethiopian phone number or an email address.",
       businessTooLong: "Please keep this under 80 characters.",
       tooMany: "Too many tries. Please wait a minute and try again.",
       generic: "Something went wrong. Please try again.",
@@ -98,15 +102,10 @@ export const en = {
     madeIn: "Made in Addis Ababa",
     rights: "© {year} Gojoline",
   },
-  errors: {
-    notFoundTitle: "Page not found",
-    notFoundBody: "We couldn't find that page.",
-    serverTitle: "Something went wrong",
-    serverBody: "We're fixing it. Please try again in a moment.",
-    retry: "Try again",
-    backHome: "Back to home",
-  },
+  errors: errorMessages.en,
 };
 
-type Stringify<T> = { [K in keyof T]: T[K] extends string ? string : Stringify<T[K]> };
+type Stringify<T> = {
+  [K in keyof T]: T[K] extends string ? string : Stringify<T[K]>;
+};
 export type Messages = Stringify<typeof en>;

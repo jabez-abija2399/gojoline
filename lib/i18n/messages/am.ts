@@ -1,4 +1,5 @@
 import type { Messages } from "./en";
+import { errorMessages } from "./errors";
 
 /**
  * Amharic catalog. Drafted by the build agent; must be reviewed by a native speaker
@@ -26,7 +27,8 @@ export const am: Messages = {
       cta: "የመጠባበቂያ ዝርዝሩን ይቀላቀሉ",
       secondary: "እንዴት እንደሚሠራ ይመልከቱ",
       chatUserLabel: "እርስዎ",
-      chatUser: "ቦሌ ያለ ትንሽ ካፌ ነን። ቡና፣ ቁርስ እና ትኩስ ጭማቂ፤ ከጠዋቱ 1 ሰዓት እስከ ምሽቱ 3 ሰዓት ክፍት ነን።",
+      chatUser:
+        "ቦሌ ያለ ትንሽ ካፌ ነን። ቡና፣ ቁርስ እና ትኩስ ጭማቂ፤ ከጠዋቱ 1 ሰዓት እስከ ምሽቱ 3 ሰዓት ክፍት ነን።",
       chatBotLabel: "ጎጆላይን",
       chatBot: "ድረ-ገጽዎ ዝግጁ ነው፦ ምናሌ፣ የሥራ ሰዓት፣ ካርታ እና የጠረጴዛ ማስያዣ ቅጽ።",
     },
@@ -99,12 +101,5 @@ export const am: Messages = {
     madeIn: "በአዲስ አበባ የተሠራ",
     rights: "© {year} ጎጆላይን",
   },
-  errors: {
-    notFoundTitle: "ገጹ አልተገኘም",
-    notFoundBody: "የፈለጉትን ገጽ ማግኘት አልቻልንም።",
-    serverTitle: "የሆነ ችግር ተፈጥሯል",
-    serverBody: "እያስተካከልነው ነው። እባክዎ ትንሽ ቆይተው እንደገና ይሞክሩ።",
-    retry: "እንደገና ይሞክሩ",
-    backHome: "ወደ መነሻ ገጽ ይመለሱ",
-  },
+  errors: errorMessages.am,
 };

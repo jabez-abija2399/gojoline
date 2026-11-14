@@ -1,23 +1,18 @@
-"use client"
+import * as React from "react";
+import { cn } from "cn";
 
-import * as React from "react"
-import { cn } from "cn"
-import { Label as LabelPrimitive } from "radix-ui"
-
-function Label({
-  className,
-  ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+// Plain <label>: no client JS needed (keeps first-load JS inside the budget).
+function Label({ className, ...props }: React.ComponentProps<"label">) {
   return (
-    <LabelPrimitive.Root
+    <label
       data-slot="label"
       className={cn(
-        "flex items-center gap-2 text-base leading-snug font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
-        className
+        "flex items-center gap-2 text-base leading-snug font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Label }
+export { Label };

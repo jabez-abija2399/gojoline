@@ -66,3 +66,15 @@ test.describe("landing page", () => {
     }
   });
 });
+
+test("waitlist moves focus to the first problem, then to the success message", async ({ page }) => {
+  await page.goto("/en");
+  const form = page.locator("#waitlist");
+  await form.getByLabel("Your name").fill("Abebe");
+  await form.getByLabel("Phone or email").fill("nope");
+  await form.getByRole("button", { name: "Join the waitlist" }).click();
+  await expect(form.getByLabel("Phone or email")).toBeFocused();
+  await form.getByLabel("Phone or email").fill("abebe@example.com");
+  await form.getByRole("button", { name: "Join the waitlist" }).click();
+  await expect(form.getByRole("status")).toBeFocused();
+});

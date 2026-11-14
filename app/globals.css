@@ -25,7 +25,7 @@
 
   --font-display: var(--font-outfit), var(--font-ethiopic), system-ui, sans-serif;
   --font-sans: var(--font-inter), var(--font-ethiopic), system-ui, sans-serif;
-  --font-ethiopic: var(--font-ethiopic), var(--font-inter), sans-serif;
+  --font-amharic: var(--font-ethiopic), var(--font-inter), system-ui, sans-serif;
   --font-heading: var(--font-display);
 
   --color-background: var(--background);
@@ -95,12 +95,13 @@
     text-wrap: balance;
   }
   /* Ge'ez script runs taller: give Amharic text room and use the Ethiopic face first. */
+  /* next/font ships no generic family; add Inter + system fallbacks for Latin text and digits. */
   :lang(am) {
-    font-family: var(--font-ethiopic);
+    font-family: var(--font-ethiopic), var(--font-inter), system-ui, sans-serif;
     line-height: 1.75;
   }
   :lang(am) :is(h1, h2, h3) {
-    font-family: var(--font-ethiopic);
+    font-family: var(--font-ethiopic), var(--font-outfit), system-ui, sans-serif;
     line-height: 1.35;
   }
   :focus-visible {

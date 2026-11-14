@@ -20,3 +20,8 @@
 | 2026-11-14 | Waitlist and rate limiter behind `WaitlistStore` / `RateLimiter` interfaces with memory implementations | Database (Slice 2) and Upstash come later; services are chosen in `lib/server/services.ts` |
 | 2026-11-14 | Brand assets copied from `brand/` by `npm run brand:sync`; a unit test checks the copies match | `brand/` stays the single source of truth |
 | 2026-11-14 | Amharic copy is drafted by the agent and must be reviewed by a native speaker before beta | No reviewer available during the build |
+| 2026-11-14 | Rate limits fail closed on Vercel when Upstash is not configured | Per-instance memory limits are no real limit on serverless (security review) |
+| 2026-11-14 | Client IP from `x-real-ip`, else the rightmost `X-Forwarded-For` hop | The leftmost hop is client-controlled and would let anyone reset their limit |
+| 2026-11-14 | Builder frames nothing unless `CSP_FRAME_ORIGINS` lists the preview origin | A wildcard like `*.vercel.run` would allow framing anyone's sandbox |
+| 2026-11-14 | GitHub Actions pinned to major tags (not SHAs) for now; Dependabot watches them | Workflow has read-only permissions and no secrets; revisit when deploy secrets are added |
+| 2026-11-14 | Direct `@radix-ui/react-slot` instead of the `radix-ui` barrel; plain `<label>` | Cut first-load JS from 201 KB to 179 KB gzip (budget 200 KB) |

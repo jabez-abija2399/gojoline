@@ -5,7 +5,7 @@ export function Hero({ t }: { t: Messages["landing"]["hero"] }) {
   return (
     <section aria-labelledby="hero-title" className="mx-auto grid max-w-6xl gap-10 px-4 pt-12 pb-16 sm:px-6 md:grid-cols-[1.15fr_1fr] md:items-center md:pt-20 md:pb-24">
       <div className="flex flex-col gap-6">
-        <p className="w-fit rounded-full bg-clay-soft px-3 py-1 text-sm font-medium text-clay-hover">{t.eyebrow}</p>
+        <p className="w-fit rounded-full bg-teal-soft px-3 py-1 text-base font-medium text-teal">{t.eyebrow}</p>
         <h1 id="hero-title" className="text-4xl leading-tight font-bold sm:text-5xl">
           {t.title}
         </h1>
@@ -22,11 +22,11 @@ export function Hero({ t }: { t: Messages["landing"]["hero"] }) {
       <figure aria-hidden="true" className="rounded-[20px] border border-line bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-4">
           <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-teal px-4 py-3 text-white">
-            <p className="text-sm font-semibold text-teal-soft">{t.chatUserLabel}</p>
+            <p className="text-base font-semibold text-teal-soft">{t.chatUserLabel}</p>
             <p>{t.chatUser}</p>
           </div>
           <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-clay-soft px-4 py-3 text-ink">
-            <p className="text-sm font-semibold text-clay-hover">{t.chatBotLabel}</p>
+            <p className="text-base font-semibold text-ink">{t.chatBotLabel}</p>
             <p>{t.chatBot}</p>
           </div>
           <div className="overflow-hidden rounded-xl border border-line">

@@ -54,14 +54,15 @@ function splitOrigins(value: string | undefined): string[] {
   return (value ?? "")
     .split(/[\s,]+/)
     .map((s) => s.trim())
-    .filter((s) => /^https:\/\/[a-z0-9.*-]+(:\d+)?$/i.test(s));
+    // https only; a "*." wildcard may only prefix a real domain (never a bare "*" or "*.tld").
+    .filter((s) => /^https:\/\/(\*\.)?[a-z0-9-]+(\.[a-z0-9-]+)+(:\d+)?$/i.test(s));
 }
 
 export function cspFromEnv(nonce: string, env: NodeJS.ProcessEnv = process.env): string {
   return buildCsp({
     nonce,
     isDev: env.NODE_ENV === "development",
-    frameOrigins: splitOrigins(env.CSP_FRAME_ORIGINS ?? "https://*.vercel.run"),
+    frameOrigins: splitOrigins(env.CSP_FRAME_ORIGINS),
     connectOrigins: splitOrigins(env.CSP_CONNECT_ORIGINS),
     imageOrigins: splitOrigins(env.CSP_IMAGE_ORIGINS),
   });

@@ -19,11 +19,16 @@ describe("CSP", () => {
   it("only accepts https origins from env", () => {
     const csp = cspFromEnv("n", {
       NODE_ENV: "production",
-      CSP_FRAME_ORIGINS: "https://*.vercel.run, javascript:alert(1) http://evil.test",
+      CSP_FRAME_ORIGINS: "https://*.vercel.run, javascript:alert(1) http://evil.test https://* https://*.com",
     } as NodeJS.ProcessEnv);
     expect(csp).toContain("frame-src https://*.vercel.run;");
     expect(csp).not.toContain("evil");
     expect(csp).not.toContain("javascript");
+    expect(csp).not.toMatch(/https:\/\/\*(\.com)?[ ;]/);
+  });
+
+  it("frames nothing unless configured", () => {
+    expect(cspFromEnv("n", { NODE_ENV: "production" } as NodeJS.ProcessEnv)).toContain("frame-src 'none'");
   });
 
   it("nonces are unique and 128-bit", () => {
