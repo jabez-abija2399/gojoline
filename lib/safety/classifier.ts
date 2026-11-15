@@ -68,6 +68,9 @@ export class LLMContentClassifier implements ContentClassifier {
         messages: [{ role: "user", content: siteMessage(body) }],
         maxTokens: 200,
         purpose: "safety",
+        // Publishing waits on this (holding the project lock): fail fast, the owner can retry.
+        timeoutMs: 20_000,
+        maxRetries: 1,
       });
       const raw = res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
       const json = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);

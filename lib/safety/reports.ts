@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { abuseReports, sites } from "@/lib/db/schema";
 
@@ -95,14 +95,25 @@ export class DbReportStore implements ReportStore {
     return row ?? null;
   }
   async openBySite(limit: number) {
+    // Rank sites in SQL (distinct reporters first), then load only those sites' reports.
+    const top = await this.db
+      .select({ siteId: abuseReports.siteId, people: sql<number>`count(distinct ${abuseReports.reporterKey})::int`, last: sql<Date>`max(${abuseReports.createdAt})` })
+      .from(abuseReports)
+      .where(eq(abuseReports.status, "open"))
+      .groupBy(abuseReports.siteId)
+      .orderBy(desc(sql`count(distinct ${abuseReports.reporterKey})`), desc(sql`max(${abuseReports.createdAt})`))
+      .limit(limit);
+    if (top.length === 0) return [];
+    const ids = top.map((x) => x.siteId);
     const rows = await this.db
       .select({ ...this.cols, reporterKey: abuseReports.reporterKey, slug: sites.slug, url: sites.url, siteStatus: sites.status })
       .from(abuseReports)
       .innerJoin(sites, eq(sites.id, abuseReports.siteId))
-      .where(eq(abuseReports.status, "open"))
+      .where(and(eq(abuseReports.status, "open"), inArray(abuseReports.siteId, ids)))
       .orderBy(desc(abuseReports.createdAt))
-      .limit(2000);
-    return group(rows, limit);
+      .limit(limit * 20);
+    const order = new Map(ids.map((id, i) => [id, i]));
+    return group(rows, limit).sort((x, y) => (order.get(x.siteId) ?? 0) - (order.get(y.siteId) ?? 0));
   }
   async closeForSite(siteId: string, status: "dismissed" | "actioned", adminId: string) {
     const rows = await this.db

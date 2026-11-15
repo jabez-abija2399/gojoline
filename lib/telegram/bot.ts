@@ -1,3 +1,4 @@
+import { reportError } from "@/lib/observability/report";
 import { z } from "zod";
 import type { BuilderDeps } from "@/lib/builder/service";
 import { sendOwnerMessage } from "@/lib/builder/service";
@@ -116,7 +117,7 @@ async function edit(deps: BotDeps, link: TelegramLink, projectId: string, reques
   try {
     await runEdit(deps, link, projectId, request, say);
   } catch (error) {
-    console.error("telegram edit failed", error instanceof Error ? error.message : "unknown");
+    reportError("telegram edit failed", error, { projectId });
     await say(botText[link.locale].failed).catch(() => undefined);
   }
 }

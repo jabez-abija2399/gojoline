@@ -1,6 +1,8 @@
 "use server";
 
+import { reportError } from "@/lib/observability/report";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
@@ -21,34 +23,43 @@ export async function reviewPayment(_prev: ReviewState, form: FormData): Promise
     revalidatePath(`/${parsed.data.lang}/admin`);
     return { status };
   } catch (error) {
-    console.error("payment review failed", error instanceof Error ? error.message : "unknown");
+    reportError("payment review failed", error);
     return { status: "failed" };
   }
 }
 
-const modInput = z.object({ siteId: z.uuid(), op: z.enum(["take_down", "dismiss", "restore"]), reason: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
+const modInput = z.object({
+  siteId: z.uuid(),
+  op: z.enum(["take_down", "dismiss", "restore"]),
+  reason: z.string().trim().max(300).optional(),
+  lang: z.enum(["en", "am"]),
+  tab: z.enum(["reports", "sites"]),
+});
 
-export type ModerateState = { status: "idle" | "ok" | "not_found" | "deploy_failed" | "invalid" | "forbidden" | "failed" };
+export type ModerateState = { status: "idle" | "ok" | "not_found" | "deploy_failed" | "invalid" | "forbidden" | "failed" | "reason_required" };
 
 export async function moderateSite(_prev: ModerateState, form: FormData): Promise<ModerateState> {
   const user = await currentUser();
   if (!user || !isAdmin(user)) return { status: "forbidden" };
-  const parsed = modInput.safeParse({ siteId: form.get("siteId"), op: form.get("op"), reason: form.get("reason") || undefined, lang: form.get("lang") });
+  const parsed = modInput.safeParse({ siteId: form.get("siteId"), op: form.get("op"), reason: form.get("reason") || undefined, lang: form.get("lang"), tab: form.get("tab") });
   if (!parsed.success) return { status: "invalid" };
+  if (parsed.data.op === "take_down" && !parsed.data.reason) return { status: "reason_required" };
   const deps = services().moderation;
   if (!deps) return { status: "failed" };
-  const { siteId, op, reason, lang } = parsed.data;
+  const { siteId, op, reason, lang, tab } = parsed.data;
+  let status: ModerateState["status"];
   try {
-    const status =
+    status =
       op === "take_down"
-        ? await takeDownSite(deps, user.id, siteId, reason ?? "admin")
+        ? await takeDownSite(deps, user.id, siteId, reason!)
         : op === "restore"
           ? await restoreSite(deps, user.id, siteId)
           : ((await dismissReports(deps, user.id, siteId)), "ok" as const);
-    revalidatePath(`/${lang}/admin`);
-    return { status };
   } catch (error) {
-    console.error("moderation failed", error instanceof Error ? error.message : "unknown");
-    return { status: "failed" };
+    reportError("moderation failed", error);
+    status = "failed";
   }
+  revalidatePath(`/${lang}/admin`);
+  // The handled item may leave the list, so the outcome is shown at the top of the page.
+  redirect(`/${lang}/admin?tab=${tab}&done=${status}`);
 }

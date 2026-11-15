@@ -54,7 +54,7 @@ describe("takedown", () => {
     const project = await new DbProjectStore(db).createProject("owner", { name: "x", locale: "en" });
     const sites = new DbSiteStore(db);
     await sites.reserve("owner", project.id, "shady", "memory");
-    const site = (await sites.byAddress("shady"))!;
+    const site = (await sites.byAddress(["shady"]))!;
     const reports = new DbReportStore(db);
     await reports.add({ siteId: site.id, reason: "scam", details: null, contact: "a@b.c", reporterKey: "k1" });
     await reports.add({ siteId: site.id, reason: "phishing", details: "pin", contact: null, reporterKey: "k2" });

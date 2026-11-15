@@ -120,7 +120,9 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
               case "error":
                 finished = true;
                 if (event.code === "no_credits") addAssistant(noCredits.text, { tone: "error", action: { href: `/${locale}/billing`, label: noCredits.action } });
-                else addAssistant(event.code === "busy" ? t.busy : event.code === "blocked" ? t.blocked : t.failed, { tone: "error" });
+                // A refusal is a normal answer, not a system failure.
+                else if (event.code === "blocked") addAssistant(t.blocked);
+                else addAssistant(event.code === "busy" ? t.busy : t.failed, { tone: "error" });
                 break;
             }
           }

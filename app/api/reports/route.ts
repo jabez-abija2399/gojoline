@@ -36,11 +36,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return json(400, { error: parsed.error.issues.some((i) => i.path[0] === "reason") ? "reason" : "site" });
 
   const publisher = svc.publish?.publisher ?? null;
-  let site = null;
-  for (const address of addressCandidates(parsed.data.site, publisher ? (s) => publisher.urlFor(s) : null)) {
-    site = await moderation.sites.byAddress(address);
-    if (site) break;
-  }
+  const site = await moderation.sites.byAddress(addressCandidates(parsed.data.site, publisher ? (s) => publisher.urlFor(s) : null));
   if (!site || site.status === "pending") return json(404, { error: "site" });
   if (!(await svc.rateLimiter.hit(`report:site:${site.id}`, 200, 86_400_000)).allowed) return json(201, { ok: true });
   // Production must have a real secret, or the stored key would be an unsalted hash of the network.

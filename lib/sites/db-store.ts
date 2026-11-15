@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { and, desc, eq, isNotNull, isNull, lt, ne, or, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { sites } from "@/lib/db/schema";
 import type { Site, SiteAdminStore, SiteStore } from "./types";
@@ -98,9 +98,10 @@ export class DbSiteStore implements SiteStore, SiteAdminStore {
     return row ?? null;
   }
 
-  async byAddress(address: string): Promise<Site | null> {
-    const [row] = await this.db.select().from(sites).where(or(eq(sites.slug, address), eq(sites.customDomain, address))).limit(1);
-    return row ?? null;
+  async byAddress(candidates: string[]): Promise<Site | null> {
+    if (candidates.length === 0) return null;
+    const rows = await this.db.select().from(sites).where(or(inArray(sites.slug, candidates), inArray(sites.customDomain, candidates))).limit(5);
+    return rows.find((r) => candidates.includes(r.slug)) ?? rows[0] ?? null;
   }
 
   async recent(limit: number): Promise<Site[]> {

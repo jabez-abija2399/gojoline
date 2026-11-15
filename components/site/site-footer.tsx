@@ -17,6 +17,13 @@ export function SiteFooter({ locale, t }: { locale: Locale; t: Messages }) {
           <p className="text-teal-soft">{t.footer.tagline}</p>
         </div>
         <div className="flex flex-col gap-1 text-teal-soft sm:items-end">
+          <nav aria-label={t.footer.linksLabel} className="flex flex-wrap gap-x-4">
+            {(["privacy", "terms", "report"] as const).map((k) => (
+              <a key={k} href={`/${locale}/${k}`} className="inline-flex min-h-11 items-center text-white underline underline-offset-4 hover:text-teal-soft">
+                {t.footer[k]}
+              </a>
+            ))}
+          </nav>
           <p>{t.footer.madeIn}</p>
           <p>{format(t.footer.rights, { year: new Date().getFullYear() })}</p>
         </div>

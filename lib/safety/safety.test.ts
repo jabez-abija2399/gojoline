@@ -70,6 +70,14 @@ describe("guard hardening", () => {
     expect(visibleText([page('<input placeholder="Telebirr PIN">')])).toContain("Telebirr PIN");
   });
 
+  it("stays fast on malformed markup", () => {
+    const evil = { path: "index.html", data: Buffer.from("<img alt=x".repeat(80_000) + "<script ".repeat(80_000)) };
+    const started = Date.now();
+    visibleText([evil]);
+    expect(Date.now() - started).toBeLessThan(1000);
+    expect(visibleText([page('<p>a<script>enter your pin</script>b</p><style>x</style>c')])).toBe("a b c");
+  });
+
   it("checks long sites in chunks and rejects answers with extra keys", async () => {
     const llm = new ScriptedLLMProvider([{ content: [textBlock('{"ok": true}')] }, { content: [textBlock('{"ok": false, "reasons": ["scam"]}')] }]);
     const c = new LLMContentClassifier(llm, new MemoryUsageLogger());

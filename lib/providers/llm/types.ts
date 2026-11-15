@@ -27,6 +27,9 @@ export interface LLMRequest {
   signal?: AbortSignal;
   /** For usage logging. */
   purpose: string;
+  /** Per-request limits for short, blocking calls (defaults: the SDK's, which allow minutes). */
+  timeoutMs?: number;
+  maxRetries?: number;
 }
 
 export interface TokenUsage {

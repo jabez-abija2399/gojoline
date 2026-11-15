@@ -16,15 +16,49 @@ export function normalizeText(text: string): string {
 const ENTITIES: Record<string, string> = { nbsp: " ", amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", apos: "'" };
 const decode = (s: string) => s.replace(/&(nbsp|amp|lt|gt|quot|#39|apos);/g, (_, e: string) => ENTITIES[e] ?? "");
 
+const MAX_PAGE_CHARS = 1_000_000;
+const ATTR = /\s(?:alt|title|placeholder|aria-label|value|content|label)\s*=\s*(?:"([^"]{0,2000})"|'([^']{0,2000})')/gi;
+
+/**
+ * Text and readable attributes of one HTML page. A single forward scan (no backtracking), so
+ * malformed markup can't make it slow: an unclosed <script> or tag simply ends the page.
+ */
+function pageText(html: string): string {
+  const out: string[] = [];
+  const lower = html.toLowerCase();
+  let i = 0;
+  while (i < html.length) {
+    const lt = html.indexOf("<", i);
+    if (lt === -1) {
+      out.push(html.slice(i));
+      break;
+    }
+    out.push(html.slice(i, lt), " ");
+    const gt = html.indexOf(">", lt + 1);
+    if (gt === -1) break;
+    const tag = html.slice(lt, gt + 1);
+    if (tag.length <= 4096) for (const m of tag.matchAll(ATTR)) out.push(m[1] ?? m[2] ?? "", " ");
+    const name = /^<([a-z]+)/i.exec(tag)?.[1]?.toLowerCase();
+    if (name === "script" || name === "style" || name === "noscript") {
+      const close = lower.indexOf(`</${name}`, gt + 1);
+      if (close === -1) break;
+      i = lower.indexOf(">", close);
+      if (i === -1) break;
+      i += 1;
+      continue;
+    }
+    i = gt + 1;
+  }
+  return out.join("");
+}
+
 /** Visible text of the built pages, plus words in attributes people see (alt, title, placeholders...). */
 export function visibleText(files: PublishFile[]): string {
   const seen = new Set<string>();
   const parts: string[] = [];
   for (const f of files) {
     if (!f.path.endsWith(".html")) continue;
-    const html = f.data.toString("utf8").replace(/<(script|style|noscript)[\s\S]*?<\/\1>/gi, " ");
-    const attrs = [...html.matchAll(/\s(?:alt|title|placeholder|aria-label|value|content|label)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)].map((m) => m[1] ?? m[2] ?? "");
-    const text = normalizeText(decode(`${html.replace(/<[^>]+>/g, " ")} ${attrs.join(" ")}`));
+    const text = normalizeText(decode(pageText(f.data.toString("utf8", 0, MAX_PAGE_CHARS))));
     if (text && !seen.has(text)) {
       seen.add(text);
       parts.push(text);

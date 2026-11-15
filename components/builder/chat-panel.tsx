@@ -95,7 +95,7 @@ export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend 
         <button
           type="submit"
           aria-disabled={working || !draft.trim()}
-          className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-clay text-white hover:bg-clay-hover aria-disabled:opacity-50"
+          className={`flex size-12 shrink-0 items-center justify-center rounded-xl text-white aria-disabled:opacity-50 ${messages.at(-1)?.action ? "bg-teal hover:bg-teal-deep" : "bg-clay hover:bg-clay-hover"}`}
         >
           <ArrowUp aria-hidden="true" className="size-5" />
           <span className="sr-only">{t.send}</span>
@@ -111,7 +111,7 @@ function Bubble({ role, label, text, note, tone, action }: { role: "owner" | "as
     <div className={`flex max-w-[90%] flex-col gap-1 ${own ? "self-end items-end" : "self-start"}`}>
       <span className="text-sm font-semibold text-ink-muted">{label}</span>
       <p
-        lang={amharic.test(text) ? "am" : undefined}
+        lang={amharic.test(text) ? "am" : "en"}
         className={`whitespace-pre-wrap rounded-2xl px-4 py-3 ${
           own ? "rounded-br-sm bg-teal text-white" : tone === "error" ? "rounded-bl-sm border border-destructive bg-clay-soft text-destructive" : "rounded-bl-sm bg-sand text-ink"
         }`}

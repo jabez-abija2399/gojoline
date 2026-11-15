@@ -7,6 +7,8 @@ export const errorMessages = {
     serverTitle: "Something went wrong",
     serverBody: "We're fixing it. Please try again in a moment.",
     retry: "Try again",
+    reference: "Reference: {id}",
+    home: "Go to the home page",
     backHome: "Back to home",
   },
   am: {
@@ -15,6 +17,8 @@ export const errorMessages = {
     serverTitle: "የሆነ ችግር ተፈጥሯል",
     serverBody: "እያስተካከልነው ነው። እባክዎ ትንሽ ቆይተው እንደገና ይሞክሩ።",
     retry: "እንደገና ይሞክሩ",
+    reference: "መለያ ቁጥር፦ {id}",
+    home: "ወደ መነሻ ገጽ ይሂዱ",
     backHome: "ወደ መነሻ ገጽ ይመለሱ",
   },
 };

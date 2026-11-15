@@ -51,8 +51,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Slice 8: Beta readiness
 - [x] All templates (10 industries) in EN + AM
-- [ ] Sentry, uptime checks, error pages
-- [ ] Privacy policy and terms pages (to be reviewed by a lawyer)
+- [x] Sentry, uptime checks, error pages
+- [x] Privacy policy and terms pages (to be reviewed by a lawyer)
 - [ ] Eval targets met (see PRD)
 
 ## Later (postponed by the founder)
@@ -66,6 +66,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 
 ## Notes for deployment
+- Sentry: project `gojoline` in the founder's Sentry organization. Set `SENTRY_DSN=https://28282cb223995ae0d77745325c298faf@o4512429782990848.ingest.us.sentry.io/4512432933371904` (a DSN is a public client key). Server errors only; no browser SDK.
 - Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
 - Database: Neon project `gojoline` (purple-brook-23584048, Frankfurt), database `gojoline`, migration `0000_init` applied. Set `DATABASE_URL` in the Vercel project (pooled connection string from the Neon console). Without it, dev and e2e use memory stores.
 - Production needs `BETTER_AUTH_SECRET` (32+ chars) and `BETTER_AUTH_URL`.
@@ -74,6 +75,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
+- Legal review: `/[lang]/privacy` and `/[lang]/terms` are drafts written from what the product does (`lib/i18n/messages/legal.ts`, EN + AM, marked as drafts on the page). A lawyer should review them, and the founder should add the legal entity name and a contact address.
+- Uptime monitor: once the app has a production URL, create a Sentry uptime monitor on `https://<app>/api/health` (60 s interval). The endpoint exists and returns 503 when the database is down.
 - Takedown policy and terms: the report page and takedown flow work, but the rules sites must follow (acceptable use) need the founder's and a lawyer's wording before launch (Slice 8 terms page).
 - Payment details: set `PAYMENT_TELEBIRR_NUMBER`, `PAYMENT_CBE_ACCOUNT`, `PAYMENT_ACCOUNT_NAME` (until set, the Plan page says payments are coming soon) and the admin list `ADMIN_EMAILS` / `ADMIN_PHONES`. Prices in `lib/billing/plans.ts` are placeholders for the founder to confirm.
 - Vercel plan: Hobby allows 10 sandboxes at a time (each owner editing uses one for up to 15 minutes). For more than ~10 owners editing at once, the team needs Vercel Pro. Plan changes are the founder's decision.

@@ -1,4 +1,5 @@
 import "server-only";
+import { reportError } from "@/lib/observability/report";
 import { randomUUID } from "node:crypto";
 import { keywordCheck } from "@/lib/safety/keywords";
 import { runAgent, type AgentEvent } from "@/lib/agent/loop";
@@ -145,7 +146,7 @@ export async function sendOwnerMessage(
     input.onEvent({ type: "done", message, previewUrl: sandbox.previewUrl });
     chargedRef = null;
   } catch (error) {
-    console.error("builder.sendOwnerMessage failed", error instanceof Error ? error.message : "unknown");
+    reportError("builder.sendOwnerMessage failed", error, { projectId: project.id });
     if (chargedRef && !input.signal?.aborted) await deps.credits?.refund(input.ownerId, chargedRef).catch(() => undefined);
     input.onEvent({ type: "error", code: "failed" });
   } finally {

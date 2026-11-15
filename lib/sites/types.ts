@@ -22,8 +22,8 @@ export interface Site {
 /** Unscoped site access for admins and public reports only. Never use it for owner actions. */
 export interface SiteAdminStore {
   byId(siteId: string): Promise<Site | null>;
-  /** A site by its slug or custom domain (any status). */
-  byAddress(slugOrDomain: string): Promise<Site | null>;
+  /** The site matching any of these slugs or custom domains (one query; a slug match wins). */
+  byAddress(candidates: string[]): Promise<Site | null>;
   recent(limit: number): Promise<Site[]>;
   /** Marks a site taken down (stops publishing and its forms). False when it doesn't exist. */
   takeDown(siteId: string, reason: string): Promise<boolean>;

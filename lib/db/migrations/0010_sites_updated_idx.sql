@@ -1,0 +1,1 @@
+CREATE INDEX "sites_updated_idx" ON "sites" USING btree ("updated_at");

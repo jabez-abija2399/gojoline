@@ -188,7 +188,7 @@ export const sites = pgTable(
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index("sites_owner_idx").on(t.ownerId)],
+  (t) => [index("sites_owner_idx").on(t.ownerId), index("sites_updated_idx").on(t.updatedAt)],
 );
 
 /** Form definitions captured from site.json at publish time; submissions are checked against them. */

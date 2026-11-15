@@ -1,4 +1,5 @@
 import "server-only";
+import { reportError } from "@/lib/observability/report";
 import { extractForms } from "@/lib/cloud/forms";
 import type { CloudStore } from "@/lib/cloud/types";
 import type { Lock } from "@/lib/lock";
@@ -182,7 +183,7 @@ async function deployLocked(
       }
       return { ok: false, error: "taken_down" };
     }
-    console.error("publish failed", msg);
+    reportError("publish failed", error, { projectId });
     return { ok: false, error: msg === "slug_taken" ? "slug_taken" : "failed" };
   } finally {
     await deps.lock.release(`project:${projectId}`, token);

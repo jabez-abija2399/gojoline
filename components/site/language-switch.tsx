@@ -12,8 +12,16 @@ interface Props {
 /** Link to the same page in the other language. A plain <a> so the server re-renders in that locale. */
 export function LanguageSwitch({ target, label, ariaLabel }: Props) {
   const pathname = usePathname() ?? "/";
-  const next = useSearchParams()?.get("next");
-  const query = next && /^\/(en|am)\//.test(next) ? `?next=${encodeURIComponent(next.replace(/^\/(en|am)\//, `/${target}/`))}` : "";
+  const params = useSearchParams();
+  // Keep the parts of the address that matter on the other side (where to go next, which site, which tab).
+  const kept = new URLSearchParams();
+  const next = params?.get("next");
+  if (next && /^\/(en|am)\//.test(next)) kept.set("next", next.replace(/^\/(en|am)\//, `/${target}/`));
+  for (const key of ["site", "tab"]) {
+    const v = params?.get(key);
+    if (v && v.length <= 300) kept.set(key, v);
+  }
+  const query = kept.size ? `?${kept.toString()}` : "";
   return (
     <a
       href={swapLocaleInPath(pathname, target) + query}

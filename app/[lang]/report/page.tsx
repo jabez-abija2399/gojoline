@@ -22,7 +22,7 @@ export default async function ReportPage({ params, searchParams }: PageProps<"/[
       <main id="main" className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 py-10">
         <h1 className="text-3xl font-bold">{t.safety.reportTitle}</h1>
         <p className="text-ink-muted">{t.safety.reportIntro}</p>
-        <ReportForm t={t.safety} site={site} />
+        <ReportForm t={t.safety} site={site} home={`/${lang}`} />
       </main>
     </>
   );

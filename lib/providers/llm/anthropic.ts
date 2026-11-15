@@ -32,7 +32,7 @@ export class AnthropicLLMProvider implements LLMProvider {
           ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const }
           : {}),
       },
-      { signal: req.signal },
+      { signal: req.signal, ...(req.timeoutMs ? { timeout: req.timeoutMs } : {}), ...(req.maxRetries !== undefined ? { maxRetries: req.maxRetries } : {}) },
     );
 
     stream.on("text", (delta) => {

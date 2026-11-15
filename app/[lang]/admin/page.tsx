@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import { FocusOnMount } from "@/components/admin/focus-on-mount";
 import { ModerateForm } from "@/components/admin/moderate-form";
 import { ReviewForm } from "@/components/admin/review-form";
 import { BuilderHeader } from "@/components/builder/builder-header";
@@ -16,7 +17,11 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): 
 }
 
 const amount = (minor: number) => new Intl.NumberFormat("en-US").format(minor / 100);
-const usd = (nano: number) => (nano / 1e9).toFixed(2);
+const usdFmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumSignificantDigits: 3 });
+const usd = (nano: number) => usdFmt.format(nano / 1e9);
+/** Text people typed may be in either language; screen readers need to know which. */
+const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
+const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
 const TABS = ["payments", "reports", "sites", "costs"] as const;
 type Tab = (typeof TABS)[number];
 
@@ -24,6 +29,8 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
   const { lang } = await params;
   const rawTab = (await searchParams).tab;
   const tab: Tab = TABS.includes(rawTab as Tab) ? (rawTab as Tab) : "payments";
+  const rawDone = (await searchParams).done;
+  const done = DONE.find((d) => d === rawDone) ?? null;
   if (!isLocale(lang)) notFound();
   const user = await currentUser();
   if (!user) redirect(`/${lang}/sign-in?next=/${lang}/admin`);
@@ -38,18 +45,25 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
       <BuilderHeader locale={lang} t={t} user={user} />
       <main id="main" className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8">
         <h1 className="text-3xl font-bold">{t.admin.title}</h1>
-        <nav aria-label={t.admin.title} className="flex flex-wrap gap-1 rounded-xl border border-line bg-white p-1">
+        <nav aria-label={t.admin.title} className="grid grid-cols-2 gap-1 rounded-xl border border-line bg-white p-1 sm:grid-cols-4">
           {TABS.map((x) => (
             <Link
               key={x}
               href={`/${lang}/admin?tab=${x}`}
               aria-current={x === tab ? "page" : undefined}
-              className="inline-flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-lg px-3 font-medium text-ink-muted aria-[current=page]:bg-teal aria-[current=page]:text-white"
+              className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-lg px-3 font-medium text-ink-muted aria-[current=page]:bg-teal aria-[current=page]:text-white"
             >
               {t.admin.tabs[x]}
             </Link>
           ))}
         </nav>
+        {done && (
+          <FocusOnMount>
+            <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-3 font-medium ${done === "ok" ? "bg-teal-soft text-teal" : "bg-clay-soft text-destructive"}`}>
+              {t.admin.tabStatus[done]}
+            </p>
+          </FocusOnMount>
+        )}
         {tab === "payments" && <Payments />}
         {tab === "reports" && <Reports />}
         {tab === "sites" && <Sites />}
@@ -113,12 +127,12 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                   {g.reports.slice(0, 10).map((r) => (
                     <li key={r.id} className="rounded-lg bg-sand p-3">
                       <p className="font-medium">{t.safety.reasons[r.reason]}</p>
-                      {r.details && <p className="whitespace-pre-wrap break-words">{r.details}</p>}
+                      {r.details && <p lang={langOf(r.details)} className="whitespace-pre-wrap break-words">{r.details}</p>}
                       <p className="text-sm text-ink-muted">{dateFmt.format(r.createdAt)}{r.contact ? ` · ${r.contact}` : ""}</p>
                     </li>
                   ))}
                 </ul>
-                <ModerateForm t={t.admin} siteId={g.siteId} lang={lang} ops={g.siteStatus === "taken_down" ? ["dismiss"] : ["take_down", "dismiss"]} />
+                <ModerateForm t={t.admin} siteId={g.siteId} lang={lang} tab="reports" ops={g.siteStatus === "taken_down" ? ["dismiss"] : ["take_down", "dismiss"]} />
               </li>
             ))}
           </ul>
@@ -145,8 +159,18 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 {site.url && site.status === "published" && (
                   <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center font-medium text-teal underline underline-offset-4">{t.admin.openSite}</a>
                 )}
-                {site.takenDownReason && <p className="text-ink-muted">{site.takenDownReason}</p>}
-                {site.status !== "pending" && <ModerateForm t={t.admin} siteId={site.id} lang={lang} ops={site.status === "taken_down" ? ["take_down", "restore"] : ["take_down"]} />}
+                {site.takenDownReason && (
+                  <p className="text-ink-muted">
+                    {t.admin.reasonShown}: <span lang={langOf(site.takenDownReason)}>{site.takenDownReason}</span>
+                  </p>
+                )}
+                {site.status === "taken_down" && <ModerateForm t={t.admin} siteId={site.id} lang={lang} tab="sites" ops={["retry", "restore"]} reason={site.takenDownReason ?? "admin"} />}
+                {site.status === "published" && (
+                  <details>
+                    <summary className="inline-flex min-h-11 cursor-pointer items-center font-medium text-destructive">{t.admin.takeDown}</summary>
+                    <ModerateForm t={t.admin} siteId={site.id} lang={lang} tab="sites" ops={["take_down"]} />
+                  </details>
+                )}
               </li>
             ))}
           </ul>
@@ -158,21 +182,27 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
   async function Costs() {
     const since = new Date(Date.now() - 30 * 86_400_000);
     const s = await svc.usageReport.summary(since);
-    const table = (title: string, rows: { key: string; costNanoUsd: number; requests: number }[]) => (
-      <div className="flex flex-col gap-2">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <table className="w-full text-start">
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.key} className="border-b border-line">
-                <th scope="row" className="py-2 pe-3 text-start font-mono font-normal break-all">{r.key}</th>
-                <td className="py-2 pe-3 text-end">{r.requests}</td>
-                <td className="py-2 text-end font-semibold">${usd(r.costNanoUsd)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    const purpose = (k: string) => (t.admin.purposes as Record<string, string>)[k] ?? k;
+    const table = (title: string, rows: { key: string; costNanoUsd: number; requests: number }[], label: (k: string) => string = (k) => k) => (
+      <table className="w-full text-start">
+        <caption className="mb-2 text-start text-lg font-semibold">{title}</caption>
+        <thead>
+          <tr className="border-b border-line text-ink-muted">
+            <th scope="col" className="py-2 pe-3 text-start font-medium">{t.admin.costWhat}</th>
+            <th scope="col" className="py-2 pe-3 text-end font-medium">{t.admin.costRequests}</th>
+            <th scope="col" className="py-2 text-end font-medium">{t.admin.costUsd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.key} className="border-b border-line">
+              <th scope="row" className="py-2 pe-3 text-start font-normal break-all">{label(r.key)}</th>
+              <td className="py-2 pe-3 text-end tabular-nums">{r.requests}</td>
+              <td className="py-2 text-end font-semibold tabular-nums">{usd(r.costNanoUsd)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     );
     return (
       <section aria-labelledby="costs-title" className="flex flex-col gap-4">
@@ -182,7 +212,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         ) : (
           <>
             <p className="text-lg font-semibold">{format(t.admin.costTotal, { usd: usd(s.costNanoUsd), n: s.requests })}</p>
-            {table(t.admin.costByPurpose, s.byPurpose)}
+            {table(t.admin.costByPurpose, s.byPurpose, purpose)}
             {table(t.admin.costByDay, s.byDay)}
             {table(t.admin.costTopUsers, s.topUsers.map((u) => ({ ...u, key: u.key.slice(0, 12) })))}
           </>

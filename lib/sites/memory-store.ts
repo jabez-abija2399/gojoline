@@ -48,8 +48,9 @@ export class MemorySiteStore implements SiteStore, SiteAdminStore {
   async byId(siteId: string) {
     return [...this.sites.values()].find((s) => s.id === siteId) ?? null;
   }
-  async byAddress(address: string) {
-    return [...this.sites.values()].find((s) => s.slug === address || s.customDomain === address) ?? null;
+  async byAddress(candidates: string[]) {
+    const all = [...this.sites.values()];
+    return all.find((s) => candidates.includes(s.slug)) ?? all.find((s) => s.customDomain !== null && candidates.includes(s.customDomain)) ?? null;
   }
   async recent(limit: number) {
     return [...this.sites.values()].reverse().slice(0, limit);

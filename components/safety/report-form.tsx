@@ -6,7 +6,7 @@ import type { Messages } from "@/lib/i18n";
 const REASONS = ["phishing", "scam", "impersonation", "adult", "illegal_goods", "violence_hate", "copyright", "other"] as const;
 type State = { kind: "idle" | "sending" | "sent" } | { kind: "error"; code: string };
 
-export function ReportForm({ t, site }: { t: Messages["safety"]; site: string }) {
+export function ReportForm({ t, site, home }: { t: Messages["safety"]; site: string; home: string }) {
   const [state, setState] = useState<State>({ kind: "idle" });
   const siteRef = useRef<HTMLInputElement>(null);
   const reasonRef = useRef<HTMLFieldSetElement>(null);
@@ -22,9 +22,19 @@ export function ReportForm({ t, site }: { t: Messages["safety"]; site: string })
 
   if (state.kind === "sent")
     return (
-      <p ref={sentRef} tabIndex={-1} role="status" className="rounded-lg bg-teal-soft px-4 py-3 text-lg font-medium text-teal">
-        {t.sent}
-      </p>
+      <div className="flex flex-col items-start gap-4">
+        <p ref={sentRef} tabIndex={-1} role="status" className="w-full rounded-lg bg-teal-soft px-4 py-3 text-lg font-medium text-teal">
+          {t.sent}
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <button type="button" onClick={() => setState({ kind: "idle" })} className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-teal-mid">
+            {t.reportAnother}
+          </button>
+          <a href={home} className="inline-flex min-h-11 items-center rounded-lg px-4 font-medium text-teal underline underline-offset-4">
+            {t.backHome}
+          </a>
+        </div>
+      </div>
     );
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
