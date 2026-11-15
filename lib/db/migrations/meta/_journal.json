@@ -85,6 +85,13 @@
       "when": 1794712797272,
       "tag": "0011_takedown_deployed",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1794719667337,
+      "tag": "0012_app_settings",
+      "breakpoints": true
     }
   ]
 }

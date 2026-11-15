@@ -4,13 +4,17 @@ import { memoryAdapter } from "better-auth/adapters/memory";
 import { nextCookies } from "better-auth/next-js";
 import { getDb } from "@/lib/db/client";
 import * as schema from "@/lib/db/schema";
-import { DevOtpSender, UnavailableOtpSender, type OtpSender } from "@/lib/providers/notify/otp";
+import type { OtpSender } from "@/lib/providers/notify/otp";
+import { pickOtpSender } from "@/lib/providers/notify/pick";
 import { createAuth } from "./config";
 
 const env = process.env;
 const production = env.NODE_ENV === "production" && env.E2E !== "1";
 
-export const otpSender: OtpSender = production ? new UnavailableOtpSender() : new DevOtpSender();
+export const otpSender: OtpSender = pickOtpSender();
+
+/** Google sign-in is on when both keys are set. */
+export const googleAuth = env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } : null;
 
 type Auth = ReturnType<typeof createAuth>;
 const g = globalThis as unknown as { gojoAuth?: Auth | null; gojoAuthMemory?: Record<string, unknown[]> };
@@ -45,6 +49,7 @@ export function getAuth(): Auth | null {
     baseURL: env.BETTER_AUTH_URL ?? env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
     secureCookies: production,
     sender: otpSender,
+    google: googleAuth,
     extraPlugins: [nextCookies()],
   });
   return g.gojoAuth;

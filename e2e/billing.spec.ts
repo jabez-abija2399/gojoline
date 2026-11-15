@@ -50,3 +50,20 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   await expect(page.getByText("Your plan: Starter")).toBeVisible();
   await expect(page.getByText("Approved")).toBeVisible();
 });
+
+test("an admin changes a price and the Plan page shows it", async ({ page }) => {
+  await signIn(page, { contact: `admin-e2e-${test.info().project.name}@example.com` });
+  await page.goto("/en/admin?tab=settings");
+  await expect(page.getByRole("heading", { name: "Prices and payment accounts" })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  const price = page.getByLabel("Business, 1 year (Birr)");
+  await price.fill("abc");
+  await page.getByRole("button", { name: "Save settings" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "check the highlighted field" })).toBeVisible();
+  const value = test.info().project.name === "mobile" ? "9500" : "9600.50";
+  await price.fill(value);
+  await page.getByRole("button", { name: "Save settings" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Saved." })).toBeVisible();
+  await page.goto("/en/billing");
+  await expect(page.getByText(/or (9,500|9,600\.5) Birr a year/)).toBeVisible();
+});

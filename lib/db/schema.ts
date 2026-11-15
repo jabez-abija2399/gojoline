@@ -375,3 +375,11 @@ export const abuseReports = pgTable(
     uniqueIndex("abuse_reports_open_uq").on(t.siteId, t.reporterKey).where(sql`${t.status} = 'open'`),
   ],
 );
+
+/** Settings the founder changes from the admin page (prices, payment accounts). */
+export const appSettings = pgTable("app_settings", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").$type<Record<string, unknown>>().notNull(),
+  updatedBy: text("updated_by"),
+  updatedAt: updatedAt(),
+});

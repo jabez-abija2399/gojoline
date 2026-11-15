@@ -1,5 +1,6 @@
 import type { Entitlements, EntitlementsResolver } from "./entitlements";
 import { PLAN_FEATURES, PRODUCTS, ROLLOVER_CAP_MONTHS, TOPUP_CREDITS, type Product } from "./plans";
+import { loadBillingSettings, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
 import { canonicalReference, type BillingStore, type PaymentMethod } from "./store";
 
 const REFUNDS_PER_DAY = 5;
@@ -10,7 +11,19 @@ export class Billing {
   constructor(
     private db: BillingStore,
     private now: () => Date = () => new Date(),
+    private readonly settingsStore: SettingsStore = new MemorySettingsStore(),
   ) {}
+
+  /** Current prices and payment accounts (admin-editable, with safe defaults). */
+  settings(): Promise<BillingSettings> {
+    return loadBillingSettings(this.settingsStore);
+  }
+
+  async saveSettings(adminId: string, next: BillingSettings): Promise<void> {
+    const before = await this.settings();
+    await this.settingsStore.set("billing", next as unknown as Record<string, unknown>, adminId);
+    await this.db.audit({ actorId: adminId, action: "settings.billing", targetType: "settings", targetId: "billing", data: { before, after: next } });
+  }
 
   /** Direct store access for read-only listings. */
   store(): BillingStore {
@@ -71,7 +84,9 @@ export class Billing {
 
   async submitPayment(userId: string, input: { product: Product; method: PaymentMethod; reference: string; receipt: Buffer | null }) {
     const reference = canonicalReference(input.reference);
-    const payment = await this.db.createPayment({ userId, ...input, reference, amountMinor: PRODUCTS[input.product].amountMinor });
+    // The price at the time of payment is recorded on the payment (later price changes don't affect it).
+    const { prices } = await this.settings();
+    const payment = await this.db.createPayment({ userId, ...input, reference, amountMinor: prices[input.product] });
     if (payment) await this.db.audit({ actorId: userId, action: "payment.submitted", targetType: "payment", targetId: payment.id, data: { product: input.product, method: input.method } });
     return payment;
   }
