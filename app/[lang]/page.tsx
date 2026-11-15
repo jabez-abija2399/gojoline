@@ -58,7 +58,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
         />
         <Proof t={t.landing} />
         <Gallery t={t.landing.gallery} sites={sites} labels={b.templates} locale={lang} />
-        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} />
+        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={services().telegram?.username ?? "gojoline_bot"} />
         <Features t={t.landing} sample={sample} />
         <Pricing t={t.landing.pricing} planNames={t.billing.plans} prices={{ starter: prices.starter_month, business: prices.business_month }} locale={lang} />
         <Faq t={t.landing.faq} />

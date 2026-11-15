@@ -33,14 +33,14 @@ export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: 
           <p className="text-ink-muted">{f.language.body}</p>
           <fieldset className="mt-auto flex flex-col gap-3 rounded-2xl bg-sand p-4">
             <legend className="sr-only">{f.language.try}</legend>
-            <p aria-hidden="true" className="text-sm font-medium text-ink-muted">
+            <p aria-hidden="true" className="font-medium text-ink-muted">
               {f.language.try}
             </p>
             <div className="flex w-fit gap-1 rounded-full border border-line bg-white p-1">
               {(["en", "am"] as const).map((l) => (
                 <label key={l} className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-4 font-medium transition-colors has-[:checked]:bg-teal has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal-mid">
                   <input type="radio" name="feature-lang" value={l} defaultChecked={l === "en"} className="sr-only" />
-                  <span lang={l}>{l === "en" ? "English" : "አማርኛ"}</span>
+                  <span lang={l}>{f.language.names[l]}</span>
                 </label>
               ))}
             </div>
@@ -50,7 +50,7 @@ export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: 
                 <p className="text-ink-muted">{sample[l].tagline}</p>
               </div>
             ))}
-            <p className="text-sm text-ink-muted">{f.language.example}</p>
+            <p className="text-ink-muted">{f.language.example}</p>
           </fieldset>
         </div>
         <div className={`${card} md:col-span-3`}>

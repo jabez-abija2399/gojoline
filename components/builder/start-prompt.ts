@@ -45,10 +45,36 @@ export const takeStartPrompt = () => take(KEY, MAX_AGE_MS);
 export const saveLandingPrompt = (start: StartPrompt) => save(LANDING_KEY, start);
 export const takeLandingPrompt = () => take(LANDING_KEY, LANDING_MAX_AGE_MS);
 
+const PRESET_KEY = "gojoline:preset";
+
+/** "Start from this" on the landing page: which real site the visitor picked. */
+export function savePresetChoice(id: string) {
+  try {
+    sessionStorage.setItem(PRESET_KEY, JSON.stringify({ id, at: Date.now() }));
+  } catch {
+    // Without storage the visitor picks the template again on "Your sites".
+  }
+}
+
+/** Reads the picked template once (5 minutes at most). */
+export function takePresetChoice(): string | null {
+  try {
+    const raw = sessionStorage.getItem(PRESET_KEY);
+    if (!raw) return null;
+    sessionStorage.removeItem(PRESET_KEY);
+    const data = JSON.parse(raw) as { id?: unknown; at?: unknown } | null;
+    if (!data || typeof data.id !== "string" || typeof data.at !== "number" || Date.now() - data.at > LANDING_MAX_AGE_MS) return null;
+    return /^[a-z-]{1,30}$/.test(data.id) ? data.id : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Opening the landing page again drops a description nobody followed through on. */
 export function clearLandingPrompt() {
   try {
     sessionStorage.removeItem(LANDING_KEY);
+    sessionStorage.removeItem(PRESET_KEY);
   } catch {
     // Nothing was stored.
   }

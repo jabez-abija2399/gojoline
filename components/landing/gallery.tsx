@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import type { ShowcaseSite } from "@/lib/landing/showcase";
+import { StartFromLink } from "./start-from-link";
 
 /** Twelve real Gojoline sites side by side. On a mouse, resting on one scrolls through its page. */
 export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
@@ -16,10 +16,10 @@ export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["
         </h2>
         <p className="mt-3 max-w-[60ch] text-lg text-ink-muted">{t.intro}</p>
       </div>
-      <ul aria-label={t.listLabel} tabIndex={0} className="chips-scroll mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-6 sm:px-6 scroll-px-4 sm:scroll-px-6 lg:scroll-px-[max(1.5rem,calc((100vw_-_72rem)_/_2_+_1.5rem))] lg:px-[max(1.5rem,calc((100vw_-_72rem)_/_2_+_1.5rem))]">
+      <ul aria-label={t.listLabel} tabIndex={0} className="mt-10 flex snap-x focus-visible:-outline-offset-3 max-lg:[scrollbar-width:none] max-lg:[&::-webkit-scrollbar]:hidden lg:[scrollbar-color:var(--gojo-teal-mid)_transparent] lg:[scrollbar-width:thin] snap-mandatory gap-5 overflow-x-auto px-4 pb-6 sm:px-6 scroll-px-4 sm:scroll-px-6 lg:scroll-px-[max(1.5rem,calc((100vw_-_72rem)_/_2_+_1.5rem))] lg:px-[max(1.5rem,calc((100vw_-_72rem)_/_2_+_1.5rem))]">
         {sites.map((s) => (
           <li key={s.id} className="w-[232px] shrink-0 snap-start">
-            <Link href={href} className="group flex flex-col gap-3 rounded-2xl">
+            <StartFromLink href={href} preset={s.id} className="group flex flex-col gap-3 rounded-2xl">
               <span className="block h-[412px] overflow-hidden rounded-[1.75rem] border-[6px] border-ink bg-white shadow-lg transition group-hover:-translate-y-1 group-hover:shadow-2xl">
                 <Image
                   src={s.shot.src}
@@ -39,7 +39,7 @@ export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["
                   <ArrowRight aria-hidden="true" className="size-4 transition-transform group-hover:translate-x-1" />
                 </span>
               </span>
-            </Link>
+            </StartFromLink>
           </li>
         ))}
       </ul>

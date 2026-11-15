@@ -5,7 +5,7 @@ import type { Locale } from "@/lib/i18n/config";
 
 /** Plan cards; monthly prices come from Admin → Settings. */
 export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing"]["pricing"]; planNames: Messages["billing"]["plans"]; prices: { starter: number; business: number }; locale: Locale }) {
-  const birr = (minor: number) => `${new Intl.NumberFormat("en-US").format(minor / 100)} ${locale === "am" ? "ብር" : "Birr"}`;
+  const birr = (minor: number) => `${new Intl.NumberFormat("en-US").format(minor / 100)} ${t.birr}`;
   const plans = [
     { id: "free" as const, price: t.free, popular: false },
     { id: "starter" as const, price: birr(prices.starter), popular: true },
@@ -19,7 +19,7 @@ export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing
         <ul className="mt-10 grid gap-6 md:grid-cols-3 md:items-stretch">
           {plans.map((p) => (
             <li key={p.id} className={`reveal relative flex flex-col gap-4 rounded-3xl border p-6 ${p.popular ? "border-teal bg-sand shadow-lg ring-2 ring-teal" : "border-line bg-white"}`}>
-              {p.popular && <span className="absolute -top-3 left-6 rounded-full bg-teal px-3 py-1 text-sm font-semibold text-white">{t.popular}</span>}
+              {p.popular && <span className="absolute -top-3 left-6 rounded-full bg-teal px-3 py-1 font-semibold text-white">{t.popular}</span>}
               <h3 className="text-xl font-bold">{planNames[p.id]}</h3>
               <p>
                 <span className="font-display text-4xl font-bold">{p.price}</span>

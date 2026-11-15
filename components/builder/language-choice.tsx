@@ -32,7 +32,7 @@ export function LanguageChoice({ title, labels, value, onChange, name, className
             <label
               key={key}
               className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 font-medium transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal-mid ${
-                checked ? "border-teal bg-teal text-white" : "border-line bg-white hover:border-teal-mid"
+                checked ? "border-teal bg-teal text-white" : "border-teal-soft bg-white hover:border-teal-mid"
               }`}
             >
               <input type="radio" name={name} className="sr-only" checked={checked} onChange={() => onChange(opt)} />

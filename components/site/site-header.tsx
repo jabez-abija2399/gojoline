@@ -30,7 +30,7 @@ export function SiteHeader({ locale, t, nav = false }: { locale: Locale; t: Mess
                   </a>
                 ))}
               </nav>
-              <Link href={`/${locale}/sign-in?next=/${locale}/build`} className="hidden min-h-11 items-center rounded-lg px-3 font-medium text-teal hover:bg-white sm:inline-flex">
+              <Link href={`/${locale}/sign-in?next=/${locale}/build`} className="inline-flex min-h-11 items-center rounded-lg px-2 font-medium text-teal hover:bg-white sm:px-3">
                 {t.landing.nav.signIn}
               </Link>
             </>

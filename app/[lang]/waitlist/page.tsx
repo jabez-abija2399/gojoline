@@ -19,7 +19,7 @@ export default async function WaitlistPage({ params }: PageProps<"/[lang]/waitli
   return (
     <>
       <SiteHeader locale={lang} t={t} />
-      <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
+      <main id="main" tabIndex={-1} className="flex-1 bg-white focus:outline-none">
         <Waitlist locale={lang} t={t.waitlist} />
       </main>
       <SiteFooter locale={lang} t={t} />

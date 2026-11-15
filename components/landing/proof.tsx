@@ -14,11 +14,11 @@ export function Proof({ t }: { t: Messages["landing"] }) {
           {t.proof.map((p) => (
             <div key={p.label} className="reveal flex flex-col-reverse justify-end gap-1">
               <dt className="text-teal-soft">{p.label}</dt>
-              <dd className="font-display text-4xl font-bold text-clay-light sm:text-5xl">{p.value}</dd>
+              <dd className="font-display text-3xl font-bold text-clay-light sm:text-5xl">{p.value}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-8 text-sm text-teal-soft">{t.proofNote}</p>
+        <p className="mt-8 text-teal-soft">{t.proofNote}</p>
       </div>
       <Tilet tone="dark" />
     </section>

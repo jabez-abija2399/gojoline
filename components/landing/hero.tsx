@@ -8,13 +8,13 @@ export function Hero({ t, locale, sites, text, install }: { t: Messages["landing
     <section aria-labelledby="hero-title" className="relative overflow-hidden">
       {/* Soft brand-coloured light behind the hero; purely decorative. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_45%_at_90%_5%,var(--color-clay-soft),transparent_70%),radial-gradient(45%_40%_at_0%_100%,var(--color-teal-soft),transparent_70%)]" />
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 pt-8 pb-16 sm:px-6 md:pt-12 md:pb-24">
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 pt-6 pb-16 sm:px-6 md:pt-8 md:pb-24">
         <HeroStart locale={locale} sites={sites} t={text}>
-          <div className="flex flex-col gap-5">
-            <p className="w-fit rounded-full border border-teal-soft bg-white/80 px-3 py-1 font-medium text-teal">{t.eyebrow}</p>
-            <h1 id="hero-title" className="text-[2.6rem] leading-[1.08] font-bold text-balance sm:text-6xl">
+          <div className="flex flex-col gap-4 sm:gap-5">
+            <p className="w-fit rounded-full border border-teal-soft bg-white/80 px-3 py-1 font-medium text-teal max-sm:hidden">{t.eyebrow}</p>
+            <h1 id="hero-title" className={`text-[2.6rem] font-bold text-balance sm:text-6xl ${locale === "am" ? "leading-[1.3]" : "leading-[1.08]"}`}>
               {t.titleStart}{" "}
-              <span className="relative inline-block text-teal">
+              <span className="relative inline-block text-teal [line-height:inherit]">
                 {t.titleEnd}
                 {/* A stitched line under the promise, like a thread run through cloth. */}
                 <svg aria-hidden="true" focusable="false" viewBox="0 0 200 8" preserveAspectRatio="none" className="absolute inset-x-0 -bottom-2 h-2 w-full text-clay">

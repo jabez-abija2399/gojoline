@@ -40,6 +40,8 @@ export interface HeroStartText {
 export function HeroStart({ locale, sites, t, children }: { locale: Locale; sites: HeroSite[]; t: HeroStartText; children: React.ReactNode }) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
+  // Nothing is "picked" until the visitor picks: the phone just starts on the first site.
+  const [picked, setPicked] = useState<number | null>(null);
   const [text, setText] = useState("");
   const [languages, setLanguages] = useState<SiteLanguages>([locale]);
   const boxRef = useRef<HTMLTextAreaElement>(null);
@@ -50,7 +52,7 @@ export function HeroStart({ locale, sites, t, children }: { locale: Locale; site
 
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-16">
-      <div className="flex min-w-0 flex-col gap-7">
+      <div className="flex min-w-0 flex-col gap-5 sm:gap-7">
         {children}
       <form
         action={`/${locale}/sign-in`}
@@ -71,10 +73,10 @@ export function HeroStart({ locale, sites, t, children }: { locale: Locale; site
             id="hero-prompt"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            rows={3}
+            rows={2}
             maxLength={4000}
             placeholder={t.placeholder}
-            className="block max-h-48 min-h-24 w-full resize-none rounded-2xl bg-transparent px-4 py-3 text-lg [field-sizing:content] placeholder:text-ink-muted focus-visible:outline-none"
+            className="block max-h-48 min-h-20 w-full resize-none rounded-2xl bg-transparent px-4 py-3 text-lg [field-sizing:content] placeholder:text-ink-muted focus-visible:outline-none"
           />
         </div>
         <div role="group" aria-label={t.pick} className="chips-scroll -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
@@ -82,10 +84,12 @@ export function HeroStart({ locale, sites, t, children }: { locale: Locale; site
             <button
               key={s.id}
               type="button"
-              aria-pressed={i === index}
+              aria-pressed={i === picked}
               onClick={() => {
                 setIndex(i);
-                setText(s.prompt);
+                setPicked(i);
+                // Never replace the visitor's own words: only an empty box or an earlier example.
+                if (!text.trim() || sites.some((x) => x.prompt === text)) setText(s.prompt);
                 boxRef.current?.focus();
               }}
               className="min-h-11 shrink-0 rounded-full border border-teal-soft bg-white px-4 font-medium text-teal transition-colors hover:border-teal-mid hover:bg-teal-soft aria-pressed:border-teal aria-pressed:bg-teal aria-pressed:text-white"
@@ -109,11 +113,11 @@ export function HeroStart({ locale, sites, t, children }: { locale: Locale; site
 
       <figure className="mx-auto flex w-full max-w-[300px] flex-col items-center gap-3">
         <div className="relative w-full rounded-[2.5rem] border-[10px] border-ink bg-ink shadow-2xl shadow-teal/20 lg:rotate-2 lg:transition-transform lg:duration-500 lg:hover:rotate-0">
-          <div key={site.id} tabIndex={0} role="group" aria-label={t.phoneLabel.replace("{name}", site.name)} className="h-[540px] animate-[pop-in_0.35s_ease-out] overflow-y-auto overscroll-contain rounded-[1.9rem] bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div key={site.id} tabIndex={0} role="group" aria-label={t.phoneLabel.replace("{name}", site.name)} className="h-[540px] animate-[pop-in_0.35s_ease-out] overflow-y-auto rounded-[1.9rem] bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <Image src={site.shot.src} alt={t.shotAlt.replace("{name}", site.name)} width={site.shot.width} height={site.shot.height} sizes="280px" priority={index === 0} className="h-auto w-full" />
           </div>
         </div>
-        <figcaption className="text-center text-sm text-ink-muted">{t.phoneCaption.replace("{name}", site.name)}</figcaption>
+        <figcaption className="text-center text-ink-muted">{t.phoneCaption.replace("{name}", site.name)}</figcaption>
       </figure>
     </div>
   );

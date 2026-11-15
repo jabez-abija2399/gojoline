@@ -2,7 +2,7 @@ import { Check, Send } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 
 /** Three steps, each shown with the real thing an owner sees at that moment. */
-export function Steps({ t, prompt, buildSteps, buildTitle }: { t: Messages["landing"]; prompt: string; buildSteps: string[]; buildTitle: string }) {
+export function Steps({ t, prompt, buildSteps, buildTitle, bot }: { t: Messages["landing"]; prompt: string; buildSteps: string[]; buildTitle: string; bot: string }) {
   const s = t.steps;
   const scenes = [
     // 1. What the owner writes.
@@ -24,7 +24,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle }: { t: Messages["land
     // 3. What arrives on the owner's phone.
     <div key="tg" className="w-full overflow-hidden rounded-2xl bg-white shadow-md">
       <p className="flex items-center gap-2 bg-teal px-3 py-2 font-semibold text-white">
-        <Send className="size-4" /> @gojoline_bot
+        <Send className="size-4" /> @{bot}
       </p>
       <p className="px-4 py-3">
         <strong className="block">{t.telegram.title}</strong>
@@ -43,11 +43,11 @@ export function Steps({ t, prompt, buildSteps, buildTitle }: { t: Messages["land
         <ol className="mt-12 grid gap-10 md:grid-cols-3 md:gap-6">
           {steps.map((step, i) => (
             <li key={step.title} className="reveal flex flex-col gap-4">
-              <div aria-hidden="true" className="flex min-h-48 items-center rounded-3xl bg-sand p-5">
+              <div aria-hidden="true" className="flex min-h-48 items-center rounded-3xl bg-sand p-5 md:h-60">
                 {scenes[i]}
               </div>
               <div className="flex gap-4">
-                <span aria-hidden="true" className="font-display text-5xl leading-none font-bold text-clay-light">
+                <span aria-hidden="true" className="font-display text-5xl leading-none font-bold text-teal-mid">
                   {i + 1}
                 </span>
                 <div className="flex flex-col gap-1">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowRight, BedDouble, Church, Coffee, GraduationCap, HeartHandshake, House, MoonStar, Mountain, PartyPopper, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
 import { BuilderHeader } from "@/components/builder/builder-header";
+import { PresetStart } from "@/components/builder/preset-start";
 import { StartBox } from "@/components/builder/start-box";
 import { PendingButton } from "@/components/builder/pending-button";
 import { currentUser } from "@/lib/auth/session";
@@ -56,7 +57,7 @@ export default async function ProjectsPage({
           const Icon = TEMPLATE_ICONS[id];
           return (
             <li key={id}>
-              <form action={createProject} className="h-full">
+              <form action={createProject} data-preset={id} className="h-full">
                 <input type="hidden" name="lang" value={lang} />
                 <input type="hidden" name="preset" value={id} />
                 <PendingButton className="group flex h-full min-h-24 w-full flex-col items-start gap-3 rounded-2xl border border-line bg-white p-4 text-start font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-teal-mid hover:shadow-md">
@@ -91,6 +92,7 @@ export default async function ProjectsPage({
         id="main"
         className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10"
       >
+        {builder && <PresetStart autoStart={projects.length === 0} />}
         {tooMany && (
           <p
             role="alert"

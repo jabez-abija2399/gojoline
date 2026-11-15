@@ -80,6 +80,31 @@ test.describe("landing page", () => {
     expect(sent).toMatchObject({ text: "Kaldi Books in Piassa", languages: ["en", "am"] });
   });
 
+  test("Start from this: the picked real site opens after sign-in; typed words are never replaced", async ({ page }) => {
+    await page.goto("/en");
+    // A chip is not pressed until picked, and it doesn't overwrite what the visitor wrote.
+    await expect(page.getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "false");
+    const box = page.getByRole("textbox", { name: "Describe your business" });
+    await box.fill("My own words");
+    await page.getByRole("button", { name: "Hotel", exact: true }).click();
+    await expect(box).toHaveValue("My own words");
+    await expect(page.getByRole("img", { name: /home page of Tana Shore Hotel/ })).toBeVisible();
+
+    await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
+    await expect(page).toHaveURL(/\/en\/sign-in\?next=/);
+    const contact = `preset-${Date.now()}-${test.info().project.name}@example.com`;
+    await page.getByLabel("Phone or email").fill(contact);
+    await page.getByRole("button", { name: "Send me a code" }).click();
+    const code = page.getByLabel("6-digit code");
+    await expect(code).toBeVisible();
+    const res = await page.request.get(`/api/test/otp?to=${encodeURIComponent(contact)}`);
+    await code.fill(((await res.json()) as { code: string }).code);
+    await page.getByRole("button", { name: "Continue" }).click();
+    // The clinic template opens as the new account's first site.
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page.getByText("Your Clinic site is ready").first()).toBeAttached();
+  });
+
   test("waitlist: shows errors, then success", async ({ page }) => {
     await page.goto("/en/waitlist");
     const form = page.locator("#waitlist");
