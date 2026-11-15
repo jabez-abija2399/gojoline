@@ -190,6 +190,7 @@ export const en = {
       ngo: "NGO or charity",
       "real-estate": "Real estate",
       tours: "Tour operator",
+      personal: "Personal website or portfolio",
     },
     empty: "You have no sites yet. Start one: it takes a few minutes.",
     untitled: "New site",

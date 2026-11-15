@@ -12,6 +12,7 @@ import { MapEmbed } from "./sections/MapEmbed";
 import { Menu } from "./sections/Menu";
 import { Services } from "./sections/Services";
 import { Testimonials } from "./sections/Testimonials";
+import { Timeline } from "./sections/Timeline";
 
 function renderSection(section: Section, index: number) {
   switch (section.type) {
@@ -31,6 +32,8 @@ function renderSection(section: Section, index: number) {
       return <MapEmbed key={index} section={section} />;
     case "testimonials":
       return <Testimonials key={index} section={section} />;
+    case "timeline":
+      return <Timeline key={index} section={section} />;
     case "form":
       return <Form key={index} section={section} />;
   }

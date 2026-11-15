@@ -14,7 +14,7 @@ export function Menu({ section }: { section: MenuSection }) {
         </div>
         <div className="grid gap-8 md:grid-cols-2">
           {section.categories.map((cat, ci) => (
-            <div key={ci} className="rounded-site border border-line bg-surface p-6">
+            <div key={ci} className="card reveal lift p-6">
               <h3 className="text-xl font-bold">{text(cat.name)}</h3>
               <ul className="mt-4 flex flex-col divide-y divide-line">
                 {cat.items.map((item, ii) => (

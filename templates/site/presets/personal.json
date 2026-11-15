@@ -1,0 +1,405 @@
+{
+  "name": {
+    "en": "Hana Bekele",
+    "am": "ሀና በቀለ"
+  },
+  "tagline": {
+    "en": "Graphic designer and photographer in Addis Ababa",
+    "am": "ግራፊክ ዲዛይነር እና ፎቶግራፈር በአዲስ አበባ"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#B4432F",
+    "accent": "#23303F",
+    "background": "#FAF8F5",
+    "text": "#1E1E24",
+    "font": "modern",
+    "radius": "small"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Addis Ababa, Ethiopia",
+      "am": "አዲስ አበባ፣ ኢትዮጵያ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Saturday",
+          "am": "ከሰኞ እስከ ቅዳሜ"
+        },
+        "time": {
+          "en": "9:00 am to 6:00 pm, meetings by appointment",
+          "am": "ከጠዋቱ 3 እስከ ምሽቱ 12 ሰዓት፤ ስብሰባ በቀጠሮ"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Hana Bekele, a freelance graphic designer and photographer in Addis Ababa.",
+        "am": "ሀና በቀለ፣ በአዲስ አበባ የምትሠራ የግል ግራፊክ ዲዛይነር እና ፎቶግራፈር።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "Freelance designer and photographer",
+            "am": "የግል ዲዛይነር እና ፎቶግራፈር"
+          },
+          "heading": {
+            "en": "Hi, I'm Hana Bekele",
+            "am": "ሰላም፣ ሀና በቀለ እባላለሁ"
+          },
+          "subheading": {
+            "en": "I design brands and social media content, and photograph events across Addis Ababa.",
+            "am": "ለድርጅቶች መለያ እና የማኅበራዊ ሚዲያ ዲዛይን እሠራለሁ፤ በአዲስ አበባ የተለያዩ ዝግጅቶችንም ፎቶ አነሣለሁ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "See my work",
+              "am": "ሥራዎቼን ይመልከቱ"
+            },
+            "href": "/work"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Start a project",
+              "am": "ሥራ እናስጀምር"
+            },
+            "href": "/contact"
+          }
+        },
+        {
+          "type": "about",
+          "id": "about",
+          "heading": {
+            "en": "About me",
+            "am": "ስለ እኔ"
+          },
+          "body": {
+            "en": "I'm a graphic designer and photographer based in Addis Ababa. I help small businesses, start-ups and families tell their story through clear design and honest photos.\n\nI like to start every project with a coffee and a good conversation, so I understand what you need before I open my laptop.",
+            "am": "በአዲስ አበባ የምኖር ግራፊክ ዲዛይነር እና ፎቶግራፈር ነኝ። አነስተኛ ንግዶች፣ አዳዲስ ድርጅቶች እና ቤተሰቦች ታሪካቸውን በግልጽ ዲዛይን እና በእውነተኛ ፎቶ እንዲያሳዩ እረዳለሁ።\n\nማንኛውንም ሥራ ከመጀመሬ በፊት በቡና ላይ ተገናኝተን መወያየት እወዳለሁ፤ ኮምፒውተሬን ከመክፈቴ በፊት የሚፈልጉትን በደንብ ለመረዳት።"
+          }
+        },
+        {
+          "type": "services",
+          "id": "services",
+          "heading": {
+            "en": "What I do",
+            "am": "የምሠራቸው ሥራዎች"
+          },
+          "intro": {
+            "en": "Prices are starting points. I send a clear quote after we talk.",
+            "am": "ዋጋዎቹ መነሻ ናቸው። ከተነጋገርን በኋላ ግልጽ የዋጋ ዝርዝር እልክልዎታለሁ።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Brand design",
+                "am": "የመለያ (ብራንድ) ዲዛይን"
+              },
+              "description": {
+                "en": "Logo, colours, fonts and business cards that make your business easy to recognise.",
+                "am": "ንግድዎን በቀላሉ የሚያስለይ ሎጎ፣ ቀለሞች፣ የፊደል ዓይነት እና የመታወቂያ ካርድ።"
+              },
+              "price": {
+                "amountMinor": 2500000,
+                "currency": "ETB"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Event photography",
+                "am": "የዝግጅት ፎቶግራፍ"
+              },
+              "description": {
+                "en": "Weddings, graduations, launches and conferences. Half-day coverage with edited photos.",
+                "am": "ሠርግ፣ ምረቃ፣ የምርት ማስተዋወቂያ እና ጉባኤ። የግማሽ ቀን ሽፋን ከተስተካከሉ ፎቶዎች ጋር።"
+              },
+              "price": {
+                "amountMinor": 1500000,
+                "currency": "ETB"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Social media design",
+                "am": "የማኅበራዊ ሚዲያ ዲዛይን"
+              },
+              "description": {
+                "en": "Monthly posts and stories for Facebook, Instagram, TikTok and Telegram, in English and Amharic.",
+                "am": "ለፌስቡክ፣ ኢንስታግራም፣ ቲክቶክ እና ቴሌግራም ወርሃዊ ፖስቶች እና ስቶሪዎች፤ በእንግሊዝኛ እና በአማርኛ።"
+              },
+              "price": {
+                "amountMinor": 1200000,
+                "currency": "ETB"
+              },
+              "icon": "heart"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/work",
+      "title": {
+        "en": "My work",
+        "am": "ሥራዎቼ"
+      },
+      "nav": {
+        "en": "Work",
+        "am": "ሥራዎች"
+      },
+      "description": {
+        "en": "Selected design and photography work, plus my experience and education.",
+        "am": "የተመረጡ የዲዛይን እና የፎቶ ሥራዎች፣ እንዲሁም የሥራ ልምዴ እና ትምህርቴ።"
+      },
+      "sections": [
+        {
+          "type": "gallery",
+          "id": "selected-work",
+          "heading": {
+            "en": "Selected work",
+            "am": "የተመረጡ ሥራዎች"
+          },
+          "images": [
+            {
+              "alt": {
+                "en": "Logo and business cards for a local coffee brand",
+                "am": "ለአንድ የአገር ውስጥ ቡና ድርጅት የተሠራ ሎጎ እና የመታወቂያ ካርዶች"
+              }
+            },
+            {
+              "alt": {
+                "en": "Bride and groom at a wedding in Addis Ababa",
+                "am": "በአዲስ አበባ በሠርግ ላይ ሙሽሮች"
+              }
+            },
+            {
+              "alt": {
+                "en": "Set of Instagram posts for a fashion shop",
+                "am": "ለአንድ የልብስ ሱቅ የተዘጋጁ የኢንስታግራም ፖስቶች"
+              }
+            },
+            {
+              "alt": {
+                "en": "Speaker on stage at a conference",
+                "am": "በጉባኤ መድረክ ላይ ንግግር የሚያደርግ ተናጋሪ"
+              }
+            },
+            {
+              "alt": {
+                "en": "Graduation portrait of a student in gown",
+                "am": "ጋውን የለበሰ ተማሪ የምረቃ ፎቶ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "timeline",
+          "id": "experience",
+          "heading": {
+            "en": "Experience and education",
+            "am": "የሥራ ልምድ እና ትምህርት"
+          },
+          "intro": {
+            "en": "Newest first.",
+            "am": "ከቅርቡ ጀምሮ።"
+          },
+          "items": [
+            {
+              "period": {
+                "en": "2022 to now",
+                "am": "ከ2022 እስከ አሁን"
+              },
+              "title": {
+                "en": "Freelance graphic designer and photographer",
+                "am": "የግል ግራፊክ ዲዛይነር እና ፎቶግራፈር"
+              },
+              "place": {
+                "en": "Addis Ababa",
+                "am": "አዲስ አበባ"
+              },
+              "description": {
+                "en": "Brand, social media and photography work for businesses and families.",
+                "am": "ለንግድ ድርጅቶች እና ለቤተሰቦች የብራንድ፣ የማኅበራዊ ሚዲያ እና የፎቶ ሥራዎች።"
+              }
+            },
+            {
+              "period": {
+                "en": "2019 to 2022",
+                "am": "ከ2019 እስከ 2022"
+              },
+              "title": {
+                "en": "Junior designer",
+                "am": "ጀማሪ ዲዛይነር"
+              },
+              "place": {
+                "en": "Design and print studio, Addis Ababa",
+                "am": "የዲዛይን እና ኅትመት ስቱዲዮ፣ አዲስ አበባ"
+              },
+              "description": {
+                "en": "Posters, packaging and printed materials for local clients.",
+                "am": "ለአገር ውስጥ ደንበኞች ፖስተሮች፣ ማሸጊያዎች እና የኅትመት ሥራዎች።"
+              }
+            },
+            {
+              "period": {
+                "en": "2015 to 2019",
+                "am": "ከ2015 እስከ 2019"
+              },
+              "title": {
+                "en": "Degree in graphic design",
+                "am": "በግራፊክ ዲዛይን ዲግሪ"
+              },
+              "place": {
+                "en": "School of fine arts and design, Addis Ababa",
+                "am": "የሥነ ጥበብ እና ዲዛይን ትምህርት ቤት፣ አዲስ አበባ"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact",
+        "am": "ያግኙኝ"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "ያግኙኝ"
+      },
+      "description": {
+        "en": "Tell me about your project and I will get back to you.",
+        "am": "ስለ ሥራዎ ይንገሩኝ፤ መልስ እሰጥዎታለሁ።"
+      },
+      "sections": [
+        {
+          "type": "form",
+          "id": "project-enquiry",
+          "kind": "contact",
+          "heading": {
+            "en": "Tell me about your project",
+            "am": "ስለ ሥራዎ ይንገሩኝ"
+          },
+          "intro": {
+            "en": "Share a few details and I will reply within two working days.",
+            "am": "ጥቂት ዝርዝሮችን ያጋሩኝ፤ በሁለት የሥራ ቀናት ውስጥ እመልስልዎታለሁ።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "email",
+              "label": {
+                "en": "Email",
+                "am": "ኢሜይል"
+              },
+              "type": "email"
+            },
+            {
+              "name": "service",
+              "label": {
+                "en": "What do you need?",
+                "am": "ምን ይፈልጋሉ?"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Brand design",
+                  "am": "የመለያ (ብራንድ) ዲዛይን"
+                },
+                {
+                  "en": "Event photography",
+                  "am": "የዝግጅት ፎቶግራፍ"
+                },
+                {
+                  "en": "Social media design",
+                  "am": "የማኅበራዊ ሚዲያ ዲዛይን"
+                },
+                {
+                  "en": "Something else",
+                  "am": "ሌላ"
+                }
+              ]
+            },
+            {
+              "name": "event_date",
+              "label": {
+                "en": "Event or deadline date",
+                "am": "የዝግጅቱ ወይም የማስረከቢያ ቀን"
+              },
+              "type": "date"
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "About your project",
+                "am": "ስለ ሥራዎ"
+              },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": {
+            "en": "Send enquiry",
+            "am": "ጥያቄውን ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! I will get back to you soon.",
+            "am": "እናመሰግናለን! በቅርቡ አገኝዎታለሁ።"
+          }
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": {
+            "en": "Call or message me",
+            "am": "ይደውሉልኝ ወይም መልዕክት ይላኩልኝ"
+          },
+          "intro": {
+            "en": "You can also reach me on Telegram.",
+            "am": "በቴሌግራምም ሊያገኙኝ ይችላሉ።"
+          }
+        }
+      ]
+    }
+  ]
+}

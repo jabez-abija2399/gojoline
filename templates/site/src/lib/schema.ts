@@ -65,6 +65,7 @@ const section = z.discriminatedUnion("type", [
   z.object({ type: z.literal("gallery"), id, heading: text, images: z.array(image).min(1).max(40) }).strict(),
   z.object({ type: z.literal("contact"), id, heading: text, intro: text.optional() }).strict(),
   z.object({ type: z.literal("map"), id, heading: text, query: z.string().max(200).optional() }).strict(),
+  z.object({ type: z.literal("timeline"), id, heading: text, intro: text.optional(), items: z.array(z.object({ period: text, title: text, place: text.optional(), description: text.optional() }).strict()).min(1).max(30) }).strict(),
   z.object({ type: z.literal("testimonials"), id, heading: text, items: z.array(z.object({ quote: text, name: z.string().min(1).max(80) }).strict()).min(1).max(12) }).strict(),
   formSectionSchema,
 ]);
