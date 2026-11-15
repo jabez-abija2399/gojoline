@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUp, Loader2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
+import { BuildTimeline, type Timeline } from "./build-timeline";
 
 export interface UiMessage {
   id: string;
@@ -20,8 +21,10 @@ interface Props {
   locale: Locale;
   messages: UiMessage[];
   working: boolean;
-  stepLabel: string | null;
+  timeline: Timeline | null;
   streamText: string;
+  /** Before the first build: which languages the site will have. */
+  languages?: { value: ("en" | "am")[]; onChange: (v: ("en" | "am")[]) => void };
   onSend: (text: string) => void;
   /** First message: the general welcome, or what to do next with a template site. */
   welcome?: string;
@@ -29,7 +32,7 @@ interface Props {
 
 const amharic = /[ሀ-፿]/;
 
-export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend, welcome }: Props) {
+export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages }: Props) {
   const [draft, setDraft] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -59,16 +62,33 @@ export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend,
             note={m.versionNumber ? t.versionSaved.replace("{n}", String(m.versionNumber)) : undefined}
           />
         ))}
-        {working && (
-          <div role="status" className="flex flex-col gap-2 rounded-2xl rounded-bl-sm bg-sand px-4 py-3">
-            <p className="flex items-center gap-2 font-medium text-teal">
-              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-              {stepLabel ?? t.working}
-            </p>
-            {streamText && <p className="whitespace-pre-wrap text-ink">{streamText}</p>}
-          </div>
+        {working && timeline && <BuildTimeline t={t} timeline={timeline} streamText={streamText} />}
+        {working && !timeline && (
+          <p role="status" className="flex items-center gap-2 font-medium text-teal">
+            <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+            {t.working}
+          </p>
         )}
       </div>
+      {languages && (
+        <fieldset className="flex flex-col gap-2 border-t border-line bg-sand px-3 pt-3 pb-2">
+          <legend className="sr-only">{t.langTitle}</legend>
+          <p aria-hidden="true" className="font-medium">{t.langTitle}</p>
+          <div className="flex flex-wrap gap-2">
+            {([["en"], ["am"], ["en", "am"]] as ("en" | "am")[][]).map((opt) => {
+              const key = opt.join("+");
+              const checked = languages.value.join("+") === key;
+              return (
+                <label key={key} className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 font-medium has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal-mid ${checked ? "border-teal bg-teal text-white" : "border-line bg-white hover:border-teal-mid"}`}>
+                  <input type="radio" name="site-languages" className="sr-only" checked={checked} onChange={() => languages.onChange(opt)} />
+                  {key === "en" ? t.langEn : key === "am" ? t.langAm : t.langBoth}
+                </label>
+              );
+            })}
+          </div>
+          <p className="text-sm text-ink-muted">{t.langHint}</p>
+        </fieldset>
+      )}
       <form
         className="flex items-end gap-2 border-t border-line bg-white p-3"
         onSubmit={(e) => {

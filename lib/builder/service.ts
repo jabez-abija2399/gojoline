@@ -71,7 +71,7 @@ function starterSiteJson(): string {
 
 export async function sendOwnerMessage(
   deps: BuilderDeps,
-  input: { ownerId: string; projectId: string; text: string; onEvent: (e: BuilderEvent) => void; signal?: AbortSignal },
+  input: { ownerId: string; projectId: string; text: string; languages?: ("en" | "am")[]; onEvent: (e: BuilderEvent) => void; signal?: AbortSignal },
 ): Promise<void> {
   const { store } = deps;
   const project = await store.getProject(input.ownerId, input.projectId);
@@ -109,7 +109,7 @@ export async function sendOwnerMessage(
       workspace: lazy,
       system: agentSystemPrompt(),
       history: historyFrom(previous),
-      userContent: userTurn(input.text, siteJson, photos),
+      userContent: userTurn(input.text, siteJson, photos, input.languages),
       model: deps.model,
       usage: deps.usage,
       context: { userId: input.ownerId, projectId: project.id },

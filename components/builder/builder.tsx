@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
+import { nextTimeline, type Timeline } from "./build-timeline";
 import { ChatPanel, type UiMessage } from "./chat-panel";
 import { CodePanel } from "./code-panel";
 import { PreviewPanel } from "./preview-panel";
@@ -11,7 +12,6 @@ import { TabList } from "./tab-list";
 import { VersionsPanel, type UiVersion } from "./versions-panel";
 
 type Tab = "chat" | "preview" | "versions" | "code";
-type Step = "reading" | "editing" | "checking" | "fixing" | null;
 
 interface Props {
   noCredits: { text: string; action: string };
@@ -34,7 +34,11 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
   const [versions, setVersions] = useState<UiVersion[]>(initialVersions);
   const [current, setCurrent] = useState<number | null>(initialVersions[0]?.number ?? null);
   const [working, setWorking] = useState(false);
-  const [step, setStep] = useState<Step>(null);
+  const [timeline, setTimeline] = useState<Timeline | null>(null);
+  // Read inside send() without re-creating it on every version change.
+  const versionsRef = useRef(initialVersions.length);
+  // Asked before the first build; defaults to the language the owner uses Gojoline in.
+  const [siteLanguages, setSiteLanguages] = useState<("en" | "am")[]>([locale]);
   const [streamText, setStreamText] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
@@ -69,14 +73,14 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
     async (text: string) => {
       setMessages((m) => [...m, { id: nextId(), role: "owner", text }]);
       setWorking(true);
-      setStep(null);
+      setTimeline({ steps: [{ key: "understand", done: false }], edits: 0, startedAt: Date.now() });
       setStreamText("");
       lastBuildFailed.current = false;
       try {
         const res = await fetch(`/api/projects/${projectId}/messages`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ text, ...(versionsRef.current === 0 ? { languages: siteLanguages } : {}) }),
         });
         if (res.status === 429) return addAssistant(t.tooMany, { tone: "error" });
         if (!res.ok || !res.body) return addAssistant(t.failed, { tone: "error" });
@@ -101,20 +105,24 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
                 break;
               case "text":
                 setStreamText((s) => s + event.delta);
+                setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 break;
               case "tool":
-                setStep(event.name === "run_build" ? "checking" : event.name === "read_file" || event.name === "list_files" ? "reading" : lastBuildFailed.current ? "fixing" : "editing");
+                setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 break;
               case "build":
+                setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 lastBuildFailed.current = !event.ok;
                 if (event.ok) setReloadKey((k) => k + 1);
                 break;
               case "done": {
                 finished = true;
+                setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 const m = event.message;
                 if (m.status === "failed") addAssistant(t.reverted, { tone: "error" });
                 else addAssistant(m.text, { versionNumber: m.versionNumber });
                 if (m.versionNumber) {
+                  versionsRef.current += 1;
                   setVersions((v) => [{ number: m.versionNumber, summary: text.slice(0, 140), createdAt: new Date().toISOString() }, ...v]);
                   setCurrent(m.versionNumber);
                   setReloadKey((k) => k + 1);
@@ -136,11 +144,11 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
         addAssistant(t.failed, { tone: "error" });
       } finally {
         setWorking(false);
-        setStep(null);
+        setTimeline(null);
         setStreamText("");
       }
     },
-    [projectId, t, addAssistant, noCredits, locale],
+    [projectId, t, addAssistant, noCredits, locale, siteLanguages],
   );
 
   const restore = useCallback(
@@ -157,9 +165,20 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
     [projectId, t, addAssistant],
   );
 
-  const stepLabel = step === "reading" ? t.stepReading : step === "editing" ? t.stepEditing : step === "checking" ? t.stepChecking : step === "fixing" ? t.stepFixing : null;
 
-  const chat = <ChatPanel t={t} locale={locale} messages={messages} working={working} stepLabel={stepLabel} streamText={streamText} onSend={send} welcome={welcome} />;
+  const chat = (
+    <ChatPanel
+      t={t}
+      locale={locale}
+      messages={messages}
+      working={working}
+      timeline={timeline}
+      streamText={streamText}
+      onSend={send}
+      welcome={welcome}
+      languages={versions.length === 0 && !working ? { value: siteLanguages, onChange: setSiteLanguages } : undefined}
+    />
+  );
   const preview = (
     <PreviewPanel
       t={t}
