@@ -5,12 +5,16 @@ import { FocusOnMount } from "@/components/admin/focus-on-mount";
 import { ModerateForm } from "@/components/admin/moderate-form";
 import { ReviewForm } from "@/components/admin/review-form";
 import { SettingsForm } from "@/components/admin/settings-form";
-import { BuilderHeader } from "@/components/builder/builder-header";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
-import { services } from "@/lib/server/services";
+import { adminStats, services } from "@/lib/server/services";
+import { cookies } from "next/headers";
+import Image from "next/image";
+import { ArrowLeft, ArrowRight, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet } from "lucide-react";
+import { BarChart } from "@/components/admin/bar-chart";
+import { setAdminTheme } from "./actions";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): Promise<Metadata> {
   const { lang } = await params;
@@ -24,14 +28,15 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["payments", "reports", "sites", "costs", "settings"] as const;
+const TABS = ["overview", "payments", "reports", "sites", "users", "costs", "settings"] as const;
 type Tab = (typeof TABS)[number];
 
 export default async function AdminPage({ params, searchParams }: PageProps<"/[lang]/admin">) {
   const { lang } = await params;
-  const rawTab = (await searchParams).tab;
-  const tab: Tab = TABS.includes(rawTab as Tab) ? (rawTab as Tab) : "payments";
-  const rawDone = (await searchParams).done;
+  const sp = await searchParams;
+  const rawTab = sp.tab;
+  const tab: Tab = TABS.includes(rawTab as Tab) ? (rawTab as Tab) : "overview";
+  const rawDone = sp.done;
   const done = DONE.find((d) => d === rawDone) ?? null;
   if (!isLocale(lang)) notFound();
   const user = await currentUser();
@@ -42,38 +47,222 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
   const svc = services();
   const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
 
+  const savedTheme = (await cookies()).get("gojo_admin_theme")?.value;
+  const theme = (["light", "dark", "system"] as const).find((x) => x === savedTheme) ?? "system";
+  const counts = await adminStats().overview();
+  const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, sites: Globe, users: Users, costs: Cpu, settings: Settings2 };
+  const navItem = (x: Tab, compact: boolean) => {
+    const Icon = icons[x];
+    return (
+      <Link
+        key={x}
+        href={`/${lang}/admin?tab=${x}`}
+        aria-current={x === tab ? "page" : undefined}
+        className={`flex min-h-11 items-center gap-3 rounded-lg px-3 font-medium text-ink-muted transition-colors hover:bg-sand hover:text-ink aria-[current=page]:bg-teal aria-[current=page]:text-white ${compact ? "shrink-0" : ""}`}
+      >
+        <Icon aria-hidden="true" className="size-5 shrink-0" />
+        <span className="truncate">{t.admin.tabs[x]}</span>
+        {!!badge[x] && <span className="ms-auto rounded-full bg-clay px-2 py-0.5 text-xs font-bold text-white tabular-nums">{badge[x]}</span>}
+      </Link>
+    );
+  };
+
   return (
-    <>
-      <BuilderHeader locale={lang} t={t} user={user} />
-      <main id="main" className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8">
-        <h1 className="text-3xl font-bold">{t.admin.title}</h1>
-        <nav aria-label={t.admin.title} className="grid grid-cols-2 gap-1 rounded-xl border border-line bg-white p-1 sm:grid-cols-5">
-          {TABS.map((x) => (
-            <Link
-              key={x}
-              href={`/${lang}/admin?tab=${x}`}
-              aria-current={x === tab ? "page" : undefined}
-              className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-lg px-3 font-medium text-ink-muted aria-[current=page]:bg-teal aria-[current=page]:text-white"
-            >
-              {t.admin.tabs[x]}
-            </Link>
-          ))}
+    <div data-admin-theme={theme} className="admin-root flex min-h-screen flex-1 bg-sand text-ink">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col gap-6 border-e border-line bg-white p-4 lg:flex">
+        <Link href={`/${lang}`} className="flex min-h-11 items-center gap-2 font-display text-lg font-bold">
+          <Image src="/brand/mark.svg" alt="" width={32} height={32} className="size-8" />
+          {t.admin.brand}
+        </Link>
+        <nav aria-label={t.admin.title} className="flex flex-col gap-1">
+          {TABS.map((x) => navItem(x, false))}
         </nav>
-        {done && (
-          <FocusOnMount>
-            <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-3 font-medium ${done === "ok" ? "bg-teal-soft text-teal" : "bg-clay-soft text-destructive"}`}>
-              {t.admin.tabStatus[done]}
-            </p>
-          </FocusOnMount>
-        )}
-        {tab === "payments" && <Payments />}
-        {tab === "reports" && <Reports />}
-        {tab === "sites" && <Sites />}
-        {tab === "costs" && <Costs />}
-        {tab === "settings" && <Settings />}
-      </main>
-    </>
+        <div className="mt-auto flex flex-col gap-3">
+          <ThemeSwitch />
+          <Link href={`/${lang}/build`} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-ink-muted hover:bg-sand hover:text-ink">
+            <ArrowLeft aria-hidden="true" className="size-4" /> {t.admin.backToApp}
+          </Link>
+        </div>
+      </aside>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-10 flex flex-col gap-3 border-b border-line bg-sand/90 px-4 py-3 backdrop-blur sm:px-6 lg:py-4">
+          <div className="flex items-center justify-between gap-3">
+            <h1 className="text-2xl font-bold sm:text-3xl">{t.admin.tabs[tab]}</h1>
+            <div className="lg:hidden"><ThemeSwitch compact /></div>
+          </div>
+          <nav aria-label={t.admin.title} className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 lg:hidden">
+            {TABS.map((x) => navItem(x, true))}
+          </nav>
+        </header>
+        <main id="main" className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6">
+          {done && (
+            <FocusOnMount>
+              <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-3 font-medium ${done === "ok" ? "bg-teal-soft text-teal" : "bg-clay-soft text-destructive"}`}>
+                {t.admin.tabStatus[done]}
+              </p>
+            </FocusOnMount>
+          )}
+          {tab === "overview" && <Overview />}
+          {tab === "payments" && <Payments />}
+          {tab === "reports" && <Reports />}
+          {tab === "sites" && <Sites />}
+          {tab === "users" && <UsersTab />}
+          {tab === "costs" && <Costs />}
+          {tab === "settings" && <Settings />}
+        </main>
+      </div>
+    </div>
   );
+
+  function ThemeSwitch({ compact = false }: { compact?: boolean }) {
+    const opts = [
+      { v: "light" as const, Icon: Sun },
+      { v: "dark" as const, Icon: Moon },
+      { v: "system" as const, Icon: Monitor },
+    ];
+    return (
+      <form action={setAdminTheme} className="flex flex-col gap-1">
+        <input type="hidden" name="lang" value={lang} />
+        <input type="hidden" name="tab" value={tab} />
+        {!compact && <span className="px-1 text-sm font-medium text-ink-muted">{t.admin.theme}</span>}
+        <div role="group" aria-label={t.admin.theme} className="flex gap-1 rounded-lg border border-line bg-sand p-1">
+          {opts.map(({ v, Icon }) => (
+            <button key={v} name="theme" value={v} aria-pressed={theme === v} title={t.admin.themes[v]} className="flex min-h-9 min-w-11 flex-1 items-center justify-center gap-1 rounded-md text-ink-muted aria-pressed:bg-white aria-pressed:text-ink aria-pressed:shadow-sm">
+              <Icon aria-hidden="true" className="size-4" />
+              <span className={compact ? "sr-only" : "text-sm"}>{t.admin.themes[v]}</span>
+            </button>
+          ))}
+        </div>
+      </form>
+    );
+  }
+
+  async function Overview() {
+    const o = counts;
+    const birr = (minor: number) => format(t.billing.price, { price: amount(minor) });
+    const delta = o.usersNew7 - o.usersPrev7;
+    const kpis = [
+      { label: t.admin.kOwners, value: String(o.users), sub: format(t.admin.kNewWeek, { n: o.usersNew7 }), trend: delta },
+      { label: t.admin.kLiveSites, value: String(o.sitesLive), sub: format(t.admin.kProjects, { n: o.projects }) },
+      { label: t.admin.kPaying, value: String(o.paidUsers), sub: o.users ? format(t.admin.kConversion, { p: Math.round((o.paidUsers / o.users) * 100) }) : "—" },
+      { label: t.admin.kRevenue, value: birr(o.revenueMonthMinor), sub: t.admin.kThisMonth },
+      { label: t.admin.kAiCost, value: usd(o.aiCost30Nano), sub: t.admin.k30Days },
+    ];
+    const attention = [
+      ...(o.pendingPayments ? [{ href: `/${lang}/admin?tab=payments`, text: format(t.admin.attPayments, { n: o.pendingPayments }), Icon: Wallet }] : []),
+      ...(o.openReports ? [{ href: `/${lang}/admin?tab=reports`, text: format(t.admin.attReports, { n: o.openReports }), Icon: Flag }] : []),
+    ];
+    const actionName = (a: string) => (t.admin.actions as Record<string, string>)[a.replace(".", "_")] ?? a;
+    return (
+      <div className="flex flex-col gap-6">
+        <ul className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-5">
+          {kpis.map((k) => (
+            <li key={k.label} className="flex flex-col gap-1 rounded-2xl border border-line bg-white p-4 last:col-span-2 sm:p-5 xl:last:col-span-1">
+              <span className="text-sm font-medium text-ink-muted">{k.label}</span>
+              <span className="font-display text-2xl font-bold tabular-nums sm:text-3xl">{k.value}</span>
+              <span className="flex items-center gap-1 text-sm text-ink-muted">
+                {k.trend !== undefined && k.trend !== 0 && (
+                  <span className={`inline-flex items-center gap-0.5 font-semibold ${k.trend > 0 ? "text-teal" : "text-destructive"}`}>
+                    {k.trend > 0 ? <TrendingUp aria-hidden="true" className="size-4" /> : <TrendingDown aria-hidden="true" className="size-4" />}
+                    {format(t.admin.kVsLastWeek, { n: `${k.trend > 0 ? "+" : ""}${k.trend}` })}
+                  </span>
+                )}
+                {k.trend === undefined || k.trend === 0 ? k.sub : <span className="sr-only">{k.sub}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <section aria-labelledby="att-title" className="rounded-2xl border border-line bg-white p-5">
+          <h2 id="att-title" className="text-lg font-bold">{t.admin.attention}</h2>
+          {attention.length === 0 ? (
+            <p className="mt-2 flex items-center gap-2 text-ink-muted"><CircleCheck aria-hidden="true" className="size-5 text-teal" /> {t.admin.allClear}</p>
+          ) : (
+            <ul className="mt-3 flex flex-col gap-2">
+              {attention.map(({ href, text, Icon }) => (
+                <li key={href}>
+                  <Link href={href} className="flex min-h-12 items-center gap-3 rounded-xl bg-clay-soft px-4 font-medium text-ink hover:ring-2 hover:ring-clay-light">
+                    <Icon aria-hidden="true" className="size-5 text-clay" /> {text}
+                    <ArrowRight aria-hidden="true" className="ms-auto size-4" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <BarChart title={t.admin.chSignups} data={o.signups} format={(v) => String(v)} tableLabel={t.admin.showTable} dayLabel={t.admin.day} valueLabel={t.admin.value} emptyLabel={t.admin.noData} />
+          <BarChart title={t.admin.chRevenue} data={o.revenue} format={birr} tableLabel={t.admin.showTable} dayLabel={t.admin.day} valueLabel={t.admin.value} emptyLabel={t.admin.noData} />
+          <BarChart title={t.admin.chAi} data={o.aiCost} format={usd} tableLabel={t.admin.showTable} dayLabel={t.admin.day} valueLabel={t.admin.value} emptyLabel={t.admin.noData} />
+        </div>
+        <section aria-labelledby="act-title" className="rounded-2xl border border-line bg-white p-5">
+          <h2 id="act-title" className="text-lg font-bold">{t.admin.activity}</h2>
+          {o.activity.length === 0 ? (
+            <p className="mt-2 text-ink-muted">{t.admin.noActivity}</p>
+          ) : (
+            <ol className="mt-3 flex flex-col">
+              {o.activity.map((a, i) => (
+                <li key={i} className="flex flex-wrap items-center justify-between gap-2 border-t border-line py-2 first:border-0">
+                  <span className="font-medium">{actionName(a.action)}</span>
+                  <span className="text-sm text-ink-muted tabular-nums">{dateFmt.format(a.createdAt)}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+      </div>
+    );
+  }
+
+  async function UsersTab() {
+    const q = typeof sp.q === "string" ? sp.q : "";
+    const list = await adminStats().users(q, 100);
+    const joinedFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
+    return (
+      <section aria-labelledby="users-title" className="flex flex-col gap-4">
+        <h2 id="users-title" className="sr-only">{t.admin.tabs.users}</h2>
+        <form role="search" className="flex gap-2">
+          <input type="hidden" name="tab" value="users" />
+          <label className="flex-1">
+            <span className="sr-only">{t.admin.searchLabel}</span>
+            <input name="q" defaultValue={q} placeholder={t.admin.searchLabel} maxLength={100} className="min-h-11 w-full rounded-lg border border-input bg-white px-3 text-base" />
+          </label>
+          <button className="min-h-11 rounded-lg bg-teal px-4 font-medium text-white">{t.admin.search}</button>
+        </form>
+        {list.length === 0 ? (
+          <p className="text-ink-muted">{t.admin.usersEmpty}</p>
+        ) : (
+          <div className="overflow-x-auto rounded-2xl border border-line bg-white">
+            <table className="w-full min-w-[640px] text-start">
+              <thead className="sticky top-0 bg-white">
+                <tr className="border-b border-line text-sm text-ink-muted">
+                  <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colOwner}</th>
+                  <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colJoined}</th>
+                  <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colPlan}</th>
+                  <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colSites}</th>
+                  <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colCredits}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {list.map((u) => (
+                  <tr key={u.id} className="border-b border-line last:border-0 hover:bg-sand">
+                    <th scope="row" className="px-4 py-3 text-start font-normal">
+                      <span className="block font-medium">{u.name || "—"}</span>
+                      <span className="block break-all text-sm text-ink-muted">{u.contact}</span>
+                    </th>
+                    <td className="px-4 py-3 text-sm tabular-nums">{joinedFmt.format(u.joined)}</td>
+                    <td className="px-4 py-3"><span className={`rounded-full px-2.5 py-1 text-sm font-semibold ${u.plan === "free" ? "bg-sand text-ink-muted" : "bg-teal-soft text-teal"}`}>{t.billing.plans[u.plan]}</span></td>
+                    <td className="px-4 py-3 text-end tabular-nums">{u.sites}</td>
+                    <td className="px-4 py-3 text-end tabular-nums">{u.credits}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    );
+  }
 
   async function Payments() {
     const pending = await svc.billing.store().pendingForAdmin();
