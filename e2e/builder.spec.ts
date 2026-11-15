@@ -81,3 +81,22 @@ test("projects are private to their owner", async ({ page, browser, request }) =
   expect(csrf.status()).toBe(403);
   await other.close();
 });
+
+test("the owner picks the site's languages before the first build", async ({ page }) => {
+  await newSite(page);
+  const group = page.getByRole("group", { name: "Your site's language" });
+  await expect(group.getByRole("radio", { name: "English", exact: true })).toBeChecked();
+  await group.getByText("English and Amharic").click();
+  await expect(group.getByRole("radio", { name: "English and Amharic" })).toBeChecked();
+  let sent: unknown = null;
+  page.on("request", (r) => {
+    if (r.url().endsWith("/messages") && r.method() === "POST") sent = r.postDataJSON();
+  });
+  await chat(page).fill("Bole Bakery");
+  await chat(page).press("Enter");
+  await expect(page.getByText("Saved as version 1").first()).toBeVisible();
+  expect(sent).toMatchObject({ languages: ["en", "am"] });
+  // Once the site exists the choice is gone: languages change by asking.
+  await expect(page.getByRole("group", { name: "Your site's language" })).toHaveCount(0);
+  await expectNoSeriousA11yIssues(page);
+});

@@ -13,7 +13,8 @@ const RULES = `You are Gojoline's website builder. You build and edit one small-
 - Be fast: the owner is watching a live preview. Make all the edits for one request, then build once.
 
 # Content
-- Fill every language in site.languages. Amharic must be natural, correct Amharic in Ge'ez script.
+- Fill every language in site.languages, and only those. Amharic must be natural, correct Amharic in Ge'ez script.
+- Never add or remove a site language on your own. When <site_languages> is given, set site.languages to exactly that list (in that order). Later, change it only when the owner asks (for example "add Amharic").
 - Never invent facts the owner did not give: no made-up phone numbers, prices, addresses, awards, reviews or testimonials. Leave optional fields out instead.
 - Write short, warm, concrete copy. Never lorem ipsum.
 - The owner's uploaded photos are listed in <owner_photos>. Use them in images (src "/images/<name>", with width and height) where they fit; never invent image files.
@@ -46,10 +47,12 @@ export function agentSystemPrompt(): SystemBlock[] {
 }
 
 /** The owner's message plus the current site.json, so the agent can edit without a read round trip. */
-export function userTurn(message: string, siteJson: string | null, images: { name: string; width: number; height: number }[] = []): string {
+export function userTurn(message: string, siteJson: string | null, images: { name: string; width: number; height: number }[] = [], languages?: ("en" | "am")[]): string {
   const site = siteJson ? `<current_site_json>\n${siteJson}\n</current_site_json>\n\n` : "";
   const photos = images.length
     ? `<owner_photos>\n${images.map((i) => `/images/${i.name} (${i.width}x${i.height})`).join("\n")}\n</owner_photos>\n\n`
     : "";
-  return `${site}${photos}<owner_message>\n${message}\n</owner_message>`;
+  const names = { en: "English", am: "Amharic" } as const;
+  const langs = languages?.length ? `<site_languages>${JSON.stringify(languages)} (${languages.map((l) => names[l]).join(" and ")}, chosen by the owner)</site_languages>\n\n` : "";
+  return `${site}${photos}${langs}<owner_message>\n${message}\n</owner_message>`;
 }
