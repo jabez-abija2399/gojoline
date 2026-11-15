@@ -1,7 +1,7 @@
 import { Inter, Outfit } from "next/font/google";
 import localFont from "next/font/local";
 
-// Self-hosted at build time by next/font. Only the heading font is preloaded (docs/QUALITY.md).
+// Self-hosted at build time by next/font. Only the Ethiopic font is preloaded (docs/QUALITY.md).
 export const outfit = Outfit({
   subsets: ["latin"],
   // Variable font (one file): the landing page sets headings at 600, the app at 700.

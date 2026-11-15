@@ -7,7 +7,7 @@ export const serif = Fraunces({
   weight: "variable",
   display: "swap",
   variable: "--font-serif",
-  // Not preloaded: Amharic pages never use it, and on English pages its arrival moves the
-  // headline by under 0.004 (measured).
+  // Not preloaded: Amharic pages never use it, and on English pages the titles are sized
+  // so that its arrival doesn't re-wrap them (measured).
   preload: false,
 });

@@ -15,7 +15,7 @@ export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing
   return (
     <section aria-labelledby="pricing-title">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:pt-20 md:pb-8">
-        <h1 id="pricing-title" className="text-center text-4xl display sm:text-6xl">{t.title}</h1>
+        <h1 id="pricing-title" className="text-center text-[2rem] display min-[400px]:text-4xl sm:text-6xl">{t.title}</h1>
         <p className="mt-3 text-center text-lg text-ink-muted">{t.intro}</p>
         <ul className="mt-10 grid gap-6 md:grid-cols-3 md:items-stretch">
           {plans.map((p) => (
