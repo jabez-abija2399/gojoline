@@ -75,14 +75,14 @@ export function DomainSection({ t, projectId }: { t: Messages["builder"]; projec
                 className="min-h-11 rounded-lg border border-input px-3 text-base"
               />
             </div>
-            <button type="button" disabled={busy || !domain} onClick={() => submit("POST")} className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-teal-mid disabled:opacity-50">
+            <button type="button" disabled={busy || !domain} onClick={() => submit("POST")} className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-faint disabled:opacity-50">
               {busy ? t.domainChecking : t.domainConnect}
             </button>
           </div>
           {error && <p role="alert" className="text-destructive">{error}</p>}
           {status && (
             <div role="status" className="flex flex-col gap-2">
-              <p className={status.status === "active" ? "font-medium text-teal" : "text-ink-muted"}>{status.status === "active" ? t.domainActive : t.domainPending}</p>
+              <p className={status.status === "active" ? "font-medium text-ink" : "text-ink-muted"}>{status.status === "active" ? t.domainActive : t.domainPending}</p>
               {status.status === "pending" && (
                 <>
                   <div className="overflow-x-auto">
@@ -101,7 +101,7 @@ export function DomainSection({ t, projectId }: { t: Messages["builder"]; projec
                       </tbody>
                     </table>
                   </div>
-                  <button type="button" disabled={busy} onClick={() => submit("GET")} className="min-h-11 self-start rounded-lg border border-line px-4 font-medium hover:border-teal-mid disabled:opacity-50">
+                  <button type="button" disabled={busy} onClick={() => submit("GET")} className="min-h-11 self-start rounded-lg border border-line px-4 font-medium hover:border-faint disabled:opacity-50">
                     {busy ? t.domainChecking : t.domainCheck}
                   </button>
                 </>

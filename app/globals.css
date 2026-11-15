@@ -5,23 +5,26 @@
 
 /*
  * Brand tokens (brand/tokens.css) are the only colour source.
- * Tailwind utilities: bg-clay, text-ink, bg-sand, border-line, font-display ...
+ * Tailwind utilities: bg-coral, text-ink, bg-paper, border-line, font-display ...
  * shadcn/ui semantic variables map onto the same tokens below.
  */
 @theme inline {
-  --color-clay: var(--gojo-clay);
-  --color-clay-hover: var(--gojo-clay-hover);
-  --color-clay-bright: var(--gojo-clay-bright);
-  --color-clay-light: var(--gojo-clay-light);
-  --color-clay-soft: var(--gojo-clay-soft);
-  --color-teal: var(--gojo-teal);
-  --color-teal-mid: var(--gojo-teal-mid);
-  --color-teal-soft: var(--gojo-teal-soft);
-  --color-teal-deep: var(--gojo-teal-deep);
-  --color-ink: var(--gojo-ink);
-  --color-ink-muted: var(--gojo-ink-muted);
+  --color-paper: var(--gojo-paper);
+  --color-sunken: var(--gojo-sunken);
   --color-line: var(--gojo-line);
-  --color-sand: var(--gojo-sand);
+  --color-ink: var(--gojo-ink);
+  --color-ink-hover: var(--gojo-ink-hover);
+  --color-ink-muted: var(--gojo-ink-muted);
+  --color-faint: var(--gojo-faint);
+  --color-link: var(--gojo-link);
+  --color-coral: var(--gojo-coral);
+  --color-coral-hover: var(--gojo-coral-hover);
+  --color-coral-soft: var(--gojo-coral-soft);
+  --color-on-coral: var(--gojo-on-coral);
+  --color-lagoon: var(--gojo-lagoon);
+  --color-warning: var(--gojo-warning);
+  --color-danger: var(--gojo-danger);
+  --color-sun: var(--gojo-sun);
 
   --font-display: var(--font-outfit), var(--font-ethiopic), system-ui, sans-serif;
   --font-sans: var(--font-inter), var(--font-ethiopic), system-ui, sans-serif;
@@ -55,25 +58,24 @@
 }
 
 :root {
-  --background: var(--gojo-sand);
+  --background: var(--gojo-paper);
   --foreground: var(--gojo-ink);
-  --card: var(--gojo-white);
+  --card: var(--gojo-panel);
   --card-foreground: var(--gojo-ink);
-  --popover: var(--gojo-white);
+  --popover: var(--gojo-panel);
   --popover-foreground: var(--gojo-ink);
-  --primary: var(--gojo-clay);
-  --primary-foreground: var(--gojo-white);
-  --secondary: var(--gojo-teal);
-  --secondary-foreground: var(--gojo-white);
-  --muted: var(--gojo-clay-soft);
+  --primary: var(--gojo-coral);
+  --primary-foreground: var(--gojo-on-coral);
+  --secondary: var(--gojo-ink);
+  --secondary-foreground: var(--gojo-paper);
+  --muted: var(--gojo-sunken);
   --muted-foreground: var(--gojo-ink-muted);
-  --accent: var(--gojo-teal-soft);
-  --accent-foreground: var(--gojo-teal);
-  /* clay-hover passes 4.5:1 on white and sand for error text */
-  --destructive: var(--gojo-clay-hover);
+  --accent: var(--gojo-sunken);
+  --accent-foreground: var(--gojo-ink);
+  --destructive: var(--gojo-danger);
   --border: var(--gojo-line);
   --input: var(--gojo-ink-muted);
-  --ring: var(--gojo-teal-mid);
+  --ring: var(--gojo-link);
   --radius: var(--gojo-radius-md);
 }
 
@@ -107,7 +109,7 @@
     line-height: 1.35;
   }
   :focus-visible {
-    outline: 3px solid var(--gojo-teal-mid);
+    outline: 3px solid var(--gojo-link);
     outline-offset: 2px;
   }
   button:not(:disabled),
@@ -147,53 +149,15 @@
   }
 }
 
-/* Admin dark mode: the same components, re-coloured by swapping the brand variables inside
-   the admin area. Surfaces get darker, text lighter, teal/clay brighter (buttons then use dark
-   text automatically because "white" becomes the dark surface). Contrast is AA on every pair. */
-[data-admin-theme="dark"] {
-  color-scheme: dark;
-  --gojo-sand: #0e1214;
-  --color-white: #161b1e;
-  --gojo-ink: #ece7e2;
-  --gojo-ink-muted: #a8a29e;
-  --gojo-line: #2a3135;
-  --gojo-teal: #6fc3cc;
-  --gojo-teal-mid: #8fd3da;
-  --gojo-teal-soft: #173438;
-  --gojo-teal-deep: #8fd3da;
-  --gojo-clay: #fb8c4a;
-  --gojo-clay-hover: #fda66f;
-  --gojo-clay-soft: #3a2318;
-  --gojo-clay-light: #fdba74;
-  --destructive: #f87171;
-  --input: #3a4246;
-  --border: #2a3135;
-  --ring: #6fc3cc;
-  --background: #0e1214;
-  --foreground: #ece7e2;
+/* Dark mode (the admin area today): brand/tokens.css swaps the role colours under
+   data-gojo-theme. Here "white" follows the panel colour, so cards turn dark and the text on
+   ink buttons (which turn light) stays readable. Coral keeps its ink text in both modes. */
+[data-gojo-theme="dark"] {
+  --color-white: var(--gojo-panel);
 }
 @media (prefers-color-scheme: dark) {
-  [data-admin-theme="system"] {
-  color-scheme: dark;
-  --gojo-sand: #0e1214;
-  --color-white: #161b1e;
-  --gojo-ink: #ece7e2;
-  --gojo-ink-muted: #a8a29e;
-  --gojo-line: #2a3135;
-  --gojo-teal: #6fc3cc;
-  --gojo-teal-mid: #8fd3da;
-  --gojo-teal-soft: #173438;
-  --gojo-teal-deep: #8fd3da;
-  --gojo-clay: #fb8c4a;
-  --gojo-clay-hover: #fda66f;
-  --gojo-clay-soft: #3a2318;
-  --gojo-clay-light: #fdba74;
-  --destructive: #f87171;
-  --input: #3a4246;
-  --border: #2a3135;
-  --ring: #6fc3cc;
-  --background: #0e1214;
-  --foreground: #ece7e2;
+  [data-gojo-theme="system"] {
+    --color-white: var(--gojo-panel);
   }
 }
 

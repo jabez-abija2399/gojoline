@@ -66,7 +66,7 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
         <legend className="mb-1 font-medium">{t.method}</legend>
         {METHODS.map((m, i) => (
           <label key={m} className="flex min-h-11 items-center gap-3">
-            <input type="radio" name="method" value={m} defaultChecked={i === 0} className="size-5 accent-teal" />
+            <input type="radio" name="method" value={m} defaultChecked={i === 0} className="size-5 accent-ink" />
             {t.methods[m]}
           </label>
         ))}
@@ -89,8 +89,8 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
       </div>
       <div className="flex flex-col gap-2">
         <span id="pay-receipt-label" className="font-medium">{t.receipt}</span>
-        <label className="inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium hover:border-teal-mid has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal-mid">
-          <ImagePlus aria-hidden="true" className="size-5 text-teal" />
+        <label className="inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium hover:border-faint has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-link">
+          <ImagePlus aria-hidden="true" className="size-5 text-ink" />
           {t.chooseReceipt}
           <input
             ref={fileRef}
@@ -107,11 +107,11 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
         <p id="pay-receipt-status" className="break-all text-ink-muted">{fileName ? format(t.receiptSelected, { name: fileName }) : t.noReceiptYet}</p>
         {receiptError && <p id="pay-receipt-error" role="alert" className="text-destructive">{errorText}</p>}
       </div>
-      {state.kind === "error" && !refError && !receiptError && <p role="alert" className="rounded-lg bg-clay-soft px-4 py-3 text-destructive">{errorText}</p>}
+      {state.kind === "error" && !refError && !receiptError && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">{errorText}</p>}
       {state.kind === "done" && (
-        <p ref={doneRef} tabIndex={-1} role="status" className="rounded-lg bg-teal-soft px-4 py-3 font-medium text-teal">{t.submitted}</p>
+        <p ref={doneRef} tabIndex={-1} role="status" className="rounded-lg bg-sunken px-4 py-3 font-medium text-ink">{t.submitted}</p>
       )}
-      <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-lg bg-clay px-5 font-medium text-white hover:bg-clay-hover aria-disabled:opacity-50">
+      <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-lg bg-coral px-5 font-medium text-on-coral hover:bg-coral-hover aria-disabled:opacity-50">
         {state.kind === "sending" ? t.submitting : t.submit}
       </button>
     </form>

@@ -50,13 +50,13 @@ export function TabList<T extends string>({ tabs, labels, active, onChange, labe
             else return;
             e.preventDefault();
           }}
-          className="relative flex min-h-11 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-1.5 text-[15px] font-medium text-ink-muted transition-colors hover:bg-sand aria-selected:bg-teal aria-selected:text-white sm:flex-none sm:px-3 sm:text-base"
+          className="relative flex min-h-11 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-1.5 text-[15px] font-medium text-ink-muted transition-colors hover:bg-paper aria-selected:bg-ink aria-selected:text-white sm:flex-none sm:px-3 sm:text-base"
         >
           {Icon && <Icon aria-hidden="true" className="hidden size-4 shrink-0 min-[520px]:block" />}
           {labels[tab]}
           {badges?.[tab] && (
             <>
-              <span aria-hidden="true" className="absolute end-1.5 top-1.5 size-2.5 rounded-full bg-clay ring-2 ring-white" />
+              <span aria-hidden="true" className="absolute end-1.5 top-1.5 size-2.5 rounded-full bg-coral ring-2 ring-white" />
               <span className="sr-only">({badgeLabel})</span>
             </>
           )}

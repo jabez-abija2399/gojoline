@@ -47,7 +47,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
               key={x}
               href={`/${lang}/dashboard/${id}?tab=${x}`}
               aria-current={x === tab ? "page" : undefined}
-              className="inline-flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-lg px-3 font-medium text-ink-muted aria-[current=page]:bg-teal aria-[current=page]:text-white"
+              className="inline-flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-lg px-3 font-medium text-ink-muted aria-[current=page]:bg-ink aria-[current=page]:text-white"
             >
               {labels[x]}
             </Link>

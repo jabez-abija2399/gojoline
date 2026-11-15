@@ -15,7 +15,7 @@ import { PRESET_IDS } from "@/lib/template/presets";
 import { InstallApp } from "@/components/pwa/install-app";
 
 const TEMPLATE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound } as const;
-const installClass = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-teal-soft bg-white px-4 font-medium text-teal hover:border-teal-mid";
+const installClass = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint";
 
 export async function generateMetadata({
   params,
@@ -44,7 +44,7 @@ export default async function ProjectsPage({
     timeStyle: "short",
   });
 
-  const tints = ["bg-teal-soft text-teal", "bg-line text-ink", "bg-teal text-white", "bg-sand text-teal"];
+  const tints = ["bg-sunken text-ink", "bg-line text-ink", "bg-ink text-white", "bg-paper text-ink"];
 
   const templates = builder ? (
     <section aria-labelledby="templates-title" className="flex flex-col gap-3">
@@ -60,8 +60,8 @@ export default async function ProjectsPage({
               <form action={createProject} data-preset={id} className="h-full">
                 <input type="hidden" name="lang" value={lang} />
                 <input type="hidden" name="preset" value={id} />
-                <PendingButton className="group flex h-full min-h-24 w-full flex-col items-start gap-3 rounded-2xl border border-line bg-white p-4 text-start font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-teal-mid hover:shadow-md">
-                  <span aria-hidden="true" className="flex size-10 items-center justify-center rounded-xl bg-teal-soft text-teal transition-colors group-hover:bg-teal group-hover:text-white">
+                <PendingButton className="group flex h-full min-h-24 w-full flex-col items-start gap-3 rounded-2xl border border-line bg-white p-4 text-start font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md">
+                  <span aria-hidden="true" className="flex size-10 items-center justify-center rounded-xl bg-sunken text-ink transition-colors group-hover:bg-ink group-hover:text-white">
                     <Icon className="size-5" />
                   </span>
                   {t.builder.templates[id]}
@@ -96,7 +96,7 @@ export default async function ProjectsPage({
         {tooMany && (
           <p
             role="alert"
-            className="rounded-lg bg-clay-soft px-4 py-3 text-destructive"
+            className="rounded-lg bg-coral-soft px-4 py-3 text-destructive"
           >
             {t.builder.tooMany}
           </p>
@@ -130,7 +130,7 @@ export default async function ProjectsPage({
                     <li key={p.id} className="min-w-0">
                       <Link
                         href={`/${lang}/build/${p.id}`}
-                        className="group flex h-full min-h-20 items-center gap-4 rounded-2xl border border-line bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-mid hover:shadow-md"
+                        className="group flex h-full min-h-20 items-center gap-4 rounded-2xl border border-line bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md"
                       >
                         <span aria-hidden="true" className={`flex size-12 shrink-0 items-center justify-center rounded-xl font-display text-xl font-bold ${tints[i % tints.length]}`}>
                           {[...name.trim()][0]?.toUpperCase() ?? "+"}
@@ -143,7 +143,7 @@ export default async function ProjectsPage({
                             })}
                           </span>
                         </span>
-                        <ArrowRight aria-hidden="true" className="size-5 shrink-0 text-ink-muted transition group-hover:translate-x-0.5 group-hover:text-teal" />
+                        <ArrowRight aria-hidden="true" className="size-5 shrink-0 text-ink-muted transition group-hover:translate-x-0.5 group-hover:text-ink" />
                       </Link>
                     </li>
                   );

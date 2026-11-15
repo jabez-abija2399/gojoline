@@ -36,20 +36,31 @@ The wordmark letters are converted to outlines, so the files look the same every
 
 PNG marks are exported at 16, 32, 48, 64, 128, 256, 512 and 1024 px in `png/mark/`. Lockups are in `png/logo/` at 480 px tall.
 
-## Colours: Terracotta Earth
+## Colours: Paper and Coral
 
-| Name | Hex | Use |
+Chosen by the founder on 2026-11-15, replacing Terracotta Earth (clay and teal). Warm paper, ink, and one coral action colour.
+
+| Role | Light | Dark |
 | --- | --- | --- |
-| Clay | `#C2410C` | Main colour: primary buttons, links, "line", the globe |
-| Deep teal | `#0E3B43` | Partner: the door, dark sections, footer |
-| Ink | `#1C1917` | Headings and body text |
-| Sand | `#FFF7F0` | Page background (white for cards) |
+| Background (paper) | `#FBF9F6` | `#121110` |
+| Sunken / inputs, raised / hover | `#F6F2EC` | `#0C0B0A` (sunken), `#221F1C` (raised) |
+| Panel / card | `#FFFFFF` | `#181614` |
+| Border | `#E9E4DC` | `#36312B` |
+| Text (ink) | `#121212` | `#FBF9F6` |
+| Muted text | `#5F5A53` | `#A8A196` |
+| Faint (decorative only) | `#8A847B` | `#6E685F` |
+| Accent text / links | `#C2370F` | `#FF8A6B` |
+| Primary button (coral) | `#FF5B35`, hover `#FF7350`, ink text on it | same |
+| Live / success (lagoon) | `#0E7C66` | `#3DD6B0` |
+| Warning | `#A3530A` | `#FFB547` |
+| Danger | `#C81E3A` | `#FF6B7F` |
+| Highlight (sun, fill only) | `#FFD23F` | same |
 
-Supporting shades: clay hover `#9A3412`, clay bright `#F97316`, clay light `#FDBA74`, clay soft `#FDE7DA`, teal mid `#4F8A91`, teal soft `#CDE3E5`, ink muted `#57534E`, border `#E7E5E4`.
+Rules: coral is for the one action you want people to take, always with ink text (white on coral fails contrast). Dark buttons and dark sections are ink. Sun is a fill (a highlighter stroke, a glow), never text. Lagoon means live or success, nothing else.
 
-Balance: about 60% sand and white, 25% ink and teal, 15% clay. Keep clay for the one action you want people to take.
+Code: `tokens.css` (CSS variables, light and dark), `tokens.json`, `tailwind.preset.js`. In the app the classes are `bg-paper`, `bg-sunken`, `border-line`, `text-ink`, `text-ink-muted`, `text-faint`, `text-link`, `bg-coral text-on-coral`, `text-lagoon`, `text-warning`, `text-danger`, `bg-sun`.
 
-Code: `tokens.css` (CSS variables), `tokens.json`, `tailwind.preset.js`.
+**Logo files still use the earlier clay and teal.** The clay in the mark (`#C2410C`) is close to the new link colour, so it sits well on paper; the teal door does not belong to the new palette. Redrawing the logo is a design decision for the founder (see `source/`).
 
 ## Typography
 
@@ -66,7 +77,7 @@ All are free on Google Fonts.
 - Don't stretch, rotate, recolour or add effects (shadows, gradients) to the logo.
 - On photos or busy backgrounds, use the one-colour white or black version.
 - Don't combine green, yellow and red together in brand materials, so the brand stays neutral for every region and community.
-- Body text always uses ink (or white on dark), never clay on clay or teal on teal.
+- Body text always uses ink (or paper on ink). Never white on coral.
 
 ## Before launch
 

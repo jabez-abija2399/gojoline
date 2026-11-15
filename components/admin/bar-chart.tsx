@@ -36,11 +36,11 @@ export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel
           return (
             <g key={d.day} className="group">
               <title>{`${shortDay(d.day)}: ${format(d.value)}`}</title>
-              <rect x={i * step} y={top} width={step} height={H - top - bottom} className="fill-transparent group-hover:fill-teal-soft/40" />
+              <rect x={i * step} y={top} width={step} height={H - top - bottom} className="fill-transparent group-hover:fill-sunken/40" />
               {d.value > 0 && (
                 <path
                   d={`M${x},${H - bottom} V${yy + r} Q${x},${yy} ${x + r},${yy} H${x + bw - r} Q${x + bw},${yy} ${x + bw},${yy + r} V${H - bottom} Z`}
-                  className="fill-teal group-hover:fill-teal-mid"
+                  className="fill-ink group-hover:fill-faint"
                 />
               )}
             </g>

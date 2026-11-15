@@ -26,9 +26,6 @@ export const en = {
       note: "Free to start · No card needed · Amharic and English",
       promptLabel: "Describe your business",
       build: "Build my site",
-      phoneCaption: "{name} is a real site made with Gojoline. Scroll it.",
-      phoneLabel: "Example site: {name}",
-      shotAlt: "The home page of {name}, as visitors see it on a phone",
     },
     nav: { label: "On this page", examples: "Examples", how: "How it works", prices: "Prices", signIn: "Sign in" },
     demo: {

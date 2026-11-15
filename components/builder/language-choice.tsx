@@ -13,26 +13,30 @@ interface Props {
   /** Radio group name: two choosers never share one. */
   name: string;
   className?: string;
+  /** One tight row with no visible title, for use inside a prompt box. */
+  compact?: boolean;
   children?: React.ReactNode;
 }
 
 /** Which languages the site will have: English, Amharic or both. */
-export function LanguageChoice({ title, labels, value, onChange, name, className = "", children }: Props) {
+export function LanguageChoice({ title, labels, value, onChange, name, className = "", compact = false, children }: Props) {
   return (
     <fieldset className={`flex flex-col gap-2 ${className}`}>
       <legend className="sr-only">{title}</legend>
-      <p aria-hidden="true" className="font-medium">
-        {title}
-      </p>
-      <div className="flex flex-wrap gap-2">
+      {!compact && (
+        <p aria-hidden="true" className="font-medium">
+          {title}
+        </p>
+      )}
+      <div className={compact ? "flex gap-1 rounded-full bg-sunken p-1" : "flex flex-wrap gap-2"}>
         {OPTIONS.map((opt) => {
           const key = opt.join("+");
           const checked = value.join("+") === key;
           return (
             <label
               key={key}
-              className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 font-medium transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal-mid ${
-                checked ? "border-teal bg-teal text-white" : "border-teal-soft bg-white hover:border-teal-mid"
+              className={`inline-flex min-h-11 cursor-pointer items-center rounded-full font-medium transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-link ${
+                compact ? `px-3 ${checked ? "bg-white text-ink shadow-sm" : "text-ink-muted hover:text-ink"}` : `border px-4 ${checked ? "border-ink bg-ink text-white" : "border-line bg-white hover:border-faint"}`
               }`}
             >
               <input type="radio" name={name} className="sr-only" checked={checked} onChange={() => onChange(opt)} />

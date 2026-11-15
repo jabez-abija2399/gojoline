@@ -142,7 +142,7 @@ function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["da
                   type="button"
                   onClick={() => remove(i)}
                   aria-label={t.itemRemoveNamed.replace("{name}", pick(it.name) || String(i + 1))}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-destructive hover:bg-clay-soft"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-destructive hover:bg-coral-soft"
                 >
                   <Trash2 aria-hidden="true" className="size-4" /> {t.itemRemove}
                 </button>
@@ -152,13 +152,13 @@ function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["da
         })}
       </ol>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <button ref={addRef} type="button" onClick={add} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line px-4 font-medium hover:border-teal-mid">
+        <button ref={addRef} type="button" onClick={add} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line px-4 font-medium hover:border-faint">
           <Plus aria-hidden="true" className="size-4" /> {t.itemAdd}
         </button>
-        <button type="button" onClick={save} aria-disabled={state.kind === "saving"} className="min-h-11 rounded-lg bg-teal px-5 font-medium text-white hover:bg-teal-deep aria-disabled:opacity-50">
+        <button type="button" onClick={save} aria-disabled={state.kind === "saving"} className="min-h-11 rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
           {state.kind === "saving" ? t.saving : t.save}
         </button>
-        {state.kind === "saved" && <p role="status" className="font-medium text-teal">{state.message}</p>}
+        {state.kind === "saved" && <p role="status" className="font-medium text-ink">{state.message}</p>}
         {state.kind === "error" && <p role="alert" className="text-destructive">{state.message}</p>}
       </div>
     </section>

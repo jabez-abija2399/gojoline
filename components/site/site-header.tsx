@@ -8,7 +8,7 @@ import { LanguageSwitch } from "./language-switch";
 export function SiteHeader({ locale, t, nav = false }: { locale: Locale; t: Messages; nav?: boolean }) {
   const other: Locale = locale === "en" ? "am" : "en";
   return (
-    <header className={nav ? "sticky top-0 z-40 border-b border-line bg-sand/95 md:bg-sand/90 md:backdrop-blur-md" : "border-b border-line bg-sand/95"}>
+    <header className={nav ? "sticky top-0 z-40 border-b border-line bg-paper md:bg-paper/85 md:backdrop-blur-md" : "border-b border-line bg-paper/95"}>
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 items-center rounded-md">
           <Image
@@ -25,12 +25,12 @@ export function SiteHeader({ locale, t, nav = false }: { locale: Locale; t: Mess
             <>
               <nav aria-label={t.landing.nav.label} className="hidden items-center md:flex">
                 {(["examples", "how", "pricing"] as const).map((id) => (
-                  <a key={id} href={`#${id}`} className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-ink hover:bg-white hover:text-teal">
+                  <a key={id} href={`#${id}`} className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-ink hover:bg-white hover:text-ink">
                     {id === "pricing" ? t.landing.nav.prices : t.landing.nav[id]}
                   </a>
                 ))}
               </nav>
-              <Link href={`/${locale}/sign-in?next=/${locale}/build`} className="inline-flex min-h-11 items-center rounded-lg px-2 font-medium text-teal hover:bg-white sm:px-3">
+              <Link href={`/${locale}/sign-in?next=/${locale}/build`} className="inline-flex min-h-11 items-center rounded-lg px-2 font-medium text-ink hover:bg-white sm:px-3">
                 {t.landing.nav.signIn}
               </Link>
             </>

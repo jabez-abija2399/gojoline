@@ -31,7 +31,7 @@ interface Props {
   publish: React.ReactNode;
 }
 
-const quiet = "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-2 font-medium transition-colors hover:bg-sand";
+const quiet = "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-2 font-medium transition-colors hover:bg-paper";
 
 /** One bar for the whole builder: where you are, the site's status, Publish, and the rest. */
 export function TopBar({ locale, projectId, text, siteName, status, publish }: Props) {
@@ -60,12 +60,12 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
         <p className="truncate font-display text-base font-bold text-ink sm:text-lg">{siteName}</p>
         {status}
       </div>
-      <Link href={`/${locale}/dashboard/${projectId}`} className={`${quiet} shrink-0 text-teal max-sm:hidden sm:px-3`}>
+      <Link href={`/${locale}/dashboard/${projectId}`} className={`${quiet} shrink-0 text-ink max-sm:hidden sm:px-3`}>
         <LayoutDashboard aria-hidden="true" className="size-5 lg:hidden" />
         <span className="sr-only lg:not-sr-only">{text.dashboard}</span>
       </Link>
       <div className="hidden items-center gap-1 lg:flex">
-        <Link href={`/${locale}/billing`} className={`${quiet} text-teal sm:px-3`}>
+        <Link href={`/${locale}/billing`} className={`${quiet} text-ink sm:px-3`}>
           {text.plan}
         </Link>
         {signOutForm(`${quiet} px-3 text-ink-muted`, false)}
@@ -74,11 +74,11 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
       {publish}
       <MoreMenu label={text.more}>
         <Link href={`/${locale}/dashboard/${projectId}`} className={`${quiet} justify-start px-3 text-ink sm:hidden`}>
-          <LayoutDashboard aria-hidden="true" className="size-5 shrink-0 text-teal" />
+          <LayoutDashboard aria-hidden="true" className="size-5 shrink-0 text-ink" />
           {text.dashboard}
         </Link>
         <Link href={`/${locale}/billing`} className={`${quiet} justify-start px-3 text-ink`}>
-          <CreditCard aria-hidden="true" className="size-5 shrink-0 text-teal" />
+          <CreditCard aria-hidden="true" className="size-5 shrink-0 text-ink" />
           {text.plan}
         </Link>
         {signOutForm(`${quiet} w-full justify-start px-3 text-ink`, true)}
@@ -121,7 +121,7 @@ function MoreMenu({ label, children }: { label: string; children: React.ReactNod
         if (!wrapRef.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
       }}
     >
-      <button ref={buttonRef} type="button" aria-expanded={open} aria-controls="builder-more" onClick={() => setOpen((o) => !o)} className={`${quiet} text-ink aria-expanded:bg-sand`}>
+      <button ref={buttonRef} type="button" aria-expanded={open} aria-controls="builder-more" onClick={() => setOpen((o) => !o)} className={`${quiet} text-ink aria-expanded:bg-paper`}>
         <MoreVertical aria-hidden="true" className="size-5" />
         <span className="sr-only">{label}</span>
       </button>

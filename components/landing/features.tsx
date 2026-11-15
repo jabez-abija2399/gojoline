@@ -6,8 +6,8 @@ interface Sample {
   tagline: string;
 }
 
-const card = "reveal flex flex-col gap-3 rounded-3xl border border-line bg-white p-6 transition hover:border-teal-mid hover:shadow-lg";
-const icon = "flex size-11 shrink-0 items-center justify-center rounded-xl bg-teal-soft text-teal";
+const card = "reveal flex flex-col gap-3 rounded-3xl border border-line bg-white p-6 transition hover:border-faint hover:shadow-lg";
+const icon = "flex size-11 shrink-0 items-center justify-center rounded-xl bg-sunken text-ink";
 
 /** What a small business gets, as a grid of unequal cards; the language card really switches. */
 export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: Sample; am: Sample } }) {
@@ -31,14 +31,14 @@ export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: 
           </span>
           <h3 className="text-2xl font-bold">{f.language.title}</h3>
           <p className="text-ink-muted">{f.language.body}</p>
-          <fieldset className="mt-auto flex flex-col gap-3 rounded-2xl bg-sand p-4">
+          <fieldset className="mt-auto flex flex-col gap-3 rounded-2xl bg-paper p-4">
             <legend className="sr-only">{f.language.try}</legend>
             <p aria-hidden="true" className="font-medium text-ink-muted">
               {f.language.try}
             </p>
             <div className="flex w-fit gap-1 rounded-full border border-line bg-white p-1">
               {(["en", "am"] as const).map((l) => (
-                <label key={l} className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-4 font-medium transition-colors has-[:checked]:bg-teal has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal-mid">
+                <label key={l} className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-4 font-medium transition-colors has-[:checked]:bg-ink has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-link">
                   <input type="radio" name="feature-lang" value={l} defaultChecked={l === "en"} className="sr-only" />
                   <span lang={l}>{f.language.names[l]}</span>
                 </label>
@@ -59,7 +59,7 @@ export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: 
           </span>
           <h3 className="text-2xl font-bold">{f.forms.title}</h3>
           <p className="text-ink-muted">{f.forms.body}</p>
-          <p aria-hidden="true" className="mt-2 w-fit max-w-full rounded-2xl rounded-tl-sm bg-teal px-4 py-3 text-white shadow-md">
+          <p aria-hidden="true" className="mt-2 w-fit max-w-full rounded-2xl rounded-tl-sm bg-ink px-4 py-3 text-white shadow-md">
             <strong className="block">{t.telegram.title}</strong>
             {t.telegram.body}
           </p>

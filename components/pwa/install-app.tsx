@@ -66,7 +66,7 @@ export function InstallApp({ t, className }: { t: { install: string; iosTitle: s
           <h2 className="text-xl font-bold">{t.iosTitle}</h2>
           <p className="mt-3 whitespace-pre-line text-ink-muted">{t.iosSteps}</p>
           <form method="dialog" className="mt-5">
-            <button className="min-h-11 rounded-lg bg-teal px-5 font-medium text-white">{t.close}</button>
+            <button className="min-h-11 rounded-lg bg-ink px-5 font-medium text-white">{t.close}</button>
           </form>
         </dialog>
       )}

@@ -112,13 +112,13 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
   }, [onLive, published]);
 
   const status = published ? (
-    <a href={published} target="_blank" rel="noopener noreferrer" className="relative flex min-w-0 items-center gap-1.5 text-sm text-ink-muted after:absolute after:inset-x-0 after:-inset-y-3 hover:text-teal">
+    <a href={published} target="_blank" rel="noopener noreferrer" className="relative flex min-w-0 items-center gap-1.5 text-sm text-ink-muted after:absolute after:inset-x-0 after:-inset-y-3 hover:text-ink">
       <span aria-hidden="true" className="relative flex size-2 shrink-0">
-        <span className="absolute inline-flex size-full animate-ping rounded-full bg-teal-mid opacity-60 motion-reduce:hidden" />
-        <span className="relative inline-flex size-2 rounded-full bg-teal" />
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-lagoon opacity-60 motion-reduce:hidden" />
+        <span className="relative inline-flex size-2 rounded-full bg-lagoon" />
       </span>
       <span className="truncate">
-        <span className="max-sm:sr-only">{t.liveAt} </span><span className="font-medium text-teal underline underline-offset-4">{published.replace(/^https:\/\//, "")}</span>
+        <span className="max-sm:sr-only">{t.liveAt} </span><span className="font-medium text-ink underline underline-offset-4">{published.replace(/^https:\/\//, "")}</span>
       </span>
     </a>
   ) : (
@@ -133,7 +133,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
       type="button"
       onClick={open}
       disabled={!canOpen}
-      className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-teal px-3 font-medium text-white transition-colors hover:bg-teal-deep disabled:opacity-50 sm:px-4"
+      className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-ink px-3 font-medium text-white transition-colors hover:bg-ink-hover disabled:opacity-50 sm:px-4"
     >
       <Rocket aria-hidden="true" className="hidden size-4 sm:block" />
       {t.publish}
@@ -146,7 +146,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
       <dialog
         ref={dialogRef}
         aria-labelledby="publish-title"
-        className="m-auto max-h-[90dvh] w-[min(94vw,30rem)] overflow-y-auto rounded-2xl border border-line bg-white p-0 text-ink shadow-2xl backdrop:bg-teal-deep/50 open:animate-[pop-in_0.2s_ease-out]"
+        className="m-auto max-h-[90dvh] w-[min(94vw,30rem)] overflow-y-auto rounded-2xl border border-line bg-white p-0 text-ink shadow-2xl backdrop:bg-ink-hover/50 open:animate-[pop-in_0.2s_ease-out]"
         onCancel={(e) => {
           e.preventDefault();
           close();
@@ -156,12 +156,12 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
           {phase.kind === "done" ? (
             <div role="status" className="flex flex-col gap-3">
               <h2 id="publish-title" ref={doneRef} tabIndex={-1} className="flex items-center gap-2 text-2xl font-bold focus:outline-none">
-                <CheckCircle2 aria-hidden="true" className="size-6 shrink-0 text-teal" /> {t.publishedTitle}
+                <CheckCircle2 aria-hidden="true" className="size-6 shrink-0 text-ink" /> {t.publishedTitle}
               </h2>
               <p className="text-ink-muted">{t.publishedBody}</p>
-              <p className="break-all rounded-lg bg-sand px-3 py-2 font-medium">{phase.url}</p>
+              <p className="break-all rounded-lg bg-paper px-3 py-2 font-medium">{phase.url}</p>
               <div className="flex flex-col gap-2 sm:flex-row">
-                <a href={phase.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-teal px-4 font-medium text-white hover:bg-teal-deep">
+                <a href={phase.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover">
                   <ExternalLink aria-hidden="true" className="size-4" /> {t.publishedOpen}
                 </a>
                 <button
@@ -173,7 +173,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
                     );
                     setCopied(!!ok);
                   }}
-                  className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-teal-mid"
+                  className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-faint"
                 >
                   {copied ? t.publishedCopied : t.publishedCopy}
                 </button>
@@ -183,7 +183,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
             <>
               <h2 id="publish-title" className="text-2xl font-bold">{t.publishTitle}</h2>
               {address ? (
-                <p className="break-all rounded-lg bg-sand px-3 py-2 font-medium">{address}</p>
+                <p className="break-all rounded-lg bg-paper px-3 py-2 font-medium">{address}</p>
               ) : loading && !info ? (
                 <div aria-hidden="true" className="h-24 animate-pulse rounded-lg bg-line" />
               ) : (
@@ -208,19 +208,19 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
                       className="min-h-11 w-full rounded-lg border border-input bg-white px-3 text-base"
                     />
                     <p id="publish-slug-hint" className="text-ink-muted">{t.publishAddressHint}</p>
-                    <p id="publish-slug-preview" aria-live="polite" className="break-all rounded-lg bg-sand px-3 py-2 font-medium">
+                    <p id="publish-slug-preview" aria-live="polite" className="break-all rounded-lg bg-paper px-3 py-2 font-medium">
                       {previewUrl}
                     </p>
                   </div>
                 </>
               )}
               {errorText && (
-                <p id="publish-error" ref={alertRef} tabIndex={-1} role="alert" className="rounded-lg bg-clay-soft px-4 py-3 text-destructive">
+                <p id="publish-error" ref={alertRef} tabIndex={-1} role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">
                   {errorText}
                 </p>
               )}
               {phase.kind === "publishing" && (
-                <p role="status" className="flex items-center gap-2 text-teal">
+                <p role="status" className="flex items-center gap-2 text-ink">
                   <Loader2 aria-hidden="true" className="size-4 animate-spin" /> {t.publishing}
                 </p>
               )}
@@ -228,7 +228,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
                 type="button"
                 onClick={publish}
                 aria-disabled={phase.kind === "publishing" || disabled}
-                className="min-h-12 rounded-lg bg-teal px-5 font-medium text-white hover:bg-teal-deep aria-disabled:opacity-50"
+                className="min-h-12 rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50"
               >
                 {address ? t.publishUpdate : t.publishNow}
               </button>
@@ -239,7 +239,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
             type="button"
             onClick={close}
             aria-disabled={phase.kind === "publishing"}
-            className="min-h-11 self-end rounded-lg px-4 font-medium text-ink-muted hover:bg-sand aria-disabled:opacity-50"
+            className="min-h-11 self-end rounded-lg px-4 font-medium text-ink-muted hover:bg-paper aria-disabled:opacity-50"
           >
             {t.close}
           </button>

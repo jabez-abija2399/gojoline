@@ -35,14 +35,13 @@ test.describe("landing page", () => {
     });
   }
 
-  test("hero: pick a business, see its real site; FAQ opens; prices show; Start free goes to sign-in", async ({ page }) => {
+  test("hero: pick a business; twelve real sites; FAQ opens; prices show; Start free goes to sign-in", async ({ page }) => {
     await page.goto("/en");
     const clinic = page.getByRole("button", { name: "Clinic", exact: true });
     await clinic.click();
     await expect(clinic).toHaveAttribute("aria-pressed", "true");
-    // The description is filled in for editing, and the phone shows that real site.
+    // The description is filled in for editing.
     await expect(page.getByRole("textbox", { name: "Describe your business" })).toHaveValue(/A family clinic in Megenagna/);
-    await expect(page.getByRole("img", { name: /home page of Megenagna Family Clinic/ })).toBeVisible();
     // Twelve real sites to start from.
     await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(12);
     // The language card switches a real site's words with no script.
@@ -88,7 +87,6 @@ test.describe("landing page", () => {
     await box.fill("My own words");
     await page.getByRole("button", { name: "Hotel", exact: true }).click();
     await expect(box).toHaveValue("My own words");
-    await expect(page.getByRole("img", { name: /home page of Tana Shore Hotel/ })).toBeVisible();
 
     await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
     await expect(page).toHaveURL(/\/en\/sign-in\?next=/);

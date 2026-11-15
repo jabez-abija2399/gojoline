@@ -66,14 +66,14 @@ export function SignInForm({ locale, t, next, google, initialError }: { locale: 
             {hidden}
             <input type="hidden" name="intent" value="send" />
             <input type="hidden" name="contact" value={state.to} />
-            <button type="submit" disabled={pending} className="min-h-11 font-medium text-teal underline underline-offset-4 disabled:opacity-50">
+            <button type="submit" disabled={pending} className="min-h-11 font-medium text-ink underline underline-offset-4 disabled:opacity-50">
               {t.resend}
             </button>
           </form>
           <form action={action} onSubmit={guard}>
             {hidden}
             <input type="hidden" name="intent" value="restart" />
-            <button type="submit" disabled={pending} className="min-h-11 font-medium text-teal underline underline-offset-4 disabled:opacity-50">
+            <button type="submit" disabled={pending} className="min-h-11 font-medium text-ink underline underline-offset-4 disabled:opacity-50">
               {t.changeContact}
             </button>
           </form>
@@ -135,7 +135,7 @@ function GoogleButton({ label }: { label: string }) {
       type="submit"
       aria-disabled={pending}
       onClick={(e) => pending && e.preventDefault()}
-      className="flex min-h-12 w-full items-center justify-center gap-3 rounded-lg border border-line bg-white px-4 font-medium hover:border-teal-mid aria-disabled:opacity-60"
+      className="flex min-h-12 w-full items-center justify-center gap-3 rounded-lg border border-line bg-white px-4 font-medium hover:border-faint aria-disabled:opacity-60"
     >
       <svg aria-hidden="true" viewBox="0 0 48 48" className="size-5">
         <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" />

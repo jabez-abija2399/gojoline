@@ -27,9 +27,6 @@ export const am: Messages = {
       note: "በነጻ ይጀምሩ · ካርድ አያስፈልግም · አማርኛ እና እንግሊዝኛ",
       promptLabel: "ስለ ንግድዎ ይጻፉ",
       build: "ድረ-ገጼን ሥራልኝ",
-      phoneCaption: "{name} በጎጆላይን የተሠራ እውነተኛ ድረ-ገጽ ነው። ወደ ታች ያሸብልሉት።",
-      phoneLabel: "የምሳሌ ድረ-ገጽ፦ {name}",
-      shotAlt: "የ{name} መነሻ ገጽ፤ ጎብኚዎች በስልክ እንደሚያዩት",
     },
     nav: { label: "በዚህ ገጽ", examples: "ምሳሌዎች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ" },
     demo: {

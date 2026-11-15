@@ -32,7 +32,7 @@ export function WaitlistForm({ locale, t }: Props) {
 
   if (state.status === "success") {
     return (
-      <div ref={successRef} tabIndex={-1} role="status" className="flex items-start gap-3 rounded-xl border border-teal-mid bg-teal-soft p-6 text-teal">
+      <div ref={successRef} tabIndex={-1} role="status" className="flex items-start gap-3 rounded-xl border border-faint bg-sunken p-6 text-ink">
         <CheckCircle2 aria-hidden="true" className="mt-1 size-6 shrink-0" />
         <div>
           <p className="text-lg font-semibold">{t.successTitle}</p>
@@ -50,7 +50,7 @@ export function WaitlistForm({ locale, t }: Props) {
     <form ref={formRef} action={action} onSubmit={(e) => pending && e.preventDefault()} noValidate className="flex flex-col gap-5" aria-describedby="waitlist-privacy">
       <input type="hidden" name="locale" value={locale} />
       {formError && (
-        <p role="alert" tabIndex={-1} className="rounded-lg border border-destructive bg-clay-soft px-4 py-3 text-destructive">
+        <p role="alert" tabIndex={-1} className="rounded-lg border border-destructive bg-coral-soft px-4 py-3 text-destructive">
           {t.errors[formError]}
         </p>
       )}

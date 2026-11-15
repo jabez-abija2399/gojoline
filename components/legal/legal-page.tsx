@@ -41,7 +41,7 @@ function withTelegramLink(text: string) {
   return (
     <>
       {before}
-      <a href="https://t.me/gojoline_bot" className="font-medium text-teal underline underline-offset-4">@gojoline_bot</a>
+      <a href="https://t.me/gojoline_bot" className="font-medium text-ink underline underline-offset-4">@gojoline_bot</a>
       {after}
     </>
   );

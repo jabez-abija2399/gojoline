@@ -59,17 +59,17 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         key={x}
         href={`/${lang}/admin?tab=${x}`}
         aria-current={x === tab ? "page" : undefined}
-        className={`flex min-h-11 items-center gap-3 rounded-lg px-3 font-medium text-ink-muted transition-colors hover:bg-sand hover:text-ink aria-[current=page]:bg-teal aria-[current=page]:text-white ${compact ? "shrink-0" : ""}`}
+        className={`flex min-h-11 items-center gap-3 rounded-lg px-3 font-medium text-ink-muted transition-colors hover:bg-paper hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-white ${compact ? "shrink-0" : ""}`}
       >
         <Icon aria-hidden="true" className="size-5 shrink-0" />
         <span className="truncate">{t.admin.tabs[x]}</span>
-        {!!badge[x] && <span className="ms-auto rounded-full bg-clay px-2 py-0.5 text-xs font-bold text-white tabular-nums">{badge[x]}</span>}
+        {!!badge[x] && <span className="ms-auto rounded-full bg-coral px-2 py-0.5 text-xs font-bold text-on-coral tabular-nums">{badge[x]}</span>}
       </Link>
     );
   };
 
   return (
-    <div data-admin-theme={theme} className="admin-root flex min-h-screen flex-1 bg-sand text-ink">
+    <div data-gojo-theme={theme} className="admin-root flex min-h-screen flex-1 bg-paper text-ink">
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col gap-6 border-e border-line bg-white p-4 lg:flex">
         <Link href={`/${lang}`} className="flex min-h-11 items-center gap-2 font-display text-lg font-bold">
           <Image src="/brand/mark.svg" alt="" width={32} height={32} className="size-8" />
@@ -80,13 +80,13 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         </nav>
         <div className="mt-auto flex flex-col gap-3">
           <ThemeSwitch />
-          <Link href={`/${lang}/build`} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-ink-muted hover:bg-sand hover:text-ink">
+          <Link href={`/${lang}/build`} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-ink-muted hover:bg-paper hover:text-ink">
             <ArrowLeft aria-hidden="true" className="size-4" /> {t.admin.backToApp}
           </Link>
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex flex-col gap-3 border-b border-line bg-sand/90 px-4 py-3 backdrop-blur sm:px-6 lg:py-4">
+        <header className="sticky top-0 z-10 flex flex-col gap-3 border-b border-line bg-paper/90 px-4 py-3 backdrop-blur sm:px-6 lg:py-4">
           <div className="flex items-center justify-between gap-3">
             <h1 className="text-2xl font-bold sm:text-3xl">{t.admin.tabs[tab]}</h1>
             <div className="lg:hidden"><ThemeSwitch compact /></div>
@@ -98,7 +98,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         <main id="main" className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6">
           {done && (
             <FocusOnMount>
-              <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-3 font-medium ${done === "ok" ? "bg-teal-soft text-teal" : "bg-clay-soft text-destructive"}`}>
+              <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-3 font-medium ${done === "ok" ? "bg-sunken text-ink" : "bg-coral-soft text-destructive"}`}>
                 {t.admin.tabStatus[done]}
               </p>
             </FocusOnMount>
@@ -126,7 +126,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         <input type="hidden" name="lang" value={lang} />
         <input type="hidden" name="tab" value={tab} />
         {!compact && <span className="px-1 text-sm font-medium text-ink-muted">{t.admin.theme}</span>}
-        <div role="group" aria-label={t.admin.theme} className="flex gap-1 rounded-lg border border-line bg-sand p-1">
+        <div role="group" aria-label={t.admin.theme} className="flex gap-1 rounded-lg border border-line bg-paper p-1">
           {opts.map(({ v, Icon }) => (
             <button key={v} name="theme" value={v} aria-pressed={theme === v} title={t.admin.themes[v]} className="flex min-h-9 min-w-11 flex-1 items-center justify-center gap-1 rounded-md text-ink-muted aria-pressed:bg-white aria-pressed:text-ink aria-pressed:shadow-sm">
               <Icon aria-hidden="true" className="size-4" />
@@ -163,7 +163,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               <span className="font-display text-2xl font-bold tabular-nums sm:text-3xl">{k.value}</span>
               <span className="flex items-center gap-1 text-sm text-ink-muted">
                 {k.trend !== undefined && k.trend !== 0 && (
-                  <span className={`inline-flex items-center gap-0.5 font-semibold ${k.trend > 0 ? "text-teal" : "text-destructive"}`}>
+                  <span className={`inline-flex items-center gap-0.5 font-semibold ${k.trend > 0 ? "text-ink" : "text-destructive"}`}>
                     {k.trend > 0 ? <TrendingUp aria-hidden="true" className="size-4" /> : <TrendingDown aria-hidden="true" className="size-4" />}
                     {format(t.admin.kVsLastWeek, { n: `${k.trend > 0 ? "+" : ""}${k.trend}` })}
                   </span>
@@ -176,13 +176,13 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         <section aria-labelledby="att-title" className="rounded-2xl border border-line bg-white p-5">
           <h2 id="att-title" className="text-lg font-bold">{t.admin.attention}</h2>
           {attention.length === 0 ? (
-            <p className="mt-2 flex items-center gap-2 text-ink-muted"><CircleCheck aria-hidden="true" className="size-5 text-teal" /> {t.admin.allClear}</p>
+            <p className="mt-2 flex items-center gap-2 text-ink-muted"><CircleCheck aria-hidden="true" className="size-5 text-ink" /> {t.admin.allClear}</p>
           ) : (
             <ul className="mt-3 flex flex-col gap-2">
               {attention.map(({ href, text, Icon }) => (
                 <li key={href}>
-                  <Link href={href} className="flex min-h-12 items-center gap-3 rounded-xl bg-clay-soft px-4 font-medium text-ink hover:ring-2 hover:ring-clay-light">
-                    <Icon aria-hidden="true" className="size-5 text-clay" /> {text}
+                  <Link href={href} className="flex min-h-12 items-center gap-3 rounded-xl bg-coral-soft px-4 font-medium text-ink hover:ring-2 hover:ring-coral">
+                    <Icon aria-hidden="true" className="size-5 text-link" /> {text}
                     <ArrowRight aria-hidden="true" className="ms-auto size-4" />
                   </Link>
                 </li>
@@ -227,7 +227,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             <span className="sr-only">{t.admin.searchLabel}</span>
             <input name="q" defaultValue={q} placeholder={t.admin.searchLabel} maxLength={100} className="min-h-11 w-full rounded-lg border border-input bg-white px-3 text-base" />
           </label>
-          <button className="min-h-11 rounded-lg bg-teal px-4 font-medium text-white">{t.admin.search}</button>
+          <button className="min-h-11 rounded-lg bg-ink px-4 font-medium text-white">{t.admin.search}</button>
         </form>
         {list.length === 0 ? (
           <p className="text-ink-muted">{t.admin.usersEmpty}</p>
@@ -245,13 +245,13 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               </thead>
               <tbody>
                 {list.map((u) => (
-                  <tr key={u.id} className="border-b border-line last:border-0 hover:bg-sand">
+                  <tr key={u.id} className="border-b border-line last:border-0 hover:bg-paper">
                     <th scope="row" className="px-4 py-3 text-start font-normal">
                       <span className="block font-medium">{u.name || "—"}</span>
                       <span className="block break-all text-sm text-ink-muted">{u.contact}</span>
                     </th>
                     <td className="px-4 py-3 text-sm tabular-nums">{joinedFmt.format(u.joined)}</td>
-                    <td className="px-4 py-3"><span className={`rounded-full px-2.5 py-1 text-sm font-semibold ${u.plan === "free" ? "bg-sand text-ink-muted" : "bg-teal-soft text-teal"}`}>{t.billing.plans[u.plan]}</span></td>
+                    <td className="px-4 py-3"><span className={`rounded-full px-2.5 py-1 text-sm font-semibold ${u.plan === "free" ? "bg-paper text-ink-muted" : "bg-sunken text-ink"}`}>{t.billing.plans[u.plan]}</span></td>
                     <td className="px-4 py-3 text-end tabular-nums">{u.sites}</td>
                     <td className="px-4 py-3 text-end tabular-nums">{u.credits}</td>
                   </tr>
@@ -284,7 +284,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                     <p className="text-ink-muted">{dateFmt.format(p.createdAt)}</p>
                   </div>
                   {p.hasReceipt ? (
-                    <a href={`/api/admin/payments/${p.id}/receipt`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 w-fit items-center font-medium text-teal underline underline-offset-4">{t.admin.viewReceipt}</a>
+                    <a href={`/api/admin/payments/${p.id}/receipt`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.viewReceipt}</a>
                   ) : (
                     <p className="text-ink-muted">{t.admin.noReceipt}</p>
                   )}
@@ -310,14 +310,14 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               <li key={g.siteId} className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-mono font-semibold">{g.slug}</p>
-                  <span className="rounded-full bg-clay-soft px-3 py-1 text-sm font-semibold text-destructive">{format(t.admin.reportCount, { n: g.reports.length, people: g.reporters })}</span>
+                  <span className="rounded-full bg-coral-soft px-3 py-1 text-sm font-semibold text-destructive">{format(t.admin.reportCount, { n: g.reports.length, people: g.reporters })}</span>
                 </div>
                 {g.url && (
-                  <a href={g.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center break-all font-medium text-teal underline underline-offset-4">{t.admin.openSite}</a>
+                  <a href={g.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center break-all font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>
                 )}
                 <ul className="flex flex-col gap-2">
                   {g.reports.slice(0, 10).map((r) => (
-                    <li key={r.id} className="rounded-lg bg-sand p-3">
+                    <li key={r.id} className="rounded-lg bg-paper p-3">
                       <p className="font-medium">{t.safety.reasons[r.reason]}</p>
                       {r.details && <p lang={langOf(r.details)} className="whitespace-pre-wrap break-words">{r.details}</p>}
                       <p className="text-sm text-ink-muted">{dateFmt.format(r.createdAt)}{r.contact ? ` · ${r.contact}` : ""}</p>
@@ -346,10 +346,10 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               <li key={site.id} className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-mono font-semibold">{site.slug}</p>
-                  <span className={`rounded-full px-3 py-1 text-sm font-semibold ${site.status === "published" ? "bg-teal-soft text-teal" : site.status === "taken_down" ? "bg-clay-soft text-destructive" : "bg-sand text-ink"}`}>{t.admin.siteStatus[site.status]}</span>
+                  <span className={`rounded-full px-3 py-1 text-sm font-semibold ${site.status === "published" ? "bg-sunken text-ink" : site.status === "taken_down" ? "bg-coral-soft text-destructive" : "bg-paper text-ink"}`}>{t.admin.siteStatus[site.status]}</span>
                 </div>
                 {site.url && site.status === "published" && (
-                  <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center font-medium text-teal underline underline-offset-4">{t.admin.openSite}</a>
+                  <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>
                 )}
                 {site.takenDownReason && (
                   <p className="text-ink-muted">
