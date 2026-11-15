@@ -20,7 +20,12 @@ export function FeatureTabs({ items, panels, backdrop }: { items: FeatureItem[];
           return (
             <li key={it.key} className="border-b border-line">
               <h3>
-                <button type="button" aria-expanded={on} aria-controls={`feature-${it.key}`} onClick={() => setActive(it.key)} className={`flex min-h-14 w-full items-center gap-3 py-3 text-start text-xl font-semibold transition-colors ${on ? "text-ink" : "text-ink-muted hover:text-ink"}`}>
+                <button type="button" aria-expanded={on} aria-controls={`feature-${it.key}`} onClick={(e) => {
+                    setActive(it.key);
+                    // On phones the row above closes and this one moves: keep it in view.
+                    const row = e.currentTarget.closest("li");
+                    requestAnimationFrame(() => row?.scrollIntoView({ block: "nearest" }));
+                  }} className={`flex min-h-14 w-full items-center gap-3 py-3 text-start text-xl font-semibold transition-colors ${on ? "text-ink" : "text-ink-muted hover:text-ink"}`}>
                   <span aria-hidden="true" className={`h-0.5 shrink-0 rounded-full bg-coral transition-all ${on ? "w-6" : "w-0"}`} />
                   {it.title}
                 </button>

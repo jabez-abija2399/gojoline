@@ -42,9 +42,12 @@ test.describe("landing page", () => {
     await expect(clinic).toHaveAttribute("aria-pressed", "true");
     // The description is filled in for editing.
     await expect(page.getByRole("textbox", { name: "Describe your business" })).toHaveValue(/A family clinic in Megenagna/);
-    // The language card switches a real site's words with no script.
-    await page.getByText("አማርኛ", { exact: true }).last().click();
-    await expect(page.getByText("ቦሌ ቡና ቤት")).toBeVisible();
+    // Features: picking one shows its description; the one before closes.
+    const birr = page.getByRole("button", { name: "Pay in Birr", exact: true });
+    await birr.click();
+    await expect(birr).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByText("Start free. Pay by Telebirr or bank transfer, no foreign card needed.")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Amharic and English", exact: true })).toHaveAttribute("aria-expanded", "false");
     const question = page.getByText("How do I pay?");
     await question.click();
     await expect(page.getByText(/send the transaction number/i)).toBeVisible();
