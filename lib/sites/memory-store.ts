@@ -37,7 +37,7 @@ export class MemorySiteStore implements SiteStore, SiteAdminStore {
   }
   async staleDomainClaim(domain: string, claimedBefore: Date) {
     const s = [...this.sites.values()].find((x) => x.customDomain === domain && !x.customDomainVerifiedAt && x.customDomainClaimedAt && x.customDomainClaimedAt < claimedBefore);
-    return s ? { siteId: s.id, providerProjectId: s.providerProjectId } : null;
+    return s ? { siteId: s.id, ownerId: s.ownerId, projectId: s.projectId, providerProjectId: s.providerProjectId } : null;
   }
   async releaseDomainClaim(siteId: string, domain: string, claimedBefore: Date) {
     const s = await this.byId(siteId);

@@ -1,0 +1,720 @@
+{
+  "name": {
+    "en": "Tibeb Merkato Fashion",
+    "am": "ጥበብ መርካቶ ፋሽን"
+  },
+  "tagline": {
+    "en": "Habesha kemis, everyday clothing and custom tailoring in Merkato",
+    "am": "የሀበሻ ቀሚስ፣ የዘወትር ልብስ እና በልኬት ስፌት በመርካቶ"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#7A2E3A",
+    "accent": "#1F5E4A",
+    "background": "#FBF8F3",
+    "text": "#1F1A17",
+    "font": "classic",
+    "radius": "medium"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Merkato, near Anwar Mosque, Addis Ababa",
+      "am": "መርካቶ፣ አንዋር መስጊድ አጠገብ፣ አዲስ አበባ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Saturday",
+          "am": "ከሰኞ እስከ ቅዳሜ"
+        },
+        "time": {
+          "en": "8:30 am to 7:00 pm",
+          "am": "ከጠዋቱ 2:30 እስከ ምሽቱ 1 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Sunday",
+          "am": "እሑድ"
+        },
+        "time": {
+          "en": "10:00 am to 4:00 pm",
+          "am": "ከጠዋቱ 4 እስከ ቀኑ 10 ሰዓት"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Handwoven habesha kemis, netela and everyday clothing in Merkato, with custom tailoring and delivery in Addis.",
+        "am": "በእጅ የተሸመነ የሀበሻ ቀሚስ፣ ነጠላ እና የዘወትር ልብስ በመርካቶ፤ በልኬት ስፌት እና በአዲስ አበባ ውስጥ ማድረስ።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "Open every day in Merkato",
+            "am": "በመርካቶ በየቀኑ ክፍት ነን"
+          },
+          "heading": {
+            "en": "Beautiful habesha kemis for every celebration",
+            "am": "ለበዓልዎ የሚያምር የሀበሻ ቀሚስ"
+          },
+          "subheading": {
+            "en": "Handwoven dresses with tibeb, ready to wear or made to your measurements. We deliver across Addis Ababa.",
+            "am": "በጥበብ ያጌጡ በእጅ የተሸመኑ ቀሚሶች፤ ተዘጋጅተው የቀረቡ ወይም በልኬትዎ የሚሰፉ። በመላው አዲስ አበባ እናደርሳለን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "See our products",
+              "am": "ምርቶቻችንን ይመልከቱ"
+            },
+            "href": "/products"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Order now",
+              "am": "አሁን ይዘዙ"
+            },
+            "href": "/order"
+          }
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "Weavers and tailors since 2010",
+            "am": "ከ2010 ጀምሮ ሸማኔዎች እና ልብስ ሰፊዎች"
+          },
+          "body": {
+            "en": "We work with skilled weavers from Gullele and Shiro Meda, and our tailors finish every dress in our Merkato shop.\n\nFor holidays, weddings and graduations, come early so we have time to fit your dress perfectly.",
+            "am": "ከጉለሌ እና ሽሮ ሜዳ ልምድ ካላቸው ሸማኔዎች ጋር እንሠራለን፤ እያንዳንዱን ቀሚስ ልብስ ሰፊዎቻችን በመርካቶ ሱቃችን ያጠናቅቃሉ።\n\nለበዓል፣ ለሠርግ እና ለምርቃት ቀሚስዎ በትክክል እንዲሆን ቀደም ብለው ይምጡ።"
+          },
+          "highlights": [
+            {
+              "value": {
+                "en": "15+",
+                "am": "15+"
+              },
+              "label": {
+                "en": "Years in Merkato",
+                "am": "ዓመታት በመርካቶ"
+              }
+            },
+            {
+              "value": {
+                "en": "7 days",
+                "am": "7 ቀን"
+              },
+              "label": {
+                "en": "Typical tailoring time",
+                "am": "የተለመደ የስፌት ጊዜ"
+              }
+            },
+            {
+              "value": {
+                "en": "Addis",
+                "am": "አዲስ አበባ"
+              },
+              "label": {
+                "en": "Delivery area",
+                "am": "የምናደርስበት"
+              }
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "Why shop with us",
+            "am": "ለምን ከእኛ ይገዛሉ"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Handwoven cotton",
+                "am": "በእጅ የተሸመነ ጥጥ"
+              },
+              "description": {
+                "en": "Soft, real shemane cotton with hand-picked tibeb.",
+                "am": "ለስላሳ የሸማ ጥጥ ከተመረጠ ጥበብ ጋር።"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Made to fit",
+                "am": "በልኬትዎ"
+              },
+              "description": {
+                "en": "Free small adjustments on any dress you buy.",
+                "am": "በገዙት ቀሚስ ላይ ትንሽ ማስተካከያ በነፃ።"
+              },
+              "icon": "scissors"
+            },
+            {
+              "title": {
+                "en": "Home delivery",
+                "am": "እቤት ድረስ ማድረስ"
+              },
+              "description": {
+                "en": "We deliver anywhere in Addis Ababa.",
+                "am": "በአዲስ አበባ የትም ቦታ እናደርሳለን።"
+              },
+              "icon": "car"
+            }
+          ]
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": {
+            "en": "Visit or call us",
+            "am": "ይጎብኙን ወይም ይደውሉልን"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Find us in Merkato",
+            "am": "በመርካቶ ያግኙን"
+          },
+          "query": "Anwar Mosque, Merkato, Addis Ababa"
+        }
+      ]
+    },
+    {
+      "path": "/products",
+      "title": {
+        "en": "Products",
+        "am": "ምርቶች"
+      },
+      "nav": {
+        "en": "Products",
+        "am": "ምርቶች"
+      },
+      "description": {
+        "en": "Habesha kemis, netela, gabi and men's traditional clothing with prices.",
+        "am": "የሀበሻ ቀሚስ፣ ነጠላ፣ ጋቢ እና የወንዶች ባህላዊ ልብስ ከነዋጋቸው።"
+      },
+      "sections": [
+        {
+          "type": "menu",
+          "heading": {
+            "en": "Our products",
+            "am": "ምርቶቻችን"
+          },
+          "intro": {
+            "en": "Prices are in Birr and may change with fabric and tibeb. Call to check what is in stock.",
+            "am": "ዋጋዎቹ በብር ናቸው፤ እንደ ጨርቁ እና ጥበቡ ሊለያዩ ይችላሉ። ያለውን ለማወቅ ይደውሉ።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "Habesha kemis",
+                "am": "የሀበሻ ቀሚስ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Simple everyday kemis",
+                    "am": "ቀለል ያለ የዘወትር ቀሚስ"
+                  },
+                  "description": {
+                    "en": "Light cotton with a narrow tibeb",
+                    "am": "ቀጭን ጥበብ ያለው ቀላል ጥጥ"
+                  },
+                  "price": {
+                    "amountMinor": 800000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Holiday kemis",
+                    "am": "የበዓል ቀሚስ"
+                  },
+                  "description": {
+                    "en": "Wide colourful tibeb, comes with netela",
+                    "am": "ሰፊ ባለቀለም ጥበብ፣ ከነጠላ ጋር"
+                  },
+                  "price": {
+                    "amountMinor": 1500000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "Popular",
+                    "am": "ተወዳጅ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Wedding kemis",
+                    "am": "የሠርግ ቀሚስ"
+                  },
+                  "description": {
+                    "en": "Full hand embroidery with gold thread",
+                    "am": "በወርቃማ ክር ሙሉ የእጅ ጥልፍ"
+                  },
+                  "price": {
+                    "amountMinor": 3500000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Girls' kemis",
+                    "am": "የልጆች ቀሚስ"
+                  },
+                  "description": {
+                    "en": "Ages 3 to 12",
+                    "am": "ከ3 እስከ 12 ዓመት"
+                  },
+                  "price": {
+                    "amountMinor": 300000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Netela and gabi",
+                "am": "ነጠላ እና ጋቢ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Netela",
+                    "am": "ነጠላ"
+                  },
+                  "price": {
+                    "amountMinor": 150000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Gabi",
+                    "am": "ጋቢ"
+                  },
+                  "description": {
+                    "en": "Thick, warm four-layer cotton",
+                    "am": "ወፍራም ባለ አራት ድርብ ሙቅ ጥጥ"
+                  },
+                  "price": {
+                    "amountMinor": 350000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Men's clothing",
+                "am": "የወንዶች ልብስ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Traditional shirt and trousers",
+                    "am": "ባህላዊ ሸሚዝ እና ሱሪ"
+                  },
+                  "description": {
+                    "en": "With tibeb on collar and cuffs",
+                    "am": "በአንገትና በእጅጌ ጥበብ"
+                  },
+                  "price": {
+                    "amountMinor": 450000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Kuta",
+                    "am": "ኩታ"
+                  },
+                  "price": {
+                    "amountMinor": 200000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Couple set",
+                    "am": "የጥንዶች ልብስ"
+                  },
+                  "description": {
+                    "en": "Matching kemis and men's outfit",
+                    "am": "የሚመሳሰል ቀሚስ እና የወንድ ልብስ"
+                  },
+                  "price": {
+                    "amountMinor": 2200000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "For weddings",
+                    "am": "ለሠርግ"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/tailoring",
+      "title": {
+        "en": "Custom tailoring",
+        "am": "በልኬት ስፌት"
+      },
+      "nav": {
+        "en": "Tailoring",
+        "am": "ስፌት"
+      },
+      "description": {
+        "en": "Habesha kemis and clothing made to your measurements in Merkato.",
+        "am": "የሀበሻ ቀሚስ እና ልብስ በልኬትዎ በመርካቶ እንሰፋለን።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "Tailoring services",
+            "am": "የስፌት አገልግሎቶች"
+          },
+          "intro": {
+            "en": "Bring your own fabric or choose from ours. Most orders are ready in about a week.",
+            "am": "የራስዎን ጨርቅ ይዘው ይምጡ ወይም ከእኛ ይምረጡ። አብዛኛው ሥራ በአንድ ሳምንት ገደማ ይደርሳል።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Kemis from your fabric",
+                "am": "ከራስዎ ጨርቅ ቀሚስ"
+              },
+              "description": {
+                "en": "Cut and sewn to your measurements.",
+                "am": "በልኬትዎ ተቆርጦ ይሰፋል።"
+              },
+              "price": {
+                "amountMinor": 250000,
+                "currency": "ETB"
+              },
+              "icon": "scissors"
+            },
+            {
+              "title": {
+                "en": "Full custom kemis",
+                "am": "ሙሉ በሙሉ በትዕዛዝ የሚሠራ ቀሚስ"
+              },
+              "description": {
+                "en": "You choose the fabric, colours and tibeb design.",
+                "am": "ጨርቁን፣ ቀለሙን እና የጥበቡን ዲዛይን እርስዎ ይመርጣሉ።"
+              },
+              "price": {
+                "amountMinor": 1200000,
+                "currency": "ETB"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Alterations",
+                "am": "ማስተካከያ"
+              },
+              "description": {
+                "en": "Shorten, take in or let out any dress.",
+                "am": "ማሳጠር፣ ማጥበብ ወይም ማስፋት።"
+              },
+              "price": {
+                "amountMinor": 40000,
+                "currency": "ETB"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "Wedding and group orders",
+                "am": "የሠርግ እና የቡድን ትዕዛዝ"
+              },
+              "description": {
+                "en": "Matching outfits for the bridal party or family.",
+                "am": "ለሙሽሮች አጃቢዎች ወይም ለቤተሰብ የሚመሳሰል ልብስ።"
+              },
+              "icon": "heart"
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "fitting",
+          "kind": "booking",
+          "heading": {
+            "en": "Book a measurement visit",
+            "am": "ለልኬት ቀጠሮ ይያዙ"
+          },
+          "intro": {
+            "en": "Choose a day to come to the shop. We will call to confirm.",
+            "am": "ወደ ሱቁ የሚመጡበትን ቀን ይምረጡ። ለማረጋገጥ እንደውልልዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": {
+                "en": "Preferred date",
+                "am": "የሚመችዎ ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "service",
+              "label": {
+                "en": "Service",
+                "am": "አገልግሎት"
+              },
+              "type": "select",
+              "options": [
+                {
+                  "en": "Kemis from my fabric",
+                  "am": "ከራሴ ጨርቅ ቀሚስ"
+                },
+                {
+                  "en": "Full custom kemis",
+                  "am": "በትዕዛዝ የሚሠራ ቀሚስ"
+                },
+                {
+                  "en": "Alterations",
+                  "am": "ማስተካከያ"
+                },
+                {
+                  "en": "Wedding or group order",
+                  "am": "የሠርግ ወይም የቡድን ትዕዛዝ"
+                }
+              ]
+            },
+            {
+              "name": "notes",
+              "label": {
+                "en": "Event date or notes",
+                "am": "የዝግጅቱ ቀን ወይም ማስታወሻ"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Book visit",
+            "am": "ቀጠሮ ያስይዙ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will call you to confirm your visit.",
+            "am": "እናመሰግናለን! ቀጠሮዎን ለማረጋገጥ እንደውልልዎታለን።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/order",
+      "title": {
+        "en": "Order",
+        "am": "ይዘዙ"
+      },
+      "nav": {
+        "en": "Order",
+        "am": "ይዘዙ"
+      },
+      "description": {
+        "en": "Order a habesha kemis or clothing for delivery in Addis Ababa.",
+        "am": "የሀበሻ ቀሚስ ወይም ልብስ አዝዘው በአዲስ አበባ ውስጥ ያስመጡ።"
+      },
+      "sections": [
+        {
+          "type": "form",
+          "id": "order",
+          "kind": "order",
+          "heading": {
+            "en": "Place an order",
+            "am": "ትዕዛዝ ይስጡ"
+          },
+          "intro": {
+            "en": "Pay on delivery. Delivery in Addis usually takes 1 to 2 days.",
+            "am": "ክፍያ ሲደርስዎ ነው። በአዲስ አበባ ውስጥ ብዙውን ጊዜ በ1 እስከ 2 ቀን ይደርሳል።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "item",
+              "label": {
+                "en": "Item",
+                "am": "የሚፈልጉት ዕቃ"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Simple everyday kemis",
+                  "am": "ቀለል ያለ የዘወትር ቀሚስ"
+                },
+                {
+                  "en": "Holiday kemis",
+                  "am": "የበዓል ቀሚስ"
+                },
+                {
+                  "en": "Wedding kemis",
+                  "am": "የሠርግ ቀሚስ"
+                },
+                {
+                  "en": "Girls' kemis",
+                  "am": "የልጆች ቀሚስ"
+                },
+                {
+                  "en": "Netela",
+                  "am": "ነጠላ"
+                },
+                {
+                  "en": "Gabi",
+                  "am": "ጋቢ"
+                },
+                {
+                  "en": "Men's shirt and trousers",
+                  "am": "የወንድ ሸሚዝ እና ሱሪ"
+                },
+                {
+                  "en": "Couple set",
+                  "am": "የጥንዶች ልብስ"
+                }
+              ]
+            },
+            {
+              "name": "size",
+              "label": {
+                "en": "Size",
+                "am": "ልክ"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "S",
+                  "am": "S"
+                },
+                {
+                  "en": "M",
+                  "am": "M"
+                },
+                {
+                  "en": "L",
+                  "am": "L"
+                },
+                {
+                  "en": "XL",
+                  "am": "XL"
+                },
+                {
+                  "en": "XXL",
+                  "am": "XXL"
+                },
+                {
+                  "en": "Kids",
+                  "am": "የልጆች"
+                },
+                {
+                  "en": "Not sure, please call me",
+                  "am": "እርግጠኛ አይደለሁም፣ ይደውሉልኝ"
+                }
+              ]
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "delivery_address",
+              "label": {
+                "en": "Delivery address",
+                "am": "የሚደርስበት አድራሻ"
+              },
+              "type": "textarea",
+              "required": true
+            },
+            {
+              "name": "notes",
+              "label": {
+                "en": "Colour or other notes",
+                "am": "ቀለም ወይም ሌላ ማስታወሻ"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send order",
+            "am": "ትዕዛዙን ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will call you to confirm your order and delivery time.",
+            "am": "እናመሰግናለን! ትዕዛዝዎን እና የሚደርስበትን ሰዓት ለማረጋገጥ እንደውልልዎታለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Questions before ordering?",
+            "am": "ከማዘዝዎ በፊት ጥያቄ አለዎት?"
+          },
+          "intro": {
+            "en": "Call us or send a message on Telegram.",
+            "am": "ይደውሉልን ወይም በቴሌግራም መልዕክት ይላኩልን።"
+          }
+        }
+      ]
+    }
+  ]
+}

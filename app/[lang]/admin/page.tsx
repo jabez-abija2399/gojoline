@@ -104,7 +104,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               <li key={g.siteId} className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-mono font-semibold">{g.slug}</p>
-                  <span className="rounded-full bg-clay-soft px-3 py-1 text-sm font-semibold text-destructive">{format(t.admin.reportCount, { n: g.reports.length })}</span>
+                  <span className="rounded-full bg-clay-soft px-3 py-1 text-sm font-semibold text-destructive">{format(t.admin.reportCount, { n: g.reports.length, people: g.reporters })}</span>
                 </div>
                 {g.url && (
                   <a href={g.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center break-all font-medium text-teal underline underline-offset-4">{t.admin.openSite}</a>
@@ -146,7 +146,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                   <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center font-medium text-teal underline underline-offset-4">{t.admin.openSite}</a>
                 )}
                 {site.takenDownReason && <p className="text-ink-muted">{site.takenDownReason}</p>}
-                {site.status !== "pending" && <ModerateForm t={t.admin} siteId={site.id} lang={lang} ops={site.status === "taken_down" ? ["restore"] : ["take_down"]} />}
+                {site.status !== "pending" && <ModerateForm t={t.admin} siteId={site.id} lang={lang} ops={site.status === "taken_down" ? ["take_down", "restore"] : ["take_down"]} />}
               </li>
             ))}
           </ul>

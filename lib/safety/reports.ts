@@ -22,25 +22,30 @@ export interface ReportedSite {
   slug: string;
   url: string | null;
   siteStatus: string;
+  /** Different networks that reported the site (one network filing many reports counts once). */
+  reporters: number;
   reports: AbuseReport[];
 }
 
 export interface ReportStore {
-  add(r: { siteId: string; reason: ReportReason; details: string | null; contact: string | null; reporterKey: string }): Promise<AbuseReport>;
+  /** One open report per site and reporter: a repeat returns null. */
+  add(r: { siteId: string; reason: ReportReason; details: string | null; contact: string | null; reporterKey: string }): Promise<AbuseReport | null>;
   /** Sites with open reports, most reported first. */
   openBySite(limit: number): Promise<ReportedSite[]>;
   /** Closes every open report for a site. */
   closeForSite(siteId: string, status: "dismissed" | "actioned", adminId: string): Promise<number>;
 }
 
-const group = (rows: (AbuseReport & { slug: string; url: string | null; siteStatus: string })[], limit: number): ReportedSite[] => {
-  const by = new Map<string, ReportedSite>();
-  for (const { slug, url, siteStatus, ...r } of rows) {
-    const g = by.get(r.siteId) ?? { siteId: r.siteId, slug, url, siteStatus, reports: [] };
+const group = (rows: (AbuseReport & { slug: string; url: string | null; siteStatus: string; reporterKey: string })[], limit: number): ReportedSite[] => {
+  const by = new Map<string, ReportedSite & { keys: Set<string> }>();
+  for (const { slug, url, siteStatus, reporterKey, ...r } of rows) {
+    const g = by.get(r.siteId) ?? { siteId: r.siteId, slug, url, siteStatus, reporters: 0, reports: [], keys: new Set<string>() };
     g.reports.push(r);
+    g.keys.add(reporterKey);
+    g.reporters = g.keys.size;
     by.set(r.siteId, g);
   }
-  return [...by.values()].sort((a, b) => b.reports.length - a.reports.length).slice(0, limit);
+  return [...by.values()].map(({ keys: _k, ...g }) => (void _k, g)).sort((a, b) => b.reporters - a.reporters).slice(0, limit);
 };
 
 export class MemoryReportStore implements ReportStore {
@@ -48,6 +53,7 @@ export class MemoryReportStore implements ReportStore {
   constructor(private siteInfo: (siteId: string) => Promise<{ slug: string; url: string | null; status: string } | null>) {}
 
   async add(r: { siteId: string; reason: ReportReason; details: string | null; contact: string | null; reporterKey: string }) {
+    if (this.reports.some((x) => x.siteId === r.siteId && x.reporterKey === r.reporterKey && x.status === "open")) return null;
     const report = { ...r, id: randomUUID(), status: "open" as const, createdAt: new Date() };
     this.reports.push(report);
     const { reporterKey: _k, ...pub } = report;
@@ -56,8 +62,7 @@ export class MemoryReportStore implements ReportStore {
   }
   async openBySite(limit: number) {
     const rows = [];
-    for (const { reporterKey: _k, ...r } of this.reports.filter((x) => x.status === "open")) {
-      void _k;
+    for (const r of this.reports.filter((x) => x.status === "open")) {
       const s = await this.siteInfo(r.siteId);
       if (s) rows.push({ ...r, slug: s.slug, url: s.url, siteStatus: s.status });
     }
@@ -86,17 +91,17 @@ export class DbReportStore implements ReportStore {
     createdAt: abuseReports.createdAt,
   };
   async add(r: { siteId: string; reason: ReportReason; details: string | null; contact: string | null; reporterKey: string }) {
-    const [row] = await this.db.insert(abuseReports).values({ ...r, status: "open" }).returning(this.cols);
-    return row!;
+    const [row] = await this.db.insert(abuseReports).values({ ...r, status: "open" }).onConflictDoNothing().returning(this.cols);
+    return row ?? null;
   }
   async openBySite(limit: number) {
     const rows = await this.db
-      .select({ ...this.cols, slug: sites.slug, url: sites.url, siteStatus: sites.status })
+      .select({ ...this.cols, reporterKey: abuseReports.reporterKey, slug: sites.slug, url: sites.url, siteStatus: sites.status })
       .from(abuseReports)
       .innerJoin(sites, eq(sites.id, abuseReports.siteId))
       .where(eq(abuseReports.status, "open"))
       .orderBy(desc(abuseReports.createdAt))
-      .limit(500);
+      .limit(2000);
     return group(rows, limit);
   }
   async closeForSite(siteId: string, status: "dismissed" | "actioned", adminId: string) {

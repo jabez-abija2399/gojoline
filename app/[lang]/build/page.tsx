@@ -9,6 +9,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
 import { createProject } from "./actions";
+import { PRESET_IDS } from "@/lib/template/presets";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/build">): Promise<Metadata> {
   const { lang } = await params;
@@ -42,6 +43,25 @@ export default async function ProjectsPage({ params, searchParams }: PageProps<"
           )}
         </div>
         {tooMany && <p role="alert" className="rounded-lg bg-clay-soft px-4 py-3 text-destructive">{t.builder.tooMany}</p>}
+        {builder && (
+          <section aria-labelledby="templates-title" className="flex flex-col gap-3">
+            <h2 id="templates-title" className="text-xl font-bold">{t.builder.templatesTitle}</h2>
+            <p className="text-ink-muted">{t.builder.templatesHint}</p>
+            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {PRESET_IDS.map((id) => (
+                <li key={id}>
+                  <form action={createProject} className="h-full">
+                    <input type="hidden" name="lang" value={lang} />
+                    <input type="hidden" name="preset" value={id} />
+                    <button type="submit" className="flex h-full min-h-14 w-full items-center rounded-xl border border-line bg-white px-4 py-3 text-start font-medium hover:border-teal-mid">
+                      {t.builder.templates[id]}
+                    </button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         {!builder ? (
           <p className="rounded-xl border border-line bg-white p-6 text-ink-muted">{t.builder.unavailable}</p>
         ) : projects.length === 0 ? (

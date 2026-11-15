@@ -5,6 +5,7 @@ import { ownerId } from "@/lib/builder/access";
 import { isLocale } from "@/lib/i18n/config";
 import { clientIp } from "@/lib/server/request";
 import { services } from "@/lib/server/services";
+import { isPresetId, presetName, presetVersionFiles } from "@/lib/template/presets";
 
 export async function createProject(form: FormData) {
   const lang = isLocale(form.get("lang")) ? (form.get("lang") as "en" | "am") : "en";
@@ -20,6 +21,9 @@ export async function createProject(form: FormData) {
     limiter.hit(`project-create:ip:${await clientIp()}`, perHour * 2, 3_600_000),
   ]);
   if (!byOwner.allowed || !byIp.allowed) redirect(`/${lang}/build?error=too_many`);
-  const project = await builder.store.createProject(owner, { name: "", locale: lang });
+  // Starting from an industry template gives a ready site as version 1 (no AI cost).
+  const preset = form.get("preset");
+  const project = await builder.store.createProject(owner, { name: isPresetId(preset) ? presetName(preset, lang) : "", locale: lang });
+  if (isPresetId(preset)) await builder.store.addVersion(owner, { projectId: project.id, summary: `Template: ${preset}`, files: presetVersionFiles(preset) });
   redirect(`/${lang}/build/${project.id}`);
 }

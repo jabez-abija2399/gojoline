@@ -45,6 +45,7 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
       headers: publishedSiteHeaders(),
       providerProjectId: site.providerProjectId,
     });
+    await deps.publisher.restrictOldDeployments?.(site.providerProjectId).catch((e: unknown) => console.error("takedown protect failed", e instanceof Error ? e.message : "unknown"));
     return "ok";
   } catch (error) {
     console.error("takedown deploy failed", siteId, error instanceof Error ? error.message : "unknown");

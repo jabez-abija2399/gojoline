@@ -1,4 +1,5 @@
 import { bigint, boolean, customType, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
 
@@ -366,5 +367,9 @@ export const abuseReports = pgTable(
     reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
-  (t) => [index("abuse_reports_status_idx").on(t.status, t.createdAt), index("abuse_reports_site_idx").on(t.siteId)],
+  (t) => [
+    index("abuse_reports_status_idx").on(t.status, t.createdAt),
+    index("abuse_reports_site_idx").on(t.siteId),
+    uniqueIndex("abuse_reports_open_uq").on(t.siteId, t.reporterKey).where(sql`${t.status} = 'open'`),
+  ],
 );

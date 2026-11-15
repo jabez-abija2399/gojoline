@@ -9,11 +9,13 @@ import type { PublishFile, PublishProvider } from "@/lib/providers/publish/types
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
 import { checkSlug, suggestSlug } from "@/lib/sites/slug";
 import type { Site, SiteStore } from "@/lib/sites/types";
+import { takenDownPage } from "@/lib/safety/takedown";
 import { publishedSiteHeaders, scanBuiltSite, type ScanIssue } from "./scan";
 
 /** Extra checks before a site goes public (content safety is added in Slice 7). */
 export interface PublishGuard {
-  check(input: { files: PublishFile[]; projectId: string; ownerId: string }): Promise<{ ok: true } | { ok: false; reasons: string[] }>;
+  /** `source` is the version's editable files (site.json holds every word the site can show). */
+  check(input: { files: PublishFile[]; source: Record<string, string>; projectId: string; ownerId: string }): Promise<{ ok: true } | { ok: false; reasons: string[] }>;
 }
 
 export interface PublishDeps {
@@ -29,6 +31,8 @@ export interface PublishDeps {
   /** Where form definitions are stored at publish time. */
   cloud?: CloudStore;
   assets?: AssetStore;
+  /** Records blocked publishes (moderation trail). */
+  audit?: (entry: { actorId: string; action: string; targetType: string; targetId: string; data?: Record<string, unknown> }) => Promise<void>;
   /** Plan limits (site count, badge). Without it: Free limits. */
   entitlements?: EntitlementsResolver;
 }
@@ -137,10 +141,15 @@ async function deployLocked(
     const issues = scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] });
     if (issues.length) return { ok: false, error: "blocked", issues };
     for (const guard of deps.guards ?? []) {
-      const verdict = await guard.check({ files: build.files, projectId, ownerId: user.id });
-      if (!verdict.ok) return { ok: false, error: "blocked", reasons: verdict.reasons };
+      const verdict = await guard.check({ files: build.files, source: latest.files, projectId, ownerId: user.id });
+      if (!verdict.ok) {
+        await deps.audit?.({ actorId: user.id, action: "publish.blocked", targetType: "project", targetId: projectId, data: { reasons: verdict.reasons, version: latest.number } }).catch(() => undefined);
+        return { ok: false, error: "blocked", reasons: verdict.reasons };
+      }
     }
 
+    // An admin may have taken the site down while this build ran.
+    if ((await deps.sites.getByProject(user.id, projectId))?.status === "taken_down") return { ok: false, error: "taken_down" };
     const result = await deps.publisher.publish({
       slug,
       files: build.files,
@@ -162,6 +171,17 @@ async function deployLocked(
     return { ok: true, site };
   } catch (error) {
     const msg = error instanceof Error ? error.message : "unknown";
+    if (msg === "Site is taken down") {
+      // Taken down during the deploy: put the notice back over what was just deployed.
+      const site = await deps.sites.getByProject(user.id, projectId);
+      if (site?.providerProjectId) {
+        const page = Buffer.from(takenDownPage());
+        await deps.publisher
+          .publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: site.providerProjectId })
+          .catch((e: unknown) => console.error("takedown redeploy failed", e instanceof Error ? e.message : "unknown"));
+      }
+      return { ok: false, error: "taken_down" };
+    }
     console.error("publish failed", msg);
     return { ok: false, error: msg === "slug_taken" ? "slug_taken" : "failed" };
   } finally {

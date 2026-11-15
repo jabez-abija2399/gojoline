@@ -1,0 +1,568 @@
+{
+  "name": {
+    "en": "Selam Trails Ethiopia",
+    "am": "ሰላም ትሬልስ ኢትዮጵያ"
+  },
+  "tagline": {
+    "en": "Guided trips to Lalibela, the Simien Mountains, Danakil and the Omo Valley",
+    "am": "ወደ ላሊበላ፣ ስሜን ተራሮች፣ ዳናኪል እና ኦሞ ሸለቆ የሚመሩ ጉዞዎች"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#9A3412",
+    "accent": "#14532D",
+    "background": "#FBF8F3",
+    "text": "#1C1917",
+    "font": "modern",
+    "radius": "medium"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "whatsapp": "+251 911 000 000",
+    "address": {
+      "en": "Bole, Atlas area, Addis Ababa",
+      "am": "ቦሌ፣ አትላስ አካባቢ፣ አዲስ አበባ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Saturday",
+          "am": "ከሰኞ እስከ ቅዳሜ"
+        },
+        "time": {
+          "en": "8:30 am to 6:00 pm",
+          "am": "ከጠዋቱ 2:30 እስከ ምሽቱ 12 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Sunday",
+          "am": "እሑድ"
+        },
+        "time": {
+          "en": "Telegram and phone only",
+          "am": "በቴሌግራም እና በስልክ ብቻ"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Small-group tours across Ethiopia with local guides, transport and hotels arranged for you.",
+        "am": "በአገር ውስጥ አስጎብኚዎች የሚመሩ የአነስተኛ ቡድን ጉዞዎች፤ ትራንስፖርት እና ሆቴል እኛ እናዘጋጃለን።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "Tours from Addis Ababa",
+            "am": "ከአዲስ አበባ የሚነሱ ጉዞዎች"
+          },
+          "heading": {
+            "en": "See the real Ethiopia with local guides",
+            "am": "እውነተኛዋን ኢትዮጵያ ከአገር ውስጥ አስጎብኚዎች ጋር ይጎብኙ"
+          },
+          "subheading": {
+            "en": "Rock-hewn churches, mountain trekking, salt flats and Omo Valley cultures. We plan everything from airport pickup to the last night.",
+            "am": "ከአለት የተፈለፈሉ አብያተ ክርስቲያናት፣ የተራራ ጉዞ፣ የጨው ሜዳ እና የኦሞ ሸለቆ ባህሎች። ከአውሮፕላን ማረፊያ ጀምሮ እስከ መጨረሻው ምሽት ሁሉንም እናዘጋጃለን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "See tour packages",
+              "am": "የጉዞ ጥቅሎችን ይመልከቱ"
+            },
+            "href": "/tours"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Book a trip",
+              "am": "ጉዞ ያስይዙ"
+            },
+            "href": "/book"
+          }
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "Our four main trips",
+            "am": "አራቱ ዋና ጉዞዎቻችን"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Lalibela",
+                "am": "ላሊበላ"
+              },
+              "description": {
+                "en": "Eleven rock-hewn churches with a priest-trained guide. Best around Genna and Timket.",
+                "am": "አስራ አንዱ ከአለት የተፈለፈሉ አብያተ ክርስቲያናት ከልምድ ያለው አስጎብኚ ጋር። በገና እና በጥምቀት ወቅት ይበልጥ ይደምቃል።"
+              },
+              "icon": "church"
+            },
+            {
+              "title": {
+                "en": "Simien Mountains",
+                "am": "ስሜን ተራሮች"
+              },
+              "description": {
+                "en": "Trek among gelada monkeys and deep valleys with a scout and mules.",
+                "am": "ከስካውት እና ከበቅሎዎች ጋር በጭላዳ ዝንጀሮዎች እና በጥልቅ ሸለቆዎች መካከል ይጓዙ።"
+              },
+              "icon": "map"
+            },
+            {
+              "title": {
+                "en": "Danakil Depression",
+                "am": "ዳናኪል ዝቅተኛ ቦታ"
+              },
+              "description": {
+                "en": "Erta Ale volcano, colourful Dallol and the salt caravans of Afar.",
+                "am": "የኤርታ አሌ እሳተ ገሞራ፣ ባለቀለሙ ዳሎል እና የአፋር የጨው ግመል ቅፍለት።"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Omo Valley",
+                "am": "ኦሞ ሸለቆ"
+              },
+              "description": {
+                "en": "Local markets and village visits in South Omo, done with respect.",
+                "am": "በደቡብ ኦሞ የአካባቢ ገበያዎችን እና መንደሮችን በአክብሮት መጎብኘት።"
+              },
+              "icon": "heart"
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "heading": {
+            "en": "What travellers say",
+            "am": "ተጓዦች ምን ይላሉ"
+          },
+          "items": [
+            {
+              "quote": {
+                "en": "Our guide in Lalibela knew every church by heart. Everything ran on time.",
+                "am": "የላሊበላ አስጎብኚያችን እያንዳንዱን ቤተ ክርስቲያን በደንብ ያውቃል። ሁሉም ነገር በሰዓቱ ነበር።"
+              },
+              "name": "Hanna, Addis Ababa"
+            },
+            {
+              "quote": {
+                "en": "The Danakil trip was hard but unforgettable. The team kept us safe and well fed.",
+                "am": "የዳናኪል ጉዞ ከባድ ቢሆንም የማይረሳ ነበር። ቡድኑ ደህንነታችንን ጠብቆ በደንብ መገበን።"
+              },
+              "name": "Mark, visitor"
+            }
+          ]
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": {
+            "en": "Talk to us",
+            "am": "ያነጋግሩን"
+          },
+          "intro": {
+            "en": "Call or message us on Telegram to plan your trip.",
+            "am": "ጉዞዎን ለማቀድ ይደውሉ ወይም በቴሌግራም መልእክት ይላኩልን።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tours",
+      "title": {
+        "en": "Tour packages",
+        "am": "የጉዞ ጥቅሎች"
+      },
+      "nav": {
+        "en": "Tours",
+        "am": "ጉዞዎች"
+      },
+      "description": {
+        "en": "Package prices in USD for international visitors and in Birr for Ethiopian residents.",
+        "am": "ለውጭ አገር ጎብኚዎች በዶላር፣ ለኢትዮጵያ ነዋሪዎች በብር የጉዞ ጥቅል ዋጋዎች።"
+      },
+      "sections": [
+        {
+          "type": "menu",
+          "heading": {
+            "en": "Packages and prices",
+            "am": "ጥቅሎች እና ዋጋዎች"
+          },
+          "intro": {
+            "en": "Prices are per person for a group of 2 or more. They include transport, hotel, guide and entrance fees. Domestic flights are extra.",
+            "am": "ዋጋዎቹ ለአንድ ሰው ሲሆኑ ለ2 እና ከዚያ በላይ ለሆነ ቡድን ነው። ትራንስፖርት፣ ሆቴል፣ አስጎብኚ እና የመግቢያ ክፍያን ያካትታሉ። የአገር ውስጥ በረራ ለብቻው ይከፈላል።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "International visitors (USD)",
+                "am": "የውጭ አገር ጎብኚዎች (ዶላር)"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Lalibela, 3 days",
+                    "am": "ላሊበላ፣ 3 ቀን"
+                  },
+                  "description": {
+                    "en": "All churches, Asheten Maryam and a sunset viewpoint",
+                    "am": "ሁሉም አብያተ ክርስቲያናት፣ አሸተን ማርያም እና የጀምበር መጥለቂያ ቦታ"
+                  },
+                  "price": {
+                    "amountMinor": 65000,
+                    "currency": "USD"
+                  },
+                  "tag": {
+                    "en": "Popular",
+                    "am": "ተወዳጅ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Simien Mountains trek, 4 days",
+                    "am": "የስሜን ተራሮች ጉዞ፣ 4 ቀን"
+                  },
+                  "description": {
+                    "en": "Camping or lodge, scout, cook and mules",
+                    "am": "ድንኳን ወይም ሎጅ፣ ስካውት፣ ምግብ አብሳይ እና በቅሎዎች"
+                  },
+                  "price": {
+                    "amountMinor": 85000,
+                    "currency": "USD"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Danakil Depression, 3 days",
+                    "am": "ዳናኪል፣ 3 ቀን"
+                  },
+                  "description": {
+                    "en": "From Mekelle, Erta Ale, Dallol and Lake Asale",
+                    "am": "ከመቀሌ መነሻ፣ ኤርታ አሌ፣ ዳሎል እና አሳሌ ሐይቅ"
+                  },
+                  "price": {
+                    "amountMinor": 75000,
+                    "currency": "USD"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Omo Valley, 6 days",
+                    "am": "ኦሞ ሸለቆ፣ 6 ቀን"
+                  },
+                  "description": {
+                    "en": "4x4 from Arba Minch, markets and villages",
+                    "am": "ከአርባ ምንጭ በ4x4 መኪና፣ ገበያዎች እና መንደሮች"
+                  },
+                  "price": {
+                    "amountMinor": 160000,
+                    "currency": "USD"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Ethiopian residents (Birr)",
+                "am": "የኢትዮጵያ ነዋሪዎች (ብር)"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Lalibela, 3 days",
+                    "am": "ላሊበላ፣ 3 ቀን"
+                  },
+                  "price": {
+                    "amountMinor": 3800000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Simien Mountains trek, 4 days",
+                    "am": "የስሜን ተራሮች ጉዞ፣ 4 ቀን"
+                  },
+                  "price": {
+                    "amountMinor": 5200000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Danakil Depression, 3 days",
+                    "am": "ዳናኪል፣ 3 ቀን"
+                  },
+                  "price": {
+                    "amountMinor": 4800000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Omo Valley, 6 days",
+                    "am": "ኦሞ ሸለቆ፣ 6 ቀን"
+                  },
+                  "price": {
+                    "amountMinor": 9500000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "Group discount",
+                    "am": "የቡድን ቅናሽ"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "Included in every trip",
+            "am": "በሁሉም ጉዞ የተካተቱ"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Transport",
+                "am": "ትራንስፖርት"
+              },
+              "description": {
+                "en": "Comfortable vehicle with an experienced driver.",
+                "am": "ምቹ መኪና ከልምድ ያለው ሹፌር ጋር።"
+              },
+              "icon": "car"
+            },
+            {
+              "title": {
+                "en": "Hotels",
+                "am": "ሆቴሎች"
+              },
+              "description": {
+                "en": "Clean, checked hotels and lodges.",
+                "am": "የተፈተሹ ንጹሕ ሆቴሎች እና ሎጆች።"
+              },
+              "icon": "bed"
+            },
+            {
+              "title": {
+                "en": "Licensed guides",
+                "am": "ፈቃድ ያላቸው አስጎብኚዎች"
+              },
+              "description": {
+                "en": "Local guides who speak English and Amharic.",
+                "am": "እንግሊዝኛ እና አማርኛ የሚናገሩ የአካባቢ አስጎብኚዎች።"
+              },
+              "icon": "check"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/about",
+      "title": {
+        "en": "About us",
+        "am": "ስለ እኛ"
+      },
+      "nav": {
+        "en": "About",
+        "am": "ስለ እኛ"
+      },
+      "sections": [
+        {
+          "type": "about",
+          "heading": {
+            "en": "An Ethiopian team that knows the road",
+            "am": "መንገዱን የሚያውቅ የኢትዮጵያ ቡድን"
+          },
+          "body": {
+            "en": "We are a small Addis Ababa team of guides and drivers. We keep groups small, pay local scouts and communities fairly and answer your messages fast.\n\nWe can also build a private trip around your dates and budget.",
+            "am": "እኛ የአዲስ አበባ አነስተኛ የአስጎብኚዎች እና የሹፌሮች ቡድን ነን። ቡድኖችን አነስተኛ እናደርጋለን፣ ለአካባቢው ስካውቶች እና ማኅበረሰቦች ፍትሐዊ ክፍያ እንከፍላለን፣ መልእክትዎንም በፍጥነት እንመልሳለን።\n\nእንደ ቀንዎ እና በጀትዎ የግል ጉዞም እናዘጋጅልዎታለን።"
+          },
+          "highlights": [
+            {
+              "value": {
+                "en": "4",
+                "am": "4"
+              },
+              "label": {
+                "en": "Main destinations",
+                "am": "ዋና መዳረሻዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "2–12",
+                "am": "2–12"
+              },
+              "label": {
+                "en": "People per group",
+                "am": "ሰው በአንድ ቡድን"
+              }
+            },
+            {
+              "value": {
+                "en": "24/7",
+                "am": "24/7"
+              },
+              "label": {
+                "en": "Support on the trip",
+                "am": "በጉዞ ላይ ድጋፍ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Our office in Addis Ababa",
+            "am": "አዲስ አበባ የሚገኘው ቢሯችን"
+          },
+          "query": "Atlas, Bole, Addis Ababa"
+        }
+      ]
+    },
+    {
+      "path": "/book",
+      "title": {
+        "en": "Book a tour",
+        "am": "ጉዞ ያስይዙ"
+      },
+      "nav": {
+        "en": "Book",
+        "am": "ያስይዙ"
+      },
+      "sections": [
+        {
+          "type": "form",
+          "id": "tour-booking",
+          "kind": "booking",
+          "heading": {
+            "en": "Book your tour",
+            "am": "ጉዞዎን ያስይዙ"
+          },
+          "intro": {
+            "en": "Choose a tour and a start date. We will email you a full plan and payment details within one day.",
+            "am": "ጉዞ እና የመነሻ ቀን ይምረጡ። ሙሉ የጉዞ ዕቅድ እና የክፍያ መረጃ በአንድ ቀን ውስጥ በኢሜይል እንልክልዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "full_name",
+              "label": {
+                "en": "Full name",
+                "am": "ሙሉ ስም"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "email",
+              "label": {
+                "en": "Email",
+                "am": "ኢሜይል"
+              },
+              "type": "email",
+              "required": true
+            },
+            {
+              "name": "tour",
+              "label": {
+                "en": "Tour",
+                "am": "ጉዞ"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Lalibela, 3 days",
+                  "am": "ላሊበላ፣ 3 ቀን"
+                },
+                {
+                  "en": "Simien Mountains, 4 days",
+                  "am": "ስሜን ተራሮች፣ 4 ቀን"
+                },
+                {
+                  "en": "Danakil Depression, 3 days",
+                  "am": "ዳናኪል፣ 3 ቀን"
+                },
+                {
+                  "en": "Omo Valley, 6 days",
+                  "am": "ኦሞ ሸለቆ፣ 6 ቀን"
+                },
+                {
+                  "en": "Custom trip",
+                  "am": "የግል ጉዞ"
+                }
+              ]
+            },
+            {
+              "name": "start_date",
+              "label": {
+                "en": "Start date",
+                "am": "የመነሻ ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "group_size",
+              "label": {
+                "en": "Group size",
+                "am": "የቡድኑ ብዛት"
+              },
+              "type": "number",
+              "required": true
+            },
+            {
+              "name": "notes",
+              "label": {
+                "en": "Anything we should know?",
+                "am": "ማወቅ ያለብን ነገር አለ?"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send booking request",
+            "am": "የቦታ ማስያዣ ጥያቄ ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will email you within one day.",
+            "am": "እናመሰግናለን! በአንድ ቀን ውስጥ በኢሜይል እናገኝዎታለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Prefer to call?",
+            "am": "መደወል ይመርጣሉ?"
+          },
+          "intro": {
+            "en": "Call or send a Telegram message and we will help you choose.",
+            "am": "ይደውሉ ወይም በቴሌግራም ይጻፉልን፤ እንዲመርጡ እንረዳዎታለን።"
+          }
+        }
+      ]
+    }
+  ]
+}

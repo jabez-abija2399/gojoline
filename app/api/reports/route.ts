@@ -24,8 +24,15 @@ export async function POST(request: Request) {
   const network = ipBucket(await clientIp());
   const [hour, day] = await Promise.all([svc.rateLimiter.hit(`report:ip:${network}`, 10, 3_600_000), svc.rateLimiter.hit(`report:ipday:${network}`, 30, 86_400_000)]);
   if (!hour.allowed || !day.allowed) return json(429, { error: "too_many" });
-  if (Number(request.headers.get("content-length") ?? 0) > 10_000) return json(413, { error: "failed" });
-  const parsed = body.safeParse(await request.json().catch(() => null));
+  const raw = await readCapped(request, 10_000);
+  if (raw === null) return json(413, { error: "failed" });
+  let data: unknown = null;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    /* invalid JSON fails validation below */
+  }
+  const parsed = body.safeParse(data);
   if (!parsed.success) return json(400, { error: parsed.error.issues.some((i) => i.path[0] === "reason") ? "reason" : "site" });
 
   const publisher = svc.publish?.publisher ?? null;
@@ -35,7 +42,10 @@ export async function POST(request: Request) {
     if (site) break;
   }
   if (!site || site.status === "pending") return json(404, { error: "site" });
-  const salt = process.env.BETTER_AUTH_SECRET ?? "gojoline";
+  if (!(await svc.rateLimiter.hit(`report:site:${site.id}`, 200, 86_400_000)).allowed) return json(201, { ok: true });
+  // Production must have a real secret, or the stored key would be an unsalted hash of the network.
+  const salt = process.env.BETTER_AUTH_SECRET || (process.env.NODE_ENV !== "production" || process.env.E2E === "1" ? "dev-only-salt" : undefined);
+  if (!salt) return json(503, { error: "failed" });
   await moderation.reports.add({
     siteId: site.id,
     reason: parsed.data.reason,
@@ -44,4 +54,23 @@ export async function POST(request: Request) {
     reporterKey: createHash("sha256").update(`${salt}:${network}`).digest("hex").slice(0, 32),
   });
   return json(201, { ok: true });
+}
+
+/** Reads at most `max` bytes of the body, whatever the headers claim; null when it is larger. */
+async function readCapped(request: Request, max: number): Promise<string | null> {
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > max) {
+      await reader.cancel().catch(() => undefined);
+      return null;
+    }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks).toString("utf8");
 }

@@ -77,7 +77,7 @@ export class DbSiteStore implements SiteStore, SiteAdminStore {
 
   async staleDomainClaim(domain: string, claimedBefore: Date) {
     const [row] = await this.db
-      .select({ siteId: sites.id, providerProjectId: sites.providerProjectId })
+      .select({ siteId: sites.id, ownerId: sites.ownerId, projectId: sites.projectId, providerProjectId: sites.providerProjectId })
       .from(sites)
       .where(and(eq(sites.customDomain, domain), isNull(sites.customDomainVerifiedAt), lt(sites.customDomainClaimedAt, claimedBefore)))
       .limit(1);

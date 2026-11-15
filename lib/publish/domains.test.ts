@@ -69,6 +69,14 @@ describe("custom domains", () => {
     expect(deps.publisher.removedDomains).toEqual(["selam.et"]);
     expect((await deps.sites.getByProject("alice", p.id))?.customDomain).toBeNull();
 
+    // A claim whose domain works at the host is kept (and recorded as verified), however old.
+    (deps.publisher as unknown as { domains: Map<string, boolean> }).domains.set("selam.et", true);
+    const bobSite0 = (await deps.sites.getByProject("bob", q.id))!;
+    bobSite0.customDomainClaimedAt = new Date(Date.now() - 30 * 86_400_000);
+    expect(await connectDomain(deps, "alice", p.id, "selam.et")).toEqual({ ok: false, error: "domain_in_use" });
+    expect((await deps.sites.getByProject("bob", q.id))?.customDomainVerifiedAt).toBeInstanceOf(Date);
+    (deps.publisher as unknown as { domains: Map<string, boolean> }).domains.set("selam.et", false);
+
     // Verified claims stay, however old.
     const bobSite = (await deps.sites.getByProject("bob", q.id))!;
     bobSite.customDomainClaimedAt = new Date(Date.now() - 30 * 86_400_000);

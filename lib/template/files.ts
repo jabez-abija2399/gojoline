@@ -3,7 +3,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { checkWritePath } from "@/lib/agent/workspace";
 
-const SKIP_DIRS = new Set(["node_modules", "dist", "dist-ssr", "test", ".vite"]);
+const SKIP_DIRS = new Set(["node_modules", "dist", "dist-ssr", "test", ".vite", "presets"]);
 const BINARY = /\.(woff2?|png|jpe?g|webp|avif|ico)$/i;
 
 export const TEMPLATE_ROOT = join(process.cwd(), "templates", "site");

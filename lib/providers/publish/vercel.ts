@@ -93,6 +93,12 @@ export class VercelPublishProvider implements PublishProvider {
     return this.domainStatus(projectId, domain, info);
   }
 
+  async restrictOldDeployments(projectId: string): Promise<void> {
+    // Standard protection: deployment URLs need a Vercel login; the production address stays public.
+    const res = await this.call("PATCH", `/v9/projects/${encodeURIComponent(projectId)}`, { ssoProtection: { deploymentType: "prod_deployment_urls_and_all_previews" } });
+    if (res.status >= 300) throw new Error(`protect_failed:${res.status}`);
+  }
+
   async removeDomain(projectId: string, domain: string): Promise<void> {
     const res = await this.call("DELETE", `/v9/projects/${encodeURIComponent(projectId)}/domains/${encodeURIComponent(domain)}`);
     if (res.status >= 300 && res.status !== 404) throw new Error(`domain_remove_failed:${res.status}`);

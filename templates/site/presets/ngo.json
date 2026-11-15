@@ -1,0 +1,638 @@
+{
+  "name": {
+    "en": "Tesfa Hawassa",
+    "am": "ተስፋ ሀዋሳ"
+  },
+  "tagline": {
+    "en": "Keeping girls in school and bringing clean water to communities around Hawassa",
+    "am": "ሴት ልጆችን በትምህርት ቤት ማቆየት እና በሀዋሳ ዙሪያ ላሉ ማኅበረሰቦች ንጹሕ ውሃ ማዳረስ"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#0E6B75",
+    "accent": "#B85A1C",
+    "background": "#F6FAF9",
+    "text": "#1A2A2E",
+    "font": "friendly",
+    "radius": "large"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Piazza area, Hawassa, Sidama Region",
+      "am": "ፒያሳ አካባቢ፣ ሀዋሳ፣ ሲዳማ ክልል"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Friday",
+          "am": "ከሰኞ እስከ ዓርብ"
+        },
+        "time": {
+          "en": "8:30 am to 5:00 pm",
+          "am": "ከጠዋቱ 2:30 እስከ ቀኑ 11 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Saturday",
+          "am": "ቅዳሜ"
+        },
+        "time": {
+          "en": "9:00 am to 12:00 noon",
+          "am": "ከጠዋቱ 3 እስከ ቀኑ 6 ሰዓት"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "A local Hawassa organisation helping girls stay in school and bringing safe water to rural villages.",
+        "am": "ሴት ልጆች ትምህርታቸውን እንዲቀጥሉ የሚያግዝ እና ለገጠር መንደሮች ንጹሕ ውሃ የሚያቀርብ የሀዋሳ የአካባቢ ድርጅት።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "A local NGO in Hawassa",
+            "am": "በሀዋሳ የሚገኝ የአካባቢ በጎ አድራጎት ድርጅት"
+          },
+          "heading": {
+            "en": "When a girl has water nearby, she has time to learn",
+            "am": "ውሃ በቅርብ ስታገኝ፣ ሴት ልጅ ለመማር ጊዜ ታገኛለች"
+          },
+          "subheading": {
+            "en": "We build water points, support girls with school supplies and tutoring, and work with families so every girl can finish school.",
+            "am": "የውሃ ቦኖዎችን እንሠራለን፣ ሴት ተማሪዎችን በትምህርት ቁሳቁስ እና በማጠናከሪያ ትምህርት እንደግፋለን፤ እያንዳንዷ ልጅ ትምህርቷን እንድትጨርስ ከቤተሰቦች ጋር እንሠራለን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Become a volunteer",
+              "am": "በጎ ፈቃደኛ ይሁኑ"
+            },
+            "href": "/volunteer"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Our programs",
+              "am": "ፕሮግራሞቻችን"
+            },
+            "href": "/programs"
+          }
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "Our impact so far",
+            "am": "እስካሁን ያስመዘገብነው ውጤት"
+          },
+          "body": {
+            "en": "Tesfa Hawassa was started by teachers and parents from Hawassa who saw girls missing school to fetch water.\n\nToday we work with schools, kebele leaders and families in villages around Lake Hawassa.",
+            "am": "ተስፋ ሀዋሳ የተመሠረተው ሴት ልጆች ውሃ ለመቅዳት ሲሉ ከትምህርት ቤት ሲቀሩ ባዩ የሀዋሳ መምህራን እና ወላጆች ነው።\n\nዛሬ በሀዋሳ ሐይቅ ዙሪያ ባሉ መንደሮች ከትምህርት ቤቶች፣ ከቀበሌ አመራሮች እና ከቤተሰቦች ጋር እንሠራለን።"
+          },
+          "highlights": [
+            {
+              "value": {
+                "en": "1,200+",
+                "am": "1,200+"
+              },
+              "label": {
+                "en": "Girls supported",
+                "am": "የተደገፉ ሴት ተማሪዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "18",
+                "am": "18"
+              },
+              "label": {
+                "en": "Water points built",
+                "am": "የተሠሩ የውሃ ቦኖዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "9,000",
+                "am": "9,000"
+              },
+              "label": {
+                "en": "People with safe water",
+                "am": "ንጹሕ ውሃ ያገኙ ሰዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "14",
+                "am": "14"
+              },
+              "label": {
+                "en": "Partner schools",
+                "am": "አጋር ትምህርት ቤቶች"
+              }
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "heading": {
+            "en": "Voices from our communities",
+            "am": "ከማኅበረሰባችን የተሰሙ ድምፆች"
+          },
+          "items": [
+            {
+              "quote": {
+                "en": "I used to walk two hours for water every morning. Now the tap is near our school and I never miss class.",
+                "am": "በየጠዋቱ ውሃ ለመቅዳት ሁለት ሰዓት እጓዝ ነበር። አሁን ቦኖው ከትምህርት ቤታችን አጠገብ ስለሆነ ክፍል አላመልጠኝም።"
+              },
+              "name": "Grade 8 student"
+            },
+            {
+              "quote": {
+                "en": "Since the water point opened, fewer children in our village get sick.",
+                "am": "የውሃ ቦኖው ከተከፈተ ወዲህ በመንደራችን የሚታመሙ ልጆች ቀንሰዋል።"
+              },
+              "name": "Mother of three"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/programs",
+      "title": {
+        "en": "Our programs",
+        "am": "ፕሮግራሞቻችን"
+      },
+      "nav": {
+        "en": "Programs",
+        "am": "ፕሮግራሞች"
+      },
+      "description": {
+        "en": "Girls' education and clean water programs in and around Hawassa.",
+        "am": "በሀዋሳ እና አካባቢዋ የሴቶች ትምህርት እና የንጹሕ ውሃ ፕሮግራሞች።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "What we do",
+            "am": "የምንሠራው ሥራ"
+          },
+          "intro": {
+            "en": "Two goals that work together: safe water and girls who finish school.",
+            "am": "አብረው የሚሄዱ ሁለት ግቦች፦ ንጹሕ ውሃ እና ትምህርታቸውን የሚጨርሱ ሴት ልጆች።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "School support for girls",
+                "am": "ለሴት ተማሪዎች የትምህርት ድጋፍ"
+              },
+              "description": {
+                "en": "Uniforms, exercise books, bags and school fees for girls from low-income families.",
+                "am": "ከአቅመ ደካማ ቤተሰቦች ለሚመጡ ሴት ተማሪዎች የደንብ ልብስ፣ ደብተር፣ ቦርሳ እና የትምህርት ክፍያ።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "After-school tutoring",
+                "am": "ከትምህርት በኋላ ማጠናከሪያ"
+              },
+              "description": {
+                "en": "Weekly study groups in maths, English and science, led by trained volunteers.",
+                "am": "በሠለጠኑ በጎ ፈቃደኞች የሚመሩ የሂሳብ፣ የእንግሊዝኛ እና የሳይንስ ሳምንታዊ የጥናት ቡድኖች።"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Menstrual health kits",
+                "am": "የወር አበባ ንጽሕና መጠበቂያ ኪት"
+              },
+              "description": {
+                "en": "Reusable pads and health lessons so girls do not miss school every month.",
+                "am": "ሴት ልጆች በየወሩ ከትምህርት እንዳይቀሩ በድጋሚ የሚያገለግሉ ሞዴሶች እና የጤና ትምህርት።"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Community water points",
+                "am": "የማኅበረሰብ የውሃ ቦኖዎች"
+              },
+              "description": {
+                "en": "We build and repair water points near schools and villages, with local water committees.",
+                "am": "ከአካባቢው የውሃ ኮሚቴዎች ጋር በትምህርት ቤቶች እና በመንደሮች አቅራቢያ የውሃ ቦኖዎችን እንሠራለን፣ እንጠግናለን።"
+              },
+              "icon": "map"
+            },
+            {
+              "title": {
+                "en": "Hygiene and sanitation",
+                "am": "የግልና የአካባቢ ንጽሕና"
+              },
+              "description": {
+                "en": "Handwashing stations, clean latrines and hygiene clubs in partner schools.",
+                "am": "በአጋር ትምህርት ቤቶች የእጅ መታጠቢያ ቦታዎች፣ ንጹሕ መጸዳጃ ቤቶች እና የንጽሕና ክበባት።"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "Family conversations",
+                "am": "ከቤተሰብ ጋር ውይይት"
+              },
+              "description": {
+                "en": "Home visits and parent meetings about the value of keeping girls in school.",
+                "am": "ሴት ልጆችን በትምህርት ቤት ማቆየት ያለውን ጥቅም በተመለከተ የቤት ለቤት ጉብኝት እና የወላጆች ስብሰባ።"
+              },
+              "icon": "home"
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "How your gift helps",
+            "am": "ድጋፍዎ እንዴት ይረዳል"
+          },
+          "intro": {
+            "en": "Call or message us on Telegram to give. Every birr is reported to our donors.",
+            "am": "ለመለገስ ይደውሉልን ወይም በቴሌግራም ይጻፉልን። እያንዳንዱ ብር ለለጋሾች ሪፖርት ይደረጋል።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "School kit for one girl",
+                "am": "ለአንዲት ተማሪ የትምህርት ቁሳቁስ"
+              },
+              "description": {
+                "en": "Uniform, books, pens and a bag for a full school year.",
+                "am": "ለአንድ ሙሉ የትምህርት ዘመን የደንብ ልብስ፣ ደብተር፣ እስክሪብቶ እና ቦርሳ።"
+              },
+              "price": {
+                "amountMinor": 250000,
+                "currency": "ETB"
+              },
+              "icon": "shopping-bag"
+            },
+            {
+              "title": {
+                "en": "Health kit for one year",
+                "am": "የአንድ ዓመት የንጽሕና ኪት"
+              },
+              "description": {
+                "en": "Reusable pads and soap for one girl for twelve months.",
+                "am": "ለአንዲት ልጅ ለአሥራ ሁለት ወራት የሚያገለግል ሞዴስ እና ሳሙና።"
+              },
+              "price": {
+                "amountMinor": 120000,
+                "currency": "ETB"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Water point repair",
+                "am": "የውሃ ቦኖ ጥገና"
+              },
+              "description": {
+                "en": "Spare parts and labour to fix a broken water point.",
+                "am": "የተበላሸ የውሃ ቦኖ ለመጠገን የመለዋወጫ እና የጉልበት ወጪ።"
+              },
+              "price": {
+                "amountMinor": 1500000,
+                "currency": "ETB"
+              },
+              "icon": "check"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/volunteer",
+      "title": {
+        "en": "Volunteer with us",
+        "am": "ከእኛ ጋር በበጎ ፈቃድ ያገልግሉ"
+      },
+      "nav": {
+        "en": "Volunteer",
+        "am": "በጎ ፈቃድ"
+      },
+      "description": {
+        "en": "Give your time as a tutor, mentor or field helper in Hawassa.",
+        "am": "በሀዋሳ እንደ አስጠኚ፣ አማካሪ ወይም የመስክ ረዳት ጊዜዎን ይስጡ።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "banner",
+          "heading": {
+            "en": "Your time can change a girl's future",
+            "am": "የእርስዎ ጊዜ የአንዲትን ልጅ የወደፊት ሕይወት ሊለውጥ ይችላል"
+          },
+          "subheading": {
+            "en": "Students, teachers, nurses and professionals are all welcome. A few hours a week makes a real difference.",
+            "am": "ተማሪዎች፣ መምህራን፣ ነርሶች እና ባለሙያዎች ሁሉ እንኳን ደህና መጡ። በሳምንት ጥቂት ሰዓታት ትልቅ ለውጥ ያመጣሉ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Register now",
+              "am": "አሁን ይመዝገቡ"
+            },
+            "href": "#volunteer-form"
+          }
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "How to volunteer",
+            "am": "በጎ ፈቃደኛ ለመሆን"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "1. Register",
+                "am": "1. ይመዝገቡ"
+              },
+              "description": {
+                "en": "Fill in the form below with your skills and free time.",
+                "am": "ከታች ያለውን ቅጽ ችሎታዎን እና ነፃ ጊዜዎን ገልጸው ይሙሉ።"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "2. Meet us",
+                "am": "2. ከእኛ ጋር ይገናኙ"
+              },
+              "description": {
+                "en": "We call you for a short meeting at our office in Piazza.",
+                "am": "ፒያሳ በሚገኘው ቢሯችን ለአጭር ውይይት እንደውልልዎታለን።"
+              },
+              "icon": "phone"
+            },
+            {
+              "title": {
+                "en": "3. Orientation",
+                "am": "3. የመግቢያ ሥልጠና"
+              },
+              "description": {
+                "en": "A half-day training on child safety and how we work.",
+                "am": "ስለ ሕፃናት ደኅንነት እና ስለ አሠራራችን የግማሽ ቀን ሥልጠና።"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "4. Start helping",
+                "am": "4. ማገዝ ይጀምሩ"
+              },
+              "description": {
+                "en": "Join a tutoring group, a school club or a field visit.",
+                "am": "የማጠናከሪያ ቡድን፣ የትምህርት ቤት ክበብ ወይም የመስክ ጉብኝት ይቀላቀሉ።"
+              },
+              "icon": "heart"
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "volunteer-form",
+          "kind": "registration",
+          "heading": {
+            "en": "Volunteer registration",
+            "am": "የበጎ ፈቃደኞች ምዝገባ"
+          },
+          "intro": {
+            "en": "Tell us a little about yourself. We will contact you within a week.",
+            "am": "ስለራስዎ ትንሽ ይንገሩን። በአንድ ሳምንት ውስጥ እናገኝዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "full_name",
+              "label": {
+                "en": "Full name",
+                "am": "ሙሉ ስም"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "email",
+              "label": {
+                "en": "Email (optional)",
+                "am": "ኢሜይል (ካለዎት)"
+              },
+              "type": "email"
+            },
+            {
+              "name": "area",
+              "label": {
+                "en": "How would you like to help?",
+                "am": "በምን ማገዝ ይፈልጋሉ?"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Tutoring girls",
+                  "am": "ሴት ተማሪዎችን ማስጠናት"
+                },
+                {
+                  "en": "Mentoring and life skills",
+                  "am": "ምክር እና የሕይወት ክህሎት"
+                },
+                {
+                  "en": "Health and hygiene lessons",
+                  "am": "የጤና እና የንጽሕና ትምህርት"
+                },
+                {
+                  "en": "Water project field work",
+                  "am": "የውሃ ፕሮጀክት የመስክ ሥራ"
+                },
+                {
+                  "en": "Office and events",
+                  "am": "የቢሮ ሥራ እና ዝግጅቶች"
+                }
+              ]
+            },
+            {
+              "name": "availability",
+              "label": {
+                "en": "When are you free?",
+                "am": "መቼ ነፃ ነዎት?"
+              },
+              "type": "select",
+              "options": [
+                {
+                  "en": "Weekday afternoons",
+                  "am": "የሥራ ቀናት ከሰዓት በኋላ"
+                },
+                {
+                  "en": "Saturdays",
+                  "am": "ቅዳሜ"
+                },
+                {
+                  "en": "School holidays only",
+                  "am": "በትምህርት ቤት ዕረፍት ጊዜ ብቻ"
+                }
+              ]
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Your skills or experience",
+                "am": "ችሎታዎ ወይም ልምድዎ"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Register",
+            "am": "ይመዝገቡ"
+          },
+          "successMessage": {
+            "en": "Thank you for registering! We will call you soon.",
+            "am": "ስለተመዘገቡ እናመሰግናለን! በቅርቡ እንደውልልዎታለን።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact us",
+        "am": "ያግኙን"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "ያግኙን"
+      },
+      "description": {
+        "en": "Visit our office in Hawassa, call us or send a message.",
+        "am": "ሀዋሳ የሚገኘውን ቢሯችንን ይጎብኙ፣ ይደውሉ ወይም መልዕክት ይላኩ።"
+      },
+      "sections": [
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Talk to us",
+            "am": "ያነጋግሩን"
+          },
+          "intro": {
+            "en": "Partners, donors and families are welcome at our office.",
+            "am": "አጋሮች፣ ለጋሾች እና ቤተሰቦች ወደ ቢሯችን እንኳን ደህና መጡ።"
+          }
+        },
+        {
+          "type": "form",
+          "id": "contact-form",
+          "kind": "contact",
+          "heading": {
+            "en": "Send us a message",
+            "am": "መልዕክት ይላኩልን"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "topic",
+              "label": {
+                "en": "Topic",
+                "am": "ጉዳይ"
+              },
+              "type": "select",
+              "options": [
+                {
+                  "en": "Donation",
+                  "am": "ልገሳ"
+                },
+                {
+                  "en": "Partnership",
+                  "am": "አጋርነት"
+                },
+                {
+                  "en": "Support for a girl",
+                  "am": "ለአንዲት ልጅ ድጋፍ መጠየቅ"
+                },
+                {
+                  "en": "Other",
+                  "am": "ሌላ"
+                }
+              ]
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Message",
+                "am": "መልዕክት"
+              },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": {
+            "en": "Send",
+            "am": "ላክ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will get back to you soon.",
+            "am": "እናመሰግናለን! በቅርቡ ምላሽ እንሰጥዎታለን።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Our office",
+            "am": "ቢሯችን"
+          },
+          "query": "Piazza, Hawassa, Ethiopia"
+        }
+      ]
+    }
+  ]
+}

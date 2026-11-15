@@ -50,7 +50,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Admin panel: payments, reports, sites, costs
 
 ## Slice 8: Beta readiness
-- [ ] All templates (10 industries) in EN + AM
+- [x] All templates (10 industries) in EN + AM
 - [ ] Sentry, uptime checks, error pages
 - [ ] Privacy policy and terms pages (to be reviewed by a lawyer)
 - [ ] Eval targets met (see PRD)
@@ -59,6 +59,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Safety: text inside uploaded photos isn't checked (no OCR or vision check yet); admins can take such sites down from reports.
+- Amharic in the 10 industry templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 - Edit cost median $0.031 vs $0.03 target: re-run evals after the search_replace prompt change.
 

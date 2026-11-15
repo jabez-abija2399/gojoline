@@ -1,0 +1,373 @@
+{
+  "name": {
+    "en": "Bole Buna House",
+    "am": "ቦሌ ቡና ቤት"
+  },
+  "tagline": {
+    "en": "Fresh Ethiopian coffee and breakfast in Bole",
+    "am": "ትኩስ የኢትዮጵያ ቡና እና ቁርስ በቦሌ"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#8A4B24",
+    "accent": "#2F3E2E",
+    "background": "#FBF7F2",
+    "text": "#1F1A17",
+    "font": "classic",
+    "radius": "medium"
+  },
+  "business": {
+    "phone": "+251 911 234 567",
+    "telegram": "bolebunahouse",
+    "address": {
+      "en": "Bole Road, near Edna Mall, Addis Ababa",
+      "am": "ቦሌ መንገድ፣ ኤድና ሞል አጠገብ፣ አዲስ አበባ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Saturday",
+          "am": "ከሰኞ እስከ ቅዳሜ"
+        },
+        "time": {
+          "en": "7:00 am to 9:00 pm",
+          "am": "ከጠዋቱ 1 እስከ ምሽቱ 3 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Sunday",
+          "am": "እሑድ"
+        },
+        "time": {
+          "en": "8:00 am to 6:00 pm",
+          "am": "ከጠዋቱ 2 እስከ ምሽቱ 12 ሰዓት"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Coffee roasted every morning, Ethiopian breakfast and fresh juice on Bole Road.",
+        "am": "በየማለዳው የሚቆላ ቡና፣ የኢትዮጵያ ቁርስ እና ትኩስ ጭማቂ በቦሌ መንገድ።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "eyebrow": {
+            "en": "Open every day from 7 am",
+            "am": "በየቀኑ ከጠዋቱ 1 ሰዓት ጀምሮ ክፍት"
+          },
+          "heading": {
+            "en": "Coffee roasted every morning",
+            "am": "በየማለዳው የሚቆላ ቡና"
+          },
+          "subheading": {
+            "en": "A traditional coffee ceremony, Ethiopian breakfast and fresh juice, a short walk from Edna Mall.",
+            "am": "ባህላዊ የቡና ሥነ ሥርዓት፣ የኢትዮጵያ ቁርስ እና ትኩስ ጭማቂ፤ ከኤድና ሞል ጥቂት እርምጃ።"
+          },
+          "image": {
+            "alt": {
+              "en": "Coffee being poured from a jebena",
+              "am": "ከጀበና የሚቀዳ ቡና"
+            }
+          },
+          "primaryAction": {
+            "label": {
+              "en": "See the menu",
+              "am": "ምናሌውን ይመልከቱ"
+            },
+            "href": "/menu"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Find us",
+              "am": "ያግኙን"
+            },
+            "href": "#contact"
+          }
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "A family café since 2015",
+            "am": "ከ2015 ጀምሮ የቤተሰብ ካፌ"
+          },
+          "body": {
+            "en": "We buy green beans from Sidama and Yirgacheffe farmers and roast them here every morning.\n\nCome for a quick macchiato or stay for the full ceremony with popcorn and incense.",
+            "am": "ጥሬ ቡናውን ከሲዳማ እና ይርጋጨፌ ገበሬዎች ገዝተን በየማለዳው እዚሁ እንቆላለን።\n\nለፈጣን ማኪያቶ ይምጡ ወይም ከፈንዲሻ እና ዕጣን ጋር ሙሉውን ሥነ ሥርዓት ይደሰቱ።"
+          },
+          "image": {
+            "alt": {
+              "en": "Inside the café",
+              "am": "የካፌው ውስጥ"
+            }
+          },
+          "highlights": [
+            {
+              "value": {
+                "en": "2015",
+                "am": "2015"
+              },
+              "label": {
+                "en": "Opened",
+                "am": "የተከፈተበት"
+              }
+            },
+            {
+              "value": {
+                "en": "2",
+                "am": "2"
+              },
+              "label": {
+                "en": "Coffee regions",
+                "am": "የቡና አካባቢዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "7 am",
+                "am": "1 ሰዓት"
+              },
+              "label": {
+                "en": "We open",
+                "am": "እንከፍታለን"
+              }
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "heading": {
+            "en": "Inside Buna House",
+            "am": "በቡና ቤቱ ውስጥ"
+          },
+          "images": [
+            {
+              "alt": {
+                "en": "Jebena on a coffee tray",
+                "am": "ጀበና በረከቦት ላይ"
+              }
+            },
+            {
+              "alt": {
+                "en": "Breakfast plate with firfir",
+                "am": "የፍርፍር ቁርስ"
+              }
+            },
+            {
+              "alt": {
+                "en": "Fresh avocado juice",
+                "am": "ትኩስ የአቮካዶ ጭማቂ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "booking",
+          "kind": "booking",
+          "heading": {
+            "en": "Book a table",
+            "am": "ጠረጴዛ ያስይዙ"
+          },
+          "intro": {
+            "en": "Tell us when you are coming. We will confirm by phone.",
+            "am": "መቼ እንደሚመጡ ይንገሩን። በስልክ እናረጋግጥልዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": {
+                "en": "Date",
+                "am": "ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "guests",
+              "label": {
+                "en": "Number of people",
+                "am": "የሰዎች ብዛት"
+              },
+              "type": "number"
+            }
+          ],
+          "submitLabel": {
+            "en": "Book now",
+            "am": "አሁን ያስይዙ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will call you to confirm.",
+            "am": "እናመሰግናለን! ለማረጋገጥ እንደውልልዎታለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Visit or call us",
+            "am": "ይጎብኙን ወይም ይደውሉልን"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Where we are",
+            "am": "የምንገኝበት"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/menu",
+      "title": {
+        "en": "Menu",
+        "am": "ምናሌ"
+      },
+      "nav": {
+        "en": "Menu",
+        "am": "ምናሌ"
+      },
+      "sections": [
+        {
+          "type": "menu",
+          "heading": {
+            "en": "Our menu",
+            "am": "የእኛ ምናሌ"
+          },
+          "intro": {
+            "en": "Prices include VAT.",
+            "am": "ዋጋዎቹ ተ.እ.ታን ያካትታሉ።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "Coffee",
+                "am": "ቡና"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Buna (traditional)",
+                    "am": "ቡና (ባህላዊ)"
+                  },
+                  "price": {
+                    "amountMinor": 4000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Macchiato",
+                    "am": "ማኪያቶ"
+                  },
+                  "price": {
+                    "amountMinor": 5000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "Popular",
+                    "am": "ተወዳጅ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Full coffee ceremony",
+                    "am": "ሙሉ የቡና ሥነ ሥርዓት"
+                  },
+                  "description": {
+                    "en": "For 2 to 4 people, with popcorn",
+                    "am": "ከ2 እስከ 4 ሰው፣ ከፈንዲሻ ጋር"
+                  },
+                  "price": {
+                    "amountMinor": 25000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Breakfast",
+                "am": "ቁርስ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Firfir",
+                    "am": "ፍርፍር"
+                  },
+                  "price": {
+                    "amountMinor": 18000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Chechebsa",
+                    "am": "ጨጨብሳ"
+                  },
+                  "description": {
+                    "en": "With honey and yoghurt",
+                    "am": "ከማር እና እርጎ ጋር"
+                  },
+                  "price": {
+                    "amountMinor": 20000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Fresh juice",
+                    "am": "ትኩስ ጭማቂ"
+                  },
+                  "description": {
+                    "en": "Avocado, mango or mixed",
+                    "am": "አቮካዶ፣ ማንጎ ወይም ስፕሪስ"
+                  },
+                  "price": {
+                    "amountMinor": 9000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -36,4 +36,6 @@ export interface PublishProvider {
   checkDomain(providerProjectId: string, domain: string): Promise<DomainStatus>;
   /** Detaches a domain from a site (used to release stale, never-verified claims). */
   removeDomain(providerProjectId: string, domain: string): Promise<void>;
+  /** After a takedown: older deployment URLs stop being public (the site address shows the notice). */
+  restrictOldDeployments?(providerProjectId: string): Promise<void>;
 }

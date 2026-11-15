@@ -1,0 +1,678 @@
+{
+  "name": {
+    "en": "Adama Tesfa Academy",
+    "am": "አዳማ ተስፋ አካዳሚ"
+  },
+  "tagline": {
+    "en": "A caring private school for KG to Grade 8 in Adama",
+    "am": "ከመዋዕለ ሕፃናት እስከ 8ኛ ክፍል የሚያስተምር የግል ትምህርት ቤት በአዳማ"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#1D4E89",
+    "accent": "#E0A100",
+    "background": "#F7F9FC",
+    "text": "#1A2433",
+    "font": "friendly",
+    "radius": "large"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Kebele 14, near the main bus station, Adama",
+      "am": "ቀበሌ 14፣ ዋናው አውቶቡስ መናኸሪያ አጠገብ፣ አዳማ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Friday",
+          "am": "ከሰኞ እስከ ዓርብ"
+        },
+        "time": {
+          "en": "7:30 am to 4:00 pm",
+          "am": "ከጠዋቱ 1:30 እስከ ቀኑ 10 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Saturday (office only)",
+          "am": "ቅዳሜ (ቢሮ ብቻ)"
+        },
+        "time": {
+          "en": "8:30 am to 12:30 pm",
+          "am": "ከጠዋቱ 2:30 እስከ ቀኑ 6:30"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Private KG and primary school in Adama with small classes, qualified teachers and safe transport.",
+        "am": "በአዳማ የሚገኝ የግል መዋዕለ ሕፃናት እና አንደኛ ደረጃ ትምህርት ቤት፤ አነስተኛ ክፍሎች፣ ብቁ መምህራን እና አስተማማኝ ትራንስፖርት።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "Registration for the new school year is open",
+            "am": "ለአዲሱ የትምህርት ዘመን ምዝገባ ተጀምሯል"
+          },
+          "heading": {
+            "en": "Where every child learns with confidence",
+            "am": "እያንዳንዱ ልጅ በራስ መተማመን የሚማርበት"
+          },
+          "subheading": {
+            "en": "KG to Grade 8 in Adama. Small classes, caring teachers and strong results in English, Amharic, Afaan Oromo, maths and science.",
+            "am": "ከመዋዕለ ሕፃናት እስከ 8ኛ ክፍል በአዳማ። አነስተኛ ክፍሎች፣ ተንከባካቢ መምህራን እና በእንግሊዝኛ፣ በአማርኛ፣ በአፋን ኦሮሞ፣ በሂሳብ እና በሳይንስ ጠንካራ ውጤት።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Register your child",
+              "am": "ልጅዎን ያስመዝግቡ"
+            },
+            "href": "/admissions"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Our programs",
+              "am": "ፕሮግራሞቻችን"
+            },
+            "href": "/programs"
+          }
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "A school that knows every child by name",
+            "am": "እያንዳንዱን ልጅ በስሙ የሚያውቅ ትምህርት ቤት"
+          },
+          "body": {
+            "en": "Adama Tesfa Academy follows the Ethiopian national curriculum with extra support in English and reading. We keep classes small so teachers can follow each child closely.\n\nParents get a progress report every term and can meet teachers any Friday afternoon.",
+            "am": "አዳማ ተስፋ አካዳሚ የኢትዮጵያን ብሔራዊ ሥርዓተ ትምህርት ይከተላል፤ በእንግሊዝኛ እና በንባብ ተጨማሪ ድጋፍ እንሰጣለን። መምህራን እያንዳንዱን ልጅ በቅርበት እንዲከታተሉ ክፍሎቻችን አነስተኛ ናቸው።\n\nወላጆች በየሩብ ዓመቱ የውጤት ሪፖርት ይደርሳቸዋል፤ በየዓርብ ከሰዓት በኋላ መምህራንን ማግኘት ይችላሉ።"
+          },
+          "highlights": [
+            {
+              "value": {
+                "en": "30",
+                "am": "30"
+              },
+              "label": {
+                "en": "Max students per class",
+                "am": "በአንድ ክፍል ከፍተኛ የተማሪ ብዛት"
+              }
+            },
+            {
+              "value": {
+                "en": "KG–8",
+                "am": "KG–8"
+              },
+              "label": {
+                "en": "Grades we teach",
+                "am": "የምናስተምራቸው ክፍሎች"
+              }
+            },
+            {
+              "value": {
+                "en": "3",
+                "am": "3"
+              },
+              "label": {
+                "en": "Languages taught",
+                "am": "የሚማሩ ቋንቋዎች"
+              }
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "Why parents choose us",
+            "am": "ወላጆች ለምን ይመርጡናል"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Qualified teachers",
+                "am": "ብቁ መምህራን"
+              },
+              "description": {
+                "en": "Trained, experienced teachers who care about every child.",
+                "am": "ለእያንዳንዱ ልጅ የሚያስቡ የሰለጠኑ እና ልምድ ያላቸው መምህራን።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Safe campus",
+                "am": "ደህንነቱ የተጠበቀ ግቢ"
+              },
+              "description": {
+                "en": "Fenced compound with a guard at the gate all day.",
+                "am": "የታጠረ ግቢ፤ ቀኑን ሙሉ በበሩ ላይ ጥበቃ አለ።"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "School bus",
+                "am": "የትምህርት ቤት ሰርቪስ"
+              },
+              "description": {
+                "en": "Morning and afternoon routes across Adama.",
+                "am": "በአዳማ የተለያዩ አካባቢዎች የጠዋት እና የከሰዓት ሰርቪስ።"
+              },
+              "icon": "car"
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "heading": {
+            "en": "What parents say",
+            "am": "ወላጆች ምን ይላሉ"
+          },
+          "items": [
+            {
+              "quote": {
+                "en": "My daughter now reads English books at home on her own. The teachers really follow up.",
+                "am": "ልጄ አሁን ቤት ውስጥ የእንግሊዝኛ መጻሕፍትን ራሷ ታነባለች። መምህራኑ በእውነት ይከታተላሉ።"
+              },
+              "name": "Parent of a Grade 3 student"
+            },
+            {
+              "quote": {
+                "en": "The school bus is always on time and the staff call us if anything changes.",
+                "am": "ሰርቪሱ ሁልጊዜ በሰዓቱ ይመጣል፤ ለውጥ ካለም ሠራተኞቹ ይደውሉልናል።"
+              },
+              "name": "Parent of a KG student"
+            }
+          ]
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": {
+            "en": "Visit the school or call us",
+            "am": "ትምህርት ቤቱን ይጎብኙ ወይም ይደውሉልን"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/programs",
+      "title": {
+        "en": "Programs and facilities",
+        "am": "ፕሮግራሞች እና መገልገያዎች"
+      },
+      "nav": {
+        "en": "Programs",
+        "am": "ፕሮግራሞች"
+      },
+      "description": {
+        "en": "KG, lower primary and upper primary programs, clubs and school facilities.",
+        "am": "የመዋዕለ ሕፃናት፣ የ1ኛ እና የ2ኛ ሳይክል ፕሮግራሞች፣ ክበባት እና የትምህርት ቤቱ መገልገያዎች።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "Our programs",
+            "am": "ፕሮግራሞቻችን"
+          },
+          "intro": {
+            "en": "All grades follow the Ethiopian national curriculum.",
+            "am": "ሁሉም ክፍሎች የኢትዮጵያን ብሔራዊ ሥርዓተ ትምህርት ይከተላሉ።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Kindergarten (KG 1–3)",
+                "am": "መዋዕለ ሕፃናት (KG 1–3)"
+              },
+              "description": {
+                "en": "Learning through play, letters, numbers, songs and good habits.",
+                "am": "በጨዋታ መማር፣ ፊደላት፣ ቁጥሮች፣ መዝሙሮች እና መልካም ልምዶች።"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Lower primary (Grades 1–4)",
+                "am": "1ኛ ሳይክል (ከ1ኛ–4ኛ ክፍል)"
+              },
+              "description": {
+                "en": "Strong reading, writing and maths foundations in three languages.",
+                "am": "በሦስት ቋንቋዎች ጠንካራ የንባብ፣ የጽሕፈት እና የሂሳብ መሠረት።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Upper primary (Grades 5–8)",
+                "am": "2ኛ ሳይክል (ከ5ኛ–8ኛ ክፍል)"
+              },
+              "description": {
+                "en": "Science, social studies and ICT, with focused preparation for the Grade 6 and Grade 8 exams.",
+                "am": "ሳይንስ፣ ማኅበራዊ ሳይንስ እና አይሲቲ፤ ለ6ኛ እና ለ8ኛ ክፍል ፈተናዎች ልዩ ዝግጅት።"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Clubs and sports",
+                "am": "ክበባት እና ስፖርት"
+              },
+              "description": {
+                "en": "Football, art, music, science club and reading club after class.",
+                "am": "ከትምህርት በኋላ እግር ኳስ፣ ስዕል፣ ሙዚቃ፣ የሳይንስ ክበብ እና የንባብ ክበብ።"
+              },
+              "icon": "check"
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "Facilities",
+            "am": "መገልገያዎች"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Library",
+                "am": "ቤተ መጻሕፍት"
+              },
+              "description": {
+                "en": "Story books and reference books in English, Amharic and Afaan Oromo.",
+                "am": "በእንግሊዝኛ፣ በአማርኛ እና በአፋን ኦሮሞ የተረት እና የማጣቀሻ መጻሕፍት።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Science and ICT lab",
+                "am": "የሳይንስ እና የኮምፒውተር ቤተ ሙከራ"
+              },
+              "description": {
+                "en": "Hands-on experiments and computer lessons from Grade 5.",
+                "am": "ከ5ኛ ክፍል ጀምሮ በተግባር የሚሠሩ ሙከራዎች እና የኮምፒውተር ትምህርት።"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Playground",
+                "am": "የመጫወቻ ሜዳ"
+              },
+              "description": {
+                "en": "A separate, safe play area for KG children.",
+                "am": "ለመዋዕለ ሕፃናት ልጆች የተለየ እና ደህንነቱ የተጠበቀ የመጫወቻ ቦታ።"
+              },
+              "icon": "home"
+            },
+            {
+              "title": {
+                "en": "Lunch service",
+                "am": "የምሳ አገልግሎት"
+              },
+              "description": {
+                "en": "Optional hot lunch cooked fresh on campus.",
+                "am": "በግቢው ውስጥ በየቀኑ የሚዘጋጅ ትኩስ ምሳ (በምርጫ)።"
+              },
+              "icon": "utensils"
+            },
+            {
+              "title": {
+                "en": "School nurse",
+                "am": "የትምህርት ቤት ነርስ"
+              },
+              "description": {
+                "en": "First aid and health checks during school hours.",
+                "am": "በትምህርት ሰዓት የመጀመሪያ እርዳታ እና የጤና ክትትል።"
+              },
+              "icon": "stethoscope"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/admissions",
+      "title": {
+        "en": "Fees and admissions",
+        "am": "ክፍያ እና ምዝገባ"
+      },
+      "nav": {
+        "en": "Admissions",
+        "am": "ምዝገባ"
+      },
+      "description": {
+        "en": "School fees per term and online registration for new students.",
+        "am": "የየሩብ ዓመቱ የትምህርት ክፍያ እና ለአዲስ ተማሪዎች የኦንላይን ምዝገባ።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "Fees per term",
+            "am": "የየሩብ ዓመቱ ክፍያ"
+          },
+          "intro": {
+            "en": "The school year has four terms. Fees are paid at the start of each term. Siblings get 10% off.",
+            "am": "የትምህርት ዘመኑ አራት ሩብ ዓመታት አሉት። ክፍያው በየሩብ ዓመቱ መጀመሪያ ይፈጸማል። ወንድማማቾች/እህትማማቾች 10% ቅናሽ ያገኛሉ።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Kindergarten (KG 1–3)",
+                "am": "መዋዕለ ሕፃናት (KG 1–3)"
+              },
+              "description": {
+                "en": "Tuition per term",
+                "am": "የአንድ ሩብ ዓመት የትምህርት ክፍያ"
+              },
+              "price": {
+                "amountMinor": 900000,
+                "currency": "ETB"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Grades 1–4",
+                "am": "ከ1ኛ–4ኛ ክፍል"
+              },
+              "description": {
+                "en": "Tuition per term",
+                "am": "የአንድ ሩብ ዓመት የትምህርት ክፍያ"
+              },
+              "price": {
+                "amountMinor": 1100000,
+                "currency": "ETB"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Grades 5–8",
+                "am": "ከ5ኛ–8ኛ ክፍል"
+              },
+              "description": {
+                "en": "Tuition per term, including lab use",
+                "am": "የአንድ ሩብ ዓመት የትምህርት ክፍያ፣ የቤተ ሙከራ አጠቃቀምን ጨምሮ"
+              },
+              "price": {
+                "amountMinor": 1300000,
+                "currency": "ETB"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "School bus",
+                "am": "የትምህርት ቤት ሰርቪስ"
+              },
+              "description": {
+                "en": "Per term, morning and afternoon",
+                "am": "በሩብ ዓመት፣ ጠዋት እና ከሰዓት"
+              },
+              "price": {
+                "amountMinor": 600000,
+                "currency": "ETB"
+              },
+              "icon": "car"
+            },
+            {
+              "title": {
+                "en": "Lunch",
+                "am": "ምሳ"
+              },
+              "description": {
+                "en": "Per term, optional",
+                "am": "በሩብ ዓመት፣ በምርጫ"
+              },
+              "price": {
+                "amountMinor": 450000,
+                "currency": "ETB"
+              },
+              "icon": "utensils"
+            },
+            {
+              "title": {
+                "en": "Registration fee",
+                "am": "የምዝገባ ክፍያ"
+              },
+              "description": {
+                "en": "One time, for new students",
+                "am": "ለአዲስ ተማሪዎች፣ አንድ ጊዜ ብቻ"
+              },
+              "price": {
+                "amountMinor": 150000,
+                "currency": "ETB"
+              },
+              "icon": "check"
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "new-student-registration",
+          "kind": "registration",
+          "heading": {
+            "en": "Register a new student",
+            "am": "አዲስ ተማሪ ያስመዝግቡ"
+          },
+          "intro": {
+            "en": "Fill in the form and we will call you to arrange a short visit and placement check.",
+            "am": "ቅጹን ይሙሉ፤ ለአጭር ጉብኝት እና ለደረጃ ምዘና ቀጠሮ እንደውልልዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "child_name",
+              "label": {
+                "en": "Child's full name",
+                "am": "የልጁ/ የልጅቷ ሙሉ ስም"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "birth_date",
+              "label": {
+                "en": "Date of birth",
+                "am": "የትውልድ ቀን"
+              },
+              "type": "date"
+            },
+            {
+              "name": "grade",
+              "label": {
+                "en": "Grade applying for",
+                "am": "የሚመዘገቡበት ክፍል"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "KG 1",
+                  "am": "KG 1"
+                },
+                {
+                  "en": "KG 2",
+                  "am": "KG 2"
+                },
+                {
+                  "en": "KG 3",
+                  "am": "KG 3"
+                },
+                {
+                  "en": "Grade 1",
+                  "am": "1ኛ ክፍል"
+                },
+                {
+                  "en": "Grade 2",
+                  "am": "2ኛ ክፍል"
+                },
+                {
+                  "en": "Grade 3",
+                  "am": "3ኛ ክፍል"
+                },
+                {
+                  "en": "Grade 4",
+                  "am": "4ኛ ክፍል"
+                },
+                {
+                  "en": "Grade 5",
+                  "am": "5ኛ ክፍል"
+                },
+                {
+                  "en": "Grade 6",
+                  "am": "6ኛ ክፍል"
+                },
+                {
+                  "en": "Grade 7",
+                  "am": "7ኛ ክፍል"
+                },
+                {
+                  "en": "Grade 8",
+                  "am": "8ኛ ክፍል"
+                }
+              ]
+            },
+            {
+              "name": "parent_name",
+              "label": {
+                "en": "Parent or guardian name",
+                "am": "የወላጅ ወይም የአሳዳጊ ስም"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "parent_phone",
+              "label": {
+                "en": "Parent phone",
+                "am": "የወላጅ ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "previous_school",
+              "label": {
+                "en": "Previous school (if any)",
+                "am": "የቀድሞ ትምህርት ቤት (ካለ)"
+              },
+              "type": "text"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send registration",
+            "am": "ምዝገባውን ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! Our office will call you within two working days.",
+            "am": "እናመሰግናለን! ቢሮአችን በሁለት የሥራ ቀናት ውስጥ ይደውልልዎታል።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact",
+        "am": "አድራሻ"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "አድራሻ"
+      },
+      "description": {
+        "en": "Call, message or visit Adama Tesfa Academy.",
+        "am": "አዳማ ተስፋ አካዳሚን ይደውሉ፣ መልዕክት ይላኩ ወይም ይጎብኙ።"
+      },
+      "sections": [
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Get in touch",
+            "am": "ያግኙን"
+          },
+          "intro": {
+            "en": "The school office is open on weekdays and Saturday mornings.",
+            "am": "የትምህርት ቤቱ ቢሮ በሥራ ቀናት እና ቅዳሜ ጠዋት ክፍት ነው።"
+          }
+        },
+        {
+          "type": "form",
+          "id": "parent-question",
+          "kind": "contact",
+          "heading": {
+            "en": "Ask us a question",
+            "am": "ጥያቄ ይጠይቁን"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Your question",
+                "am": "ጥያቄዎ"
+              },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": {
+            "en": "Send",
+            "am": "ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will get back to you soon.",
+            "am": "እናመሰግናለን! በቅርቡ እንመልስልዎታለን።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Find the school",
+            "am": "ትምህርት ቤቱ የሚገኝበት"
+          },
+          "query": "Adama, Ethiopia"
+        }
+      ]
+    }
+  ]
+}

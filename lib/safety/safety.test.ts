@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ScriptedLLMProvider, textBlock } from "@/lib/providers/llm/fake";
 import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
 import { LLMContentClassifier } from "./classifier";
-import { ContentGuard, visibleText } from "./guard";
+import { ContentGuard, credentialFields, normalizeText, visibleText } from "./guard";
 import { keywordCheck } from "./keywords";
 
 const page = (body: string) => ({ path: "index.html", data: Buffer.from(`<html><head><script>var pin="enter your pin"</script></head><body>${body}</body></html>`) });
@@ -38,7 +38,7 @@ describe("ContentGuard", () => {
     const llm = new ScriptedLLMProvider([{ content: [textBlock('{"ok": false, "reasons": ["violence_hate"]}')] }]);
     const usage = new MemoryUsageLogger();
     const guard = new ContentGuard(new LLMContentClassifier(llm, usage));
-    const ctx = { projectId: "p", ownerId: "u" };
+    const ctx = { projectId: "p", ownerId: "u", source: {} };
     expect(await guard.check({ files: [page("Guaranteed daily profit 30% daily returns")], ...ctx })).toMatchObject({ ok: false, reasons: ["scam"] });
     expect(usage.records).toHaveLength(0);
     expect(await guard.check({ files: [page("something hateful")], ...ctx })).toEqual({ ok: false, reasons: ["violence_hate"] });
@@ -50,6 +50,33 @@ describe("ContentGuard", () => {
 
   it("fails closed when the AI answer can't be read", async () => {
     const guard = new ContentGuard(new LLMContentClassifier(new ScriptedLLMProvider([{ content: [textBlock("sure!")] }]), new MemoryUsageLogger()));
-    await expect(guard.check({ files: [page("Cafe")], projectId: "p", ownerId: "u" })).rejects.toThrow();
+    await expect(guard.check({ files: [page("Cafe")], source: {}, projectId: "p", ownerId: "u" })).rejects.toThrow();
+  });
+});
+
+describe("guard hardening", () => {
+  const json = (fields: { name: string; label: Record<string, string> }[], extra = "") =>
+    ({ "src/site.json": JSON.stringify({ name: { en: `Cafe ${extra}` }, pages: [{ path: "/", sections: [{ type: "form", fields }] }] }) });
+
+  it("finds hidden words and refuses forms that ask for PINs or passwords", async () => {
+    expect(keywordCheck(normalizeText("enter your P\u200bIN"))).toContain("phishing");
+    expect(credentialFields(json([{ name: "telebirr_pin", label: { en: "Telebirr PIN" } }]))).toBe(true);
+    expect(credentialFields(json([{ name: "code", label: { am: "ፒን ቁጥር" } }]))).toBe(true);
+    expect(credentialFields(json([{ name: "phone", label: { en: "Phone" } }]))).toBe(false);
+    const guard = new ContentGuard(null);
+    expect(await guard.check({ files: [page("Cafe")], source: json([{ name: "pin", label: { en: "PIN" } }]), projectId: "p", ownerId: "u" })).toMatchObject({ ok: false, reasons: ["phishing"] });
+    // Words in site.json that the HTML doesn't show are checked too.
+    expect(await guard.check({ files: [page("Cafe")], source: json([], "double your money"), projectId: "p", ownerId: "u" })).toMatchObject({ ok: false, reasons: ["scam"] });
+    expect(visibleText([page('<input placeholder="Telebirr PIN">')])).toContain("Telebirr PIN");
+  });
+
+  it("checks long sites in chunks and rejects answers with extra keys", async () => {
+    const llm = new ScriptedLLMProvider([{ content: [textBlock('{"ok": true}')] }, { content: [textBlock('{"ok": false, "reasons": ["scam"]}')] }]);
+    const c = new LLMContentClassifier(llm, new MemoryUsageLogger());
+    expect(await c.classify("a".repeat(30_000), { userId: "u", projectId: "p" })).toEqual({ ok: false, reasons: ["scam"] });
+    expect(llm.requests).toHaveLength(2);
+    expect(String(llm.requests[0]!.messages[0]!.content)).toMatch(/<SITE_[0-9a-f]{16}>/);
+    const sneaky = new LLMContentClassifier(new ScriptedLLMProvider([{ content: [textBlock('{"ok": true, "reasons": ["phishing"]}')] }]), new MemoryUsageLogger());
+    await expect(sneaky.classify("x", { userId: "u", projectId: "p" })).rejects.toThrow();
   });
 });

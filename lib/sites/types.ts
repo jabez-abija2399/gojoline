@@ -44,7 +44,7 @@ export interface SiteStore {
   /** Records that the owner's domain is pointing at us (first time only). */
   markDomainVerified(ownerId: string, projectId: string): Promise<void>;
   /** Another site's claim on this domain that was never verified and is older than the cutoff. */
-  staleDomainClaim(domain: string, claimedBefore: Date): Promise<{ siteId: string; providerProjectId: string | null } | null>;
+  staleDomainClaim(domain: string, claimedBefore: Date): Promise<{ siteId: string; ownerId: string; projectId: string; providerProjectId: string | null } | null>;
   /** Drops a stale claim (only if it is still unverified and older than the cutoff). */
   releaseDomainClaim(siteId: string, domain: string, claimedBefore: Date): Promise<boolean>;
   savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain" | "siteKey">): Promise<Site>;
