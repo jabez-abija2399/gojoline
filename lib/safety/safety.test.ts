@@ -1,3 +1,4 @@
+import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 import { ScriptedLLMProvider, textBlock } from "@/lib/providers/llm/fake";
 import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
@@ -95,5 +96,31 @@ describe("guard hardening", () => {
     expect(String(llm.requests[0]!.messages[0]!.content)).toMatch(/<SITE_[0-9a-f]{16}>/);
     const sneaky = new LLMContentClassifier(new ScriptedLLMProvider([{ content: [textBlock('{"ok": true, "reasons": ["phishing"]}')] }]), new MemoryUsageLogger());
     await expect(sneaky.classify("x", { userId: "u", projectId: "p" })).rejects.toThrow();
+  });
+});
+
+describe("photo check", () => {
+  const photo = (color: string) => sharp({ create: { width: 1200, height: 900, channels: 3, background: color } }).webp().toBuffer();
+
+  it("checks the owner's photos after the text, once per photo", async () => {
+    const llm = new ScriptedLLMProvider([
+      { content: [textBlock('{"ok": true}')] }, // text
+      { content: [textBlock('{"ok": true}')] }, // photos
+      // the new photo (text is cached):
+      { content: [textBlock('{"ok": false, "reasons": ["phishing"]}')] },
+    ]);
+    const guard = new ContentGuard(new LLMContentClassifier(llm, new MemoryUsageLogger()));
+    const files = [page("Cafe"), { path: "images/menu.webp", data: await photo("#ffffff") }, { path: "assets/index.js", data: Buffer.from("x") }];
+    const input = { files, source: {}, projectId: "p", ownerId: "u" };
+    expect(await guard.check(input)).toEqual({ ok: true });
+    const req = llm.requests[1]!.messages[0]!.content as { type: string }[];
+    expect(req.filter((b) => b.type === "image")).toHaveLength(1);
+    // Same text and photo again: no new calls.
+    expect(await guard.check(input)).toEqual({ ok: true });
+    expect(llm.requests).toHaveLength(2);
+    // A new photo is checked and can block publishing.
+    const withLogin = { ...input, files: [...files, { path: "images/login.webp", data: await photo("#123456") }] };
+    expect(await guard.check(withLogin)).toEqual({ ok: false, reasons: ["phishing"] });
+    expect(llm.requests).toHaveLength(3);
   });
 });
