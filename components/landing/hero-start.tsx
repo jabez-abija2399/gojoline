@@ -113,7 +113,7 @@ export function HeroStart({ locale, sites, t, children }: { locale: Locale; site
 
       <figure className="mx-auto flex w-full max-w-[300px] flex-col items-center gap-3">
         <div className="relative w-full rounded-[2.5rem] border-[10px] border-ink bg-ink shadow-2xl shadow-teal/20 lg:rotate-2 lg:transition-transform lg:duration-500 lg:hover:rotate-0">
-          <div key={site.id} tabIndex={0} role="group" aria-label={t.phoneLabel.replace("{name}", site.name)} className="h-[540px] animate-[pop-in_0.35s_ease-out] overflow-y-auto rounded-[1.9rem] bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div key={site.id} tabIndex={0} role="group" aria-label={t.phoneLabel.replace("{name}", site.name)} className={`h-[540px] overflow-y-auto rounded-[1.9rem] bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${picked === null ? "" : "animate-[pop-in_0.35s_ease-out]"}`}>
             <Image src={site.shot.src} alt={t.shotAlt.replace("{name}", site.name)} width={site.shot.width} height={site.shot.height} sizes="280px" priority={index === 0} className="h-auto w-full" />
           </div>
         </div>

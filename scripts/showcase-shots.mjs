@@ -1,7 +1,7 @@
 // Takes the pictures of real Gojoline sites shown on the landing page.
 // Builds every starter template (templates/site/presets) exactly as a customer site is built,
 // opens it at phone width in English and Amharic, and saves the whole page as WebP in
-// public/showcase/, plus lib/landing/showcase-shots.json (sizes, for layout without shift).
+// public/showcase/ (with a small top-of-page crop for the gallery), plus lib/landing/showcase-shots.json (sizes, for layout without shift).
 //
 //   node scripts/showcase-shots.mjs            (copies the template to a temp folder, installs, builds)
 //   SHOWCASE_WORKDIR=/path/with/node_modules node scripts/showcase-shots.mjs   (reuse an installed copy)
@@ -18,6 +18,8 @@ const outDir = join(root, "public", "showcase");
 const WIDTH = 390;
 // Enough to show the whole home page of most sites; longer pages are cut here.
 const MAX_HEIGHT = 3600;
+// The part of the page a gallery card shows (CSS px at phone width).
+const TOP_HEIGHT = 700;
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".txt": "text/plain", ".xml": "application/xml" };
 
 let work = process.env.SHOWCASE_WORKDIR;
@@ -68,7 +70,11 @@ for (const id of presets) {
     await page.close();
     const file = `${id}-${lang}.webp`;
     const info = await sharp(png).webp({ quality: 60, effort: 6 }).toFile(join(outDir, file));
-    manifest[id][lang] = { src: `/showcase/${file}`, width: info.width, height: info.height };
+    // The gallery shows only the top of each page: a small crop keeps phones from downloading
+    // a whole page they will never scroll.
+    const topFile = `${id}-${lang}-top.webp`;
+    const top = await sharp(png).extract({ left: 0, top: 0, width: info.width, height: Math.min(info.height, TOP_HEIGHT * 2) }).resize({ width: 520 }).webp({ quality: 62, effort: 6 }).toFile(join(outDir, topFile));
+    manifest[id][lang] = { src: `/showcase/${file}`, width: info.width, height: info.height, top: { src: `/showcase/${topFile}`, width: top.width, height: top.height } };
     console.log(file, `${info.width}x${info.height}`, `${Math.round(info.size / 1024)} KB`);
   }
   server.close();

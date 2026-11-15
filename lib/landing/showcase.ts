@@ -13,10 +13,13 @@ export interface ShowcaseSite {
   tagline: string;
   /** Whole home page at phone width; made by scripts/showcase-shots.mjs. */
   shot: { src: string; width: number; height: number };
+  /** Just the top of the page, small: what a gallery card shows. */
+  top: { src: string; width: number; height: number };
 }
 
 type Text = { en?: string; am?: string };
-type Shot = { src: string; width: number; height: number };
+type Size = { src: string; width: number; height: number };
+type Shot = Size & { top: Size };
 
 export function showcaseSites(locale: "en" | "am"): ShowcaseSite[] {
   const pick = (t: Text | undefined) => t?.[locale] ?? t?.en ?? "";
@@ -25,6 +28,6 @@ export function showcaseSites(locale: "en" | "am"): ShowcaseSite[] {
     const shot = all[id]?.[locale] ?? all[id]?.en;
     if (!shot) return [];
     const site = JSON.parse(presetSiteJson(id)) as { name: Text; tagline?: Text };
-    return [{ id, name: pick(site.name), tagline: pick(site.tagline), shot }];
+    return [{ id, name: pick(site.name), tagline: pick(site.tagline), shot: { src: shot.src, width: shot.width, height: shot.height }, top: shot.top }];
   });
 }

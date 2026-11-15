@@ -5,6 +5,8 @@ import type { Locale } from "@/lib/i18n/config";
 import type { ShowcaseSite } from "@/lib/landing/showcase";
 import { StartFromLink } from "./start-from-link";
 
+const WIDE_HOVER = "[@media(hover:hover)_and_(min-width:1024px)]";
+
 /** Twelve real Gojoline sites side by side. On a mouse, resting on one scrolls through its page. */
 export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
   const href = `/${locale}/sign-in?next=/${locale}/build`;
@@ -21,6 +23,9 @@ export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["
           <li key={s.id} className="w-[232px] shrink-0 snap-start">
             <StartFromLink href={href} preset={s.id} className="group flex flex-col gap-3 rounded-2xl">
               <span className="block h-[412px] overflow-hidden rounded-[1.75rem] border-[6px] border-ink bg-white shadow-lg transition group-hover:-translate-y-1 group-hover:shadow-2xl">
+                {/* Phones and tablets get a small picture of the top of the page. */}
+                <Image src={s.top.src} alt="" width={s.top.width} height={s.top.height} sizes="232px" loading="lazy" className={`h-auto w-full ${WIDE_HOVER}:hidden`} />
+                {/* Large screens with a mouse get the whole page, which scrolls by while the pointer rests on it. */}
                 <Image
                   src={s.shot.src}
                   alt=""
@@ -28,7 +33,7 @@ export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["
                   height={s.shot.height}
                   sizes="232px"
                   loading="lazy"
-                  className="h-auto w-full transition-transform duration-[9s] ease-linear motion-reduce:transition-none [@media(hover:hover)]:group-hover:translate-y-[calc(-100%+400px)] motion-reduce:[@media(hover:hover)]:group-hover:translate-y-0"
+                  className={`hidden h-auto w-full transition-transform duration-[9s] ease-linear motion-reduce:transition-none ${WIDE_HOVER}:block ${WIDE_HOVER}:group-hover:translate-y-[calc(-100%+400px)] motion-reduce:group-hover:translate-y-0`}
                 />
               </span>
               <span className="flex flex-col px-1">

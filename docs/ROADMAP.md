@@ -73,6 +73,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Follow-ups
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
+- Landing page, from the reviews: real photos in the starter templates would make the gallery stronger (they show placeholder shapes now); the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
 - Re-run `node scripts/showcase-shots.mjs` after changing the site template or a preset, so the landing page's pictures stay true.
 - The new builder and landing strings in Amharic (start box, ideas, suggestions, photos, gallery, numbers) need the same native-speaker review.
 - Amharic in the 12 templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
