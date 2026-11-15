@@ -15,6 +15,7 @@ import { getMessages } from "@/lib/i18n";
 import { serif } from "@/lib/fonts-landing";
 import { HERO_IDS, showcaseSites } from "@/lib/landing/showcase";
 import { services } from "@/lib/server/services";
+import { EXAMPLE_SLUG } from "@/lib/sites/slug";
 
 export default async function LandingPage({ params, searchParams }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -33,6 +34,8 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const cafe = { en: showcaseSites("en").find((s) => s.id === "cafe"), am: showcaseSites("am").find((s) => s.id === "cafe") };
   const sample = { en: { name: cafe.en?.name ?? "", tagline: cafe.en?.tagline ?? "" }, am: { name: cafe.am?.name ?? "", tagline: cafe.am?.tagline ?? "" } };
   const b = t.builder;
+  // The example address is built the way publishing builds real ones, and its name is reserved.
+  const exampleAddress = (services().publish?.publisher.urlFor(EXAMPLE_SLUG) ?? `https://gojo-${EXAMPLE_SLUG}.vercel.app`).replace(/^https:\/\//, "");
   return (
     <>
       <SiteHeader locale={lang} t={t} nav />
@@ -64,7 +67,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
           }}
         />
         <Proof t={t.landing} />
-        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={services().telegram?.username ?? "gojoline_bot"} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={process.env.PUBLISH_BASE_DOMAIN ? `selam-coffee.${process.env.PUBLISH_BASE_DOMAIN}` : "gojo-selam-coffee.vercel.app"} />
+        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={services().telegram?.username ?? "gojoline_bot"} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} />
         <Gallery t={t.landing.gallery} sites={sites} labels={b.templates} locale={lang} />
         <Features t={t.landing} sample={sample} />
         <Pricing t={t.landing.pricing} planNames={t.billing.plans} prices={{ starter: prices.starter_month, business: prices.business_month }} locale={lang} />

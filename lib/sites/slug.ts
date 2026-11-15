@@ -1,10 +1,15 @@
 /** Public address part of a site: lowercase letters, numbers and dashes, 3–40 characters. */
 export const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])$/;
 
+/** The address the landing page shows as an example. Reserved, so no one can claim it. */
+export const EXAMPLE_SLUG = "your-business";
+
 const RESERVED = new Set([
   "www", "api", "app", "admin", "mail", "gojoline", "gojo", "support", "help", "login", "signin", "account",
   "billing", "pay", "payment", "secure", "bank", "telebirr", "cbe", "ethiotelecom", "safaricom", "status", "docs",
   "dashboard", "static", "assets", "cdn", "test", "root", "official", "verify", "update",
+  // Shown as the example address on the landing page: nobody else may publish there.
+  EXAMPLE_SLUG,
 ]);
 
 /** Banks, telecoms and payment brands people could be tricked by, matched inside words too. */
