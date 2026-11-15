@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { clearStartPrompt, saveStartPrompt, takeStartPrompt } from "./start-prompt";
+import { clearLandingPrompt, clearStartPrompt, saveLandingPrompt, saveStartPrompt, takeLandingPrompt, takeStartPrompt } from "./start-prompt";
 
 describe("start prompt", () => {
   beforeEach(() => {
@@ -18,6 +18,20 @@ describe("start prompt", () => {
     saveStartPrompt({ text: "Selam Coffee", languages: ["en"] });
     clearStartPrompt();
     expect(takeStartPrompt()).toBeNull();
+  });
+
+  it("landing prompt: read once, kept apart from the start prompt, gone after 5 minutes", () => {
+    saveLandingPrompt({ text: "Kaldi Books", languages: ["am"] });
+    expect(takeStartPrompt()).toBeNull();
+    expect(takeLandingPrompt()).toEqual({ text: "Kaldi Books", languages: ["am"] });
+    expect(takeLandingPrompt()).toBeNull();
+    saveLandingPrompt({ text: "Kaldi Books", languages: ["am"] });
+    clearLandingPrompt();
+    expect(takeLandingPrompt()).toBeNull();
+    vi.useFakeTimers();
+    saveLandingPrompt({ text: "Kaldi Books", languages: ["am"] });
+    vi.advanceTimersByTime(5 * 60_000 + 1000);
+    expect(takeLandingPrompt()).toBeNull();
   });
 
   it("ignores an old prompt", () => {

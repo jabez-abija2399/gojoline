@@ -10,7 +10,7 @@ const KEY = "gojoline:start";
 const MAX_AGE_MS = 30_000;
 // Typed on the landing page before signing in: signing in can take a few minutes.
 const LANDING_KEY = "gojoline:landing";
-const LANDING_MAX_AGE_MS = 15 * 60_000;
+const LANDING_MAX_AGE_MS = 5 * 60_000;
 
 function save(key: string, start: StartPrompt) {
   try {
@@ -44,6 +44,15 @@ export const takeStartPrompt = () => take(KEY, MAX_AGE_MS);
 /** The landing page's "Build my site": kept while the visitor signs in, then handed to "Your sites". */
 export const saveLandingPrompt = (start: StartPrompt) => save(LANDING_KEY, start);
 export const takeLandingPrompt = () => take(LANDING_KEY, LANDING_MAX_AGE_MS);
+
+/** Opening the landing page again drops a description nobody followed through on. */
+export function clearLandingPrompt() {
+  try {
+    sessionStorage.removeItem(LANDING_KEY);
+  } catch {
+    // Nothing was stored.
+  }
+}
 
 /** Forgets a prompt that never reached a new site (creating it was refused, or sign-in expired). */
 export function clearStartPrompt() {

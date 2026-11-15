@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { LanguageChoice, type SiteLanguages } from "@/components/builder/language-choice";
-import { saveLandingPrompt } from "@/components/builder/start-prompt";
+import { clearLandingPrompt, saveLandingPrompt } from "@/components/builder/start-prompt";
 import type { Locale } from "@/lib/i18n/config";
 
 export interface HeroSite {
@@ -43,6 +43,8 @@ export function HeroStart({ locale, sites, t, children }: { locale: Locale; site
   const [text, setText] = useState("");
   const [languages, setLanguages] = useState<SiteLanguages>([locale]);
   const boxRef = useRef<HTMLTextAreaElement>(null);
+  // A description from an earlier visit to this page is dropped: only this visit's counts.
+  useEffect(clearLandingPrompt, []);
   const site = sites[index]!;
   const next = `/${locale}/build`;
 
