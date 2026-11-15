@@ -1,0 +1,19 @@
+# Never upload local secrets, build output or installed packages (Vercel installs and builds itself).
+.env
+.env.*
+!.env.example
+node_modules
+.next
+templates/site/node_modules
+templates/site/dist
+templates/site/dist-ssr
+evals/.runs
+test-results
+playwright-report
+blob-report
+coverage
+.lighthouseci
+.claude
+.vercel
+*.log
+*.pem
