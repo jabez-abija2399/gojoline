@@ -93,6 +93,13 @@
               "am": "ፓኬጆቹን ይመልከቱ"
             },
             "href": "/packages"
+          },
+          "image": {
+            "art": "event",
+            "alt": {
+              "en": "A stage with flags and lights",
+              "am": "ባንዲራ እና መብራት ያለው መድረክ"
+            }
           }
         },
         {
@@ -104,6 +111,13 @@
           "body": {
             "en": "From the first meeting to the last guest leaving, our team plans the timeline, sets up the venue and coordinates every supplier.\n\nWe work in hotels, halls, gardens and homes across Addis Ababa.",
             "am": "ከመጀመሪያው ውይይት እስከ መጨረሻው እንግዳ መውጫ ድረስ ቡድናችን ፕሮግራሙን ያቅዳል፣ አዳራሹን ያዘጋጃል፣ ሁሉንም አቅራቢዎች ያስተባብራል።\n\nበአዲስ አበባ ውስጥ በሆቴሎች፣ በአዳራሾች፣ በግቢዎች እና በቤቶች እንሠራለን።"
+          },
+          "image": {
+            "art": "people",
+            "alt": {
+              "en": "Guests gathered at an event",
+              "am": "በዝግጅት ላይ የተሰበሰቡ እንግዶች"
+            }
           }
         },
         {
@@ -158,6 +172,72 @@
               "icon": "star"
             }
           ]
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Planning your day",
+            "am": "ዝግጅትዎን ሲያቅዱ"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "How early should I book?",
+                "am": "ምን ያህል ቀደም ብዬ ልያዝ?"
+              },
+              "answer": {
+                "en": "As early as you can. Popular dates fill up months ahead.",
+                "am": "በተቻለ መጠን ቀደም ብለው ይያዙ። ተፈላጊ ቀናት ከወራት በፊት ይያዛሉ።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can you work with my budget?",
+                "am": "በበጀቴ መሥራት ትችላላችሁ?"
+              },
+              "answer": {
+                "en": "Yes. Tell us your budget and guest number and we will suggest a package.",
+                "am": "አዎ። በጀትዎን እና የእንግዶችዎን ብዛት ይንገሩን፤ የሚስማማ ጥቅል እናቀርባለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Do you travel outside the city?",
+                "am": "ከከተማ ውጭ ትሠራላችሁ?"
+              },
+              "answer": {
+                "en": "Yes, for most events. Ask us about your place and date.",
+                "am": "አዎ፤ ለአብዛኞቹ ዝግጅቶች። ስለ ቦታዎ እና ቀንዎ ይጠይቁን።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Let's plan a day people remember",
+            "am": "የማይረሳ ቀን አብረን እናቅድ"
+          },
+          "body": {
+            "en": "Tell us the date and the number of guests. We reply the same day.",
+            "am": "ቀኑን እና የእንግዶቹን ብዛት ይንገሩን። በዚያው ቀን እንመልሳለን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book your date",
+              "am": "ቀንዎን ይያዙ"
+            },
+            "href": "/book"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See packages",
+              "am": "ጥቅሎችን ይመልከቱ"
+            },
+            "href": "/packages"
+          }
         }
       ]
     },

@@ -7,6 +7,7 @@ import { site } from "./site";
 import "./styles.css";
 // Locked (not owner-editable): motion and depth shared by every site, old and new.
 import "./motion.css";
+import "./design.css";
 
 const container = document.getElementById("root")!;
 const { lang, path } = parsePath(window.location.pathname, site);

@@ -29,6 +29,11 @@ export function parsePath(pathname: string, site: Langs): { lang: Lang; path: st
 const ui = {
   en: {
     call: "Call us",
+    callShort: "Call",
+    telegramShort: "Telegram",
+    whatsapp: "WhatsApp",
+    contact: "Contact",
+    quickActions: "Contact us",
     telegram: "Message on Telegram",
     hours: "Opening hours",
     address: "Address",
@@ -52,6 +57,11 @@ const ui = {
   },
   am: {
     call: "ይደውሉልን",
+    callShort: "ይደውሉ",
+    telegramShort: "ቴሌግራም",
+    whatsapp: "ዋትስአፕ",
+    contact: "ያግኙን",
+    quickActions: "ያግኙን",
     telegram: "በቴሌግራም ይጻፉልን",
     hours: "የሥራ ሰዓት",
     address: "አድራሻ",

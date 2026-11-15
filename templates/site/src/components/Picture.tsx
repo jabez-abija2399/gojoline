@@ -1,5 +1,6 @@
 import { useSite } from "../lib/context";
 import type { Image } from "../lib/types";
+import { Art } from "./Art";
 
 interface Props {
   image?: Image;
@@ -10,19 +11,15 @@ interface Props {
 }
 
 /**
- * A photo, or a tasteful placeholder in the theme colours when no photo exists yet.
- * Placeholders are decorative (no alt) so screen readers skip them.
+ * A photo, or a drawing in the theme colours when no photo exists yet (`image.art` picks
+ * which one). Drawings are decorative (no alt) so screen readers skip them.
  */
 export function Picture({ image, className = "", priority = false, sizes = "100vw" }: Props) {
   const { text } = useSite();
   if (!image?.src) {
     return (
       <div aria-hidden="true" className={`placeholder relative overflow-hidden bg-primary-soft ${className}`}>
-        <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full">
-          <circle cx="320" cy="60" r="90" className="fill-accent opacity-15" />
-          <circle cx="60" cy="260" r="120" className="fill-primary opacity-15" />
-          <path d="M0 220 Q 100 170 200 210 T 400 190 V300 H0Z" className="fill-primary opacity-20" />
-        </svg>
+        <Art name={image?.art} seed={(image?.alt.en ?? image?.alt.am ?? "") + className} />
       </div>
     );
   }

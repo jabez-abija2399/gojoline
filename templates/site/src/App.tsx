@@ -3,6 +3,8 @@ import { SiteProvider } from "./lib/context";
 import type { Lang, Page, Section, Site } from "./lib/types";
 import { About } from "./sections/About";
 import { Contact } from "./sections/Contact";
+import { Cta } from "./sections/Cta";
+import { Faq } from "./sections/Faq";
 import { Footer } from "./sections/Footer";
 import { Form } from "./sections/Form";
 import { Gallery } from "./sections/Gallery";
@@ -11,6 +13,7 @@ import { Hero } from "./sections/Hero";
 import { MapEmbed } from "./sections/MapEmbed";
 import { Menu } from "./sections/Menu";
 import { Services } from "./sections/Services";
+import { StickyActions, hasStickyActions } from "./sections/StickyActions";
 import { Testimonials } from "./sections/Testimonials";
 import { Timeline } from "./sections/Timeline";
 
@@ -34,6 +37,10 @@ function renderSection(section: Section, index: number) {
       return <Testimonials key={index} section={section} />;
     case "timeline":
       return <Timeline key={index} section={section} />;
+    case "faq":
+      return <Faq key={index} section={section} />;
+    case "cta":
+      return <Cta key={index} section={section} />;
     case "form":
       return <Form key={index} section={section} />;
   }
@@ -44,7 +51,8 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
   const firstIsHero = page.sections[0]?.type === "hero";
   return (
     <SiteProvider site={site} page={page} lang={lang}>
-      <div className="flex min-h-screen flex-col">
+      {/* Room at the bottom on phones so the call bar never hides the footer's last line. */}
+      <div className={`flex min-h-screen flex-col ${hasStickyActions(site) ? "max-md:pb-16" : ""}`}>
         <Header />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {page.sections.map((section, i) =>
@@ -59,6 +67,7 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
         </main>
         <Footer />
       </div>
+      <StickyActions />
     </SiteProvider>
   );
 }

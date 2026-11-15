@@ -67,7 +67,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "variant": "split",
           "eyebrow": {
             "en": "Open Monday to Saturday, 8 am to 8 pm",
             "am": "ከሰኞ እስከ ቅዳሜ ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት ክፍት"
@@ -93,6 +93,13 @@
               "am": "ይደውሉልን"
             },
             "href": "tel:+251911000000"
+          },
+          "image": {
+            "art": "clinic",
+            "alt": {
+              "en": "A medical cross and a heartbeat line",
+              "am": "የሕክምና መስቀል እና የልብ ምት መስመር"
+            }
           }
         },
         {
@@ -157,7 +164,54 @@
           "body": {
             "en": "We are a small team of doctors, nurses and lab staff serving families around Megenagna.\n\nWe take time to listen, explain clearly and refer you to a specialist or hospital when needed.",
             "am": "በመገናኛ አካባቢ ቤተሰቦችን የምናገለግል የሐኪሞች፣ የነርሶች እና የላብራቶሪ ባለሙያዎች ቡድን ነን።\n\nጊዜ ወስደን እናዳምጥዎታለን፣ በግልጽ እናስረዳለን፤ ሲያስፈልግም ወደ ስፔሻሊስት ወይም ሆስፒታል እንልክዎታለን።"
+          },
+          "image": {
+            "art": "people",
+            "alt": {
+              "en": "A family standing together",
+              "am": "አብሮ የቆመ ቤተሰብ"
+            }
           }
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Before you visit",
+            "am": "ከመምጣትዎ በፊት"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "Do I need an appointment?",
+                "am": "ቀጠሮ ያስፈልጋል?"
+              },
+              "answer": {
+                "en": "You can walk in, but people with an appointment are seen first. Booking takes one minute.",
+                "am": "ያለ ቀጠሮ መምጣት ይችላሉ፤ ሆኖም ቀጠሮ ያላቸው ቀድመው ይታያሉ። ቀጠሮ መያዝ አንድ ደቂቃ ብቻ ይወስዳል።"
+              }
+            },
+            {
+              "question": {
+                "en": "What should I bring?",
+                "am": "ምን ይዤ ልምጣ?"
+              },
+              "answer": {
+                "en": "Bring any earlier test results and the medicines you take now.",
+                "am": "ከዚህ በፊት ያደረጓቸውን የምርመራ ውጤቶች እና አሁን የሚወስዷቸውን መድኃኒቶች ይዘው ይምጡ።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can I come with my child?",
+                "am": "ከልጄ ጋር መምጣት እችላለሁ?"
+              },
+              "answer": {
+                "en": "Yes. We see children and adults in the same visit.",
+                "am": "አዎ። ሕፃናትንም አዋቂዎችንም በአንድ ጉብኝት እናያለን።"
+              }
+            }
+          ]
         },
         {
           "type": "contact",
@@ -169,6 +223,32 @@
           "intro": {
             "en": "In an emergency, go to the nearest hospital right away.",
             "am": "ድንገተኛ ሁኔታ ሲያጋጥም ወዲያውኑ በአቅራቢያዎ ወዳለ ሆስፒታል ይሂዱ።"
+          }
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Feeling unwell? See a doctor today",
+            "am": "ሕመም ይሰማዎታል? ዛሬውኑ ሐኪም ይዩ"
+          },
+          "body": {
+            "en": "Book a time that suits you, or call us and we will help.",
+            "am": "የሚመችዎትን ሰዓት ይያዙ፤ ወይም ይደውሉልን፤ እንረዳዎታለን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book an appointment",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/appointments"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Contact us",
+              "am": "ያግኙን"
+            },
+            "href": "/contact"
           }
         }
       ]

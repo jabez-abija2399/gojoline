@@ -67,7 +67,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "variant": "split",
           "eyebrow": {
             "en": "Open every day in Merkato",
             "am": "በመርካቶ በየቀኑ ክፍት ነን"
@@ -93,6 +93,13 @@
               "am": "አሁን ይዘዙ"
             },
             "href": "/order"
+          },
+          "image": {
+            "art": "fashion",
+            "alt": {
+              "en": "A dress with a woven band",
+              "am": "ጥለት ያለው ቀሚስ"
+            }
           }
         },
         {
@@ -104,6 +111,13 @@
           "body": {
             "en": "We work with skilled weavers from Gullele and Shiro Meda, and our tailors finish every dress in our Merkato shop.\n\nFor holidays, weddings and graduations, come early so we have time to fit your dress perfectly.",
             "am": "ከጉለሌ እና ሽሮ ሜዳ ልምድ ካላቸው ሸማኔዎች ጋር እንሠራለን፤ እያንዳንዱን ቀሚስ ልብስ ሰፊዎቻችን በመርካቶ ሱቃችን ያጠናቅቃሉ።\n\nለበዓል፣ ለሠርግ እና ለምርቃት ቀሚስዎ በትክክል እንዲሆን ቀደም ብለው ይምጡ።"
+          },
+          "image": {
+            "art": "shopping",
+            "alt": {
+              "en": "A shopping bag and parcels",
+              "am": "የገበያ ከረጢት እና ጥቅሎች"
+            }
           }
         },
         {
@@ -149,6 +163,46 @@
           ]
         },
         {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Ordering from us",
+            "am": "ከእኛ ሲያዝዙ"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "Do you deliver?",
+                "am": "ታደርሳላችሁ?"
+              },
+              "answer": {
+                "en": "Yes, we deliver in the city. Tell us where you are when you order.",
+                "am": "አዎ፤ በከተማ ውስጥ እናደርሳለን። ሲያዝዙ ያሉበትን ቦታ ይንገሩን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can you make it to my size?",
+                "am": "በልኬ ትሠሩልኛላችሁ?"
+              },
+              "answer": {
+                "en": "Yes. Come for a fitting or send us your measurements.",
+                "am": "አዎ። ለልኬት ይምጡ ወይም ልክዎን ይላኩልን።"
+              }
+            },
+            {
+              "question": {
+                "en": "How do I pay?",
+                "am": "እንዴት እከፍላለሁ?"
+              },
+              "answer": {
+                "en": "You can pay when you collect, or by mobile money.",
+                "am": "ሲረከቡ ወይም በሞባይል ገንዘብ መክፈል ይችላሉ።"
+              }
+            }
+          ]
+        },
+        {
           "type": "contact",
           "id": "contact",
           "heading": {
@@ -163,6 +217,32 @@
             "am": "በመርካቶ ያግኙን"
           },
           "query": "Anwar Mosque, Merkato, Addis Ababa"
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Find the dress for your day",
+            "am": "ለልዩ ቀንዎ የሚሆን ልብስ ያግኙ"
+          },
+          "body": {
+            "en": "Order now, or visit us to see and try the dresses.",
+            "am": "አሁኑኑ ይዘዙ፤ ወይም መጥተው ልብሶቹን ይመልከቱ፣ ይለኩ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Order now",
+              "am": "አሁን ይዘዙ"
+            },
+            "href": "/order"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See our products",
+              "am": "ምርቶቻችንን ይመልከቱ"
+            },
+            "href": "/products"
+          }
         }
       ]
     },

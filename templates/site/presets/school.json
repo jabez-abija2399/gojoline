@@ -67,7 +67,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "variant": "split",
           "eyebrow": {
             "en": "Registration for the new school year is open",
             "am": "ለአዲሱ የትምህርት ዘመን ምዝገባ ተጀምሯል"
@@ -93,6 +93,13 @@
               "am": "ፕሮግራሞቻችን"
             },
             "href": "/programs"
+          },
+          "image": {
+            "art": "school",
+            "alt": {
+              "en": "An open book, a pencil and a star",
+              "am": "የተከፈተ መጽሐፍ፣ እርሳስ እና ኮከብ"
+            }
           }
         },
         {
@@ -104,6 +111,13 @@
           "body": {
             "en": "Adama Tesfa Academy follows the Ethiopian national curriculum with extra support in English and reading. We keep classes small so teachers can follow each child closely.\n\nParents get a progress report every term and can meet teachers any Friday afternoon.",
             "am": "አዳማ ተስፋ አካዳሚ የኢትዮጵያን ብሔራዊ ሥርዓተ ትምህርት ይከተላል፤ በእንግሊዝኛ እና በንባብ ተጨማሪ ድጋፍ እንሰጣለን። መምህራን እያንዳንዱን ልጅ በቅርበት እንዲከታተሉ ክፍሎቻችን አነስተኛ ናቸው።\n\nወላጆች በየሩብ ዓመቱ የውጤት ሪፖርት ይደርሳቸዋል፤ በየዓርብ ከሰዓት በኋላ መምህራንን ማግኘት ይችላሉ።"
+          },
+          "image": {
+            "art": "people",
+            "alt": {
+              "en": "Children and a teacher together",
+              "am": "ተማሪዎች ከመምህራቸው ጋር"
+            }
           }
         },
         {
@@ -149,11 +163,77 @@
           ]
         },
         {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Parents often ask",
+            "am": "ወላጆች ብዙ ጊዜ የሚጠይቁት"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "When can I register my child?",
+                "am": "ልጄን መቼ ማስመዝገብ እችላለሁ?"
+              },
+              "answer": {
+                "en": "Registration dates are on the admissions page. Places fill early, so register soon.",
+                "am": "የምዝገባ ቀናት በምዝገባ ገጹ ላይ አሉ። ቦታ ቶሎ ስለሚሞላ ቀደም ብለው ያስመዝግቡ።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can we visit the school first?",
+                "am": "መጀመሪያ ትምህርት ቤቱን መጎብኘት እንችላለን?"
+              },
+              "answer": {
+                "en": "Yes. Call us and we will show you the classrooms and answer your questions.",
+                "am": "አዎ። ይደውሉልን፤ ክፍሎቹን እናሳይዎታለን፤ ጥያቄዎችዎንም እንመልሳለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "How will I know how my child is doing?",
+                "am": "የልጄን ውጤት እንዴት አውቃለሁ?"
+              },
+              "answer": {
+                "en": "Teachers meet parents every term, and you can ask to talk at any time.",
+                "am": "መምህራን በየተርሙ ከወላጆች ጋር ይገናኛሉ፤ በማንኛውም ጊዜ ለመነጋገር መጠየቅም ይችላሉ።"
+              }
+            }
+          ]
+        },
+        {
           "type": "contact",
           "id": "contact",
           "heading": {
             "en": "Visit the school or call us",
             "am": "ትምህርት ቤቱን ይጎብኙ ወይም ይደውሉልን"
+          }
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Give your child a strong start",
+            "am": "ለልጅዎ ጠንካራ ጅማሬ ይስጡ"
+          },
+          "body": {
+            "en": "Registration is open. Come and see the school for yourself.",
+            "am": "ምዝገባ ተጀምሯል። መጥተው ትምህርት ቤቱን በዓይንዎ ይመልከቱ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Register your child",
+              "am": "ልጅዎን ያስመዝግቡ"
+            },
+            "href": "/admissions"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Ask a question",
+              "am": "ጥያቄ ይጠይቁ"
+            },
+            "href": "/contact"
           }
         }
       ]

@@ -3,7 +3,10 @@ import { useSite } from "../lib/context";
 import type { HeroSection } from "../lib/types";
 
 export function Hero({ section, first }: { section: HeroSection; first: boolean }) {
-  const { text, href } = useSite();
+  const { site, text, href } = useSite();
+  // On the home page's hero: when they are open (or, without hours, the phone number).
+  const hours = site.business.hours?.[0];
+  const chip = first ? (hours ? `${text(hours.days)} · ${text(hours.time)}` : site.business.phone) : undefined;
   const variant = section.variant ?? "split";
   const Heading = first ? "h1" : "h2";
 
@@ -68,6 +71,12 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           <div className="zoom rounded-site">
             <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[4/3] w-full rounded-site" />
           </div>
+          {chip && (
+            <p className="info-chip enter flex items-center gap-3 font-semibold" style={{ "--i": 5 } as React.CSSProperties}>
+              <span aria-hidden="true" className="info-dot" />
+              <span>{chip}</span>
+            </p>
+          )}
         </div>
       </div>
     </section>

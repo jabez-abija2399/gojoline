@@ -57,7 +57,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "variant": "split",
           "eyebrow": {
             "en": "Freelance designer and photographer",
             "am": "የግል ዲዛይነር እና ፎቶግራፈር"
@@ -83,6 +83,13 @@
               "am": "ሥራ እናስጀምር"
             },
             "href": "/contact"
+          },
+          "image": {
+            "art": "portrait",
+            "alt": {
+              "en": "A portrait",
+              "am": "የቁም ምስል"
+            }
           }
         },
         {
@@ -95,6 +102,13 @@
           "body": {
             "en": "I'm a graphic designer and photographer based in Addis Ababa. I help small businesses, start-ups and families tell their story through clear design and honest photos.\n\nI like to start every project with a coffee and a good conversation, so I understand what you need before I open my laptop.",
             "am": "በአዲስ አበባ የምኖር ግራፊክ ዲዛይነር እና ፎቶግራፈር ነኝ። አነስተኛ ንግዶች፣ አዳዲስ ድርጅቶች እና ቤተሰቦች ታሪካቸውን በግልጽ ዲዛይን እና በእውነተኛ ፎቶ እንዲያሳዩ እረዳለሁ።\n\nማንኛውንም ሥራ ከመጀመሬ በፊት በቡና ላይ ተገናኝተን መወያየት እወዳለሁ፤ ኮምፒውተሬን ከመክፈቴ በፊት የሚፈልጉትን በደንብ ለመረዳት።"
+          },
+          "image": {
+            "art": "work",
+            "alt": {
+              "en": "Finished work in frames",
+              "am": "በፍሬም ያሉ የተጠናቀቁ ሥራዎች"
+            }
           }
         },
         {
@@ -155,6 +169,72 @@
               "icon": "heart"
             }
           ]
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Working with me",
+            "am": "ከእኔ ጋር ሲሠሩ"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "How do we start?",
+                "am": "እንዴት እንጀምራለን?"
+              },
+              "answer": {
+                "en": "Send me a short message about what you need. I reply within a day with questions and a price.",
+                "am": "ስለሚፈልጉት ነገር አጭር መልዕክት ይላኩልኝ። በአንድ ቀን ውስጥ ከጥያቄዎች እና ከዋጋ ጋር እመልሳለሁ።"
+              }
+            },
+            {
+              "question": {
+                "en": "How long does a project take?",
+                "am": "አንድ ሥራ ምን ያህል ጊዜ ይወስዳል?"
+              },
+              "answer": {
+                "en": "It depends on the work. I give you a date before we start and keep to it.",
+                "am": "እንደ ሥራው ይለያያል። ከመጀመራችን በፊት ቀን እሰጥዎታለሁ፤ እጠብቀዋለሁም።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can I ask for changes?",
+                "am": "ለውጥ መጠየቅ እችላለሁ?"
+              },
+              "answer": {
+                "en": "Yes. Every project includes a round of changes.",
+                "am": "አዎ። እያንዳንዱ ሥራ አንድ ዙር ማስተካከያን ያካትታል።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Have a project in mind?",
+            "am": "በልብዎ ያለ ሥራ አለ?"
+          },
+          "body": {
+            "en": "Tell me about it. The first conversation is free.",
+            "am": "ይንገሩኝ። የመጀመሪያው ውይይት በነጻ ነው።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Start a project",
+              "am": "ሥራ ይጀምሩ"
+            },
+            "href": "/contact"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See my work",
+              "am": "ሥራዎቼን ይመልከቱ"
+            },
+            "href": "/work"
+          }
         }
       ]
     },
@@ -185,31 +265,36 @@
               "alt": {
                 "en": "Logo and business cards for a local coffee brand",
                 "am": "ለአንድ የአገር ውስጥ ቡና ድርጅት የተሠራ ሎጎ እና የመታወቂያ ካርዶች"
-              }
+              },
+              "art": "work"
             },
             {
               "alt": {
                 "en": "Bride and groom at a wedding in Addis Ababa",
                 "am": "በአዲስ አበባ በሠርግ ላይ ሙሽሮች"
-              }
+              },
+              "art": "people"
             },
             {
               "alt": {
                 "en": "Set of Instagram posts for a fashion shop",
                 "am": "ለአንድ የልብስ ሱቅ የተዘጋጁ የኢንስታግራም ፖስቶች"
-              }
+              },
+              "art": "work"
             },
             {
               "alt": {
                 "en": "Speaker on stage at a conference",
                 "am": "በጉባኤ መድረክ ላይ ንግግር የሚያደርግ ተናጋሪ"
-              }
+              },
+              "art": "event"
             },
             {
               "alt": {
                 "en": "Graduation portrait of a student in gown",
                 "am": "ጋውን የለበሰ ተማሪ የምረቃ ፎቶ"
-              }
+              },
+              "art": "portrait"
             }
           ]
         },

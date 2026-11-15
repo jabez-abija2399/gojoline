@@ -97,3 +97,37 @@ describe("helpers", () => {
     expect(contrast("#000000", "#ffffff")).toBeCloseTo(21);
   });
 });
+
+describe("drawings, questions and the closing band", () => {
+  const withHome = (sections: unknown[]) => ({ ...site, pages: [{ ...site.pages[0]!, sections }, ...site.pages.slice(1)] });
+  const hero = site.pages[0]!.sections[0]!;
+
+  it("accepts an image drawing, a faq and a cta", () => {
+    const next = withHome([
+      { ...hero, image: { art: "coffee", alt: { en: "A coffee pot" } } },
+      { type: "faq", heading: { en: "Good to know" }, items: [{ question: { en: "Do you deliver?" }, answer: { en: "Yes." } }] },
+      { type: "cta", heading: { en: "Come by" }, primaryAction: { label: { en: "Call" }, href: "tel:+251911234567" } },
+    ]);
+    expect(siteSchema.safeParse(next).success).toBe(true);
+  });
+  it("refuses a drawing that doesn't exist, an empty faq and a cta with an unsafe link", () => {
+    expect(siteSchema.safeParse(withHome([{ ...hero, image: { art: "dragon", alt: { en: "x" } } }])).success).toBe(false);
+    expect(siteSchema.safeParse(withHome([hero, { type: "faq", heading: { en: "Q" }, items: [] }])).success).toBe(false);
+    expect(siteSchema.safeParse(withHome([hero, { type: "cta", heading: { en: "Go" }, primaryAction: { label: { en: "Go" }, href: "javascript:alert(1)" } }])).success).toBe(false);
+  });
+  it("preloads the heading font on English pages and the Ge'ez font on Amharic ones", () => {
+    expect(render("/")!.head).toMatch(/fonts\/(fraunces|outfit|nunito)-latin\.woff2/);
+    expect(render("/am")!.head).not.toMatch(/-latin\.woff2/);
+  });
+  it("shows the call bar only when there is a way to reach the business", () => {
+    expect(render("/")!.html).toContain("sticky-actions");
+    const b = site.business;
+    const saved = { phone: b.phone, telegram: b.telegram, whatsapp: b.whatsapp };
+    b.phone = b.telegram = b.whatsapp = undefined;
+    try {
+      expect(render("/")!.html).not.toContain("sticky-actions");
+    } finally {
+      Object.assign(b, saved);
+    }
+  });
+});

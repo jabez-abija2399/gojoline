@@ -22,6 +22,7 @@ const image = z
       .max(500)
       .refine((s) => /^(\/[\w\-/.]+|https:\/\/[^\s<>"]+)$/.test(s), "Image src must be /path or https URL")
       .optional(),
+    art: z.enum(["coffee", "food", "hotel", "room", "clinic", "school", "fashion", "shopping", "church", "mosque", "event", "people", "home", "mountains", "portrait", "work"]).optional(),
     alt: text,
     width: z.number().int().positive().max(4000).optional(),
     height: z.number().int().positive().max(4000).optional(),
@@ -67,6 +68,8 @@ const section = z.discriminatedUnion("type", [
   z.object({ type: z.literal("map"), id, heading: text, query: z.string().max(200).optional() }).strict(),
   z.object({ type: z.literal("timeline"), id, heading: text, intro: text.optional(), items: z.array(z.object({ period: text, title: text, place: text.optional(), description: text.optional() }).strict()).min(1).max(30) }).strict(),
   z.object({ type: z.literal("testimonials"), id, heading: text, items: z.array(z.object({ quote: text, name: z.string().min(1).max(80) }).strict()).min(1).max(12) }).strict(),
+  z.object({ type: z.literal("faq"), id, heading: text, intro: text.optional(), items: z.array(z.object({ question: text, answer: text }).strict()).min(1).max(20) }).strict(),
+  z.object({ type: z.literal("cta"), id, heading: text, body: text.optional(), primaryAction: link, secondaryAction: link.optional() }).strict(),
   formSectionSchema,
 ]);
 

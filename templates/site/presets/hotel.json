@@ -67,7 +67,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "variant": "split",
           "eyebrow": {
             "en": "On the shore of Lake Tana",
             "am": "በጣና ሐይቅ ዳርቻ"
@@ -93,6 +93,13 @@
               "am": "ክፍሎችና ዋጋዎች"
             },
             "href": "/rooms"
+          },
+          "image": {
+            "art": "hotel",
+            "alt": {
+              "en": "A lodge beside the water",
+              "am": "በውኃ ዳር ያለ ሎጅ"
+            }
           }
         },
         {
@@ -104,6 +111,13 @@
           "body": {
             "en": "Tana Shore Hotel has 42 rooms, a garden by the water and a team that knows the city well.\n\nWe can arrange boat trips to the island monasteries and day trips to the Blue Nile Falls.",
             "am": "ጣና ሾር ሆቴል 42 ክፍሎች፣ ውሃው አጠገብ የአትክልት ስፍራ እና ከተማዋን በደንብ የሚያውቁ ሠራተኞች አሉት።\n\nበጀልባ ወደ ደሴት ገዳማት እና ወደ ጢስ ዓባይ ፏፏቴ የሚደረጉ ጉብኝቶችን እናዘጋጅልዎታለን።"
+          },
+          "image": {
+            "art": "room",
+            "alt": {
+              "en": "A made bed under a window",
+              "am": "በመስኮት ሥር የተነጠፈ አልጋ"
+            }
           }
         },
         {
@@ -162,6 +176,72 @@
               "icon": "check"
             }
           ]
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Before you arrive",
+            "am": "ከመምጣትዎ በፊት"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "What time is check-in?",
+                "am": "መግቢያ ሰዓት መቼ ነው?"
+              },
+              "answer": {
+                "en": "Rooms are ready in the afternoon. Arriving early? Tell us and we will do our best.",
+                "am": "ክፍሎች ከሰዓት በኋላ ዝግጁ ይሆናሉ። ቀደም ብለው ከደረሱ ይንገሩን፤ የቻልነውን እናደርጋለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Is breakfast included?",
+                "am": "ቁርስ ተካትቷል?"
+              },
+              "answer": {
+                "en": "Yes, breakfast is included with every room.",
+                "am": "አዎ፤ ቁርስ በሁሉም ክፍሎች ዋጋ ውስጥ ተካትቷል።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can you pick me up from the airport?",
+                "am": "ከአውሮፕላን ማረፊያ ትቀበሉኛላችሁ?"
+              },
+              "answer": {
+                "en": "Yes. Send us your flight time when you book.",
+                "am": "አዎ። ክፍል ሲይዙ የበረራ ሰዓትዎን ይላኩልን።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Your room by the lake is waiting",
+            "am": "በሐይቁ ዳር ያለው ክፍልዎ ይጠብቅዎታል"
+          },
+          "body": {
+            "en": "Book directly with us and we confirm by phone.",
+            "am": "በቀጥታ ከእኛ ይያዙ፤ በስልክ እናረጋግጥልዎታለን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book a room",
+              "am": "ክፍል ይያዙ"
+            },
+            "href": "/rooms#booking"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Contact us",
+              "am": "ያግኙን"
+            },
+            "href": "/contact"
+          }
         }
       ]
     },

@@ -1,0 +1,173 @@
+/*
+ * Design layer shared by every Gojoline site (locked, like motion.css): heading fonts,
+ * section titles, and the pieces added after launch (questions, call-to-action band,
+ * the call bar on phones). Owners' own tweaks stay in styles.css.
+ */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/fraunces-latin.woff2") format("woff2");
+  font-weight: 500 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212;
+}
+@font-face {
+  font-family: "Outfit";
+  src: url("/fonts/outfit-latin.woff2") format("woff2");
+  font-weight: 500 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212;
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("/fonts/nunito-latin.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
+@layer components {
+  /* A short bar in the brand colour above each section title: quiet, consistent rhythm. */
+  .section-title {
+    font-size: clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem);
+    line-height: 1.12;
+  }
+  :lang(am) .section-title {
+    line-height: 1.4;
+  }
+  .section-title::before {
+    content: "";
+    display: block;
+    width: 2.75rem;
+    height: 4px;
+    margin-bottom: 1rem;
+    border-radius: 999px;
+    background: var(--site-primary);
+  }
+  @media (min-width: 768px) {
+    .section {
+      padding-block: 6rem;
+    }
+  }
+  /* The first letter of the name as a small mark beside it. */
+  .brand-mark {
+    display: inline-flex;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: min(var(--site-radius), 10px);
+    background: var(--site-primary);
+    color: var(--site-on-primary);
+    font-family: var(--site-font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  /* Dotted line between a dish and its price. */
+  .leader {
+    flex: 1;
+    min-width: 1rem;
+    margin-bottom: 0.4em;
+    border-bottom: 2px dotted var(--site-line);
+  }
+  /* What visitors most want to know, pinned to the hero picture. */
+  .info-chip {
+    position: absolute;
+    inset-block-end: -1rem;
+    inset-inline-start: 1rem;
+    max-width: calc(100% - 2rem);
+    border: 1px solid var(--site-line);
+    border-radius: var(--site-radius);
+    background: var(--site-surface);
+    padding: 0.625rem 1rem;
+    font-size: 0.9375rem;
+    line-height: 1.35;
+    box-shadow: 0 14px 30px -14px color-mix(in oklab, var(--site-text) 40%, transparent);
+  }
+  .info-dot {
+    display: inline-block;
+    width: 0.625rem;
+    height: 0.625rem;
+    flex: none;
+    border-radius: 999px;
+    background: var(--site-primary);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--site-primary) 22%, transparent);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--site-line);
+  }
+  .faq-item summary {
+    display: flex;
+    min-height: 3.5rem;
+    cursor: pointer;
+    list-style: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary::after {
+    content: "+";
+    flex: none;
+    color: var(--site-primary);
+    font-size: 1.75rem;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .faq-item[open] summary::after {
+    content: "\2212";
+  }
+  /* Call and message, always one thumb away on a phone. */
+  .sticky-actions {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 30;
+    display: flex;
+    gap: 0.5rem;
+    border-top: 1px solid var(--site-line);
+    background: color-mix(in oklab, var(--site-background) 94%, transparent);
+    padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom));
+    backdrop-filter: blur(8px);
+  }
+  .sticky-actions .btn {
+    flex: 1;
+    min-width: 0;
+  }
+  @media (min-width: 768px) {
+    .sticky-actions {
+      display: none;
+    }
+  }
+  @media print {
+    .sticky-actions {
+      display: none;
+    }
+  }
+}
+
+/* The call bar slides up once the visitor has scrolled past the top of the page, so it
+   never sits on the hero's own buttons. Without scroll timelines it is simply there. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .sticky-actions {
+      animation: site-sticky linear both;
+      animation-timeline: scroll();
+      animation-range: 240px 420px;
+    }
+  }
+}
+@keyframes site-sticky {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: none;
+  }
+}

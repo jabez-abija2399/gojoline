@@ -1,7 +1,7 @@
 import { renderToString } from "react-dom/server";
 import { App, findPage } from "./App";
 import { localePath, parsePath, t } from "./lib/i18n";
-import { styleString, themeVariables } from "./lib/theme";
+import { headingFontFile, styleString, themeVariables } from "./lib/theme";
 import type { Lang } from "./lib/types";
 import { publishMeta } from "./lib/meta";
 import { site } from "./site";
@@ -44,7 +44,10 @@ export function render(url: string): RenderedPage | null {
     alternates,
     `<meta name="theme-color" content="${escapeHtml(site.theme.primary)}">`,
     page.path === "/" ? `<script type="application/ld+json">${jsonLd(lang, base)}</script>` : "",
-    lang === "am" ? `<link rel="preload" href="/fonts/noto-sans-ethiopic-core.woff2" as="font" type="font/woff2" crossorigin>` : "",
+    // One font preload per page: Ge'ez for Amharic, the heading font otherwise.
+    lang === "am"
+      ? `<link rel="preload" href="/fonts/noto-sans-ethiopic-core.woff2" as="font" type="font/woff2" crossorigin>`
+      : `<link rel="preload" href="/fonts/${headingFontFile[site.theme.font]}" as="font" type="font/woff2" crossorigin>`,
   ]
     .filter(Boolean)
     .join("\n    ");

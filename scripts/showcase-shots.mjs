@@ -63,6 +63,8 @@ for (const id of presets) {
     const path = languages[0] === lang ? "/" : `/${lang}/`;
     const page = await browser.newPage({ viewport: { width: WIDTH, height: 844 }, deviceScaleFactor: 2, reducedMotion: "reduce" });
     await page.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: "networkidle" });
+    // The phone call bar is fixed to the screen; in a picture of the whole page it would sit mid-page.
+    await page.addStyleTag({ content: ".sticky-actions{display:none!important}" });
     await page.evaluate(() => document.fonts.ready);
     const full = await page.evaluate(() => document.documentElement.scrollHeight);
     const height = Math.min(full, MAX_HEIGHT);
