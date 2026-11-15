@@ -7,9 +7,9 @@ import { parseContact } from "@/lib/contact";
 import { isLocale } from "@/lib/i18n/config";
 import { clientIp } from "@/lib/server/request";
 import { services } from "@/lib/server/services";
-import { getAuth, otpSender } from "./server";
+import { getAuth, googleAuth, otpSender } from "./server";
 
-export type SignInError = "contactInvalid" | "codeInvalid" | "tooMany" | "unavailable" | "generic";
+export type SignInError = "contactInvalid" | "codeInvalid" | "tooMany" | "unavailable" | "smsUnavailable" | "google" | "generic";
 export type SignInState =
   | { step: "contact"; error?: SignInError; contact?: string }
   | { step: "code"; kind: "phone" | "email"; to: string; error?: SignInError };
@@ -42,6 +42,8 @@ export async function signInStep(rawPrev: SignInState, form: FormData): Promise<
     const contact = parseContact(raw);
     if (!contact) return { step: "contact", error: "contactInvalid", contact: raw };
     if (!otpSender.available || !getAuth()) return { step: "contact", error: "unavailable", contact: raw };
+    // Phone codes need an SMS gateway; until then, email (or Google) works.
+    if (!otpSender.supports(contact.kind === "email" ? "email" : "sms")) return { step: "contact", error: "smsUnavailable", contact: raw };
     const [byIp, byContactIp, byContact] = await Promise.all([
       limiter.hit(`otp-send:ip:${ip}`, Number(process.env.OTP_SEND_PER_IP_PER_HOUR) || 10, 3_600_000),
       limiter.hit(`otp-send:to-ip:${contact.value}:${ip}`, 3, 600_000),
@@ -84,4 +86,26 @@ export async function signOut(form: FormData) {
   const lang = isLocale(field(form, "lang")) ? field(form, "lang") : "en";
   await getAuth()?.api.signOut({ headers: await headers() }).catch(() => undefined);
   redirect(`/${lang}`);
+}
+
+/** Starts "Continue with Google": Google sends the person back to /api/auth/callback/google. */
+export async function signInWithGoogle(form: FormData) {
+  const lang = isLocale(field(form, "lang")) ? field(form, "lang") : "en";
+  const auth = getAuth();
+  if (!auth || !googleAuth) redirect(`/${lang}/sign-in?error=google`);
+  const limiter = services().rateLimiter;
+  if (!(await limiter.hit(`google:ip:${await clientIp()}`, 30, 3_600_000)).allowed) redirect(`/${lang}/sign-in?error=tooMany`);
+  let url: string | undefined;
+  try {
+    const res = await auth.api.signInSocial({
+      body: { provider: "google", callbackURL: safeNext(lang, field(form, "next")), errorCallbackURL: `/${lang}/sign-in?error=google`, newUserCallbackURL: `/${lang}/build` },
+      headers: await headers(),
+    });
+    url = res.url;
+  } catch (error) {
+    console.error("google sign-in failed", error instanceof Error ? error.message : "unknown");
+  }
+  // Only Google's own sign-in page.
+  if (!url || !url.startsWith("https://accounts.google.com/")) redirect(`/${lang}/sign-in?error=google`);
+  redirect(url);
 }

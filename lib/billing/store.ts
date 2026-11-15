@@ -46,6 +46,8 @@ export interface BillingStore {
   unreview(id: string): Promise<void>;
   /** Pending payments with the customer's contact, for admins only. */
   pendingForAdmin(): Promise<(Payment & { contact: string | null })[]>;
+  /** The customer's real email (not a phone placeholder) and phone, for payment notices. */
+  contactFor(userId: string): Promise<{ email: string | null; phone: string | null } | null>;
   createPayment(p: { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null }): Promise<Payment | null>;
   paymentsFor(userId: string): Promise<Payment[]>;
   pendingPayments(): Promise<Payment[]>;
@@ -100,6 +102,9 @@ export class MemoryBillingStore implements BillingStore {
   }
   async pendingForAdmin() {
     return (await this.pendingPayments()).map((p) => ({ ...p, contact: null }));
+  }
+  async contactFor() {
+    return null;
   }
   async createPayment(p: { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null }) {
     if (this.pays.some((x) => x.reference === p.reference)) return null;
@@ -218,6 +223,12 @@ export class DbBillingStore implements BillingStore {
   }
   async unreview(id: string) {
     await this.db.update(payments).set({ status: "pending", reviewedBy: null, reviewedAt: null }).where(eq(payments.id, id));
+  }
+  async contactFor(userId: string) {
+    const [row] = await this.db.select({ email: user.email, emailVerified: user.emailVerified, phone: user.phoneNumber }).from(user).where(eq(user.id, userId)).limit(1);
+    if (!row) return null;
+    const real = !row.email.endsWith("@phone.gojoline.invalid") && row.emailVerified;
+    return { email: real ? row.email : null, phone: row.phone ?? null };
   }
   async pendingForAdmin() {
     const rows = await this.db

@@ -6,8 +6,11 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
+import { billingSettingsSchema } from "@/lib/billing/settings";
 import { dismissReports, restoreSite, takeDownSite } from "@/lib/safety/takedown";
-import { services } from "@/lib/server/services";
+import { after } from "next/server";
+import { noticeDecision } from "@/lib/billing/notify";
+import { paymentNotices, services } from "@/lib/server/services";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
 
@@ -19,7 +22,13 @@ export async function reviewPayment(_prev: ReviewState, form: FormData): Promise
   const parsed = input.safeParse({ id: form.get("id"), decision: form.get("decision"), note: form.get("note") || undefined, lang: form.get("lang") });
   if (!parsed.success) return { status: "invalid" };
   try {
-    const status = await services().billing.review(user.id, parsed.data.id, parsed.data.decision, parsed.data.note ?? null);
+    const billing = services().billing;
+    const payment = await billing.store().payment(parsed.data.id);
+    const status = await billing.review(user.id, parsed.data.id, parsed.data.decision, parsed.data.note ?? null);
+    if (status === "ok" && payment) {
+      const { decision, note } = parsed.data;
+      after(() => noticeDecision(paymentNotices(), payment, decision, note ?? null).catch((e: unknown) => reportError("decision notice failed", e)));
+    }
     revalidatePath(`/${parsed.data.lang}/admin`);
     return { status };
   } catch (error) {
@@ -62,4 +71,43 @@ export async function moderateSite(_prev: ModerateState, form: FormData): Promis
   revalidatePath(`/${lang}/admin`);
   // The handled item may leave the list, so the outcome is shown at the top of the page.
   redirect(`/${lang}/admin?tab=${tab}&done=${status}`);
+}
+
+export type SettingsState = { status: "idle" | "ok" | "invalid" | "forbidden" | "failed"; field?: string };
+
+/** "399" or "399.50" Birr → santim, without floating point. */
+function birrToMinor(raw: string): number | null {
+  const m = /^(\d{1,7})(?:\.(\d{1,2}))?$/.exec(raw.trim().replace(/,/g, ""));
+  if (!m) return null;
+  return Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0") || "0");
+}
+
+export async function saveBillingSettings(_prev: SettingsState, form: FormData): Promise<SettingsState> {
+  const user = await currentUser();
+  if (!user || !isAdmin(user)) return { status: "forbidden" };
+  const billing = services().billing;
+  const current = await billing.settings();
+  const prices: Record<string, number> = {};
+  for (const key of Object.keys(current.prices)) {
+    const minor = birrToMinor(String(form.get(`price_${key}`) ?? ""));
+    if (minor === null || minor < 100) return { status: "invalid", field: `price_${key}` };
+    prices[key] = minor;
+  }
+  const parsed = billingSettingsSchema.safeParse({
+    prices,
+    telebirrNumber: String(form.get("telebirrNumber") ?? ""),
+    cbeAccount: String(form.get("cbeAccount") ?? ""),
+    accountName: String(form.get("accountName") ?? ""),
+  });
+  if (!parsed.success) return { status: "invalid", field: String(parsed.error.issues[0]?.path[0] ?? "") };
+  try {
+    await billing.saveSettings(user.id, parsed.data);
+  } catch (error) {
+    reportError("settings save failed", error);
+    return { status: "failed" };
+  }
+  const lang = form.get("lang") === "am" ? "am" : "en";
+  revalidatePath(`/${lang}/admin`);
+  revalidatePath(`/${lang}/billing`);
+  return { status: "ok" };
 }

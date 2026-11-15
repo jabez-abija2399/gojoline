@@ -1,4 +1,7 @@
 import "server-only";
+import type { PaymentNoticeDeps } from "@/lib/billing/notify";
+import { emailSender } from "@/lib/providers/notify/pick";
+import { DbSettingsStore, MemorySettingsStore } from "@/lib/billing/settings";
 import { LLMContentClassifier } from "@/lib/safety/classifier";
 import { ContentGuard } from "@/lib/safety/guard";
 import { DbReportStore, MemoryReportStore, type ReportStore } from "@/lib/safety/reports";
@@ -146,7 +149,7 @@ export function services(): Services {
   if (!globalForServices.gojoServices) {
     const db = getDb(process.env);
     const usage = db ? new DbUsageLogger(db) : new MemoryUsageLogger();
-    const billing = new Billing(db ? new DbBillingStore(db) : new MemoryBillingStore());
+    const billing = new Billing(db ? new DbBillingStore(db) : new MemoryBillingStore(), undefined, db ? new DbSettingsStore(db) : new MemorySettingsStore());
     globalForServices.gojoServices = {
       waitlist: db ? new DbWaitlistStore(db) : new MemoryWaitlistStore(),
       rateLimiter: pickRateLimiter(process.env),
@@ -186,4 +189,17 @@ export function services(): Services {
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);
   }
   return globalForServices.gojoServices;
+}
+
+/** Who to tell about payments, and how (email via Resend, Telegram when linked). */
+export function paymentNotices(): PaymentNoticeDeps {
+  const svc = services();
+  const list = (v: string | undefined) => (v ?? "").split(",").map((x) => x.trim()).filter((x) => x.includes("@"));
+  return {
+    email: emailSender(),
+    appUrl: (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+    adminEmails: list(process.env.ADMIN_EMAILS),
+    store: svc.billing.store(),
+    telegram: svc.telegram,
+  };
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FocusOnMount } from "@/components/admin/focus-on-mount";
 import { ModerateForm } from "@/components/admin/moderate-form";
 import { ReviewForm } from "@/components/admin/review-form";
+import { SettingsForm } from "@/components/admin/settings-form";
 import { BuilderHeader } from "@/components/builder/builder-header";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
@@ -23,7 +24,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["payments", "reports", "sites", "costs"] as const;
+const TABS = ["payments", "reports", "sites", "costs", "settings"] as const;
 type Tab = (typeof TABS)[number];
 
 export default async function AdminPage({ params, searchParams }: PageProps<"/[lang]/admin">) {
@@ -46,7 +47,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
       <BuilderHeader locale={lang} t={t} user={user} />
       <main id="main" className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8">
         <h1 className="text-3xl font-bold">{t.admin.title}</h1>
-        <nav aria-label={t.admin.title} className="grid grid-cols-2 gap-1 rounded-xl border border-line bg-white p-1 sm:grid-cols-4">
+        <nav aria-label={t.admin.title} className="grid grid-cols-2 gap-1 rounded-xl border border-line bg-white p-1 sm:grid-cols-5">
           {TABS.map((x) => (
             <Link
               key={x}
@@ -69,6 +70,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         {tab === "reports" && <Reports />}
         {tab === "sites" && <Sites />}
         {tab === "costs" && <Costs />}
+        {tab === "settings" && <Settings />}
       </main>
     </>
   );
@@ -176,6 +178,19 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             ))}
           </ul>
         )}
+      </section>
+    );
+  }
+
+  async function Settings() {
+    const s = await svc.billing.settings();
+    const birr = (minor: number) => (minor % 100 === 0 ? String(minor / 100) : `${Math.floor(minor / 100)}.${String(minor % 100).padStart(2, "0")}`);
+    const values = { ...s, prices: Object.fromEntries(Object.entries(s.prices).map(([k, v]) => [k, birr(v)])) };
+    return (
+      <section aria-labelledby="settings-title" className="flex flex-col gap-4">
+        <h2 id="settings-title" className="text-2xl font-bold">{t.admin.settingsTitle}</h2>
+        <p className="text-ink-muted">{t.admin.settingsHint}</p>
+        <SettingsForm t={t.admin} tb={t.billing} lang={lang} values={values} />
       </section>
     );
   }

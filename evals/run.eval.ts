@@ -77,6 +77,7 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
         model: env.AGENT_MODEL || DEFAULT_MODEL,
         usage,
         context: { userId: null, projectId: `eval-${c.id}` },
+        effort: history.length ? "low" : "medium",
       });
       const siteTs = (await site.readFile("src/site.json")) ?? "";
       const vague = c.industry === "unknown";

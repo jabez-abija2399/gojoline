@@ -66,3 +66,17 @@ Follow-ups from this run:
 | am-tailor | yes | $0.089 | 34 | – | – |
 | am-pharmacy | yes | $0.080 | 35 | – | – |
 | am-vague | yes (asked) | $0.021 | 7 | – | – |
+
+## 2026-11-15: edit cost with lower effort for edits
+
+10 cases with an edit (5 EN, 5 AM), `claude-opus-5-5`, edits at effort "low" (first builds stay "medium").
+
+| Metric | Before (effort medium) | After (edits at low) | Target |
+|---|---|---|---|
+| First try success | 100% | 100% | ≥ 90% |
+| Edit success | 100% | 100% | |
+| Median cost, first site | $0.122 | $0.089 | ≤ $0.50 |
+| Median cost per edit | $0.0321 | **$0.0295** | ≤ $0.03 |
+
+Edits: about half of the remaining cost is writing the site (~2.7k tokens) to the prompt cache; the rest is output. Still open: the Amharic quality score needs a native-speaker review of `evals/.runs/`.
+

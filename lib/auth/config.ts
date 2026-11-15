@@ -31,6 +31,8 @@ export interface AuthConfig {
   baseURL: string;
   secureCookies: boolean;
   sender: OtpSender;
+  /** Google OAuth client (redirect URI: <baseURL>/api/auth/callback/google). */
+  google?: { clientId: string; clientSecret: string } | null;
   extraPlugins?: BetterAuthPlugin[];
 }
 
@@ -43,6 +45,9 @@ export function createAuth(c: AuthConfig) {
     database: c.database,
     advanced: { cookiePrefix: "gojo", useSecureCookies: c.secureCookies },
     session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
+    // Google confirms the email, so a Google sign-in joins the account that already uses it.
+    socialProviders: c.google ? { google: { clientId: c.google.clientId, clientSecret: c.google.clientSecret, prompt: "select_account" } } : undefined,
+    account: { accountLinking: { enabled: true, trustedProviders: ["google"] } },
     rateLimit: { enabled: true, window: 60, max: 30 },
     // Codes are only sent and checked through our server actions (shared Upstash rate limits);
     // the matching public HTTP routes are switched off. Server-side auth.api calls still work.

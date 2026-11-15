@@ -1,4 +1,4 @@
-import type { LLMProvider, MessageParam, SystemBlock } from "@/lib/providers/llm/types";
+import type { Effort, LLMProvider, MessageParam, SystemBlock } from "@/lib/providers/llm/types";
 import { usageRecord, type UsageLogger } from "@/lib/providers/llm/usage-log";
 import { agentTools, runTool } from "./tools";
 import type { Workspace } from "./workspace";
@@ -25,6 +25,8 @@ export interface AgentRunInput {
   context: { userId: string | null; projectId: string | null };
   onEvent?: (event: AgentEvent) => void;
   signal?: AbortSignal;
+  /** Lower for small edits to an existing site (cheaper, faster); medium for first builds. */
+  effort?: Effort;
 }
 
 export interface AgentRunResult {
@@ -66,7 +68,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       tools: agentTools,
       messages,
       maxTokens: 32_000,
-      effort: "medium",
+      effort: input.effort ?? "medium",
       onText: (delta) => emit({ type: "text", delta }),
       signal: input.signal,
       purpose: "agent",

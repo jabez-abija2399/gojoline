@@ -23,12 +23,11 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
   const t = getMessages(lang);
   const b = t.billing;
   const billing = services().billing;
-  const [{ plan, until }, credits, history] = await Promise.all([billing.plan(user.id), billing.creditsLeft(user.id), billing.store().paymentsFor(user.id)]);
+  const [{ plan, until }, credits, history, settings] = await Promise.all([billing.plan(user.id), billing.creditsLeft(user.id), billing.store().paymentsFor(user.id), billing.settings()]);
   const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
-  const env = process.env;
-  const payReady = !!(env.PAYMENT_TELEBIRR_NUMBER || env.PAYMENT_CBE_ACCOUNT);
+  const payReady = !!(settings.telebirrNumber || settings.cbeAccount);
   const birr = (minor: number) => format(b.price, { price: amount(minor) });
-  const prices = Object.fromEntries(Object.entries(PRODUCTS).map(([k, v]) => [k, birr(v.amountMinor)])) as Record<keyof typeof PRODUCTS, string>;
+  const prices = Object.fromEntries(Object.entries(settings.prices).map(([k, v]) => [k, birr(v)])) as Record<keyof typeof PRODUCTS, string>;
 
   return (
     <>
@@ -52,8 +51,8 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
                 <p className="font-semibold">{b.freePrice}</p>
               ) : (
                 <>
-                  <p className="font-semibold">{format(b.perMonth, { price: amount(PRODUCTS[`${p}_month`].amountMinor) })}</p>
-                  <p className="text-ink-muted">{format(b.perYear, { price: amount(PRODUCTS[`${p}_year`].amountMinor) })}</p>
+                  <p className="font-semibold">{format(b.perMonth, { price: amount(settings.prices[`${p}_month`]) })}</p>
+                  <p className="text-ink-muted">{format(b.perYear, { price: amount(settings.prices[`${p}_year`]) })}</p>
                 </>
               )}
               <p className="text-ink-muted">{b.features[p]}</p>
@@ -61,7 +60,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
           ))}
         </ul>
         <p className="text-ink-muted">
-          <strong className="text-ink">{b.topup}:</strong> {format(b.topupDesc, { price: amount(PRODUCTS.topup.amountMinor) })}
+          <strong className="text-ink">{b.topup}:</strong> {format(b.topupDesc, { price: amount(settings.prices.topup) })}
         </p>
 
         <section aria-labelledby="pay-title" className="flex flex-col gap-4 rounded-xl border border-line bg-white p-5">
@@ -74,9 +73,9 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
                 ))}
               </ol>
               <ul className="flex flex-col gap-1 rounded-lg bg-sand p-4 font-medium">
-                {env.PAYMENT_TELEBIRR_NUMBER && <li>{format(b.payTelebirr, { number: env.PAYMENT_TELEBIRR_NUMBER })}</li>}
-                {env.PAYMENT_CBE_ACCOUNT && <li>{format(b.payCbe, { account: env.PAYMENT_CBE_ACCOUNT })}</li>}
-                {env.PAYMENT_ACCOUNT_NAME && <li>{format(b.payName, { name: env.PAYMENT_ACCOUNT_NAME })}</li>}
+                {settings.telebirrNumber && <li>{format(b.payTelebirr, { number: settings.telebirrNumber })}</li>}
+                {settings.cbeAccount && <li>{format(b.payCbe, { account: settings.cbeAccount })}</li>}
+                {settings.accountName && <li>{format(b.payName, { name: settings.accountName })}</li>}
               </ul>
               <PaymentForm t={b} prices={prices} />
             </>

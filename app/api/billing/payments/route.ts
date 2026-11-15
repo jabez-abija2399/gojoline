@@ -4,7 +4,10 @@ import { currentUser } from "@/lib/auth/session";
 import { sameOrigin } from "@/lib/builder/access";
 import { processImage } from "@/lib/cloud/images";
 import { clientIp } from "@/lib/server/request";
-import { services } from "@/lib/server/services";
+import { after } from "next/server";
+import { noticeNewPayment } from "@/lib/billing/notify";
+import { reportError } from "@/lib/observability/report";
+import { paymentNotices, services } from "@/lib/server/services";
 
 /** Below the hosting platform's ~4.5 MB request limit, so a big photo gets a clear message. */
 const MAX_RECEIPT_BYTES = 4_000_000;
@@ -47,5 +50,6 @@ export async function POST(request: Request) {
   const receipt = img.data;
   const payment = await services().billing.submitPayment(user.id, { ...parsed.data, receipt });
   if (!payment) return json(409, { error: "duplicate" });
+  after(() => noticeNewPayment(paymentNotices(), payment).catch((e: unknown) => reportError("payment notice failed", e)));
   return json(201, { payment });
 }
