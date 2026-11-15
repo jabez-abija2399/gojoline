@@ -490,6 +490,12 @@ export const am: Messages = {
       failed: "የሆነ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።",
     },
   },
+  pwa: {
+    install: "መተግበሪያውን ይጫኑ",
+    iosTitle: "ጎጆላይንን በመነሻ ገጽዎ ላይ ያስቀምጡ",
+    iosSteps: "1. ከSafari ግርጌ ያለውን «Share» (ቀስት ያለበት ካሬ) ይጫኑ።\n2. «Add to Home Screen»ን ይምረጡ፤ ከዚያ «Add»ን ይጫኑ።",
+    close: "ገባኝ",
+  },
   footer: {
     tagline: "ጎጆዎ ኦንላይን።",
     madeIn: "በአዲስ አበባ የተሠራ",

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { fontVariables } from "@/lib/fonts";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
+import { RegisterServiceWorker } from "@/components/pwa/register-sw";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -34,6 +35,9 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
       images: [{ url: "/brand/og-image.png", width: 1200, height: 630, alt: t.common.logoAlt }],
     },
     twitter: { card: "summary_large_image", images: ["/brand/og-image.png"] },
+    // Home-screen app on iPhone (Android and desktop use the web manifest).
+    appleWebApp: { capable: true, title: "Gojoline", statusBarStyle: "default" },
+    formatDetection: { telephone: false },
   };
 }
 
@@ -59,6 +63,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           {t.common.skipToContent}
         </a>
         {children}
+        <RegisterServiceWorker />
       </body>
     </html>
   );

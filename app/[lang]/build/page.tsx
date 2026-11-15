@@ -11,6 +11,7 @@ import { format, getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
 import { createProject } from "./actions";
 import { PRESET_IDS } from "@/lib/template/presets";
+import { InstallApp } from "@/components/pwa/install-app";
 
 export async function generateMetadata({
   params,
@@ -86,6 +87,7 @@ export default async function ProjectsPage({
             </form>
           )}
         </div>
+        <InstallApp t={t.pwa} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-teal-soft bg-white px-4 font-medium text-teal hover:border-teal-mid" />
         {tooMany && (
           <p
             role="alert"

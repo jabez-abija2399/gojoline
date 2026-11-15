@@ -490,6 +490,12 @@ export const en = {
       failed: "Something went wrong. Please try again.",
     },
   },
+  pwa: {
+    install: "Install the app",
+    iosTitle: "Add Gojoline to your Home Screen",
+    iosSteps: "1. Tap the Share button (the square with an arrow) at the bottom of Safari.\n2. Choose “Add to Home Screen”, then tap Add.",
+    close: "Got it",
+  },
   footer: {
     tagline: "Your home online.",
     madeIn: "Made in Addis Ababa",
