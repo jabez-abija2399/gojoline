@@ -12,7 +12,7 @@ export function Gallery({ section }: { section: GallerySection }) {
   const cols = big || count >= 4 ? "md:grid-cols-4" : count === 3 ? "md:grid-cols-3" : count === 2 ? "md:grid-cols-2" : "md:grid-cols-1";
   const wideFirst = !big && count % 2 === 1;
   return (
-    <section id={section.id ?? "gallery"} className="section bg-surface">
+    <section id={section.id ?? "gallery"} className="section">
       <div className="container-site flex flex-col gap-8">
         <SectionTitle>{text(section.heading)}</SectionTitle>
         {/* Editorial grid: with 5+ photos the first is large and the rest fill around it. */}

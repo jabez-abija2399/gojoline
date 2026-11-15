@@ -6,7 +6,7 @@ import type { FaqSection } from "../lib/types";
 export function Faq({ section }: { section: FaqSection }) {
   const { text } = useSite();
   return (
-    <section id={section.id ?? "faq"} className="section bg-surface">
+    <section id={section.id ?? "faq"} className="section">
       <div className="container-site grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-16">
         <div className="reveal flex flex-col gap-3">
           <SectionTitle>{text(section.heading)}</SectionTitle>

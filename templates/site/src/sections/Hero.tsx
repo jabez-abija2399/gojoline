@@ -5,8 +5,9 @@ import type { HeroSection } from "../lib/types";
 export function Hero({ section, first }: { section: HeroSection; first: boolean }) {
   const { site, text, href } = useSite();
   // On the home page's hero: when they are open (or, without hours, the phone number).
-  const hours = site.business.hours?.[0];
-  const chip = first ? (hours ? `${text(hours.days)} · ${text(hours.time)}` : site.business.phone) : undefined;
+  // Up to two lines, so a business open on other days at other times isn't made to look closed.
+  const hours = (site.business.hours ?? []).slice(0, 2).map((h) => `${text(h.days)} · ${text(h.time)}`);
+  const chip = first ? (hours.length ? hours : site.business.phone ? [site.business.phone] : undefined) : undefined;
   const variant = section.variant ?? "split";
   const Heading = first ? "h1" : "h2";
 
@@ -74,7 +75,11 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           {chip && (
             <p className="info-chip enter flex items-center gap-3 font-semibold" style={{ "--i": 5 } as React.CSSProperties}>
               <span aria-hidden="true" className="info-dot" />
-              <span>{chip}</span>
+              <span className="flex flex-col">
+                {chip.map((line) => (
+                  <span key={line}>{line}</span>
+                ))}
+              </span>
             </p>
           )}
         </div>

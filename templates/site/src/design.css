@@ -73,17 +73,26 @@
   }
   /* What visitors most want to know, pinned to the hero picture. */
   .info-chip {
-    position: absolute;
-    inset-block-end: -1rem;
-    inset-inline-start: 1rem;
-    max-width: calc(100% - 2rem);
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 1.25rem;
     border: 1px solid var(--site-line);
     border-radius: var(--site-radius);
     background: var(--site-surface);
     padding: 0.625rem 1rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     line-height: 1.35;
     box-shadow: 0 14px 30px -14px color-mix(in oklab, var(--site-text) 40%, transparent);
+  }
+  /* On wide screens the chip sits on the picture's lower edge; on small ones it sits under it. */
+  @media (min-width: 1024px) {
+    .info-chip {
+      position: absolute;
+      inset-block-end: -1.25rem;
+      inset-inline-start: 1.25rem;
+      max-width: calc(100% - 2.5rem);
+      margin-top: 0;
+    }
   }
   .info-dot {
     display: inline-block;
@@ -140,8 +149,23 @@
     flex: 1;
     min-width: 0;
   }
-  @media (min-width: 768px) {
+  /* Wide screens have the header and contact section; short ones (a phone on its side) have no room. */
+  @media (min-width: 768px), (max-height: 480px) {
     .sticky-actions {
+      display: none;
+    }
+  }
+  /* Keyboard focus is never left under the sticky header or the call bar. */
+  html {
+    scroll-padding-top: 4.5rem;
+  }
+  @media (max-width: 767px) {
+    html {
+      scroll-padding-bottom: 5.5rem;
+    }
+  }
+  @media (max-width: 399px) {
+    .brand-mark {
       display: none;
     }
   }
@@ -162,6 +186,11 @@
       animation-range: 240px 420px;
     }
   }
+}
+/* Reached by keyboard before any scrolling: show it at once. */
+.sticky-actions:focus-within {
+  animation: none;
+  transform: none;
 }
 @keyframes site-sticky {
   from {

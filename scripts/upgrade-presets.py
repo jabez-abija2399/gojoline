@@ -18,21 +18,20 @@ DATA = {
     "cafe": dict(
         hero=("split", "coffee", T("A clay coffee pot and two small cups", "ጀበና እና ሁለት ሲኒዎች")),
         about=("food", T("A shared plate with injera and stews", "እንጀራ እና ወጥ ያለበት ማዕድ")),
-        gallery=["coffee", "food", None],
         faq=(T("Good to know", "ማወቅ ያለብዎት"), [
             (T("Do I need to book a table?", "ጠረጴዛ አስቀድሞ መያዝ ያስፈልጋል?"), T("No, you can walk in. For groups or the full coffee ceremony, book ahead so we can prepare.", "አያስፈልግም፤ በቀጥታ መምጣት ይችላሉ። ለቡድን ወይም ለሙሉ የቡና ሥነ ሥርዓት ግን እንድንዘጋጅ አስቀድመው ይያዙ።")),
             (T("Do you serve fasting food?", "የጾም ምግብ አላችሁ?"), T("Ask us which fasting dishes we have today; we are glad to help you choose.", "ዛሬ የትኞቹ የጾም ምግቦች እንዳሉ ይጠይቁን፤ ለመምረጥ በደስታ እንረዳዎታለን።")),
             (T("Can I order to take away?", "ይዤ መሄድ እችላለሁ?"), T("Yes. Call us with your order and it will be ready when you arrive.", "አዎ። ደውለው ያዝዙ፤ ሲደርሱ ተዘጋጅቶ ይጠብቅዎታል።")),
         ]),
-        cta=(T("Come for the coffee, stay for the ceremony", "ለቡና ይምጡ፤ ለሥነ ሥርዓቱ ይቆዩ"), T("Book a table or just walk in. We are open every day.", "ጠረጴዛ ይያዙ ወይም በቀጥታ ይምጡ። በየቀኑ ክፍት ነን።"), (T("Book a table", "ጠረጴዛ ይያዙ"), "#booking"), (T("See the menu", "ምናሌውን ይመልከቱ"), "/menu")),
+        cta=(T("Come for the coffee, stay for the ceremony", "ለቡና ይምጡ፤ ለሥነ ሥርዓቱ ይቆዩ"), T("Book a table or just walk in. We are open every day.", "ጠረጴዛ ያስይዙ ወይም በቀጥታ ይምጡ። በየቀኑ ክፍት ነን።"), (T("Book a table", "ጠረጴዛ ያስይዙ"), "#booking"), (T("See the menu", "ምናሌውን ይመልከቱ"), "/menu")),
     ),
     "clinic": dict(
         hero=("split", "clinic", T("A medical cross and a heartbeat line", "የሕክምና መስቀል እና የልብ ምት መስመር")),
         about=("people", T("A family standing together", "አብሮ የቆመ ቤተሰብ")),
         faq=(T("Before you visit", "ከመምጣትዎ በፊት"), [
-            (T("Do I need an appointment?", "ቀጠሮ ያስፈልጋል?"), T("You can walk in, but people with an appointment are seen first. Booking takes one minute.", "ያለ ቀጠሮ መምጣት ይችላሉ፤ ሆኖም ቀጠሮ ያላቸው ቀድመው ይታያሉ። ቀጠሮ መያዝ አንድ ደቂቃ ብቻ ይወስዳል።")),
+            (T("Do I need an appointment?", "ቀጠሮ ያስፈልጋል?"), T("You can book with the form or call us, and we will tell you when to come.", "በቅጹ ቀጠሮ መያዝ ወይም መደወል ይችላሉ፤ መቼ እንደሚመጡ እንነግርዎታለን።")),
             (T("What should I bring?", "ምን ይዤ ልምጣ?"), T("Bring any earlier test results and the medicines you take now.", "ከዚህ በፊት ያደረጓቸውን የምርመራ ውጤቶች እና አሁን የሚወስዷቸውን መድኃኒቶች ይዘው ይምጡ።")),
-            (T("Can I come with my child?", "ከልጄ ጋር መምጣት እችላለሁ?"), T("Yes. We see children and adults in the same visit.", "አዎ። ሕፃናትንም አዋቂዎችንም በአንድ ጉብኝት እናያለን።")),
+            (T("Can I come with my child?", "ከልጄ ጋር መምጣት እችላለሁ?"), T("Yes. Tell us when you book so we can prepare.", "አዎ። እንድንዘጋጅ ቀጠሮ ሲይዙ ይንገሩን።")),
         ]),
         cta=(T("Feeling unwell? See a doctor today", "ሕመም ይሰማዎታል? ዛሬውኑ ሐኪም ይዩ"), T("Book a time that suits you, or call us and we will help.", "የሚመችዎትን ሰዓት ይያዙ፤ ወይም ይደውሉልን፤ እንረዳዎታለን።"), (T("Book an appointment", "ቀጠሮ ይያዙ"), "/appointments"), (T("Contact us", "ያግኙን"), "/contact")),
     ),
@@ -41,10 +40,10 @@ DATA = {
         about=("people", T("Guests gathered at an event", "በዝግጅት ላይ የተሰበሰቡ እንግዶች")),
         faq=(T("Planning your day", "ዝግጅትዎን ሲያቅዱ"), [
             (T("How early should I book?", "ምን ያህል ቀደም ብዬ ልያዝ?"), T("As early as you can, so your date is still free.", "ቀንዎ ሳይያዝ በተቻለ መጠን ቀደም ብለው ይያዙ።")),
-            (T("Can you work with my budget?", "በበጀቴ መሥራት ትችላላችሁ?"), T("Yes. Tell us your budget and guest number and we will suggest a package.", "አዎ። በጀትዎን እና የእንግዶችዎን ብዛት ይንገሩን፤ የሚስማማ ጥቅል እናቀርባለን።")),
+            (T("Can you work with my budget?", "በበጀቴ መሥራት ትችላላችሁ?"), T("Yes. Tell us your budget and guest number and we will suggest a package.", "አዎ። በጀትዎን እና የእንግዶችዎን ብዛት ይንገሩን፤ የሚስማማ ፓኬጅ እናቀርባለን።")),
             (T("Do you travel outside the city?", "ከከተማ ውጭ ትሠራላችሁ?"), T("Tell us the place and the date and we will let you know.", "ቦታውን እና ቀኑን ይንገሩን፤ እናሳውቅዎታለን።")),
         ]),
-        cta=(T("Let's plan a day people remember", "የማይረሳ ቀን አብረን እናቅድ"), T("Tell us the date and the number of guests and we will get back to you.", "ቀኑን እና የእንግዶቹን ብዛት ይንገሩን፤ መልሰን እናገኝዎታለን።"), (T("Book your date", "ቀንዎን ይያዙ"), "/book"), (T("See packages", "ጥቅሎችን ይመልከቱ"), "/packages")),
+        cta=(T("Let's plan a day people remember", "የማይረሳ ቀን አብረን እናቅድ"), T("Tell us the date and the number of guests and we will get back to you.", "ቀኑን እና የእንግዶቹን ብዛት ይንገሩን፤ መልሰን እናገኝዎታለን።"), (T("Book your date", "ቀንዎን ያስይዙ"), "/book"), (T("See packages", "ፓኬጆችን ይመልከቱ"), "/packages")),
     ),
     "hotel": dict(
         hero=("split", "hotel", T("A lodge beside the water", "በውኃ ዳር ያለ ሎጅ")),
@@ -54,15 +53,15 @@ DATA = {
             (T("How do I book a room?", "ክፍል እንዴት እይዛለሁ?"), T("Use the booking form or call us. We confirm your room by phone.", "የማስያዣ ቅጹን ይሙሉ ወይም ይደውሉልን። ክፍልዎን በስልክ እናረጋግጥልዎታለን።")),
             (T("Can you pick me up from the airport?", "ከአውሮፕላን ማረፊያ ትቀበሉኛላችሁ?"), T("Ask us when you book and send your flight time.", "ክፍል ሲይዙ ይጠይቁን፤ የበረራ ሰዓትዎንም ይላኩልን።")),
         ]),
-        cta=(T("Your room by the lake is waiting", "በሐይቁ ዳር ያለው ክፍልዎ ይጠብቅዎታል"), T("Book directly with us and we confirm by phone.", "በቀጥታ ከእኛ ይያዙ፤ በስልክ እናረጋግጥልዎታለን።"), (T("Book a room", "ክፍል ይያዙ"), "/rooms#booking"), (T("Contact us", "ያግኙን"), "/contact")),
+        cta=(T("Your room by the lake is waiting", "በሐይቁ ዳር ያለው ክፍልዎ ይጠብቅዎታል"), T("Book directly with us and we confirm by phone.", "በቀጥታ ከእኛ ይያዙ፤ በስልክ እናረጋግጥልዎታለን።"), (T("Book a room", "ክፍል ያስይዙ"), "/rooms#booking"), (T("Contact us", "ያግኙን"), "/contact")),
     ),
     "mosque": dict(
         hero=("split", "mosque", T("A mosque with a dome and a minaret", "ጉልላት እና ሚናራ ያለው መስጊድ")),
         about=("people", T("People of the community together", "የማኅበረሰቡ አባላት በአንድነት")),
         faq=(T("Visiting us", "ሲጎበኙን"), [
-            (T("I am new here. Who can I ask?", "አዲስ ነኝ። ማንን ልጠይቅ?"), T("You are welcome. Ask anyone at the mosque or write to us and we will help you.", "እንኳን ደህና መጡ። በመስጊዱ ያለን ማንኛውንም ሰው ይጠይቁ ወይም ይጻፉልን፤ እንረዳዎታለን።")),
-            (T("Can children join the classes?", "ልጆች ትምህርቱን መከታተል ይችላሉ?"), T("Yes. See the classes page for ages and times.", "አዎ። ዕድሜ እና ሰዓቱን በትምህርቶች ገጽ ይመልከቱ።")),
-            (T("How can I give?", "እንዴት መስጠት እችላለሁ?"), T("You can give at the mosque or ask us for the account details.", "በመስጊዱ መስጠት ወይም የሒሳብ ቁጥሩን ከእኛ መጠየቅ ይችላሉ።")),
+            (T("I am new here. Who can I ask?", "አዲስ ነኝ። ማንን ልጠይቅ?"), T("You are welcome. Ask anyone at the mosque or write to us and we will help you.", "እንኳን ደህና መጡ። በመስጂዱ ያለን ማንኛውንም ሰው ይጠይቁ ወይም ይጻፉልን፤ እንረዳዎታለን።")),
+            (T("Can children join the classes?", "ልጆች ትምህርቱን መከታተል ይችላሉ?"), T("Yes. Ask us about ages and times.", "አዎ። ስለ ዕድሜ እና ሰዓት ይጠይቁን።")),
+            (T("How can I give?", "እንዴት መስጠት እችላለሁ?"), T("You can give at the mosque or ask us for the account details.", "በመስጂዱ መስጠት ወይም የሒሳብ ቁጥሩን ከእኛ መጠየቅ ይችላሉ።")),
         ]),
         cta=(T("Everyone is welcome", "ሁሉም እንኳን ደህና መጡ"), T("Join us for prayer, learning and community.", "ለሶላት፣ ለትምህርት እና ለማኅበረሰባዊ አንድነት ይቀላቀሉን።"), (T("Prayer times", "የሶላት ሰዓቶች"), "/prayer-times"), (T("Contact us", "ያግኙን"), "/contact")),
     ),
@@ -71,10 +70,10 @@ DATA = {
         about=("school", T("An open book and a pencil", "የተከፈተ መጽሐፍ እና እርሳስ")),
         faq=(T("How you can help", "እንዴት መርዳት ይችላሉ"), [
             (T("Do I need experience to volunteer?", "በጎ ፈቃደኛ ለመሆን ልምድ ያስፈልጋል?"), T("No. We show you what to do and you work beside our team.", "አያስፈልግም። ምን እንደሚሠሩ እናሳይዎታለን፤ ከቡድናችን ጋር አብረው ይሠራሉ።")),
-            (T("How is my gift used?", "ስጦታዬ እንዴት ጥቅም ላይ ይውላል?"), T("It goes to our programmes. Ask us and we will explain how gifts are used.", "ለፕሮግራሞቻችን ይውላል። ከጠየቁን ስጦታዎች እንዴት እንደሚውሉ እናስረዳዎታለን።")),
+            (T("How is my gift used?", "ልገሳዬ እንዴት ጥቅም ላይ ይውላል?"), T("It goes to our programs. Ask us and we will explain how gifts are used.", "ለፕሮግራሞቻችን ይውላል። ከጠየቁን ልገሳዎች እንዴት እንደሚውሉ እናስረዳዎታለን።")),
             (T("Can my company or school take part?", "ድርጅቴ ወይም ትምህርት ቤቴ መሳተፍ ይችላል?"), T("Yes. Write to us and we will plan a day together.", "አዎ። ይጻፉልን፤ አንድ ቀን አብረን እናቅዳለን።")),
         ]),
-        cta=(T("A few hours of your time changes a life", "ጥቂት ሰዓታትዎ የአንድን ሰው ሕይወት ይቀይራሉ"), T("Join as a volunteer or write to us about giving.", "በጎ ፈቃደኛ ሆነው ይቀላቀሉን፤ ወይም ስለ ስጦታ ይጻፉልን።"), (T("Volunteer with us", "በጎ ፈቃደኛ ይሁኑ"), "/volunteer"), (T("Contact us", "ያግኙን"), "/contact")),
+        cta=(T("A few hours of your time changes a life", "ጥቂት ሰዓታትዎ የአንድን ሰው ሕይወት ይቀይራሉ"), T("Join as a volunteer or write to us about giving.", "በጎ ፈቃደኛ ሆነው ይቀላቀሉን፤ ወይም ስለ ልገሳ ይጻፉልን።"), (T("Volunteer with us", "በጎ ፈቃደኛ ይሁኑ"), "/volunteer"), (T("Contact us", "ያግኙን"), "/contact")),
     ),
     "personal": dict(
         hero=("split", "portrait", T("A portrait", "የቁም ምስል")),
@@ -85,7 +84,7 @@ DATA = {
             (T("How long does a project take?", "አንድ ሥራ ምን ያህል ጊዜ ይወስዳል?"), T("It depends on the work. I give you a date before we start and keep to it.", "እንደ ሥራው ይለያያል። ከመጀመራችን በፊት ቀን እሰጥዎታለሁ፤ እጠብቀዋለሁም።")),
             (T("Can I ask for changes?", "ለውጥ መጠየቅ እችላለሁ?"), T("Yes. Tell me what you would like changed and we agree on it together.", "አዎ። ምን እንዲቀየር እንደሚፈልጉ ይንገሩኝ፤ አብረን እንስማማበታለን።")),
         ]),
-        cta=(T("Have a project in mind?", "በልብዎ ያለ ሥራ አለ?"), T("Tell me about it and I will reply with ideas and a price.", "ይንገሩኝ፤ ከሐሳቦች እና ከዋጋ ጋር እመልሳለሁ።"), (T("Start a project", "ሥራ ይጀምሩ"), "/contact"), (T("See my work", "ሥራዎቼን ይመልከቱ"), "/work")),
+        cta=(T("Have a project in mind?", "በልብዎ ያለ ሥራ አለ?"), T("Tell me about it and I will reply with ideas and a price.", "ይንገሩኝ፤ ከሐሳቦች እና ከዋጋ ጋር እመልሳለሁ።"), (T("Start a project", "ሥራ እናስጀምር"), "/contact"), (T("See my work", "ሥራዎቼን ይመልከቱ"), "/work")),
     ),
     "real-estate": dict(
         hero=("split", "home", T("Homes on a street", "በአንድ መንገድ ያሉ ቤቶች")),
@@ -101,7 +100,7 @@ DATA = {
         hero=("split", "school", T("An open book, a pencil and a star", "የተከፈተ መጽሐፍ፣ እርሳስ እና ኮከብ")),
         about=("people", T("Children and a teacher together", "ተማሪዎች ከመምህራቸው ጋር")),
         faq=(T("Parents often ask", "ወላጆች ብዙ ጊዜ የሚጠይቁት"), [
-            (T("When can I register my child?", "ልጄን መቼ ማስመዝገብ እችላለሁ?"), T("Registration dates are on the admissions page. Places fill early, so register soon.", "የምዝገባ ቀናት በምዝገባ ገጹ ላይ አሉ። ቦታ ቶሎ ስለሚሞላ ቀደም ብለው ያስመዝግቡ።")),
+            (T("When can I register my child?", "ልጄን መቼ ማስመዝገብ እችላለሁ?"), T("Fill in the form on the admissions page and we will call you.", "በምዝገባ ገጹ ላይ ያለውን ቅጽ ይሙሉ፤ እንደውልልዎታለን።")),
             (T("Can we visit the school first?", "መጀመሪያ ትምህርት ቤቱን መጎብኘት እንችላለን?"), T("Yes. Call us and we will show you the classrooms and answer your questions.", "አዎ። ይደውሉልን፤ ክፍሎቹን እናሳይዎታለን፤ ጥያቄዎችዎንም እንመልሳለን።")),
             (T("How will I know how my child is doing?", "የልጄን ውጤት እንዴት አውቃለሁ?"), T("Teachers meet parents every term, and you can ask to talk at any time.", "መምህራን በየተርሙ ከወላጆች ጋር ይገናኛሉ፤ በማንኛውም ጊዜ ለመነጋገር መጠየቅም ይችላሉ።")),
         ]),
@@ -121,23 +120,26 @@ DATA = {
         hero=("centered", "mountains", T("Highland peaks with a path and the sun", "የደጋ ተራሮች፣ መንገድ እና ፀሐይ")),
         about=("people", T("Travellers with their guide", "ተጓዦች ከአስጎብኚያቸው ጋር")),
         faq=(T("Before you travel", "ከመጓዝዎ በፊት"), [
-            (T("Are the tours private or in a group?", "ጉብኝቶቹ የግል ናቸው ወይስ የቡድን?"), T("Both. Tell us how many you are and we will suggest the best way.", "ሁለቱም አሉ። ስንት እንደሆናችሁ ይንገሩን፤ የተሻለውን እናቀርባለን።")),
-            (T("What is included in the price?", "በዋጋው ውስጥ ምን ተካትቷል?"), T("Each tour lists what is included. Ask us if anything is unclear.", "እያንዳንዱ ጉብኝት የተካተተውን ይዘረዝራል። ግልጽ ያልሆነ ነገር ካለ ይጠይቁን።")),
+            (T("Are the tours private or in a group?", "ጉዞዎቹ የግል ናቸው ወይስ የቡድን?"), T("Both. Tell us how many you are and we will suggest the best way.", "ሁለቱም አሉ። ስንት እንደሆናችሁ ይንገሩን፤ የተሻለውን እናቀርባለን።")),
+            (T("What is included in the price?", "በዋጋው ውስጥ ምን ተካትቷል?"), T("Each tour lists what is included. Ask us if anything is unclear.", "እያንዳንዱ ጉዞ የተካተተውን ይዘረዝራል። ግልጽ ያልሆነ ነገር ካለ ይጠይቁን።")),
             (T("Can you plan a trip just for me?", "ለእኔ ብቻ የተዘጋጀ ጉዞ ማቀድ ትችላላችሁ?"), T("Yes. Tell us your dates and what you want to see.", "አዎ። ቀናትዎን እና ማየት የሚፈልጉትን ይንገሩን።")),
         ]),
-        cta=(T("Ready to see Ethiopia?", "ኢትዮጵያን ለማየት ዝግጁ ነዎት?"), T("Send us your dates. We reply with a plan and a price.", "ቀናትዎን ይላኩልን። ከዕቅድ እና ከዋጋ ጋር እንመልሳለን።"), (T("Book a tour", "ጉብኝት ይያዙ"), "/book"), (T("See all tours", "ሁሉንም ጉብኝቶች ይመልከቱ"), "/tours")),
+        cta=(T("Ready to see Ethiopia?", "ኢትዮጵያን ለማየት ዝግጁ ነዎት?"), T("Send us your dates. We reply with a plan and a price.", "ቀናትዎን ይላኩልን። ከዕቅድ እና ከዋጋ ጋር እንመልሳለን።"), (T("Book a tour", "ጉዞ ያስይዙ"), "/book"), (T("See all tours", "ሁሉንም ጉዞዎች ይመልከቱ"), "/tours")),
     ),
     "worship": dict(
         hero=("split", "church", T("A church with a cross", "መስቀል ያለው ቤተ ክርስቲያን")),
         about=("people", T("People of the congregation together", "የምእመናን አንድነት")),
         faq=(T("Visiting us", "ሲጎበኙን"), [
             (T("I am new. Can I just come?", "አዲስ ነኝ። በቀጥታ መምጣት እችላለሁ?"), T("Yes, you are welcome. Come a little early and someone will greet you.", "አዎ፤ እንኳን ደህና መጡ። ትንሽ ቀደም ብለው ይምጡ፤ የሚቀበልዎ ሰው ይኖራል።")),
-            (T("Is there something for children?", "ለልጆች የሚሆን ፕሮግራም አለ?"), T("Yes. See the programmes page for days and times.", "አዎ። ቀንና ሰዓቱን በፕሮግራሞች ገጽ ይመልከቱ።")),
+            (T("Is there something for children?", "ለልጆች የሚሆን ፕሮግራም አለ?"), T("Yes. See the programs page for days and times.", "አዎ። ቀንና ሰዓቱን በፕሮግራሞች ገጽ ይመልከቱ።")),
             (T("How can I talk to someone?", "ከአንድ ሰው ጋር እንዴት ልነጋገር?"), T("Write to us or call. We are glad to listen and to pray with you.", "ይጻፉልን ወይም ይደውሉ። ለመስማትና አብረን ለመጸለይ ደስተኞች ነን።")),
         ]),
-        cta=(T("You are welcome here", "እንኳን ደህና መጡ"), T("Join us this week, or write to us with any question.", "በዚህ ሳምንት ይቀላቀሉን፤ ወይም ማንኛውንም ጥያቄ ይጻፉልን።"), (T("Contact us", "ያግኙን"), "/contact"), (T("Our programmes", "ፕሮግራሞቻችን"), "/programs")),
+        cta=(T("You are welcome here", "እንኳን ደህና መጡ"), T("Join us this week, or write to us with any question.", "በዚህ ሳምንት ይቀላቀሉን፤ ወይም ማንኛውንም ጥያቄ ይጻፉልን።"), (T("Contact us", "ያግኙን"), "/contact"), (T("Our programs", "ፕሮግራሞቻችን"), "/programs")),
     ),
 }
+
+# The hero now shows the opening hours itself, so these eyebrows say where the business is instead.
+EYEBROW = {"cafe": T("Bole, near Edna Mall", "ቦሌ፣ ኤድና ሞል አጠገብ"), "clinic": T("Megenagna, Addis Ababa", "መገናኛ፣ አዲስ አበባ")}
 
 for pid, d in DATA.items():
     path = ROOT / f"{pid}.json"
@@ -146,6 +148,8 @@ for pid, d in DATA.items():
     # Remove what an earlier run added.
     home["sections"] = [s for s in home["sections"] if s.get("id") not in ("questions", "next-step")]
     hero = next(s for s in home["sections"] if s["type"] == "hero")
+    if pid in EYEBROW:
+        hero["eyebrow"] = EYEBROW[pid]
     variant, art, alt = d["hero"]
     hero["variant"] = variant
     hero["image"] = {**{k: v for k, v in (hero.get("image") or {}).items() if k not in ("art",)}, "art": art, "alt": (hero.get("image") or {}).get("alt") or alt}
@@ -153,6 +157,12 @@ for pid, d in DATA.items():
     if about:
         art, alt = d["about"]
         about["image"] = {**(about.get("image") or {}), "art": art, "alt": (about.get("image") or {}).get("alt") or alt}
+    # Gallery tiles keep the calm abstract shapes unless a preset names drawings for them.
+    for page in site["pages"]:
+        for s in page["sections"]:
+            if s["type"] == "gallery" and "gallery" not in d:
+                for img in s["images"]:
+                    img.pop("art", None)
     if "gallery" in d:
         for page in site["pages"]:
             for s in page["sections"]:

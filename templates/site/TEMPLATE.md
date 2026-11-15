@@ -55,10 +55,10 @@ When there is no photo yet, `art` picks a drawing in the site's colours instead 
 | `coffee` | A jebena and cups | Cafés, coffee |
 | `food` | A shared plate | Restaurants, catering |
 | `hotel` / `room` | A lodge by the water / a made bed | Hotels, guest houses, rentals |
-| `clinic` | A cross and a heartbeat | Clinics, pharmacies, health |
+| `clinic` | A cross and a heartbeat (drawn in the accent colour; don't choose a red accent for a clinic) | Clinics, pharmacies, health |
 | `school` | A book, a pencil, a star | Schools, courses, tutoring |
 | `fashion` / `shopping` | A dress with a woven band / a bag and parcels | Clothes and tailoring / any shop |
-| `church` / `mosque` | The building | Places of worship |
+| `church` / `mosque` | The building (the church is a gabled hall with a cross; for an Orthodox church prefer the owner's photo) | Places of worship |
 | `event` | A stage with flags | Events, weddings, music |
 | `people` | Three people together | Teams, community, NGOs, families |
 | `home` | Houses on a street | Real estate, construction |
@@ -69,7 +69,7 @@ Give the home hero and the `about` section a drawing that fits the business, and
 
 ## A good home page
 
-Hero (with `art` or a photo, and a button to the thing visitors want: menu, booking, call) → what you offer (`menu` or `services`) → `about` → `faq` when the owner gave enough to answer real questions → `contact` (and `map`) → `cta` as the last section. On phones a bar with Call and Telegram (or WhatsApp) appears by itself when `business.phone`, `telegram` or `whatsapp` is set, and the hero shows the first `business.hours` line, so fill those in whenever the owner gives them.
+Hero (with `art` or a photo, and a button to the thing visitors want: menu, booking, call) → what you offer (`menu` or `services`) → `about` → `faq` when the owner gave enough to answer real questions → `contact` (and `map`) → `cta` as the last section. On phones a bar with Call and Telegram (or WhatsApp) appears by itself when `business.phone`, `telegram` or `whatsapp` is set, and the hero shows the first `business.hours` line, so fill those in whenever the owner gives them. Don't repeat the hours in the hero `eyebrow`; use it for the place or what makes the business special.
 
 ## Personal websites
 

@@ -52,7 +52,7 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
   return (
     <SiteProvider site={site} page={page} lang={lang}>
       {/* Room at the bottom on phones so the call bar never hides the footer's last line. */}
-      <div className={`flex min-h-screen flex-col ${hasStickyActions(site) ? "max-md:pb-16" : ""}`}>
+      <div className={`flex min-h-screen flex-col ${hasStickyActions(site) ? "max-md:pb-[4.5rem]" : ""}`}>
         <Header />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {page.sections.map((section, i) =>

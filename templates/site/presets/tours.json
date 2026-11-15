@@ -167,7 +167,7 @@
             {
               "question": {
                 "en": "Are the tours private or in a group?",
-                "am": "ጉብኝቶቹ የግል ናቸው ወይስ የቡድን?"
+                "am": "ጉዞዎቹ የግል ናቸው ወይስ የቡድን?"
               },
               "answer": {
                 "en": "Both. Tell us how many you are and we will suggest the best way.",
@@ -181,7 +181,7 @@
               },
               "answer": {
                 "en": "Each tour lists what is included. Ask us if anything is unclear.",
-                "am": "እያንዳንዱ ጉብኝት የተካተተውን ይዘረዝራል። ግልጽ ያልሆነ ነገር ካለ ይጠይቁን።"
+                "am": "እያንዳንዱ ጉዞ የተካተተውን ይዘረዝራል። ግልጽ ያልሆነ ነገር ካለ ይጠይቁን።"
               }
             },
             {
@@ -222,14 +222,14 @@
           "primaryAction": {
             "label": {
               "en": "Book a tour",
-              "am": "ጉብኝት ይያዙ"
+              "am": "ጉዞ ያስይዙ"
             },
             "href": "/book"
           },
           "secondaryAction": {
             "label": {
               "en": "See all tours",
-              "am": "ሁሉንም ጉብኝቶች ይመልከቱ"
+              "am": "ሁሉንም ጉዞዎች ይመልከቱ"
             },
             "href": "/tours"
           }

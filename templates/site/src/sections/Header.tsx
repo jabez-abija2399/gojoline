@@ -63,7 +63,7 @@ export function Header() {
             </summary>
             <nav
               aria-label={uiText("pages", lang)}
-              className="absolute right-0 mt-2 flex w-56 flex-col gap-1 rounded-site border border-line bg-surface p-2 shadow-lg"
+              className="absolute right-0 mt-2 flex max-h-[calc(100dvh-5rem)] w-56 flex-col gap-1 overflow-y-auto rounded-site border border-line bg-surface p-2 shadow-lg"
             >
               {links}
               {switcher}

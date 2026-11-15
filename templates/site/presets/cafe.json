@@ -69,8 +69,8 @@
           "type": "hero",
           "variant": "split",
           "eyebrow": {
-            "en": "Open every day from 7 am",
-            "am": "በየቀኑ ከጠዋቱ 1 ሰዓት ጀምሮ ክፍት"
+            "en": "Bole, near Edna Mall",
+            "am": "ቦሌ፣ ኤድና ሞል አጠገብ"
           },
           "heading": {
             "en": "Coffee roasted every morning",
@@ -131,15 +131,13 @@
               "alt": {
                 "en": "Jebena on a coffee tray",
                 "am": "ጀበና በረከቦት ላይ"
-              },
-              "art": "coffee"
+              }
             },
             {
               "alt": {
                 "en": "Breakfast plate with firfir",
                 "am": "የፍርፍር ቁርስ"
-              },
-              "art": "food"
+              }
             },
             {
               "alt": {
@@ -270,12 +268,12 @@
           },
           "body": {
             "en": "Book a table or just walk in. We are open every day.",
-            "am": "ጠረጴዛ ይያዙ ወይም በቀጥታ ይምጡ። በየቀኑ ክፍት ነን።"
+            "am": "ጠረጴዛ ያስይዙ ወይም በቀጥታ ይምጡ። በየቀኑ ክፍት ነን።"
           },
           "primaryAction": {
             "label": {
               "en": "Book a table",
-              "am": "ጠረጴዛ ይያዙ"
+              "am": "ጠረጴዛ ያስይዙ"
             },
             "href": "#booking"
           },

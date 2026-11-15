@@ -188,7 +188,7 @@
               },
               "answer": {
                 "en": "You are welcome. Ask anyone at the mosque or write to us and we will help you.",
-                "am": "እንኳን ደህና መጡ። በመስጊዱ ያለን ማንኛውንም ሰው ይጠይቁ ወይም ይጻፉልን፤ እንረዳዎታለን።"
+                "am": "እንኳን ደህና መጡ። በመስጂዱ ያለን ማንኛውንም ሰው ይጠይቁ ወይም ይጻፉልን፤ እንረዳዎታለን።"
               }
             },
             {
@@ -197,8 +197,8 @@
                 "am": "ልጆች ትምህርቱን መከታተል ይችላሉ?"
               },
               "answer": {
-                "en": "Yes. See the classes page for ages and times.",
-                "am": "አዎ። ዕድሜ እና ሰዓቱን በትምህርቶች ገጽ ይመልከቱ።"
+                "en": "Yes. Ask us about ages and times.",
+                "am": "አዎ። ስለ ዕድሜ እና ሰዓት ይጠይቁን።"
               }
             },
             {
@@ -208,7 +208,7 @@
               },
               "answer": {
                 "en": "You can give at the mosque or ask us for the account details.",
-                "am": "በመስጊዱ መስጠት ወይም የሒሳብ ቁጥሩን ከእኛ መጠየቅ ይችላሉ።"
+                "am": "በመስጂዱ መስጠት ወይም የሒሳብ ቁጥሩን ከእኛ መጠየቅ ይችላሉ።"
               }
             }
           ]

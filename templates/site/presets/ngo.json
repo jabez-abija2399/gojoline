@@ -141,11 +141,11 @@
             {
               "question": {
                 "en": "How is my gift used?",
-                "am": "ስጦታዬ እንዴት ጥቅም ላይ ይውላል?"
+                "am": "ልገሳዬ እንዴት ጥቅም ላይ ይውላል?"
               },
               "answer": {
-                "en": "It goes to our programmes. Ask us and we will explain how gifts are used.",
-                "am": "ለፕሮግራሞቻችን ይውላል። ከጠየቁን ስጦታዎች እንዴት እንደሚውሉ እናስረዳዎታለን።"
+                "en": "It goes to our programs. Ask us and we will explain how gifts are used.",
+                "am": "ለፕሮግራሞቻችን ይውላል። ከጠየቁን ልገሳዎች እንዴት እንደሚውሉ እናስረዳዎታለን።"
               }
             },
             {
@@ -169,7 +169,7 @@
           },
           "body": {
             "en": "Join as a volunteer or write to us about giving.",
-            "am": "በጎ ፈቃደኛ ሆነው ይቀላቀሉን፤ ወይም ስለ ስጦታ ይጻፉልን።"
+            "am": "በጎ ፈቃደኛ ሆነው ይቀላቀሉን፤ ወይም ስለ ልገሳ ይጻፉልን።"
           },
           "primaryAction": {
             "label": {

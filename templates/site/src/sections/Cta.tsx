@@ -9,10 +9,10 @@ export function Cta({ section }: { section: CtaSection }) {
     <section id={section.id} className="section">
       <div className="container-site">
         <div className="reveal relative isolate flex flex-col items-start gap-6 overflow-hidden rounded-site bg-accent px-6 py-12 text-on-accent sm:px-12 md:flex-row md:items-center md:justify-between md:py-16">
-          {/* Two soft circles in the brand colour: depth without a picture. */}
+          {/* Two faint circles in the band's own text colour: depth, and text over them stays readable in any theme. */}
           <svg aria-hidden="true" viewBox="0 0 400 200" preserveAspectRatio="xMaxYMid slice" className="absolute inset-0 -z-10 size-full">
-            <circle cx="360" cy="20" r="120" className="fill-primary opacity-40" />
-            <circle cx="300" cy="210" r="90" className="fill-primary opacity-25" />
+            <circle cx="360" cy="20" r="120" className="fill-on-accent opacity-[0.07]" />
+            <circle cx="300" cy="210" r="90" className="fill-on-accent opacity-[0.05]" />
           </svg>
           <div className="flex max-w-[46ch] flex-col gap-3">
             <SectionTitle className="font-heading text-3xl font-bold md:text-4xl">{text(section.heading)}</SectionTitle>

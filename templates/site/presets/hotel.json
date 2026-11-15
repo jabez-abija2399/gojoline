@@ -231,7 +231,7 @@
           "primaryAction": {
             "label": {
               "en": "Book a room",
-              "am": "ክፍል ይያዙ"
+              "am": "ክፍል ያስይዙ"
             },
             "href": "/rooms#booking"
           },

@@ -51,6 +51,8 @@ const scenes: Record<ArtName, React.ReactNode> = {
       <circle cx="254" cy="186" r="20" className={`${P} opacity-70`} />
       <circle cx="200" cy="88" r="13" className={`${P} opacity-55`} />
       <circle cx="200" cy="212" r="13" className={`${A} opacity-60`} />
+      <rect x="112" y="140" width="34" height="14" rx="7" className={W} transform="rotate(-62 129 147)" />
+      <rect x="254" y="146" width="34" height="14" rx="7" className={W} transform="rotate(62 271 153)" />
       <path d="M40 60q14-10 28 0M332 244q14-10 28 0" className="stroke-primary opacity-50" strokeWidth="5" {...line} />
     </>
   ),
@@ -82,13 +84,14 @@ const scenes: Record<ArtName, React.ReactNode> = {
       <path d="M40 250h320" className="stroke-accent opacity-25" strokeWidth="4" {...line} />
     </>
   ),
-  // Care: a cross, a heartbeat.
+  // Care: a cross and a heartbeat. The cross uses the accent colour, never the primary, so a
+  // red theme can't turn it into the protected red cross emblem.
   clinic: (
     <>
       <circle cx="200" cy="150" r="112" className={`${P} opacity-15`} />
       <rect x="132" y="82" width="136" height="136" rx="28" className={W} />
-      <path d="M182 108h36v24h24v36h-24v24h-36v-24h-24v-36h24z" className={P} />
-      <path d="M36 150h70l16-30 20 60 16-30h30M242 150h30l14-26 18 52 14-26h46" className="stroke-accent" strokeWidth="6" {...line} />
+      <path d="M182 108h36v24h24v36h-24v24h-36v-24h-24v-36h24z" className={A} />
+      <path d="M36 150h70l16-30 20 60 16-30h30M242 150h30l14-26 18 52 14-26h46" className="stroke-primary" strokeWidth="6" {...line} />
       <circle cx="78" cy="76" r="10" className={`${A} opacity-40`} />
       <circle cx="326" cy="232" r="14" className={`${P} opacity-40`} />
     </>
@@ -102,7 +105,7 @@ const scenes: Record<ArtName, React.ReactNode> = {
       <path d="M200 112v112" className="stroke-accent" strokeWidth="6" {...line} />
       <path d="M112 132q32-8 64 4M112 156q32-8 64 4M112 180q32-8 64 4" className="stroke-accent opacity-45" strokeWidth="5" {...line} />
       <path d="M224 136q32-12 64-4M224 160q32-12 64-4" className="stroke-accent opacity-60" strokeWidth="5" {...line} />
-      <path d="M300 44l8 18 20 2-15 13 5 20-18-10-18 10 5-20-15-13 20-2z" className={P} />
+      <path d="M300 62l8 18 20 2-15 13 5 20-18-10-18 10 5-20-15-13 20-2z" className={P} />
       <path d="M92 250l150-14" className="stroke-primary" strokeWidth="12" {...line} />
       <path d="M242 236l22-2-18 12z" className={A} />
     </>
@@ -111,13 +114,15 @@ const scenes: Record<ArtName, React.ReactNode> = {
   fashion: (
     <>
       <circle cx="200" cy="150" r="118" className={`${P} opacity-15`} />
-      <path d="M170 52h60" className="stroke-accent" strokeWidth="6" {...line} />
-      <path d="M200 52v-14a10 10 0 1 0-10-10" className="stroke-accent" strokeWidth="5" {...line} />
-      <path d="M172 62h56l44 34-18 24-24-16v32l34 108H136l34-108v-32l-24 16-18-24z" className={W} />
-      <path d="M144 220h112l8 24H136z" className={P} />
-      <path d="M150 232l10-8 10 8 10-8 10 8 10-8 10 8 10-8 10 8 10-8 10 8" className="stroke-surface" strokeWidth="3" {...line} />
-      <path d="M192 62h16v96h-16z" className={`${P} opacity-80`} />
-      <path d="M200 76l5 5-5 5-5-5zM200 100l5 5-5 5-5-5zM200 124l5 5-5 5-5-5z" className={W} />
+      <g transform="translate(34 34) scale(0.83)">
+        <path d="M170 52h60" className="stroke-accent" strokeWidth="6" {...line} />
+        <path d="M200 52v-14a10 10 0 1 0-10-10" className="stroke-accent" strokeWidth="5" {...line} />
+        <path d="M172 62h56l44 34-18 24-24-16v32l34 108H136l34-108v-32l-24 16-18-24z" className={W} />
+        <path d="M144 220h112l8 24H136z" className={P} />
+        <path d="M150 232l10-8 10 8 10-8 10 8 10-8 10 8 10-8 10 8 10-8 10 8" className="stroke-surface" strokeWidth="3" {...line} />
+        <path d="M192 62h16v96h-16z" className={`${P} opacity-80`} />
+        <path d="M200 76l5 5-5 5-5-5zM200 100l5 5-5 5-5-5zM200 124l5 5-5 5-5-5z" className={W} />
+      </g>
     </>
   ),
   // A bag, a tag and parcels.
@@ -139,13 +144,15 @@ const scenes: Record<ArtName, React.ReactNode> = {
   church: (
     <>
       {sky}
-      <path d="M200 40v40M184 54h32" className="stroke-accent" strokeWidth="7" {...line} />
-      <path d="M150 132l50-52 50 52v96H150z" className={A} />
-      <path d="M96 164h54v64H96zM250 164h54v64h-54z" className={`${A} opacity-75`} />
-      <path d="M184 228v-34a16 16 0 0 1 32 0v34z" className={P} />
-      <path d="M190 150v-14a10 10 0 0 1 20 0v14z" className={W} />
-      <path d="M112 206v-16a10 10 0 0 1 20 0v16zM268 206v-16a10 10 0 0 1 20 0v16z" className={`${W} opacity-80`} />
-      <path d="M86 164h70M244 164h70" className="stroke-primary" strokeWidth="8" {...line} />
+      <g transform="translate(20 34) scale(0.9)">
+        <path d="M200 40v40M184 54h32" className="stroke-accent" strokeWidth="7" {...line} />
+        <path d="M150 132l50-52 50 52v96H150z" className={A} />
+        <path d="M96 164h54v64H96zM250 164h54v64h-54z" className={`${A} opacity-75`} />
+        <path d="M184 228v-34a16 16 0 0 1 32 0v34z" className={P} />
+        <path d="M190 150v-14a10 10 0 0 1 20 0v14z" className={W} />
+        <path d="M112 206v-16a10 10 0 0 1 20 0v16zM268 206v-16a10 10 0 0 1 20 0v16z" className={`${W} opacity-80`} />
+        <path d="M86 164h70M244 164h70" className="stroke-primary" strokeWidth="8" {...line} />
+      </g>
     </>
   ),
   // A dome, a minaret and a crescent.
@@ -169,9 +176,9 @@ const scenes: Record<ArtName, React.ReactNode> = {
   // Flags, lights and a stage.
   event: (
     <>
-      <path d="M20 54q180 60 360 0" className="stroke-accent opacity-60" strokeWidth="3" {...line} />
+      <path d="M20 70q180 60 360 0" className="stroke-accent opacity-60" strokeWidth="3" {...line} />
       {[60, 110, 160, 210, 260, 310].map((x, i) => (
-        <path key={x} d={`M${x} ${64 + Math.round(22 * Math.sin(((x - 20) / 360) * Math.PI))}l14 0-7 26z`} className={i % 2 ? A : P} />
+        <path key={x} d={`M${x} ${80 + Math.round(22 * Math.sin(((x - 20) / 360) * Math.PI))}l14 0-7 26z`} className={i % 2 ? A : P} />
       ))}
       <path d="M130 70l-56 170h112zM270 70l56 170H214z" className={`${P} opacity-20`} />
       <path d="M70 232h260v26H70z" className={A} />
@@ -272,7 +279,7 @@ const abstracts = [
 function pick(seed: string): number {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return h % abstracts.length;
+  return (h ^ (h >>> 7) ^ (h >>> 13)) % abstracts.length;
 }
 
 export function Art({ name, seed = "" }: { name?: ArtName; seed?: string }) {

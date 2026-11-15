@@ -222,7 +222,7 @@
                 "am": "ለልጆች የሚሆን ፕሮግራም አለ?"
               },
               "answer": {
-                "en": "Yes. See the programmes page for days and times.",
+                "en": "Yes. See the programs page for days and times.",
                 "am": "አዎ። ቀንና ሰዓቱን በፕሮግራሞች ገጽ ይመልከቱ።"
               }
             },
@@ -265,7 +265,7 @@
           },
           "secondaryAction": {
             "label": {
-              "en": "Our programmes",
+              "en": "Our programs",
               "am": "ፕሮግራሞቻችን"
             },
             "href": "/programs"

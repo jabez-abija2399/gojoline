@@ -69,8 +69,8 @@
           "type": "hero",
           "variant": "split",
           "eyebrow": {
-            "en": "Open Monday to Saturday, 8 am to 8 pm",
-            "am": "ከሰኞ እስከ ቅዳሜ ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት ክፍት"
+            "en": "Megenagna, Addis Ababa",
+            "am": "መገናኛ፣ አዲስ አበባ"
           },
           "heading": {
             "en": "Care for the whole family, close to home",
@@ -187,8 +187,8 @@
                 "am": "ቀጠሮ ያስፈልጋል?"
               },
               "answer": {
-                "en": "You can walk in, but people with an appointment are seen first. Booking takes one minute.",
-                "am": "ያለ ቀጠሮ መምጣት ይችላሉ፤ ሆኖም ቀጠሮ ያላቸው ቀድመው ይታያሉ። ቀጠሮ መያዝ አንድ ደቂቃ ብቻ ይወስዳል።"
+                "en": "You can book with the form or call us, and we will tell you when to come.",
+                "am": "በቅጹ ቀጠሮ መያዝ ወይም መደወል ይችላሉ፤ መቼ እንደሚመጡ እንነግርዎታለን።"
               }
             },
             {
@@ -207,8 +207,8 @@
                 "am": "ከልጄ ጋር መምጣት እችላለሁ?"
               },
               "answer": {
-                "en": "Yes. We see children and adults in the same visit.",
-                "am": "አዎ። ሕፃናትንም አዋቂዎችንም በአንድ ጉብኝት እናያለን።"
+                "en": "Yes. Tell us when you book so we can prepare.",
+                "am": "አዎ። እንድንዘጋጅ ቀጠሮ ሲይዙ ይንገሩን።"
               }
             }
           ]

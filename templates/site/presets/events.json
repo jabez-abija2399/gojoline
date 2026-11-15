@@ -198,7 +198,7 @@
               },
               "answer": {
                 "en": "Yes. Tell us your budget and guest number and we will suggest a package.",
-                "am": "አዎ። በጀትዎን እና የእንግዶችዎን ብዛት ይንገሩን፤ የሚስማማ ጥቅል እናቀርባለን።"
+                "am": "አዎ። በጀትዎን እና የእንግዶችዎን ብዛት ይንገሩን፤ የሚስማማ ፓኬጅ እናቀርባለን።"
               }
             },
             {
@@ -227,14 +227,14 @@
           "primaryAction": {
             "label": {
               "en": "Book your date",
-              "am": "ቀንዎን ይያዙ"
+              "am": "ቀንዎን ያስይዙ"
             },
             "href": "/book"
           },
           "secondaryAction": {
             "label": {
               "en": "See packages",
-              "am": "ጥቅሎችን ይመልከቱ"
+              "am": "ፓኬጆችን ይመልከቱ"
             },
             "href": "/packages"
           }

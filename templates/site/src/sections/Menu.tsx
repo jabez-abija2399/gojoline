@@ -29,7 +29,7 @@ export function Menu({ section }: { section: MenuSection }) {
                       {item.price && (
                         <>
                           <span aria-hidden="true" className="leader" />
-                          <p className="shrink-0 font-heading text-lg font-bold whitespace-nowrap text-primary">{formatPrice(item.price, lang)}</p>
+                          <p className="shrink-0 font-heading text-lg font-bold whitespace-nowrap">{formatPrice(item.price, lang)}</p>
                         </>
                       )}
                     </div>
