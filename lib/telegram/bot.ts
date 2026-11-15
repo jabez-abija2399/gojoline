@@ -137,6 +137,8 @@ async function runEdit(deps: BotDeps, link: TelegramLink, projectId: string, req
     },
   });
   if (outcome.error === "busy") return say(t.busy);
+  if (outcome.error === "blocked") return say(t.blocked);
+  if (outcome.error === "no_credits") return say(t.noCredits);
   if (outcome.error || outcome.status === "failed") return say(t.failed);
   const reply = escapeHtml(outcome.reply ?? "");
   if (outcome.status === "changed" && deps.publish) {

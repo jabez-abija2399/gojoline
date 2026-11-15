@@ -1,6 +1,10 @@
 import "server-only";
 import { LLMContentClassifier } from "@/lib/safety/classifier";
 import { ContentGuard } from "@/lib/safety/guard";
+import { DbReportStore, MemoryReportStore, type ReportStore } from "@/lib/safety/reports";
+import type { ModerationDeps } from "@/lib/safety/takedown";
+import type { SiteAdminStore } from "@/lib/sites/types";
+import type { UsageReport } from "@/lib/providers/llm/usage-log";
 import { Redis } from "@upstash/redis";
 import type { BuilderDeps } from "@/lib/builder/service";
 import { getDb } from "@/lib/db/client";
@@ -130,6 +134,10 @@ interface Services {
   publish: PublishDeps | null;
   /** null when AI or sandbox credentials are missing. */
   builder: BuilderDeps | null;
+  /** AI cost totals for admins. */
+  usageReport: UsageReport;
+  /** Abuse reports and takedowns; null without a database or publishing. */
+  moderation: ModerationDeps | null;
 }
 
 const globalForServices = globalThis as unknown as { gojoServices?: Services };
@@ -150,6 +158,8 @@ export function services(): Services {
       cloud: null,
       notifier: null,
       telegram: null,
+      usageReport: usage as unknown as UsageReport,
+      moderation: null,
     };
     const svc = globalForServices.gojoServices;
     if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r) };
@@ -162,6 +172,16 @@ export function services(): Services {
       svc.publish.guards = [new ContentGuard(classifier)];
     }
     svc.cloud = svc.publish?.cloud ?? null;
+    const siteAdmin = (svc.publish?.sites as unknown as SiteAdminStore | undefined) ?? (db ? new DbSiteStore(db) : null);
+    if (siteAdmin) {
+      const reports: ReportStore = db
+        ? new DbReportStore(db)
+        : new MemoryReportStore(async (id) => {
+            const s = await siteAdmin.byId(id);
+            return s ? { slug: s.slug, url: s.url, status: s.status } : null;
+          });
+      svc.moderation = { sites: siteAdmin, reports, publisher: svc.publish?.publisher ?? null, audit: (e) => billing.store().audit(e) };
+    }
     svc.telegram = pickTelegram(process.env);
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);
   }

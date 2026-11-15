@@ -1,10 +1,10 @@
 import { randomBytes } from "node:crypto";
-import { and, eq, ne, sql } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, lt, ne, or, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { sites } from "@/lib/db/schema";
-import type { Site, SiteStore } from "./types";
+import type { Site, SiteAdminStore, SiteStore } from "./types";
 
-export class DbSiteStore implements SiteStore {
+export class DbSiteStore implements SiteStore, SiteAdminStore {
   constructor(private db: Database) {}
 
   async getByProject(ownerId: string, projectId: string): Promise<Site | null> {
@@ -35,11 +35,16 @@ export class DbSiteStore implements SiteStore {
     }
   }
 
-  async setCustomDomain(ownerId: string, projectId: string, domain: string | null): Promise<boolean> {
+  async setCustomDomain(ownerId: string, projectId: string, domain: string | null, restore?: { claimedAt: Date | null; verifiedAt: Date | null }): Promise<boolean> {
     try {
       const rows = await this.db
         .update(sites)
-        .set({ customDomain: domain, updatedAt: new Date() })
+        .set({
+          customDomain: domain,
+          customDomainClaimedAt: restore ? restore.claimedAt : domain ? new Date() : null,
+          customDomainVerifiedAt: restore ? restore.verifiedAt : null,
+          updatedAt: new Date(),
+        })
         .where(and(eq(sites.projectId, projectId), eq(sites.ownerId, ownerId)))
         .returning({ id: sites.id });
       return rows.length === 1;
@@ -54,10 +59,65 @@ export class DbSiteStore implements SiteStore {
     if (existing) {
       // A site that was taken down stays down; only an admin can restore it.
       if (existing.status === "taken_down") throw new Error("Site is taken down");
-      const [row] = await this.db.update(sites).set({ ...values, ...(existing.siteKey ? {} : { siteKey: randomBytes(18).toString("base64url") }) }).where(and(eq(sites.id, existing.id), eq(sites.ownerId, ownerId))).returning();
-      return row!;
+      const [row] = await this.db.update(sites).set({ ...values, ...(existing.siteKey ? {} : { siteKey: randomBytes(18).toString("base64url") }) }).where(and(eq(sites.id, existing.id), eq(sites.ownerId, ownerId), ne(sites.status, "taken_down"))).returning();
+      // Taken down while this publish was running: it stays down.
+      if (!row) throw new Error("Site is taken down");
+      return row;
     }
     const [row] = await this.db.insert(sites).values({ ...values, siteKey: randomBytes(18).toString("base64url") }).returning();
     return row!;
+  }
+
+  async markDomainVerified(ownerId: string, projectId: string): Promise<void> {
+    await this.db
+      .update(sites)
+      .set({ customDomainVerifiedAt: new Date() })
+      .where(and(eq(sites.projectId, projectId), eq(sites.ownerId, ownerId), isNull(sites.customDomainVerifiedAt), isNotNull(sites.customDomain)));
+  }
+
+  async staleDomainClaim(domain: string, claimedBefore: Date) {
+    const [row] = await this.db
+      .select({ siteId: sites.id, providerProjectId: sites.providerProjectId })
+      .from(sites)
+      .where(and(eq(sites.customDomain, domain), isNull(sites.customDomainVerifiedAt), lt(sites.customDomainClaimedAt, claimedBefore)))
+      .limit(1);
+    return row ?? null;
+  }
+
+  async releaseDomainClaim(siteId: string, domain: string, claimedBefore: Date): Promise<boolean> {
+    const rows = await this.db
+      .update(sites)
+      .set({ customDomain: null, customDomainClaimedAt: null, updatedAt: new Date() })
+      .where(and(eq(sites.id, siteId), eq(sites.customDomain, domain), isNull(sites.customDomainVerifiedAt), lt(sites.customDomainClaimedAt, claimedBefore)))
+      .returning({ id: sites.id });
+    return rows.length === 1;
+  }
+
+  async byId(siteId: string): Promise<Site | null> {
+    const [row] = await this.db.select().from(sites).where(eq(sites.id, siteId)).limit(1);
+    return row ?? null;
+  }
+
+  async byAddress(address: string): Promise<Site | null> {
+    const [row] = await this.db.select().from(sites).where(or(eq(sites.slug, address), eq(sites.customDomain, address))).limit(1);
+    return row ?? null;
+  }
+
+  async recent(limit: number): Promise<Site[]> {
+    return this.db.select().from(sites).orderBy(desc(sites.updatedAt)).limit(limit);
+  }
+
+  async takeDown(siteId: string, reason: string): Promise<boolean> {
+    const rows = await this.db.update(sites).set({ status: "taken_down", takenDownReason: reason, updatedAt: new Date() }).where(eq(sites.id, siteId)).returning({ id: sites.id });
+    return rows.length === 1;
+  }
+
+  async restore(siteId: string): Promise<boolean> {
+    const rows = await this.db
+      .update(sites)
+      .set({ status: "pending", takenDownReason: null, updatedAt: new Date() })
+      .where(and(eq(sites.id, siteId), eq(sites.status, "taken_down")))
+      .returning({ id: sites.id });
+    return rows.length === 1;
   }
 }

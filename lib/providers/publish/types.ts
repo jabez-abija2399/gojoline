@@ -34,4 +34,6 @@ export interface PublishProvider {
   /** Attaches the owner's domain to the site and says which DNS records it needs. */
   addDomain(providerProjectId: string, domain: string): Promise<DomainStatus>;
   checkDomain(providerProjectId: string, domain: string): Promise<DomainStatus>;
+  /** Detaches a domain from a site (used to release stale, never-verified claims). */
+  removeDomain(providerProjectId: string, domain: string): Promise<void>;
 }

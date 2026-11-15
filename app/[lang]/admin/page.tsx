@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import { ModerateForm } from "@/components/admin/moderate-form";
 import { ReviewForm } from "@/components/admin/review-form";
 import { BuilderHeader } from "@/components/builder/builder-header";
 import { currentUser } from "@/lib/auth/session";
@@ -14,16 +16,21 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): 
 }
 
 const amount = (minor: number) => new Intl.NumberFormat("en-US").format(minor / 100);
+const usd = (nano: number) => (nano / 1e9).toFixed(2);
+const TABS = ["payments", "reports", "sites", "costs"] as const;
+type Tab = (typeof TABS)[number];
 
-export default async function AdminPage({ params }: PageProps<"/[lang]/admin">) {
+export default async function AdminPage({ params, searchParams }: PageProps<"/[lang]/admin">) {
   const { lang } = await params;
+  const rawTab = (await searchParams).tab;
+  const tab: Tab = TABS.includes(rawTab as Tab) ? (rawTab as Tab) : "payments";
   if (!isLocale(lang)) notFound();
   const user = await currentUser();
   if (!user) redirect(`/${lang}/sign-in?next=/${lang}/admin`);
   const t = getMessages(lang);
   // Not admin: same answer as a missing page.
   if (!isAdmin(user)) notFound();
-  const pending = await services().billing.store().pendingForAdmin();
+  const svc = services();
   const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
 
   return (
@@ -31,6 +38,29 @@ export default async function AdminPage({ params }: PageProps<"/[lang]/admin">) 
       <BuilderHeader locale={lang} t={t} user={user} />
       <main id="main" className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8">
         <h1 className="text-3xl font-bold">{t.admin.title}</h1>
+        <nav aria-label={t.admin.title} className="flex flex-wrap gap-1 rounded-xl border border-line bg-white p-1">
+          {TABS.map((x) => (
+            <Link
+              key={x}
+              href={`/${lang}/admin?tab=${x}`}
+              aria-current={x === tab ? "page" : undefined}
+              className="inline-flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-lg px-3 font-medium text-ink-muted aria-[current=page]:bg-teal aria-[current=page]:text-white"
+            >
+              {t.admin.tabs[x]}
+            </Link>
+          ))}
+        </nav>
+        {tab === "payments" && <Payments />}
+        {tab === "reports" && <Reports />}
+        {tab === "sites" && <Sites />}
+        {tab === "costs" && <Costs />}
+      </main>
+    </>
+  );
+
+  async function Payments() {
+    const pending = await svc.billing.store().pendingForAdmin();
+    return (
         <section aria-labelledby="pay-title" className="flex flex-col gap-3">
           <h2 id="pay-title" className="text-2xl font-bold">{t.admin.paymentsTitle}</h2>
           <p className="text-ink-muted">{t.admin.checkHint}</p>
@@ -58,7 +88,106 @@ export default async function AdminPage({ params }: PageProps<"/[lang]/admin">) 
             </ul>
           )}
         </section>
-      </main>
-    </>
-  );
+    );
+  }
+
+  async function Reports() {
+    const groups = (await svc.moderation?.reports.openBySite(50)) ?? [];
+    return (
+      <section aria-labelledby="rep-title" className="flex flex-col gap-3">
+        <h2 id="rep-title" className="text-2xl font-bold">{t.admin.reportsTitle}</h2>
+        {groups.length === 0 ? (
+          <p className="text-ink-muted">{t.admin.reportsEmpty}</p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {groups.map((g) => (
+              <li key={g.siteId} className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-mono font-semibold">{g.slug}</p>
+                  <span className="rounded-full bg-clay-soft px-3 py-1 text-sm font-semibold text-destructive">{format(t.admin.reportCount, { n: g.reports.length })}</span>
+                </div>
+                {g.url && (
+                  <a href={g.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center break-all font-medium text-teal underline underline-offset-4">{t.admin.openSite}</a>
+                )}
+                <ul className="flex flex-col gap-2">
+                  {g.reports.slice(0, 10).map((r) => (
+                    <li key={r.id} className="rounded-lg bg-sand p-3">
+                      <p className="font-medium">{t.safety.reasons[r.reason]}</p>
+                      {r.details && <p className="whitespace-pre-wrap break-words">{r.details}</p>}
+                      <p className="text-sm text-ink-muted">{dateFmt.format(r.createdAt)}{r.contact ? ` · ${r.contact}` : ""}</p>
+                    </li>
+                  ))}
+                </ul>
+                <ModerateForm t={t.admin} siteId={g.siteId} lang={lang} ops={g.siteStatus === "taken_down" ? ["dismiss"] : ["take_down", "dismiss"]} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  }
+
+  async function Sites() {
+    const list = (await svc.moderation?.sites.recent(50)) ?? [];
+    return (
+      <section aria-labelledby="sites-title" className="flex flex-col gap-3">
+        <h2 id="sites-title" className="text-2xl font-bold">{t.admin.sitesTitle}</h2>
+        {list.length === 0 ? (
+          <p className="text-ink-muted">{t.admin.sitesEmpty}</p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {list.map((site) => (
+              <li key={site.id} className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-mono font-semibold">{site.slug}</p>
+                  <span className={`rounded-full px-3 py-1 text-sm font-semibold ${site.status === "published" ? "bg-teal-soft text-teal" : site.status === "taken_down" ? "bg-clay-soft text-destructive" : "bg-sand text-ink"}`}>{t.admin.siteStatus[site.status]}</span>
+                </div>
+                {site.url && site.status === "published" && (
+                  <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center font-medium text-teal underline underline-offset-4">{t.admin.openSite}</a>
+                )}
+                {site.takenDownReason && <p className="text-ink-muted">{site.takenDownReason}</p>}
+                {site.status !== "pending" && <ModerateForm t={t.admin} siteId={site.id} lang={lang} ops={site.status === "taken_down" ? ["restore"] : ["take_down"]} />}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  }
+
+  async function Costs() {
+    const since = new Date(Date.now() - 30 * 86_400_000);
+    const s = await svc.usageReport.summary(since);
+    const table = (title: string, rows: { key: string; costNanoUsd: number; requests: number }[]) => (
+      <div className="flex flex-col gap-2">
+        <h3 className="text-lg font-semibold">{title}</h3>
+        <table className="w-full text-start">
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.key} className="border-b border-line">
+                <th scope="row" className="py-2 pe-3 text-start font-mono font-normal break-all">{r.key}</th>
+                <td className="py-2 pe-3 text-end">{r.requests}</td>
+                <td className="py-2 text-end font-semibold">${usd(r.costNanoUsd)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+    return (
+      <section aria-labelledby="costs-title" className="flex flex-col gap-4">
+        <h2 id="costs-title" className="text-2xl font-bold">{t.admin.costsTitle}</h2>
+        {s.requests === 0 ? (
+          <p className="text-ink-muted">{t.admin.costEmpty}</p>
+        ) : (
+          <>
+            <p className="text-lg font-semibold">{format(t.admin.costTotal, { usd: usd(s.costNanoUsd), n: s.requests })}</p>
+            {table(t.admin.costByPurpose, s.byPurpose)}
+            {table(t.admin.costByDay, s.byDay)}
+            {table(t.admin.costTopUsers, s.topUsers.map((u) => ({ ...u, key: u.key.slice(0, 12) })))}
+          </>
+        )}
+      </section>
+    );
+  }
 }

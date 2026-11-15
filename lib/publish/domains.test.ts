@@ -52,6 +52,30 @@ describe("custom domains", () => {
     expect(await domainStatus(deps, "bob", p.id)).toBeNull();
   });
 
+  it("releases a claim nobody verified within 7 days, but never a verified one", async () => {
+    const { deps, p } = await setup(true);
+    await publishSite(deps, { id: "alice", verified: true }, p.id, "aaa-site");
+    await connectDomain(deps, "alice", p.id, "selam.et");
+    const q = await deps.store.createProject("bob", { name: "B", locale: "en" });
+    await deps.store.addVersion("bob", { projectId: q.id, summary: "v1", files: { "src/site.ts": `name: { en: "B" }` } });
+    await publishSite(deps, { id: "bob", verified: true }, q.id, "bbb-site");
+    expect(await connectDomain(deps, "bob", q.id, "selam.et")).toEqual({ ok: false, error: "domain_in_use" });
+
+    const aliceSite = (await deps.sites.getByProject("alice", p.id))!;
+    aliceSite.customDomainClaimedAt = new Date(Date.now() - 8 * 86_400_000);
+    // A failed attempt by alice on another domain must not refresh her old claim.
+    expect(await connectDomain(deps, "alice", p.id, "localhost")).toEqual({ ok: false, error: "invalid_domain" });
+    expect(await connectDomain(deps, "bob", q.id, "selam.et")).toMatchObject({ ok: true, domain: "selam.et" });
+    expect(deps.publisher.removedDomains).toEqual(["selam.et"]);
+    expect((await deps.sites.getByProject("alice", p.id))?.customDomain).toBeNull();
+
+    // Verified claims stay, however old.
+    const bobSite = (await deps.sites.getByProject("bob", q.id))!;
+    bobSite.customDomainClaimedAt = new Date(Date.now() - 30 * 86_400_000);
+    bobSite.customDomainVerifiedAt = new Date(Date.now() - 29 * 86_400_000);
+    expect(await connectDomain(deps, "alice", p.id, "selam.et")).toEqual({ ok: false, error: "domain_in_use" });
+  });
+
   it("Vercel provider: reports TXT verification and routing records", async () => {
     const calls: string[] = [];
     const fake = (async (url: string, init?: RequestInit) => {

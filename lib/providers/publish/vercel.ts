@@ -93,6 +93,11 @@ export class VercelPublishProvider implements PublishProvider {
     return this.domainStatus(projectId, domain, info);
   }
 
+  async removeDomain(projectId: string, domain: string): Promise<void> {
+    const res = await this.call("DELETE", `/v9/projects/${encodeURIComponent(projectId)}/domains/${encodeURIComponent(domain)}`);
+    if (res.status >= 300 && res.status !== 404) throw new Error(`domain_remove_failed:${res.status}`);
+  }
+
   async checkDomain(projectId: string, domain: string): Promise<DomainStatus> {
     let info = (await this.call<ProjectDomain>("GET", `/v9/projects/${encodeURIComponent(projectId)}/domains/${encodeURIComponent(domain)}`)).data;
     if (info.name && !info.verified) {

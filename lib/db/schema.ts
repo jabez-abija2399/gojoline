@@ -144,7 +144,7 @@ export const aiUsage = pgTable(
     ok: boolean("ok").notNull(),
     createdAt: createdAt(),
   },
-  (t) => [index("ai_usage_user_idx").on(t.userId, t.createdAt), index("ai_usage_project_idx").on(t.projectId)],
+  (t) => [index("ai_usage_user_idx").on(t.userId, t.createdAt), index("ai_usage_project_idx").on(t.projectId), index("ai_usage_created_idx").on(t.createdAt)],
 );
 
 export const waitlist = pgTable("waitlist", {
@@ -177,6 +177,9 @@ export const sites = pgTable(
     publishedVersion: integer("published_version"),
     lastDeploymentId: text("last_deployment_id"),
     customDomain: text("custom_domain").unique(),
+    /** When the owner connected the domain, and when its DNS was first confirmed (null = never). */
+    customDomainClaimedAt: timestamp("custom_domain_claimed_at", { withTimezone: true }),
+    customDomainVerifiedAt: timestamp("custom_domain_verified_at", { withTimezone: true }),
     /** Public key the published site sends with form submissions (identifies the site, not a secret). */
     siteKey: text("site_key"),
     publishedAt: timestamp("published_at", { withTimezone: true }),
@@ -343,4 +346,25 @@ export const auditLog = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("audit_log_target_idx").on(t.targetType, t.targetId)],
+);
+
+/** Reports from the public (anyone can report a site; no account needed). */
+export const abuseReports = pgTable(
+  "abuse_reports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    siteId: uuid("site_id")
+      .notNull()
+      .references(() => sites.id, { onDelete: "cascade" }),
+    reason: text("reason", { enum: ["phishing", "scam", "adult", "illegal_goods", "violence_hate", "impersonation", "copyright", "other"] }).notNull(),
+    details: text("details"),
+    contact: text("contact"),
+    /** Salted hash of the reporter's network, to spot floods without storing IPs. */
+    reporterKey: text("reporter_key").notNull(),
+    status: text("status", { enum: ["open", "dismissed", "actioned"] }).notNull(),
+    reviewedBy: text("reviewed_by"),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("abuse_reports_status_idx").on(t.status, t.createdAt), index("abuse_reports_site_idx").on(t.siteId)],
 );

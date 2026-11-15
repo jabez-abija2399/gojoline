@@ -45,9 +45,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Manual payments: receipt upload, admin approval, audit log
 
 ## Slice 7: Trust and safety + admin
-- [ ] Content checks on prompts and pages before publish
-- [ ] Verification before publish, report-abuse link, takedown
-- [ ] Admin panel: payments, reports, sites, costs
+- [x] Content checks on prompts and pages before publish
+- [x] Verification before publish, report-abuse link, takedown
+- [x] Admin panel: payments, reports, sites, costs
 
 ## Slice 8: Beta readiness
 - [ ] All templates (10 industries) in EN + AM
@@ -62,7 +62,6 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 - Edit cost median $0.031 vs $0.03 target: re-run evals after the search_replace prompt change.
 
-- Custom domains: release a domain claim that stays unverified for more than 7 days (squatting), before plans with custom domains go on sale.
 
 ## Notes for deployment
 - Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
@@ -73,6 +72,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
+- Takedown policy and terms: the report page and takedown flow work, but the rules sites must follow (acceptable use) need the founder's and a lawyer's wording before launch (Slice 8 terms page).
 - Payment details: set `PAYMENT_TELEBIRR_NUMBER`, `PAYMENT_CBE_ACCOUNT`, `PAYMENT_ACCOUNT_NAME` (until set, the Plan page says payments are coming soon) and the admin list `ADMIN_EMAILS` / `ADMIN_PHONES`. Prices in `lib/billing/plans.ts` are placeholders for the founder to confirm.
 - Vercel plan: Hobby allows 10 sandboxes at a time (each owner editing uses one for up to 15 minutes). For more than ~10 owners editing at once, the team needs Vercel Pro. Plan changes are the founder's decision.
 - Sign-in code delivery: choose an SMS gateway for Ethiopian numbers (e.g. AfroMessage, Geez SMS) and/or an email service (e.g. Resend) and add its key. Until then production sign-in shows "not open yet" (`OtpSender` interface in `lib/providers/notify/otp.ts`; development prints codes in the server log).

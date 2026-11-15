@@ -26,6 +26,8 @@ export function PublishBar({ t, projectId, hasVersion, disabled }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const alertRef = useRef<HTMLParagraphElement>(null);
   const doneRef = useRef<HTMLHeadingElement>(null);
+  // Once the owner types an address, reloading the publish info must not replace it.
+  const editedRef = useRef(false);
 
   const load = useCallback(async () => {
     const data: Info | null = await fetch(`/api/projects/${projectId}/publish`)
@@ -33,7 +35,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled }: Props) {
       .catch(() => null);
     if (data) {
       setInfo(data);
-      setSlug(data.slug);
+      if (!editedRef.current) setSlug(data.slug);
     }
   }, [projectId]);
 
@@ -44,7 +46,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled }: Props) {
       .then((data: Info | null) => {
         if (!cancelled && data) {
           setInfo(data);
-          setSlug(data.slug);
+          if (!editedRef.current) setSlug(data.slug);
         }
       })
       .catch(() => undefined);
@@ -175,7 +177,10 @@ export function PublishBar({ t, projectId, hasVersion, disabled }: Props) {
                       ref={inputRef}
                       id="publish-slug"
                       value={slug}
-                      onChange={(e) => setSlug(e.target.value.toLowerCase())}
+                      onChange={(e) => {
+                        editedRef.current = true;
+                        setSlug(e.target.value.toLowerCase());
+                      }}
                       maxLength={40}
                       autoComplete="off"
                       autoCapitalize="none"

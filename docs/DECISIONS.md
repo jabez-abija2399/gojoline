@@ -88,3 +88,8 @@
 | 2026-11-15 | One sender may use at most a tenth of a site's monthly form answers | Nobody can switch off a site's forms by exhausting its allowance |
 | 2026-11-15 | Vercel functions pinned to `fra1` (`vercel.json`) | Neon is in Frankfurt; avoids ~90 ms per query across the Atlantic (performance review) |
 | 2026-11-15 | Content safety: keyword rules (EN + AM) on every owner request and every published page, then a Haiku-class AI check on publish; AI errors block publishing (fail closed) | Abuse protection is Phase 1; keywords are free, the AI check costs well under a cent per publish and verdicts for unchanged text are reused |
+| 2026-11-15 | Anyone can report a site at `/[lang]/report` (no account); reports are limited per network, stored with a salted network hash (no IPs) | Easy for the public, hard to flood, private |
+| 2026-11-15 | Takedown marks the site in the database first (forms stop at once), then replaces the live site with a bilingual notice; the owner can't republish until an admin restores it; every action is audited | Works with any hosting provider; nothing deleted, so a mistake can be undone |
+| 2026-11-15 | Admin panel tabs: payments, reports, sites, AI costs (30 days by use, day and user, from `ai_usage`) | One place for the founder's daily checks |
+| 2026-11-15 | Unverified custom-domain claims older than 7 days are released when someone else connects that domain (DB and hosting); rollbacks keep the original claim date | Stops squatting without a background job |
+| 2026-11-15 | Publish dialog keeps an address the owner typed when its info reloads | Typed address was being replaced after each save |

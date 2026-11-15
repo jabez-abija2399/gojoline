@@ -13,6 +13,10 @@ export class MemoryPublishProvider implements PublishProvider {
     this.domains.set(domain, false);
     return { status: "pending", records: [routingRecord(domain, domain.split(".").slice(-2).join("."))] };
   }
+  readonly removedDomains: string[] = [];
+  async removeDomain(_project: string, domain: string): Promise<void> {
+    this.removedDomains.push(domain);
+  }
   async checkDomain(_project: string, domain: string): Promise<DomainStatus> {
     return { status: this.domains.get(domain) ? "active" : "pending", records: [routingRecord(domain, domain.split(".").slice(-2).join("."))] };
   }
