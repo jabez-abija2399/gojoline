@@ -35,8 +35,11 @@ export function Header() {
         {uiText("skip", lang)}
       </a>
       <div className="container-site flex items-center justify-between gap-3 py-2">
-        <a href={href("/")} className="flex min-h-11 items-center font-heading text-xl font-bold">
-          {text(site.name)}
+        <a href={href("/")} className="flex min-h-11 min-w-0 items-center gap-2.5 font-heading text-xl font-bold">
+          <span aria-hidden="true" className="brand-mark">
+            {[...text(site.name).trim()][0]?.toUpperCase()}
+          </span>
+          <span className="truncate">{text(site.name)}</span>
         </a>
         <nav aria-label={uiText("pages", lang)} className="hidden items-center gap-1 md:flex">
           {links}
@@ -60,7 +63,7 @@ export function Header() {
             </summary>
             <nav
               aria-label={uiText("pages", lang)}
-              className="absolute right-0 mt-2 flex w-56 flex-col gap-1 rounded-site border border-line bg-surface p-2 shadow-lg"
+              className="absolute right-0 mt-2 flex max-h-[calc(100dvh-5rem)] w-56 flex-col gap-1 overflow-y-auto rounded-site border border-line bg-surface p-2 shadow-lg"
             >
               {links}
               {switcher}

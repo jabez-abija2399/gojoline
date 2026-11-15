@@ -25,7 +25,7 @@
     "en": {
       "src": "/showcase/clinic-en.webp",
       "width": 780,
-      "height": 6664,
+      "height": 7200,
       "top": {
         "src": "/showcase/clinic-en-top.webp",
         "width": 520,
@@ -35,7 +35,7 @@
     "am": {
       "src": "/showcase/clinic-am.webp",
       "width": 780,
-      "height": 6410,
+      "height": 7200,
       "top": {
         "src": "/showcase/clinic-am-top.webp",
         "width": 520,
@@ -47,7 +47,7 @@
     "en": {
       "src": "/showcase/events-en.webp",
       "width": 780,
-      "height": 5192,
+      "height": 7200,
       "top": {
         "src": "/showcase/events-en-top.webp",
         "width": 520,
@@ -57,7 +57,7 @@
     "am": {
       "src": "/showcase/events-am.webp",
       "width": 780,
-      "height": 5174,
+      "height": 7200,
       "top": {
         "src": "/showcase/events-am-top.webp",
         "width": 520,
@@ -69,7 +69,7 @@
     "en": {
       "src": "/showcase/hotel-en.webp",
       "width": 780,
-      "height": 5136,
+      "height": 7200,
       "top": {
         "src": "/showcase/hotel-en-top.webp",
         "width": 520,
@@ -79,7 +79,7 @@
     "am": {
       "src": "/showcase/hotel-am.webp",
       "width": 780,
-      "height": 5198,
+      "height": 7200,
       "top": {
         "src": "/showcase/hotel-am-top.webp",
         "width": 520,
@@ -91,7 +91,7 @@
     "en": {
       "src": "/showcase/mosque-en.webp",
       "width": 780,
-      "height": 6346,
+      "height": 7200,
       "top": {
         "src": "/showcase/mosque-en-top.webp",
         "width": 520,
@@ -101,7 +101,7 @@
     "am": {
       "src": "/showcase/mosque-am.webp",
       "width": 780,
-      "height": 6420,
+      "height": 7200,
       "top": {
         "src": "/showcase/mosque-am-top.webp",
         "width": 520,
@@ -113,7 +113,7 @@
     "en": {
       "src": "/showcase/ngo-en.webp",
       "width": 780,
-      "height": 3194,
+      "height": 6538,
       "top": {
         "src": "/showcase/ngo-en-top.webp",
         "width": 520,
@@ -123,7 +123,7 @@
     "am": {
       "src": "/showcase/ngo-am.webp",
       "width": 780,
-      "height": 3342,
+      "height": 6732,
       "top": {
         "src": "/showcase/ngo-am-top.webp",
         "width": 520,
@@ -135,7 +135,7 @@
     "en": {
       "src": "/showcase/personal-en.webp",
       "width": 780,
-      "height": 5290,
+      "height": 7200,
       "top": {
         "src": "/showcase/personal-en-top.webp",
         "width": 520,
@@ -145,7 +145,7 @@
     "am": {
       "src": "/showcase/personal-am.webp",
       "width": 780,
-      "height": 5332,
+      "height": 7200,
       "top": {
         "src": "/showcase/personal-am-top.webp",
         "width": 520,
@@ -157,7 +157,7 @@
     "en": {
       "src": "/showcase/real-estate-en.webp",
       "width": 780,
-      "height": 6670,
+      "height": 7200,
       "top": {
         "src": "/showcase/real-estate-en-top.webp",
         "width": 520,
@@ -167,7 +167,7 @@
     "am": {
       "src": "/showcase/real-estate-am.webp",
       "width": 780,
-      "height": 6818,
+      "height": 7200,
       "top": {
         "src": "/showcase/real-estate-am-top.webp",
         "width": 520,
@@ -179,7 +179,7 @@
     "en": {
       "src": "/showcase/school-en.webp",
       "width": 780,
-      "height": 6376,
+      "height": 7200,
       "top": {
         "src": "/showcase/school-en-top.webp",
         "width": 520,
@@ -189,7 +189,7 @@
     "am": {
       "src": "/showcase/school-am.webp",
       "width": 780,
-      "height": 6376,
+      "height": 7200,
       "top": {
         "src": "/showcase/school-am-top.webp",
         "width": 520,
@@ -201,7 +201,7 @@
     "en": {
       "src": "/showcase/shop-en.webp",
       "width": 780,
-      "height": 7038,
+      "height": 7200,
       "top": {
         "src": "/showcase/shop-en-top.webp",
         "width": 520,
@@ -211,7 +211,7 @@
     "am": {
       "src": "/showcase/shop-am.webp",
       "width": 780,
-      "height": 6898,
+      "height": 7200,
       "top": {
         "src": "/showcase/shop-am-top.webp",
         "width": 520,
@@ -223,7 +223,7 @@
     "en": {
       "src": "/showcase/tours-en.webp",
       "width": 780,
-      "height": 5502,
+      "height": 7200,
       "top": {
         "src": "/showcase/tours-en-top.webp",
         "width": 520,
@@ -233,7 +233,7 @@
     "am": {
       "src": "/showcase/tours-am.webp",
       "width": 780,
-      "height": 5708,
+      "height": 7200,
       "top": {
         "src": "/showcase/tours-am-top.webp",
         "width": 520,
@@ -245,7 +245,7 @@
     "en": {
       "src": "/showcase/worship-en.webp",
       "width": 780,
-      "height": 6688,
+      "height": 7200,
       "top": {
         "src": "/showcase/worship-en-top.webp",
         "width": 520,
@@ -255,7 +255,7 @@
     "am": {
       "src": "/showcase/worship-am.webp",
       "width": 780,
-      "height": 6832,
+      "height": 7200,
       "top": {
         "src": "/showcase/worship-am-top.webp",
         "width": 520,

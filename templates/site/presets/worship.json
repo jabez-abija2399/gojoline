@@ -87,7 +87,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "variant": "split",
           "eyebrow": {
             "en": "Everyone is welcome",
             "am": "ሁሉም እንኳን ደህና መጡ"
@@ -113,6 +113,13 @@
               "am": "ያግኙን"
             },
             "href": "/contact"
+          },
+          "image": {
+            "alt": {
+              "en": "A church with a cross",
+              "am": "መስቀል ያለው ቤተ ክርስቲያን"
+            },
+            "art": "church"
           }
         },
         {
@@ -182,13 +189,86 @@
           "body": {
             "en": "We are a community of families, students and elders who meet to worship God and care for one another.\n\nWhether you are new to Addis or have lived here all your life, you have a place with us.",
             "am": "እግዚአብሔርን ለማምለክ እና እርስ በርስ ለመተሳሰብ የምንሰበሰብ የቤተሰቦች፣ የተማሪዎች እና የአረጋውያን ኅብረት ነን።\n\nአዲስ አበባ አዲስ ቢሆኑም ሆነ ዕድሜዎን ሙሉ እዚህ ቢኖሩም፣ በመካከላችን ቦታ አለዎት።"
+          },
+          "image": {
+            "art": "people",
+            "alt": {
+              "en": "People of the congregation together",
+              "am": "የምእመናን አንድነት"
+            }
           }
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Visiting us",
+            "am": "ሲጎበኙን"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "I am new. Can I just come?",
+                "am": "አዲስ ነኝ። በቀጥታ መምጣት እችላለሁ?"
+              },
+              "answer": {
+                "en": "Yes, you are welcome. Come a little early and someone will greet you.",
+                "am": "አዎ፤ እንኳን ደህና መጡ። ትንሽ ቀደም ብለው ይምጡ፤ የሚቀበልዎ ሰው ይኖራል።"
+              }
+            },
+            {
+              "question": {
+                "en": "Is there something for children?",
+                "am": "ለልጆች የሚሆን ፕሮግራም አለ?"
+              },
+              "answer": {
+                "en": "Yes. See the programs page for days and times.",
+                "am": "አዎ። ቀንና ሰዓቱን በፕሮግራሞች ገጽ ይመልከቱ።"
+              }
+            },
+            {
+              "question": {
+                "en": "How can I talk to someone?",
+                "am": "ከአንድ ሰው ጋር እንዴት ልነጋገር?"
+              },
+              "answer": {
+                "en": "Write to us or call. We are glad to listen and to pray with you.",
+                "am": "ይጻፉልን ወይም ይደውሉ። ለመስማትና አብረን ለመጸለይ ደስተኞች ነን።"
+              }
+            }
+          ]
         },
         {
           "type": "contact",
           "heading": {
             "en": "Visit or call us",
             "am": "ይጎብኙን ወይም ይደውሉልን"
+          }
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "You are welcome here",
+            "am": "እንኳን ደህና መጡ"
+          },
+          "body": {
+            "en": "Join us this week, or write to us with any question.",
+            "am": "በዚህ ሳምንት ይቀላቀሉን፤ ወይም ማንኛውንም ጥያቄ ይጻፉልን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Contact us",
+              "am": "ያግኙን"
+            },
+            "href": "/contact"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Our programs",
+              "am": "ፕሮግራሞቻችን"
+            },
+            "href": "/programs"
           }
         }
       ]

@@ -2,17 +2,18 @@ import { contrast, readableOn, tint } from "./color";
 import type { Lang, Theme } from "./types";
 
 const fonts: Record<Theme["font"], { heading: string; body: string }> = {
-  // System stacks: nothing to download, fast on slow networks. Ge'ez uses the bundled Noto subset.
+  // Headings use one small bundled font (public/fonts); body text stays on system fonts, so
+  // there is little to download on slow networks. Ge'ez uses the bundled Noto subset.
   modern: {
-    heading: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
+    heading: '"Outfit", system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
   classic: {
-    heading: 'Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
+    heading: '"Fraunces", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
   friendly: {
-    heading: 'ui-rounded, "SF Pro Rounded", "Nunito", system-ui, "Noto Sans Ethiopic", sans-serif',
+    heading: '"Nunito", ui-rounded, "SF Pro Rounded", system-ui, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
 };
@@ -36,7 +37,9 @@ export function themeVariables(theme: Theme, lang: Lang): Record<string, string>
     "--site-line": tint(theme.text, 0.85),
     "--site-focus": focusColor(theme),
     "--site-radius": radii[theme.radius],
-    "--site-font-heading": amharicFirst + fonts[theme.font].heading,
+    // Amharic pages skip the Latin display font: a heading's spaces alone would make the
+    // browser download it, and its arrival would shift the page.
+    "--site-font-heading": lang === "am" ? amharicFirst + fonts[theme.font].body : fonts[theme.font].heading,
     "--site-font-body": amharicFirst + fonts[theme.font].body,
   };
 }
@@ -55,6 +58,9 @@ function mixToward(text: string, bg: string): string {
   }
   return text;
 }
+
+/** The bundled heading font file for a theme (for a preload on Latin-script pages). */
+export const headingFontFile: Record<Theme["font"], string> = { modern: "outfit-latin.woff2", classic: "fraunces-latin.woff2", friendly: "nunito-latin.woff2" };
 
 export function styleString(vars: Record<string, string>): string {
   return Object.entries(vars)

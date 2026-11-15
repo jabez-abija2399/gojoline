@@ -67,7 +67,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "variant": "split",
           "eyebrow": {
             "en": "A local NGO in Hawassa",
             "am": "በሀዋሳ የሚገኝ የአካባቢ በጎ አድራጎት ድርጅት"
@@ -93,6 +93,13 @@
               "am": "ፕሮግራሞቻችን"
             },
             "href": "/programs"
+          },
+          "image": {
+            "alt": {
+              "en": "Three people standing together",
+              "am": "አብረው የቆሙ ሦስት ሰዎች"
+            },
+            "art": "people"
           }
         },
         {
@@ -104,6 +111,79 @@
           "body": {
             "en": "Tesfa Hawassa was started by teachers and parents from Hawassa who saw girls missing school to fetch water.\n\nToday we work with schools, kebele leaders and families in villages around Lake Hawassa.",
             "am": "ተስፋ ሀዋሳ የተመሠረተው ሴት ልጆች ውሃ ለመቅዳት ሲሉ ከትምህርት ቤት ሲቀሩ ባዩ የሀዋሳ መምህራን እና ወላጆች ነው።\n\nዛሬ በሀዋሳ ሐይቅ ዙሪያ ባሉ መንደሮች ከትምህርት ቤቶች፣ ከቀበሌ አመራሮች እና ከቤተሰቦች ጋር እንሠራለን።"
+          },
+          "image": {
+            "art": "school",
+            "alt": {
+              "en": "An open book and a pencil",
+              "am": "የተከፈተ መጽሐፍ እና እርሳስ"
+            }
+          }
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "How you can help",
+            "am": "እንዴት መርዳት ይችላሉ"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "Do I need experience to volunteer?",
+                "am": "በጎ ፈቃደኛ ለመሆን ልምድ ያስፈልጋል?"
+              },
+              "answer": {
+                "en": "No. We show you what to do and you work beside our team.",
+                "am": "አያስፈልግም። ምን እንደሚሠሩ እናሳይዎታለን፤ ከቡድናችን ጋር አብረው ይሠራሉ።"
+              }
+            },
+            {
+              "question": {
+                "en": "How is my gift used?",
+                "am": "ልገሳዬ እንዴት ጥቅም ላይ ይውላል?"
+              },
+              "answer": {
+                "en": "It goes to our programs. Ask us and we will explain how gifts are used.",
+                "am": "ለፕሮግራሞቻችን ይውላል። ከጠየቁን ልገሳዎች እንዴት እንደሚውሉ እናስረዳዎታለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can my company or school take part?",
+                "am": "ድርጅቴ ወይም ትምህርት ቤቴ መሳተፍ ይችላል?"
+              },
+              "answer": {
+                "en": "Yes. Write to us and we will plan a day together.",
+                "am": "አዎ። ይጻፉልን፤ አንድ ቀን አብረን እናቅዳለን።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "A few hours of your time changes a life",
+            "am": "ጥቂት ሰዓታትዎ የአንድን ሰው ሕይወት ይቀይራሉ"
+          },
+          "body": {
+            "en": "Join as a volunteer or write to us about giving.",
+            "am": "በጎ ፈቃደኛ ሆነው ይቀላቀሉን፤ ወይም ስለ ልገሳ ይጻፉልን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Volunteer with us",
+              "am": "በጎ ፈቃደኛ ይሁኑ"
+            },
+            "href": "/volunteer"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Contact us",
+              "am": "ያግኙን"
+            },
+            "href": "/contact"
           }
         }
       ]

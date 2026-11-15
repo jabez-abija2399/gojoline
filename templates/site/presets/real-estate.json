@@ -94,6 +94,13 @@
               "am": "ቤት ለማየት ቀጠሮ ይያዙ"
             },
             "href": "/listings#viewing"
+          },
+          "image": {
+            "alt": {
+              "en": "Homes on a street",
+              "am": "በአንድ መንገድ ያሉ ቤቶች"
+            },
+            "art": "home"
           }
         },
         {
@@ -105,6 +112,13 @@
           "body": {
             "en": "We visit every property before we list it, so you only see homes that are really available.\n\nWe help tenants, buyers, owners and families abroad with everything from the first viewing to the signed contract.",
             "am": "ከማስተዋወቃችን በፊት እያንዳንዱን ቤት ሄደን እናያለን፤ ስለዚህ የሚያዩት በእርግጥ የሚገኙ ቤቶችን ብቻ ነው።\n\nተከራዮችን፣ ገዢዎችን፣ የቤት ባለቤቶችን እና በውጭ የሚኖሩ ቤተሰቦችን ከመጀመሪያው ጉብኝት እስከ ውል ፊርማ ድረስ እናግዛለን።"
+          },
+          "image": {
+            "art": "room",
+            "alt": {
+              "en": "A bright room in a home",
+              "am": "ብሩህ የቤት ክፍል"
+            }
           }
         },
         {
@@ -150,10 +164,76 @@
           ]
         },
         {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Buying and renting",
+            "am": "ስለ መግዛት እና መከራየት"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "Can I visit a home before deciding?",
+                "am": "ከመወሰኔ በፊት ቤቱን ማየት እችላለሁ?"
+              },
+              "answer": {
+                "en": "Yes. Ask for a viewing and we take you there ourselves.",
+                "am": "አዎ። ጉብኝት ይጠይቁ፤ እኛው ራሳችን እናስጎበኝዎታለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Do you help with the papers?",
+                "am": "በሰነዶቹ ትረዳላችሁ?"
+              },
+              "answer": {
+                "en": "Yes. Ask us and we will explain each step.",
+                "am": "አዎ። ይጠይቁን፤ እያንዳንዱን ደረጃ እናስረዳዎታለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "I want to sell or rent out my home. What now?",
+                "am": "ቤቴን መሸጥ ወይም ማከራየት እፈልጋለሁ። ምን ላድርግ?"
+              },
+              "answer": {
+                "en": "Ask for a valuation. We tell you a fair price and look for buyers or tenants.",
+                "am": "ግምት ይጠይቁ። ተገቢውን ዋጋ እንነግርዎታለን፤ ገዢ ወይም ተከራይም እንፈልጋለን።"
+              }
+            }
+          ]
+        },
+        {
           "type": "contact",
           "heading": {
             "en": "Call or visit our office",
             "am": "ይደውሉልን ወይም ቢሯችንን ይጎብኙ"
+          }
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Find the home that fits your life",
+            "am": "ለሕይወትዎ የሚስማማ ቤት ያግኙ"
+          },
+          "body": {
+            "en": "See what is available now, or tell us what you are looking for.",
+            "am": "አሁን ያሉትን ቤቶች ይመልከቱ፤ ወይም የሚፈልጉትን ይንገሩን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "See homes",
+              "am": "ቤቶችን ይመልከቱ"
+            },
+            "href": "/listings"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Talk to us",
+              "am": "ያነጋግሩን"
+            },
+            "href": "/contact"
           }
         }
       ]

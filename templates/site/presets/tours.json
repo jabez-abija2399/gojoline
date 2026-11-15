@@ -94,6 +94,13 @@
               "am": "ጉዞ ያስይዙ"
             },
             "href": "/book"
+          },
+          "image": {
+            "alt": {
+              "en": "Highland peaks with a path and the sun",
+              "am": "የደጋ ተራሮች፣ መንገድ እና ፀሐይ"
+            },
+            "art": "mountains"
           }
         },
         {
@@ -150,6 +157,46 @@
           ]
         },
         {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Before you travel",
+            "am": "ከመጓዝዎ በፊት"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "Are the tours private or in a group?",
+                "am": "ጉዞዎቹ የግል ናቸው ወይስ የቡድን?"
+              },
+              "answer": {
+                "en": "Both. Tell us how many you are and we will suggest the best way.",
+                "am": "ሁለቱም አሉ። ስንት እንደሆናችሁ ይንገሩን፤ የተሻለውን እናቀርባለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "What is included in the price?",
+                "am": "በዋጋው ውስጥ ምን ተካትቷል?"
+              },
+              "answer": {
+                "en": "Each tour lists what is included. Ask us if anything is unclear.",
+                "am": "እያንዳንዱ ጉዞ የተካተተውን ይዘረዝራል። ግልጽ ያልሆነ ነገር ካለ ይጠይቁን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can you plan a trip just for me?",
+                "am": "ለእኔ ብቻ የተዘጋጀ ጉዞ ማቀድ ትችላላችሁ?"
+              },
+              "answer": {
+                "en": "Yes. Tell us your dates and what you want to see.",
+                "am": "አዎ። ቀናትዎን እና ማየት የሚፈልጉትን ይንገሩን።"
+              }
+            }
+          ]
+        },
+        {
           "type": "contact",
           "id": "contact",
           "heading": {
@@ -159,6 +206,32 @@
           "intro": {
             "en": "Call or message us on Telegram to plan your trip.",
             "am": "ጉዞዎን ለማቀድ ይደውሉ ወይም በቴሌግራም መልእክት ይላኩልን።"
+          }
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Ready to see Ethiopia?",
+            "am": "ኢትዮጵያን ለማየት ዝግጁ ነዎት?"
+          },
+          "body": {
+            "en": "Send us your dates. We reply with a plan and a price.",
+            "am": "ቀናትዎን ይላኩልን። ከዕቅድ እና ከዋጋ ጋር እንመልሳለን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book a tour",
+              "am": "ጉዞ ያስይዙ"
+            },
+            "href": "/book"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See all tours",
+              "am": "ሁሉንም ጉዞዎች ይመልከቱ"
+            },
+            "href": "/tours"
           }
         }
       ]

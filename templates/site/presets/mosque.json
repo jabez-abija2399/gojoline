@@ -67,7 +67,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "variant": "split",
           "eyebrow": {
             "en": "Assalamu alaikum",
             "am": "አሰላሙ ዐለይኩም"
@@ -93,6 +93,13 @@
               "am": "ያግኙን"
             },
             "href": "/contact"
+          },
+          "image": {
+            "alt": {
+              "en": "A mosque with a dome and a minaret",
+              "am": "ጉልላት እና ሚናራ ያለው መስጊድ"
+            },
+            "art": "mosque"
           }
         },
         {
@@ -104,6 +111,13 @@
           "body": {
             "en": "Our doors are open to everyone for the five daily prayers and Jumu'ah.\n\nBeyond prayer, we teach the Quran to children and adults and help neighbours who are going through hard times.",
             "am": "በሩ ለአምስቱ የዕለት ሶላቶች እና ለጁሙዓ ለሁሉም ክፍት ነው።\n\nከሶላት በተጨማሪ ለልጆችና ለአዋቂዎች ቁርኣን እናስተምራለን፤ በችግር ላይ ያሉ ጎረቤቶቻችንንም እንረዳለን።"
+          },
+          "image": {
+            "art": "people",
+            "alt": {
+              "en": "People of the community together",
+              "am": "የማኅበረሰቡ አባላት በአንድነት"
+            }
           }
         },
         {
@@ -160,11 +174,77 @@
           ]
         },
         {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Visiting us",
+            "am": "ሲጎበኙን"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "I am new here. Who can I ask?",
+                "am": "አዲስ ነኝ። ማንን ልጠይቅ?"
+              },
+              "answer": {
+                "en": "You are welcome. Ask anyone at the mosque or write to us and we will help you.",
+                "am": "እንኳን ደህና መጡ። በመስጂዱ ያለን ማንኛውንም ሰው ይጠይቁ ወይም ይጻፉልን፤ እንረዳዎታለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can children join the classes?",
+                "am": "ልጆች ትምህርቱን መከታተል ይችላሉ?"
+              },
+              "answer": {
+                "en": "Yes. Ask us about ages and times.",
+                "am": "አዎ። ስለ ዕድሜ እና ሰዓት ይጠይቁን።"
+              }
+            },
+            {
+              "question": {
+                "en": "How can I give?",
+                "am": "እንዴት መስጠት እችላለሁ?"
+              },
+              "answer": {
+                "en": "You can give at the mosque or ask us for the account details.",
+                "am": "በመስጂዱ መስጠት ወይም የሒሳብ ቁጥሩን ከእኛ መጠየቅ ይችላሉ።"
+              }
+            }
+          ]
+        },
+        {
           "type": "contact",
           "id": "contact",
           "heading": {
             "en": "Visit or call us",
             "am": "ይጎብኙን ወይም ይደውሉልን"
+          }
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Everyone is welcome",
+            "am": "ሁሉም እንኳን ደህና መጡ"
+          },
+          "body": {
+            "en": "Join us for prayer, learning and community.",
+            "am": "ለሶላት፣ ለትምህርት እና ለማኅበረሰባዊ አንድነት ይቀላቀሉን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Prayer times",
+              "am": "የሶላት ሰዓቶች"
+            },
+            "href": "/prayer-times"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Contact us",
+              "am": "ያግኙን"
+            },
+            "href": "/contact"
           }
         }
       ]

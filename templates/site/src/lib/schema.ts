@@ -22,11 +22,29 @@ const image = z
       .max(500)
       .refine((s) => /^(\/[\w\-/.]+|https:\/\/[^\s<>"]+)$/.test(s), "Image src must be /path or https URL")
       .optional(),
+    art: z.enum(["coffee", "food", "hotel", "room", "clinic", "school", "fashion", "shopping", "church", "mosque", "event", "people", "home", "mountains", "portrait", "work"]).optional(),
     alt: text,
     width: z.number().int().positive().max(4000).optional(),
     height: z.number().int().positive().max(4000).optional(),
   })
   .strict();
+
+/** A profile link shown under a fixed label ("Facebook"): https, on that service's own domain, nothing else. */
+function socialUrl(hosts: string[]) {
+  return z
+    .string()
+    .max(300)
+    .refine((v) => {
+      if (!/^https:\/\/[^\s<>"]+$/.test(v)) return false;
+      try {
+        const u = new URL(v);
+        const host = u.hostname.toLowerCase().replace(/^(www|m|web)\./, "");
+        return u.protocol === "https:" && !u.username && !u.password && hosts.includes(host);
+      } catch {
+        return false;
+      }
+    }, `Must be an https link on ${hosts.join(" or ")}`);
+}
 
 const link = z.object({ label: text, href: safeHref }).strict();
 const price = z.object({ amountMinor: z.number().int().nonnegative().max(1_000_000_000), currency: z.enum(["ETB", "USD"]) }).strict();
@@ -67,6 +85,8 @@ const section = z.discriminatedUnion("type", [
   z.object({ type: z.literal("map"), id, heading: text, query: z.string().max(200).optional() }).strict(),
   z.object({ type: z.literal("timeline"), id, heading: text, intro: text.optional(), items: z.array(z.object({ period: text, title: text, place: text.optional(), description: text.optional() }).strict()).min(1).max(30) }).strict(),
   z.object({ type: z.literal("testimonials"), id, heading: text, items: z.array(z.object({ quote: text, name: z.string().min(1).max(80) }).strict()).min(1).max(12) }).strict(),
+  z.object({ type: z.literal("faq"), id, heading: text, intro: text.optional(), items: z.array(z.object({ question: text, answer: text }).strict()).min(1).max(20) }).strict(),
+  z.object({ type: z.literal("cta"), id, heading: text, body: text.optional(), primaryAction: link, secondaryAction: link.optional() }).strict(),
   formSectionSchema,
 ]);
 
@@ -86,7 +106,7 @@ export const siteSchema = z
         whatsapp: z.string().max(40).optional(),
         address: text.optional(),
         hours: z.array(z.object({ days: text, time: text }).strict()).max(14).optional(),
-        social: z.object({ facebook: z.url().optional(), instagram: z.url().optional(), tiktok: z.url().optional() }).strict().optional(),
+        social: z.object({ facebook: socialUrl(["facebook.com", "fb.com"]).optional(), instagram: socialUrl(["instagram.com"]).optional(), tiktok: socialUrl(["tiktok.com"]).optional() }).strict().optional(),
       })
       .strict(),
     pages: z

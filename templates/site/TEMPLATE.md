@@ -9,7 +9,7 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 | `src/site.json` | All content: name, languages, theme, business details, pages and their sections | Yes, this is the main file |
 | `src/site.ts` | Loads site.json with its type | No |
 | `src/lib/types.ts` | The content model (`Site`, `Page`, `Section`, `Text`, `Price`) | Read only |
-| `src/sections/*.tsx` | Section components (Hero, About, Menu, Services, Gallery, Contact, MapEmbed, Testimonials, Header, Footer) | No (read them to see what each field does) |
+| `src/sections/*.tsx` | Section components (Hero, About, Menu, Services, Gallery, Contact, MapEmbed, Testimonials, Timeline, Faq, Cta, Form, Header, Footer) | No (read them to see what each field does) |
 | `src/styles.css` | Tailwind setup, theme utilities, `.btn`, `.section`, `.container-site` | Rarely, for small style tweaks |
 | `public/images/` | Photos the owner uploaded | Reference them as `/images/<name>` |
 
@@ -20,7 +20,7 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 - Money: `price: { amountMinor: 15000, currency: "ETB" }` means 150 Birr. Integers only, never floats.
 - Page `path`: `"/"` for home, otherwise lowercase like `"/menu"`. Add `nav` to show a page in the navigation.
 - Links (`href`): `"#contact"`, `"/menu"`, `"tel:+251911234567"`, `"mailto:..."` or `https://...`. Nothing else is allowed.
-- Images: omit `src` to get a tasteful placeholder in theme colours. Always write a short, specific `alt` in each language.
+- Images: use the owner's photos when there are any. Without a photo, omit `src` and set `art` to the drawing that fits (see Drawings below); it is shown in the site's colours until a photo replaces it. Always write a short, specific `alt` in each language.
 - Never invent facts the owner did not give (prices, phone numbers, addresses, awards). Leave the field out instead; ask the owner if it matters.
 - Never use lorem ipsum. Write short, warm, concrete copy for the business.
 - The first section of the home page should be a `hero`; it becomes the page's only `<h1>`.
@@ -38,11 +38,38 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 | `map` | Location card that opens the maps app | `heading`, `query` (defaults to the English address) |
 | `testimonials` | Customer quotes (only real ones the owner gave) | `items[]` (`quote`, `name`) |
 | `timeline` | Personal sites (work, studies), "our story", milestones | `heading`, `intro`, `items[]` (`period`, `title`, `place`, `description`), newest first |
+| `faq` | Questions customers always ask (booking, delivery, payment, what to bring). 3 to 6, short answers, only facts the owner gave or plain how-to | `heading`, `intro`, `items[]` (`question`, `answer`) |
+| `cta` | One clear ask on a dark band, usually the last section of the home page | `heading`, `body`, `primaryAction`, `secondaryAction` |
 | `form` | Contact, booking, order or registration forms. Answers reach the owner's dashboard and Telegram | `id` (required, e.g. `"booking"`), `kind`, `heading`, `intro`, `fields[]`, `submitLabel`, `successMessage` |
 
 Form fields: `{ "name": "phone", "label": {...}, "type": "tel", "required": true }`. Types: text, email, tel, date, time, number, select (with `options`), textarea. Keep forms short (2 to 6 fields). Never ask for passwords, PINs, card numbers, bank details or ID numbers. Add a form when the owner wants bookings, orders, registrations or messages; link to it with `"#<id>"` (for example a hero button to `"#booking"`).
 
 Icons for `services`: coffee, utensils, bed, stethoscope, school, shopping-bag, church, calendar, heart, home, map, scissors, car, star, phone, check.
+
+## Drawings (`image.art`)
+
+When there is no photo yet, `art` picks a drawing in the site's colours instead of an empty box:
+
+| `art` | Shows | Use for |
+| --- | --- | --- |
+| `coffee` | A jebena and cups | Cafés, coffee |
+| `food` | A shared plate | Restaurants, catering |
+| `hotel` / `room` | A lodge by the water / a made bed | Hotels, guest houses, rentals |
+| `clinic` | A cross and a heartbeat (drawn in the accent colour; don't choose a red accent for a clinic) | Clinics, pharmacies, health |
+| `school` | A book, a pencil, a star | Schools, courses, tutoring |
+| `fashion` / `shopping` | A dress with a woven band / a bag and parcels | Clothes and tailoring / any shop |
+| `church` / `mosque` | The building (the church is a gabled hall with a cross; for an Orthodox church prefer the owner's photo) | Places of worship |
+| `event` | A stage with flags | Events, weddings, music |
+| `people` | Three people together | Teams, community, NGOs, families |
+| `home` | Houses on a street | Real estate, construction |
+| `mountains` | Highland peaks and a path | Tours, travel, outdoors |
+| `portrait` / `work` | A person in an arch / framed work | Personal sites, portfolios |
+
+Give the home hero and the `about` section a drawing that fits the business, and vary them (don't repeat one drawing down the page). Leave `art` out for a calm abstract shape. Once the owner uploads a photo, set `src` and remove `art`.
+
+## A good home page
+
+Hero (with `art` or a photo, and a button to the thing visitors want: menu, booking, call) → what you offer (`menu` or `services`) → `about` → `faq` when the owner gave enough to answer real questions → `contact` (and `map`) → `cta` as the last section. On phones a bar with Call and Telegram (or WhatsApp) appears by itself when `business.phone`, `telegram` or `whatsapp` is set, and the hero shows the first `business.hours` line, so fill those in whenever the owner gives them. Don't repeat the hours in the hero `eyebrow`; use it for the place or what makes the business special.
 
 ## Personal websites
 
@@ -50,7 +77,7 @@ For a person (portfolio, CV, freelancer, artist, coach, speaker): hero with thei
 
 ## Design and motion
 
-Sections already animate (gentle reveal on scroll, lift and tilt on cards, a soft glow behind the hero, cross-fades between pages) and respect "reduce motion". Choose the hero `variant` to fit: `split` for a business with a photo, `centered` for a strong statement or a person, `banner` for a big atmospheric photo. With 4 or more `services` the first becomes a large feature tile, so put the most important one first. In a `gallery` the first photo is shown large.
+Sections already animate (gentle reveal on scroll, lift and tilt on cards, a soft glow behind the hero, cross-fades between pages) and respect "reduce motion". Headings use a real display font chosen by `theme.font`: `classic` (Fraunces, a warm serif: cafés, hotels, shops, worship, events), `modern` (Outfit, clean: clinics, real estate, tours, personal), `friendly` (Nunito, rounded: schools, NGOs, children). Choose the hero `variant` to fit: `split` for a business with a photo, `centered` for a strong statement or a person, `banner` for a big atmospheric photo. With 4 or more `services` the first becomes a large feature tile, so put the most important one first. In a `gallery` of 5 or more the first photo is shown large.
 
 ## Theme
 

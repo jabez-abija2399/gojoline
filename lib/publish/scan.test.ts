@@ -1,3 +1,5 @@
+import { readdirSync, statSync } from "node:fs";
+import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { publishedSiteHeaders, scanBuiltSite } from "./scan";
 
@@ -73,5 +75,23 @@ describe("publishedSiteHeaders", () => {
     expect(csp).toContain("script-src 'self';");
     expect(csp).toContain("form-action 'self' https://api.gojoline.com");
     expect(csp).toContain("frame-ancestors 'none'");
+  });
+});
+
+describe("the site template's public folder", () => {
+  it("holds only files a published site may contain (anything else would block every publish)", () => {
+    const root = join(process.cwd(), "templates", "site", "public");
+    const files: string[] = [];
+    const walk = (dir: string) => {
+      for (const name of readdirSync(dir)) {
+        const full = join(dir, name);
+        if (statSync(full).isDirectory()) walk(full);
+        else files.push(relative(root, full).replace(/\\/g, "/"));
+      }
+    };
+    walk(root);
+    expect(files.length).toBeGreaterThan(0);
+    const issues = scanBuiltSite([f("index.html", good), ...files.map((p) => f(p, ""))]);
+    expect(issues.filter((i) => i.rule === "file-type")).toEqual([]);
   });
 });

@@ -7,9 +7,30 @@ export type Lang = "en" | "am";
 /** Text in one or both languages. Missing languages fall back to the site's first language. */
 export type Text = { en?: string; am?: string };
 
+/** Drawings shown where a photo will go, in the site's colours. */
+export type ArtName =
+  | "coffee"
+  | "food"
+  | "hotel"
+  | "room"
+  | "clinic"
+  | "school"
+  | "fashion"
+  | "shopping"
+  | "church"
+  | "mosque"
+  | "event"
+  | "people"
+  | "home"
+  | "mountains"
+  | "portrait"
+  | "work";
+
 export interface Image {
-  /** Path under /public (e.g. "/images/coffee.webp") or an https URL. Omit for a tasteful placeholder. */
+  /** Path under /public (e.g. "/images/coffee.webp") or an https URL. Omit to show a drawing instead. */
   src?: string;
+  /** Which drawing to show while there is no photo (ignored once `src` is set). */
+  art?: ArtName;
   alt: Text;
   width?: number;
   height?: number;
@@ -151,6 +172,25 @@ export interface TimelineSection {
   items: { period: Text; title: Text; place?: Text; description?: Text }[];
 }
 
+/** Questions customers always ask, each with a short answer. */
+export interface FaqSection {
+  type: "faq";
+  id?: string;
+  heading: Text;
+  intro?: Text;
+  items: { question: Text; answer: Text }[];
+}
+
+/** A band that asks for one thing: book, call, order, visit. Good near the end of a page. */
+export interface CtaSection {
+  type: "cta";
+  id?: string;
+  heading: Text;
+  body?: Text;
+  primaryAction: Link;
+  secondaryAction?: Link;
+}
+
 export type Section =
   | HeroSection
   | AboutSection
@@ -161,6 +201,8 @@ export type Section =
   | MapSection
   | TestimonialsSection
   | TimelineSection
+  | FaqSection
+  | CtaSection
   | FormSection;
 
 export interface Page {

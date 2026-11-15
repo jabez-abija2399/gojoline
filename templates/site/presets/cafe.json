@@ -69,8 +69,8 @@
           "type": "hero",
           "variant": "split",
           "eyebrow": {
-            "en": "Open every day from 7 am",
-            "am": "በየቀኑ ከጠዋቱ 1 ሰዓት ጀምሮ ክፍት"
+            "en": "Bole, near Edna Mall",
+            "am": "ቦሌ፣ ኤድና ሞል አጠገብ"
           },
           "heading": {
             "en": "Coffee roasted every morning",
@@ -84,7 +84,8 @@
             "alt": {
               "en": "Coffee being poured from a jebena",
               "am": "ከጀበና የሚቀዳ ቡና"
-            }
+            },
+            "art": "coffee"
           },
           "primaryAction": {
             "label": {
@@ -115,7 +116,8 @@
             "alt": {
               "en": "Inside the café",
               "am": "የካፌው ውስጥ"
-            }
+            },
+            "art": "food"
           }
         },
         {
@@ -204,6 +206,46 @@
           }
         },
         {
+          "type": "faq",
+          "id": "questions",
+          "heading": {
+            "en": "Good to know",
+            "am": "ማወቅ ያለብዎት"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "Do I need to book a table?",
+                "am": "ጠረጴዛ አስቀድሞ መያዝ ያስፈልጋል?"
+              },
+              "answer": {
+                "en": "No, you can walk in. For groups or the full coffee ceremony, book ahead so we can prepare.",
+                "am": "አያስፈልግም፤ በቀጥታ መምጣት ይችላሉ። ለቡድን ወይም ለሙሉ የቡና ሥነ ሥርዓት ግን እንድንዘጋጅ አስቀድመው ይያዙ።"
+              }
+            },
+            {
+              "question": {
+                "en": "Do you serve fasting food?",
+                "am": "የጾም ምግብ አላችሁ?"
+              },
+              "answer": {
+                "en": "Ask us which fasting dishes we have today; we are glad to help you choose.",
+                "am": "ዛሬ የትኞቹ የጾም ምግቦች እንዳሉ ይጠይቁን፤ ለመምረጥ በደስታ እንረዳዎታለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can I order to take away?",
+                "am": "ይዤ መሄድ እችላለሁ?"
+              },
+              "answer": {
+                "en": "Yes. Call us with your order and it will be ready when you arrive.",
+                "am": "አዎ። ደውለው ያዝዙ፤ ሲደርሱ ተዘጋጅቶ ይጠብቅዎታል።"
+              }
+            }
+          ]
+        },
+        {
           "type": "contact",
           "heading": {
             "en": "Visit or call us",
@@ -215,6 +257,32 @@
           "heading": {
             "en": "Where we are",
             "am": "የምንገኝበት"
+          }
+        },
+        {
+          "type": "cta",
+          "id": "next-step",
+          "heading": {
+            "en": "Come for the coffee, stay for the ceremony",
+            "am": "ለቡና ይምጡ፤ ለሥነ ሥርዓቱ ይቆዩ"
+          },
+          "body": {
+            "en": "Book a table or just walk in. We are open every day.",
+            "am": "ጠረጴዛ ያስይዙ ወይም በቀጥታ ይምጡ። በየቀኑ ክፍት ነን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book a table",
+              "am": "ጠረጴዛ ያስይዙ"
+            },
+            "href": "#booking"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See the menu",
+              "am": "ምናሌውን ይመልከቱ"
+            },
+            "href": "/menu"
           }
         }
       ]
