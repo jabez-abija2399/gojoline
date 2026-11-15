@@ -85,7 +85,8 @@ export class DbAdminStats implements AdminStats {
   }
 
   async users(search: string, limit: number): Promise<AdminUser[]> {
-    const q = search.trim().slice(0, 100);
+    // Plain substring match: % _ and \ typed by the admin are literal characters.
+    const q = search.trim().slice(0, 100).replace(/[\\%_]/g, (c) => `\\${c}`);
     const where = q ? or(ilike(user.email, `%${q}%`), ilike(user.phoneNumber, `%${q}%`), ilike(user.name, `%${q}%`)) : undefined;
     const rows = await this.db
       .select({
