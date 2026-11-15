@@ -120,6 +120,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
         {messages.map((m) => (
           <Bubble
             key={m.id}
+            animate={m.id.startsWith("local-")}
             role={m.role}
             label={m.role === "owner" ? t.you : t.assistant}
             text={m.text}
@@ -262,12 +263,14 @@ interface BubbleProps {
   tone?: "error";
   action?: { href: string; label: string };
   seeSite?: { label: string; onClick: () => void };
+  /** Only messages added in this visit ease in; saved history is simply there. */
+  animate?: boolean;
 }
 
-function Bubble({ role, label, text, note, tone, action, seeSite }: BubbleProps) {
+function Bubble({ role, label, text, note, tone, action, seeSite, animate }: BubbleProps) {
   const own = role === "owner";
   return (
-    <div className={`msg-in flex max-w-[90%] flex-col gap-1 ${own ? "items-end self-end" : "self-start"}`}>
+    <div className={`${animate ? "msg-in " : ""}flex max-w-[90%] flex-col gap-1 ${own ? "items-end self-end" : "self-start"}`}>
       <span className="flex items-center gap-2 text-sm font-semibold text-ink-muted">
         {!own && <Image src="/brand/mark.svg" alt="" width={20} height={20} className="size-5" />}
         {label}

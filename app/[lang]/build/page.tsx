@@ -73,7 +73,9 @@ export default async function ProjectsPage({
     </section>
   ) : null;
 
-  const startBox = builder ? <StartBox t={t.builder} locale={lang} action={createProject} heading={projects.length === 0 ? "h1" : "h2"} /> : null;
+  const b = t.builder;
+  const startText = { startTitle: b.startTitle, startAgainTitle: b.startAgainTitle, startBody: b.startBody, startPlaceholder: b.startPlaceholder, ideasLabel: b.ideasLabel, ideas: b.ideas, startLang: b.startLang, langEn: b.langEn, langAm: b.langAm, langBothShort: b.langBothShort, newSite: b.newSite };
+  const startBox = builder ? <StartBox t={startText} locale={lang} action={createProject} heading={projects.length === 0 ? "h1" : "h2"} /> : null;
 
   return (
     <>

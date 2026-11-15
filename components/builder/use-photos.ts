@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export interface Photo {
   name: string;
@@ -12,13 +12,14 @@ export type UploadResult = { ok: true; photo: Photo } | { ok: false; error: stri
 
 export const PHOTO_TYPES = "image/jpeg,image/png,image/webp,image/heic,image/heif,image/avif";
 
-/** The owner's photos for one site: loaded once, shared by the chat and the Photos tab. */
-export function usePhotos(projectId: string) {
+/** The owner's photos for one site, shared by the chat and the Photos tab; the list loads when first wanted. */
+export function usePhotos(projectId: string, wanted: boolean) {
   const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    if (!wanted) return;
     let cancelled = false;
     fetch(`/api/projects/${projectId}/assets`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("load"))))
@@ -27,7 +28,7 @@ export function usePhotos(projectId: string) {
     return () => {
       cancelled = true;
     };
-  }, [projectId, attempt]);
+  }, [projectId, attempt, wanted]);
 
   const upload = useCallback(
     async (file: File): Promise<UploadResult> => {
@@ -58,7 +59,7 @@ export function usePhotos(projectId: string) {
     setAttempt((a) => a + 1);
   }, []);
 
-  return { photos, loadError, upload, remove, retry };
+  return useMemo(() => ({ photos, loadError, upload, remove, retry }), [photos, loadError, upload, remove, retry]);
 }
 
 export type Photos = ReturnType<typeof usePhotos>;

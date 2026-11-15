@@ -217,9 +217,9 @@
     transform: none;
   }
 }
-@keyframes shimmer {
-  to {
-    background-position: -200% 0;
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.45;
   }
 }
 @keyframes slide-x {
@@ -241,12 +241,12 @@
   }
 }
 .msg-in {
-  animation: rise-in 0.25s ease-out both;
+  animation: rise-in 0.25s ease-out backwards;
 }
+/* Opacity only: a placeholder must not cost a repaint every frame on a slow phone. */
 .skeleton {
-  background: linear-gradient(90deg, var(--gojo-line) 25%, var(--gojo-sand) 50%, var(--gojo-line) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.6s linear infinite;
+  background: var(--gojo-line);
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
 }
 .progress-slide {
   animation: slide-x 1.4s ease-in-out infinite;
@@ -257,9 +257,6 @@
 @media (prefers-reduced-motion: reduce) {
   .confetti-piece {
     display: none;
-  }
-  .skeleton {
-    background: var(--gojo-line);
   }
 }
 /* A thin scroll bar for chip rows that scroll sideways on phones. */

@@ -71,6 +71,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
 - The new builder strings in Amharic (start box, ideas, suggestions, photos) need the same native-speaker review.
 - Amharic in the 12 templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.

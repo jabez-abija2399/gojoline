@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { History, RotateCcw } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
@@ -20,11 +20,16 @@ interface Props {
   onRestore: (number: number) => Promise<boolean>;
 }
 
-export function VersionsPanel({ t, locale, versions, current, disabled, onRestore }: Props) {
+const DATE_FORMATS = {
+  en: new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short" }),
+  am: new Intl.DateTimeFormat("am-ET", { dateStyle: "medium", timeStyle: "short" }),
+};
+
+export const VersionsPanel = memo(function VersionsPanel({ t, locale, versions, current, disabled, onRestore }: Props) {
   const [busy, setBusy] = useState<number | null>(null);
   const [failed, setFailed] = useState(false);
 
-  const dateFmt = new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
+  const dateFmt = DATE_FORMATS[locale];
 
   if (versions.length === 0) {
     return (
@@ -80,4 +85,4 @@ export function VersionsPanel({ t, locale, versions, current, disabled, onRestor
       </ol>
     </div>
   );
-}
+});

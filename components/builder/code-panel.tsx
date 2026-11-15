@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import type { Messages } from "@/lib/i18n";
 
 /** Read-only view of the site's files (for the curious; edits happen through chat). */
-export function CodePanel({ t, projectId, refreshKey }: { t: Messages["builder"]; projectId: string; refreshKey: number }) {
+export const CodePanel = memo(function CodePanel({ t, projectId, refreshKey }: { t: Messages["builder"]; projectId: string; refreshKey: number }) {
   const [files, setFiles] = useState<Record<string, string> | null>(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -61,4 +61,4 @@ export function CodePanel({ t, projectId, refreshKey }: { t: Messages["builder"]
       </pre>
     </div>
   );
-}
+});

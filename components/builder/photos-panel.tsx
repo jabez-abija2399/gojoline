@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { ImagePlus, Loader2, Trash2, Wand2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { PHOTO_TYPES, type Photos } from "./use-photos";
@@ -18,7 +18,7 @@ interface Props {
 }
 
 /** Add, see and remove the site's photos; one tap hands a photo to the chat. */
-export function PhotosPanel({ t, tp, projectId, photos, disabled, onUse }: Props) {
+export const PhotosPanel = memo(function PhotosPanel({ t, tp, projectId, photos, disabled, onUse }: Props) {
   const [progress, setProgress] = useState<{ n: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -149,4 +149,4 @@ export function PhotosPanel({ t, tp, projectId, photos, disabled, onUse }: Props
       </div>
     </div>
   );
-}
+});

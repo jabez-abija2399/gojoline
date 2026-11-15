@@ -143,7 +143,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
       <dialog
         ref={dialogRef}
         aria-labelledby="publish-title"
-        className="m-auto max-h-[90dvh] w-[min(94vw,30rem)] overflow-y-auto rounded-2xl border border-line bg-white p-0 text-ink shadow-2xl backdrop:bg-teal-deep/50 backdrop:backdrop-blur-sm open:animate-[pop-in_0.2s_ease-out]"
+        className="m-auto max-h-[90dvh] w-[min(94vw,30rem)] overflow-y-auto rounded-2xl border border-line bg-white p-0 text-ink shadow-2xl backdrop:bg-teal-deep/50 open:animate-[pop-in_0.2s_ease-out]"
         onCancel={(e) => {
           e.preventDefault();
           close();

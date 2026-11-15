@@ -67,7 +67,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const [reloadKey, setReloadKey] = useState(0);
   const [mobileTab, setMobileTab] = useState<Tab>(templateName ? "preview" : "chat");
   const [deskTab, setDeskTab] = useState<SideTab>("preview");
-  const photos = usePhotos(projectId);
+  // The photo list is fetched the first time the Photos view is opened.
+  const [photosWanted, setPhotosWanted] = useState(false);
+  const photos = usePhotos(projectId, photosWanted);
   // The message being written lives here so photos and suggestions can add to it.
   const [draft, setDraft] = useState("");
   const [focusChat, setFocusChat] = useState(0);
@@ -189,23 +191,33 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
     return () => clearTimeout(id);
   }, [initialMessages.length, initialVersions.length, send]);
 
+  const retryPreview = useCallback(() => {
+    setPreviewError(false);
+    setPreviewLoading(true);
+    setPreviewAttempt((a) => a + 1);
+  }, []);
   const reload = useCallback(() => setReloadKey((k) => k + 1), []);
   const showTab = (tab: Tab) => {
     setMobileTab(tab);
     if (tab === "preview") setPreviewFresh(false);
+    if (tab === "photos") setPhotosWanted(true);
   };
 
+  const showDesk = (tab: SideTab) => {
+    setDeskTab(tab);
+    if (tab === "photos") setPhotosWanted(true);
+  };
   const showSide = (tab: SideTab) => {
     showTab(tab);
     setDeskTab(tab);
   };
   /** Hands a photo to the chat: the owner only has to say where it goes. */
-  const handPhoto = (name: string) => {
+  const handPhoto = useCallback((name: string) => {
     const line = t.photoUseText.replace("{name}", name);
     setDraft((d) => (d.trim() ? `${d.trimEnd()}\n${line}` : line));
     setMobileTab("chat");
     setFocusChat((k) => k + 1);
-  };
+  }, [t.photoUseText]);
 
   const restore = useCallback(
     async (number: number): Promise<boolean> => {
@@ -253,11 +265,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       onReload={reload}
       loading={previewLoading || (working && !previewUrl)}
       error={previewError && !previewUrl}
-      onRetry={() => {
-        setPreviewError(false);
-        setPreviewLoading(true);
-        setPreviewAttempt((a) => a + 1);
-      }}
+      onRetry={retryPreview}
       reloadKey={reloadKey}
     />
   );
@@ -294,7 +302,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         </section>
         <div className="flex min-h-0 min-w-0 flex-1 flex-col max-lg:contents">
           <div className="hidden min-w-0 items-center gap-3 border-b border-line bg-white px-2 py-1.5 lg:flex">
-            <TabList tabs={SIDE_TABS} labels={tabLabels} icons={TAB_ICONS} active={deskTab} onChange={setDeskTab} label={t.viewsLabel} idPrefix="tab-d" className="flex shrink-0" />
+            <TabList tabs={SIDE_TABS} labels={tabLabels} icons={TAB_ICONS} active={deskTab} onChange={showDesk} label={t.viewsLabel} idPrefix="tab-d" className="flex shrink-0" />
             {deskTab === "preview" && <PreviewControls t={t} url={previewUrl} liveUrl={liveUrl} onReload={reload} device={{ value: device, onChange: setDevice }} className="flex-1 justify-end" />}
           </div>
           {SIDE_TABS.map((tab) => (

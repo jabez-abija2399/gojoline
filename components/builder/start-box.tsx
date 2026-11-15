@@ -8,8 +8,11 @@ import type { Locale } from "@/lib/i18n/config";
 import { LanguageChoice, type SiteLanguages } from "./language-choice";
 import { clearStartPrompt, saveStartPrompt } from "./start-prompt";
 
+export type StartText = Pick<Messages["builder"], "startTitle" | "startAgainTitle" | "startBody" | "startPlaceholder" | "ideasLabel" | "ideas" | "startLang" | "langEn" | "langAm" | "langBothShort" | "newSite">;
+
 interface Props {
-  t: Messages["builder"];
+  /** Only the words this box shows, so the page doesn't send the whole builder vocabulary. */
+  t: StartText;
   locale: Locale;
   action: (form: FormData) => void | Promise<void>;
   /** "h1" on an empty account, where this box is the page; "h2" under the list of sites. */

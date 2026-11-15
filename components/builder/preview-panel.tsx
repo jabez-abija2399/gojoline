@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { memo } from "react";
 import { ExternalLink, Globe, Lock, Monitor, RotateCw, Smartphone } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 
@@ -66,7 +67,7 @@ interface Props {
   device: Device;
 }
 
-export function PreviewPanel({ t, url, liveUrl, loading, working, error, onRetry, onReload, reloadKey, device }: Props) {
+export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loading, working, error, onRetry, onReload, reloadKey, device }: Props) {
   // A phone-shaped frame on big screens; on a phone the preview simply fills the screen.
   const shell =
     device === "phone"
@@ -77,7 +78,7 @@ export function PreviewPanel({ t, url, liveUrl, loading, working, error, onRetry
       <PreviewControls t={t} url={url} liveUrl={liveUrl} onReload={onReload} className="border-b border-line bg-white px-2 py-1 lg:hidden" />
       <div className="flex min-h-0 flex-1 items-stretch justify-center overflow-auto bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] p-3 lg:p-6">
         {url ? (
-          <div className={`relative flex min-h-[480px] flex-col overflow-hidden bg-white transition-[width,border-radius] duration-300 ${shell}`}>
+          <div className={`relative flex min-h-[480px] flex-col overflow-hidden bg-white ${shell}`}>
             <iframe key={`${url}-${reloadKey}`} src={url} title={t.previewTitle} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" className="min-h-0 w-full flex-1 bg-white" />
             {working && (
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex flex-col justify-between">
@@ -109,7 +110,7 @@ export function PreviewPanel({ t, url, liveUrl, loading, working, error, onRetry
       </div>
     </div>
   );
-}
+});
 
 /** The outline of a site (bar, headline, picture, cards) while the real one is on its way. */
 function SiteSkeleton() {
