@@ -19,7 +19,7 @@ export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: 
     { icon: ShieldCheck, ...f.safe },
   ];
   return (
-    <section aria-labelledby="features-title" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
+    <section aria-labelledby="features-title" className="below-fold mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
       <h2 id="features-title" className="mx-auto max-w-[20ch] text-center text-3xl display sm:text-5xl">
         {f.title}
       </h2>

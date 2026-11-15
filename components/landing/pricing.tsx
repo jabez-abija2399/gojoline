@@ -12,7 +12,7 @@ export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing
     { id: "business" as const, price: birr(prices.business), popular: false },
   ];
   return (
-    <section id="pricing" aria-labelledby="pricing-title" className="bg-white">
+    <section id="pricing" aria-labelledby="pricing-title" className="bg-white below-fold">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
         <h2 id="pricing-title" className="text-center text-3xl display sm:text-5xl">{t.title}</h2>
         <p className="mt-3 text-center text-lg text-ink-muted">{t.intro}</p>

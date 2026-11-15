@@ -26,7 +26,14 @@ function scatter(cols: number, rows: number) {
 const CELL = 28;
 
 export function Mosaic({ cols = 60, rows = 14, className = "fill-sun" }: { cols?: number; rows?: number; className?: string }) {
-  const cells = scatter(cols, rows);
+  // One path per shade (four shades) instead of one element per square: the same picture in
+  // a fraction of the markup.
+  const shades = [0.35, 0.55, 0.75, 1];
+  const paths = shades.map(() => "");
+  for (const c of scatter(cols, rows)) {
+    const i = Math.min(shades.length - 1, Math.floor(((c.o - 0.25) / 0.75) * shades.length));
+    paths[i] += `M${c.x} ${c.y}h1v1h-1z`;
+  }
   // Drawn at a fixed size and centred, never stretched: the squares stay square at every width
   // and the parent simply crops what doesn't fit.
   return (
@@ -38,9 +45,7 @@ export function Mosaic({ cols = 60, rows = 14, className = "fill-sun" }: { cols?
       height={rows * CELL}
       className={`pointer-events-none absolute top-0 left-1/2 max-w-none -translate-x-1/2 ${className}`}
     >
-      {cells.map((c) => (
-        <rect key={`${c.x}-${c.y}`} x={c.x} y={c.y} width="1" height="1" opacity={c.o.toFixed(2)} />
-      ))}
+      {paths.map((d, i) => d && <path key={i} d={d} opacity={shades[i]} />)}
     </svg>
   );
 }

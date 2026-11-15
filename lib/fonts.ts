@@ -8,7 +8,9 @@ export const outfit = Outfit({
   weight: "variable",
   display: "swap",
   variable: "--font-outfit",
-  preload: true,
+  // Not preloaded: the landing page's first screen doesn't use it, and elsewhere it swaps in
+  // without moving anything (measured).
+  preload: false,
 });
 
 export const inter = Inter({

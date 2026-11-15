@@ -9,7 +9,7 @@ import { StartFromLink } from "./start-from-link";
 export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
   const href = `/${locale}/sign-in?next=/${locale}/build`;
   return (
-    <section id="examples" aria-labelledby="examples-title" className="py-16 md:py-24">
+    <section id="examples" aria-labelledby="examples-title" className="py-16 md:py-24 below-fold">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 id="examples-title" className="mx-auto max-w-[18ch] text-center text-3xl display sm:text-5xl">
           {t.title}

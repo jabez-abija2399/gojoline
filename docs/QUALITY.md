@@ -31,7 +31,7 @@ Every slice meets these before it is ticked in `docs/ROADMAP.md`. They apply to 
 
 - Server Components by default; client components only for interactivity.
 - Images: modern formats (AVIF/WebP), responsive sizes, lazy below the fold, explicit width and height.
-- Fonts: self-hosted, subset, `font-display: swap`, preload only the heading font and the Ethiopic font.
+- Fonts: self-hosted, subset, `font-display: swap`, preload only the Ethiopic font.
 - Generated sites are static and prerendered; no client-side data fetching for content that can be built in.
 - AI speed: stream every response; time to first token shown to the user ≤ 2 s; first preview ≤ 60 s.
 - Lighthouse CI runs in GitHub Actions and fails the build below the budgets.

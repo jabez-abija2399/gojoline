@@ -155,7 +155,7 @@ export function LandingStage({ locale, sites, t, backdrop, promptHeading, prompt
                   </p>
                 </div>
                 <div key={`p-${site.id}`} className={`h-[340px] w-[250px] shrink-0 overflow-hidden rounded-t-[2rem] border-x-[8px] border-t-[8px] border-ink bg-white md:h-[440px] md:w-[280px] lg:h-[480px] lg:w-[300px] ${picked === null ? "" : "animate-[pop-in_0.35s_ease-out]"}`}>
-                  <Image src={site.shot.src} alt="" width={site.shot.width} height={site.shot.height} sizes="280px" priority={index === 0} className="h-auto w-full" />
+                  <Image src={site.shot.src} alt="" width={site.shot.width} height={site.shot.height} sizes="(min-width: 1024px) 284px, (min-width: 768px) 264px, 234px" priority={index === 0} className="h-auto w-full" />
                 </div>
               </div>
             </div>

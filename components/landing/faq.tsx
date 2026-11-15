@@ -4,7 +4,7 @@ import type { Messages } from "@/lib/i18n";
 /** Native <details>: opens and closes without any JavaScript. */
 export function Faq({ t }: { t: Messages["landing"]["faq"] }) {
   return (
-    <section aria-labelledby="faq-title" className="mx-auto max-w-3xl px-4 py-16 sm:px-6 md:py-20">
+    <section aria-labelledby="faq-title" className="below-fold mx-auto max-w-3xl px-4 py-16 sm:px-6 md:py-20">
       <h2 id="faq-title" className="text-center text-3xl display sm:text-5xl">{t.title}</h2>
       <div className="mt-8 flex flex-col gap-3">
         {t.items.map((item) => (
