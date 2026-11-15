@@ -81,12 +81,14 @@ test.describe("landing page", () => {
 
   test("Start from this: the picked real site opens after sign-in; typed words are never replaced", async ({ page }) => {
     await page.goto("/en");
-    // A chip is not pressed until picked, and it doesn't overwrite what the visitor wrote.
-    await expect(page.getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "false");
+    // The showcase opens on the café; picking another never overwrites what the visitor wrote.
+    await expect(page.getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "true");
     const box = page.getByRole("textbox", { name: "Describe your business" });
     await box.fill("My own words");
     await page.getByRole("button", { name: "Hotel", exact: true }).click();
     await expect(box).toHaveValue("My own words");
+    await expect(page.getByRole("button", { name: "Hotel", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("img", { name: /builder with the site it made for Tana Shore Hotel/ })).toBeVisible();
 
     await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
     await expect(page).toHaveURL(/\/en\/sign-in\?next=/);

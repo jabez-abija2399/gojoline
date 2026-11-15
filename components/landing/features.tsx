@@ -20,7 +20,7 @@ export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: 
   ];
   return (
     <section aria-labelledby="features-title" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
-      <h2 id="features-title" className="max-w-[20ch] text-3xl display sm:text-5xl">
+      <h2 id="features-title" className="mx-auto max-w-[20ch] text-center text-3xl display sm:text-5xl">
         {f.title}
       </h2>
       <div className="mt-10 grid gap-4 md:grid-cols-6">
@@ -59,10 +59,6 @@ export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: 
           </span>
           <h3 className="text-2xl font-bold">{f.forms.title}</h3>
           <p className="text-ink-muted">{f.forms.body}</p>
-          <p aria-hidden="true" className="mt-2 w-fit max-w-full rounded-2xl rounded-tl-sm bg-ink px-4 py-3 text-white shadow-md">
-            <strong className="block">{t.telegram.title}</strong>
-            {t.telegram.body}
-          </p>
         </div>
         {small.map(({ icon: Icon, title, body }, i) => (
           <div key={title} className={`${card} ${i === 0 ? "md:col-span-3" : "md:col-span-2"}`}>

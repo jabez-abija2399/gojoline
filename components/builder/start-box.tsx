@@ -96,7 +96,7 @@ export function StartBox({ t, locale, action, heading: Heading, autoStart }: Pro
           <Sparkles aria-hidden="true" className="size-4 text-faint" />
           {t.ideasLabel}
         </p>
-        <ul aria-labelledby="ideas-label" className="chips-scroll -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+        <ul aria-labelledby="ideas-label" className="chips-scroll -mx-4 flex gap-2 overflow-x-auto px-4 py-1.5 sm:mx-0 sm:flex-wrap sm:px-0">
           {IDEAS.map((id) => (
             <li key={id} className="shrink-0">
               <button

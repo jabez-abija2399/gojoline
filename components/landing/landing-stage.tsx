@@ -28,15 +28,18 @@ export interface StageText {
   langEn: string;
   langAm: string;
   langBoth: string;
-  you: string;
-  assistant: string;
   buildTitle: string;
   buildSteps: string[];
   ready: string;
   publish: string;
   chatPlaceholder: string;
-  private: string;
   showcaseLabel: string;
+  /** Read to screen readers when a chip is picked. */
+  picked: string;
+  /** Small cards beside the phone on wide screens. */
+  noteTitle: string;
+  noteBody: string;
+  saved: string;
 }
 
 interface Props {
@@ -71,15 +74,15 @@ export function LandingStage({ locale, sites, t, backdrop, promptHeading, prompt
   return (
     <>
       <div className="flex flex-col items-center gap-8 md:gap-10">
-        <div role="group" aria-label={t.chipsLabel} className="chips-scroll flex w-full items-center gap-2 overflow-x-auto px-4 sm:justify-center sm:px-0">
-          <span aria-hidden="true" className="shrink-0 pe-1 font-medium text-ink">
+        <div role="group" aria-label={t.chipsLabel} className="flex w-full flex-wrap items-center justify-center gap-2 px-4 sm:px-0">
+          <span aria-hidden="true" className="shrink-0 pe-1 font-medium text-ink max-sm:basis-full max-sm:text-center">
             {t.chipsLabel}
           </span>
           {sites.map((s, i) => (
             <button
               key={s.id}
               type="button"
-              aria-pressed={i === picked}
+              aria-pressed={i === index}
               onClick={() => {
                 setIndex(i);
                 setPicked(i);
@@ -95,7 +98,10 @@ export function LandingStage({ locale, sites, t, backdrop, promptHeading, prompt
 
         {/* The real builder, drawn with its own pieces: the chat on the left, a real site on the right. */}
         <div className="w-full px-4 sm:px-0">
-        <figure aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-line bg-sun/20 p-3 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
+        <p role="status" className="sr-only">
+          {picked === null ? "" : t.picked.replace("{name}", site.name)}
+        </p>
+        <figure role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-line bg-sun/20 p-4 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
           {backdrop}
           <div aria-hidden="true" className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgb(18_18_18/0.45)] md:rounded-b-none md:border-b-0">
             <div className="flex items-center gap-3 border-b border-line px-3 py-2.5 sm:px-4">
@@ -110,7 +116,7 @@ export function LandingStage({ locale, sites, t, backdrop, promptHeading, prompt
               </span>
               <span className="rounded-full bg-ink px-3 py-1 font-medium text-white">{t.publish}</span>
             </div>
-            <div className="grid md:grid-cols-[minmax(0,22rem)_1fr]">
+            <div className="grid md:grid-cols-[minmax(0,18rem)_1fr] lg:grid-cols-[minmax(0,22rem)_1fr]">
               <div key={`c-${site.id}`} className="flex flex-col gap-3 p-4 text-start md:border-e md:border-line">
                 <p className="ms-auto max-w-[92%] rounded-2xl rounded-br-sm bg-ink px-4 py-3 text-white">{site.prompt}</p>
                 <div className="rounded-2xl rounded-bl-sm border border-line px-4 py-3">
@@ -129,13 +135,26 @@ export function LandingStage({ locale, sites, t, backdrop, promptHeading, prompt
                 <p className="w-fit rounded-2xl rounded-bl-sm bg-sunken px-4 py-3 font-medium">{t.ready}</p>
                 <div className="mt-auto flex items-center gap-2 rounded-2xl border border-line p-1.5 max-md:hidden">
                   <span className="flex-1 truncate px-2.5 text-ink-muted">{t.chatPlaceholder}</span>
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-coral text-on-coral">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ink text-white">
                     <ArrowUp className="size-5" />
                   </span>
                 </div>
               </div>
-              <div className="flex justify-center bg-paper bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] px-4 pt-6 max-md:border-t max-md:border-line md:pt-8">
-                <div key={`p-${site.id}`} className={`h-[340px] w-[250px] overflow-hidden rounded-t-[2rem] border-x-[8px] border-t-[8px] border-ink bg-white md:h-[440px] md:w-[280px] ${picked === null ? "" : "animate-[pop-in_0.35s_ease-out]"}`}>
+              <div className="relative flex items-end justify-center gap-6 bg-paper bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] px-4 pt-6 max-md:border-t max-md:border-line md:pt-10 lg:min-h-[32rem]">
+                {/* Wide screens: what happens around the site, beside it. */}
+                <div className="mb-16 flex w-52 flex-col gap-3 text-start max-lg:hidden">
+                  <p className="rounded-2xl border border-line bg-white px-4 py-3 shadow-lg">
+                    <strong className="block">{t.noteTitle}</strong>
+                    <span className="text-ink-muted">{t.noteBody}</span>
+                  </p>
+                  <p className="flex w-fit items-center gap-2 rounded-full border border-line bg-white px-3 py-2 font-medium shadow-lg">
+                    <span className="flex size-5 items-center justify-center rounded-full bg-lagoon text-white">
+                      <Check className="size-3.5" strokeWidth={3} />
+                    </span>
+                    {t.saved}
+                  </p>
+                </div>
+                <div key={`p-${site.id}`} className={`h-[340px] w-[250px] shrink-0 overflow-hidden rounded-t-[2rem] border-x-[8px] border-t-[8px] border-ink bg-white md:h-[440px] md:w-[280px] lg:h-[480px] lg:w-[300px] ${picked === null ? "" : "animate-[pop-in_0.35s_ease-out]"}`}>
                   <Image src={site.shot.src} alt="" width={site.shot.width} height={site.shot.height} sizes="280px" priority={index === 0} className="h-auto w-full" />
                 </div>
               </div>

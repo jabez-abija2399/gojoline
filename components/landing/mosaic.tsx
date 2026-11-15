@@ -23,10 +23,21 @@ function scatter(cols: number, rows: number) {
   return cells;
 }
 
-export function Mosaic({ cols = 36, rows = 14, className = "fill-sun" }: { cols?: number; rows?: number; className?: string }) {
+const CELL = 28;
+
+export function Mosaic({ cols = 60, rows = 14, className = "fill-sun" }: { cols?: number; rows?: number; className?: string }) {
   const cells = scatter(cols, rows);
+  // Drawn at a fixed size and centred, never stretched: the squares stay square at every width
+  // and the parent simply crops what doesn't fit.
   return (
-    <svg aria-hidden="true" focusable="false" viewBox={`0 0 ${cols} ${rows}`} preserveAspectRatio="none" className={`pointer-events-none absolute inset-0 size-full ${className}`}>
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox={`0 0 ${cols} ${rows}`}
+      width={cols * CELL}
+      height={rows * CELL}
+      className={`pointer-events-none absolute top-0 left-1/2 max-w-none -translate-x-1/2 ${className}`}
+    >
       {cells.map((c) => (
         <rect key={`${c.x}-${c.y}`} x={c.x} y={c.y} width="1" height="1" opacity={c.o.toFixed(2)} />
       ))}

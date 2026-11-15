@@ -29,6 +29,7 @@ export const en = {
       chipsLabel: "Gojoline for",
       promptTitle: "What does your business need?",
       showcaseLabel: "The Gojoline builder with the site it made for {name}",
+      picked: "Showing {name}. An example description was added to the box below.",
       build: "Build my site",
     },
     nav: { label: "On this page", examples: "Examples", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free" },

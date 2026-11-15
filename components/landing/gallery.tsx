@@ -9,12 +9,12 @@ import { StartFromLink } from "./start-from-link";
 export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
   const href = `/${locale}/sign-in?next=/${locale}/build`;
   return (
-    <section id="examples" aria-labelledby="examples-title" className="scroll-mt-20 py-16 md:py-24">
+    <section id="examples" aria-labelledby="examples-title" className="py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 id="examples-title" className="max-w-[18ch] text-3xl display sm:text-5xl">
+        <h2 id="examples-title" className="mx-auto max-w-[18ch] text-center text-3xl display sm:text-5xl">
           {t.title}
         </h2>
-        <p className="mt-3 max-w-[60ch] text-lg text-ink-muted">{t.intro}</p>
+        <p className="mx-auto mt-3 max-w-[60ch] text-center text-lg text-ink-muted">{t.intro}</p>
         <ul aria-label={t.listLabel} className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
           {sites.map((s) => (
             <li key={s.id}>

@@ -55,19 +55,20 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
             langEn: b.langEn,
             langAm: b.langAm,
             langBoth: b.langBothShort,
-            you: b.you,
-            assistant: b.assistant,
             buildTitle: b.tlTitle,
             buildSteps: [b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady],
             ready: b.readyTitle,
             publish: b.publish,
             chatPlaceholder: b.chatPlaceholder,
-            private: b.previewPrivate,
             showcaseLabel: t.landing.hero.showcaseLabel,
+            picked: t.landing.hero.picked,
+            noteTitle: t.landing.telegram.title,
+            noteBody: t.landing.telegram.body,
+            saved: b.versionSaved.replace("{n}", "1"),
           }}
         />
         <Proof t={t.landing} />
-        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={services().telegram?.username ?? "gojoline_bot"} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} />
+        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={services().telegram?.username ?? "gojoline_bot"} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} languages={`${b.langEn} · ${b.langAm}`} />
         <Gallery t={t.landing.gallery} sites={sites} labels={b.templates} locale={lang} />
         <Features t={t.landing} sample={sample} />
         <Pricing t={t.landing.pricing} planNames={t.billing.plans} prices={{ starter: prices.starter_month, business: prices.business_month }} locale={lang} />
