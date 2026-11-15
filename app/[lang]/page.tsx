@@ -26,7 +26,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
     <>
       <SiteHeader locale={lang} t={t} />
       <main id="main" tabIndex={-1} className="focus:outline-none">
-        <Hero t={t.landing} locale={lang} sites={showcaseSites(lang)} install={t.pwa} />
+        <Hero t={t.landing} locale={lang} sites={showcaseSites(lang)} install={t.pwa} steps={[t.builder.tlUnderstand, t.builder.tlWriting, t.builder.tlChecking, t.builder.tlReady]} />
         <Steps t={t.landing} />
         <Features t={t.landing} />
         <Templates t={t.landing.templates} names={t.builder.templates} locale={lang} />
