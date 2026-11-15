@@ -121,3 +121,4 @@
 | 2026-11-15 | Prices and payment accounts live in `app_settings`, edited by admins (Settings tab), audited; payments keep the price they were sent at | No redeploy to change prices or bank details |
 | 2026-11-15 | New payments email the admins; decisions email the customer (real email only) and message them on Telegram when linked | Customers aren't left waiting a day |
 | 2026-11-15 | App served at `gojoline.afridea.et` (wildcard DNS already points at Vercel) until the founder buys the product domain | Founder's instruction |
+| 2026-11-15 | Agent effort "low" for changes to an existing site, "medium" for first builds | Measured: median edit $0.0321 → $0.0295 with 100% edit success (evals/RESULTS.md) |

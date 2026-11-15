@@ -61,7 +61,6 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 ## Follow-ups
 - Amharic in the 11 industry templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
-- Edit cost median $0.031 vs $0.03 target: re-run evals after the search_replace prompt change.
 
 
 ## Notes for deployment
@@ -80,8 +79,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - **Email sign-in and payment emails:** add `RESEND_API_KEY` to the Vercel project `gojoline` (Settings → Environment Variables; the same key as the `saysite` project works, `afridea.et` is already verified in Resend). Until then production sign-in says it's not open. Copying it from `saysite` automatically was refused by the session's permission rules.
 - **Google sign-in:** add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to `gojoline`, and in Google Cloud Console add the redirect URI `https://gojoline.afridea.et/api/auth/callback/google` to that OAuth client. The button appears once both keys are set.
 - **SMS sign-in:** needs a gateway for Ethiopian numbers (e.g. AfroMessage); until then phone users are asked to use email or Google.
-- **Vercel Sandbox snapshot storage is full (Hobby limit), so the builder and evals can't start sandboxes right now** (`402 ... usage limit exceeded for Snapshots Storage`). Cause: named sandboxes in `@vercel/sandbox` v4 were persistent by default, so each idle sandbox left a ~340 MB snapshot (47 automatic snapshots, ~16 GB, all from eval runs). Fixed in code (sandboxes are now non-persistent; snapshots expire after a day). To unblock now, delete the 47 snapshots with creation method "automatic" in the Vercel project's Sandbox snapshots (keep the 2 "manual" ones; `SANDBOX_SNAPSHOT_ID` is one of them), or wait for them to expire, or move to Vercel Pro. My attempt to delete them was stopped by the session's permission rules, so it is left for you.
-- Eval targets: first-try build (100%), after auto-fix (100%) and cost per first site (median $0.086) are met. Still open: cost per edit (last full run $0.031 vs $0.03; re-run blocked by the snapshot storage above) and the Amharic quality score (needs a native-speaker review of `evals/.runs/`).
+- Vercel Sandbox snapshot storage: sandboxes start again (checked 2026-11-15); the code no longer leaves snapshots behind. The 47 old automatic snapshots can still be deleted in the Vercel project to free space (keep the 2 manual ones).
+- Eval targets: build success (100%), cost per first site (median $0.089) and cost per edit (median $0.0295, 2026-11-15) are met. Still open: the Amharic quality score, which needs a native-speaker review of `evals/.runs/`.
 - Legal review: `/[lang]/privacy` and `/[lang]/terms` are drafts written from what the product does (`lib/i18n/messages/legal.ts`, EN + AM, marked as drafts on the page). A lawyer should review them, and the founder should add the legal entity name and a contact address.
 - Uptime monitor: once the app has a production URL, create a Sentry uptime monitor on `https://<app>/api/health` (60 s interval). The endpoint exists and returns 503 when the database is down.
 - Takedown policy and terms: the report page and takedown flow work, but the rules sites must follow (acceptable use) need the founder's and a lawyer's wording before launch (Slice 8 terms page).

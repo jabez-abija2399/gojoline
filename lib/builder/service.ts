@@ -115,6 +115,8 @@ export async function sendOwnerMessage(
       context: { userId: input.ownerId, projectId: project.id },
       onEvent: input.onEvent,
       signal: input.signal,
+      // Changing an existing site is usually small: less thinking costs less (measured in evals).
+      effort: latest ? "low" : "medium",
     });
 
     const sandbox = await opening;
