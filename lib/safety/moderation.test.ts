@@ -30,6 +30,7 @@ describe("takedown", () => {
 
     expect(await takeDownSite(deps, "admin", site.id, "phishing")).toBe("ok");
     expect((await sites.byId(site.id))?.status).toBe("taken_down");
+    expect((await sites.byId(site.id))?.takedownDeployedAt).toBeInstanceOf(Date);
     expect(publisher.published.get("bad-site")!.at(-1)!.data.toString()).toContain("This site is not available");
     expect(await reports.openBySite(10)).toEqual([]);
     // The owner can't republish over a takedown.
@@ -39,6 +40,10 @@ describe("takedown", () => {
     expect((await sites.byId(site.id))?.status).toBe("pending");
     expect(log).toEqual(["site.taken_down", "site.restored"]);
     expect(await takeDownSite(deps, "admin", "nope", "x")).toBe("not_found");
+    // A failed notice deploy leaves the flag unset, so admins are offered a retry.
+    const failing = { ...deps, publisher: { ...publisher, publish: async () => { throw new Error("down"); }, urlFor: publisher.urlFor.bind(publisher) } as unknown as typeof publisher };
+    expect(await takeDownSite(failing, "admin", site.id, "again")).toBe("deploy_failed");
+    expect((await sites.byId(site.id))?.takedownDeployedAt).toBeNull();
   });
 
   it("the notice page has no scripts and both languages", () => {

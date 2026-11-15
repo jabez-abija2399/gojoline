@@ -109,14 +109,18 @@ export class DbSiteStore implements SiteStore, SiteAdminStore {
   }
 
   async takeDown(siteId: string, reason: string): Promise<boolean> {
-    const rows = await this.db.update(sites).set({ status: "taken_down", takenDownReason: reason, updatedAt: new Date() }).where(eq(sites.id, siteId)).returning({ id: sites.id });
+    const rows = await this.db.update(sites).set({ status: "taken_down", takenDownReason: reason, takedownDeployedAt: null, updatedAt: new Date() }).where(eq(sites.id, siteId)).returning({ id: sites.id });
     return rows.length === 1;
+  }
+
+  async markTakedownDeployed(siteId: string): Promise<void> {
+    await this.db.update(sites).set({ takedownDeployedAt: new Date() }).where(and(eq(sites.id, siteId), eq(sites.status, "taken_down")));
   }
 
   async restore(siteId: string): Promise<boolean> {
     const rows = await this.db
       .update(sites)
-      .set({ status: "pending", takenDownReason: null, updatedAt: new Date() })
+      .set({ status: "pending", takenDownReason: null, takedownDeployedAt: null, updatedAt: new Date() })
       .where(and(eq(sites.id, siteId), eq(sites.status, "taken_down")))
       .returning({ id: sites.id });
     return rows.length === 1;

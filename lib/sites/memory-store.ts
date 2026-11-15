@@ -58,15 +58,20 @@ export class MemorySiteStore implements SiteStore, SiteAdminStore {
   async takeDown(siteId: string, reason: string) {
     const s = await this.byId(siteId);
     if (!s) return false;
-    Object.assign(s, { status: "taken_down", takenDownReason: reason });
+    Object.assign(s, { status: "taken_down", takenDownReason: reason, takedownDeployedAt: null });
     return true;
   }
   async restore(siteId: string) {
     const s = await this.byId(siteId);
     if (!s || s.status !== "taken_down") return false;
-    Object.assign(s, { status: "pending", takenDownReason: null });
+    Object.assign(s, { status: "pending", takenDownReason: null, takedownDeployedAt: null });
     return true;
   }
+  async markTakedownDeployed(siteId: string) {
+    const s = await this.byId(siteId);
+    if (s?.status === "taken_down") s.takedownDeployedAt = new Date();
+  }
+
   all() {
     return this.sites.values();
   }

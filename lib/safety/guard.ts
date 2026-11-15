@@ -125,7 +125,12 @@ export class ContentGuard implements PublishGuard {
     if (css.some((c) => /\p{L}{2,}/u.test(c))) reasons.add("other");
     if (reasons.size) return { ok: false as const, reasons: [...reasons] };
     if (!this.classifier) return { ok: true as const };
+    const ctx = { userId: input.ownerId, projectId: input.projectId };
     // The AI reads site.json's text once (rendered pages repeat the same words in two languages).
-    return this.classifier.classify(source || text, { userId: input.ownerId, projectId: input.projectId });
+    const verdict = await this.classifier.classify(source || text, ctx);
+    if (!verdict.ok || !this.classifier.classifyImages) return verdict;
+    // The owner's photos: words or scenes inside them never reach the text check.
+    const photos = input.files.filter((f) => /^images\/[\w.-]+\.(?:webp|png|jpe?g|avif)$/i.test(f.path)).map((f) => ({ name: f.path, data: f.data }));
+    return photos.length ? this.classifier.classifyImages(photos, ctx) : verdict;
   }
 }
