@@ -34,6 +34,8 @@ export class VercelSandboxProvider implements SandboxProvider {
     let fresh = false;
     try {
       sandbox = await Sandbox.get({ ...creds, name });
+      // A sandbox that stopped comes back from its base image, not from where it left off.
+      if (sandbox.status !== "running") fresh = true;
     } catch {
       fresh = true;
       sandbox = await Sandbox.create({
@@ -47,6 +49,10 @@ export class VercelSandboxProvider implements SandboxProvider {
           ? { source: { type: "snapshot" as const, snapshotId: this.config.snapshotId }, networkPolicy: "deny-all" as const }
           : { runtime: "node22" }),
         tags: { app: "gojoline", project: projectId.slice(0, 60) },
+        // Not persistent: project files are restored from Gojoline's own versions, and a saved
+        // filesystem per idle sandbox (~340 MB each) would fill the plan's snapshot storage.
+        persistent: false,
+        snapshotExpiration: 86_400_000,
       });
     }
 
