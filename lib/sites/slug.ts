@@ -8,8 +8,6 @@ const RESERVED = new Set([
   "www", "api", "app", "admin", "mail", "gojoline", "gojo", "support", "help", "login", "signin", "account",
   "billing", "pay", "payment", "secure", "bank", "telebirr", "cbe", "ethiotelecom", "safaricom", "status", "docs",
   "dashboard", "static", "assets", "cdn", "test", "root", "official", "verify", "update",
-  // Shown as the example address on the landing page: nobody else may publish there.
-  EXAMPLE_SLUG,
 ]);
 
 /** Banks, telecoms and payment brands people could be tricked by, matched inside words too. */
@@ -24,6 +22,8 @@ export function checkSlug(slug: string): SlugProblem | null {
   if (!SLUG_RE.test(slug) || slug.includes("--")) return "format";
   // Reserved words anywhere (as a dash-separated part, or inside longer words for brand names).
   const parts = slug.split("-");
+  // Shown as the example address on the landing page: nobody may publish there.
+  if (slug === EXAMPLE_SLUG) return "reserved";
   if (parts.some((p) => RESERVED.has(p)) || [...BRANDS].some((b) => slug.includes(b))) return "reserved";
   return null;
 }
