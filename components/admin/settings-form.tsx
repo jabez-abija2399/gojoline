@@ -10,7 +10,7 @@ const PRODUCTS = ["starter_month", "starter_year", "business_month", "business_y
 function Save({ t }: { t: Messages["admin"] }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-12 w-fit rounded-lg bg-teal px-5 font-medium text-white hover:bg-teal-deep aria-disabled:opacity-50">
+    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-12 w-fit rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
       {pending ? t.working : t.settingsSave}
     </button>
   );
@@ -45,7 +45,7 @@ export function SettingsForm({ t, tb, lang, values }: { t: Messages["admin"]; tb
         <p className="text-ink-muted">{t.settingsAccountsHint}</p>
       </fieldset>
       {state.status !== "idle" && (
-        <p ref={msgRef} tabIndex={-1} role={state.status === "ok" ? "status" : "alert"} className={state.status === "ok" ? "font-medium text-teal" : "text-destructive"}>
+        <p ref={msgRef} tabIndex={-1} role={state.status === "ok" ? "status" : "alert"} className={state.status === "ok" ? "font-medium text-ink" : "text-destructive"}>
           {state.status === "ok" ? t.done : state.status === "invalid" ? t.settingsInvalid : state.status === "forbidden" ? t.forbidden : t.failed}
         </p>
       )}

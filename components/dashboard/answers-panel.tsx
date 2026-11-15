@@ -63,9 +63,9 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2 sm:flex-row">
         {unread > 0 && (
-          <button type="button" onClick={markRead} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium hover:border-teal-mid">{t.answersMarkRead}</button>
+          <button type="button" onClick={markRead} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium hover:border-faint">{t.answersMarkRead}</button>
         )}
-        <a href={`/api/projects/${projectId}/submissions/export`} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-white px-4 font-medium hover:border-teal-mid">
+        <a href={`/api/projects/${projectId}/submissions/export`} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-white px-4 font-medium hover:border-faint">
           {t.answersExport}
         </a>
       </div>
@@ -74,7 +74,7 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
           <li key={r.id} className="rounded-xl border border-line bg-white p-4">
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-semibold">{forms[r.formKey]?.heading[locale] || forms[r.formKey]?.heading.en || forms[r.formKey]?.heading.am || r.formKey}</span>
-              {!r.readAt && <span className="rounded-full bg-clay-soft px-2 py-0.5 font-medium text-ink">{t.answersNew}</span>}
+              {!r.readAt && <span className="rounded-full bg-coral-soft px-2 py-0.5 font-medium text-ink">{t.answersNew}</span>}
               <span className="ms-auto text-ink-muted">{fmt.format(new Date(r.createdAt))}</span>
             </div>
             <dl className="mt-2 grid min-w-0 gap-x-4 gap-y-1 sm:grid-cols-[max-content_1fr]">
@@ -83,7 +83,7 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
                   <dt className="font-medium text-ink-muted">{forms[r.formKey]?.labels[k]?.[locale] || forms[r.formKey]?.labels[k]?.en || k}</dt>
                   <dd className="min-w-0 [overflow-wrap:anywhere]">
                     {/^[+\d][\d\s\-()]{5,20}$/.test(v) ? (
-                      <a className="inline-flex min-h-11 items-center text-teal underline underline-offset-4" href={`tel:${v.replace(/[^\d+]/g, "")}`}>{v}</a>
+                      <a className="inline-flex min-h-11 items-center text-ink underline underline-offset-4" href={`tel:${v.replace(/[^\d+]/g, "")}`}>{v}</a>
                     ) : (
                       v
                     )}

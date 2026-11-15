@@ -4,7 +4,8 @@ import localFont from "next/font/local";
 // Self-hosted at build time by next/font. Only the heading font is preloaded (docs/QUALITY.md).
 export const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["700"],
+  // Variable font (one file): the landing page sets headings at 600, the app at 700.
+  weight: "variable",
   display: "swap",
   variable: "--font-outfit",
   preload: true,
@@ -24,7 +25,9 @@ export const ethiopic = localFont({
   weight: "400 700",
   display: "swap",
   variable: "--font-ethiopic",
-  preload: false,
+  // Preloaded on every page: Amharic pages need it for their first paint (without it the
+  // headline re-wrapped when it arrived), and English pages use it for the language switch.
+  preload: true,
   declarations: [{ prop: "unicode-range", value: "U+1200-137F" }],
 });
 

@@ -21,9 +21,9 @@ export function takenDownPage(): string {
   const en = getMessages("en").safety;
   const am = getMessages("am").safety;
   const e = escapeHtml;
-  // Brand colours (ink on sand); no scripts; both languages, each with a way back to Gojoline.
+  // Brand colours (ink on paper); no scripts; both languages, each with a way back to Gojoline.
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${e(en.downTitle)}</title>
-<style>body{font-family:system-ui,"Noto Sans Ethiopic",sans-serif;max-width:36rem;margin:0 auto;padding:3rem 1rem;color:#1C1917;background:#FFF7F0;line-height:1.6}h1,h2{font-size:1.5rem;margin:0 0 .5rem}section{margin-bottom:2.5rem}a{color:#0E3B43;display:inline-block;min-height:44px;line-height:44px}</style></head>
+<style>body{font-family:system-ui,"Noto Sans Ethiopic",sans-serif;max-width:36rem;margin:0 auto;padding:3rem 1rem;color:#121212;background:#FBF9F6;line-height:1.6}h1,h2{font-size:1.5rem;margin:0 0 .5rem}section{margin-bottom:2.5rem}a{color:#C2370F;display:inline-block;min-height:44px;line-height:44px}</style></head>
 <body><main><section><h1>${e(en.downTitle)}</h1><p>${e(en.downBody)}</p><p>${e(en.downOwner)}</p><a href="${e(APP_URL)}/en/sign-in">${e(en.downLink)}</a></section>
 <section lang="am"><h2>${e(am.downTitle)}</h2><p>${e(am.downBody)}</p><p>${e(am.downOwner)}</p><a href="${e(APP_URL)}/am/sign-in">${e(am.downLink)}</a></section></main></body></html>`;
 }

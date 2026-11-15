@@ -78,23 +78,23 @@ export function TelegramPanel({ t, locale, bot }: { t: Messages["dashboard"]; lo
       {status === "error" ? (
         <>
           <p role="alert">{t.tgUnavailable}</p>
-          <button type="button" onClick={() => void load()} className="min-h-11 w-fit rounded-lg border border-line px-4 font-medium hover:border-teal-mid">{t.tgRetry}</button>
+          <button type="button" onClick={() => void load()} className="min-h-11 w-fit rounded-lg border border-line px-4 font-medium hover:border-faint">{t.tgRetry}</button>
         </>
       ) : status.linked ? (
         <>
-          <p role="status" className="font-medium text-teal">{format(t.tgConnected, { who: status.username ? ` (@${status.username})` : "" })}</p>
-          <button type="button" onClick={disconnect} aria-disabled={busy} className="min-h-11 w-fit rounded-lg border border-line px-4 font-medium hover:border-teal-mid aria-disabled:opacity-50">{busy ? t.tgDisconnecting : t.tgDisconnect}</button>
+          <p role="status" className="font-medium text-ink">{format(t.tgConnected, { who: status.username ? ` (@${status.username})` : "" })}</p>
+          <button type="button" onClick={disconnect} aria-disabled={busy} className="min-h-11 w-fit rounded-lg border border-line px-4 font-medium hover:border-faint aria-disabled:opacity-50">{busy ? t.tgDisconnecting : t.tgDisconnect}</button>
         </>
       ) : (
         <>
           <p className="text-ink-muted">{t.tgBody}</p>
-          <button type="button" onClick={connect} aria-disabled={busy} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg bg-teal px-4 font-medium text-white hover:bg-teal-deep aria-disabled:opacity-50">
+          <button type="button" onClick={connect} aria-disabled={busy} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
             <Send aria-hidden="true" className="size-4" /> {busy ? t.tgOpening : t.tgConnect}
           </button>
           {url && (
             <p role="status" className="text-ink-muted">
               {format(t.tgOpenHint, { bot })}{" "}
-              <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center font-medium text-teal underline underline-offset-4">
+              <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center font-medium text-ink underline underline-offset-4">
                 {t.tgOpenLink}
               </a>
             </p>

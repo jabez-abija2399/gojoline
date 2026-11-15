@@ -6,7 +6,7 @@ import { errorMessages } from "@/lib/i18n/messages/errors";
 export default function GlobalError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <html lang="en">
-      <body style={{ fontFamily: "system-ui, sans-serif", background: "#FFF7F0", color: "#1C1917", padding: 24 }}>
+      <body style={{ fontFamily: "system-ui, sans-serif", background: "#FBF9F6", color: "#121212", padding: 24 }}>
         <main>
           <h1>{errorMessages.en.serverTitle}</h1>
           <p>{errorMessages.en.serverBody}</p>

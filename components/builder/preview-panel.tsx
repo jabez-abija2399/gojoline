@@ -18,8 +18,8 @@ interface ControlsProps {
   className?: string;
 }
 
-const pill = "flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-sand px-3 text-sm";
-const iconButton = "flex size-11 shrink-0 items-center justify-center rounded-lg text-ink-muted transition-colors hover:bg-sand hover:text-teal aria-pressed:bg-teal-soft aria-pressed:text-teal disabled:opacity-40";
+const pill = "flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-paper px-3 text-sm";
+const iconButton = "flex size-11 shrink-0 items-center justify-center rounded-lg text-ink-muted transition-colors hover:bg-paper hover:text-ink aria-pressed:bg-ink aria-pressed:text-white disabled:opacity-40";
 
 /** The preview's "browser bar": screen size, where the site lives, reload, open. */
 export function PreviewControls({ t, url, liveUrl, onReload, device, className = "" }: ControlsProps) {
@@ -37,7 +37,7 @@ export function PreviewControls({ t, url, liveUrl, onReload, device, className =
         </div>
       )}
       {liveUrl ? (
-        <a href={liveUrl} target="_blank" rel="noopener noreferrer" className={`${pill} font-medium text-teal hover:bg-teal-soft ${device ? "max-xl:hidden" : ""}`}>
+        <a href={liveUrl} target="_blank" rel="noopener noreferrer" className={`${pill} font-medium text-ink hover:bg-sunken ${device ? "max-xl:hidden" : ""}`}>
           <Globe aria-hidden="true" className="size-4 shrink-0" />
           <span className="truncate underline underline-offset-4">{liveUrl.replace(/^https:\/\//, "")}</span>
         </a>
@@ -82,7 +82,7 @@ export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loadin
       ? "h-full w-[390px] max-w-full rounded-xl border border-line lg:my-auto lg:max-h-[844px] lg:rounded-[2.25rem] lg:border-[10px] lg:border-ink lg:shadow-2xl"
       : "h-full w-full rounded-xl border border-line shadow-lg";
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-sand">
+    <div className="flex min-h-0 flex-1 flex-col bg-paper">
       <PreviewControls t={t} url={url} liveUrl={liveUrl} onReload={onReload} className="border-b border-line bg-white px-2 py-1 lg:hidden" />
       <div className="flex min-h-0 flex-1 items-stretch justify-center overflow-auto bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] p-3 lg:p-6">
         {url ? (
@@ -90,10 +90,10 @@ export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loadin
             <iframe key={`${url}-${reloadKey}`} src={url} title={t.previewTitle} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" className="min-h-0 w-full flex-1 bg-white" />
             {working && (
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex flex-col justify-between">
-                <span className="block h-1 overflow-hidden bg-teal-soft">
-                  <span className="progress-slide block h-full w-1/3 rounded-full bg-teal" />
+                <span className="block h-1 overflow-hidden bg-sunken">
+                  <span className="progress-slide block h-full w-1/3 rounded-full bg-ink" />
                 </span>
-                <span className="mb-4 self-center rounded-full bg-teal px-4 py-2 text-sm font-medium text-white shadow-lg">{t.previewUpdating}</span>
+                <span className="mb-4 self-center rounded-full bg-ink px-4 py-2 text-sm font-medium text-white shadow-lg">{t.previewUpdating}</span>
               </div>
             )}
           </div>
@@ -105,12 +105,12 @@ export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loadin
         ) : error ? (
           <div role="alert" className="flex max-w-md flex-col items-center gap-3 self-center rounded-2xl border border-line bg-white p-6 text-center text-ink-muted">
             <p>{t.previewError}</p>
-            <button type="button" onClick={onRetry} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-teal-mid">
+            <button type="button" onClick={onRetry} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint">
               {t.retry}
             </button>
           </div>
         ) : (
-          <div className="flex w-full max-w-[390px] flex-col items-center justify-center gap-4 self-center rounded-[2rem] border-2 border-dashed border-teal-soft bg-white/70 px-6 py-16 text-center">
+          <div className="flex w-full max-w-[390px] flex-col items-center justify-center gap-4 self-center rounded-[2rem] border-2 border-dashed border-line bg-white/70 px-6 py-16 text-center">
             <Image src="/brand/mark.svg" alt="" width={56} height={56} className="size-14 opacity-80" />
             <p className="max-w-[28ch] text-ink-muted">{t.previewEmpty}</p>
           </div>

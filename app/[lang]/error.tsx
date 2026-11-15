@@ -14,10 +14,10 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
       <p className="text-ink-muted">{t.serverBody}</p>
       {error.digest && <p className="break-all text-ink-muted">{format(t.reference, { id: error.digest })}</p>}
       <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={reset} className="inline-flex min-h-11 items-center rounded-lg bg-teal px-5 font-medium text-white hover:bg-teal-deep">
+        <button type="button" onClick={reset} className="inline-flex min-h-11 items-center rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover">
           {t.retry}
         </button>
-        <a href={`/${isLocale(params.lang) ? params.lang : "en"}`} className="inline-flex min-h-11 items-center rounded-lg border border-line px-5 font-medium hover:border-teal-mid">
+        <a href={`/${isLocale(params.lang) ? params.lang : "en"}`} className="inline-flex min-h-11 items-center rounded-lg border border-line px-5 font-medium hover:border-faint">
           {t.home}
         </a>
       </div>

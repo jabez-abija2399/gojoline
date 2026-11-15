@@ -49,7 +49,7 @@ interface Props {
 const amharic = /[ሀ-፿]/;
 const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 const NEXT = ["contact", "colours", "prices", "language"] as const;
-const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-teal-soft bg-white px-4 font-medium text-teal transition-colors hover:border-teal-mid hover:bg-teal-soft";
+const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line bg-white px-4 font-medium text-ink transition-colors hover:border-faint hover:bg-sunken";
 
 export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors }: Props) {
   const [attach, setAttach] = useState<{ busy: boolean; note?: string; error?: string }>({ busy: false });
@@ -101,7 +101,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             <h2 className="text-2xl font-bold">{t.emptyTitle}</h2>
             <p className="text-ink-muted">{t.welcome}</p>
             <p id="chat-ideas" className="mt-2 flex items-center gap-2 text-sm font-medium text-ink-muted">
-              <Sparkles aria-hidden="true" className="size-4 text-teal-mid" />
+              <Sparkles aria-hidden="true" className="size-4 text-faint" />
               {t.ideasLabel}
             </p>
             <ul aria-labelledby="chat-ideas" className="flex flex-wrap justify-center gap-2">
@@ -131,18 +131,18 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
           />
         ))}
         {celebrate && !working && (
-          <div className="msg-in relative flex shrink-0 gap-3 overflow-hidden rounded-2xl border border-teal-soft bg-teal p-4 text-white">
+          <div className="msg-in relative flex shrink-0 gap-3 overflow-hidden rounded-2xl border border-line bg-ink p-4 text-white">
             <Confetti />
-            <PartyPopper aria-hidden="true" className="relative mt-0.5 size-6 shrink-0 text-clay-light" />
+            <PartyPopper aria-hidden="true" className="relative mt-0.5 size-6 shrink-0 text-coral" />
             <div className="relative flex flex-col gap-1">
               <p className="font-display text-lg font-bold">{t.readyTitle}</p>
-              <p className="text-teal-soft">{t.readyBody}</p>
+              <p className="text-sunken">{t.readyBody}</p>
             </div>
           </div>
         )}
         {working && timeline && <BuildTimeline t={t} timeline={timeline} streamText={streamText} />}
         {working && !timeline && (
-          <p role="status" className="flex items-center gap-2 font-medium text-teal">
+          <p role="status" className="flex items-center gap-2 font-medium text-ink">
             <Loader2 aria-hidden="true" className="size-4 animate-spin" />
             {t.working}
           </p>
@@ -151,7 +151,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
       {hasSite && !working && (
         <div className="flex flex-col gap-2 border-t border-line bg-white pt-2 lg:pt-3">
           <p id="chat-next" className="flex items-center gap-2 px-4 text-sm font-medium text-ink-muted max-lg:sr-only">
-            <Sparkles aria-hidden="true" className="size-4 text-teal-mid" />
+            <Sparkles aria-hidden="true" className="size-4 text-faint" />
             {t.nextLabel}
           </p>
           <ul aria-labelledby="chat-next" className="chips-scroll flex gap-2 overflow-x-auto px-4 pb-1">
@@ -178,7 +178,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
           value={languages.value}
           onChange={languages.onChange}
           name="site-languages"
-          className="border-t border-line bg-sand px-4 pt-3 pb-2"
+          className="border-t border-line bg-paper px-4 pt-3 pb-2"
         >
           <p className="text-sm text-ink-muted max-sm:hidden">{t.langHint}</p>
         </LanguageChoice>
@@ -193,10 +193,10 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
         <label htmlFor="chat-input" className="sr-only">
           {t.chatLabel}
         </label>
-        <div className="flex items-end gap-2 rounded-2xl border border-input bg-white p-1.5 shadow-sm has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-teal-mid">
+        <div className="flex items-end gap-2 rounded-2xl border border-input bg-white p-1.5 shadow-sm has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link">
           <label
             title={t.photoAttach}
-            className={`flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-xl text-teal transition-colors hover:bg-teal-soft has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal-mid ${attach.busy ? "opacity-60" : ""}`}
+            className={`flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-xl text-ink transition-colors hover:bg-sunken has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-link ${attach.busy ? "opacity-60" : ""}`}
           >
             {attach.busy ? <Loader2 aria-hidden="true" className="size-5 animate-spin" /> : <ImagePlus aria-hidden="true" className="size-5" />}
             <span className="sr-only">{t.photoAttach}</span>
@@ -231,13 +231,13 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
           <button
             type="submit"
             aria-disabled={working || !draft.trim()}
-            className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-white transition aria-disabled:opacity-50 not-aria-disabled:hover:scale-105 ${messages.at(-1)?.action ? "bg-teal hover:bg-teal-deep" : "bg-clay hover:bg-clay-hover"}`}
+            className={`flex size-11 shrink-0 items-center justify-center rounded-xl transition aria-disabled:opacity-50 not-aria-disabled:hover:scale-105 ${messages.at(-1)?.action ? "bg-ink text-white hover:bg-ink-hover" : "bg-coral text-on-coral hover:bg-coral-hover"}`}
           >
             {working ? <Loader2 aria-hidden="true" className="size-5 animate-spin" /> : <ArrowUp aria-hidden="true" className="size-5" />}
             <span className="sr-only">{t.send}</span>
           </button>
         </div>
-        <p role="status" className="px-2 text-sm text-teal empty:hidden">
+        <p role="status" className="px-2 text-sm text-ink empty:hidden">
           {attach.note}
         </p>
         {attach.error && (
@@ -278,24 +278,24 @@ function Bubble({ role, label, text, note, tone, action, seeSite, animate }: Bub
       <p
         lang={amharic.test(text) ? "am" : "en"}
         className={`whitespace-pre-wrap rounded-2xl px-4 py-3 ${
-          own ? "rounded-br-sm bg-teal text-white" : tone === "error" ? "rounded-bl-sm border border-destructive bg-clay-soft text-destructive" : "rounded-bl-sm bg-sand text-ink"
+          own ? "rounded-br-sm bg-ink text-white" : tone === "error" ? "rounded-bl-sm border border-destructive bg-coral-soft text-destructive" : "rounded-bl-sm bg-paper text-ink"
         }`}
       >
         {text}
       </p>
       {action && (
-        <Link href={action.href} className="inline-flex min-h-11 items-center rounded-lg bg-clay px-4 font-medium text-white hover:bg-clay-hover">
+        <Link href={action.href} className="inline-flex min-h-11 items-center rounded-lg bg-coral px-4 font-medium text-on-coral hover:bg-coral-hover">
           {action.label}
         </Link>
       )}
       {note && (
         <span className="flex items-center gap-1.5 text-sm text-ink-muted">
-          <CheckCircle2 aria-hidden="true" className="size-4 text-teal-mid" />
+          <CheckCircle2 aria-hidden="true" className="size-4 text-faint" />
           {note}
         </span>
       )}
       {seeSite && (
-        <button type="button" onClick={seeSite.onClick} className="mt-1 inline-flex min-h-11 items-center gap-2 rounded-lg border border-teal bg-white px-4 font-medium text-teal hover:bg-teal-soft lg:hidden">
+        <button type="button" onClick={seeSite.onClick} className="mt-1 inline-flex min-h-11 items-center gap-2 rounded-lg border border-ink bg-white px-4 font-medium text-ink hover:bg-sunken lg:hidden">
           <Eye aria-hidden="true" className="size-4" />
           {seeSite.label}
         </button>
@@ -305,14 +305,14 @@ function Bubble({ role, label, text, note, tone, action, seeSite, animate }: Bub
 }
 
 const PIECES = [
-  ["34px", "-22px", "220deg", "bg-clay-light"],
-  ["70px", "30px", "-160deg", "bg-teal-soft"],
-  ["108px", "-16px", "140deg", "bg-clay-bright"],
+  ["34px", "-22px", "220deg", "bg-coral"],
+  ["70px", "30px", "-160deg", "bg-sunken"],
+  ["108px", "-16px", "140deg", "bg-coral"],
   ["140px", "44px", "-200deg", "bg-white"],
-  ["176px", "-8px", "180deg", "bg-clay-light"],
-  ["206px", "36px", "-120deg", "bg-teal-mid"],
+  ["176px", "-8px", "180deg", "bg-coral"],
+  ["206px", "36px", "-120deg", "bg-faint"],
   ["238px", "4px", "260deg", "bg-white"],
-  ["90px", "58px", "90deg", "bg-clay-bright"],
+  ["90px", "58px", "90deg", "bg-coral"],
 ] as const;
 
 /** A small burst from the party icon: decoration only, hidden under reduced motion. */

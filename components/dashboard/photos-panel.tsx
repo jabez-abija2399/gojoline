@@ -64,7 +64,7 @@ export function PhotosPanel({ t, projectId }: { t: Messages["dashboard"]; projec
     <div className="flex flex-col gap-4">
       <p className="text-ink-muted">{t.photosHint}</p>
       <div className="flex flex-col gap-2">
-        <label className={`inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 rounded-lg bg-teal px-4 font-medium text-white hover:bg-teal-deep has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal-mid ${busy ? "opacity-60" : ""}`}>
+        <label className={`inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-link ${busy ? "opacity-60" : ""}`}>
           <ImagePlus aria-hidden="true" className="size-5" />
           {busy ? t.photoUploading : t.photoAdd}
           <input
@@ -79,7 +79,7 @@ export function PhotosPanel({ t, projectId }: { t: Messages["dashboard"]; projec
             }}
           />
         </label>
-        <p role="status" className="text-teal">{status}</p>
+        <p role="status" className="text-ink">{status}</p>
         {error && <p role="alert" className="text-destructive">{error}</p>}
       </div>
       {assets === null ? (
@@ -98,7 +98,7 @@ export function PhotosPanel({ t, projectId }: { t: Messages["dashboard"]; projec
                 {/* eslint-disable-next-line @next/next/no-img-element -- private, owner-only images from our API */}
                 <img src={`/api/projects/${projectId}/assets/${a.name}`} alt={label} width={a.width} height={a.height} loading="lazy" className="aspect-square w-full rounded-lg object-cover" />
                 <span className="text-ink-muted">{label}</span>
-                <button type="button" onClick={() => remove(a.name)} aria-label={t.photoRemoveNamed.replace("{n}", String(i + 1))} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg font-medium text-destructive hover:bg-clay-soft">
+                <button type="button" onClick={() => remove(a.name)} aria-label={t.photoRemoveNamed.replace("{n}", String(i + 1))} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg font-medium text-destructive hover:bg-coral-soft">
                   <Trash2 aria-hidden="true" className="size-4" /> {t.photoRemove}
                 </button>
               </li>

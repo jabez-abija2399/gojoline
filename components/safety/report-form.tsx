@@ -23,14 +23,14 @@ export function ReportForm({ t, site, home }: { t: Messages["safety"]; site: str
   if (state.kind === "sent")
     return (
       <div className="flex flex-col items-start gap-4">
-        <p ref={sentRef} tabIndex={-1} role="status" className="w-full rounded-lg bg-teal-soft px-4 py-3 text-lg font-medium text-teal">
+        <p ref={sentRef} tabIndex={-1} role="status" className="w-full rounded-lg border border-lagoon bg-white px-4 py-3 text-lg font-medium text-lagoon">
           {t.sent}
         </p>
         <div className="flex flex-wrap gap-3">
-          <button type="button" onClick={() => setState({ kind: "idle" })} className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-teal-mid">
+          <button type="button" onClick={() => setState({ kind: "idle" })} className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-faint">
             {t.reportAnother}
           </button>
-          <a href={home} className="inline-flex min-h-11 items-center rounded-lg px-4 font-medium text-teal underline underline-offset-4">
+          <a href={home} className="inline-flex min-h-11 items-center rounded-lg px-4 font-medium text-ink underline underline-offset-4">
             {t.backHome}
           </a>
         </div>
@@ -71,7 +71,7 @@ export function ReportForm({ t, site, home }: { t: Messages["safety"]; site: str
         <legend className="mb-1 font-medium">{t.reasonLabel}</legend>
         {REASONS.map((r) => (
           <label key={r} className="flex min-h-11 items-center gap-3">
-            <input type="radio" name="reason" value={r} className="size-5 shrink-0 accent-teal" />
+            <input type="radio" name="reason" value={r} className="size-5 shrink-0 accent-ink" />
             {t.reasons[r]}
           </label>
         ))}
@@ -85,8 +85,8 @@ export function ReportForm({ t, site, home }: { t: Messages["safety"]; site: str
         <label htmlFor="report-contact" className="font-medium">{t.contactLabel}</label>
         <input id="report-contact" name="contact" maxLength={200} autoComplete="email" className="min-h-11 rounded-lg border border-input px-3 text-base" />
       </div>
-      {code && code !== "site" && code !== "reason" && <p role="alert" className="rounded-lg bg-clay-soft px-4 py-3 text-destructive">{message}</p>}
-      <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-lg bg-clay px-5 font-medium text-white hover:bg-clay-hover aria-disabled:opacity-50">
+      {code && code !== "site" && code !== "reason" && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">{message}</p>}
+      <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-lg bg-coral px-5 font-medium text-on-coral hover:bg-coral-hover aria-disabled:opacity-50">
         {state.kind === "sending" ? t.sending : t.submit}
       </button>
     </form>

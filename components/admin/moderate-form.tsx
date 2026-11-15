@@ -24,7 +24,7 @@ function Buttons({ t, ops }: { t: Messages["admin"]; ops: Op[] }) {
             onClick={(e) => {
               if (pending || (op === "take_down" && !window.confirm(t.takeDownConfirm))) e.preventDefault();
             }}
-            className={`min-h-11 rounded-lg px-4 font-medium aria-disabled:opacity-50 ${op === "take_down" ? "border border-destructive text-destructive hover:bg-clay-soft" : "border border-line hover:border-teal-mid"}`}
+            className={`min-h-11 rounded-lg px-4 font-medium aria-disabled:opacity-50 ${op === "take_down" ? "border border-destructive text-destructive hover:bg-coral-soft" : "border border-line hover:border-faint"}`}
           >
             {pending && sent === value ? t.working : label[op]}
           </button>

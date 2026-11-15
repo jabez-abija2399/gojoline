@@ -1,22 +1,30 @@
-/* Gojoline brand tokens. Import once at the root of any Gojoline app or site. */
+/* Gojoline brand tokens. Import once at the root of any Gojoline app or site.
+   Palette "Paper and Coral" (2026-11): warm paper, ink, one coral action colour. */
 :root {
-  /* Core palette (Terracotta Earth) */
-  --gojo-clay: #C2410C;        /* main: buttons, links, "line", the globe */
-  --gojo-clay-hover: #9A3412;
-  --gojo-clay-bright: #F97316; /* accents on dark backgrounds */
-  --gojo-clay-light: #FDBA74;  /* "line" on dark backgrounds */
-  --gojo-clay-soft: #FDE7DA;   /* tinted surfaces, badges */
+  /* Surfaces */
+  --gojo-paper: #FBF9F6;       /* page background */
+  --gojo-sunken: #F6F2EC;      /* inputs, wells, raised/hover fills */
+  --gojo-panel: #FFFFFF;       /* cards and panels */
+  --gojo-line: #E9E4DC;        /* borders, dividers */
 
-  --gojo-teal: #0E3B43;        /* partner: door, dark sections, footer */
-  --gojo-teal-mid: #4F8A91;
-  --gojo-teal-soft: #CDE3E5;
-  --gojo-teal-deep: #082429;
+  /* Text */
+  --gojo-ink: #121212;         /* headings, body text, dark buttons and dark sections */
+  --gojo-ink-hover: #2B2926;   /* hover on ink buttons */
+  --gojo-ink-muted: #5F5A53;   /* secondary text */
+  --gojo-faint: #8A847B;       /* decorative only: icons, hover borders (not for reading) */
+  --gojo-link: #C2370F;        /* accent text, links, focus ring */
 
-  --gojo-ink: #1C1917;         /* headings and body text */
-  --gojo-ink-muted: #57534E;   /* secondary text */
-  --gojo-line: #E7E5E4;        /* borders, dividers */
-  --gojo-sand: #FFF7F0;        /* page background */
-  --gojo-white: #FFFFFF;       /* cards */
+  /* The one action colour. Text on it is always ink (white fails contrast). */
+  --gojo-coral: #FF5B35;
+  --gojo-coral-hover: #FF7350;
+  --gojo-coral-soft: #FFE9E2;  /* tinted surfaces, error backgrounds */
+  --gojo-on-coral: #121212;
+
+  /* Meaning */
+  --gojo-lagoon: #0E7C66;      /* live, success */
+  --gojo-warning: #A3530A;
+  --gojo-danger: #C81E3A;
+  --gojo-sun: #FFD23F;         /* highlight: fills only, never text */
 
   /* Typography */
   --gojo-font-display: "Outfit", system-ui, sans-serif;
@@ -27,4 +35,41 @@
   --gojo-radius-sm: 8px;
   --gojo-radius-md: 12px;
   --gojo-radius-lg: 20px;
+}
+
+/* Dark values of the same roles. Apply by setting data-gojo-theme="dark" on a container
+   (the admin area does); "system" follows the device. */
+[data-gojo-theme="dark"] {
+  color-scheme: dark;
+  --gojo-paper: #121110;
+  --gojo-sunken: #0C0B0A;
+  --gojo-panel: #181614;
+  --gojo-line: #36312B;
+  --gojo-ink: #FBF9F6;
+  --gojo-ink-hover: #E9E4DC;
+  --gojo-ink-muted: #A8A196;
+  --gojo-faint: #6E685F;
+  --gojo-link: #FF8A6B;
+  --gojo-coral-soft: #3A1E16;
+  --gojo-lagoon: #3DD6B0;
+  --gojo-warning: #FFB547;
+  --gojo-danger: #FF6B7F;
+}
+@media (prefers-color-scheme: dark) {
+  [data-gojo-theme="system"] {
+    color-scheme: dark;
+    --gojo-paper: #121110;
+    --gojo-sunken: #0C0B0A;
+    --gojo-panel: #181614;
+    --gojo-line: #36312B;
+    --gojo-ink: #FBF9F6;
+    --gojo-ink-hover: #E9E4DC;
+    --gojo-ink-muted: #A8A196;
+    --gojo-faint: #6E685F;
+    --gojo-link: #FF8A6B;
+    --gojo-coral-soft: #3A1E16;
+    --gojo-lagoon: #3DD6B0;
+    --gojo-warning: #FFB547;
+    --gojo-danger: #FF6B7F;
+  }
 }

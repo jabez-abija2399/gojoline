@@ -22,9 +22,9 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
   const label: Record<TimelineKey, string> = { understand: t.tlUnderstand, write: t.tlWriting, check: t.tlChecking, fix: t.tlFixing, ready: t.tlReady };
 
   return (
-    <div role="status" className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-teal-soft bg-white px-4 pt-4 pb-3 shadow-sm">
-      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 overflow-hidden bg-teal-soft">
-        <span className="progress-slide block h-full w-1/3 rounded-full bg-teal" />
+    <div role="status" className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-line bg-white px-4 pt-4 pb-3 shadow-sm">
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 overflow-hidden bg-sunken">
+        <span className="progress-slide block h-full w-1/3 rounded-full bg-ink" />
       </span>
       <div className="flex items-center justify-between gap-4">
         <p className="font-semibold">{t.tlTitle}</p>
@@ -33,7 +33,7 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
       <ol className="flex flex-col gap-2">
         {timeline.steps.map((s) => (
           <li key={s.key} className="flex items-center gap-3">
-            <span aria-hidden="true" className={`flex size-6 shrink-0 items-center justify-center rounded-full ${s.done ? "bg-teal text-white" : "bg-teal-soft text-teal"}`}>
+            <span aria-hidden="true" className={`flex size-6 shrink-0 items-center justify-center rounded-full ${s.done ? "bg-ink text-white" : "bg-sunken text-ink"}`}>
               {s.done ? <Check className="size-4" /> : <Loader2 className="size-4 animate-spin" />}
             </span>
             <span className={s.done ? "text-ink-muted" : "font-medium text-ink"}>

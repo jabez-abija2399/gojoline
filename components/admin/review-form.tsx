@@ -9,7 +9,7 @@ function Buttons({ t }: { t: Messages["admin"] }) {
   const { pending } = useFormStatus();
   return (
     <div className="flex gap-2">
-      <button name="decision" value="approve" aria-disabled={pending} className="min-h-11 flex-1 rounded-lg bg-teal px-4 font-medium text-white hover:bg-teal-deep aria-disabled:opacity-50 sm:flex-none">
+      <button name="decision" value="approve" aria-disabled={pending} className="min-h-11 flex-1 rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50 sm:flex-none">
         {pending ? t.working : t.approve}
       </button>
       <button
@@ -19,7 +19,7 @@ function Buttons({ t }: { t: Messages["admin"] }) {
         onClick={(e) => {
           if (pending || !window.confirm(t.rejectConfirm)) e.preventDefault();
         }}
-        className="min-h-11 flex-1 rounded-lg border border-line px-4 font-medium text-destructive hover:bg-clay-soft aria-disabled:opacity-50 sm:flex-none"
+        className="min-h-11 flex-1 rounded-lg border border-line px-4 font-medium text-destructive hover:bg-coral-soft aria-disabled:opacity-50 sm:flex-none"
       >
         {t.reject}
       </button>
@@ -52,7 +52,7 @@ export function ReviewForm({ t, id, lang }: { t: Messages["admin"]; id: string; 
       </label>
       <Buttons t={t} />
       {message && (
-        <p ref={statusRef} tabIndex={-1} role={state.status === "ok" ? "status" : "alert"} className={state.status === "ok" ? "font-medium text-teal" : "text-destructive"}>
+        <p ref={statusRef} tabIndex={-1} role={state.status === "ok" ? "status" : "alert"} className={state.status === "ok" ? "font-medium text-ink" : "text-destructive"}>
           {message}
         </p>
       )}

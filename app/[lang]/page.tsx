@@ -23,11 +23,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const t = getMessages(lang);
   const { prices } = await services().billing.settings();
   const sites = showcaseSites(lang);
-  const byId = new Map(sites.map((s) => [s.id, s]));
-  const heroSites = HERO_IDS.flatMap((id) => {
-    const s = byId.get(id);
-    return s ? [{ id, label: t.landing.demo.labels[id], name: s.name, prompt: t.landing.demo.prompts[id], shot: s.shot }] : [];
-  });
+  const ideas = HERO_IDS.map((id) => ({ id, label: t.landing.demo.labels[id], prompt: t.landing.demo.prompts[id] }));
   // The same café, in both languages, for the language card.
   const cafe = { en: showcaseSites("en").find((s) => s.id === "cafe"), am: showcaseSites("am").find((s) => s.id === "cafe") };
   const sample = { en: { name: cafe.en?.name ?? "", tagline: cafe.en?.tagline ?? "" }, am: { name: cafe.am?.name ?? "", tagline: cafe.am?.tagline ?? "" } };
@@ -39,21 +35,17 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
         <Hero
           t={t.landing.hero}
           locale={lang}
-          sites={heroSites}
+          ideas={ideas}
           install={t.pwa}
           text={{
             promptLabel: t.landing.hero.promptLabel,
-            placeholder: b.startPlaceholder,
+            placeholder: t.landing.hero.placeholder,
             pick: t.landing.demo.pick,
             build: t.landing.hero.build,
-            note: t.landing.hero.note,
             langTitle: b.startLang,
             langEn: b.langEn,
             langAm: b.langAm,
             langBoth: b.langBothShort,
-            phoneCaption: t.landing.hero.phoneCaption,
-            phoneLabel: t.landing.hero.phoneLabel,
-            shotAlt: t.landing.hero.shotAlt,
           }}
         />
         <Proof t={t.landing} />

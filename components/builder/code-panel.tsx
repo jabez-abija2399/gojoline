@@ -28,7 +28,7 @@ export const CodePanel = memo(function CodePanel({ t, projectId, refreshKey }: {
         <button type="button" onClick={() => {
             setError(false);
             setAttempt((a) => a + 1);
-          }} className="min-h-11 rounded-lg border border-line px-4 font-medium text-ink hover:border-teal-mid">
+          }} className="min-h-11 rounded-lg border border-line px-4 font-medium text-ink hover:border-faint">
           {t.retry}
         </button>
       </div>
@@ -56,7 +56,7 @@ export const CodePanel = memo(function CodePanel({ t, projectId, refreshKey }: {
           <option key={p} value={p}>{p}</option>
         ))}
       </select>
-      <pre className="min-h-0 flex-1 overflow-auto rounded-xl bg-teal-deep p-4 text-sm leading-relaxed text-teal-soft" tabIndex={0}>
+      <pre className="min-h-0 flex-1 overflow-auto rounded-xl bg-ink-hover p-4 text-sm leading-relaxed text-sunken" tabIndex={0}>
         <code>{files[active]}</code>
       </pre>
     </div>

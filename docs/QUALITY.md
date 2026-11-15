@@ -4,7 +4,7 @@ Every slice meets these before it is ticked in `docs/ROADMAP.md`. They apply to 
 
 ## Design and UX
 
-- Brand: only tokens from `brand/tokens.css`; Outfit for headings, Inter for UI, Noto Sans Ethiopic for Amharic. Clay is reserved for the one primary action per screen.
+- Brand: only tokens from `brand/tokens.css`; Outfit for headings, Inter for UI, Noto Sans Ethiopic for Amharic. Coral is reserved for the one primary action per screen, always with ink text.
 - Mobile-first: design at 360 px first, then 768 and 1280. No horizontal scroll at any width.
 - Touch targets at least 44 × 44 px; body text at least 16 px; line length 60 to 75 characters.
 - Every screen has designed empty, loading (skeletons, not spinners for content), error and success states.
@@ -31,7 +31,7 @@ Every slice meets these before it is ticked in `docs/ROADMAP.md`. They apply to 
 
 - Server Components by default; client components only for interactivity.
 - Images: modern formats (AVIF/WebP), responsive sizes, lazy below the fold, explicit width and height.
-- Fonts: self-hosted, subset, `font-display: swap`, preload only the heading font.
+- Fonts: self-hosted, subset, `font-display: swap`, preload only the heading font and the Ethiopic font.
 - Generated sites are static and prerendered; no client-side data fetching for content that can be built in.
 - AI speed: stream every response; time to first token shown to the user ≤ 2 s; first preview ≤ 60 s.
 - Lighthouse CI runs in GitHub Actions and fails the build below the budgets.
