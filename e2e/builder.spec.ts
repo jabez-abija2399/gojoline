@@ -86,8 +86,8 @@ test("the owner picks the site's languages before the first build", async ({ pag
   await newSite(page);
   const group = page.getByRole("group", { name: "Your site's language" });
   await expect(group.getByRole("radio", { name: "English", exact: true })).toBeChecked();
-  await group.getByText("English and Amharic").click();
-  await expect(group.getByRole("radio", { name: "English and Amharic" })).toBeChecked();
+  await group.getByText("Both").click();
+  await expect(group.getByRole("radio", { name: "Both" })).toBeChecked();
   let sent: unknown = null;
   page.on("request", (r) => {
     if (r.url().endsWith("/messages") && r.method() === "POST") sent = r.postDataJSON();
@@ -99,4 +99,80 @@ test("the owner picks the site's languages before the first build", async ({ pag
   // Once the site exists the choice is gone: languages change by asking.
   await expect(page.getByRole("group", { name: "Your site's language" })).toHaveCount(0);
   await expectNoSeriousA11yIssues(page);
+});
+
+test("describe the business on Your sites: the new site opens and builds itself", async ({ page }, info) => {
+  await signIn(page);
+  // An idea fills the box with an example to edit.
+  await page.getByRole("button", { name: "Café", exact: true }).click();
+  const box = page.getByRole("textbox", { name: "What would you like to build?" });
+  await expect(box).toHaveValue(/Selam Coffee/);
+  await box.fill("Kaldi Books");
+  await page.getByRole("group", { name: "Site language" }).getByText("Both").click();
+  let sent: unknown = null;
+  page.on("request", (r) => {
+    if (r.url().endsWith("/messages") && r.method() === "POST") sent = r.postDataJSON();
+  });
+  await page.getByRole("button", { name: "Start a new site" }).click();
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page.getByText("Saved as version 1").first()).toBeVisible();
+  expect(sent).toMatchObject({ text: "Kaldi Books", languages: ["en", "am"] });
+  await expect(page.getByText("Your site is ready!")).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+
+  // Next steps fill the message box; nothing is sent until the owner says so.
+  await page.getByRole("button", { name: "Change the colours" }).click();
+  await expect(chat(page)).toHaveValue("Change the colours to ");
+  await expect(chat(page)).toBeFocused();
+
+  if (info.project.name === "mobile") {
+    // Phones: the Preview tab says there is something new, and one tap shows the site.
+    await expect(page.getByRole("tab", { name: /Preview.*updated/ })).toBeVisible();
+    await page.getByRole("button", { name: "See your site" }).click();
+    await expect(page.getByRole("tab", { name: "Preview" })).toHaveAttribute("aria-selected", "true");
+    // The less-used links sit behind "More".
+    await page.getByRole("button", { name: "More" }).click();
+    await expect(page.getByRole("link", { name: "Plan" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Dashboard" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("link", { name: "Plan" })).toBeHidden();
+  }
+
+  // Reloading doesn't send the description a second time.
+  await page.reload();
+  await expect(page.getByText("Saved as version 1").first()).toBeVisible();
+  await expect(page.getByText("Saved as version 2")).toHaveCount(0);
+});
+
+test("photos: add one in the builder and hand it to the chat", async ({ page }) => {
+  await newSite(page);
+  await chat(page).fill("Selam Coffee");
+  await chat(page).press("Enter");
+  await expect(page.getByText("Saved as version 1").first()).toBeVisible();
+
+  await page.getByRole("tab", { name: "Photos" }).filter({ visible: true }).click();
+  await expect(page.getByText("No photos yet.").filter({ visible: true })).toBeVisible();
+  const picker = page.getByRole("tabpanel", { name: "Photos" }).locator('input[type="file"]');
+  await picker.setInputFiles("e2e/fixtures/fake.jpg");
+  await expect(page.getByText("That file isn't a photo we can use")).toBeVisible();
+  await picker.setInputFiles("e2e/fixtures/photo.jpg");
+  await expect(page.getByRole("img", { name: "Photo 1" })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+
+  // One tap puts the photo in the message; the owner says where it goes.
+  await page.getByRole("button", { name: "Use in my site: Photo 1" }).click();
+  await expect(chat(page)).toHaveValue(/Use my photo .photo.*\.\w+. $/);
+  await expect(chat(page)).toBeFocused();
+
+  // The chat box can add a photo too.
+  await chat(page).fill("");
+  await page.getByRole("tabpanel", { name: "Chat" }).locator('input[type="file"]').setInputFiles("e2e/fixtures/photo.jpg");
+  await expect(page.getByText("Photo added. Now say where it should go.")).toBeVisible();
+  await expect(chat(page)).toHaveValue(/Use my photo /);
+
+  await page.getByRole("tab", { name: "Photos" }).filter({ visible: true }).click();
+  await page.getByRole("button", { name: "Remove photo 2" }).click();
+  await expect(page.getByRole("img", { name: "Photo 2" })).toHaveCount(0);
 });

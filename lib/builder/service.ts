@@ -28,7 +28,7 @@ export interface BuilderDeps {
 export type BuilderEvent =
   | AgentEvent
   | { type: "preview"; url: string }
-  | { type: "done"; message: ChatMessage; previewUrl: string }
+  | { type: "done"; message: ChatMessage; previewUrl: string; siteName?: string }
   | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked" };
 
 const HISTORY_MESSAGES = 8;
@@ -121,6 +121,8 @@ export async function sendOwnerMessage(
 
     const sandbox = await opening;
     let versionNumber: number | undefined;
+    // Sent back so the builder can show the site's new name straight away.
+    let siteNameNow: string | undefined;
     if (result.status === "changed") {
       const version = await store.addVersion(input.ownerId, {
         projectId: project.id,
@@ -130,7 +132,10 @@ export async function sendOwnerMessage(
       versionNumber = version.number;
       if (!project.name) {
         const name = siteName(version.files["src/site.json"] ?? "", project.locale);
-        if (name) await store.renameProject(input.ownerId, project.id, name);
+        if (name) {
+          await store.renameProject(input.ownerId, project.id, name);
+          siteNameNow = name;
+        }
       }
     }
     // Refund failures on our side, not runs the owner walked away from.
@@ -145,7 +150,7 @@ export async function sendOwnerMessage(
       status: result.status,
       versionNumber,
     });
-    input.onEvent({ type: "done", message, previewUrl: sandbox.previewUrl });
+    input.onEvent({ type: "done", message, previewUrl: sandbox.previewUrl, ...(siteNameNow ? { siteName: siteNameNow } : {}) });
     chargedRef = null;
   } catch (error) {
     reportError("builder.sendOwnerMessage failed", error, { projectId: project.id });
