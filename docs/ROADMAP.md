@@ -69,11 +69,13 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Landing page rebuilt: real start box in the hero (carries the description through sign-in into a build), pictures of the 12 real template sites, measured numbers, woven-border motif, waitlist moved to its own page
 - [x] Site template upgrade: 16 drawings in the site's colours instead of empty boxes, real heading fonts, questions and call-to-action sections, a call bar on phones, fuller footer; all 12 presets updated
 - [x] New brand palette "Paper and Coral" (light and dark tokens) across the app; landing page restyled with a centred prompt-first hero
+- [x] Landing page rebuilt after Zite and the builders it compares: floating menu, serif headline, a showcase of the real builder switched by business chips, prompt section, steps on ink with colour panels
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
 - Landing page, from the reviews: real photos in the starter templates would make the gallery stronger (they show placeholder shapes now); the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
 - Re-run `node scripts/showcase-shots.mjs` after changing the site template or a preset, so the landing page's pictures stay true.

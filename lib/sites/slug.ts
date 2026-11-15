@@ -1,6 +1,9 @@
 /** Public address part of a site: lowercase letters, numbers and dashes, 3–40 characters. */
 export const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])$/;
 
+/** The address the landing page shows as an example. Reserved, so no one can claim it. */
+export const EXAMPLE_SLUG = "your-business";
+
 const RESERVED = new Set([
   "www", "api", "app", "admin", "mail", "gojoline", "gojo", "support", "help", "login", "signin", "account",
   "billing", "pay", "payment", "secure", "bank", "telebirr", "cbe", "ethiotelecom", "safaricom", "status", "docs",
@@ -19,6 +22,8 @@ export function checkSlug(slug: string): SlugProblem | null {
   if (!SLUG_RE.test(slug) || slug.includes("--")) return "format";
   // Reserved words anywhere (as a dash-separated part, or inside longer words for brand names).
   const parts = slug.split("-");
+  // Shown as the example address on the landing page: nobody may publish there.
+  if (slug === EXAMPLE_SLUG) return "reserved";
   if (parts.some((p) => RESERVED.has(p)) || [...BRANDS].some((b) => slug.includes(b))) return "reserved";
   return null;
 }

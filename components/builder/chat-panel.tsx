@@ -154,7 +154,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             <Sparkles aria-hidden="true" className="size-4 text-faint" />
             {t.nextLabel}
           </p>
-          <ul aria-labelledby="chat-next" className="chips-scroll flex gap-2 overflow-x-auto px-4 pb-1">
+          <ul aria-labelledby="chat-next" className="chips-scroll flex gap-2 overflow-x-auto px-4 py-1.5">
             {NEXT.map((id) => (
               <li key={id} className="shrink-0">
                 <button type="button" onClick={() => fill(t.next[id].text)} className={chip}>

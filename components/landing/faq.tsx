@@ -4,11 +4,11 @@ import type { Messages } from "@/lib/i18n";
 /** Native <details>: opens and closes without any JavaScript. */
 export function Faq({ t }: { t: Messages["landing"]["faq"] }) {
   return (
-    <section aria-labelledby="faq-title" className="mx-auto max-w-3xl px-4 py-16 sm:px-6 md:py-20">
-      <h2 id="faq-title" className="text-3xl display sm:text-5xl">{t.title}</h2>
+    <section aria-labelledby="faq-title" className="below-fold mx-auto max-w-3xl px-4 py-16 sm:px-6 md:py-20">
+      <h2 id="faq-title" className="text-center text-3xl display sm:text-5xl">{t.title}</h2>
       <div className="mt-8 flex flex-col gap-3">
         {t.items.map((item) => (
-          <details key={item.q} className="group rounded-xl border border-line bg-white open:border-faint open:shadow-sm">
+          <details key={item.q} className="group rounded-2xl border border-line bg-white open:border-faint open:shadow-sm">
             <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-5 py-3 text-lg font-semibold [&::-webkit-details-marker]:hidden">
               {item.q}
               <ChevronDown aria-hidden="true" className="size-5 shrink-0 text-ink transition-transform group-open:rotate-180" />

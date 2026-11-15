@@ -65,6 +65,7 @@ Code: `tokens.css` (CSS variables, light and dark), `tokens.json`, `tailwind.pre
 ## Typography
 
 - **Outfit 700**: headings and the wordmark
+- **Fraunces 500**: the landing page's headlines only (a warm serif, loaded on that page alone)
 - **Inter 400/500/600**: interface and body text
 - **Noto Sans Ethiopic**: Amharic, Tigrinya and other Ge'ez-script text
 

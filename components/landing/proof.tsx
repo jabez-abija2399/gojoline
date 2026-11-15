@@ -1,22 +1,22 @@
 import type { Messages } from "@/lib/i18n";
 
-/** What we measured on our own test builds: four plain numbers. */
+/** What we measured on our own test builds: four numbers between hairlines. */
 export function Proof({ t }: { t: Messages["landing"] }) {
   return (
-    <section aria-labelledby="proof-title" className="border-b border-line">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-12">
+    <section aria-labelledby="proof-title" className="border-y border-line">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 id="proof-title" className="sr-only">
           {t.proofTitle}
         </h2>
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
-          {t.proof.map((p) => (
-            <div key={p.label} className="reveal flex flex-col-reverse justify-end gap-1">
+        <dl className="grid grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line">
+          {t.proof.map((p, i) => (
+            <div key={p.label} className={`reveal flex flex-col-reverse justify-end gap-1 py-8 lg:px-8 lg:first:ps-0 ${i % 2 ? "max-lg:ps-4" : "max-lg:pe-4"} ${i < 2 ? "max-lg:border-b max-lg:border-line" : ""}`}>
               <dt className="text-ink-muted">{p.label}</dt>
-              <dd className="font-display text-3xl font-bold text-ink md:text-4xl lg:text-5xl">{p.value}</dd>
+              <dd className="text-4xl display text-ink lg:text-5xl">{p.value}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-8 text-ink-muted">{t.proofNote}</p>
+        <p className="border-t border-line py-4 text-ink-muted">{t.proofNote}</p>
       </div>
     </section>
   );
