@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { Plus } from "lucide-react";
+import { ArrowRight, BedDouble, Church, Coffee, GraduationCap, HeartHandshake, House, MoonStar, Mountain, PartyPopper, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
 import { BuilderHeader } from "@/components/builder/builder-header";
-import { Button } from "@/components/ui/button";
+import { StartBox } from "@/components/builder/start-box";
 import { PendingButton } from "@/components/builder/pending-button";
 import { currentUser } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/config";
@@ -12,6 +12,9 @@ import { services } from "@/lib/server/services";
 import { createProject } from "./actions";
 import { PRESET_IDS } from "@/lib/template/presets";
 import { InstallApp } from "@/components/pwa/install-app";
+
+const TEMPLATE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound } as const;
+const installClass = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-teal-soft bg-white px-4 font-medium text-teal hover:border-teal-mid";
 
 export async function generateMetadata({
   params,
@@ -40,27 +43,37 @@ export default async function ProjectsPage({
     timeStyle: "short",
   });
 
+  const tints = ["bg-teal-soft text-teal", "bg-clay-soft text-clay-hover", "bg-teal text-white", "bg-sand text-teal"];
+
   const templates = builder ? (
     <section aria-labelledby="templates-title" className="flex flex-col gap-3">
-      <h2 id="templates-title" className="text-xl font-bold">
+      <h2 id="templates-title" className="text-2xl font-bold">
         {t.builder.templatesTitle}
       </h2>
-      <p className="text-ink-muted">{t.builder.templatesHint}</p>
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {PRESET_IDS.map((id) => (
-          <li key={id}>
-            <form action={createProject} className="h-full">
-              <input type="hidden" name="lang" value={lang} />
-              <input type="hidden" name="preset" value={id} />
-              <PendingButton className="flex h-full min-h-14 w-full items-center rounded-xl border border-line bg-white px-4 py-3 text-start font-medium hover:border-teal-mid">
-                {t.builder.templates[id]}
-              </PendingButton>
-            </form>
-          </li>
-        ))}
+      <p className="max-w-[65ch] text-ink-muted">{t.builder.templatesHint}</p>
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {PRESET_IDS.map((id) => {
+          const Icon = TEMPLATE_ICONS[id];
+          return (
+            <li key={id}>
+              <form action={createProject} className="h-full">
+                <input type="hidden" name="lang" value={lang} />
+                <input type="hidden" name="preset" value={id} />
+                <PendingButton className="group flex h-full min-h-24 w-full flex-col items-start gap-3 rounded-2xl border border-line bg-white p-4 text-start font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-teal-mid hover:shadow-md">
+                  <span aria-hidden="true" className="flex size-10 items-center justify-center rounded-xl bg-teal-soft text-teal transition-colors group-hover:bg-teal group-hover:text-white">
+                    <Icon className="size-5" />
+                  </span>
+                  {t.builder.templates[id]}
+                </PendingButton>
+              </form>
+            </li>
+          );
+        })}
       </ul>
     </section>
   ) : null;
+
+  const startBox = builder ? <StartBox t={t.builder} locale={lang} action={createProject} heading={projects.length === 0 ? "h1" : "h2"} /> : null;
 
   return (
     <>
@@ -74,20 +87,8 @@ export default async function ProjectsPage({
       />
       <main
         id="main"
-        className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10"
+        className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10"
       >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-3xl font-bold">{t.builder.title}</h1>
-          {builder && (
-            <form action={createProject}>
-              <input type="hidden" name="lang" value={lang} />
-              <Button type="submit" size="lg">
-                <Plus aria-hidden="true" /> {t.builder.newSite}
-              </Button>
-            </form>
-          )}
-        </div>
-        <InstallApp t={t.pwa} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-teal-soft bg-white px-4 font-medium text-teal hover:border-teal-mid" />
         {tooMany && (
           <p
             role="alert"
@@ -96,37 +97,59 @@ export default async function ProjectsPage({
             {t.builder.tooMany}
           </p>
         )}
-        {projects.length === 0 && templates}
         {!builder ? (
-          <p className="rounded-xl border border-line bg-white p-6 text-ink-muted">
-            {t.builder.unavailable}
-          </p>
+          <>
+            <h1 className="text-3xl font-bold">{t.builder.title}</h1>
+            <p className="rounded-xl border border-line bg-white p-6 text-ink-muted">
+              {t.builder.unavailable}
+            </p>
+          </>
         ) : projects.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-line bg-white p-8 text-center text-ink-muted">
-            {t.builder.empty}
-          </p>
+          <>
+            {startBox}
+            <InstallApp t={t.pwa} className={installClass} />
+            {templates}
+          </>
         ) : (
-          <ul className="flex flex-col gap-3">
-            {projects.map((p) => (
-              <li key={p.id}>
-                <Link
-                  href={`/${lang}/build/${p.id}`}
-                  className="flex min-h-16 flex-col justify-center rounded-xl border border-line bg-white px-5 py-3 hover:border-teal-mid"
-                >
-                  <span className="font-semibold">
-                    {p.name || t.builder.untitled}
-                  </span>
-                  <span className="text-ink-muted">
-                    {format(t.builder.updated, {
-                      date: dateFmt.format(p.updatedAt),
-                    })}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <>
+            <section aria-labelledby="sites-title" className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h1 id="sites-title" className="text-3xl font-bold">
+                  {t.builder.title}
+                </h1>
+                <InstallApp t={t.pwa} className={installClass} />
+              </div>
+              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {projects.map((p, i) => {
+                  const name = p.name || t.builder.untitled;
+                  return (
+                    <li key={p.id}>
+                      <Link
+                        href={`/${lang}/build/${p.id}`}
+                        className="group flex h-full min-h-20 items-center gap-4 rounded-2xl border border-line bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-mid hover:shadow-md"
+                      >
+                        <span aria-hidden="true" className={`flex size-12 shrink-0 items-center justify-center rounded-xl font-display text-xl font-bold ${tints[i % tints.length]}`}>
+                          {[...name.trim()][0]?.toUpperCase() ?? "+"}
+                        </span>
+                        <span className="flex min-w-0 flex-1 flex-col">
+                          <span className="truncate font-semibold">{name}</span>
+                          <span className="text-sm text-ink-muted">
+                            {format(t.builder.updated, {
+                              date: dateFmt.format(p.updatedAt),
+                            })}
+                          </span>
+                        </span>
+                        <ArrowRight aria-hidden="true" className="size-5 shrink-0 text-ink-muted transition group-hover:translate-x-0.5 group-hover:text-teal" />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+            {startBox}
+            {templates}
+          </>
         )}
-        {projects.length > 0 && templates}
       </main>
     </>
   );

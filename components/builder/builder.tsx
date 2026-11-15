@@ -1,23 +1,36 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Eye, FileText, History, Images, MessageCircle } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { nextTimeline, type Timeline } from "./build-timeline";
 import { ChatPanel, type UiMessage } from "./chat-panel";
 import { CodePanel } from "./code-panel";
-import { PreviewPanel } from "./preview-panel";
+import type { SiteLanguages } from "./language-choice";
+import { PhotosPanel, type PhotoText } from "./photos-panel";
+import { PreviewControls, PreviewPanel, type Device } from "./preview-panel";
 import { PublishBar } from "./publish-bar";
+import { takeStartPrompt } from "./start-prompt";
 import { TabList } from "./tab-list";
+import { TopBar, type TopBarText } from "./top-bar";
+import { usePhotos } from "./use-photos";
 import { VersionsPanel, type UiVersion } from "./versions-panel";
 
-type Tab = "chat" | "preview" | "versions" | "code";
+type Tab = "chat" | "preview" | "photos" | "versions" | "code";
+type SideTab = Exclude<Tab, "chat">;
+const SIDE_TABS = ["preview", "photos", "versions", "code"] as const;
+const TAB_ICONS = { chat: MessageCircle, preview: Eye, photos: Images, versions: History, code: FileText };
 
 interface Props {
   noCredits: { text: string; action: string };
   locale: Locale;
   projectId: string;
   t: Messages["builder"];
+  chrome: TopBarText;
+  photoText: PhotoText;
+  /** The site's name, or the "New site" placeholder until the first build names it. */
+  siteName: string;
   initialMessages: UiMessage[];
   initialVersions: UiVersion[];
 }
@@ -25,7 +38,7 @@ interface Props {
 let localId = 0;
 const nextId = () => `local-${++localId}`;
 
-export function Builder({ locale, projectId, t, initialMessages, initialVersions, noCredits }: Props) {
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, noCredits }: Props) {
   // A site that only has its template version: show it first and say what to change.
   const templateId = initialVersions.length === 1 ? /^template:([a-z-]+)$/.exec(initialVersions[0]!.summary)?.[1] : undefined;
   const templateName = templateId ? (t.templates as Record<string, string>)[templateId] : undefined;
@@ -38,7 +51,14 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
   // Read inside send() without re-creating it on every version change.
   const versionsRef = useRef(initialVersions.length);
   // Asked before the first build; defaults to the language the owner uses Gojoline in.
-  const [siteLanguages, setSiteLanguages] = useState<("en" | "am")[]>([locale]);
+  const [siteLanguages, setSiteLanguages] = useState<SiteLanguages>([locale]);
+  const [name, setName] = useState(siteName);
+  const [liveUrl, setLiveUrl] = useState<string | null>(null);
+  const [device, setDevice] = useState<Device>("phone");
+  // The first site made in this visit gets a small celebration.
+  const [celebrate, setCelebrate] = useState(false);
+  // Phones: a dot on the Preview tab when the site changed while the owner was elsewhere.
+  const [previewFresh, setPreviewFresh] = useState(false);
   const [streamText, setStreamText] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
@@ -46,7 +66,11 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
   const [previewAttempt, setPreviewAttempt] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
   const [mobileTab, setMobileTab] = useState<Tab>(templateName ? "preview" : "chat");
-  const [deskTab, setDeskTab] = useState<Exclude<Tab, "chat">>("preview");
+  const [deskTab, setDeskTab] = useState<SideTab>("preview");
+  const photos = usePhotos(projectId);
+  // The message being written lives here so photos and suggestions can add to it.
+  const [draft, setDraft] = useState("");
+  const [focusChat, setFocusChat] = useState(0);
   const lastBuildFailed = useRef(false);
 
   // Wake the sandbox for an existing site so the preview shows straight away.
@@ -70,7 +94,7 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
   }, []);
 
   const send = useCallback(
-    async (text: string) => {
+    async (text: string, languages: SiteLanguages) => {
       setMessages((m) => [...m, { id: nextId(), role: "owner", text }]);
       setWorking(true);
       setTimeline({ steps: [{ key: "understand", done: false }], edits: 0, startedAt: Date.now() });
@@ -80,7 +104,7 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
         const res = await fetch(`/api/projects/${projectId}/messages`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, ...(versionsRef.current === 0 ? { languages: siteLanguages } : {}) }),
+          body: JSON.stringify({ text, ...(versionsRef.current === 0 ? { languages } : {}) }),
         });
         if (res.status === 429) return addAssistant(t.tooMany, { tone: "error" });
         if (!res.ok || !res.body) return addAssistant(t.failed, { tone: "error" });
@@ -121,7 +145,10 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
                 const m = event.message;
                 if (m.status === "failed") addAssistant(t.reverted, { tone: "error" });
                 else addAssistant(m.text, { versionNumber: m.versionNumber });
+                if (typeof event.siteName === "string" && event.siteName) setName(event.siteName);
                 if (m.versionNumber) {
+                  if (versionsRef.current === 0) setCelebrate(true);
+                  setPreviewFresh(true);
                   versionsRef.current += 1;
                   setVersions((v) => [{ number: m.versionNumber, summary: text.slice(0, 140), createdAt: new Date().toISOString() }, ...v]);
                   setCurrent(m.versionNumber);
@@ -148,8 +175,37 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
         setStreamText("");
       }
     },
-    [projectId, t, addAssistant, noCredits, locale, siteLanguages],
+    [projectId, t, addAssistant, noCredits, locale],
   );
+
+  // A description typed on "Your sites" starts the build as soon as the new site opens.
+  useEffect(() => {
+    if (initialMessages.length > 0 || initialVersions.length > 0) return;
+    // After hydration, and only once: the prompt is removed from storage as it is read.
+    const id = setTimeout(() => {
+      const start = takeStartPrompt();
+      if (start) void send(start.text, start.languages);
+    }, 0);
+    return () => clearTimeout(id);
+  }, [initialMessages.length, initialVersions.length, send]);
+
+  const reload = useCallback(() => setReloadKey((k) => k + 1), []);
+  const showTab = (tab: Tab) => {
+    setMobileTab(tab);
+    if (tab === "preview") setPreviewFresh(false);
+  };
+
+  const showSide = (tab: SideTab) => {
+    showTab(tab);
+    setDeskTab(tab);
+  };
+  /** Hands a photo to the chat: the owner only has to say where it goes. */
+  const handPhoto = (name: string) => {
+    const line = t.photoUseText.replace("{name}", name);
+    setDraft((d) => (d.trim() ? `${d.trimEnd()}\n${line}` : line));
+    setMobileTab("chat");
+    setFocusChat((k) => k + 1);
+  };
 
   const restore = useCallback(
     async (number: number): Promise<boolean> => {
@@ -169,12 +225,20 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
   const chat = (
     <ChatPanel
       t={t}
-      locale={locale}
+      hasSite={versions.length > 0}
+      celebrate={celebrate}
+      onSeeSite={() => showTab("preview")}
+      onPhotos={() => showSide("photos")}
+      draft={draft}
+      onDraft={setDraft}
+      focusKey={focusChat}
+      onAttach={photos.upload}
+      photoErrors={photoText.photoErrors}
       messages={messages}
       working={working}
       timeline={timeline}
       streamText={streamText}
-      onSend={send}
+      onSend={(text) => send(text, siteLanguages)}
       welcome={welcome}
       languages={versions.length === 0 && !working ? { value: siteLanguages, onChange: setSiteLanguages } : undefined}
     />
@@ -183,6 +247,10 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
     <PreviewPanel
       t={t}
       url={previewUrl}
+      liveUrl={liveUrl}
+      working={working}
+      device={device}
+      onReload={reload}
       loading={previewLoading || (working && !previewUrl)}
       error={previewError && !previewUrl}
       onRetry={() => {
@@ -193,10 +261,11 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
       reloadKey={reloadKey}
     />
   );
-  const versionsPanel = <VersionsPanel t={t} versions={versions} current={current} disabled={working} onRestore={restore} />;
+  const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working} onRestore={restore} />;
   const code = <CodePanel t={t} projectId={projectId} refreshKey={current ?? 0} />;
-  const panels: Record<Exclude<Tab, "chat">, React.ReactNode> = { preview, versions: versionsPanel, code };
-  const tabLabels: Record<Tab, string> = { chat: t.tabChat, preview: t.tabPreview, versions: t.tabVersions, code: t.tabCode };
+  const photosPanel = <PhotosPanel t={t} tp={photoText} projectId={projectId} photos={photos} disabled={working} onUse={handPhoto} />;
+  const panels: Record<SideTab, React.ReactNode> = { preview, photos: photosPanel, versions: versionsPanel, code };
+  const tabLabels: Record<Tab, string> = { chat: t.tabChat, preview: t.tabPreview, photos: t.tabPhotos, versions: t.tabVersions, code: t.tabCode };
 
   // Each panel renders once; CSS decides what shows (mobile: one tab, desktop: chat + one tab).
   const panelClass = (tab: Tab) =>
@@ -204,15 +273,31 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <PublishBar t={t} projectId={projectId} hasVersion={versions.length > 0} disabled={working} />
-      <TabList tabs={["chat", "preview", "versions", "code"] as const} labels={tabLabels} active={mobileTab} onChange={setMobileTab} label={t.viewsLabel} idPrefix="tab-m" className="flex lg:hidden" />
+      <PublishBar t={t} projectId={projectId} hasVersion={versions.length > 0} disabled={working} onLive={setLiveUrl}>
+        {({ status, button }) => <TopBar locale={locale} projectId={projectId} text={chrome} siteName={name} status={status} publish={button} />}
+      </PublishBar>
+      <TabList
+        tabs={["chat", ...SIDE_TABS] as const}
+        labels={tabLabels}
+        icons={TAB_ICONS}
+        badges={{ preview: previewFresh && mobileTab !== "preview" }}
+        badgeLabel={t.tabNew}
+        active={mobileTab}
+        onChange={showTab}
+        label={t.viewsLabel}
+        idPrefix="tab-m"
+        className="flex overflow-x-auto border-b border-line bg-white p-1.5 lg:hidden"
+      />
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <section id="panel-chat" role="tabpanel" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-r lg:border-line`}>
+        <section id="panel-chat" role="tabpanel" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-e lg:border-line xl:w-[460px]`}>
           {chat}
         </section>
-        <div className="flex min-h-0 flex-1 flex-col max-lg:contents">
-          <TabList tabs={["preview", "versions", "code"] as const} labels={tabLabels} active={deskTab} onChange={setDeskTab} label={t.viewsLabel} idPrefix="tab-d" className="hidden lg:flex" />
-          {(["preview", "versions", "code"] as const).map((tab) => (
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col max-lg:contents">
+          <div className="hidden min-w-0 items-center gap-3 border-b border-line bg-white px-2 py-1.5 lg:flex">
+            <TabList tabs={SIDE_TABS} labels={tabLabels} icons={TAB_ICONS} active={deskTab} onChange={setDeskTab} label={t.viewsLabel} idPrefix="tab-d" className="flex shrink-0" />
+            {deskTab === "preview" && <PreviewControls t={t} url={previewUrl} liveUrl={liveUrl} onReload={reload} device={{ value: device, onChange: setDevice }} className="flex-1 justify-end" />}
+          </div>
+          {SIDE_TABS.map((tab) => (
             <section key={tab} id={`panel-${tab}`} role="tabpanel" aria-label={tabLabels[tab]} className={panelClass(tab)}>
               {panels[tab]}
             </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CheckCircle2, ExternalLink, Globe, Loader2 } from "lucide-react";
+import { CheckCircle2, ExternalLink, Globe, Loader2, Rocket } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { DomainSection } from "./domain-section";
 
@@ -13,9 +13,13 @@ interface Props {
   projectId: string;
   hasVersion: boolean;
   disabled: boolean;
+  /** Tells the builder the live address (shown in the preview's address bar), or null. */
+  onLive?: (url: string | null) => void;
+  /** Places the status line and the Publish button in the top bar. */
+  children: (parts: { status: React.ReactNode; button: React.ReactNode }) => React.ReactNode;
 }
 
-export function PublishBar({ t, projectId, hasVersion, disabled }: Props) {
+export function PublishBar({ t, projectId, hasVersion, disabled, onLive, children }: Props) {
   const [info, setInfo] = useState<Info | null>(null);
   const [loading, setLoading] = useState(false);
   const [slug, setSlug] = useState("");
@@ -100,35 +104,46 @@ export function PublishBar({ t, projectId, hasVersion, disabled }: Props) {
   const canOpen = hasVersion && !!info;
   const previewUrl = info ? `${info.prefix}${slug || "…"}${info.suffix}` : "";
 
-  return (
-    <div className="flex items-center justify-between gap-3 border-b border-line bg-white px-3 py-1">
-      {published ? (
-        <a href={published} target="_blank" rel="noopener noreferrer" className="flex min-h-11 min-w-0 items-center gap-2 text-ink-muted hover:text-teal">
-          <Globe aria-hidden="true" className="size-4 shrink-0" />
-          <span className="truncate">
-            {t.liveAt} <span className="font-medium text-teal underline underline-offset-4">{published.replace(/^https:\/\//, "")}</span>
-          </span>
-        </a>
-      ) : (
-        <p className="flex min-h-11 items-center gap-2 text-ink-muted">
-          <Globe aria-hidden="true" className="size-4 shrink-0" />
-          {t.notPublished}
-        </p>
-      )}
-      <button
-        ref={openerRef}
-        type="button"
-        onClick={open}
-        disabled={!canOpen}
-        className="min-h-11 shrink-0 rounded-lg bg-teal px-4 font-medium text-white hover:bg-teal-deep disabled:opacity-50"
-      >
-        {t.publish}
-      </button>
+  useEffect(() => {
+    onLive?.(published);
+  }, [onLive, published]);
 
+  const status = published ? (
+    <a href={published} target="_blank" rel="noopener noreferrer" className="flex min-w-0 items-center gap-1.5 text-sm text-ink-muted hover:text-teal">
+      <span aria-hidden="true" className="relative flex size-2 shrink-0">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-teal-mid opacity-60 motion-reduce:hidden" />
+        <span className="relative inline-flex size-2 rounded-full bg-teal" />
+      </span>
+      <span className="truncate">
+        {t.liveAt} <span className="font-medium text-teal underline underline-offset-4">{published.replace(/^https:\/\//, "")}</span>
+      </span>
+    </a>
+  ) : (
+    <p className="flex min-w-0 items-center gap-1.5 text-sm text-ink-muted">
+      <Globe aria-hidden="true" className="size-3.5 shrink-0 max-sm:hidden" />
+      <span className="truncate">{t.notPublished}</span>
+    </p>
+  );
+  const button = (
+    <button
+      ref={openerRef}
+      type="button"
+      onClick={open}
+      disabled={!canOpen}
+      className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-teal px-3 font-medium text-white transition-colors hover:bg-teal-deep disabled:opacity-50 sm:px-4"
+    >
+      <Rocket aria-hidden="true" className="hidden size-4 sm:block" />
+      {t.publish}
+    </button>
+  );
+
+  return (
+    <>
+      {children({ status, button })}
       <dialog
         ref={dialogRef}
         aria-labelledby="publish-title"
-        className="m-auto max-h-[90dvh] w-[min(94vw,30rem)] overflow-y-auto rounded-2xl border border-line bg-white p-0 text-ink backdrop:bg-ink/40"
+        className="m-auto max-h-[90dvh] w-[min(94vw,30rem)] overflow-y-auto rounded-2xl border border-line bg-white p-0 text-ink shadow-2xl backdrop:bg-teal-deep/50 backdrop:backdrop-blur-sm open:animate-[pop-in_0.2s_ease-out]"
         onCancel={(e) => {
           e.preventDefault();
           close();
@@ -227,6 +242,6 @@ export function PublishBar({ t, projectId, hasVersion, disabled }: Props) {
           </button>
         </div>
       </dialog>
-    </div>
+    </>
   );
 }

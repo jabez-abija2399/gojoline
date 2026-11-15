@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import type { LucideIcon } from "lucide-react";
 
 interface Props<T extends string> {
   tabs: readonly T[];
@@ -10,10 +11,14 @@ interface Props<T extends string> {
   label: string;
   idPrefix: string;
   className?: string;
+  icons?: Partial<Record<T, LucideIcon>>;
+  /** A dot on tabs with something new to see; `badgeLabel` says so to screen readers. */
+  badges?: Partial<Record<T, boolean>>;
+  badgeLabel?: string;
 }
 
 /** WAI-ARIA tabs: arrow keys, Home/End and roving tabindex. */
-export function TabList<T extends string>({ tabs, labels, active, onChange, label, idPrefix, className = "" }: Props<T>) {
+export function TabList<T extends string>({ tabs, labels, active, onChange, label, idPrefix, className = "", icons, badges, badgeLabel }: Props<T>) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const move = (index: number) => {
     const next = (index + tabs.length) % tabs.length;
@@ -21,8 +26,10 @@ export function TabList<T extends string>({ tabs, labels, active, onChange, labe
     refs.current[next]?.focus();
   };
   return (
-    <div role="tablist" aria-label={label} className={`gap-1 border-b border-line bg-white p-2 ${className}`}>
-      {tabs.map((tab, i) => (
+    <div role="tablist" aria-label={label} className={`gap-1 ${className}`}>
+      {tabs.map((tab, i) => {
+        const Icon: LucideIcon | undefined = icons?.[tab];
+        return (
         <button
           key={tab}
           ref={(el) => {
@@ -43,11 +50,19 @@ export function TabList<T extends string>({ tabs, labels, active, onChange, labe
             else return;
             e.preventDefault();
           }}
-          className="min-h-11 flex-1 rounded-lg px-2 text-sm font-medium text-ink-muted aria-selected:bg-teal aria-selected:text-white sm:flex-none sm:px-3 sm:text-base"
+          className="relative flex min-h-11 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-1.5 text-sm font-medium text-ink-muted transition-colors hover:bg-sand aria-selected:bg-teal aria-selected:text-white sm:flex-none sm:px-3 sm:text-base"
         >
+          {Icon && <Icon aria-hidden="true" className="hidden size-4 shrink-0 min-[520px]:block" />}
           {labels[tab]}
+          {badges?.[tab] && (
+            <>
+              <span aria-hidden="true" className="absolute end-1.5 top-1.5 size-2.5 rounded-full bg-clay ring-2 ring-white" />
+              <span className="sr-only">({badgeLabel})</span>
+            </>
+          )}
         </button>
-      ))}
+        );
+      })}
     </div>
   );
 }

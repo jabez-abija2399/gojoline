@@ -22,7 +22,10 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
   const label: Record<TimelineKey, string> = { understand: t.tlUnderstand, write: t.tlWriting, check: t.tlChecking, fix: t.tlFixing, ready: t.tlReady };
 
   return (
-    <div role="status" className="flex max-w-[90%] flex-col gap-3 self-start rounded-2xl rounded-bl-sm border border-line bg-white px-4 py-3 shadow-sm">
+    <div role="status" className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-teal-soft bg-white px-4 pt-4 pb-3 shadow-sm">
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 overflow-hidden bg-teal-soft">
+        <span className="progress-slide block h-full w-1/3 rounded-full bg-teal" />
+      </span>
       <div className="flex items-center justify-between gap-4">
         <p className="font-semibold">{t.tlTitle}</p>
         <span className="text-sm tabular-nums text-ink-muted" aria-hidden="true">{t.tlElapsed.replace("{s}", String(seconds))}</span>

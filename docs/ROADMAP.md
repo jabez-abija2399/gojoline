@@ -65,11 +65,13 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Admin dashboard: overview KPIs, needs-attention list, 30-day charts, owners search, dark mode
 - [x] Site template: motion and depth (CSS only, reduced-motion safe), bento services, editorial gallery, timeline section
 - [x] Personal website / portfolio template (12 templates in total)
+- [x] Builder redesign: one top bar, describe-your-business start box with ideas, next-step suggestions, phone-framed preview with a live address bar, Photos tab and add-photo button in the chat, version timeline
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- The new builder strings in Amharic (start box, ideas, suggestions, photos) need the same native-speaker review.
 - Amharic in the 12 templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 

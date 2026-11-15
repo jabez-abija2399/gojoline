@@ -194,3 +194,78 @@
   --foreground: #ece7e2;
   }
 }
+
+/* Builder: small, quick motion that says "something happened". All of it stops under
+   prefers-reduced-motion (rule above). */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes slide-x {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+@keyframes confetti {
+  from {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  }
+}
+.msg-in {
+  animation: rise-in 0.25s ease-out both;
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--gojo-line) 25%, var(--gojo-sand) 50%, var(--gojo-line) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+.progress-slide {
+  animation: slide-x 1.4s ease-in-out infinite;
+}
+.confetti-piece {
+  animation: confetti 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece {
+    display: none;
+  }
+  .skeleton {
+    background: var(--gojo-line);
+  }
+}
+/* A thin scroll bar for chip rows that scroll sideways on phones. */
+.chips-scroll {
+  scrollbar-width: none;
+}
+.chips-scroll::-webkit-scrollbar {
+  display: none;
+}

@@ -1,11 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Loader2 } from "lucide-react";
+import { ArrowUp, CheckCircle2, Eye, ImagePlus, Loader2, PartyPopper, Sparkles } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
-import type { Locale } from "@/lib/i18n/config";
 import { BuildTimeline, type Timeline } from "./build-timeline";
+import { LanguageChoice, type SiteLanguages } from "./language-choice";
+import { PHOTO_TYPES, type UploadResult } from "./use-photos";
 
 export interface UiMessage {
   id: string;
@@ -18,39 +20,103 @@ export interface UiMessage {
 
 interface Props {
   t: Messages["builder"];
-  locale: Locale;
   messages: UiMessage[];
   working: boolean;
   timeline: Timeline | null;
   streamText: string;
   /** Before the first build: which languages the site will have. */
-  languages?: { value: ("en" | "am")[]; onChange: (v: ("en" | "am")[]) => void };
+  languages?: { value: SiteLanguages; onChange: (v: SiteLanguages) => void };
   onSend: (text: string) => void;
   /** First message: the general welcome, or what to do next with a template site. */
   welcome?: string;
+  /** The site exists: offer next steps instead of starting ideas. */
+  hasSite: boolean;
+  /** The first version was just made in this visit. */
+  celebrate: boolean;
+  /** Phones: jump to the preview tab. */
+  onSeeSite: () => void;
+  /** Open the Photos view. */
+  onPhotos: () => void;
+  draft: string;
+  onDraft: (text: string) => void;
+  /** Changes when something else filled the message box and it should take focus. */
+  focusKey: number;
+  /** Add a photo straight from the chat box. */
+  onAttach: (file: File) => Promise<UploadResult>;
+  photoErrors: Record<string, string>;
 }
 
 const amharic = /[ሀ-፿]/;
+const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
+const NEXT = ["contact", "colours", "prices", "language"] as const;
+const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-teal-soft bg-white px-4 font-medium text-teal transition-colors hover:border-teal-mid hover:bg-teal-soft";
 
-export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages }: Props) {
-  const [draft, setDraft] = useState("");
+export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors }: Props) {
+  const [attach, setAttach] = useState<{ busy: boolean; note?: string; error?: string }>({ busy: false });
   const listRef = useRef<HTMLDivElement>(null);
+  const boxRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
-  }, [messages, streamText, working]);
+    // An empty chat starts at its top (the greeting); a conversation follows its newest line.
+    if (messages.length > 0 || working) listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
+  }, [messages, streamText, working, celebrate, hasSite]);
+
+  useEffect(() => {
+    if (focusKey > 0) boxRef.current?.focus();
+  }, [focusKey]);
+
+  const attachPhoto = async (file: File) => {
+    if (attach.busy) return;
+    setAttach({ busy: true });
+    const result = await onAttach(file);
+    if (result.ok) {
+      const line = t.photoUseText.replace("{name}", result.photo.name);
+      setDraft(draft.trim() ? `${draft.trimEnd()}\n${line}` : line);
+      setAttach({ busy: false, note: t.photoAttached });
+      boxRef.current?.focus();
+    } else setAttach({ busy: false, error: photoErrors[result.error] ?? photoErrors.failed });
+  };
 
   const submit = () => {
     const text = draft.trim();
     if (!text || working) return;
     setDraft("");
+    setAttach({ busy: false });
     onSend(text);
   };
+  const fill = (text: string) => {
+    setDraft(text);
+    boxRef.current?.focus();
+  };
+
+  const fresh = messages.length === 0 && !welcome && !working && !hasSite;
+  const lastId = messages.at(-1)?.id;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div ref={listRef} role="log" tabIndex={0} aria-label={t.tabChat} className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4" aria-live="polite" aria-relevant="additions">
-        <Bubble role="assistant" label={t.assistant} text={welcome ?? t.welcome} />
+        {fresh ? (
+          <div className="m-auto flex w-full max-w-sm flex-col items-center gap-3 py-4 text-center">
+            <Image src="/brand/mark.svg" alt="" width={56} height={56} className="size-12 sm:size-14" />
+            <h2 className="text-2xl font-bold">{t.emptyTitle}</h2>
+            <p className="text-ink-muted">{t.welcome}</p>
+            <p id="chat-ideas" className="mt-2 flex items-center gap-2 text-sm font-medium text-ink-muted">
+              <Sparkles aria-hidden="true" className="size-4 text-teal-mid" />
+              {t.ideasLabel}
+            </p>
+            <ul aria-labelledby="chat-ideas" className="flex flex-wrap justify-center gap-2">
+              {IDEAS.map((id) => (
+                <li key={id}>
+                  <button type="button" onClick={() => fill(t.ideas[id].text)} className={chip}>
+                    {t.ideas[id].label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <Bubble role="assistant" label={t.assistant} text={welcome ?? t.welcome} />
+        )}
         {messages.map((m) => (
           <Bubble
             key={m.id}
@@ -60,8 +126,19 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             tone={m.tone}
             action={m.action}
             note={m.versionNumber ? t.versionSaved.replace("{n}", String(m.versionNumber)) : undefined}
+            seeSite={m.versionNumber && m.id === lastId && !working ? { label: t.seeSite, onClick: onSeeSite } : undefined}
           />
         ))}
+        {celebrate && !working && (
+          <div className="msg-in relative flex shrink-0 gap-3 overflow-hidden rounded-2xl border border-teal-soft bg-teal p-4 text-white">
+            <Confetti />
+            <PartyPopper aria-hidden="true" className="relative mt-0.5 size-6 shrink-0 text-clay-light" />
+            <div className="relative flex flex-col gap-1">
+              <p className="font-display text-lg font-bold">{t.readyTitle}</p>
+              <p className="text-teal-soft">{t.readyBody}</p>
+            </div>
+          </div>
+        )}
         {working && timeline && <BuildTimeline t={t} timeline={timeline} streamText={streamText} />}
         {working && !timeline && (
           <p role="status" className="flex items-center gap-2 font-medium text-teal">
@@ -70,27 +147,43 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
           </p>
         )}
       </div>
+      {hasSite && !working && (
+        <div className="flex flex-col gap-2 border-t border-line bg-white pt-2 lg:pt-3">
+          <p id="chat-next" className="flex items-center gap-2 px-4 text-sm font-medium text-ink-muted max-lg:sr-only">
+            <Sparkles aria-hidden="true" className="size-4 text-teal-mid" />
+            {t.nextLabel}
+          </p>
+          <ul aria-labelledby="chat-next" className="chips-scroll flex gap-2 overflow-x-auto px-4 pb-1">
+            {NEXT.map((id) => (
+              <li key={id} className="shrink-0">
+                <button type="button" onClick={() => fill(t.next[id].text)} className={chip}>
+                  {t.next[id].label}
+                </button>
+              </li>
+            ))}
+            <li className="shrink-0">
+              <button type="button" onClick={onPhotos} className={`${chip} inline-flex items-center gap-2`}>
+                <ImagePlus aria-hidden="true" className="size-4" />
+                {t.next.photos.label}
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
       {languages && (
-        <fieldset className="flex flex-col gap-2 border-t border-line bg-sand px-3 pt-3 pb-2">
-          <legend className="sr-only">{t.langTitle}</legend>
-          <p aria-hidden="true" className="font-medium">{t.langTitle}</p>
-          <div className="flex flex-wrap gap-2">
-            {([["en"], ["am"], ["en", "am"]] as ("en" | "am")[][]).map((opt) => {
-              const key = opt.join("+");
-              const checked = languages.value.join("+") === key;
-              return (
-                <label key={key} className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 font-medium has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal-mid ${checked ? "border-teal bg-teal text-white" : "border-line bg-white hover:border-teal-mid"}`}>
-                  <input type="radio" name="site-languages" className="sr-only" checked={checked} onChange={() => languages.onChange(opt)} />
-                  {key === "en" ? t.langEn : key === "am" ? t.langAm : t.langBoth}
-                </label>
-              );
-            })}
-          </div>
-          <p className="text-sm text-ink-muted">{t.langHint}</p>
-        </fieldset>
+        <LanguageChoice
+          title={t.langTitle}
+          labels={{ en: t.langEn, am: t.langAm, both: t.langBothShort }}
+          value={languages.value}
+          onChange={languages.onChange}
+          name="site-languages"
+          className="border-t border-line bg-sand px-4 pt-3 pb-2"
+        >
+          <p className="text-sm text-ink-muted max-sm:hidden">{t.langHint}</p>
+        </LanguageChoice>
       )}
       <form
-        className="flex items-end gap-2 border-t border-line bg-white p-3"
+        className="flex flex-col gap-1 bg-white p-3"
         onSubmit={(e) => {
           e.preventDefault();
           submit();
@@ -99,39 +192,86 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
         <label htmlFor="chat-input" className="sr-only">
           {t.chatLabel}
         </label>
-        <textarea
-          id="chat-input"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
-              e.preventDefault();
-              submit();
-            }
-          }}
-          rows={2}
-          maxLength={4000}
-          placeholder={t.chatPlaceholder}
-          className="min-h-12 flex-1 resize-none rounded-xl border border-input bg-white px-3 py-2 text-base placeholder:text-ink-muted"
-        />
-        <button
-          type="submit"
-          aria-disabled={working || !draft.trim()}
-          className={`flex size-12 shrink-0 items-center justify-center rounded-xl text-white aria-disabled:opacity-50 ${messages.at(-1)?.action ? "bg-teal hover:bg-teal-deep" : "bg-clay hover:bg-clay-hover"}`}
-        >
-          <ArrowUp aria-hidden="true" className="size-5" />
-          <span className="sr-only">{t.send}</span>
-        </button>
+        <div className="flex items-end gap-2 rounded-2xl border border-input bg-white p-1.5 shadow-sm transition-shadow has-[textarea:focus-visible]:border-teal has-[textarea:focus-visible]:shadow-[0_0_0_3px_var(--gojo-teal-soft)]">
+          <label
+            title={t.photoAttach}
+            className={`flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-xl text-teal transition-colors hover:bg-teal-soft has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal-mid ${attach.busy ? "opacity-60" : ""}`}
+          >
+            {attach.busy ? <Loader2 aria-hidden="true" className="size-5 animate-spin" /> : <ImagePlus aria-hidden="true" className="size-5" />}
+            <span className="sr-only">{t.photoAttach}</span>
+            <input
+              type="file"
+              accept={PHOTO_TYPES}
+              className="sr-only"
+              aria-disabled={attach.busy}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (file) void attachPhoto(file);
+              }}
+            />
+          </label>
+          <textarea
+            ref={boxRef}
+            id="chat-input"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                e.preventDefault();
+                submit();
+              }
+            }}
+            rows={2}
+            maxLength={4000}
+            placeholder={t.chatPlaceholder}
+            className="max-h-40 min-h-12 flex-1 resize-none rounded-xl bg-transparent px-2.5 py-1.5 text-base [field-sizing:content] placeholder:text-ink-muted focus-visible:outline-none"
+          />
+          <button
+            type="submit"
+            aria-disabled={working || !draft.trim()}
+            className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-white transition aria-disabled:opacity-50 not-aria-disabled:hover:scale-105 ${messages.at(-1)?.action ? "bg-teal hover:bg-teal-deep" : "bg-clay hover:bg-clay-hover"}`}
+          >
+            {working ? <Loader2 aria-hidden="true" className="size-5 animate-spin" /> : <ArrowUp aria-hidden="true" className="size-5" />}
+            <span className="sr-only">{t.send}</span>
+          </button>
+        </div>
+        <p role="status" className="px-2 text-sm text-teal empty:hidden">
+          {attach.note}
+        </p>
+        {attach.error && (
+          <p role="alert" className="px-2 text-sm text-destructive">
+            {attach.error}
+          </p>
+        )}
+        {!attach.note && !attach.error && (
+          <p aria-hidden="true" className="hidden px-2 text-sm text-ink-muted lg:block">
+            {t.composerHint}
+          </p>
+        )}
       </form>
     </div>
   );
 }
 
-function Bubble({ role, label, text, note, tone, action }: { role: "owner" | "assistant"; label: string; text: string; note?: string; tone?: "error"; action?: { href: string; label: string } }) {
+interface BubbleProps {
+  role: "owner" | "assistant";
+  label: string;
+  text: string;
+  note?: string;
+  tone?: "error";
+  action?: { href: string; label: string };
+  seeSite?: { label: string; onClick: () => void };
+}
+
+function Bubble({ role, label, text, note, tone, action, seeSite }: BubbleProps) {
   const own = role === "owner";
   return (
-    <div className={`flex max-w-[90%] flex-col gap-1 ${own ? "self-end items-end" : "self-start"}`}>
-      <span className="text-sm font-semibold text-ink-muted">{label}</span>
+    <div className={`msg-in flex max-w-[90%] flex-col gap-1 ${own ? "items-end self-end" : "self-start"}`}>
+      <span className="flex items-center gap-2 text-sm font-semibold text-ink-muted">
+        {!own && <Image src="/brand/mark.svg" alt="" width={20} height={20} className="size-5" />}
+        {label}
+      </span>
       <p
         lang={amharic.test(text) ? "am" : "en"}
         className={`whitespace-pre-wrap rounded-2xl px-4 py-3 ${
@@ -145,7 +285,40 @@ function Bubble({ role, label, text, note, tone, action }: { role: "owner" | "as
           {action.label}
         </Link>
       )}
-      {note && <span className="text-sm text-ink-muted">{note}</span>}
+      {note && (
+        <span className="flex items-center gap-1.5 text-sm text-ink-muted">
+          <CheckCircle2 aria-hidden="true" className="size-4 text-teal-mid" />
+          {note}
+        </span>
+      )}
+      {seeSite && (
+        <button type="button" onClick={seeSite.onClick} className="mt-1 inline-flex min-h-11 items-center gap-2 rounded-lg border border-teal bg-white px-4 font-medium text-teal hover:bg-teal-soft lg:hidden">
+          <Eye aria-hidden="true" className="size-4" />
+          {seeSite.label}
+        </button>
+      )}
     </div>
+  );
+}
+
+const PIECES = [
+  ["34px", "-22px", "220deg", "bg-clay-light"],
+  ["70px", "30px", "-160deg", "bg-teal-soft"],
+  ["108px", "-16px", "140deg", "bg-clay-bright"],
+  ["140px", "44px", "-200deg", "bg-white"],
+  ["176px", "-8px", "180deg", "bg-clay-light"],
+  ["206px", "36px", "-120deg", "bg-teal-mid"],
+  ["238px", "4px", "260deg", "bg-white"],
+  ["90px", "58px", "90deg", "bg-clay-bright"],
+] as const;
+
+/** A small burst from the party icon: decoration only, hidden under reduced motion. */
+function Confetti() {
+  return (
+    <span aria-hidden="true" className="pointer-events-none absolute start-7 top-7">
+      {PIECES.map(([dx, dy, rot, color], i) => (
+        <span key={i} className={`confetti-piece absolute size-2 rounded-[2px] ${color}`} style={{ "--dx": dx, "--dy": dy, "--rot": rot, animationDelay: `${i * 40}ms` } as React.CSSProperties} />
+      ))}
+    </span>
   );
 }
