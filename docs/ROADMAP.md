@@ -53,7 +53,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] All templates (10 industries) in EN + AM
 - [x] Sentry, uptime checks, error pages
 - [x] Privacy policy and terms pages (to be reviewed by a lawyer)
-- [ ] Eval targets met (see PRD)
+- [ ] Eval targets met (see PRD): all met except the Amharic quality score (needs a native-speaker review)
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
@@ -64,7 +64,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 
 ## Notes for deployment
-- **Live:** https://gojoline.afridea.et (until the founder's own domain; `gojoline.vercel.app` also works). Vercel project `gojoline`, functions in `fra1`, connected to GitHub (`main` deploys to production).
+- **Live:** https://gojoline.afridea.et (until the founder's own domain; `gojoline.vercel.app` also works). Vercel project `gojoline`, functions in `fra1`, linked to GitHub on 2026-11-15 (pushes to `main` deploy to production). `gojoline.vercel.app` redirects (308) to `gojoline.afridea.et`; the Telegram webhook points at the new domain. Uptime: Sentry monitor on `/api/health` every 5 minutes.
 - Production env set on Vercel (2026-11-15): `DATABASE_URL` (Neon, pooled), `UPSTASH_REDIS_REST_URL`/`_TOKEN` (new free Upstash database `gojoline`, Frankfurt), `SAYSITE_ANTHROPIC_API_KEY`, `VERCEL_TOKEN`/`_TEAM_ID`/`_PROJECT_ID`, `SANDBOX_SNAPSHOT_ID`, `CSP_FRAME_ORIGINS`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET` (generated), `BETTER_AUTH_SECRET` (generated), `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL`, `SENTRY_DSN`, `AGENT_MODEL`. Telegram webhook registered to `/api/telegram/webhook`.
 - Still unset (features stay off until added): SMS/email sign-in provider, `PAYMENT_*`, `ADMIN_EMAILS`/`ADMIN_PHONES`, R2/Cloudflare, Chapa.
 - Sentry: project `gojoline` in the founder's Sentry organization. Set `SENTRY_DSN=https://28282cb223995ae0d77745325c298faf@o4512429782990848.ingest.us.sentry.io/4512432933371904` (a DSN is a public client key). Server errors only; no browser SDK.
@@ -82,7 +82,6 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Vercel Sandbox snapshot storage: sandboxes start again (checked 2026-11-15); the code no longer leaves snapshots behind. The 47 old automatic snapshots can still be deleted in the Vercel project to free space (keep the 2 manual ones).
 - Eval targets: build success (100%), cost per first site (median $0.089) and cost per edit (median $0.0295, 2026-11-15) are met. Still open: the Amharic quality score, which needs a native-speaker review of `evals/.runs/`.
 - Legal review: `/[lang]/privacy` and `/[lang]/terms` are drafts written from what the product does (`lib/i18n/messages/legal.ts`, EN + AM, marked as drafts on the page). A lawyer should review them, and the founder should add the legal entity name and a contact address.
-- Uptime monitor: once the app has a production URL, create a Sentry uptime monitor on `https://<app>/api/health` (60 s interval). The endpoint exists and returns 503 when the database is down.
 - Takedown policy and terms: the report page and takedown flow work, but the rules sites must follow (acceptable use) need the founder's and a lawyer's wording before launch (Slice 8 terms page).
 - Payment details and prices: sign in as an admin (`ADMIN_EMAILS` is set to the founder's Vercel account email) and fill in Admin → Settings (Telebirr number, CBE account, account name, prices). Until then the Plan page says payments are coming soon.
 - Vercel plan: Hobby allows 10 sandboxes at a time (each owner editing uses one for up to 15 minutes). For more than ~10 owners editing at once, the team needs Vercel Pro. Plan changes are the founder's decision.
