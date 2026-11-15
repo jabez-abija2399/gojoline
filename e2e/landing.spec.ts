@@ -35,22 +35,37 @@ test.describe("landing page", () => {
     });
   }
 
-  test("hero: pick a business; twelve real sites; FAQ opens; prices show; Start free goes to sign-in", async ({ page }) => {
+  test("hero: pick a business; FAQ opens; the menu leads to Templates and Prices; Start free goes to sign-in", async ({ page }) => {
     await page.goto("/en");
     const clinic = page.getByRole("button", { name: "Clinic", exact: true });
     await clinic.click();
     await expect(clinic).toHaveAttribute("aria-pressed", "true");
     // The description is filled in for editing.
     await expect(page.getByRole("textbox", { name: "Describe your business" })).toHaveValue(/A family clinic in Megenagna/);
-    // Twelve real sites to start from.
-    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(12);
     // The language card switches a real site's words with no script.
     await page.getByText("አማርኛ", { exact: true }).last().click();
     await expect(page.getByText("ቦሌ ቡና ቤት")).toBeVisible();
     const question = page.getByText("How do I pay?");
     await question.click();
     await expect(page.getByText(/send the transaction number/i)).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Simple prices in Birr" })).toBeVisible();
+    // Templates and prices have their own pages, reached from the menu (behind "Menu" on phones).
+    const openMenu = async () => {
+      if (test.info().project.name === "mobile") await page.getByText("Menu", { exact: true }).click();
+    };
+    await openMenu();
+    await page.getByRole("navigation", { name: "Main" }).filter({ visible: true }).getByRole("link", { name: "Templates" }).click();
+    await expect(page).toHaveURL(/\/en\/templates$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Start from a real site" })).toBeVisible();
+    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(12);
+    await expectNoSeriousA11yIssues(page);
+    await expectNoHorizontalScroll(page);
+    await openMenu();
+    await page.getByRole("navigation", { name: "Main" }).filter({ visible: true }).getByRole("link", { name: "Prices" }).click();
+    await expect(page).toHaveURL(/\/en\/pricing$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Simple prices in Birr" })).toBeVisible();
+    await expect(page.getByText("How do I pay?")).toBeVisible();
+    await expectNoSeriousA11yIssues(page);
+    await expectNoHorizontalScroll(page);
     await page.getByRole("link", { name: "Start free" }).first().click();
     await expect(page).toHaveURL(/\/en\/sign-in/);
   });
@@ -90,6 +105,8 @@ test.describe("landing page", () => {
     await expect(page.getByRole("button", { name: "Hotel", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("img", { name: /builder with the site it made for Tana Shore Hotel/ })).toBeVisible();
 
+    await page.getByRole("link", { name: "See all 12 templates" }).click();
+    await expect(page).toHaveURL(/\/en\/templates$/);
     await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
     await expect(page).toHaveURL(/\/en\/sign-in\?next=/);
     const contact = `preset-${Date.now()}-${test.info().project.name}@example.com`;

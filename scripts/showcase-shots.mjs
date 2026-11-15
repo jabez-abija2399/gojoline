@@ -47,39 +47,69 @@ mkdirSync(outDir, { recursive: true });
 const browser = await chromium.launch();
 const manifest = {};
 const presets = readdirSync(join(root, "templates", "site", "presets")).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)).sort();
-for (const id of presets) {
-  const json = readFileSync(join(root, "templates", "site", "presets", `${id}.json`), "utf8");
+// The landing page shows a few of these sites dressed in Gojoline's own colours, so the page
+// stays within the brand palette. Same content, only the theme differs.
+const BRAND_THEME = { primary: "#FF5B35", accent: "#121212", background: "#FBF9F6", text: "#121212" };
+const BRAND_IDS = ["cafe", "hotel", "clinic", "shop", "personal"];
+
+async function build(json) {
   writeFileSync(join(work, "src", "site.json"), json);
   run(["vite", "build"]);
   run(["vite", "build", "--ssr", "src/entry-server.tsx", "--outDir", "dist-ssr"]);
   execFileSync("node", ["scripts/prerender.mjs"], { cwd: work, stdio: "pipe" });
+  return serve(join(work, "dist"));
+}
+
+async function shoot(port, languages, lang) {
+  // The first language lives at "/", the other under its code.
+  const path = languages[0] === lang ? "/" : `/${lang}/`;
+  const page = await browser.newPage({ viewport: { width: WIDTH, height: 844 }, deviceScaleFactor: 2, reducedMotion: "reduce" });
+  await page.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: "networkidle" });
+  // The phone call bar is fixed to the screen; in a picture of the whole page it would sit mid-page.
+  await page.addStyleTag({ content: ".sticky-actions{display:none!important}" });
+  await page.evaluate(() => document.fonts.ready);
+  const full = await page.evaluate(() => document.documentElement.scrollHeight);
+  const height = Math.min(full, MAX_HEIGHT);
+  const png = await page.screenshot({ clip: { x: 0, y: 0, width: WIDTH, height }, fullPage: true });
+  await page.close();
+  return png;
+}
+
+const topCrop = (png, file) =>
+  sharp(png)
+    .metadata()
+    .then((m) => sharp(png).extract({ left: 0, top: 0, width: m.width, height: Math.min(m.height, TOP_HEIGHT * 2) }).resize({ width: 520 }).webp({ quality: 62, effort: 6 }).toFile(join(outDir, file)));
+
+for (const id of presets) {
+  const json = readFileSync(join(root, "templates", "site", "presets", `${id}.json`), "utf8");
   const languages = JSON.parse(json).languages ?? ["en"];
-  const server = await serve(join(work, "dist"));
-  const port = server.address().port;
+  const server = await build(json);
   manifest[id] = {};
   for (const lang of ["en", "am"]) {
     if (!languages.includes(lang)) continue;
-    // The first language lives at "/", the other under its code.
-    const path = languages[0] === lang ? "/" : `/${lang}/`;
-    const page = await browser.newPage({ viewport: { width: WIDTH, height: 844 }, deviceScaleFactor: 2, reducedMotion: "reduce" });
-    await page.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: "networkidle" });
-    // The phone call bar is fixed to the screen; in a picture of the whole page it would sit mid-page.
-    await page.addStyleTag({ content: ".sticky-actions{display:none!important}" });
-    await page.evaluate(() => document.fonts.ready);
-    const full = await page.evaluate(() => document.documentElement.scrollHeight);
-    const height = Math.min(full, MAX_HEIGHT);
-    const png = await page.screenshot({ clip: { x: 0, y: 0, width: WIDTH, height }, fullPage: true });
-    await page.close();
+    const png = await shoot(server.address().port, languages, lang);
     const file = `${id}-${lang}.webp`;
     const info = await sharp(png).webp({ quality: 60, effort: 6 }).toFile(join(outDir, file));
     // The gallery shows only the top of each page: a small crop keeps phones from downloading
     // a whole page they will never scroll.
     const topFile = `${id}-${lang}-top.webp`;
-    const top = await sharp(png).extract({ left: 0, top: 0, width: info.width, height: Math.min(info.height, TOP_HEIGHT * 2) }).resize({ width: 520 }).webp({ quality: 62, effort: 6 }).toFile(join(outDir, topFile));
+    const top = await topCrop(png, topFile);
     manifest[id][lang] = { src: `/showcase/${file}`, width: info.width, height: info.height, top: { src: `/showcase/${topFile}`, width: top.width, height: top.height } };
     console.log(file, `${info.width}x${info.height}`, `${Math.round(info.size / 1024)} KB`);
   }
   server.close();
+  if (!BRAND_IDS.includes(id)) continue;
+  const site = JSON.parse(json);
+  site.theme = { ...site.theme, ...BRAND_THEME };
+  const branded = await build(JSON.stringify(site));
+  for (const lang of ["en", "am"]) {
+    if (!languages.includes(lang)) continue;
+    const brandFile = `${id}-${lang}-brand.webp`;
+    const b = await topCrop(await shoot(branded.address().port, languages, lang), brandFile);
+    manifest[id][lang].brand = { src: `/showcase/${brandFile}`, width: b.width, height: b.height };
+    console.log(brandFile, `${Math.round(b.size / 1024)} KB`);
+  }
+  branded.close();
 }
 await browser.close();
 writeFileSync(join(root, "lib", "landing", "showcase-shots.json"), `${JSON.stringify(manifest, null, 2)}\n`);

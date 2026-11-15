@@ -8,6 +8,11 @@
         "src": "/showcase/cafe-en-top.webp",
         "width": 520,
         "height": 933
+      },
+      "brand": {
+        "src": "/showcase/cafe-en-brand.webp",
+        "width": 520,
+        "height": 933
       }
     },
     "am": {
@@ -16,6 +21,11 @@
       "height": 7200,
       "top": {
         "src": "/showcase/cafe-am-top.webp",
+        "width": 520,
+        "height": 933
+      },
+      "brand": {
+        "src": "/showcase/cafe-am-brand.webp",
         "width": 520,
         "height": 933
       }
@@ -30,6 +40,11 @@
         "src": "/showcase/clinic-en-top.webp",
         "width": 520,
         "height": 933
+      },
+      "brand": {
+        "src": "/showcase/clinic-en-brand.webp",
+        "width": 520,
+        "height": 933
       }
     },
     "am": {
@@ -38,6 +53,11 @@
       "height": 7200,
       "top": {
         "src": "/showcase/clinic-am-top.webp",
+        "width": 520,
+        "height": 933
+      },
+      "brand": {
+        "src": "/showcase/clinic-am-brand.webp",
         "width": 520,
         "height": 933
       }
@@ -74,6 +94,11 @@
         "src": "/showcase/hotel-en-top.webp",
         "width": 520,
         "height": 933
+      },
+      "brand": {
+        "src": "/showcase/hotel-en-brand.webp",
+        "width": 520,
+        "height": 933
       }
     },
     "am": {
@@ -82,6 +107,11 @@
       "height": 7200,
       "top": {
         "src": "/showcase/hotel-am-top.webp",
+        "width": 520,
+        "height": 933
+      },
+      "brand": {
+        "src": "/showcase/hotel-am-brand.webp",
         "width": 520,
         "height": 933
       }
@@ -140,6 +170,11 @@
         "src": "/showcase/personal-en-top.webp",
         "width": 520,
         "height": 933
+      },
+      "brand": {
+        "src": "/showcase/personal-en-brand.webp",
+        "width": 520,
+        "height": 933
       }
     },
     "am": {
@@ -148,6 +183,11 @@
       "height": 7200,
       "top": {
         "src": "/showcase/personal-am-top.webp",
+        "width": 520,
+        "height": 933
+      },
+      "brand": {
+        "src": "/showcase/personal-am-brand.webp",
         "width": 520,
         "height": 933
       }
@@ -206,6 +246,11 @@
         "src": "/showcase/shop-en-top.webp",
         "width": 520,
         "height": 933
+      },
+      "brand": {
+        "src": "/showcase/shop-en-brand.webp",
+        "width": 520,
+        "height": 933
       }
     },
     "am": {
@@ -214,6 +259,11 @@
       "height": 7200,
       "top": {
         "src": "/showcase/shop-am-top.webp",
+        "width": 520,
+        "height": 933
+      },
+      "brand": {
+        "src": "/showcase/shop-am-brand.webp",
         "width": 520,
         "height": 933
       }

@@ -12,15 +12,15 @@ export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing
     { id: "business" as const, price: birr(prices.business), popular: false },
   ];
   return (
-    <section id="pricing" aria-labelledby="pricing-title" className="bg-white below-fold">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
-        <h2 id="pricing-title" className="text-center text-3xl display sm:text-5xl">{t.title}</h2>
+    <section aria-labelledby="pricing-title">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-20">
+        <h1 id="pricing-title" className="text-center text-4xl display sm:text-6xl">{t.title}</h1>
         <p className="mt-3 text-center text-lg text-ink-muted">{t.intro}</p>
         <ul className="mt-10 grid gap-6 md:grid-cols-3 md:items-stretch">
           {plans.map((p) => (
             <li key={p.id} className={`reveal relative flex flex-col gap-4 rounded-3xl border p-6 ${p.popular ? "border-ink bg-paper shadow-lg ring-2 ring-ink" : "border-line bg-white"}`}>
               {p.popular && <span className="absolute -top-4 left-6 rounded-full bg-ink px-3 py-1 font-semibold text-white">{t.popular}</span>}
-              <h3 className="text-xl font-bold">{planNames[p.id]}</h3>
+              <h2 className="text-xl font-bold">{planNames[p.id]}</h2>
               <p>
                 <span className="text-4xl display">{p.price}</span>
                 {p.id !== "free" && <span className="text-ink-muted"> {t.perMonth}</span>}

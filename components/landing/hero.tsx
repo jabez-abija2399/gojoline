@@ -1,4 +1,5 @@
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+import Link from "next/link";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { InstallApp } from "@/components/pwa/install-app";
@@ -9,7 +10,7 @@ import { Mosaic } from "./mosaic";
  * Headline, then the real product: pick a business and the builder below shows a real site
  * for it. Then one box to describe your own.
  */
-export function Hero({ t, locale, sites, text, install, promptTitle }: { t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string }) {
+export function Hero({ t, locale, sites, text, install, promptTitle, templates }: { t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string; templates: { href: string; label: string } }) {
   return (
     <div className="relative">
       <section aria-labelledby="hero-title" className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 pt-10 text-center sm:px-6 md:gap-7 md:pt-16">
@@ -31,6 +32,12 @@ export function Hero({ t, locale, sites, text, install, promptTitle }: { t: Mess
           sites={sites}
           t={text}
           backdrop={<Mosaic />}
+          more={
+            <Link href={templates.href} className="group inline-flex min-h-11 items-center gap-1 font-medium text-link underline-offset-4 hover:underline">
+              {templates.label}
+              <ArrowRight aria-hidden="true" className="size-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          }
           promptHeading={
             <h2 id="start-title" className="text-3xl display text-balance sm:text-5xl">
               {promptTitle}

@@ -33,7 +33,7 @@ export const am: Messages = {
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",
       build: "ድረ-ገጼን ሥራልኝ",
     },
-    nav: { label: "በዚህ ገጽ", examples: "ምሳሌዎች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ" },
+    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", menu: "ማውጫ", seeTemplates: "12ቱንም አብነቶች ይመልከቱ" },
     demo: {
       pick: "የንግድ ዓይነት ይምረጡ",
       prompts: {
@@ -615,6 +615,7 @@ export const am: Messages = {
     privacy: "ግላዊነት",
     terms: "የአጠቃቀም ውሎች",
     report: "ድረ-ገጽ ሪፖርት ያድርጉ",
+    pagesLabel: "ገጾች",
     linksLabel: "ሕግ እና ደኅንነት",
   },
   errors: errorMessages.am,
