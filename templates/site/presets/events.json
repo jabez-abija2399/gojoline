@@ -1,0 +1,529 @@
+{
+  "name": {
+    "en": "Fikir Events",
+    "am": "ፍቅር ኢቨንትስ"
+  },
+  "tagline": {
+    "en": "Weddings, graduations and corporate events planned with care in Addis Ababa",
+    "am": "ሠርግ፣ ምረቃ እና የድርጅት ዝግጅቶችን በጥንቃቄ እናዘጋጃለን"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#7A2E5C",
+    "accent": "#B8862B",
+    "background": "#FBF8F5",
+    "text": "#221A24",
+    "font": "classic",
+    "radius": "medium"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Atlas area, Bole, Addis Ababa",
+      "am": "አትላስ አካባቢ፣ ቦሌ፣ አዲስ አበባ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Saturday",
+          "am": "ከሰኞ እስከ ቅዳሜ"
+        },
+        "time": {
+          "en": "8:30 am to 6:00 pm",
+          "am": "ከጠዋቱ 2:30 እስከ ምሽቱ 12 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Sunday",
+          "am": "እሑድ"
+        },
+        "time": {
+          "en": "By appointment",
+          "am": "በቀጠሮ ብቻ"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Event planning, decoration and catering for weddings, graduations and company events in Addis Ababa.",
+        "am": "ለሠርግ፣ ለምረቃ እና ለድርጅት ዝግጅቶች የዝግጅት ዕቅድ፣ ዲኮር እና የምግብ አቅርቦት በአዲስ አበባ።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "Event planning in Addis Ababa",
+            "am": "የዝግጅት አዘጋጅ በአዲስ አበባ"
+          },
+          "heading": {
+            "en": "Your big day, beautifully planned",
+            "am": "ትልቁ ቀንዎ፣ በውበት የተዘጋጀ"
+          },
+          "subheading": {
+            "en": "Decoration, catering, music and coordination in one package, so you can enjoy the day with your guests.",
+            "am": "ዲኮር፣ ምግብ፣ ሙዚቃ እና ማስተባበር በአንድ ፓኬጅ፤ እርስዎ ከእንግዶችዎ ጋር ቀኑን ብቻ ይደሰቱ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book your event",
+              "am": "ዝግጅትዎን ያስይዙ"
+            },
+            "href": "/book"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See packages",
+              "am": "ፓኬጆቹን ይመልከቱ"
+            },
+            "href": "/packages"
+          }
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "We handle the details",
+            "am": "ዝርዝሩን እኛ እንይዛለን"
+          },
+          "body": {
+            "en": "From the first meeting to the last guest leaving, our team plans the timeline, sets up the venue and coordinates every supplier.\n\nWe work in hotels, halls, gardens and homes across Addis Ababa.",
+            "am": "ከመጀመሪያው ውይይት እስከ መጨረሻው እንግዳ መውጫ ድረስ ቡድናችን ፕሮግራሙን ያቅዳል፣ አዳራሹን ያዘጋጃል፣ ሁሉንም አቅራቢዎች ያስተባብራል።\n\nበአዲስ አበባ ውስጥ በሆቴሎች፣ በአዳራሾች፣ በግቢዎች እና በቤቶች እንሠራለን።"
+          }
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "What we organise",
+            "am": "የምናዘጋጃቸው ዝግጅቶች"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Weddings",
+                "am": "ሠርግ"
+              },
+              "description": {
+                "en": "Ring ceremony, wedding day and melse, with decoration and catering.",
+                "am": "ቀለበት፣ የሠርግ ቀን እና መልስ፤ ከዲኮር እና ከምግብ ጋር።"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Graduations",
+                "am": "ምረቃ"
+              },
+              "description": {
+                "en": "Graduation parties at home, in a garden or in a hall.",
+                "am": "የምረቃ ድግስ በቤት፣ በግቢ ወይም በአዳራሽ።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Corporate events",
+                "am": "የድርጅት ዝግጅቶች"
+              },
+              "description": {
+                "en": "Launches, workshops, staff parties and year-end dinners.",
+                "am": "የምርት ማስተዋወቂያ፣ ወርክሾፕ፣ የሠራተኞች ፕሮግራም እና የዓመት መጨረሻ እራት።"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Decoration and catering",
+                "am": "ዲኮር እና ምግብ"
+              },
+              "description": {
+                "en": "Book decoration or catering on its own for any occasion.",
+                "am": "ለማንኛውም ዝግጅት ዲኮር ወይም ምግብ ለብቻው ማዘዝ ይችላሉ።"
+              },
+              "icon": "star"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/packages",
+      "title": {
+        "en": "Packages and prices",
+        "am": "ፓኬጆች እና ዋጋዎች"
+      },
+      "nav": {
+        "en": "Packages",
+        "am": "ፓኬጆች"
+      },
+      "description": {
+        "en": "Event, decoration and catering packages with starting prices.",
+        "am": "የዝግጅት፣ የዲኮር እና የምግብ ፓኬጆች ከመነሻ ዋጋቸው ጋር።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "Event packages",
+            "am": "የዝግጅት ፓኬጆች"
+          },
+          "intro": {
+            "en": "Starting prices. The final quote depends on guests, venue and date.",
+            "am": "የመነሻ ዋጋዎች ናቸው። የመጨረሻው ዋጋ በእንግዶች ብዛት፣ በቦታ እና በቀኑ ይወሰናል።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Wedding Classic",
+                "am": "የሠርግ ክላሲክ"
+              },
+              "description": {
+                "en": "Up to 150 guests: decoration, catering, DJ and day coordination.",
+                "am": "እስከ 150 እንግዶች፤ ዲኮር፣ ምግብ፣ ዲጄ እና የዕለቱ ማስተባበር።"
+              },
+              "price": {
+                "amountMinor": 35000000,
+                "currency": "ETB"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Wedding Premium",
+                "am": "የሠርግ ፕሪሚየም"
+              },
+              "description": {
+                "en": "Up to 300 guests: full planning, stage, lighting, cake and decorated car.",
+                "am": "እስከ 300 እንግዶች፤ ሙሉ ዕቅድ፣ መድረክ፣ መብራት፣ ኬክ እና ያጌጠ መኪና።"
+              },
+              "price": {
+                "amountMinor": 75000000,
+                "currency": "ETB"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Graduation party",
+                "am": "የምረቃ ድግስ"
+              },
+              "description": {
+                "en": "Up to 60 guests: decoration, buffet, cake and photo corner.",
+                "am": "እስከ 60 እንግዶች፤ ዲኮር፣ ቡፌ፣ ኬክ እና የፎቶ ማዕዘን።"
+              },
+              "price": {
+                "amountMinor": 8500000,
+                "currency": "ETB"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Corporate event",
+                "am": "የድርጅት ዝግጅት"
+              },
+              "description": {
+                "en": "Up to 100 guests: venue setup, sound system, coffee breaks and lunch.",
+                "am": "እስከ 100 እንግዶች፤ የአዳራሽ ዝግጅት፣ የድምፅ ሲስተም፣ የሻይ ቡና እረፍት እና ምሳ።"
+              },
+              "price": {
+                "amountMinor": 12000000,
+                "currency": "ETB"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Decoration only",
+                "am": "ዲኮር ብቻ"
+              },
+              "description": {
+                "en": "Flowers, backdrop, table setting and lighting for any event.",
+                "am": "አበባ፣ የጀርባ ማስጌጫ፣ የጠረጴዛ አቀማመጥ እና መብራት ለማንኛውም ዝግጅት።"
+              },
+              "price": {
+                "amountMinor": 4500000,
+                "currency": "ETB"
+              },
+              "icon": "check"
+            }
+          ]
+        },
+        {
+          "type": "menu",
+          "heading": {
+            "en": "Catering packages",
+            "am": "የምግብ ፓኬጆች"
+          },
+          "intro": {
+            "en": "Price per guest, minimum 50 guests. Includes service staff.",
+            "am": "ዋጋው በአንድ እንግዳ ነው፤ ቢያንስ 50 እንግዶች። አስተናጋጆችን ያካትታል።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "Buffet",
+                "am": "ቡፌ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Traditional buffet",
+                    "am": "ባህላዊ ቡፌ"
+                  },
+                  "description": {
+                    "en": "Doro wat, key wat, tibs, shiro, injera and salad",
+                    "am": "ዶሮ ወጥ፣ ቀይ ወጥ፣ ጥብስ፣ ሽሮ፣ እንጀራ እና ሰላጣ"
+                  },
+                  "price": {
+                    "amountMinor": 120000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "Popular",
+                    "am": "ተወዳጅ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Mixed buffet",
+                    "am": "የተደባለቀ ቡፌ"
+                  },
+                  "description": {
+                    "en": "Ethiopian and international dishes with dessert",
+                    "am": "የኢትዮጵያ እና የውጭ ምግቦች ከጣፋጭ ጋር"
+                  },
+                  "price": {
+                    "amountMinor": 180000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Fasting buffet",
+                    "am": "የጾም ቡፌ"
+                  },
+                  "description": {
+                    "en": "Shiro, misir, gomen, atkilt and fasting pasta",
+                    "am": "ሽሮ፣ ምስር፣ ጎመን፣ አትክልት እና የጾም ፓስታ"
+                  },
+                  "price": {
+                    "amountMinor": 95000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Extras",
+                "am": "ተጨማሪዎች"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Coffee ceremony corner",
+                    "am": "የቡና ሥነ ሥርዓት ማዕዘን"
+                  },
+                  "description": {
+                    "en": "Per event, with popcorn and incense",
+                    "am": "ለአንድ ዝግጅት፣ ከፈንዲሻ እና ዕጣን ጋር"
+                  },
+                  "price": {
+                    "amountMinor": 600000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Soft drinks and water",
+                    "am": "ለስላሳ መጠጥ እና ውሃ"
+                  },
+                  "description": {
+                    "en": "Per guest",
+                    "am": "በአንድ እንግዳ"
+                  },
+                  "price": {
+                    "amountMinor": 15000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Celebration cake",
+                    "am": "የበዓል ኬክ"
+                  },
+                  "description": {
+                    "en": "Three tiers, about 100 slices",
+                    "am": "ባለ ሶስት ፎቅ፣ ወደ 100 ቁራጭ"
+                  },
+                  "price": {
+                    "amountMinor": 1800000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/book",
+      "title": {
+        "en": "Book your event",
+        "am": "ዝግጅትዎን ያስይዙ"
+      },
+      "nav": {
+        "en": "Book",
+        "am": "ቀጠሮ"
+      },
+      "description": {
+        "en": "Send us your event date and details. We will call you with a quote.",
+        "am": "የዝግጅትዎን ቀን እና ዝርዝር ይላኩልን። ዋጋውን ይዘን እንደውልልዎታለን።"
+      },
+      "sections": [
+        {
+          "type": "form",
+          "id": "event-booking",
+          "kind": "booking",
+          "heading": {
+            "en": "Tell us about your event",
+            "am": "ስለ ዝግጅትዎ ይንገሩን"
+          },
+          "intro": {
+            "en": "Popular dates fill up fast. Book early and we will call you within one working day.",
+            "am": "ተፈላጊ ቀናት ቶሎ ይያዛሉ። አስቀድመው ያስይዙ፤ በአንድ የሥራ ቀን ውስጥ እንደውልልዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "event_date",
+              "label": {
+                "en": "Event date",
+                "am": "የዝግጅቱ ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "event_type",
+              "label": {
+                "en": "Event type",
+                "am": "የዝግጅቱ ዓይነት"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Wedding",
+                  "am": "ሠርግ"
+                },
+                {
+                  "en": "Engagement or melse",
+                  "am": "ቀለበት ወይም መልስ"
+                },
+                {
+                  "en": "Graduation",
+                  "am": "ምረቃ"
+                },
+                {
+                  "en": "Corporate event",
+                  "am": "የድርጅት ዝግጅት"
+                },
+                {
+                  "en": "Birthday",
+                  "am": "የልደት በዓል"
+                },
+                {
+                  "en": "Decoration or catering only",
+                  "am": "ዲኮር ወይም ምግብ ብቻ"
+                },
+                {
+                  "en": "Other",
+                  "am": "ሌላ"
+                }
+              ]
+            },
+            {
+              "name": "guests",
+              "label": {
+                "en": "Number of guests",
+                "am": "የእንግዶች ብዛት"
+              },
+              "type": "number",
+              "required": true
+            },
+            {
+              "name": "details",
+              "label": {
+                "en": "Venue and other details",
+                "am": "ቦታ እና ሌሎች ዝርዝሮች"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send booking request",
+            "am": "ጥያቄውን ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will call you soon to discuss your event.",
+            "am": "እናመሰግናለን! ስለ ዝግጅትዎ ለመነጋገር በቅርቡ እንደውልልዎታለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Visit our office or call us",
+            "am": "ቢሯችንን ይጎብኙ ወይም ይደውሉልን"
+          },
+          "intro": {
+            "en": "Come and see our decoration samples and taste our menu by appointment.",
+            "am": "በቀጠሮ መጥተው የዲኮር ናሙናዎቻችንን ይመልከቱ፣ ምግባችንንም ይቅመሱ።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Where to find us",
+            "am": "የምንገኝበት"
+          },
+          "query": "Atlas, Bole, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

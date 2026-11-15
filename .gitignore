@@ -1,8 +1,8 @@
 node_modules/
 .next/
-out/
-dist/
-build/
+/out/
+/dist/
+/build/
 coverage/
 playwright-report/
 test-results/
@@ -13,3 +13,10 @@ test-results/
 .DS_Store
 *.log
 .claude/settings.local.json
+*.tsbuildinfo
+next-env.d.ts
+.pnp.*
+*.pem
+/blob-report/
+/.lighthouseci/
+evals/.runs/

@@ -3,61 +3,86 @@
 Work top to bottom. Each task is a vertical slice: build it, test it, tick it, commit, push. Record choices in `docs/DECISIONS.md`.
 
 ## Slice 0: Foundation
-- [ ] Next.js App Router + TypeScript strict + Tailwind + shadcn/ui, brand tokens and fonts (Outfit, Inter, Noto Sans Ethiopic)
-- [ ] Scripts: dev, build, typecheck, lint, test (Vitest), e2e (Playwright)
-- [ ] i18n (en, am) with language switch; Amharic layout check
-- [ ] Favicon, app icons, manifest and social image from `brand/`
-- [ ] Landing page in brand (EN + AM) with waitlist form
-- [ ] GitHub Actions CI: typecheck, lint, test, npm audit, Lighthouse CI budgets
-- [ ] Security headers and CSP middleware; Dependabot config
-- [ ] Playwright + axe accessibility checks wired into e2e
+- [x] Next.js App Router + TypeScript strict + Tailwind + shadcn/ui, brand tokens and fonts (Outfit, Inter, Noto Sans Ethiopic)
+- [x] Scripts: dev, build, typecheck, lint, test (Vitest), e2e (Playwright)
+- [x] i18n (en, am) with language switch; Amharic layout check
+- [x] Favicon, app icons, manifest and social image from `brand/`
+- [x] Landing page in brand (EN + AM) with waitlist form
+- [x] GitHub Actions CI: typecheck, lint, test, npm audit, Lighthouse CI budgets
+- [x] Security headers and CSP middleware; Dependabot config
+- [x] Playwright + axe accessibility checks wired into e2e
 
 ## Slice 1: Core loop (prompt → site → preview → edit)
-- [ ] `templates/site/` Vite + React template with sections library (hero, about, menu/services, gallery, contact, map, footer)
-- [ ] `LLMProvider` (Anthropic SDK, streaming, prompt caching, cost logging)
-- [ ] Agent loop with file tools and capped auto-fix
-- [ ] `SandboxProvider` (Vercel Sandbox) with pre-installed snapshot and preview URL
-- [ ] Builder UI: chat, live preview iframe, code view, mobile layout
-- [ ] Version history and restore
-- [ ] Eval set (30 prompts EN + AM) and runner reporting success, cost, time
+- [x] `templates/site/` Vite + React template with sections library (hero, about, menu/services, gallery, contact, map, footer)
+- [x] `LLMProvider` (Anthropic SDK, streaming, prompt caching, cost logging)
+- [x] Agent loop with file tools and capped auto-fix
+- [x] `SandboxProvider` (Vercel Sandbox) with pre-installed snapshot and preview URL
+- [x] Builder UI: chat, live preview iframe, code view, mobile layout
+- [x] Version history and restore
+- [x] Eval set (30 prompts EN + AM) and runner reporting success, cost, time
 
 ## Slice 2: Accounts and data
-- [ ] Neon + Drizzle schema and migrations
-- [ ] Better Auth (email + phone), projects list
-- [ ] Persist projects, messages, versions, AI usage
+- [x] Neon + Drizzle schema and migrations
+- [x] Better Auth (email + phone), projects list
+- [x] Persist projects, messages, versions, AI usage
 
 ## Slice 3: Publish
-- [ ] `PublishProvider`: build and publish static site to `name.gojoline.site`
-- [ ] SEO basics in template (prerender, meta, sitemap)
-- [ ] Custom domains (paid)
+- [x] `PublishProvider`: build and publish static site to `name.gojoline.site` (Vercel fallback on `gojo-<name>.vercel.app` until Cloudflare credentials and the domain exist)
+- [x] SEO basics in template (prerender, meta, sitemap)
+- [x] Custom domains (paid; switched on per plan once billing lands in Slice 6)
 
 ## Slice 4: Gojoline Cloud (simple full-stack)
-- [ ] Public Data API for forms, lists, uploads with per-site keys and rate limits
-- [ ] Template components: contact/booking/order forms, editable lists
-- [ ] Owner dashboard (submissions, list editing), owner login
+- [x] Public Data API for forms, lists, uploads with per-site keys and rate limits
+- [x] Template components: contact/booking/order forms, editable lists
+- [x] Owner dashboard (submissions, list editing), owner login
 
 ## Slice 5: Telegram
-- [ ] Bot: link owner chat, form notifications
-- [ ] Bot edits: text, prices, photos through the agent
+- [x] Bot: link owner chat, form notifications
+- [x] Bot edits: text, prices, photos through the agent
 
 ## Slice 6: Billing
-- [ ] Plans, credits ledger, metering per AI edit
-- [ ] Manual payments: receipt upload, admin approval, audit log
+- [x] Plans, credits ledger, metering per AI edit
+- [x] Manual payments: receipt upload, admin approval, audit log
 
 ## Slice 7: Trust and safety + admin
-- [ ] Content checks on prompts and pages before publish
-- [ ] Verification before publish, report-abuse link, takedown
-- [ ] Admin panel: payments, reports, sites, costs
+- [x] Content checks on prompts and pages before publish
+- [x] Verification before publish, report-abuse link, takedown
+- [x] Admin panel: payments, reports, sites, costs
 
 ## Slice 8: Beta readiness
-- [ ] All templates (10 industries) in EN + AM
-- [ ] Sentry, uptime checks, error pages
-- [ ] Privacy policy and terms pages (to be reviewed by a lawyer)
+- [x] All templates (10 industries) in EN + AM
+- [x] Sentry, uptime checks, error pages
+- [x] Privacy policy and terms pages (to be reviewed by a lawyer)
 - [ ] Eval targets met (see PRD)
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
+## Follow-ups
+- Admin Sites tab shows "Replace the live page again" on every taken-down site; show it only after a failed notice deploy (needs a stored deploy flag).
+- Safety: text inside uploaded photos isn't checked (no OCR or vision check yet); admins can take such sites down from reports.
+- Amharic in the 11 industry templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
+- Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
+- Edit cost median $0.031 vs $0.03 target: re-run evals after the search_replace prompt change.
+
+
+## Notes for deployment
+- Sentry: project `gojoline` in the founder's Sentry organization. Set `SENTRY_DSN=https://28282cb223995ae0d77745325c298faf@o4512429782990848.ingest.us.sentry.io/4512432933371904` (a DSN is a public client key). Server errors only; no browser SDK.
+- Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
+- Database: Neon project `gojoline` (purple-brook-23584048, Frankfurt), database `gojoline`, migration `0000_init` applied. Set `DATABASE_URL` in the Vercel project (pooled connection string from the Neon console). Without it, dev and e2e use memory stores.
+- Production needs `BETTER_AUTH_SECRET` (32+ chars) and `BETTER_AUTH_URL`.
+- Builder needs `SAYSITE_ANTHROPIC_API_KEY`, `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, `SANDBOX_SNAPSHOT_ID` and `CSP_FRAME_ORIGINS=https://*.vercel.run`.
+
+- Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
+
 ## Blocked (needs the founder)
+- **Vercel Sandbox snapshot storage is full (Hobby limit), so the builder and evals can't start sandboxes right now** (`402 ... usage limit exceeded for Snapshots Storage`). Cause: named sandboxes in `@vercel/sandbox` v4 were persistent by default, so each idle sandbox left a ~340 MB snapshot (47 automatic snapshots, ~16 GB, all from eval runs). Fixed in code (sandboxes are now non-persistent; snapshots expire after a day). To unblock now, delete the 47 snapshots with creation method "automatic" in the Vercel project's Sandbox snapshots (keep the 2 "manual" ones; `SANDBOX_SNAPSHOT_ID` is one of them), or wait for them to expire, or move to Vercel Pro. My attempt to delete them was stopped by the session's permission rules, so it is left for you.
+- Eval targets: first-try build (100%), after auto-fix (100%) and cost per first site (median $0.086) are met. Still open: cost per edit (last full run $0.031 vs $0.03; re-run blocked by the snapshot storage above) and the Amharic quality score (needs a native-speaker review of `evals/.runs/`).
+- Legal review: `/[lang]/privacy` and `/[lang]/terms` are drafts written from what the product does (`lib/i18n/messages/legal.ts`, EN + AM, marked as drafts on the page). A lawyer should review them, and the founder should add the legal entity name and a contact address.
+- Uptime monitor: once the app has a production URL, create a Sentry uptime monitor on `https://<app>/api/health` (60 s interval). The endpoint exists and returns 503 when the database is down.
+- Takedown policy and terms: the report page and takedown flow work, but the rules sites must follow (acceptable use) need the founder's and a lawyer's wording before launch (Slice 8 terms page).
+- Payment details: set `PAYMENT_TELEBIRR_NUMBER`, `PAYMENT_CBE_ACCOUNT`, `PAYMENT_ACCOUNT_NAME` (until set, the Plan page says payments are coming soon) and the admin list `ADMIN_EMAILS` / `ADMIN_PHONES`. Prices in `lib/billing/plans.ts` are placeholders for the founder to confirm.
+- Vercel plan: Hobby allows 10 sandboxes at a time (each owner editing uses one for up to 15 minutes). For more than ~10 owners editing at once, the team needs Vercel Pro. Plan changes are the founder's decision.
+- Sign-in code delivery: choose an SMS gateway for Ethiopian numbers (e.g. AfroMessage, Geez SMS) and/or an email service (e.g. Resend) and add its key. Until then production sign-in shows "not open yet" (`OtpSender` interface in `lib/providers/notify/otp.ts`; development prints codes in the server log).
 - Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider
-- Publishing domain (`gojoline.site` or similar): until bought, publish under a free subdomain
+- Publishing domain (`gojoline.site` or similar): until bought, sites publish to `https://gojo-<name>.vercel.app` (one Vercel project per site)

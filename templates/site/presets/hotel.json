@@ -1,0 +1,668 @@
+{
+  "name": {
+    "en": "Tana Shore Hotel",
+    "am": "ጣና ሾር ሆቴል"
+  },
+  "tagline": {
+    "en": "Comfortable rooms by Lake Tana in Bahir Dar",
+    "am": "በባሕር ዳር፣ ጣና ሐይቅ ዳር ምቹ ክፍሎች"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#1F5F7A",
+    "accent": "#B5762A",
+    "background": "#F6FAFB",
+    "text": "#13222B",
+    "font": "modern",
+    "radius": "medium"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Lakeside road, near St. George Church, Bahir Dar",
+      "am": "የሐይቅ ዳር መንገድ፣ ቅዱስ ጊዮርጊስ ቤተ ክርስቲያን አጠገብ፣ ባሕር ዳር"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Reception",
+          "am": "እንግዳ መቀበያ"
+        },
+        "time": {
+          "en": "Open 24 hours",
+          "am": "24 ሰዓት ክፍት"
+        }
+      },
+      {
+        "days": {
+          "en": "Restaurant, every day",
+          "am": "ምግብ ቤት፣ በየቀኑ"
+        },
+        "time": {
+          "en": "6:30 am to 10:00 pm",
+          "am": "ከጠዋቱ 12:30 እስከ ምሽቱ 4 ሰዓት"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "A friendly mid-size hotel on the shore of Lake Tana with lake-view rooms, a restaurant and airport pickup.",
+        "am": "በጣና ሐይቅ ዳር የሚገኝ ሆቴል፤ ሐይቁን የሚያሳዩ ክፍሎች፣ ምግብ ቤት እና የአውሮፕላን ማረፊያ ትራንስፖርት።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "On the shore of Lake Tana",
+            "am": "በጣና ሐይቅ ዳርቻ"
+          },
+          "heading": {
+            "en": "Wake up to the lake",
+            "am": "ጠዋት ሐይቁን እያዩ ይንቁ"
+          },
+          "subheading": {
+            "en": "Quiet rooms, a lakeside restaurant and pickup from Bahir Dar airport. Book directly and we confirm by phone.",
+            "am": "ጸጥ ያሉ ክፍሎች፣ የሐይቅ ዳር ምግብ ቤት እና ከባሕር ዳር አውሮፕላን ማረፊያ ትራንስፖርት። በቀጥታ ያስይዙ፤ በስልክ እናረጋግጥልዎታለን።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book a room",
+              "am": "ክፍል ያስይዙ"
+            },
+            "href": "/rooms#booking"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See rooms and prices",
+              "am": "ክፍሎችና ዋጋዎች"
+            },
+            "href": "/rooms"
+          }
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "Your base for Bahir Dar",
+            "am": "በባሕር ዳር ቆይታዎ ማረፊያ"
+          },
+          "body": {
+            "en": "Tana Shore Hotel has 42 rooms, a garden by the water and a team that knows the city well.\n\nWe can arrange boat trips to the island monasteries and day trips to the Blue Nile Falls.",
+            "am": "ጣና ሾር ሆቴል 42 ክፍሎች፣ ውሃው አጠገብ የአትክልት ስፍራ እና ከተማዋን በደንብ የሚያውቁ ሠራተኞች አሉት።\n\nበጀልባ ወደ ደሴት ገዳማት እና ወደ ጢስ ዓባይ ፏፏቴ የሚደረጉ ጉብኝቶችን እናዘጋጅልዎታለን።"
+          }
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "What we offer",
+            "am": "የምናቀርባቸው አገልግሎቶች"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Airport pickup",
+                "am": "ከአውሮፕላን ማረፊያ ማምጣት"
+              },
+              "description": {
+                "en": "Our driver meets you at Bahir Dar airport. Send us your flight time.",
+                "am": "ሾፌራችን ባሕር ዳር አውሮፕላን ማረፊያ ይቀበልዎታል። የበረራ ሰዓትዎን ይላኩልን።"
+              },
+              "price": {
+                "amountMinor": 80000,
+                "currency": "ETB"
+              },
+              "icon": "car"
+            },
+            {
+              "title": {
+                "en": "Lakeside restaurant",
+                "am": "የሐይቅ ዳር ምግብ ቤት"
+              },
+              "description": {
+                "en": "Ethiopian and international dishes, fresh Lake Tana fish.",
+                "am": "የኢትዮጵያ እና የውጭ ምግቦች፣ ትኩስ የጣና አሳ።"
+              },
+              "icon": "utensils"
+            },
+            {
+              "title": {
+                "en": "Boat and day trips",
+                "am": "የጀልባ እና የቀን ጉብኝቶች"
+              },
+              "description": {
+                "en": "We book trusted boats and guides for the monasteries and the falls.",
+                "am": "ለገዳማቱ እና ለፏፏቴው አስተማማኝ ጀልባ እና አስጎብኚ እንይዝልዎታለን።"
+              },
+              "icon": "map"
+            },
+            {
+              "title": {
+                "en": "Breakfast included",
+                "am": "ቁርስ ተካቷል"
+              },
+              "description": {
+                "en": "Every room rate includes breakfast and Wi-Fi.",
+                "am": "የሁሉም ክፍሎች ዋጋ ቁርስ እና ዋይፋይ ያካትታል።"
+              },
+              "icon": "check"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/rooms",
+      "title": {
+        "en": "Rooms and booking",
+        "am": "ክፍሎች እና ማስያዣ"
+      },
+      "nav": {
+        "en": "Rooms",
+        "am": "ክፍሎች"
+      },
+      "description": {
+        "en": "Room types and prices per night, with breakfast included. Book online.",
+        "am": "የክፍል አይነቶች እና የአንድ ሌሊት ዋጋ፣ ቁርስን ጨምሮ። በመስመር ላይ ያስይዙ።"
+      },
+      "sections": [
+        {
+          "type": "menu",
+          "heading": {
+            "en": "Rooms and prices",
+            "am": "ክፍሎች እና ዋጋዎች"
+          },
+          "intro": {
+            "en": "Prices are per room per night, including breakfast, Wi-Fi and VAT.",
+            "am": "ዋጋዎቹ ለአንድ ክፍል በአንድ ሌሊት ሲሆኑ ቁርስ፣ ዋይፋይ እና ተ.እ.ታን ያካትታሉ።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "Rooms",
+                "am": "ክፍሎች"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Standard single",
+                    "am": "ስታንዳርድ ነጠላ"
+                  },
+                  "description": {
+                    "en": "One bed, garden view, for 1 person",
+                    "am": "አንድ አልጋ፣ የአትክልት ስፍራ እይታ፣ ለ1 ሰው"
+                  },
+                  "price": {
+                    "amountMinor": 350000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Standard double",
+                    "am": "ስታንዳርድ ደብል"
+                  },
+                  "description": {
+                    "en": "Double or twin beds, for 2 people",
+                    "am": "ደብል ወይም ሁለት አልጋ፣ ለ2 ሰው"
+                  },
+                  "price": {
+                    "amountMinor": 450000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Lake view double",
+                    "am": "የሐይቅ እይታ ደብል"
+                  },
+                  "description": {
+                    "en": "Balcony facing Lake Tana, for 2 people",
+                    "am": "ወደ ጣና የሚያይ በረንዳ፣ ለ2 ሰው"
+                  },
+                  "price": {
+                    "amountMinor": 600000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "Most popular",
+                    "am": "በጣም ተወዳጅ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Family suite",
+                    "am": "የቤተሰብ ስዊት"
+                  },
+                  "description": {
+                    "en": "Two rooms, lake view, up to 4 people",
+                    "am": "ሁለት ክፍል፣ የሐይቅ እይታ፣ እስከ 4 ሰው"
+                  },
+                  "price": {
+                    "amountMinor": 850000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Extras",
+                "am": "ተጨማሪዎች"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Extra bed",
+                    "am": "ተጨማሪ አልጋ"
+                  },
+                  "price": {
+                    "amountMinor": 60000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Airport pickup (one way)",
+                    "am": "ከአውሮፕላን ማረፊያ ትራንስፖርት (አንድ ጉዞ)"
+                  },
+                  "price": {
+                    "amountMinor": 80000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "booking",
+          "kind": "booking",
+          "heading": {
+            "en": "Book your room",
+            "am": "ክፍልዎን ያስይዙ"
+          },
+          "intro": {
+            "en": "Send your dates and we will call you to confirm. No payment needed now.",
+            "am": "ቀኖችዎን ይላኩልን፤ ለማረጋገጥ እንደውልልዎታለን። አሁን ክፍያ አያስፈልግም።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Full name",
+                "am": "ሙሉ ስም"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "check_in",
+              "label": {
+                "en": "Check-in date",
+                "am": "የመግቢያ ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "nights",
+              "label": {
+                "en": "Number of nights",
+                "am": "የሌሊቶች ብዛት"
+              },
+              "type": "number",
+              "required": true
+            },
+            {
+              "name": "guests",
+              "label": {
+                "en": "Number of guests",
+                "am": "የእንግዶች ብዛት"
+              },
+              "type": "number",
+              "required": true
+            },
+            {
+              "name": "room_type",
+              "label": {
+                "en": "Room type",
+                "am": "የክፍል አይነት"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Standard single",
+                  "am": "ስታንዳርድ ነጠላ"
+                },
+                {
+                  "en": "Standard double",
+                  "am": "ስታንዳርድ ደብል"
+                },
+                {
+                  "en": "Lake view double",
+                  "am": "የሐይቅ እይታ ደብል"
+                },
+                {
+                  "en": "Family suite",
+                  "am": "የቤተሰብ ስዊት"
+                }
+              ]
+            },
+            {
+              "name": "notes",
+              "label": {
+                "en": "Flight time or other requests",
+                "am": "የበረራ ሰዓት ወይም ሌላ ጥያቄ"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send booking",
+            "am": "ማስያዣውን ላክ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will call you soon to confirm your room.",
+            "am": "እናመሰግናለን! ክፍልዎን ለማረጋገጥ በቅርቡ እንደውልልዎታለን።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/restaurant",
+      "title": {
+        "en": "Restaurant",
+        "am": "ምግብ ቤት"
+      },
+      "nav": {
+        "en": "Restaurant",
+        "am": "ምግብ ቤት"
+      },
+      "description": {
+        "en": "Lakeside restaurant with Ethiopian food, Lake Tana fish and international dishes.",
+        "am": "የኢትዮጵያ ምግብ፣ የጣና አሳ እና የውጭ ምግቦች የሚቀርቡበት የሐይቅ ዳር ምግብ ቤት።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "banner",
+          "heading": {
+            "en": "Dinner by the water",
+            "am": "እራት በውሃ ዳር"
+          },
+          "subheading": {
+            "en": "Open to hotel guests and visitors every day from 6:30 am.",
+            "am": "ለሆቴሉ እንግዶች እና ለጎብኚዎች በየቀኑ ከጠዋቱ 12:30 ጀምሮ ክፍት።"
+          }
+        },
+        {
+          "type": "menu",
+          "heading": {
+            "en": "Restaurant menu",
+            "am": "የምግብ ቤቱ ምናሌ"
+          },
+          "intro": {
+            "en": "Prices include VAT.",
+            "am": "ዋጋዎቹ ተ.እ.ታን ያካትታሉ።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "Ethiopian",
+                "am": "የኢትዮጵያ ምግቦች"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Beef tibs",
+                    "am": "የበሬ ጥብስ"
+                  },
+                  "description": {
+                    "en": "With injera and awaze",
+                    "am": "ከእንጀራ እና አዋዜ ጋር"
+                  },
+                  "price": {
+                    "amountMinor": 65000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Shiro",
+                    "am": "ሽሮ"
+                  },
+                  "price": {
+                    "amountMinor": 35000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Fasting platter",
+                    "am": "የጾም በያይነቱ"
+                  },
+                  "description": {
+                    "en": "Lentils, greens, shiro and more",
+                    "am": "ምስር፣ ጎመን፣ ሽሮ እና ሌሎችም"
+                  },
+                  "price": {
+                    "amountMinor": 45000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "From the lake",
+                "am": "ከሐይቁ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Fish goulash",
+                    "am": "የአሳ ጉላሽ"
+                  },
+                  "description": {
+                    "en": "Fresh Lake Tana fish",
+                    "am": "ትኩስ የጣና አሳ"
+                  },
+                  "price": {
+                    "amountMinor": 55000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "Chef's pick",
+                    "am": "የሼፉ ምርጫ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Fried fish",
+                    "am": "አሳ ጥብስ"
+                  },
+                  "description": {
+                    "en": "Whole fish with salad",
+                    "am": "ሙሉ አሳ ከሰላጣ ጋር"
+                  },
+                  "price": {
+                    "amountMinor": 60000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "International",
+                "am": "የውጭ ምግቦች"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Pasta with tomato sauce",
+                    "am": "ፓስታ በቲማቲም ሶስ"
+                  },
+                  "price": {
+                    "amountMinor": 40000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Club sandwich",
+                    "am": "ክለብ ሳንድዊች"
+                  },
+                  "price": {
+                    "amountMinor": 50000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Drinks",
+                "am": "መጠጦች"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Macchiato",
+                    "am": "ማኪያቶ"
+                  },
+                  "price": {
+                    "amountMinor": 6000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Fresh juice",
+                    "am": "ትኩስ ጭማቂ"
+                  },
+                  "price": {
+                    "amountMinor": 12000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact",
+        "am": "አድራሻ"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "ያግኙን"
+      },
+      "description": {
+        "en": "Call, message or visit Tana Shore Hotel in Bahir Dar.",
+        "am": "ጣና ሾር ሆቴልን በስልክ፣ በመልዕክት ወይም በአካል ያግኙ።"
+      },
+      "sections": [
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Get in touch",
+            "am": "ያግኙን"
+          },
+          "intro": {
+            "en": "Reception answers the phone day and night.",
+            "am": "እንግዳ መቀበያ ቀንም ሌሊትም ስልክ ያነሳል።"
+          }
+        },
+        {
+          "type": "form",
+          "id": "contact",
+          "kind": "contact",
+          "heading": {
+            "en": "Send us a message",
+            "am": "መልዕክት ይላኩልን"
+          },
+          "intro": {
+            "en": "Questions about groups, trips or pickup? Write to us.",
+            "am": "ስለ ቡድን ቆይታ፣ ጉብኝት ወይም ትራንስፖርት ጥያቄ አለዎት? ይጻፉልን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Message",
+                "am": "መልዕክት"
+              },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": {
+            "en": "Send",
+            "am": "ላክ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will get back to you soon.",
+            "am": "እናመሰግናለን! በቅርቡ እንመልስልዎታለን።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Find us in Bahir Dar",
+            "am": "በባሕር ዳር የምንገኝበት"
+          },
+          "query": "Lake Tana, Bahir Dar, Ethiopia"
+        }
+      ]
+    }
+  ]
+}

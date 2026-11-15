@@ -1,0 +1,44 @@
+import { costNanoUsd } from "./pricing";
+import { textBlock, toolUseBlock } from "./fake";
+import type { LLMProvider, LLMRequest, LLMResponse } from "./types";
+
+/**
+ * Deterministic stand-in used by e2e tests (E2E=1). Renames the site to the owner's message,
+ * or writes a broken file when the message contains "break it", so UI paths can be tested
+ * without spending money.
+ */
+export class DemoLLMProvider implements LLMProvider {
+  async complete(req: LLMRequest): Promise<LLMResponse> {
+    const last = req.messages.at(-1);
+    const lastText = typeof last?.content === "string" ? last.content : "";
+    const isToolResult = Array.isArray(last?.content) && last.content.some((c) => c.type === "tool_result");
+    const owner = /<owner_message>\n([\s\S]*?)\n<\/owner_message>/.exec(lastText)?.[1] ?? "";
+    const current = /<current_site_json>\n([\s\S]*?)\n<\/current_site_json>/.exec(lastText)?.[1] ?? "";
+
+    let content;
+    if (isToolResult || !owner) {
+      content = [textBlock("Done. I updated your site.")];
+    } else if (owner.toLowerCase().includes("question")) {
+      content = [textBlock("What is your business called?")];
+    } else if (owner.toLowerCase().includes("break it")) {
+      content = [toolUseBlock("write_file", { path: "src/site.json", content: "BROKEN" }), toolUseBlock("run_build", {})];
+    } else {
+      const name = owner.replace(/["\\\n]/g, "").slice(0, 40);
+      const match = /"name": \{\s*"en": "([^"]*)"/.exec(current);
+      content = match
+        ? [toolUseBlock("search_replace", { path: "src/site.json", old_string: match[0], new_string: match[0].replace(match[1]!, name) }), toolUseBlock("run_build", {})]
+        : [textBlock("I could not find the site name.")];
+    }
+    req.onText?.(content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join(""));
+    const usage = { inputTokens: 100, outputTokens: 20, cacheReadTokens: 0, cacheWriteTokens: 0 };
+    return {
+      content,
+      stopReason: content.some((b) => b.type === "tool_use") ? "tool_use" : "end_turn",
+      model: req.model,
+      usage,
+      costNanoUsd: costNanoUsd(req.model, usage),
+      durationMs: 5,
+      firstTokenMs: 5,
+    };
+  }
+}

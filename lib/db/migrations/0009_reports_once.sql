@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "abuse_reports_open_uq" ON "abuse_reports" USING btree ("site_id","reporter_key") WHERE "abuse_reports"."status" = 'open';

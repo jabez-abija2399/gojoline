@@ -1,0 +1,44 @@
+import "server-only";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join, relative } from "node:path";
+import { checkWritePath } from "@/lib/agent/workspace";
+
+const SKIP_DIRS = new Set(["node_modules", "dist", "dist-ssr", "test", ".vite", "presets"]);
+const BINARY = /\.(woff2?|png|jpe?g|webp|avif|ico)$/i;
+
+export const TEMPLATE_ROOT = join(process.cwd(), "templates", "site");
+
+export interface TemplateFile {
+  path: string;
+  content: string | Buffer;
+}
+
+/** All files of the site template (text and binary), relative to its root. */
+export function templateFiles(root = TEMPLATE_ROOT): TemplateFile[] {
+  const out: TemplateFile[] = [];
+  const walk = (dir: string) => {
+    for (const name of readdirSync(dir)) {
+      const full = join(dir, name);
+      if (statSync(full).isDirectory()) {
+        if (!SKIP_DIRS.has(name)) walk(full);
+        continue;
+      }
+      const path = relative(root, full).replace(/\\/g, "/");
+      out.push({ path, content: BINARY.test(path) ? readFileSync(full) : readFileSync(full, "utf8") });
+    }
+  };
+  walk(root);
+  return out.sort((a, b) => a.path.localeCompare(b.path));
+}
+
+/** Files the agent may change; only these are saved in versions or restored into a sandbox. */
+export function isVersionedPath(path: string): boolean {
+  if (path.length > 200) return false;
+  const check = checkWritePath(path);
+  return check.ok && check.path === path;
+}
+
+/** Template files the agent may not change; re-written before every build. */
+export function lockedTemplateFiles(root = TEMPLATE_ROOT): TemplateFile[] {
+  return templateFiles(root).filter((f) => !isVersionedPath(f.path));
+}

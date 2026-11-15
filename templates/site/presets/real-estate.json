@@ -1,0 +1,704 @@
+{
+  "name": {
+    "en": "Selam Properties",
+    "am": "ሰላም ፕሮፐርቲስ"
+  },
+  "tagline": {
+    "en": "Apartments and houses for rent and sale in Addis Ababa",
+    "am": "በአዲስ አበባ የሚከራዩና የሚሸጡ አፓርትመንቶችና ቤቶች"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#1E4E79",
+    "accent": "#B7791F",
+    "background": "#F7F9FB",
+    "text": "#1A202C",
+    "font": "modern",
+    "radius": "small"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "whatsapp": "+251 911 000 000",
+    "address": {
+      "en": "Bole, near Atlas Hotel, Addis Ababa",
+      "am": "ቦሌ፣ አትላስ ሆቴል አጠገብ፣ አዲስ አበባ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Friday",
+          "am": "ከሰኞ እስከ ዓርብ"
+        },
+        "time": {
+          "en": "8:30 am to 6:00 pm",
+          "am": "ከጠዋቱ 2:30 እስከ ምሽቱ 12 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Saturday",
+          "am": "ቅዳሜ"
+        },
+        "time": {
+          "en": "9:00 am to 1:00 pm",
+          "am": "ከጠዋቱ 3 እስከ ቀኑ 7 ሰዓት"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Find an apartment or house to rent or buy in Addis Ababa with a trusted local agent.",
+        "am": "በአዲስ አበባ የሚከራይ ወይም የሚሸጥ አፓርትመንትና ቤት በታማኝ ደላላ ያግኙ።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "eyebrow": {
+            "en": "Rent, buy or sell in Addis",
+            "am": "በአዲስ አበባ ይከራዩ፣ ይግዙ ወይም ይሽጡ"
+          },
+          "heading": {
+            "en": "Find the right home without the stress",
+            "am": "የሚስማማዎትን ቤት ያለ ጭንቀት ያግኙ"
+          },
+          "subheading": {
+            "en": "Checked apartments and houses in Bole, CMC, Ayat, Kazanchis and more. Clear prices and honest advice.",
+            "am": "በቦሌ፣ ሲኤምሲ፣ አያት፣ ካዛንቺስ እና ሌሎች አካባቢዎች የተረጋገጡ አፓርትመንቶችና ቤቶች። ግልጽ ዋጋ እና ታማኝ ምክር።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "See listings",
+              "am": "ቤቶቹን ይመልከቱ"
+            },
+            "href": "/listings"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Book a viewing",
+              "am": "ቤት ለማየት ቀጠሮ ይያዙ"
+            },
+            "href": "/listings#viewing"
+          }
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "A local agency you can trust",
+            "am": "የሚታመን የሰፈር ኤጀንሲ"
+          },
+          "body": {
+            "en": "We visit every property before we list it, so you only see homes that are really available.\n\nWe help tenants, buyers, owners and families abroad with everything from the first viewing to the signed contract.",
+            "am": "ከማስተዋወቃችን በፊት እያንዳንዱን ቤት ሄደን እናያለን፤ ስለዚህ የሚያዩት በእርግጥ የሚገኙ ቤቶችን ብቻ ነው።\n\nተከራዮችን፣ ገዢዎችን፣ የቤት ባለቤቶችን እና በውጭ የሚኖሩ ቤተሰቦችን ከመጀመሪያው ጉብኝት እስከ ውል ፊርማ ድረስ እናግዛለን።"
+          }
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "How we help",
+            "am": "እንዴት እናግዝዎታለን"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Rent a home",
+                "am": "ቤት ይከራዩ"
+              },
+              "description": {
+                "en": "Apartments, villas and offices that match your budget.",
+                "am": "ከበጀትዎ ጋር የሚስማሙ አፓርትመንቶች፣ ቪላዎችና ቢሮዎች።"
+              },
+              "icon": "home"
+            },
+            {
+              "title": {
+                "en": "Buy or sell",
+                "am": "ይግዙ ወይም ይሽጡ"
+              },
+              "description": {
+                "en": "Fair prices and help with title deed transfer.",
+                "am": "ፍትሐዊ ዋጋ እና የካርታ ስም ዝውውር ድጋፍ።"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "Property management",
+                "am": "የንብረት አስተዳደር"
+              },
+              "description": {
+                "en": "We find tenants, collect rent and handle repairs.",
+                "am": "ተከራይ እንፈልጋለን፣ ኪራይ እንሰበስባለን፣ ጥገናም እንከታተላለን።"
+              },
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Call or visit our office",
+            "am": "ይደውሉልን ወይም ቢሯችንን ይጎብኙ"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/listings",
+      "title": {
+        "en": "Listings",
+        "am": "የሚከራዩና የሚሸጡ ቤቶች"
+      },
+      "nav": {
+        "en": "Listings",
+        "am": "ቤቶች"
+      },
+      "description": {
+        "en": "Current apartments and houses for rent and sale in Addis Ababa with prices.",
+        "am": "በአዲስ አበባ አሁን የሚከራዩና የሚሸጡ አፓርትመንቶችና ቤቶች ከነዋጋቸው።"
+      },
+      "sections": [
+        {
+          "type": "menu",
+          "heading": {
+            "en": "Available now",
+            "am": "አሁን የሚገኙ"
+          },
+          "intro": {
+            "en": "Rent prices are per month. Sale prices can be negotiated. Call to check the latest list.",
+            "am": "የኪራይ ዋጋዎች በወር ናቸው። የሽያጭ ዋጋ ለድርድር ክፍት ነው። አዲሱን ዝርዝር ለማወቅ ይደውሉ።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "For rent",
+                "am": "የሚከራዩ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "2-bedroom apartment, Bole",
+                    "am": "ባለ 2 መኝታ አፓርትመንት፣ ቦሌ"
+                  },
+                  "description": {
+                    "en": "Furnished, 110 m², near Atlas, with parking",
+                    "am": "ዕቃ የተሟላለት፣ 110 ካሬ፣ አትላስ አካባቢ፣ የመኪና ማቆሚያ ያለው"
+                  },
+                  "price": {
+                    "amountMinor": 5500000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "Popular",
+                    "am": "ተፈላጊ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Studio apartment, Kazanchis",
+                    "am": "ስቱዲዮ አፓርትመንት፣ ካዛንቺስ"
+                  },
+                  "description": {
+                    "en": "45 m², water tank and backup generator",
+                    "am": "45 ካሬ፣ የውሃ ታንከር እና ጀነሬተር ያለው"
+                  },
+                  "price": {
+                    "amountMinor": 1800000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "4-bedroom villa, Old Airport",
+                    "am": "ባለ 4 መኝታ ቪላ፣ ኦልድ ኤርፖርት"
+                  },
+                  "description": {
+                    "en": "G+1 with garden and servant quarters",
+                    "am": "ጂ+1፣ የአትክልት ግቢ እና የሠራተኛ ክፍል ያለው"
+                  },
+                  "price": {
+                    "amountMinor": 15000000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Office space, Kazanchis",
+                    "am": "የቢሮ ቦታ፣ ካዛንቺስ"
+                  },
+                  "description": {
+                    "en": "120 m² on the 4th floor, with lift",
+                    "am": "120 ካሬ፣ 4ኛ ፎቅ፣ ሊፍት ያለው"
+                  },
+                  "price": {
+                    "amountMinor": 9000000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "For sale",
+                "am": "የሚሸጡ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "2-bedroom condominium, Ayat",
+                    "am": "ባለ 2 መኝታ ኮንዶሚኒየም፣ አያት"
+                  },
+                  "description": {
+                    "en": "75 m², 2nd floor, title deed ready",
+                    "am": "75 ካሬ፣ 2ኛ ፎቅ፣ ካርታ የተዘጋጀለት"
+                  },
+                  "price": {
+                    "amountMinor": 380000000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "3-bedroom apartment, Summit",
+                    "am": "ባለ 3 መኝታ አፓርትመንት፣ ሰሚት"
+                  },
+                  "description": {
+                    "en": "140 m², new building, two balconies",
+                    "am": "140 ካሬ፣ አዲስ ሕንፃ፣ ሁለት በረንዳ ያለው"
+                  },
+                  "price": {
+                    "amountMinor": 920000000,
+                    "currency": "ETB"
+                  },
+                  "tag": {
+                    "en": "New",
+                    "am": "አዲስ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "G+1 house, CMC",
+                    "am": "ጂ+1 ቤት፣ ሲኤምሲ"
+                  },
+                  "description": {
+                    "en": "5 bedrooms on a 300 m² plot",
+                    "am": "5 መኝታ ክፍሎች፣ 300 ካሬ ቦታ ላይ"
+                  },
+                  "tag": {
+                    "en": "Price on request",
+                    "am": "ዋጋ በጥያቄ"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "viewing",
+          "kind": "booking",
+          "heading": {
+            "en": "Book a viewing",
+            "am": "ቤት ለማየት ቀጠሮ ይያዙ"
+          },
+          "intro": {
+            "en": "Choose a property and a day. We will call you to confirm the time.",
+            "am": "ቤቱን እና ቀኑን ይምረጡ። ሰዓቱን ለማረጋገጥ እንደውልልዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "property",
+              "label": {
+                "en": "Property",
+                "am": "ቤቱ"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "2-bedroom apartment, Bole",
+                  "am": "ባለ 2 መኝታ አፓርትመንት፣ ቦሌ"
+                },
+                {
+                  "en": "Studio apartment, Kazanchis",
+                  "am": "ስቱዲዮ አፓርትመንት፣ ካዛንቺስ"
+                },
+                {
+                  "en": "4-bedroom villa, Old Airport",
+                  "am": "ባለ 4 መኝታ ቪላ፣ ኦልድ ኤርፖርት"
+                },
+                {
+                  "en": "Office space, Kazanchis",
+                  "am": "የቢሮ ቦታ፣ ካዛንቺስ"
+                },
+                {
+                  "en": "2-bedroom condominium, Ayat",
+                  "am": "ባለ 2 መኝታ ኮንዶሚኒየም፣ አያት"
+                },
+                {
+                  "en": "3-bedroom apartment, Summit",
+                  "am": "ባለ 3 መኝታ አፓርትመንት፣ ሰሚት"
+                },
+                {
+                  "en": "G+1 house, CMC",
+                  "am": "ጂ+1 ቤት፣ ሲኤምሲ"
+                }
+              ]
+            },
+            {
+              "name": "date",
+              "label": {
+                "en": "Preferred date",
+                "am": "የሚመችዎ ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "time",
+              "label": {
+                "en": "Preferred time",
+                "am": "የሚመችዎ ሰዓት"
+              },
+              "type": "time"
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Anything we should know?",
+                "am": "ሌላ ማወቅ ያለብን ነገር አለ?"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Request viewing",
+            "am": "ቀጠሮ ይጠይቁ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will call you soon to confirm.",
+            "am": "እናመሰግናለን! ለማረጋገጥ በቅርቡ እንደውልልዎታለን።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/services",
+      "title": {
+        "en": "Services",
+        "am": "አገልግሎቶች"
+      },
+      "nav": {
+        "en": "Services",
+        "am": "አገልግሎቶች"
+      },
+      "description": {
+        "en": "Property management, valuation and sales support in Addis Ababa.",
+        "am": "በአዲስ አበባ የንብረት አስተዳደር፣ የቤት ግምት እና የሽያጭ ድጋፍ።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "Our services",
+            "am": "አገልግሎቶቻችን"
+          },
+          "intro": {
+            "en": "For owners, tenants, buyers and families living abroad.",
+            "am": "ለቤት ባለቤቶች፣ ለተከራዮች፣ ለገዢዎች እና በውጭ ለሚኖሩ ቤተሰቦች።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Property management",
+                "am": "የንብረት አስተዳደር"
+              },
+              "description": {
+                "en": "We find and check tenants, collect rent, arrange repairs and send you a monthly report. Fee based on monthly rent.",
+                "am": "ተከራይ እንፈልጋለን፣ እናጣራለን፣ ኪራይ እንሰበስባለን፣ ጥገና እናስተካክላለን፤ በየወሩም ሪፖርት እንልክልዎታለን። ክፍያው በወር ኪራይ መሠረት ነው።"
+              },
+              "icon": "home"
+            },
+            {
+              "title": {
+                "en": "Property valuation",
+                "am": "የቤት ዋጋ ግምት"
+              },
+              "description": {
+                "en": "A site visit and a written estimate of market value for sale, rent or bank loans.",
+                "am": "ቦታው ድረስ መጥተን ለሽያጭ፣ ለኪራይ ወይም ለባንክ ብድር የሚሆን የገበያ ዋጋ ግምት በጽሑፍ እንሰጣለን።"
+              },
+              "price": {
+                "amountMinor": 1500000,
+                "currency": "ETB"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "Selling your home",
+                "am": "ቤትዎን መሸጥ"
+              },
+              "description": {
+                "en": "Pricing advice, listing, viewings with serious buyers and help with the sale contract.",
+                "am": "የዋጋ ምክር፣ ማስተዋወቅ፣ ከቁም ነገረኛ ገዢዎች ጋር ጉብኝት እና የሽያጭ ውል ድጋፍ።"
+              },
+              "icon": "star"
+            },
+            {
+              "title": {
+                "en": "Paperwork support",
+                "am": "የሰነድ ጉዳዮች ድጋፍ"
+              },
+              "description": {
+                "en": "Help with rental contracts and title deed transfer at the land office.",
+                "am": "በኪራይ ውል እና በመሬት ልማት ቢሮ የካርታ ስም ዝውውር እናግዛለን።"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Help for diaspora",
+                "am": "ለዳያስፖራ ድጋፍ"
+              },
+              "description": {
+                "en": "Video viewings and updates by Telegram or WhatsApp while you are abroad.",
+                "am": "ውጭ ሆነው በቪዲዮ ቤቱን ማየት እና በቴሌግራም ወይም በዋትስአፕ መረጃ ማግኘት ይችላሉ።"
+              },
+              "icon": "phone"
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "valuation",
+          "kind": "contact",
+          "heading": {
+            "en": "Request a valuation or management quote",
+            "am": "የዋጋ ግምት ወይም የአስተዳደር ዋጋ ይጠይቁ"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "service",
+              "label": {
+                "en": "Service",
+                "am": "አገልግሎት"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Valuation",
+                  "am": "የዋጋ ግምት"
+                },
+                {
+                  "en": "Property management",
+                  "am": "የንብረት አስተዳደር"
+                },
+                {
+                  "en": "Selling my home",
+                  "am": "ቤቴን መሸጥ"
+                }
+              ]
+            },
+            {
+              "name": "location",
+              "label": {
+                "en": "Property location",
+                "am": "ቤቱ የሚገኝበት ቦታ"
+              },
+              "type": "text"
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Details",
+                "am": "ዝርዝር"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send request",
+            "am": "ጥያቄውን ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! An agent will call you within one working day.",
+            "am": "እናመሰግናለን! ባለሙያችን በአንድ የሥራ ቀን ውስጥ ይደውልልዎታል።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact",
+        "am": "ያግኙን"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "ያግኙን"
+      },
+      "description": {
+        "en": "Call, message or visit Selam Properties in Bole.",
+        "am": "ሰላም ፕሮፐርቲስን ይደውሉ፣ መልዕክት ይላኩ ወይም ቦሌ ቢሯችን ይምጡ።"
+      },
+      "sections": [
+        {
+          "type": "form",
+          "id": "enquiry",
+          "kind": "contact",
+          "heading": {
+            "en": "Tell us what you are looking for",
+            "am": "ምን እንደሚፈልጉ ይንገሩን"
+          },
+          "intro": {
+            "en": "We will send you matching homes by phone or Telegram.",
+            "am": "የሚስማሙ ቤቶችን በስልክ ወይም በቴሌግራም እንልክልዎታለን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "interest",
+              "label": {
+                "en": "I want to",
+                "am": "የምፈልገው"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Rent a home",
+                  "am": "ቤት መከራየት"
+                },
+                {
+                  "en": "Buy a home",
+                  "am": "ቤት መግዛት"
+                },
+                {
+                  "en": "Rent out my property",
+                  "am": "ቤቴን ማከራየት"
+                },
+                {
+                  "en": "Sell my property",
+                  "am": "ቤቴን መሸጥ"
+                }
+              ]
+            },
+            {
+              "name": "area",
+              "label": {
+                "en": "Preferred area",
+                "am": "የሚፈልጉት አካባቢ"
+              },
+              "type": "text"
+            },
+            {
+              "name": "budget",
+              "label": {
+                "en": "Budget (Birr)",
+                "am": "በጀት (በብር)"
+              },
+              "type": "number"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send",
+            "am": "ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will contact you soon.",
+            "am": "እናመሰግናለን! በቅርቡ እናገኝዎታለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Our office",
+            "am": "ቢሯችን"
+          },
+          "intro": {
+            "en": "Walk in during office hours or call to book a time with an agent.",
+            "am": "በሥራ ሰዓት በቀጥታ ይምጡ ወይም ከባለሙያ ጋር ቀጠሮ ለመያዝ ይደውሉ።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Find us",
+            "am": "የምንገኝበት"
+          },
+          "query": "Atlas, Bole, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+import "server-only";
+import { reportError } from "@/lib/observability/report";
+import { extractForms } from "@/lib/cloud/forms";
+import type { CloudStore } from "@/lib/cloud/types";
+import type { Lock } from "@/lib/lock";
+import type { AssetStore } from "@/lib/cloud/assets";
+import type { EntitlementsResolver } from "@/lib/billing/entitlements";
+import type { ProjectStore } from "@/lib/projects/types";
+import type { PublishFile, PublishProvider } from "@/lib/providers/publish/types";
+import type { SandboxProvider } from "@/lib/providers/sandbox/types";
+import { checkSlug, suggestSlug } from "@/lib/sites/slug";
+import type { Site, SiteStore } from "@/lib/sites/types";
+import { takenDownPage } from "@/lib/safety/takedown";
+import { publishedSiteHeaders, scanBuiltSite, type ScanIssue } from "./scan";
+
+/** Extra checks before a site goes public (content safety is added in Slice 7). */
+export interface PublishGuard {
+  /** `source` is the version's editable files (site.json holds every word the site can show). */
+  check(input: { files: PublishFile[]; source: Record<string, string>; projectId: string; ownerId: string }): Promise<{ ok: true } | { ok: false; reasons: string[] }>;
+}
+
+export interface PublishDeps {
+  store: ProjectStore;
+  sites: SiteStore;
+  sandboxes: SandboxProvider;
+  publisher: PublishProvider;
+  lock: Lock;
+  appUrl: string;
+  /** Origin of the public Data API the site's forms post to (defaults to the app's origin). */
+  dataApiOrigin?: string;
+  guards?: PublishGuard[];
+  /** Where form definitions are stored at publish time. */
+  cloud?: CloudStore;
+  assets?: AssetStore;
+  /** Records blocked publishes (moderation trail). */
+  audit?: (entry: { actorId: string; action: string; targetType: string; targetId: string; data?: Record<string, unknown> }) => Promise<void>;
+  /** Plan limits (site count, badge). Without it: Free limits. */
+  entitlements?: EntitlementsResolver;
+}
+
+export type PublishError =
+  | "not_found"
+  | "no_version"
+  | "unverified"
+  | "slug_format"
+  | "slug_reserved"
+  | "slug_taken"
+  | "busy"
+  | "taken_down"
+  | "build_failed"
+  | "blocked"
+  | "plan_limit"
+  | "unfinished"
+  | "failed";
+
+export type PublishOutcome =
+  | { ok: true; site: Site }
+  | { ok: false; error: PublishError; issues?: ScanIssue[]; reasons?: string[] };
+
+export interface PublishUser {
+  id: string;
+  verified: boolean;
+}
+
+/** What the publish dialog shows before the owner publishes. */
+export async function publishInfo(deps: PublishDeps, user: PublishUser, projectId: string) {
+  const project = await deps.store.getProject(user.id, projectId);
+  if (!project) return null;
+  const site = await deps.sites.getByProject(user.id, projectId);
+  const slug = site?.slug ?? suggestSlug(project.name, `site-${projectId.slice(0, 8)}`);
+  return {
+    slug,
+    url: site?.url ?? null,
+    status: site?.status ?? null,
+    publishedVersion: site?.publishedVersion ?? null,
+    prefix: deps.publisher.urlFor("SLUG").split("SLUG")[0]!,
+    suffix: deps.publisher.urlFor("SLUG").split("SLUG")[1]!,
+  };
+}
+
+export async function publishSite(deps: PublishDeps, user: PublishUser, projectId: string, requestedSlug: string): Promise<PublishOutcome> {
+  const project = await deps.store.getProject(user.id, projectId);
+  if (!project) return { ok: false, error: "not_found" };
+  // Verification before publish (Phase 1 trust rule).
+  if (!user.verified) return { ok: false, error: "unverified" };
+  const existing = await deps.sites.getByProject(user.id, projectId);
+  if (existing?.status === "taken_down") return { ok: false, error: "taken_down" };
+
+  // The address can't change after the first publish (links people saved keep working).
+  const slug = existing?.slug ?? requestedSlug.trim().toLowerCase();
+  const problem = checkSlug(slug);
+  if (problem) return { ok: false, error: problem === "format" ? "slug_format" : "slug_reserved" };
+  if (await deps.sites.slugTaken(slug, projectId)) return { ok: false, error: "slug_taken" };
+
+  const latest = await deps.store.latestVersion(user.id, projectId);
+  if (!latest) return { ok: false, error: "no_version" };
+  // Example details from a template (placeholder phone, [bracketed] text) must not go live.
+  if (hasExampleDetails(latest.files["src/site.json"] ?? "")) return { ok: false, error: "unfinished" };
+  const plan = deps.entitlements ? await deps.entitlements(user.id) : null;
+  const firstLive = (existing?.status ?? "pending") !== "published";
+  // A new live site: one at a time per owner, so parallel publishes can't pass the site limit together.
+  const ownerToken = firstLive ? await deps.lock.acquire(`publish-owner:${user.id}`, 6 * 60_000) : null;
+  if (firstLive && !ownerToken) return { ok: false, error: "busy" };
+  try {
+    if (firstLive && (await deps.sites.countPublished(user.id, projectId)) >= (plan?.maxSites ?? 1)) {
+      return { ok: false, error: "plan_limit" };
+    }
+    return await deployLocked(deps, user, projectId, { existing, slug, latest, plan, project });
+  } finally {
+    if (ownerToken) await deps.lock.release(`publish-owner:${user.id}`, ownerToken);
+  }
+}
+
+async function deployLocked(
+  deps: PublishDeps,
+  user: PublishUser,
+  projectId: string,
+  ctx: { existing: Site | null; slug: string; latest: NonNullable<Awaited<ReturnType<ProjectStore["latestVersion"]>>>; plan: Awaited<ReturnType<EntitlementsResolver>> | null; project: NonNullable<Awaited<ReturnType<ProjectStore["getProject"]>>> },
+): Promise<PublishOutcome> {
+  const { existing, slug, latest, plan, project } = ctx;
+  // Claim the address in our database before anything is deployed (atomic, unique).
+  if (!existing && !(await deps.sites.reserve(user.id, projectId, slug, deps.publisher.name))) return { ok: false, error: "slug_taken" };
+
+  const token = await deps.lock.acquire(`project:${projectId}`, 6 * 60_000);
+  if (!token) return { ok: false, error: "busy" };
+  try {
+    const reserved = existing ?? (await deps.sites.getByProject(user.id, projectId));
+    const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
+    const url = deps.publisher.urlFor(slug);
+    const sandbox = await deps.sandboxes.open(projectId, latest.files);
+    if (deps.assets) await sandbox.writeAssets(await deps.assets.files(user.id, projectId));
+    const build = await sandbox.buildForPublish({
+      VITE_SITE_URL: url,
+      VITE_SITE_ID: projectId,
+      VITE_REPORT_URL: `${deps.appUrl.replace(/\/$/, "")}/${project.locale}/report?site=${encodeURIComponent(slug)}`,
+      VITE_DATA_API_URL: apiOrigin,
+      VITE_BADGE: plan && !plan.badge ? "0" : "1",
+      ...(reserved?.siteKey ? { VITE_SITE_KEY: reserved.siteKey } : {}),
+    });
+    if (!build.ok) {
+      console.warn("publish build failed", projectId, build.output.slice(-1500));
+      return { ok: false, error: "build_failed" };
+    }
+
+    const issues = scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] });
+    if (issues.length) return { ok: false, error: "blocked", issues };
+    for (const guard of deps.guards ?? []) {
+      const verdict = await guard.check({ files: build.files, source: latest.files, projectId, ownerId: user.id });
+      if (!verdict.ok) {
+        await deps.audit?.({ actorId: user.id, action: "publish.blocked", targetType: "project", targetId: projectId, data: { reasons: verdict.reasons, version: latest.number } }).catch(() => undefined);
+        return { ok: false, error: "blocked", reasons: verdict.reasons };
+      }
+    }
+
+    // An admin may have taken the site down while this build ran.
+    if ((await deps.sites.getByProject(user.id, projectId))?.status === "taken_down") return { ok: false, error: "taken_down" };
+    const result = await deps.publisher.publish({
+      slug,
+      files: build.files,
+      headers: publishedSiteHeaders({ dataApiOrigin: apiOrigin }),
+      providerProjectId: existing?.providerProjectId ?? null,
+    });
+    const site = await deps.sites.savePublished(user.id, {
+      projectId,
+      slug,
+      provider: deps.publisher.name,
+      providerProjectId: result.providerProjectId,
+      url: result.url,
+      publishedVersion: latest.number,
+      lastDeploymentId: result.deploymentId,
+      publishedAt: new Date(),
+    });
+    // Forms on the live site accept answers only in the shape published here.
+    await deps.cloud?.saveForms(site.id, extractForms(latest.files["src/site.json"] ?? ""));
+    return { ok: true, site };
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : "unknown";
+    if (msg === "Site is taken down") {
+      // Taken down during the deploy: put the notice back over what was just deployed.
+      const site = await deps.sites.getByProject(user.id, projectId);
+      if (site?.providerProjectId) {
+        const page = Buffer.from(takenDownPage());
+        try {
+          await deps.publisher.publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: site.providerProjectId });
+          await deps.publisher.restrictOldDeployments?.(site.providerProjectId);
+        } catch (e) {
+          reportError("takedown redeploy failed", e, { projectId });
+        }
+      }
+      return { ok: false, error: "taken_down" };
+    }
+    reportError("publish failed", error, { projectId });
+    return { ok: false, error: msg === "slug_taken" ? "slug_taken" : "failed" };
+  } finally {
+    await deps.lock.release(`project:${projectId}`, token);
+  }
+}
+
+/** True while a site still shows a template's placeholders (in any text value). */
+export function hasExampleDetails(siteJson: string): boolean {
+  let found = false;
+  const walk = (v: unknown) => {
+    if (found) return;
+    if (typeof v === "string") found = /\+251 ?911 ?000 ?000/.test(v) || /\[[^\]\n]{2,40}\]/.test(v);
+    else if (Array.isArray(v)) v.forEach(walk);
+    else if (v && typeof v === "object") Object.values(v).forEach(walk);
+  };
+  try {
+    walk(JSON.parse(siteJson));
+  } catch {
+    return false;
+  }
+  return found;
+}

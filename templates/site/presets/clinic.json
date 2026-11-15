@@ -1,0 +1,470 @@
+{
+  "name": {
+    "en": "Megenagna Family Clinic",
+    "am": "መገናኛ የቤተሰብ ክሊኒክ"
+  },
+  "tagline": {
+    "en": "Everyday care for adults and children in Megenagna",
+    "am": "ለአዋቂዎችና ለልጆች የዕለት ተዕለት ሕክምና በመገናኛ"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#0B6E7F",
+    "accent": "#1F4E79",
+    "background": "#F5FAFB",
+    "text": "#12232E",
+    "font": "modern",
+    "radius": "medium"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Megenagna, near the roundabout, Addis Ababa",
+      "am": "መገናኛ፣ አደባባዩ አጠገብ፣ አዲስ አበባ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Saturday",
+          "am": "ከሰኞ እስከ ቅዳሜ"
+        },
+        "time": {
+          "en": "8:00 am to 8:00 pm",
+          "am": "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Sunday",
+          "am": "እሑድ"
+        },
+        "time": {
+          "en": "9:00 am to 1:00 pm",
+          "am": "ከጠዋቱ 3 እስከ ቀኑ 7 ሰዓት"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "A family clinic in Megenagna offering general check-ups, children's health visits, lab tests and ultrasound.",
+        "am": "በመገናኛ የሚገኝ የቤተሰብ ክሊኒክ፤ አጠቃላይ ምርመራ፣ የሕፃናት ሕክምና፣ የላብራቶሪ ምርመራ እና አልትራሳውንድ።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "Open Monday to Saturday, 8 am to 8 pm",
+            "am": "ከሰኞ እስከ ቅዳሜ ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት ክፍት"
+          },
+          "heading": {
+            "en": "Care for the whole family, close to home",
+            "am": "ለመላው ቤተሰብ ሕክምና፣ በቅርብዎ"
+          },
+          "subheading": {
+            "en": "See a doctor, bring your child for a check-up, or do lab tests and ultrasound in one place.",
+            "am": "ሐኪም ማየት፣ ልጅዎን ማስመርመር፣ የላብራቶሪ ምርመራ እና አልትራሳውንድ በአንድ ቦታ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book an appointment",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/appointments"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Call us",
+              "am": "ይደውሉልን"
+            },
+            "href": "tel:+251911000000"
+          }
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "What we offer",
+            "am": "የምንሰጣቸው አገልግሎቶች"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "General practice",
+                "am": "አጠቃላይ ሕክምና"
+              },
+              "description": {
+                "en": "Consultations and check-ups for adults.",
+                "am": "ለአዋቂዎች የሐኪም ምክክር እና ምርመራ።"
+              },
+              "icon": "stethoscope"
+            },
+            {
+              "title": {
+                "en": "Children's health",
+                "am": "የሕፃናት ጤና"
+              },
+              "description": {
+                "en": "Check-ups and visits for babies and children.",
+                "am": "ለጨቅላ ሕፃናትና ለልጆች ምርመራ።"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Lab tests",
+                "am": "የላብራቶሪ ምርመራ"
+              },
+              "description": {
+                "en": "Common blood, urine and stool tests.",
+                "am": "የተለመዱ የደም፣ የሽንት እና የሰገራ ምርመራዎች።"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "Ultrasound",
+                "am": "አልትራሳውንድ"
+              },
+              "description": {
+                "en": "Abdominal and pregnancy ultrasound by appointment.",
+                "am": "የሆድ እና የእርግዝና አልትራሳውንድ በቀጠሮ።"
+              },
+              "icon": "calendar"
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "A neighbourhood clinic for families",
+            "am": "የሰፈር የቤተሰብ ክሊኒክ"
+          },
+          "body": {
+            "en": "We are a small team of doctors, nurses and lab staff serving families around Megenagna.\n\nWe take time to listen, explain clearly and refer you to a specialist or hospital when needed.",
+            "am": "በመገናኛ አካባቢ ቤተሰቦችን የምናገለግል የሐኪሞች፣ የነርሶች እና የላብራቶሪ ባለሙያዎች ቡድን ነን።\n\nጊዜ ወስደን እናዳምጥዎታለን፣ በግልጽ እናስረዳለን፤ ሲያስፈልግም ወደ ስፔሻሊስት ወይም ሆስፒታል እንልክዎታለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": {
+            "en": "Visit or call us",
+            "am": "ይጎብኙን ወይም ይደውሉልን"
+          },
+          "intro": {
+            "en": "In an emergency, go to the nearest hospital right away.",
+            "am": "ድንገተኛ ሁኔታ ሲያጋጥም ወዲያውኑ በአቅራቢያዎ ወዳለ ሆስፒታል ይሂዱ።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/services",
+      "title": {
+        "en": "Services and prices",
+        "am": "አገልግሎቶችና ዋጋዎች"
+      },
+      "nav": {
+        "en": "Services",
+        "am": "አገልግሎቶች"
+      },
+      "description": {
+        "en": "Consultation, children's health, lab test and ultrasound prices at Megenagna Family Clinic.",
+        "am": "በመገናኛ የቤተሰብ ክሊኒክ የምክክር፣ የሕፃናት፣ የላብራቶሪ እና የአልትራሳውንድ ዋጋዎች።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "Services and starting prices",
+            "am": "አገልግሎቶችና መነሻ ዋጋዎች"
+          },
+          "intro": {
+            "en": "Prices are a guide. Your doctor will explain any extra tests before you pay.",
+            "am": "ዋጋዎቹ ግምታዊ ናቸው። ተጨማሪ ምርመራ ካስፈለገ ከመክፈልዎ በፊት ሐኪምዎ ያስረዳዎታል።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Doctor consultation",
+                "am": "የሐኪም ምክክር"
+              },
+              "description": {
+                "en": "General visit for adults.",
+                "am": "ለአዋቂዎች አጠቃላይ ምርመራ።"
+              },
+              "price": {
+                "amountMinor": 50000,
+                "currency": "ETB"
+              },
+              "icon": "stethoscope"
+            },
+            {
+              "title": {
+                "en": "Child consultation",
+                "am": "የሕፃናት ምክክር"
+              },
+              "description": {
+                "en": "Visit for babies and children, with growth check.",
+                "am": "ለሕፃናትና ለልጆች ምርመራ፣ የዕድገት ክትትልን ጨምሮ።"
+              },
+              "price": {
+                "amountMinor": 60000,
+                "currency": "ETB"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Complete blood count (CBC)",
+                "am": "ሙሉ የደም ምርመራ (CBC)"
+              },
+              "description": {
+                "en": "Results usually the same day.",
+                "am": "ውጤቱ አብዛኛውን ጊዜ በዚያው ቀን ይደርሳል።"
+              },
+              "price": {
+                "amountMinor": 35000,
+                "currency": "ETB"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "Urine and stool tests",
+                "am": "የሽንት እና የሰገራ ምርመራ"
+              },
+              "description": {
+                "en": "Basic tests, each.",
+                "am": "መሠረታዊ ምርመራ፣ ለእያንዳንዱ።"
+              },
+              "price": {
+                "amountMinor": 20000,
+                "currency": "ETB"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "Abdominal ultrasound",
+                "am": "የሆድ አልትራሳውንድ"
+              },
+              "description": {
+                "en": "By appointment.",
+                "am": "በቀጠሮ።"
+              },
+              "price": {
+                "amountMinor": 120000,
+                "currency": "ETB"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Pregnancy ultrasound",
+                "am": "የእርግዝና አልትራሳውንድ"
+              },
+              "description": {
+                "en": "By appointment.",
+                "am": "በቀጠሮ።"
+              },
+              "price": {
+                "amountMinor": 150000,
+                "currency": "ETB"
+              },
+              "icon": "calendar"
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "Before your visit",
+            "am": "ከመምጣትዎ በፊት"
+          },
+          "body": {
+            "en": "Bring any previous results and the medicines you take. For some blood tests you may need to come without eating; call us to check.",
+            "am": "ከዚህ በፊት የተመረመሩበትን ውጤት እና የሚወስዷቸውን መድኃኒቶች ይዘው ይምጡ። ለአንዳንድ የደም ምርመራዎች ሳይበሉ መምጣት ሊያስፈልግ ይችላል፤ ደውለው ይጠይቁን።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/appointments",
+      "title": {
+        "en": "Book an appointment",
+        "am": "ቀጠሮ ይያዙ"
+      },
+      "nav": {
+        "en": "Appointments",
+        "am": "ቀጠሮ"
+      },
+      "description": {
+        "en": "Request an appointment at Megenagna Family Clinic. We confirm by phone.",
+        "am": "በመገናኛ የቤተሰብ ክሊኒክ ቀጠሮ ይጠይቁ። በስልክ እናረጋግጣለን።"
+      },
+      "sections": [
+        {
+          "type": "form",
+          "id": "appointment",
+          "kind": "booking",
+          "heading": {
+            "en": "Request an appointment",
+            "am": "ቀጠሮ ይጠይቁ"
+          },
+          "intro": {
+            "en": "Choose a day and time. We will call you to confirm. This form is not for emergencies.",
+            "am": "ቀንና ሰዓት ይምረጡ። ለማረጋገጥ እንደውልልዎታለን። ይህ ቅጽ ለድንገተኛ ሁኔታ አይደለም።"
+          },
+          "fields": [
+            {
+              "name": "full_name",
+              "label": {
+                "en": "Patient's full name",
+                "am": "የታካሚው ሙሉ ስም"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": {
+                "en": "Preferred date",
+                "am": "የሚመርጡት ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "time",
+              "label": {
+                "en": "Preferred time",
+                "am": "የሚመርጡት ሰዓት"
+              },
+              "type": "time",
+              "required": true
+            },
+            {
+              "name": "reason",
+              "label": {
+                "en": "Reason for visit",
+                "am": "የመጡበት ምክንያት"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "General check-up",
+                  "am": "አጠቃላይ ምርመራ"
+                },
+                {
+                  "en": "Child's health",
+                  "am": "የልጅ ጤና"
+                },
+                {
+                  "en": "Lab test",
+                  "am": "የላብራቶሪ ምርመራ"
+                },
+                {
+                  "en": "Ultrasound",
+                  "am": "አልትራሳውንድ"
+                },
+                {
+                  "en": "Other",
+                  "am": "ሌላ"
+                }
+              ]
+            },
+            {
+              "name": "notes",
+              "label": {
+                "en": "Anything we should know",
+                "am": "ልናውቀው የሚገባ ነገር"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send request",
+            "am": "ጥያቄውን ይላኩ"
+          },
+          "successMessage": {
+            "en": "Thank you! We will call you soon to confirm your appointment.",
+            "am": "እናመሰግናለን! ቀጠሮዎን ለማረጋገጥ በቅርቡ እንደውልልዎታለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Prefer to call?",
+            "am": "መደወል ይመርጣሉ?"
+          },
+          "intro": {
+            "en": "You can also book by phone or Telegram during opening hours.",
+            "am": "በሥራ ሰዓት በስልክ ወይም በቴሌግራም ቀጠሮ መያዝ ይችላሉ።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact and location",
+        "am": "አድራሻና ቦታ"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "አድራሻ"
+      },
+      "description": {
+        "en": "Find Megenagna Family Clinic: address, phone and opening hours.",
+        "am": "የመገናኛ የቤተሰብ ክሊኒክ አድራሻ፣ ስልክ እና የሥራ ሰዓት።"
+      },
+      "sections": [
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Get in touch",
+            "am": "ያግኙን"
+          },
+          "intro": {
+            "en": "Call, message us on Telegram or walk in during opening hours.",
+            "am": "ይደውሉ፣ በቴሌግራም ይጻፉልን ወይም በሥራ ሰዓት ይምጡ።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "How to find us",
+            "am": "እንዴት እንደሚያገኙን"
+          },
+          "query": "Megenagna, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

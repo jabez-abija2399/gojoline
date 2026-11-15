@@ -1,0 +1,18 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { LegalPage } from "@/components/legal/legal-page";
+import { isLocale } from "@/lib/i18n/config";
+import { getMessages } from "@/lib/i18n";
+import { legal } from "@/lib/i18n/messages/legal";
+
+export async function generateMetadata({ params }: PageProps<"/[lang]/privacy">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  return { title: legal[lang].privacy.title, alternates: { languages: { en: "/en/privacy", am: "/am/privacy" } } };
+}
+
+export default async function Page({ params }: PageProps<"/[lang]/privacy">) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  return <LegalPage locale={lang} t={getMessages(lang)} doc={legal[lang].privacy} />;
+}
