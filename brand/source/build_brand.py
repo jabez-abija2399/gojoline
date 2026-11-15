@@ -8,11 +8,11 @@ from fontTools.pens.transformPen import TransformPen
 OUT = sys.argv[1]
 FONTS = sys.argv[2]
 
-CLAY = "#C2410C"
-CLAY_LIGHT = "#FDBA74"
-TEAL = "#0E3B43"
-INK = "#1C1917"
-SAND = "#FFF7F0"
+CLAY = "#FF5B35"  # coral
+CLAY_LIGHT = "#FF7350"  # coral on dark
+TEAL = "#121212"  # ink: the door and dark backgrounds
+INK = "#121212"
+SAND = "#FBF9F6"  # paper
 WHITE = "#FFFFFF"
 
 # ---------- the mark, drawn on a 120 x 120 grid ----------
@@ -24,7 +24,7 @@ LINES = "M12.7 30 H107.3 M25.4 16 H94.6"
 
 
 def mark_group(disc=CLAY, gojo=SAND, door=TEAL, lines=SAND, uid="m", detail=True):
-    """Full-colour mark: clay globe, gojo cut in sand, teal door, faint world lines in the sky."""
+    """Full-colour mark: coral globe, gojo cut in paper, ink door, faint world lines in the sky."""
     world = ""
     if detail:
         world = (

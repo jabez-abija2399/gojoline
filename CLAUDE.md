@@ -10,6 +10,7 @@ Read before working: `docs/PRD.md` (what), `docs/ARCHITECTURE.md` (how), `docs/R
 - Decide sensible defaults yourself and record each decision in `docs/DECISIONS.md` (date, decision, why). Ask only when blocked on something only the founder can provide (a secret, a payment, a legal choice); then skip to the next task that is not blocked.
 - Never fake results. If a service or secret is missing, build behind an interface, write the test with a clear skip message, and note it in `docs/ROADMAP.md` under "Blocked".
 - Work on a feature branch (`build/<slice>`); push with `git push -u origin <branch>`. Keep `main` deployable.
+- When a slice is finished (checks pass, review findings fixed), merge it into `main` and push without asking: the founder's standing instruction (2026-11-15). `main` deploys to production, so never merge with failing checks.
 - Before ticking a task: `npm run typecheck`, `npm run lint`, `npm test` pass, and for UI work `npm run e2e` (Playwright, `--trace off`) passes. Fix failures; never disable checks to get green.
 - At the end of each slice, run the `design-reviewer`, `performance-reviewer` and `security-reviewer` agents (`.claude/agents/`), fix what they find, and only then tick the slice.
 - Small commits with clear messages. Update docs in the same commit as the code.
