@@ -165,7 +165,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                     {t.admin.reasonShown}: <span lang={langOf(site.takenDownReason)}>{site.takenDownReason}</span>
                   </p>
                 )}
-                {site.status === "taken_down" && <ModerateForm t={t.admin} siteId={site.id} lang={lang} tab="sites" ops={["retry", "restore"]} reason={site.takenDownReason ?? "admin"} />}
+                {site.status === "taken_down" && <ModerateForm t={t.admin} siteId={site.id} lang={lang} tab="sites" ops={site.takedownDeployedAt ? ["restore"] : ["retry", "restore"]} reason={site.takenDownReason ?? "admin"} />}
                 {site.status === "published" && (
                   <details>
                     <summary className="inline-flex min-h-11 cursor-pointer items-center font-medium text-destructive">{t.admin.takeDown}</summary>

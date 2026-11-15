@@ -40,6 +40,7 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
   await deps.audit({ actorId: adminId, action: "site.taken_down", targetType: "site", targetId: siteId, data: { slug: site.slug, reason } });
   // Reports close only once the live page is replaced, so a failed attempt stays in the queue to retry.
   const done = async () => {
+    await deps.sites.markTakedownDeployed(siteId);
     await deps.reports.closeForSite(siteId, "actioned", adminId);
     return "ok" as const;
   };

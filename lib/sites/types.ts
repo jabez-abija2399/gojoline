@@ -17,6 +17,7 @@ export interface Site {
   siteKey: string | null;
   publishedAt: Date | null;
   takenDownReason: string | null;
+  takedownDeployedAt?: Date | null;
 }
 
 /** Unscoped site access for admins and public reports only. Never use it for owner actions. */
@@ -29,6 +30,8 @@ export interface SiteAdminStore {
   takeDown(siteId: string, reason: string): Promise<boolean>;
   /** Lets the owner publish again (status back to pending until they do). */
   restore(siteId: string): Promise<boolean>;
+  /** Records that the takedown notice is now what visitors see. */
+  markTakedownDeployed(siteId: string): Promise<void>;
 }
 
 export interface SiteStore {

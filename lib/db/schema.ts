@@ -185,6 +185,8 @@ export const sites = pgTable(
     siteKey: text("site_key"),
     publishedAt: timestamp("published_at", { withTimezone: true }),
     takenDownReason: text("taken_down_reason"),
+    /** When the takedown notice replaced the live site (null: not yet, e.g. the deploy failed). */
+    takedownDeployedAt: timestamp("takedown_deployed_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

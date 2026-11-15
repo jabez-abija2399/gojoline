@@ -1,0 +1,1 @@
+ALTER TABLE "sites" ADD COLUMN "takedown_deployed_at" timestamp with time zone;

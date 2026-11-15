@@ -59,7 +59,6 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
-- Admin Sites tab shows "Replace the live page again" on every taken-down site; show it only after a failed notice deploy (needs a stored deploy flag).
 - Safety: text inside uploaded photos isn't checked (no OCR or vision check yet); admins can take such sites down from reports.
 - Amharic in the 11 industry templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
