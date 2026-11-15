@@ -12,6 +12,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
+import { serif } from "@/lib/fonts-landing";
 import { HERO_IDS, showcaseSites } from "@/lib/landing/showcase";
 import { services } from "@/lib/server/services";
 
@@ -23,7 +24,11 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const t = getMessages(lang);
   const { prices } = await services().billing.settings();
   const sites = showcaseSites(lang);
-  const ideas = HERO_IDS.map((id) => ({ id, label: t.landing.demo.labels[id], prompt: t.landing.demo.prompts[id] }));
+  const byId = new Map(sites.map((x) => [x.id, x]));
+  const stageSites = HERO_IDS.flatMap((id) => {
+    const x = byId.get(id);
+    return x ? [{ id, label: t.landing.demo.labels[id], name: x.name, prompt: t.landing.demo.prompts[id], shot: x.top }] : [];
+  });
   // The same café, in both languages, for the language card.
   const cafe = { en: showcaseSites("en").find((s) => s.id === "cafe"), am: showcaseSites("am").find((s) => s.id === "cafe") };
   const sample = { en: { name: cafe.en?.name ?? "", tagline: cafe.en?.tagline ?? "" }, am: { name: cafe.am?.name ?? "", tagline: cafe.am?.tagline ?? "" } };
@@ -31,26 +36,36 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   return (
     <>
       <SiteHeader locale={lang} t={t} nav />
-      <main id="main" tabIndex={-1} className="focus:outline-none">
+      <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero
           t={t.landing.hero}
           locale={lang}
-          ideas={ideas}
+          sites={stageSites}
           install={t.pwa}
+          promptTitle={t.landing.hero.promptTitle}
           text={{
+            chipsLabel: t.landing.hero.chipsLabel,
             promptLabel: t.landing.hero.promptLabel,
             placeholder: t.landing.hero.placeholder,
-            pick: t.landing.demo.pick,
             build: t.landing.hero.build,
             langTitle: b.startLang,
             langEn: b.langEn,
             langAm: b.langAm,
             langBoth: b.langBothShort,
+            you: b.you,
+            assistant: b.assistant,
+            buildTitle: b.tlTitle,
+            buildSteps: [b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady],
+            ready: b.readyTitle,
+            publish: b.publish,
+            chatPlaceholder: b.chatPlaceholder,
+            private: b.previewPrivate,
+            showcaseLabel: t.landing.hero.showcaseLabel,
           }}
         />
         <Proof t={t.landing} />
+        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={services().telegram?.username ?? "gojoline_bot"} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={process.env.PUBLISH_BASE_DOMAIN ? `selam-coffee.${process.env.PUBLISH_BASE_DOMAIN}` : "gojo-selam-coffee.vercel.app"} />
         <Gallery t={t.landing.gallery} sites={sites} labels={b.templates} locale={lang} />
-        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={services().telegram?.username ?? "gojoline_bot"} />
         <Features t={t.landing} sample={sample} />
         <Pricing t={t.landing.pricing} planNames={t.billing.plans} prices={{ starter: prices.starter_month, business: prices.business_month }} locale={lang} />
         <Faq t={t.landing.faq} />

@@ -240,13 +240,15 @@
   outline-color: var(--gojo-paper);
 }
 
-/* Landing page headings: medium weight and tight tracking read calmer than bold at display
-   sizes. Ge'ez script keeps its natural spacing and weight. */
+/* Landing page headings: a warm serif at medium weight with tight tracking (set on the page
+   by lib/fonts-landing.ts). Ge'ez script keeps its own face, weight and spacing. */
 .display {
-  font-weight: 600;
-  letter-spacing: -0.025em;
+  font-family: var(--font-serif), var(--font-outfit), var(--font-ethiopic), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 :lang(am) .display {
+  font-family: var(--font-ethiopic), var(--font-inter), system-ui, sans-serif;
   font-weight: 700;
   letter-spacing: 0;
 }
