@@ -70,6 +70,15 @@ describe("guard hardening", () => {
     expect(visibleText([page('<input placeholder="Telebirr PIN">')])).toContain("Telebirr PIN");
   });
 
+  it("catches words drawn by CSS and look-alike letters", async () => {
+    const guard = new ContentGuard(null);
+    const base = { files: [page("Cafe")], projectId: "p", ownerId: "u" };
+    const css = (c: string) => ({ "src/site.json": JSON.stringify({ name: { en: "Cafe" } }), "src/styles.css": c });
+    expect(await guard.check({ ...base, source: css('label::after{content:"Telebirr PIN"}') })).toMatchObject({ ok: false });
+    expect(await guard.check({ ...base, source: css('li::before{content:"•"} a::after{content:" →"}') })).toEqual({ ok: true });
+    expect(credentialFields({ "src/site.json": JSON.stringify({ pages: [{ sections: [{ type: "form", fields: [{ name: "x", label: { en: "\u0420IN" } }] }] }] }) })).toBe(true);
+  });
+
   it("stays fast on malformed markup", () => {
     const evil = { path: "index.html", data: Buffer.from("<img alt=x".repeat(80_000) + "<script ".repeat(80_000)) };
     const started = Date.now();

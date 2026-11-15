@@ -5,9 +5,17 @@ import { keywordCheck } from "./keywords";
 import type { SafetyReason } from "./reasons";
 
 /** Removes tricks that hide words from the checks: look-alike forms and invisible characters. */
+const CONFUSABLES: Record<string, string> = {
+  "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y", "х": "x", "і": "i", "ј": "j", "ѕ": "s", "ԁ": "d", "ɡ": "g", "һ": "h", "ո": "n",
+  "А": "A", "В": "B", "Е": "E", "К": "K", "М": "M", "Н": "H", "О": "O", "Р": "P", "С": "C", "Т": "T", "Х": "X", "І": "I", "Ј": "J", "Ѕ": "S",
+  "α": "a", "ο": "o", "ρ": "p", "ν": "v", "ι": "i", "Α": "A", "Β": "B", "Ε": "E", "Ι": "I", "Κ": "K", "Μ": "M", "Ν": "N", "Ο": "O", "Ρ": "P", "Τ": "T", "Χ": "X",
+};
+const CONFUSABLE_RE = new RegExp(`[${Object.keys(CONFUSABLES).join("")}]`, "g");
+
 export function normalizeText(text: string): string {
   return text
     .normalize("NFKC")
+    .replace(CONFUSABLE_RE, (c) => CONFUSABLES[c] ?? c)
     .replace(/[​-‏‪-‮⁠-⁤﻿­]/g, "")
     .replace(/\s+/g, " ")
     .trim();
@@ -83,6 +91,12 @@ export function sourceText(source: Record<string, string>): string {
   return normalizeText(out.join("\n"));
 }
 
+/** Strings a stylesheet would draw on the page with `content:` (CSS can add visible words). */
+export function cssContentStrings(source: Record<string, string>): string[] {
+  const css = source["src/styles.css"] ?? "";
+  return [...css.matchAll(/content\s*:\s*(?:"((?:[^"\\]|\\.){0,500})"|'((?:[^'\\]|\\.){0,500})')/gi)].map((m) => normalizeText(m[1] ?? m[2] ?? "")).filter(Boolean);
+}
+
 const CREDENTIAL_FIELD = /\b(pin|otp|password|passcode|passwd|cvv|cvc|card[\s_-]?number|secret[\s_-]?code)\b|ፒን|የይለፍ\s?ቃል|ሚስጥር\s?ቁጥር/i;
 
 /** Forms must never ask visitors for passwords, PINs or card details. */
@@ -102,10 +116,13 @@ export class ContentGuard implements PublishGuard {
   constructor(private readonly classifier: ContentClassifier | null) {}
 
   async check(input: { files: PublishFile[]; source: Record<string, string>; projectId: string; ownerId: string }) {
-    const source = sourceText(input.source);
+    const css = cssContentStrings(input.source);
+    const source = [sourceText(input.source), ...css].filter(Boolean).join("\n");
     const text = [visibleText(input.files), source].filter(Boolean).join("\n");
     const reasons = new Set<SafetyReason>(keywordCheck(text));
     if (credentialFields(input.source)) reasons.add("phishing");
+    // Words drawn by CSS bypass the content model entirely; icons and bullets are fine.
+    if (css.some((c) => /\p{L}{2,}/u.test(c))) reasons.add("other");
     if (reasons.size) return { ok: false as const, reasons: [...reasons] };
     if (!this.classifier) return { ok: true as const };
     // The AI reads site.json's text once (rendered pages repeat the same words in two languages).

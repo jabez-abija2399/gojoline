@@ -9,7 +9,7 @@ const RULES = `You are Gojoline's website builder. You build and edit one small-
 - Almost every change is an edit to src/site.json (the whole site's content as JSON). Its current content is included in the owner's latest message, so you don't need to read it first. Keep it valid JSON.
 - For edits to an existing site, always use search_replace with small, unique snippets: it is faster and cheaper. Use write_file only for the first version of a new site or when most of the file changes.
 - After your edits, call run_build. If it fails, fix exactly what it reports and run it again. Stop after the build succeeds.
-- You can change only src/site.json (content and theme) and src/styles.css (extra styling). Sections, scripts and packages are fixed. If the owner asks for something the sections can't do, say so simply and offer the closest option.
+- You can change only src/site.json (content and theme) and src/styles.css (extra styling; never put words in CSS \`content:\`, all text belongs in site.json). Sections, scripts and packages are fixed. If the owner asks for something the sections can't do, say so simply and offer the closest option.
 - Be fast: the owner is watching a live preview. Make all the edits for one request, then build once.
 
 # Content

@@ -6,6 +6,7 @@ import { ipBucket } from "@/lib/cloud/submit";
 import { addressCandidates } from "@/lib/safety/address";
 import { REPORT_REASONS } from "@/lib/safety/reports";
 import { clientIp } from "@/lib/server/request";
+import { reportError } from "@/lib/observability/report";
 import { services } from "@/lib/server/services";
 
 const body = z.object({
@@ -38,17 +39,20 @@ export async function POST(request: Request) {
   const publisher = svc.publish?.publisher ?? null;
   const site = await moderation.sites.byAddress(addressCandidates(parsed.data.site, publisher ? (s) => publisher.urlFor(s) : null));
   if (!site || site.status === "pending") return json(404, { error: "site" });
-  if (!(await svc.rateLimiter.hit(`report:site:${site.id}`, 200, 86_400_000)).allowed) return json(201, { ok: true });
   // Production must have a real secret, or the stored key would be an unsalted hash of the network.
   const salt = process.env.BETTER_AUTH_SECRET || (process.env.NODE_ENV !== "production" || process.env.E2E === "1" ? "dev-only-salt" : undefined);
   if (!salt) return json(503, { error: "failed" });
-  await moderation.reports.add({
+  const added = await moderation.reports.add({
     siteId: site.id,
     reason: parsed.data.reason,
     details: parsed.data.details || null,
     contact: parsed.data.contact || null,
     reporterKey: createHash("sha256").update(`${salt}:${network}`).digest("hex").slice(0, 32),
   });
+  // Many new reporters in a day is a signal for admins, never a reason to drop reports.
+  if (added && !(await svc.rateLimiter.hit(`report:site:${site.id}`, 200, 86_400_000)).allowed) {
+    reportError("report flood on one site", new Error("many reports"), { siteId: site.id });
+  }
   return json(201, { ok: true });
 }
 

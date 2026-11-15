@@ -177,9 +177,12 @@ async function deployLocked(
       const site = await deps.sites.getByProject(user.id, projectId);
       if (site?.providerProjectId) {
         const page = Buffer.from(takenDownPage());
-        await deps.publisher
-          .publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: site.providerProjectId })
-          .catch((e: unknown) => console.error("takedown redeploy failed", e instanceof Error ? e.message : "unknown"));
+        try {
+          await deps.publisher.publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: site.providerProjectId });
+          await deps.publisher.restrictOldDeployments?.(site.providerProjectId);
+        } catch (e) {
+          reportError("takedown redeploy failed", e, { projectId });
+        }
       }
       return { ok: false, error: "taken_down" };
     }
