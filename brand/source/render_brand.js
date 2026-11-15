@@ -56,46 +56,46 @@ const imgPage = (src, w, h) =>
       @font-face{font-family:Inter;src:url(${fontUri('inter/package/files/inter-latin-500-normal.woff2')})}
       @font-face{font-family:Ethi;src:url(${fontUri('noto-sans-ethiopic/package/files/noto-sans-ethiopic-ethiopic-700-normal.woff2')})}
       </style></head><body style="margin:0">
-      <div style="width:1200px;height:630px;background:#FFF7F0;display:flex;flex-direction:column;justify-content:center;padding:0 96px;box-sizing:border-box;gap:28px;font-family:Inter">
+      <div style="width:1200px;height:630px;background:#FBF9F6;display:flex;flex-direction:column;justify-content:center;padding:0 96px;box-sizing:border-box;gap:28px;font-family:Inter">
         <img src="${dataUri('logo/gojoline-logo.svg')}" style="height:120px;align-self:flex-start">
-        <div style="font-family:Outfit;font-size:64px;line-height:1.05;color:#1C1917;letter-spacing:-0.02em">Describe your business.<br><span style="color:#C2410C">Get your home online.</span></div>
-        <div style="font-family:Ethi;font-size:30px;color:#0E3B43">ቤትዎ በመስመር ላይ</div>
+        <div style="font-family:Outfit;font-size:64px;line-height:1.05;color:#121212;letter-spacing:-0.02em">Build your<br><span style="background:linear-gradient(transparent 62%,#FFD23F 62%,#FFD23F 92%,transparent 92%)">home online</span></div>
+        <div style="font-family:Ethi;font-size:30px;color:#121212">ቤትዎ በመስመር ላይ</div>
       </div></body></html>`;
     await shot(page, og, 1200, 630, path.join(png, 'social/og-image-1200x630.png'), false);
   }
 
   // Preview sheet (2x for people)
   const p2 = await browser.newPage({ deviceScaleFactor: 2 });
-  const tile = (bg, inner, label) => `<div style="background:${bg};border-radius:20px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:200px;border:1px solid #E7E5E4"><div style="display:flex;align-items:center;justify-content:center;gap:18px">${inner}</div><div style="font:500 13px Inter;color:${bg === '#0E3B43' || bg === '#1C1917' || bg === '#C2410C' ? '#CDE3E5' : '#57534E'}">${label}</div></div>`;
+  const tile = (bg, inner, label) => `<div style="background:${bg};border-radius:20px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:200px;border:1px solid #E9E4DC"><div style="display:flex;align-items:center;justify-content:center;gap:18px">${inner}</div><div style="font:500 13px Inter;color:${bg === '#121212' || bg === '#121212' || bg === '#FF5B35' ? '#F6F2EC' : '#5F5A53'}">${label}</div></div>`;
   const im = (p, h) => `<img src="${dataUri(p)}" style="height:${h}px">`;
   const sheet = `<html><head><style>
     @font-face{font-family:Outfit;src:url(${fontUri('outfit/package/files/outfit-latin-700-normal.woff2')})}
     @font-face{font-family:Inter;font-weight:500;src:url(${fontUri('inter/package/files/inter-latin-500-normal.woff2')})}
     </style></head><body style="margin:0">
-    <div style="width:1400px;background:#FFF7F0;padding:56px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px;font-family:Inter">
-      <div style="font:700 44px Outfit;color:#1C1917">Gojoline brand assets</div>
+    <div style="width:1400px;background:#FBF9F6;padding:56px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px;font-family:Inter">
+      <div style="font:700 44px Outfit;color:#121212">Gojoline brand assets</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
         ${tile('#FFFFFF', im('logo/gojoline-logo.svg', 120), 'Primary logo')}
-        ${tile('#0E3B43', im('logo/gojoline-logo-reversed.svg', 120), 'Reversed, on deep teal')}
+        ${tile('#121212', im('logo/gojoline-logo-reversed.svg', 120), 'Reversed, on ink')}
         ${tile('#FFFFFF', im('logo/gojoline-logo-amharic.svg', 120), 'Amharic logo')}
-        ${tile('#1C1917', im('logo/gojoline-logo-amharic-reversed.svg', 120), 'Amharic, on dark')}
+        ${tile('#121212', im('logo/gojoline-logo-amharic-reversed.svg', 120), 'Amharic, on dark')}
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
         ${tile('#FFFFFF', im('logo/gojoline-mark.svg', 150), 'Mark · full colour')}
-        ${tile('#FFFFFF', im('logo/gojoline-mark-teal.svg', 150), 'Mark · teal variant')}
-        ${tile('#E7E5E4', im('logo/gojoline-mark-black.svg', 150), 'One colour · black (true cut-out)')}
-        ${tile('#C2410C', im('logo/gojoline-mark-white.svg', 150), 'One colour · white (true cut-out)')}
+        ${tile('#FFFFFF', im('logo/gojoline-mark-teal.svg', 150), 'Mark · ink variant')}
+        ${tile('#E9E4DC', im('logo/gojoline-mark-black.svg', 150), 'One colour · black (true cut-out)')}
+        ${tile('#FF5B35', im('logo/gojoline-mark-white.svg', 150), 'One colour · white (true cut-out)')}
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
         ${tile('#FFFFFF', `<img src="${dataUri('icons/app-icon.svg')}" style="height:150px;border-radius:34px">`, 'App icon')}
-        ${tile('#FFFFFF', `<img src="${dataUri('icons/app-icon-light.svg')}" style="height:150px;border-radius:34px;border:1px solid #E7E5E4">`, 'App icon · light')}
+        ${tile('#FFFFFF', `<img src="${dataUri('icons/app-icon-light.svg')}" style="height:150px;border-radius:34px;border:1px solid #E9E4DC">`, 'App icon · light')}
         ${tile('#FFFFFF', `<img src="${dataUri('icons/telegram-avatar.svg')}" style="height:150px;border-radius:999px">`, 'Telegram avatar')}
         ${tile('#FFFFFF', [128, 64, 32, 16].map(s => im(s <= 48 ? 'logo/gojoline-mark-simple.svg' : 'logo/gojoline-mark.svg', s)).join(''), 'Size test 128 · 64 · 32 · 16 px')}
       </div>
       <div style="display:grid;grid-template-columns:1fr 2fr;gap:24px">
         ${tile('#FFFFFF', im('logo/gojoline-logo-stacked.svg', 200), 'Stacked logo')}
-        <div style="background:#FFFFFF;border-radius:20px;padding:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;border:1px solid #E7E5E4">
-          ${[['#C2410C', 'Clay', 'Main'], ['#0E3B43', 'Deep teal', 'Partner'], ['#1C1917', 'Ink', 'Text'], ['#FFF7F0', 'Sand', 'Background']].map(([c, n, r]) => `<div style="display:flex;flex-direction:column;gap:8px"><div style="height:110px;border-radius:14px;background:${c};border:1px solid #E7E5E4"></div><div style="font:700 18px Outfit;color:#1C1917">${n}</div><div style="font:500 13px Inter;color:#57534E">${c} · ${r}</div></div>`).join('')}
+        <div style="background:#FFFFFF;border-radius:20px;padding:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;border:1px solid #E9E4DC">
+          ${[['#FF5B35', 'Coral', 'The one action'], ['#121212', 'Ink', 'Text and dark surfaces'], ['#FBF9F6', 'Paper', 'Background'], ['#FFD23F', 'Sun', 'Highlight fill']].map(([c, n, r]) => `<div style="display:flex;flex-direction:column;gap:8px"><div style="height:110px;border-radius:14px;background:${c};border:1px solid #E9E4DC"></div><div style="font:700 18px Outfit;color:#121212">${n}</div><div style="font:500 13px Inter;color:#5F5A53">${c} · ${r}</div></div>`).join('')}
         </div>
       </div>
     </div></body></html>`;

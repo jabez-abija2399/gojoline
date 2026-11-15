@@ -97,7 +97,6 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
-- **Logo in the new palette:** the logo files still use the earlier clay and teal. Decide whether to redraw the mark (the teal door no longer matches) and regenerate `brand/logo`, `brand/icons`, `brand/png` and the social image.
 - **Agent evals after the template guide change (2026-11-15):** `TEMPLATE.md` now teaches the agent `image.art`, `faq` and `cta`. The eval run costs real money and was not run in this session (not permitted). Run `EVAL_ONLY=en-cafe,am-clinic npm run evals` (about $0.30) or the full set, and record the result in `evals/RESULTS.md`.
 - **SMS sign-in:** needs a gateway for Ethiopian numbers (e.g. AfroMessage); until then phone users are asked to use email or Google.
 - Vercel Sandbox snapshot storage: sandboxes start again (checked 2026-11-15); the code no longer leaves snapshots behind. The 47 old automatic snapshots can still be deleted in the Vercel project to free space (keep the 2 manual ones).
