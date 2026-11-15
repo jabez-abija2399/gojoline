@@ -37,7 +37,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   const { viewport, userAgent, isMobile, hasTouch, deviceScaleFactor, baseURL } = test.info().project.use;
   const ctx = await browser.newContext({ viewport, userAgent, isMobile, hasTouch, deviceScaleFactor, baseURL });
   const admin = await ctx.newPage();
-  await signIn(admin, { contact: `admin-e2e-${test.info().project.name}@example.com` });
+  await signIn(admin, { contact: `admin-e2e-pay-${test.info().project.name}@example.com` });
   await admin.goto("/en/admin");
   const item = admin.getByRole("listitem").filter({ hasText: reference });
   await expect(item).toBeVisible();
@@ -52,7 +52,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
 });
 
 test("an admin changes a price and the Plan page shows it", async ({ page }) => {
-  await signIn(page, { contact: `admin-e2e-${test.info().project.name}@example.com` });
+  await signIn(page, { contact: `admin-e2e-set-${test.info().project.name}@example.com` });
   await page.goto("/en/admin?tab=settings");
   await expect(page.getByRole("heading", { name: "Prices and payment accounts" })).toBeVisible();
   await expectNoSeriousA11yIssues(page);

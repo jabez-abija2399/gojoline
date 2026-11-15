@@ -38,7 +38,7 @@ test("someone reports a live site and an admin takes it down", async ({ page, br
   // An admin takes it down from the reports queue.
   const adminCtx = await browser.newContext({ viewport: ctxOpts.viewport, userAgent: ctxOpts.userAgent, isMobile: ctxOpts.isMobile, hasTouch: ctxOpts.hasTouch, baseURL: ctxOpts.baseURL });
   const admin = await adminCtx.newPage();
-  await signIn(admin, { contact: `admin-e2e-${test.info().project.name}@example.com` });
+  await signIn(admin, { contact: `admin-e2e-mod-${test.info().project.name}@example.com` });
   await admin.goto("/en/admin?tab=reports");
   const item = admin.getByRole("listitem").filter({ hasText: slug }).first();
   await expect(item).toContainText("It asks for my Telebirr PIN");
