@@ -1,4 +1,5 @@
 import "server-only";
+import { DbAdminStats, MemoryAdminStats, type AdminStats } from "@/lib/admin/stats";
 import type { PaymentNoticeDeps } from "@/lib/billing/notify";
 import { emailSender } from "@/lib/providers/notify/pick";
 import { DbSettingsStore, MemorySettingsStore } from "@/lib/billing/settings";
@@ -202,4 +203,16 @@ export function paymentNotices(): PaymentNoticeDeps {
     store: svc.billing.store(),
     telegram: svc.telegram,
   };
+}
+
+/** Admin overview numbers and user list (database when available). */
+export function adminStats(): AdminStats {
+  const db = getDb(process.env);
+  if (db) return new DbAdminStats(db);
+  const svc = services();
+  return new MemoryAdminStats(async () => ({
+    pendingPayments: (await svc.billing.store().pendingPayments()).length,
+    openReports: ((await svc.moderation?.reports.openBySite(1000)) ?? []).reduce((n, g) => n + g.reports.length, 0),
+    sitesLive: ((await svc.moderation?.sites.recent(1000)) ?? []).filter((x) => x.status === "published").length,
+  }));
 }

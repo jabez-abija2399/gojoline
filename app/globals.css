@@ -144,3 +144,53 @@
     transform: none;
   }
 }
+
+/* Admin dark mode: the same components, re-coloured by swapping the brand variables inside
+   the admin area. Surfaces get darker, text lighter, teal/clay brighter (buttons then use dark
+   text automatically because "white" becomes the dark surface). Contrast is AA on every pair. */
+[data-admin-theme="dark"] {
+  color-scheme: dark;
+  --gojo-sand: #0e1214;
+  --color-white: #161b1e;
+  --gojo-ink: #ece7e2;
+  --gojo-ink-muted: #a8a29e;
+  --gojo-line: #2a3135;
+  --gojo-teal: #6fc3cc;
+  --gojo-teal-mid: #8fd3da;
+  --gojo-teal-soft: #173438;
+  --gojo-teal-deep: #8fd3da;
+  --gojo-clay: #fb8c4a;
+  --gojo-clay-hover: #fda66f;
+  --gojo-clay-soft: #3a2318;
+  --gojo-clay-light: #fdba74;
+  --destructive: #f87171;
+  --input: #3a4246;
+  --border: #2a3135;
+  --ring: #6fc3cc;
+  --background: #0e1214;
+  --foreground: #ece7e2;
+}
+@media (prefers-color-scheme: dark) {
+  [data-admin-theme="system"] {
+  color-scheme: dark;
+  --gojo-sand: #0e1214;
+  --color-white: #161b1e;
+  --gojo-ink: #ece7e2;
+  --gojo-ink-muted: #a8a29e;
+  --gojo-line: #2a3135;
+  --gojo-teal: #6fc3cc;
+  --gojo-teal-mid: #8fd3da;
+  --gojo-teal-soft: #173438;
+  --gojo-teal-deep: #8fd3da;
+  --gojo-clay: #fb8c4a;
+  --gojo-clay-hover: #fda66f;
+  --gojo-clay-soft: #3a2318;
+  --gojo-clay-light: #fdba74;
+  --destructive: #f87171;
+  --input: #3a4246;
+  --border: #2a3135;
+  --ring: #6fc3cc;
+  --background: #0e1214;
+  --foreground: #ece7e2;
+  }
+}

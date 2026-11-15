@@ -38,7 +38,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   const ctx = await browser.newContext({ viewport, userAgent, isMobile, hasTouch, deviceScaleFactor, baseURL });
   const admin = await ctx.newPage();
   await signIn(admin, { contact: `admin-e2e-pay-${test.info().project.name}@example.com` });
-  await admin.goto("/en/admin");
+  await admin.goto("/en/admin?tab=payments");
   const item = admin.getByRole("listitem").filter({ hasText: reference });
   await expect(item).toBeVisible();
   await expectNoSeriousA11yIssues(admin);
@@ -66,4 +66,20 @@ test("an admin changes a price and the Plan page shows it", async ({ page }) => 
   await expect(page.getByRole("status").filter({ hasText: "Saved." })).toBeVisible();
   await page.goto("/en/billing");
   await expect(page.getByText(/or (9,500|9,600\.5) Birr a year/)).toBeVisible();
+});
+
+test("admin dashboard: overview, owners, and dark mode", async ({ page }) => {
+  await signIn(page, { contact: `admin-e2e-set-${test.info().project.name}@example.com` });
+  await page.goto("/en/admin");
+  await expect(page.getByRole("heading", { level: 1, name: "Overview" })).toBeVisible();
+  await expect(page.getByText("Needs your attention")).toBeVisible();
+  await expect(page.getByRole("img", { name: /New owners, 30 days/ })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await page.getByRole("button", { name: "Dark" }).first().click();
+  await expect(page.locator("[data-admin-theme]")).toHaveAttribute("data-admin-theme", "dark");
+  await expectNoSeriousA11yIssues(page);
+  await page.getByRole("link", { name: "Owners" }).first().click();
+  await expect(page.getByRole("searchbox").or(page.getByPlaceholder("Search by name, email or phone"))).toBeVisible();
+  await page.getByRole("button", { name: "Light" }).first().click();
+  await expect(page.locator("[data-admin-theme]")).toHaveAttribute("data-admin-theme", "light");
 });

@@ -2,6 +2,7 @@
 
 import { reportError } from "@/lib/observability/report";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
@@ -110,4 +111,15 @@ export async function saveBillingSettings(_prev: SettingsState, form: FormData):
   revalidatePath(`/${lang}/admin`);
   revalidatePath(`/${lang}/billing`);
   return { status: "ok" };
+}
+
+/** Light, dark or follow the device, remembered for a year (admin pages only). */
+export async function setAdminTheme(form: FormData) {
+  const theme = form.get("theme");
+  const lang = form.get("lang") === "am" ? "am" : "en";
+  const tab = String(form.get("tab") ?? "overview").replace(/[^a-z]/g, "").slice(0, 20);
+  if (theme === "light" || theme === "dark" || theme === "system") {
+    (await cookies()).set("gojo_admin_theme", theme, { path: `/`, maxAge: 60 * 60 * 24 * 365, sameSite: "lax", httpOnly: true, secure: process.env.NODE_ENV === "production" });
+  }
+  redirect(`/${lang}/admin?tab=${tab}`);
 }
