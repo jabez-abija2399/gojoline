@@ -115,7 +115,7 @@ export function SignInForm({ locale, t, next, google, initialError }: { locale: 
             <p id="contact-error" role="alert" className="text-destructive">
               {error}{" "}
               {state.error === "unavailable" && (
-                <Link href={`/${locale}#waitlist`} className="font-medium underline underline-offset-4">
+                <Link href={`/${locale}/waitlist`} className="font-medium underline underline-offset-4">
                   {t.joinWaitlist}
                 </Link>
               )}

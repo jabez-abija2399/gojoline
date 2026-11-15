@@ -6,7 +6,7 @@ import { ArrowRight, Loader2, Sparkles } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { LanguageChoice, type SiteLanguages } from "./language-choice";
-import { clearStartPrompt, saveStartPrompt } from "./start-prompt";
+import { clearStartPrompt, saveStartPrompt, takeLandingPrompt } from "./start-prompt";
 
 export type StartText = Pick<Messages["builder"], "startTitle" | "startAgainTitle" | "startBody" | "startPlaceholder" | "ideasLabel" | "ideas" | "startLang" | "langEn" | "langAm" | "langBothShort" | "newSite">;
 
@@ -17,12 +17,18 @@ interface Props {
   action: (form: FormData) => void | Promise<void>;
   /** "h1" on an empty account, where this box is the page; "h2" under the list of sites. */
   heading: "h1" | "h2";
+  /**
+   * A description typed on the landing page starts the first site by itself only on an
+   * account with no sites yet. An existing account gets it filled in and presses Start,
+   * so a tab someone else left behind can never spend its credit.
+   */
+  autoStart: boolean;
 }
 
 const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 
 /** Describe the business right on "Your sites": the new site opens and starts building. */
-export function StartBox({ t, locale, action, heading: Heading }: Props) {
+export function StartBox({ t, locale, action, heading: Heading, autoStart }: Props) {
   const [text, setText] = useState("");
   const [languages, setLanguages] = useState<SiteLanguages>([locale]);
   const boxRef = useRef<HTMLTextAreaElement>(null);
@@ -30,7 +36,28 @@ export function StartBox({ t, locale, action, heading: Heading }: Props) {
 
   // Back on "Your sites" with a prompt still waiting means no new site was made for it:
   // drop it, so it can never start a build in a different site.
-  useEffect(clearStartPrompt, []);
+  // Unless the visitor described their business on the landing page before signing in:
+  // then that description starts their first site right away.
+  const handled = useRef(false);
+  useEffect(() => {
+    if (handled.current) return;
+    handled.current = true;
+    const fromLanding = takeLandingPrompt();
+    if (!fromLanding) return clearStartPrompt();
+    if (autoStart) {
+      saveStartPrompt(fromLanding);
+      if (boxRef.current) boxRef.current.placeholder = fromLanding.text;
+      formRef.current?.requestSubmit();
+      return;
+    }
+    // After hydration: show the description and wait for the owner's own press.
+    const id = setTimeout(() => {
+      setText(fromLanding.text);
+      setLanguages(fromLanding.languages);
+      boxRef.current?.focus();
+    }, 0);
+    return () => clearTimeout(id);
+  }, [autoStart]);
 
   return (
     <form

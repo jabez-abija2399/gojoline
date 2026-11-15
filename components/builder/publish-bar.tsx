@@ -99,6 +99,9 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
   };
 
   const published = info?.status === "published" && info.url ? info.url : null;
+  // A site that was taken down keeps its address: the dialog must not fall back to the
+  // first-time form (where the owner would be asked to choose an address again).
+  const address = published ?? (info?.status === "taken_down" && info.url ? info.url : null);
   const errorText = phase.kind === "error" ? ((t.publishErrors as Record<string, string>)[phase.code] ?? t.publishErrors.failed) : null;
   const slugError = phase.kind === "error" && phase.code.startsWith("slug");
   const canOpen = hasVersion && !!info;
@@ -179,8 +182,8 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
           ) : (
             <>
               <h2 id="publish-title" className="text-2xl font-bold">{t.publishTitle}</h2>
-              {published ? (
-                <p className="break-all rounded-lg bg-sand px-3 py-2 font-medium">{published}</p>
+              {address ? (
+                <p className="break-all rounded-lg bg-sand px-3 py-2 font-medium">{address}</p>
               ) : loading && !info ? (
                 <div aria-hidden="true" className="h-24 animate-pulse rounded-lg bg-line" />
               ) : (
@@ -227,7 +230,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
                 aria-disabled={phase.kind === "publishing" || disabled}
                 className="min-h-12 rounded-lg bg-teal px-5 font-medium text-white hover:bg-teal-deep aria-disabled:opacity-50"
               >
-                {published ? t.publishUpdate : t.publishNow}
+                {address ? t.publishUpdate : t.publishNow}
               </button>
             </>
           )}

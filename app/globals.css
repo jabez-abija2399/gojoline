@@ -83,6 +83,8 @@
   }
   html {
     @apply font-sans;
+    /* Keep focused and linked-to content clear of the landing page's sticky header. */
+    scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
   }
   body {

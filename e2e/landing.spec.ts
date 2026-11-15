@@ -35,13 +35,19 @@ test.describe("landing page", () => {
     });
   }
 
-  test("hero demo switches business; FAQ opens; Start free goes to sign-in", async ({ page }) => {
+  test("hero: pick a business, see its real site; FAQ opens; prices show; Start free goes to sign-in", async ({ page }) => {
     await page.goto("/en");
     const clinic = page.getByRole("button", { name: "Clinic", exact: true });
     await clinic.click();
     await expect(clinic).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByText("Megenagna Family Clinic")).toBeVisible();
-    await expect(page.getByText("A family clinic in Megenagna")).toBeVisible();
+    // The description is filled in for editing, and the phone shows that real site.
+    await expect(page.getByRole("textbox", { name: "Describe your business" })).toHaveValue(/A family clinic in Megenagna/);
+    await expect(page.getByRole("img", { name: /home page of Megenagna Family Clinic/ })).toBeVisible();
+    // Twelve real sites to start from.
+    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(12);
+    // The language card switches a real site's words with no script.
+    await page.getByText("አማርኛ", { exact: true }).last().click();
+    await expect(page.getByText("ቦሌ ቡና ቤት")).toBeVisible();
     const question = page.getByText("How do I pay?");
     await question.click();
     await expect(page.getByText(/send the transaction number/i)).toBeVisible();
@@ -50,8 +56,57 @@ test.describe("landing page", () => {
     await expect(page).toHaveURL(/\/en\/sign-in/);
   });
 
-  test("waitlist: shows errors, then success", async ({ page }) => {
+  test("describe a business on the landing page, sign in, and the site builds itself", async ({ page }) => {
     await page.goto("/en");
+    await page.getByRole("textbox", { name: "Describe your business" }).fill("Kaldi Books in Piassa");
+    await page.getByRole("group", { name: "Site language" }).getByText("Both").click();
+    await page.getByRole("button", { name: "Build my site" }).click();
+    await expect(page).toHaveURL(/\/en\/sign-in\?next=/);
+    let sent: unknown = null;
+    page.on("request", (r) => {
+      if (r.url().endsWith("/messages") && r.method() === "POST") sent = r.postDataJSON();
+    });
+    const contact = `landing-${Date.now()}-${test.info().project.name}@example.com`;
+    await page.getByLabel("Phone or email").fill(contact);
+    await page.getByRole("button", { name: "Send me a code" }).click();
+    const code = page.getByLabel("6-digit code");
+    await expect(code).toBeVisible();
+    const res = await page.request.get(`/api/test/otp?to=${encodeURIComponent(contact)}`);
+    await code.fill(((await res.json()) as { code: string }).code);
+    await page.getByRole("button", { name: "Continue" }).click();
+    // No more clicks: the new site opens and builds from the description.
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page.getByText("Saved as version 1").first()).toBeVisible();
+    expect(sent).toMatchObject({ text: "Kaldi Books in Piassa", languages: ["en", "am"] });
+  });
+
+  test("Start from this: the picked real site opens after sign-in; typed words are never replaced", async ({ page }) => {
+    await page.goto("/en");
+    // A chip is not pressed until picked, and it doesn't overwrite what the visitor wrote.
+    await expect(page.getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "false");
+    const box = page.getByRole("textbox", { name: "Describe your business" });
+    await box.fill("My own words");
+    await page.getByRole("button", { name: "Hotel", exact: true }).click();
+    await expect(box).toHaveValue("My own words");
+    await expect(page.getByRole("img", { name: /home page of Tana Shore Hotel/ })).toBeVisible();
+
+    await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
+    await expect(page).toHaveURL(/\/en\/sign-in\?next=/);
+    const contact = `preset-${Date.now()}-${test.info().project.name}@example.com`;
+    await page.getByLabel("Phone or email").fill(contact);
+    await page.getByRole("button", { name: "Send me a code" }).click();
+    const code = page.getByLabel("6-digit code");
+    await expect(code).toBeVisible();
+    const res = await page.request.get(`/api/test/otp?to=${encodeURIComponent(contact)}`);
+    await code.fill(((await res.json()) as { code: string }).code);
+    await page.getByRole("button", { name: "Continue" }).click();
+    // The clinic template opens as the new account's first site.
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page.getByText("Your Clinic site is ready").first()).toBeAttached();
+  });
+
+  test("waitlist: shows errors, then success", async ({ page }) => {
+    await page.goto("/en/waitlist");
     const form = page.locator("#waitlist");
     await form.getByLabel("Your name").fill("Abebe");
     await form.getByLabel("Phone or email").fill("12345");
@@ -66,7 +121,7 @@ test.describe("landing page", () => {
   });
 
   test("waitlist works in Amharic", async ({ page }) => {
-    await page.goto("/am");
+    await page.goto("/am/waitlist");
     const form = page.locator("#waitlist");
     await form.getByLabel("ስምዎ").fill("ሰላም");
     await form.getByLabel("ስልክ ወይም ኢሜይል").fill("selam@example.com");
@@ -83,7 +138,7 @@ test.describe("landing page", () => {
 });
 
 test("waitlist moves focus to the first problem, then to the success message", async ({ page }) => {
-  await page.goto("/en");
+  await page.goto("/en/waitlist");
   const form = page.locator("#waitlist");
   await form.getByLabel("Your name").fill("Abebe");
   await form.getByLabel("Phone or email").fill("nope");
