@@ -25,7 +25,9 @@ export const ethiopic = localFont({
   weight: "400 700",
   display: "swap",
   variable: "--font-ethiopic",
-  preload: false,
+  // Preloaded on every page: Amharic pages need it for their first paint (without it the
+  // headline re-wrapped when it arrived), and English pages use it for the language switch.
+  preload: true,
   declarations: [{ prop: "unicode-range", value: "U+1200-137F" }],
 });
 

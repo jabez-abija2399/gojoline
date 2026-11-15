@@ -49,7 +49,7 @@ export function HeroStart({ locale, ideas, t }: { locale: Locale; ideas: HeroIde
           if (text.trim()) saveLandingPrompt({ text, languages });
           router.push(`/${locale}/sign-in?next=${next}`);
         }}
-        className="flex min-w-0 flex-col rounded-[28px] border border-line bg-white p-2 text-start shadow-[0_24px_70px_-24px_rgb(18_18_18/0.35)] has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link"
+        className="flex min-w-0 flex-col rounded-[28px] border border-ink/10 bg-white p-2 text-start shadow-[0_24px_70px_-24px_rgb(18_18_18/0.35)] has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link"
       >
         <input type="hidden" name="next" value={next} />
         <label htmlFor="hero-prompt" className="sr-only">
@@ -70,7 +70,7 @@ export function HeroStart({ locale, ideas, t }: { locale: Locale; ideas: HeroIde
         />
         <div className="flex flex-wrap items-center justify-between gap-2 p-1">
           <LanguageChoice compact title={t.langTitle} labels={{ en: t.langEn, am: t.langAm, both: t.langBoth }} value={languages} onChange={setLanguages} name="hero-languages" />
-          <button type="submit" className="group ms-auto inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-coral ps-5 pe-2 text-lg font-semibold text-on-coral transition hover:bg-coral-hover">
+          <button type="submit" className="group ms-auto inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-coral ps-5 pe-2 text-lg max-sm:w-full font-semibold text-on-coral transition hover:bg-coral-hover">
             {t.build}
             <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-full bg-ink text-white transition-transform group-hover:-translate-y-0.5">
               <ArrowUp className="size-4" strokeWidth={3} />
@@ -90,7 +90,7 @@ export function HeroStart({ locale, ideas, t }: { locale: Locale; ideas: HeroIde
               if (!text.trim() || ideas.some((x) => x.prompt === text)) setText(idea.prompt);
               boxRef.current?.focus();
             }}
-            className="min-h-11 shrink-0 rounded-full border border-line bg-white/80 px-4 font-medium text-ink backdrop-blur transition-colors hover:border-faint hover:bg-white aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+            className="min-h-11 shrink-0 rounded-full border border-line bg-white/90 px-4 font-medium text-ink transition-colors hover:border-faint hover:bg-white aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
           >
             {idea.label}
           </button>

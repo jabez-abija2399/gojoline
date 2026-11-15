@@ -23,7 +23,7 @@ export function ReportForm({ t, site, home }: { t: Messages["safety"]; site: str
   if (state.kind === "sent")
     return (
       <div className="flex flex-col items-start gap-4">
-        <p ref={sentRef} tabIndex={-1} role="status" className="w-full rounded-lg bg-sunken px-4 py-3 text-lg font-medium text-ink">
+        <p ref={sentRef} tabIndex={-1} role="status" className="w-full rounded-lg border border-lagoon bg-white px-4 py-3 text-lg font-medium text-lagoon">
           {t.sent}
         </p>
         <div className="flex flex-wrap gap-3">

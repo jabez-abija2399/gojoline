@@ -19,7 +19,7 @@ interface ControlsProps {
 }
 
 const pill = "flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-paper px-3 text-sm";
-const iconButton = "flex size-11 shrink-0 items-center justify-center rounded-lg text-ink-muted transition-colors hover:bg-paper hover:text-ink aria-pressed:bg-sunken aria-pressed:text-ink disabled:opacity-40";
+const iconButton = "flex size-11 shrink-0 items-center justify-center rounded-lg text-ink-muted transition-colors hover:bg-paper hover:text-ink aria-pressed:bg-ink aria-pressed:text-white disabled:opacity-40";
 
 /** The preview's "browser bar": screen size, where the site lives, reload, open. */
 export function PreviewControls({ t, url, liveUrl, onReload, device, className = "" }: ControlsProps) {

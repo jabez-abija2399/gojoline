@@ -8,7 +8,7 @@ import { LanguageSwitch } from "./language-switch";
 export function SiteHeader({ locale, t, nav = false }: { locale: Locale; t: Messages; nav?: boolean }) {
   const other: Locale = locale === "en" ? "am" : "en";
   return (
-    <header className={nav ? "sticky top-0 z-40 border-b border-line bg-paper md:bg-paper/85 md:backdrop-blur-md" : "border-b border-line bg-paper/95"}>
+    <header className={nav ? "sticky top-0 z-40 border-b border-line bg-paper lg:bg-paper/85 lg:backdrop-blur-md" : "border-b border-line bg-paper/95"}>
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 items-center rounded-md">
           <Image

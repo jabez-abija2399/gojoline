@@ -42,7 +42,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
 
         <ul className="grid gap-4 md:grid-cols-3">
           {(["free", "starter", "business"] as const).map((p) => (
-            <li key={p} aria-current={p === plan ? "true" : undefined} className={`flex flex-col gap-2 rounded-xl border bg-white p-5 ${p === plan ? "border-faint ring-2 ring-sunken" : "border-line"}`}>
+            <li key={p} aria-current={p === plan ? "true" : undefined} className={`flex flex-col gap-2 rounded-xl border bg-white p-5 ${p === plan ? "border-ink ring-1 ring-ink" : "border-line"}`}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-xl font-bold">{b.plans[p]}</h2>
                 {p === plan && <span className="rounded-full bg-sunken px-3 py-1 text-sm font-semibold text-ink">{b.currentBadge}</span>}
@@ -94,7 +94,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
                 <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line bg-white p-3">
                   <span>{b.productNames[p.product]} · {prices[p.product]}</span>
                   <span className="text-ink-muted">{dateFmt.format(p.createdAt)}</span>
-                  <span className={`rounded-full px-3 py-1 text-sm font-semibold ${p.status === "approved" ? "bg-sunken text-ink" : p.status === "rejected" ? "bg-coral-soft text-destructive" : "bg-paper text-ink"}`}>{b.status[p.status]}</span>
+                  <span className={`rounded-full px-3 py-1 text-sm font-semibold ${p.status === "approved" ? "border border-lagoon bg-white text-lagoon" : p.status === "rejected" ? "bg-coral-soft text-destructive" : "bg-paper text-ink"}`}>{b.status[p.status]}</span>
                   {p.note && <span className="w-full text-ink-muted">{p.note}</span>}
                 </li>
               ))}

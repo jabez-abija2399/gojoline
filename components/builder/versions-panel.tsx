@@ -51,7 +51,7 @@ export const VersionsPanel = memo(function VersionsPanel({ t, locale, versions, 
           const isCurrent = v.number === current;
           return (
             <li key={v.number} className={`relative flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white p-4 transition-shadow ${isCurrent ? "border-ink shadow-md" : "border-line hover:shadow-sm"}`}>
-              <span aria-hidden="true" className={`absolute -start-[1.6rem] top-6 size-3 rounded-full ring-4 ring-paper ${isCurrent ? "bg-ink" : "bg-sunken"}`} />
+              <span aria-hidden="true" className={`absolute -start-[1.6rem] top-6 size-3 rounded-full ring-4 ring-paper ${isCurrent ? "bg-ink" : "bg-line"}`} />
               <div className="min-w-0 flex-1 basis-40">
                 <p className="font-semibold">{t.versionLabel.replace("{n}", String(v.number))}</p>
                 <p className="truncate text-ink-muted">{restoredFrom ? t.versionRestoredFrom.replace("{n}", restoredFrom) : templateName ? t.versionFromTemplate.replace("{industry}", templateName) : v.summary}</p>

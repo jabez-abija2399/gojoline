@@ -109,7 +109,7 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
       </div>
       {state.kind === "error" && !refError && !receiptError && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">{errorText}</p>}
       {state.kind === "done" && (
-        <p ref={doneRef} tabIndex={-1} role="status" className="rounded-lg bg-sunken px-4 py-3 font-medium text-ink">{t.submitted}</p>
+        <p ref={doneRef} tabIndex={-1} role="status" className="rounded-lg border border-lagoon bg-white px-4 py-3 font-medium text-lagoon">{t.submitted}</p>
       )}
       <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-lg bg-coral px-5 font-medium text-on-coral hover:bg-coral-hover aria-disabled:opacity-50">
         {state.kind === "sending" ? t.submitting : t.submit}

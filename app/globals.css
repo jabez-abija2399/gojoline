@@ -57,7 +57,9 @@
   --radius-2xl: var(--gojo-radius-lg);
 }
 
-:root {
+/* Re-declared under the theme container too, so these resolve against the dark tokens there. */
+:root,
+[data-gojo-theme] {
   --background: var(--gojo-paper);
   --foreground: var(--gojo-ink);
   --card: var(--gojo-panel);
@@ -231,6 +233,11 @@
 }
 .chips-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* On ink sections (footer, closing band) the focus ring is paper: the link colour is too dim there. */
+.bg-ink :focus-visible {
+  outline-color: var(--gojo-paper);
 }
 
 /* Landing page headings: medium weight and tight tracking read calmer than bold at display

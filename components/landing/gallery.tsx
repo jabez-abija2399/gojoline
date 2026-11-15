@@ -1,11 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
-import Image from "next/image";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import type { ShowcaseSite } from "@/lib/landing/showcase";
+import { PanShot } from "./pan-shot";
 import { StartFromLink } from "./start-from-link";
-
-const WIDE_HOVER = "[@media(hover:hover)_and_(min-width:1024px)]";
 
 /** Twelve real Gojoline sites as a grid of cards. On a mouse, resting on one scrolls through its page. */
 export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
@@ -21,20 +19,7 @@ export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["
           {sites.map((s) => (
             <li key={s.id}>
               <StartFromLink href={href} preset={s.id} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:-translate-y-1 hover:border-faint hover:shadow-xl">
-                <span className="block aspect-[4/5] overflow-hidden border-b border-line bg-sunken">
-                  {/* Phones and tablets get a small picture of the top of the page. */}
-                  <Image src={s.top.src} alt="" width={s.top.width} height={s.top.height} sizes="(min-width: 1024px) 270px, (min-width: 768px) 33vw, 50vw" loading="lazy" className={`h-auto w-full ${WIDE_HOVER}:hidden`} />
-                  {/* Large screens with a mouse get the whole page, which scrolls by while the pointer rests on it. */}
-                  <Image
-                    src={s.shot.src}
-                    alt=""
-                    width={s.shot.width}
-                    height={s.shot.height}
-                    sizes="270px"
-                    loading="lazy"
-                    className={`hidden h-auto w-full transition-transform duration-[9s] ease-linear motion-reduce:transition-none ${WIDE_HOVER}:block ${WIDE_HOVER}:group-hover:translate-y-[calc(-100%+330px)] motion-reduce:group-hover:translate-y-0`}
-                  />
-                </span>
+                <PanShot top={s.top} full={s.shot} />
                 <span className="flex flex-1 flex-col p-3 sm:p-4">
                   <span className="font-display text-lg leading-snug font-bold">{labels[s.id]}</span>
                   <span className="truncate text-ink-muted">{s.name}</span>

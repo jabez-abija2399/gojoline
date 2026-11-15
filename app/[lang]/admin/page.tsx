@@ -98,7 +98,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         <main id="main" className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6">
           {done && (
             <FocusOnMount>
-              <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-3 font-medium ${done === "ok" ? "bg-sunken text-ink" : "bg-coral-soft text-destructive"}`}>
+              <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-3 font-medium ${done === "ok" ? "border border-lagoon bg-white text-lagoon" : "bg-coral-soft text-destructive"}`}>
                 {t.admin.tabStatus[done]}
               </p>
             </FocusOnMount>
@@ -128,7 +128,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         {!compact && <span className="px-1 text-sm font-medium text-ink-muted">{t.admin.theme}</span>}
         <div role="group" aria-label={t.admin.theme} className="flex gap-1 rounded-lg border border-line bg-paper p-1">
           {opts.map(({ v, Icon }) => (
-            <button key={v} name="theme" value={v} aria-pressed={theme === v} title={t.admin.themes[v]} className="flex min-h-9 min-w-11 flex-1 items-center justify-center gap-1 rounded-md text-ink-muted aria-pressed:bg-white aria-pressed:text-ink aria-pressed:shadow-sm">
+            <button key={v} name="theme" value={v} aria-pressed={theme === v} title={t.admin.themes[v]} className="flex min-h-11 min-w-11 flex-1 items-center justify-center gap-1 rounded-md text-ink-muted aria-pressed:bg-ink aria-pressed:text-white">
               <Icon aria-hidden="true" className="size-4" />
               <span className={compact ? "sr-only" : "text-sm"}>{t.admin.themes[v]}</span>
             </button>
@@ -163,7 +163,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               <span className="font-display text-2xl font-bold tabular-nums sm:text-3xl">{k.value}</span>
               <span className="flex items-center gap-1 text-sm text-ink-muted">
                 {k.trend !== undefined && k.trend !== 0 && (
-                  <span className={`inline-flex items-center gap-0.5 font-semibold ${k.trend > 0 ? "text-ink" : "text-destructive"}`}>
+                  <span className={`inline-flex items-center gap-0.5 font-semibold ${k.trend > 0 ? "text-lagoon" : "text-destructive"}`}>
                     {k.trend > 0 ? <TrendingUp aria-hidden="true" className="size-4" /> : <TrendingDown aria-hidden="true" className="size-4" />}
                     {format(t.admin.kVsLastWeek, { n: `${k.trend > 0 ? "+" : ""}${k.trend}` })}
                   </span>
@@ -346,7 +346,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               <li key={site.id} className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-mono font-semibold">{site.slug}</p>
-                  <span className={`rounded-full px-3 py-1 text-sm font-semibold ${site.status === "published" ? "bg-sunken text-ink" : site.status === "taken_down" ? "bg-coral-soft text-destructive" : "bg-paper text-ink"}`}>{t.admin.siteStatus[site.status]}</span>
+                  <span className={`rounded-full px-3 py-1 text-sm font-semibold ${site.status === "published" ? "border border-lagoon bg-white text-lagoon" : site.status === "taken_down" ? "bg-coral-soft text-destructive" : "bg-paper text-ink"}`}>{t.admin.siteStatus[site.status]}</span>
                 </div>
                 {site.url && site.status === "published" && (
                   <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>

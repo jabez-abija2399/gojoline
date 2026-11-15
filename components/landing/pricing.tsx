@@ -33,7 +33,7 @@ export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing
                   </li>
                 ))}
               </ul>
-              <Link href={`/${locale}/sign-in?next=/${locale}/build`} className={`inline-flex min-h-12 items-center justify-center rounded-lg px-5 font-semibold ${p.popular ? "bg-coral text-on-coral hover:bg-coral-hover" : "border border-line hover:border-faint"}`}>
+              <Link href={`/${locale}/sign-in?next=/${locale}/build`} className={`inline-flex min-h-12 items-center justify-center rounded-lg px-5 font-semibold ${p.popular ? "bg-ink text-white hover:bg-ink-hover" : "border border-line hover:border-faint"}`}>
                 {t.cta}
               </Link>
             </li>
