@@ -29,6 +29,23 @@ const image = z
   })
   .strict();
 
+/** A profile link shown under a fixed label ("Facebook"): https, on that service's own domain, nothing else. */
+function socialUrl(hosts: string[]) {
+  return z
+    .string()
+    .max(300)
+    .refine((v) => {
+      if (!/^https:\/\/[^\s<>"]+$/.test(v)) return false;
+      try {
+        const u = new URL(v);
+        const host = u.hostname.toLowerCase().replace(/^(www|m|web)\./, "");
+        return u.protocol === "https:" && !u.username && !u.password && hosts.includes(host);
+      } catch {
+        return false;
+      }
+    }, `Must be an https link on ${hosts.join(" or ")}`);
+}
+
 const link = z.object({ label: text, href: safeHref }).strict();
 const price = z.object({ amountMinor: z.number().int().nonnegative().max(1_000_000_000), currency: z.enum(["ETB", "USD"]) }).strict();
 const id = z.string().regex(/^[a-z][a-z0-9-]{0,40}$/).optional();
@@ -89,7 +106,7 @@ export const siteSchema = z
         whatsapp: z.string().max(40).optional(),
         address: text.optional(),
         hours: z.array(z.object({ days: text, time: text }).strict()).max(14).optional(),
-        social: z.object({ facebook: z.url().optional(), instagram: z.url().optional(), tiktok: z.url().optional() }).strict().optional(),
+        social: z.object({ facebook: socialUrl(["facebook.com", "fb.com"]).optional(), instagram: socialUrl(["instagram.com"]).optional(), tiktok: socialUrl(["tiktok.com"]).optional() }).strict().optional(),
       })
       .strict(),
     pages: z

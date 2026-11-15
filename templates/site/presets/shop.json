@@ -95,11 +95,11 @@
             "href": "/order"
           },
           "image": {
-            "art": "fashion",
             "alt": {
               "en": "A dress with a woven band",
               "am": "ጥለት ያለው ቀሚስ"
-            }
+            },
+            "art": "fashion"
           }
         },
         {
@@ -196,8 +196,8 @@
                 "am": "እንዴት እከፍላለሁ?"
               },
               "answer": {
-                "en": "You can pay when you collect, or by mobile money.",
-                "am": "ሲረከቡ ወይም በሞባይል ገንዘብ መክፈል ይችላሉ።"
+                "en": "Ask us when you order and we will tell you the ways to pay.",
+                "am": "ሲያዝዙ ይጠይቁን፤ የክፍያ መንገዶቹን እንነግርዎታለን።"
               }
             }
           ]

@@ -95,11 +95,11 @@
             "href": "/contact"
           },
           "image": {
-            "art": "mosque",
             "alt": {
               "en": "A mosque with a dome and a minaret",
               "am": "ጉልላት እና ሚናራ ያለው መስጊድ"
-            }
+            },
+            "art": "mosque"
           }
         },
         {
@@ -183,12 +183,12 @@
           "items": [
             {
               "question": {
-                "en": "Is there a place for women to pray?",
-                "am": "ለሴቶች የመስገጃ ቦታ አለ?"
+                "en": "I am new here. Who can I ask?",
+                "am": "አዲስ ነኝ። ማንን ልጠይቅ?"
               },
               "answer": {
-                "en": "Yes. There is a separate prayer area for women.",
-                "am": "አዎ። ለሴቶች የተለየ የመስገጃ ቦታ አለ።"
+                "en": "You are welcome. Ask anyone at the mosque or write to us and we will help you.",
+                "am": "እንኳን ደህና መጡ። በመስጊዱ ያለን ማንኛውንም ሰው ይጠይቁ ወይም ይጻፉልን፤ እንረዳዎታለን።"
               }
             },
             {

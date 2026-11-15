@@ -271,7 +271,7 @@ export const en = {
       busy: "I'm still working on your last change. Try again in a moment.",
       taken_down: "This site was taken down. Please contact support.",
       build_failed: "Your site couldn't be prepared for publishing. Ask in the chat to fix it, then try again.",
-      unfinished: "Your site still has example details: the phone +251 911 000 000 or text in [square brackets]. Tell me your real details in the chat, then publish.",
+      unfinished: "Your site still has example details: the phone +251 911 000 000, an example Telegram name, or text in [square brackets]. Tell me your real details in the chat, then publish.",
       blocked: "Your site has something we can't publish, such as a password or payment form, or content against our rules. Please change it and try again.",
       failed: "Publishing didn't work this time. Please try again.",
       too_many: "You've published many times. Please wait a little.",

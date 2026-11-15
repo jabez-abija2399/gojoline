@@ -96,11 +96,11 @@
             "href": "/book"
           },
           "image": {
-            "art": "mountains",
             "alt": {
               "en": "Highland peaks with a path and the sun",
               "am": "የደጋ ተራሮች፣ መንገድ እና ፀሐይ"
-            }
+            },
+            "art": "mountains"
           }
         },
         {

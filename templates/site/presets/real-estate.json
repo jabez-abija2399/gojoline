@@ -96,11 +96,11 @@
             "href": "/listings#viewing"
           },
           "image": {
-            "art": "home",
             "alt": {
               "en": "Homes on a street",
               "am": "በአንድ መንገድ ያሉ ቤቶች"
-            }
+            },
+            "art": "home"
           }
         },
         {
@@ -187,8 +187,8 @@
                 "am": "በሰነዶቹ ትረዳላችሁ?"
               },
               "answer": {
-                "en": "Yes. We check the documents and go with you to the offices.",
-                "am": "አዎ። ሰነዶቹን እናጣራለን፤ ወደ ቢሮዎችም አብረንዎት እንሄዳለን።"
+                "en": "Yes. Ask us and we will explain each step.",
+                "am": "አዎ። ይጠይቁን፤ እያንዳንዱን ደረጃ እናስረዳዎታለን።"
               }
             },
             {
@@ -197,8 +197,8 @@
                 "am": "ቤቴን መሸጥ ወይም ማከራየት እፈልጋለሁ። ምን ላድርግ?"
               },
               "answer": {
-                "en": "Ask for a free valuation. We tell you a fair price and find buyers or tenants.",
-                "am": "ነጻ ግምት ይጠይቁ። ተገቢውን ዋጋ እንነግርዎታለን፤ ገዢ ወይም ተከራይም እንፈልጋለን።"
+                "en": "Ask for a valuation. We tell you a fair price and look for buyers or tenants.",
+                "am": "ግምት ይጠይቁ። ተገቢውን ዋጋ እንነግርዎታለን፤ ገዢ ወይም ተከራይም እንፈልጋለን።"
               }
             }
           ]

@@ -84,6 +84,11 @@ describe("publishSite", () => {
     expect(await publishSite(deps, alice, p.id, "example-site")).toEqual({ ok: false, error: "unfinished" });
     expect(hasExampleDetails(JSON.stringify({ x: "Account: [account number]", n: [1, 2] }))).toBe(true);
     expect(hasExampleDetails(JSON.stringify({ x: "Call +251 911 234 567", n: [1, 2], o: ["a"] }))).toBe(false);
+    // The starters' example Telegram names: anyone could register them and receive the site's customers.
+    expect(hasExampleDetails(JSON.stringify({ business: { phone: "+251 911 234 567", telegram: "yourbusiness" } }))).toBe(true);
+    expect(hasExampleDetails(JSON.stringify({ business: { telegram: "@BoleBunaHouse" } }))).toBe(true);
+    expect(hasExampleDetails(JSON.stringify({ a: { href: "https://t.me/yourchurch" } }))).toBe(true);
+    expect(hasExampleDetails(JSON.stringify({ business: { telegram: "selamcoffee" } }))).toBe(false);
   });
 
   it("refuses while another change is running", async () => {

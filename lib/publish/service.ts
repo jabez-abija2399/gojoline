@@ -196,12 +196,15 @@ async function deployLocked(
   }
 }
 
+/** Telegram names the starter templates use as examples. Anyone could register them and receive a site's customers. */
+export const EXAMPLE_TELEGRAM = /^@?(yourbusiness|yourchurch|bolebunahouse)$/i;
+
 /** True while a site still shows a template's placeholders (in any text value). */
 export function hasExampleDetails(siteJson: string): boolean {
   let found = false;
   const walk = (v: unknown) => {
     if (found) return;
-    if (typeof v === "string") found = /\+251 ?911 ?000 ?000/.test(v) || /\[[^\]\n]{2,40}\]/.test(v);
+    if (typeof v === "string") found = /\+251 ?911 ?000 ?000/.test(v) || /\[[^\]\n]{2,40}\]/.test(v) || EXAMPLE_TELEGRAM.test(v.trim()) || /t\.me\/(yourbusiness|yourchurch|bolebunahouse)\b/i.test(v);
     else if (Array.isArray(v)) v.forEach(walk);
     else if (v && typeof v === "object") Object.values(v).forEach(walk);
   };

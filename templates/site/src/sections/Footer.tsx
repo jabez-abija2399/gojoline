@@ -22,7 +22,7 @@ export function Footer() {
             <ul className="flex flex-wrap gap-x-4">
               {social.map(([name, url]) => (
                 <li key={name}>
-                  <a href={url} rel="noopener" className={`${link} capitalize`}>
+                  <a href={url} rel="noopener noreferrer nofollow" className={`${link} capitalize`}>
                     {name}
                   </a>
                 </li>

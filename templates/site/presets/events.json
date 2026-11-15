@@ -95,11 +95,11 @@
             "href": "/packages"
           },
           "image": {
-            "art": "event",
             "alt": {
               "en": "A stage with flags and lights",
               "am": "ባንዲራ እና መብራት ያለው መድረክ"
-            }
+            },
+            "art": "event"
           }
         },
         {
@@ -187,8 +187,8 @@
                 "am": "ምን ያህል ቀደም ብዬ ልያዝ?"
               },
               "answer": {
-                "en": "As early as you can. Popular dates fill up months ahead.",
-                "am": "በተቻለ መጠን ቀደም ብለው ይያዙ። ተፈላጊ ቀናት ከወራት በፊት ይያዛሉ።"
+                "en": "As early as you can, so your date is still free.",
+                "am": "ቀንዎ ሳይያዝ በተቻለ መጠን ቀደም ብለው ይያዙ።"
               }
             },
             {
@@ -207,8 +207,8 @@
                 "am": "ከከተማ ውጭ ትሠራላችሁ?"
               },
               "answer": {
-                "en": "Yes, for most events. Ask us about your place and date.",
-                "am": "አዎ፤ ለአብዛኞቹ ዝግጅቶች። ስለ ቦታዎ እና ቀንዎ ይጠይቁን።"
+                "en": "Tell us the place and the date and we will let you know.",
+                "am": "ቦታውን እና ቀኑን ይንገሩን፤ እናሳውቅዎታለን።"
               }
             }
           ]
@@ -221,8 +221,8 @@
             "am": "የማይረሳ ቀን አብረን እናቅድ"
           },
           "body": {
-            "en": "Tell us the date and the number of guests. We reply the same day.",
-            "am": "ቀኑን እና የእንግዶቹን ብዛት ይንገሩን። በዚያው ቀን እንመልሳለን።"
+            "en": "Tell us the date and the number of guests and we will get back to you.",
+            "am": "ቀኑን እና የእንግዶቹን ብዛት ይንገሩን፤ መልሰን እናገኝዎታለን።"
           },
           "primaryAction": {
             "label": {

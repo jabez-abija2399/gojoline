@@ -95,11 +95,11 @@
             "href": "/rooms"
           },
           "image": {
-            "art": "hotel",
             "alt": {
               "en": "A lodge beside the water",
               "am": "በውኃ ዳር ያለ ሎጅ"
-            }
+            },
+            "art": "hotel"
           }
         },
         {
@@ -191,18 +191,18 @@
                 "am": "መግቢያ ሰዓት መቼ ነው?"
               },
               "answer": {
-                "en": "Rooms are ready in the afternoon. Arriving early? Tell us and we will do our best.",
-                "am": "ክፍሎች ከሰዓት በኋላ ዝግጁ ይሆናሉ። ቀደም ብለው ከደረሱ ይንገሩን፤ የቻልነውን እናደርጋለን።"
+                "en": "Tell us your arrival time when you book and we will have your room ready.",
+                "am": "ክፍል ሲይዙ የሚደርሱበትን ሰዓት ይንገሩን፤ ክፍልዎን አዘጋጅተን እንጠብቅዎታለን።"
               }
             },
             {
               "question": {
-                "en": "Is breakfast included?",
-                "am": "ቁርስ ተካትቷል?"
+                "en": "How do I book a room?",
+                "am": "ክፍል እንዴት እይዛለሁ?"
               },
               "answer": {
-                "en": "Yes, breakfast is included with every room.",
-                "am": "አዎ፤ ቁርስ በሁሉም ክፍሎች ዋጋ ውስጥ ተካትቷል።"
+                "en": "Use the booking form or call us. We confirm your room by phone.",
+                "am": "የማስያዣ ቅጹን ይሙሉ ወይም ይደውሉልን። ክፍልዎን በስልክ እናረጋግጥልዎታለን።"
               }
             },
             {
@@ -211,8 +211,8 @@
                 "am": "ከአውሮፕላን ማረፊያ ትቀበሉኛላችሁ?"
               },
               "answer": {
-                "en": "Yes. Send us your flight time when you book.",
-                "am": "አዎ። ክፍል ሲይዙ የበረራ ሰዓትዎን ይላኩልን።"
+                "en": "Ask us when you book and send your flight time.",
+                "am": "ክፍል ሲይዙ ይጠይቁን፤ የበረራ ሰዓትዎንም ይላኩልን።"
               }
             }
           ]

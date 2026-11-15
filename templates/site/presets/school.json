@@ -95,11 +95,11 @@
             "href": "/programs"
           },
           "image": {
-            "art": "school",
             "alt": {
               "en": "An open book, a pencil and a star",
               "am": "የተከፈተ መጽሐፍ፣ እርሳስ እና ኮከብ"
-            }
+            },
+            "art": "school"
           }
         },
         {

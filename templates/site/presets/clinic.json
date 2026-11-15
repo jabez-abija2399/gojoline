@@ -95,11 +95,11 @@
             "href": "tel:+251911000000"
           },
           "image": {
-            "art": "clinic",
             "alt": {
               "en": "A medical cross and a heartbeat line",
               "am": "የሕክምና መስቀል እና የልብ ምት መስመር"
-            }
+            },
+            "art": "clinic"
           }
         },
         {

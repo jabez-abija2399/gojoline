@@ -95,11 +95,11 @@
             "href": "/programs"
           },
           "image": {
-            "art": "people",
             "alt": {
               "en": "Three people standing together",
               "am": "አብረው የቆሙ ሦስት ሰዎች"
-            }
+            },
+            "art": "people"
           }
         },
         {
@@ -144,8 +144,8 @@
                 "am": "ስጦታዬ እንዴት ጥቅም ላይ ይውላል?"
               },
               "answer": {
-                "en": "It goes to our programmes. Ask us and we will show you our latest report.",
-                "am": "ለፕሮግራሞቻችን ይውላል። ከጠየቁን የቅርብ ጊዜ ሪፖርታችንን እናሳይዎታለን።"
+                "en": "It goes to our programmes. Ask us and we will explain how gifts are used.",
+                "am": "ለፕሮግራሞቻችን ይውላል። ከጠየቁን ስጦታዎች እንዴት እንደሚውሉ እናስረዳዎታለን።"
               }
             },
             {

@@ -1,4 +1,4 @@
-# Fonts in this folder
+# Fonts in public/fonts
 
 All are open fonts under the SIL Open Font License 1.1 (https://openfontlicense.org), which allows bundling them in websites.
 

@@ -115,11 +115,11 @@
             "href": "/contact"
           },
           "image": {
-            "art": "church",
             "alt": {
               "en": "A church with a cross",
               "am": "መስቀል ያለው ቤተ ክርስቲያን"
-            }
+            },
+            "art": "church"
           }
         },
         {
