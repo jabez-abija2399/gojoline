@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { saveStartPrompt, takeStartPrompt } from "./start-prompt";
+import { clearStartPrompt, saveStartPrompt, takeStartPrompt } from "./start-prompt";
 
 describe("start prompt", () => {
   beforeEach(() => {
@@ -14,10 +14,16 @@ describe("start prompt", () => {
     expect(takeStartPrompt()).toBeNull();
   });
 
+  it("can be dropped before it is used", () => {
+    saveStartPrompt({ text: "Selam Coffee", languages: ["en"] });
+    clearStartPrompt();
+    expect(takeStartPrompt()).toBeNull();
+  });
+
   it("ignores an old prompt", () => {
     vi.useFakeTimers();
     saveStartPrompt({ text: "Selam Coffee", languages: ["en"] });
-    vi.advanceTimersByTime(3 * 60_000);
+    vi.advanceTimersByTime(31_000);
     expect(takeStartPrompt()).toBeNull();
   });
 

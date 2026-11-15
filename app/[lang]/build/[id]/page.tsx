@@ -40,7 +40,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
             dashboard: t.dashboard.link,
             plan: t.billing.link,
             signOut: t.auth.signOut,
-            signedInAs: t.auth.signedInAs.replace("{who}", who),
+            signedInAs: t.auth.signedInAs.replace("{who}", () => who),
             language: t.common.languageSwitch,
             languageLabel: t.common.languageSwitchLabel,
             more: t.builder.menuMore,

@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { ArrowRight, Loader2, Sparkles } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { LanguageChoice, type SiteLanguages } from "./language-choice";
-import { saveStartPrompt } from "./start-prompt";
+import { clearStartPrompt, saveStartPrompt } from "./start-prompt";
 
 interface Props {
   t: Messages["builder"];
@@ -24,6 +24,10 @@ export function StartBox({ t, locale, action, heading: Heading }: Props) {
   const [languages, setLanguages] = useState<SiteLanguages>([locale]);
   const boxRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Back on "Your sites" with a prompt still waiting means no new site was made for it:
+  // drop it, so it can never start a build in a different site.
+  useEffect(clearStartPrompt, []);
 
   return (
     <form

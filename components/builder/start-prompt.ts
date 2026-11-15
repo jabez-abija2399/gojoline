@@ -7,13 +7,22 @@ export interface StartPrompt {
 }
 
 const KEY = "gojoline:start";
-const MAX_AGE_MS = 2 * 60_000;
+const MAX_AGE_MS = 30_000;
 
 export function saveStartPrompt(start: StartPrompt) {
   try {
     sessionStorage.setItem(KEY, JSON.stringify({ ...start, at: Date.now() }));
   } catch {
     // Private windows may refuse storage: the owner simply types in the chat instead.
+  }
+}
+
+/** Forgets a prompt that never reached a new site (creating it was refused, or sign-in expired). */
+export function clearStartPrompt() {
+  try {
+    sessionStorage.removeItem(KEY);
+  } catch {
+    // Nothing was stored.
   }
 }
 
