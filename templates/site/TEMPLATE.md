@@ -37,11 +37,20 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 | `contact` | Call / Telegram buttons, phone, address, hours (from `business`) | `heading`, `intro` |
 | `map` | Location card that opens the maps app | `heading`, `query` (defaults to the English address) |
 | `testimonials` | Customer quotes (only real ones the owner gave) | `items[]` (`quote`, `name`) |
+| `timeline` | Personal sites (work, studies), "our story", milestones | `heading`, `intro`, `items[]` (`period`, `title`, `place`, `description`), newest first |
 | `form` | Contact, booking, order or registration forms. Answers reach the owner's dashboard and Telegram | `id` (required, e.g. `"booking"`), `kind`, `heading`, `intro`, `fields[]`, `submitLabel`, `successMessage` |
 
 Form fields: `{ "name": "phone", "label": {...}, "type": "tel", "required": true }`. Types: text, email, tel, date, time, number, select (with `options`), textarea. Keep forms short (2 to 6 fields). Never ask for passwords, PINs, card numbers, bank details or ID numbers. Add a form when the owner wants bookings, orders, registrations or messages; link to it with `"#<id>"` (for example a hero button to `"#booking"`).
 
 Icons for `services`: coffee, utensils, bed, stethoscope, school, shopping-bag, church, calendar, heart, home, map, scissors, car, star, phone, check.
+
+## Personal websites
+
+For a person (portfolio, CV, freelancer, artist, coach, speaker): hero with their name and what they do, `about` (their story, `highlights` only with facts they gave), `services` ("What I do"), `gallery` for their work, `timeline` for experience and education, then a contact `form`. Use first-person, warm copy. No prices unless they gave them.
+
+## Design and motion
+
+Sections already animate (gentle reveal on scroll, lift and tilt on cards, a soft glow behind the hero, cross-fades between pages) and respect "reduce motion". Choose the hero `variant` to fit: `split` for a business with a photo, `centered` for a strong statement or a person, `banner` for a big atmospheric photo. With 4 or more `services` the first becomes a large feature tile, so put the most important one first. In a `gallery` the first photo is shown large.
 
 ## Theme
 

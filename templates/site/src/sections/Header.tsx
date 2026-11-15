@@ -30,7 +30,7 @@ export function Header() {
   ));
 
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-background/95 backdrop-blur">
+    <header className="header-scroll sticky top-0 z-20 border-b border-line bg-background/95 backdrop-blur">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-30 focus:rounded-site focus:bg-surface focus:px-4 focus:py-3">
         {uiText("skip", lang)}
       </a>

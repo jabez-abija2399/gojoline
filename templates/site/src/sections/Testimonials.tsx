@@ -11,7 +11,7 @@ export function Testimonials({ section }: { section: TestimonialsSection }) {
         <ul className="grid gap-6 md:grid-cols-3">
           {section.items.map((item, i) => (
             <li key={i}>
-              <figure className="flex h-full flex-col gap-4 rounded-site border border-current/20 p-6">
+              <figure className="reveal lift flex h-full flex-col gap-4 rounded-site border border-current/20 bg-current/5 p-6">
                 <blockquote className="text-lg">“{text(item.quote)}”</blockquote>
                 <figcaption className="mt-auto font-semibold">{item.name}</figcaption>
               </figure>

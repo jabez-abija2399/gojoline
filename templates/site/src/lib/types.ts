@@ -142,6 +142,15 @@ export interface FormSection {
   successMessage: Text;
 }
 
+/** Experience, education or milestones, newest first: CVs, portfolios, "our story". */
+export interface TimelineSection {
+  type: "timeline";
+  id?: string;
+  heading: Text;
+  intro?: Text;
+  items: { period: Text; title: Text; place?: Text; description?: Text }[];
+}
+
 export type Section =
   | HeroSection
   | AboutSection
@@ -151,6 +160,7 @@ export type Section =
   | ContactSection
   | MapSection
   | TestimonialsSection
+  | TimelineSection
   | FormSection;
 
 export interface Page {

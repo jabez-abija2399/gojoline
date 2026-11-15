@@ -8,7 +8,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
   const Heading = first ? "h1" : "h2";
 
   const actions = (
-    <div className={`flex flex-col gap-3 sm:flex-row ${variant === "centered" ? "sm:justify-center" : ""}`}>
+    <div className={`enter flex flex-col gap-3 sm:flex-row ${variant === "centered" ? "sm:justify-center" : ""}`} style={{ "--i": 3 } as React.CSSProperties}>
       {section.primaryAction && (
         <a href={href(section.primaryAction.href)} className="btn btn-primary">
           {text(section.primaryAction.label)}
@@ -26,10 +26,11 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
     return (
       <section id={section.id} className="relative isolate overflow-hidden bg-accent text-on-accent">
         <Picture image={section.image} priority={first} className="absolute inset-0 -z-10 size-full opacity-30" />
-        <div className="container-site flex flex-col gap-5 py-20 md:py-28">
-          {section.eyebrow && <p className="font-semibold">{text(section.eyebrow)}</p>}
-          <Heading className="max-w-3xl text-4xl font-bold sm:text-5xl">{text(section.heading)}</Heading>
-          {section.subheading && <p className="max-w-[60ch] text-lg">{text(section.subheading)}</p>}
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-accent via-accent/70 to-accent/20" />
+        <div className="container-site flex flex-col gap-5 py-24 md:py-36">
+          {section.eyebrow && <p className="enter font-semibold tracking-wide [&:lang(am)]:tracking-normal">{text(section.eyebrow)}</p>}
+          <Heading className="headline max-w-4xl">{text(section.heading)}</Heading>
+          {section.subheading && <p className="enter max-w-[60ch] text-lg" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
           {actions}
         </div>
       </section>
@@ -38,28 +39,36 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
 
   if (variant === "centered") {
     return (
-      <section id={section.id} className="section">
-        <div className="container-site flex flex-col items-center gap-5 text-center">
-          {section.eyebrow && <p className="rounded-full bg-primary-soft px-3 py-1 font-semibold">{text(section.eyebrow)}</p>}
-          <Heading className="max-w-3xl text-4xl font-bold sm:text-5xl">{text(section.heading)}</Heading>
-          {section.subheading && <p className="max-w-[60ch] text-lg text-muted">{text(section.subheading)}</p>}
+      <section id={section.id} className="section hero-glow md:py-24">
+        <div className="container-site flex flex-col items-center gap-6 text-center">
+          {section.eyebrow && <p className="enter rounded-full border border-line bg-surface/80 px-4 py-1 font-semibold">{text(section.eyebrow)}</p>}
+          <Heading className="headline max-w-4xl">{text(section.heading)}</Heading>
+          {section.subheading && <p className="enter max-w-[60ch] text-lg text-muted" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
           {actions}
-          {section.image && <Picture image={section.image} priority={first} className="mt-6 aspect-[16/9] w-full rounded-site" />}
+          {section.image && (
+            <div className="zoom mt-8 w-full rounded-site shadow-2xl shadow-primary/10">
+              <Picture image={section.image} priority={first} className="aspect-[16/9] w-full rounded-site" />
+            </div>
+          )}
         </div>
       </section>
     );
   }
 
   return (
-    <section id={section.id} className="section">
-      <div className="container-site grid items-center gap-10 md:grid-cols-2">
-        <div className="flex flex-col gap-5">
-          {section.eyebrow && <p className="w-fit rounded-full bg-primary-soft px-3 py-1 font-semibold">{text(section.eyebrow)}</p>}
-          <Heading className="text-4xl font-bold sm:text-5xl">{text(section.heading)}</Heading>
-          {section.subheading && <p className="max-w-[60ch] text-lg text-muted">{text(section.subheading)}</p>}
+    <section id={section.id} className="section hero-glow md:py-24">
+      <div className="container-site grid items-center gap-12 md:grid-cols-[1.1fr_1fr]">
+        <div className="flex flex-col gap-6">
+          {section.eyebrow && <p className="enter w-fit rounded-full border border-line bg-surface/80 px-4 py-1 font-semibold">{text(section.eyebrow)}</p>}
+          <Heading className="headline">{text(section.heading)}</Heading>
+          {section.subheading && <p className="enter max-w-[56ch] text-lg text-muted" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
           {actions}
         </div>
-        <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[4/3] w-full rounded-site" />
+        <div className="depth-frame me-3.5 mb-3.5">
+          <div className="zoom rounded-site">
+            <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[4/3] w-full rounded-site" />
+          </div>
+        </div>
       </div>
     </section>
   );
