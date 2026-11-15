@@ -150,29 +150,6 @@
           ]
         },
         {
-          "type": "testimonials",
-          "heading": {
-            "en": "What travellers say",
-            "am": "ተጓዦች ምን ይላሉ"
-          },
-          "items": [
-            {
-              "quote": {
-                "en": "Our guide in Lalibela knew every church by heart. Everything ran on time.",
-                "am": "የላሊበላ አስጎብኚያችን እያንዳንዱን ቤተ ክርስቲያን በደንብ ያውቃል። ሁሉም ነገር በሰዓቱ ነበር።"
-              },
-              "name": "Hanna, Addis Ababa"
-            },
-            {
-              "quote": {
-                "en": "The Danakil trip was hard but unforgettable. The team kept us safe and well fed.",
-                "am": "የዳናኪል ጉዞ ከባድ ቢሆንም የማይረሳ ነበር። ቡድኑ ደህንነታችንን ጠብቆ በደንብ መገበን።"
-              },
-              "name": "Mark, visitor"
-            }
-          ]
-        },
-        {
           "type": "contact",
           "id": "contact",
           "heading": {
@@ -398,39 +375,7 @@
           "body": {
             "en": "We are a small Addis Ababa team of guides and drivers. We keep groups small, pay local scouts and communities fairly and answer your messages fast.\n\nWe can also build a private trip around your dates and budget.",
             "am": "እኛ የአዲስ አበባ አነስተኛ የአስጎብኚዎች እና የሹፌሮች ቡድን ነን። ቡድኖችን አነስተኛ እናደርጋለን፣ ለአካባቢው ስካውቶች እና ማኅበረሰቦች ፍትሐዊ ክፍያ እንከፍላለን፣ መልእክትዎንም በፍጥነት እንመልሳለን።\n\nእንደ ቀንዎ እና በጀትዎ የግል ጉዞም እናዘጋጅልዎታለን።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "4",
-                "am": "4"
-              },
-              "label": {
-                "en": "Main destinations",
-                "am": "ዋና መዳረሻዎች"
-              }
-            },
-            {
-              "value": {
-                "en": "2–12",
-                "am": "2–12"
-              },
-              "label": {
-                "en": "People per group",
-                "am": "ሰው በአንድ ቡድን"
-              }
-            },
-            {
-              "value": {
-                "en": "24/7",
-                "am": "24/7"
-              },
-              "label": {
-                "en": "Support on the trip",
-                "am": "በጉዞ ላይ ድጋፍ"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "map",

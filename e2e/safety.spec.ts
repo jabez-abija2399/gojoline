@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test";
 import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
 test("someone reports a live site and an admin takes it down", async ({ page, browser }) => {
+  // Three people (owner, visitor, admin) with two sign-ins: longer than a one-person test.
+  test.setTimeout(60_000);
   // An owner publishes a site.
   await signIn(page);
   await page.getByRole("button", { name: "Start a new site" }).click();

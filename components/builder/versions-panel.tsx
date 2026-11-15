@@ -30,11 +30,13 @@ export function VersionsPanel({ t, versions, current, disabled, onRestore }: Pro
       <ol className="flex flex-col gap-3">
         {versions.map((v) => {
           const restoredFrom = /^restore:(\d+)$/.exec(v.summary)?.[1];
+          const template = /^template:([a-z-]+)$/.exec(v.summary)?.[1];
+          const templateName = template ? (t.templates as Record<string, string>)[template] : undefined;
           return (
             <li key={v.number} className="flex items-center justify-between gap-3 rounded-xl border border-line bg-white p-4">
               <div className="min-w-0">
                 <p className="font-semibold">{t.versionLabel.replace("{n}", String(v.number))}</p>
-                <p className="truncate text-ink-muted">{restoredFrom ? t.versionRestoredFrom.replace("{n}", restoredFrom) : v.summary}</p>
+                <p className="truncate text-ink-muted">{restoredFrom ? t.versionRestoredFrom.replace("{n}", restoredFrom) : templateName ? t.versionFromTemplate.replace("{industry}", templateName) : v.summary}</p>
               </div>
               {v.number === current ? (
                 <span className="shrink-0 rounded-full bg-teal-soft px-3 py-1 font-medium text-teal">{t.versionCurrent}</span>

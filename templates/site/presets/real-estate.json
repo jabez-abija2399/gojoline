@@ -105,39 +105,7 @@
           "body": {
             "en": "We visit every property before we list it, so you only see homes that are really available.\n\nWe help tenants, buyers, owners and families abroad with everything from the first viewing to the signed contract.",
             "am": "ከማስተዋወቃችን በፊት እያንዳንዱን ቤት ሄደን እናያለን፤ ስለዚህ የሚያዩት በእርግጥ የሚገኙ ቤቶችን ብቻ ነው።\n\nተከራዮችን፣ ገዢዎችን፣ የቤት ባለቤቶችን እና በውጭ የሚኖሩ ቤተሰቦችን ከመጀመሪያው ጉብኝት እስከ ውል ፊርማ ድረስ እናግዛለን።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "10+",
-                "am": "10+"
-              },
-              "label": {
-                "en": "Years in Addis",
-                "am": "ዓመታት በአዲስ አበባ"
-              }
-            },
-            {
-              "value": {
-                "en": "500+",
-                "am": "500+"
-              },
-              "label": {
-                "en": "Homes rented and sold",
-                "am": "የተከራዩና የተሸጡ ቤቶች"
-              }
-            },
-            {
-              "value": {
-                "en": "7",
-                "am": "7"
-              },
-              "label": {
-                "en": "Sub-cities covered",
-                "am": "የምንሠራባቸው ክፍለ ከተሞች"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "services",
@@ -178,29 +146,6 @@
                 "am": "ተከራይ እንፈልጋለን፣ ኪራይ እንሰበስባለን፣ ጥገናም እንከታተላለን።"
               },
               "icon": "star"
-            }
-          ]
-        },
-        {
-          "type": "testimonials",
-          "heading": {
-            "en": "What clients say",
-            "am": "ደንበኞቻችን ምን ይላሉ"
-          },
-          "items": [
-            {
-              "quote": {
-                "en": "They found us a clean two-bedroom in Bole within one week.",
-                "am": "በአንድ ሳምንት ውስጥ ቦሌ ላይ ንጹሕ ባለ ሁለት መኝታ ቤት አገኙልን።"
-              },
-              "name": "Hana T."
-            },
-            {
-              "quote": {
-                "en": "I live abroad and they manage my apartment. Rent arrives every month on time.",
-                "am": "የምኖረው ውጭ ነው፤ አፓርትመንቴን እነሱ ያስተዳድራሉ። ኪራዩ በየወሩ በሰዓቱ ይደርሰኛል።"
-              },
-              "name": "Dawit M."
             }
           ]
         },

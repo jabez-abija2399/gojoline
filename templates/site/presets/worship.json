@@ -182,39 +182,7 @@
           "body": {
             "en": "We are a community of families, students and elders who meet to worship God and care for one another.\n\nWhether you are new to Addis or have lived here all your life, you have a place with us.",
             "am": "እግዚአብሔርን ለማምለክ እና እርስ በርስ ለመተሳሰብ የምንሰበሰብ የቤተሰቦች፣ የተማሪዎች እና የአረጋውያን ኅብረት ነን።\n\nአዲስ አበባ አዲስ ቢሆኑም ሆነ ዕድሜዎን ሙሉ እዚህ ቢኖሩም፣ በመካከላችን ቦታ አለዎት።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "3",
-                "am": "3"
-              },
-              "label": {
-                "en": "Weekly gatherings",
-                "am": "ሳምንታዊ ስብሰባዎች"
-              }
-            },
-            {
-              "value": {
-                "en": "40+",
-                "am": "40+"
-              },
-              "label": {
-                "en": "Youth choir members",
-                "am": "የወጣት መዘምራን አባላት"
-              }
-            },
-            {
-              "value": {
-                "en": "6",
-                "am": "6"
-              },
-              "label": {
-                "en": "Community programs",
-                "am": "የኅብረተሰብ ፕሮግራሞች"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "contact",
@@ -318,29 +286,7 @@
           "body": {
             "en": "Our youth choir leads worship on Friday evenings and once a month on Sunday. Rehearsals are on Saturday afternoons.\n\nYoung people aged 15 to 30 are welcome to join. No experience needed, just a willing heart.",
             "am": "የወጣቶች መዘምራን በዓርብ ምሽት እና በወር አንድ ጊዜ በእሑድ አምልኮን ይመራሉ። ልምምድ ቅዳሜ ከሰዓት በኋላ ነው።\n\nዕድሜያቸው ከ15 እስከ 30 የሆኑ ወጣቶች መቀላቀል ይችላሉ። ልምድ አያስፈልግም፤ ፈቃደኛ ልብ ብቻ በቂ ነው።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "Saturday",
-                "am": "ቅዳሜ"
-              },
-              "label": {
-                "en": "Rehearsal day",
-                "am": "የልምምድ ቀን"
-              }
-            },
-            {
-              "value": {
-                "en": "15 to 30",
-                "am": "ከ15 እስከ 30"
-              },
-              "label": {
-                "en": "Age group",
-                "am": "የዕድሜ ክልል"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "form",
@@ -454,7 +400,7 @@
           "type": "services",
           "heading": {
             "en": "Ways to give",
-            "am": "የመስጠቻ መንገዶች"
+            "am": "የመስጫ መንገዶች"
           },
           "items": [
             {

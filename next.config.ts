@@ -6,9 +6,16 @@ const nextConfig: NextConfig = {
   // See docs/DECISIONS.md (2026-11-14, CSP).
   poweredByHeader: false,
   // The agent reads the template guide and copies template files into sandboxes at runtime.
+  // Explicit folders only: negated globs are ignored here, and the template's node_modules
+  // (~90 MB) must never ship inside the app's functions.
   outputFileTracingIncludes: {
-    "/**": ["./templates/site/**/*", "!./templates/site/node_modules/**", "!./templates/site/dist/**"],
+    "/**": ["./templates/site/{src,public,scripts,presets}/**/*", "./templates/site/*.{json,ts,html,md}"],
   },
+  outputFileTracingExcludes: {
+    "/**": ["./templates/site/node_modules/**", "./templates/site/dist*/**", "./templates/site/test/**"],
+  },
+  // Sentry loads its own runtime hooks; bundling it breaks them and triples its size.
+  serverExternalPackages: ["@sentry/nextjs", "@sentry/node"],
   reactStrictMode: true,
   turbopack: {
     rules: {

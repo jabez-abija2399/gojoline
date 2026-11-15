@@ -50,6 +50,7 @@ export type PublishError =
   | "build_failed"
   | "blocked"
   | "plan_limit"
+  | "unfinished"
   | "failed";
 
 export type PublishOutcome =
@@ -93,6 +94,8 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
 
   const latest = await deps.store.latestVersion(user.id, projectId);
   if (!latest) return { ok: false, error: "no_version" };
+  // Example details from a template (placeholder phone, [bracketed] text) must not go live.
+  if (hasExampleDetails(latest.files["src/site.json"] ?? "")) return { ok: false, error: "unfinished" };
   const plan = deps.entitlements ? await deps.entitlements(user.id) : null;
   const firstLive = (existing?.status ?? "pending") !== "published";
   // A new live site: one at a time per owner, so parallel publishes can't pass the site limit together.
@@ -191,4 +194,21 @@ async function deployLocked(
   } finally {
     await deps.lock.release(`project:${projectId}`, token);
   }
+}
+
+/** True while a site still shows a template's placeholders (in any text value). */
+export function hasExampleDetails(siteJson: string): boolean {
+  let found = false;
+  const walk = (v: unknown) => {
+    if (found) return;
+    if (typeof v === "string") found = /\+251 ?911 ?000 ?000/.test(v) || /\[[^\]\n]{2,40}\]/.test(v);
+    else if (Array.isArray(v)) v.forEach(walk);
+    else if (v && typeof v === "object") Object.values(v).forEach(walk);
+  };
+  try {
+    walk(JSON.parse(siteJson));
+  } catch {
+    return false;
+  }
+  return found;
 }

@@ -17,8 +17,9 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): 
 }
 
 const amount = (minor: number) => new Intl.NumberFormat("en-US").format(minor / 100);
-const usdFmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumSignificantDigits: 3 });
-const usd = (nano: number) => usdFmt.format(nano / 1e9);
+const usdFmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const usdSmall = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 4, maximumFractionDigits: 4 });
+const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).format(nano / 1e9);
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;

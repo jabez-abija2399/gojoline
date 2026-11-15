@@ -104,72 +104,7 @@
           "body": {
             "en": "Tesfa Hawassa was started by teachers and parents from Hawassa who saw girls missing school to fetch water.\n\nToday we work with schools, kebele leaders and families in villages around Lake Hawassa.",
             "am": "ተስፋ ሀዋሳ የተመሠረተው ሴት ልጆች ውሃ ለመቅዳት ሲሉ ከትምህርት ቤት ሲቀሩ ባዩ የሀዋሳ መምህራን እና ወላጆች ነው።\n\nዛሬ በሀዋሳ ሐይቅ ዙሪያ ባሉ መንደሮች ከትምህርት ቤቶች፣ ከቀበሌ አመራሮች እና ከቤተሰቦች ጋር እንሠራለን።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "1,200+",
-                "am": "1,200+"
-              },
-              "label": {
-                "en": "Girls supported",
-                "am": "የተደገፉ ሴት ተማሪዎች"
-              }
-            },
-            {
-              "value": {
-                "en": "18",
-                "am": "18"
-              },
-              "label": {
-                "en": "Water points built",
-                "am": "የተሠሩ የውሃ ቦኖዎች"
-              }
-            },
-            {
-              "value": {
-                "en": "9,000",
-                "am": "9,000"
-              },
-              "label": {
-                "en": "People with safe water",
-                "am": "ንጹሕ ውሃ ያገኙ ሰዎች"
-              }
-            },
-            {
-              "value": {
-                "en": "14",
-                "am": "14"
-              },
-              "label": {
-                "en": "Partner schools",
-                "am": "አጋር ትምህርት ቤቶች"
-              }
-            }
-          ]
-        },
-        {
-          "type": "testimonials",
-          "heading": {
-            "en": "Voices from our communities",
-            "am": "ከማኅበረሰባችን የተሰሙ ድምፆች"
-          },
-          "items": [
-            {
-              "quote": {
-                "en": "I used to walk two hours for water every morning. Now the tap is near our school and I never miss class.",
-                "am": "በየጠዋቱ ውሃ ለመቅዳት ሁለት ሰዓት እጓዝ ነበር። አሁን ቦኖው ከትምህርት ቤታችን አጠገብ ስለሆነ ክፍል አላመልጠኝም።"
-              },
-              "name": "Grade 8 student"
-            },
-            {
-              "quote": {
-                "en": "Since the water point opened, fewer children in our village get sick.",
-                "am": "የውሃ ቦኖው ከተከፈተ ወዲህ በመንደራችን የሚታመሙ ልጆች ቀንሰዋል።"
-              },
-              "name": "Mother of three"
-            }
-          ]
+          }
         }
       ]
     },

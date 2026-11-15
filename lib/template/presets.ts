@@ -1,10 +1,10 @@
 import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { TEMPLATE_ROOT, templateFiles } from "./files";
+import { TEMPLATE_ROOT } from "./files";
 
 /** Ready-made starting sites, one per industry (templates/site/presets/<id>.json, EN + AM). */
-export const PRESET_IDS = ["cafe", "hotel", "clinic", "school", "shop", "worship", "events", "ngo", "real-estate", "tours"] as const;
+export const PRESET_IDS = ["cafe", "hotel", "clinic", "school", "shop", "worship", "mosque", "events", "ngo", "real-estate", "tours"] as const;
 export type PresetId = (typeof PRESET_IDS)[number];
 
 export function isPresetId(v: unknown): v is PresetId {
@@ -23,10 +23,12 @@ export function presetSiteJson(id: PresetId): string {
   return json;
 }
 
+let styles: string | null = null;
+
 /** Files for a project's first version when it starts from a preset. */
 export function presetVersionFiles(id: PresetId): Record<string, string> {
-  const styles = templateFiles().find((f) => f.path === "src/styles.css")?.content;
-  return { "src/site.json": presetSiteJson(id), ...(typeof styles === "string" ? { "src/styles.css": styles } : {}) };
+  styles ??= readFileSync(join(TEMPLATE_ROOT, "src", "styles.css"), "utf8");
+  return { "src/site.json": presetSiteJson(id), "src/styles.css": styles };
 }
 
 /** The business name in the owner's language, used as the project's first name. */

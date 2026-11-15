@@ -20,7 +20,7 @@ export function Services({ section }: { section: ServicesSection }) {
                 <Icon name={item.icon ?? "check"} />
               </span>
               <h3 className="text-xl font-bold">{text(item.title)}</h3>
-              <p className="text-muted">{text(item.description)}</p>
+              <p className="whitespace-pre-line text-muted">{text(item.description)}</p>
               {item.price && <p className="mt-auto font-semibold">{formatPrice(item.price, lang)}</p>}
             </li>
           ))}

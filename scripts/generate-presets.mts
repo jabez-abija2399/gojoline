@@ -16,6 +16,7 @@ const PRESETS: Record<string, string> = {
   clinic: "a family medical clinic in Addis Ababa (Megenagna): general practice, children's health, lab tests, ultrasound; opening hours; an appointment booking form (date, time, reason select). No medical claims or guarantees.",
   school: "a private primary school (KG to grade 8) in Adama: programs, facilities, fees per term in a services list, a registration form for new students (child name, grade select, parent phone)",
   shop: "a clothing and traditional dress (habesha kemis) shop in Merkato: product list with prices, custom tailoring service, an order form (item, size select, phone, delivery address)",
+  mosque: "a neighbourhood mosque in Addis Ababa (Kolfe): the five daily prayer times and Jumu'ah, Quran classes for children and adults, community programs and support for families in need, a page about giving (bank account placeholder), a contact form. Respectful, simple tone.",
   worship: "a church in Addis Ababa: service and prayer times, community programs, youth choir, a page about giving (bank account placeholder for donations), a contact form. Respectful, simple tone.",
   events: "an event planning company in Addis Ababa: weddings, graduations, corporate events, decoration and catering packages with prices, a booking form (event date, event type select, guests)",
   ngo: "a local NGO in Hawassa supporting girls' education and clean water: programs, impact numbers, how to volunteer, a registration form for volunteers",
@@ -31,7 +32,8 @@ Rules:
 - The business is fictional but realistic for Ethiopia; use the placeholder phone "+251 911 000 000" and no real brands, people or emails. You may include a Telegram handle like "yourbusiness" only as a placeholder.
 - Prices: integer minor units (ETB cents: 450 Birr = 45000). Use realistic 2026 Addis prices.
 - Do NOT include any "image" objects or "gallery" sections (the owner adds photos later). No "meta" key.
-- 3 to 5 pages, each with 2 to 5 sections. Home page path "/". Include at least one "form" section appropriate to the business with 3 to 7 fields; form ids unique; field names lowercase_with_underscores.
+- 3 to 5 pages, each with 2 to 5 sections. Home page path "/". Include exactly one "form" section appropriate to the business with 3 to 7 fields; field names lowercase_with_underscores.
+- No "testimonials" sections and no made-up statistics or achievements (no "500 students", "20 years"): this is example content the owner replaces, and invented reviews or numbers must never go live. For account numbers use the placeholder "[account number]".
 - Choose a theme that suits the industry: theme.text on theme.background contrast >= 4.5:1, theme.text on #ffffff >= 4.5:1, theme.primary on theme.background >= 3:1. Background should be light.
 - Use icons only from the schema's icon list. Keep each text short and useful.
 

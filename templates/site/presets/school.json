@@ -104,39 +104,7 @@
           "body": {
             "en": "Adama Tesfa Academy follows the Ethiopian national curriculum with extra support in English and reading. We keep classes small so teachers can follow each child closely.\n\nParents get a progress report every term and can meet teachers any Friday afternoon.",
             "am": "አዳማ ተስፋ አካዳሚ የኢትዮጵያን ብሔራዊ ሥርዓተ ትምህርት ይከተላል፤ በእንግሊዝኛ እና በንባብ ተጨማሪ ድጋፍ እንሰጣለን። መምህራን እያንዳንዱን ልጅ በቅርበት እንዲከታተሉ ክፍሎቻችን አነስተኛ ናቸው።\n\nወላጆች በየሩብ ዓመቱ የውጤት ሪፖርት ይደርሳቸዋል፤ በየዓርብ ከሰዓት በኋላ መምህራንን ማግኘት ይችላሉ።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "30",
-                "am": "30"
-              },
-              "label": {
-                "en": "Max students per class",
-                "am": "በአንድ ክፍል ከፍተኛ የተማሪ ብዛት"
-              }
-            },
-            {
-              "value": {
-                "en": "KG–8",
-                "am": "KG–8"
-              },
-              "label": {
-                "en": "Grades we teach",
-                "am": "የምናስተምራቸው ክፍሎች"
-              }
-            },
-            {
-              "value": {
-                "en": "3",
-                "am": "3"
-              },
-              "label": {
-                "en": "Languages taught",
-                "am": "የሚማሩ ቋንቋዎች"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "services",
@@ -177,29 +145,6 @@
                 "am": "በአዳማ የተለያዩ አካባቢዎች የጠዋት እና የከሰዓት ሰርቪስ።"
               },
               "icon": "car"
-            }
-          ]
-        },
-        {
-          "type": "testimonials",
-          "heading": {
-            "en": "What parents say",
-            "am": "ወላጆች ምን ይላሉ"
-          },
-          "items": [
-            {
-              "quote": {
-                "en": "My daughter now reads English books at home on her own. The teachers really follow up.",
-                "am": "ልጄ አሁን ቤት ውስጥ የእንግሊዝኛ መጻሕፍትን ራሷ ታነባለች። መምህራኑ በእውነት ይከታተላሉ።"
-              },
-              "name": "Parent of a Grade 3 student"
-            },
-            {
-              "quote": {
-                "en": "The school bus is always on time and the staff call us if anything changes.",
-                "am": "ሰርቪሱ ሁልጊዜ በሰዓቱ ይመጣል፤ ለውጥ ካለም ሠራተኞቹ ይደውሉልናል።"
-              },
-              "name": "Parent of a KG student"
             }
           ]
         },

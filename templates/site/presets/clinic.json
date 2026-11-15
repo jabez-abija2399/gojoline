@@ -157,39 +157,7 @@
           "body": {
             "en": "We are a small team of doctors, nurses and lab staff serving families around Megenagna.\n\nWe take time to listen, explain clearly and refer you to a specialist or hospital when needed.",
             "am": "በመገናኛ አካባቢ ቤተሰቦችን የምናገለግል የሐኪሞች፣ የነርሶች እና የላብራቶሪ ባለሙያዎች ቡድን ነን።\n\nጊዜ ወስደን እናዳምጥዎታለን፣ በግልጽ እናስረዳለን፤ ሲያስፈልግም ወደ ስፔሻሊስት ወይም ሆስፒታል እንልክዎታለን።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "6 days",
-                "am": "6 ቀን"
-              },
-              "label": {
-                "en": "Open each week",
-                "am": "በሳምንት ክፍት"
-              }
-            },
-            {
-              "value": {
-                "en": "4",
-                "am": "4"
-              },
-              "label": {
-                "en": "Main services",
-                "am": "ዋና አገልግሎቶች"
-              }
-            },
-            {
-              "value": {
-                "en": "Walk-ins",
-                "am": "ያለቀጠሮ"
-              },
-              "label": {
-                "en": "Also welcome",
-                "am": "መምጣት ይቻላል"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "contact",

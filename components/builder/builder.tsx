@@ -26,6 +26,10 @@ let localId = 0;
 const nextId = () => `local-${++localId}`;
 
 export function Builder({ locale, projectId, t, initialMessages, initialVersions, noCredits }: Props) {
+  // A site that only has its template version: show it first and say what to change.
+  const templateId = initialVersions.length === 1 ? /^template:([a-z-]+)$/.exec(initialVersions[0]!.summary)?.[1] : undefined;
+  const templateName = templateId ? (t.templates as Record<string, string>)[templateId] : undefined;
+  const welcome = templateName ? t.welcomeTemplate.replace("{industry}", templateName) : undefined;
   const [messages, setMessages] = useState<UiMessage[]>(initialMessages);
   const [versions, setVersions] = useState<UiVersion[]>(initialVersions);
   const [current, setCurrent] = useState<number | null>(initialVersions[0]?.number ?? null);
@@ -37,7 +41,7 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
   const [previewError, setPreviewError] = useState(false);
   const [previewAttempt, setPreviewAttempt] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
-  const [mobileTab, setMobileTab] = useState<Tab>("chat");
+  const [mobileTab, setMobileTab] = useState<Tab>(templateName ? "preview" : "chat");
   const [deskTab, setDeskTab] = useState<Exclude<Tab, "chat">>("preview");
   const lastBuildFailed = useRef(false);
 
@@ -155,7 +159,7 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
 
   const stepLabel = step === "reading" ? t.stepReading : step === "editing" ? t.stepEditing : step === "checking" ? t.stepChecking : step === "fixing" ? t.stepFixing : null;
 
-  const chat = <ChatPanel t={t} locale={locale} messages={messages} working={working} stepLabel={stepLabel} streamText={streamText} onSend={send} />;
+  const chat = <ChatPanel t={t} locale={locale} messages={messages} working={working} stepLabel={stepLabel} streamText={streamText} onSend={send} welcome={welcome} />;
   const preview = (
     <PreviewPanel
       t={t}

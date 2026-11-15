@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { contrast, parseHex } from "./color.ts";
+import { contrast, parseHex, readableOn } from "./color.ts";
 
 /** Runtime schema mirroring types.ts; the builder and `npm run check` validate site.ts with it. */
 const text = z
@@ -127,5 +127,7 @@ export function themeWarnings(theme: { primary: string; accent: string; backgrou
   check(theme.text, "#ffffff", "theme.text on white cards");
   // Buttons use white or near-black text automatically; links use primary on the background.
   check(theme.primary, theme.background, "theme.primary (links, icons) on theme.background", 3);
+  // The accent fills the footer and banners; their text is white or near-black, whichever reads best.
+  check(readableOn(theme.accent), theme.accent, "text on theme.accent (footer, banners)");
   return out;
 }

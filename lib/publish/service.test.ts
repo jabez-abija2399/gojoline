@@ -4,7 +4,7 @@ import { MemoryProjectStore } from "@/lib/projects/memory-store";
 import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { MemorySandboxProvider } from "@/lib/providers/sandbox/memory";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
-import { publishInfo, publishSite, type PublishDeps } from "./service";
+import { hasExampleDetails, publishInfo, publishSite, type PublishDeps } from "./service";
 
 const siteTs = `export const site = { name: { en: "Selam Coffee" } }`;
 let deps: PublishDeps;
@@ -23,7 +23,7 @@ beforeEach(() => {
   };
 });
 
-async function projectWithVersion(owner = "alice", files = { "src/site.ts": siteTs }) {
+async function projectWithVersion(owner = "alice", files: Record<string, string> = { "src/site.ts": siteTs }) {
   const p = await deps.store.createProject(owner, { name: "Selam Coffee", locale: "en" });
   await deps.store.addVersion(owner, { projectId: p.id, summary: "v1", files });
   return p;
@@ -77,6 +77,13 @@ describe("publishSite", () => {
     expect(await publishSite(deps, alice, b.id, "site-two")).toEqual({ ok: false, error: "plan_limit" });
     // Republishing the existing site is always fine.
     expect((await publishSite(deps, alice, a.id, "site-one")).ok).toBe(true);
+  });
+
+  it("won't publish template placeholders", async () => {
+    const p = await projectWithVersion("alice", { "src/site.json": JSON.stringify({ name: { en: "A" }, business: { phone: "+251 911 000 000" } }) });
+    expect(await publishSite(deps, alice, p.id, "example-site")).toEqual({ ok: false, error: "unfinished" });
+    expect(hasExampleDetails(JSON.stringify({ x: "Account: [account number]", n: [1, 2] }))).toBe(true);
+    expect(hasExampleDetails(JSON.stringify({ x: "Call +251 911 234 567", n: [1, 2], o: ["a"] }))).toBe(false);
   });
 
   it("refuses while another change is running", async () => {

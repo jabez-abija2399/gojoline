@@ -104,39 +104,7 @@
           "body": {
             "en": "Tana Shore Hotel has 42 rooms, a garden by the water and a team that knows the city well.\n\nWe can arrange boat trips to the island monasteries and day trips to the Blue Nile Falls.",
             "am": "ጣና ሾር ሆቴል 42 ክፍሎች፣ ውሃው አጠገብ የአትክልት ስፍራ እና ከተማዋን በደንብ የሚያውቁ ሠራተኞች አሉት።\n\nበጀልባ ወደ ደሴት ገዳማት እና ወደ ጢስ ዓባይ ፏፏቴ የሚደረጉ ጉብኝቶችን እናዘጋጅልዎታለን።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "42",
-                "am": "42"
-              },
-              "label": {
-                "en": "Rooms",
-                "am": "ክፍሎች"
-              }
-            },
-            {
-              "value": {
-                "en": "15 min",
-                "am": "15 ደቂቃ"
-              },
-              "label": {
-                "en": "From the airport",
-                "am": "ከአውሮፕላን ማረፊያ"
-              }
-            },
-            {
-              "value": {
-                "en": "24/7",
-                "am": "24/7"
-              },
-              "label": {
-                "en": "Reception",
-                "am": "እንግዳ መቀበያ"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "services",
@@ -192,29 +160,6 @@
                 "am": "የሁሉም ክፍሎች ዋጋ ቁርስ እና ዋይፋይ ያካትታል።"
               },
               "icon": "check"
-            }
-          ]
-        },
-        {
-          "type": "testimonials",
-          "heading": {
-            "en": "What guests say",
-            "am": "እንግዶች ምን ይላሉ"
-          },
-          "items": [
-            {
-              "quote": {
-                "en": "Clean room, beautiful lake view and the driver was waiting for us at the airport.",
-                "am": "ንጹሕ ክፍል፣ ውብ የሐይቅ እይታ፤ ሾፌሩም አውሮፕላን ማረፊያ ይጠብቀን ነበር።"
-              },
-              "name": "Hanna T."
-            },
-            {
-              "quote": {
-                "en": "The fish goulash at the restaurant was the best we had in Bahir Dar.",
-                "am": "የምግብ ቤቱ የአሳ ጉላሽ በባሕር ዳር ከበላነው ሁሉ ምርጡ ነበር።"
-              },
-              "name": "Dawit M."
             }
           ]
         }

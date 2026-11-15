@@ -12,7 +12,7 @@ export function LegalPage({ locale, t, doc }: { locale: Locale; t: Messages; doc
         <header className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold">{doc.title}</h1>
           <p className="text-ink-muted">{doc.updated}</p>
-          <p className="rounded-lg bg-sand px-4 py-3">{doc.draftNote}</p>
+          <p className="rounded-lg border border-line bg-white px-4 py-3">{doc.draftNote}</p>
         </header>
         {doc.sections.map((s) => (
           <section key={s.heading} className="flex flex-col gap-2">
@@ -20,16 +20,29 @@ export function LegalPage({ locale, t, doc }: { locale: Locale; t: Messages; doc
             {s.body.length > 1 ? (
               <ul className="flex list-disc flex-col gap-1 ps-6">
                 {s.body.map((p) => (
-                  <li key={p}>{p}</li>
+                  <li key={p}>{withTelegramLink(p)}</li>
                 ))}
               </ul>
             ) : (
-              <p>{s.body[0]}</p>
+              <p>{withTelegramLink(s.body[0] ?? "")}</p>
             )}
           </section>
         ))}
       </main>
       <SiteFooter locale={locale} t={t} />
+    </>
+  );
+}
+
+/** Makes the @gojoline_bot mention tappable. */
+function withTelegramLink(text: string) {
+  const [before, after] = text.split("@gojoline_bot");
+  if (after === undefined) return text;
+  return (
+    <>
+      {before}
+      <a href="https://t.me/gojoline_bot" className="font-medium text-teal underline underline-offset-4">@gojoline_bot</a>
+      {after}
     </>
   );
 }

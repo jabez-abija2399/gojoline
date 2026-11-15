@@ -23,11 +23,13 @@ interface Props {
   stepLabel: string | null;
   streamText: string;
   onSend: (text: string) => void;
+  /** First message: the general welcome, or what to do next with a template site. */
+  welcome?: string;
 }
 
 const amharic = /[ሀ-፿]/;
 
-export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend }: Props) {
+export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend, welcome }: Props) {
   const [draft, setDraft] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +47,7 @@ export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div ref={listRef} role="log" tabIndex={0} aria-label={t.tabChat} className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4" aria-live="polite" aria-relevant="additions">
-        <Bubble role="assistant" label={t.assistant} text={t.welcome} />
+        <Bubble role="assistant" label={t.assistant} text={welcome ?? t.welcome} />
         {messages.map((m) => (
           <Bubble
             key={m.id}

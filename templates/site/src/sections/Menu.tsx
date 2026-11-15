@@ -26,7 +26,7 @@ export function Menu({ section }: { section: MenuSection }) {
                           <span className="ms-2 rounded-full bg-primary-soft px-2 py-0.5 text-sm font-medium">{text(item.tag)}</span>
                         )}
                       </p>
-                      {item.description && <p className="text-muted">{text(item.description)}</p>}
+                      {item.description && <p className="whitespace-pre-line text-muted">{text(item.description)}</p>}
                     </div>
                     {item.price && <p className="shrink-0 font-semibold whitespace-nowrap">{formatPrice(item.price, lang)}</p>}
                   </li>

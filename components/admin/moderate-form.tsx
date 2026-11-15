@@ -57,7 +57,6 @@ export function ModerateForm({ t, siteId, lang, tab, ops, reason }: { t: Message
           <input
             ref={reasonRef}
             name="reason"
-            required
             maxLength={300}
             aria-invalid={state.status === "reason_required" || undefined}
             aria-describedby={state.status === "reason_required" ? errorId : undefined}

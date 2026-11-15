@@ -104,39 +104,7 @@
           "body": {
             "en": "From the first meeting to the last guest leaving, our team plans the timeline, sets up the venue and coordinates every supplier.\n\nWe work in hotels, halls, gardens and homes across Addis Ababa.",
             "am": "ከመጀመሪያው ውይይት እስከ መጨረሻው እንግዳ መውጫ ድረስ ቡድናችን ፕሮግራሙን ያቅዳል፣ አዳራሹን ያዘጋጃል፣ ሁሉንም አቅራቢዎች ያስተባብራል።\n\nበአዲስ አበባ ውስጥ በሆቴሎች፣ በአዳራሾች፣ በግቢዎች እና በቤቶች እንሠራለን።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "300+",
-                "am": "300+"
-              },
-              "label": {
-                "en": "Events organised",
-                "am": "ያዘጋጀናቸው ዝግጅቶች"
-              }
-            },
-            {
-              "value": {
-                "en": "1,000",
-                "am": "1,000"
-              },
-              "label": {
-                "en": "Guests at our largest event",
-                "am": "በትልቁ ዝግጅታችን የነበሩ እንግዶች"
-              }
-            },
-            {
-              "value": {
-                "en": "1",
-                "am": "1"
-              },
-              "label": {
-                "en": "Coordinator for your whole event",
-                "am": "ለሙሉ ዝግጅትዎ አንድ አስተባባሪ"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "services",
@@ -188,36 +156,6 @@
                 "am": "ለማንኛውም ዝግጅት ዲኮር ወይም ምግብ ለብቻው ማዘዝ ይችላሉ።"
               },
               "icon": "star"
-            }
-          ]
-        },
-        {
-          "type": "testimonials",
-          "heading": {
-            "en": "What our clients say",
-            "am": "ደንበኞቻችን ምን ይላሉ"
-          },
-          "items": [
-            {
-              "quote": {
-                "en": "Everything was ready on time and our guests still talk about the decoration.",
-                "am": "ሁሉም ነገር በሰዓቱ ተዘጋጅቷል፤ እንግዶቻችን ስለ ዲኮሩ አሁንም ያወራሉ።"
-              },
-              "name": "Hana and Dawit"
-            },
-            {
-              "quote": {
-                "en": "My daughter's graduation party was simple, beautiful and stress-free.",
-                "am": "የልጄ የምረቃ ድግስ ቀላል፣ ውብ እና ከጭንቀት ነፃ ነበር።"
-              },
-              "name": "Meron T."
-            },
-            {
-              "quote": {
-                "en": "They managed our staff dinner for 200 people without a single problem.",
-                "am": "የ200 ሠራተኞቻችንን የእራት ፕሮግራም ያለ አንዳች ችግር አስተናግደዋል።"
-              },
-              "name": "Yonas G."
             }
           ]
         }

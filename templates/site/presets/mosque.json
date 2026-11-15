@@ -1,0 +1,617 @@
+{
+  "name": {
+    "en": "Kolfe Al-Noor Mosque",
+    "am": "ኮልፌ አል-ኑር መስጂድ"
+  },
+  "tagline": {
+    "en": "A place of prayer, learning and care in Kolfe",
+    "am": "በኮልፌ የሶላት፣ የትምህርት እና የመረዳዳት ቦታ"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#1F6B4A",
+    "accent": "#A87A2E",
+    "background": "#F7FAF7",
+    "text": "#1B2A22",
+    "font": "classic",
+    "radius": "small"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Kolfe Keranio, Addis Ababa",
+      "am": "ኮልፌ ቀራኒዮ፣ አዲስ አበባ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Every day",
+          "am": "በየቀኑ"
+        },
+        "time": {
+          "en": "From Fajr until after Isha",
+          "am": "ከሱብሒ እስከ ዒሻ በኋላ"
+        }
+      },
+      {
+        "days": {
+          "en": "Office (Monday to Saturday)",
+          "am": "ቢሮ (ከሰኞ እስከ ቅዳሜ)"
+        },
+        "time": {
+          "en": "9:00 am to 5:00 pm",
+          "am": "ከጠዋቱ 3 እስከ ቀኑ 11 ሰዓት"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Neighbourhood mosque in Kolfe: daily prayers, Jumu'ah, Quran classes and community support.",
+        "am": "በኮልፌ የሚገኝ የሰፈር መስጂድ፤ የዕለት ሶላት፣ ጁሙዓ፣ የቁርኣን ትምህርት እና የማህበረሰብ ድጋፍ።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "centered",
+          "eyebrow": {
+            "en": "Assalamu alaikum",
+            "am": "አሰላሙ ዐለይኩም"
+          },
+          "heading": {
+            "en": "Welcome to Kolfe Al-Noor Mosque",
+            "am": "ወደ ኮልፌ አል-ኑር መስጂድ እንኳን ደህና መጡ"
+          },
+          "subheading": {
+            "en": "Pray with us, learn the Quran, and stand with the families of our neighbourhood.",
+            "am": "አብረውን ይስገዱ፣ ቁርኣን ይማሩ፣ የሰፈራችንንም ቤተሰቦች ይደግፉ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Prayer times",
+              "am": "የሶላት ሰዓቶች"
+            },
+            "href": "/prayer-times"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Contact us",
+              "am": "ያግኙን"
+            },
+            "href": "/contact"
+          }
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "Our mosque",
+            "am": "መስጂዳችን"
+          },
+          "body": {
+            "en": "Our doors are open to everyone for the five daily prayers and Jumu'ah.\n\nBeyond prayer, we teach the Quran to children and adults and help neighbours who are going through hard times.",
+            "am": "በሩ ለአምስቱ የዕለት ሶላቶች እና ለጁሙዓ ለሁሉም ክፍት ነው።\n\nከሶላት በተጨማሪ ለልጆችና ለአዋቂዎች ቁርኣን እናስተምራለን፤ በችግር ላይ ያሉ ጎረቤቶቻችንንም እንረዳለን።"
+          }
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "What we offer",
+            "am": "የምንሰጣቸው አገልግሎቶች"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Daily prayers",
+                "am": "የዕለት ሶላቶች"
+              },
+              "description": {
+                "en": "All five prayers in congregation, plus Jumu'ah every Friday.",
+                "am": "አምስቱም ሶላቶች በጀማዓ፣ እንዲሁም በየጁሙዓ ቀን የጁሙዓ ሶላት።"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Quran classes",
+                "am": "የቁርኣን ትምህርት"
+              },
+              "description": {
+                "en": "Reading, tajweed and memorisation for children and adults.",
+                "am": "ለልጆችና ለአዋቂዎች ንባብ፣ ተጅዊድ እና ሂፍዝ።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Family support",
+                "am": "ለቤተሰቦች ድጋፍ"
+              },
+              "description": {
+                "en": "Food and basic help for families in need, given with dignity.",
+                "am": "ለተቸገሩ ቤተሰቦች ምግብ እና መሠረታዊ እርዳታ፣ ክብራቸውን በጠበቀ መልኩ።"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Community programs",
+                "am": "የማህበረሰብ መርሃ ግብሮች"
+              },
+              "description": {
+                "en": "Talks, Ramadan iftar and gatherings for the neighbourhood.",
+                "am": "ዳዕዋ፣ የረመዳን ኢፍጣር እና የሰፈር ስብሰባዎች።"
+              },
+              "icon": "home"
+            }
+          ]
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": {
+            "en": "Visit or call us",
+            "am": "ይጎብኙን ወይም ይደውሉልን"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/prayer-times",
+      "title": {
+        "en": "Prayer times",
+        "am": "የሶላት ሰዓቶች"
+      },
+      "nav": {
+        "en": "Prayer times",
+        "am": "ሶላት"
+      },
+      "description": {
+        "en": "Approximate times for the five daily prayers and Jumu'ah at Kolfe Al-Noor Mosque.",
+        "am": "በኮልፌ አል-ኑር መስጂድ የአምስቱ ሶላቶች እና የጁሙዓ ግምታዊ ሰዓቶች።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "Daily prayers",
+            "am": "የዕለት ሶላቶች"
+          },
+          "intro": {
+            "en": "Times are approximate and shift a few minutes through the year. Exact times are posted at the entrance.",
+            "am": "ሰዓቶቹ ግምታዊ ሲሆኑ በዓመቱ ውስጥ በጥቂት ደቂቃዎች ይለዋወጣሉ። ትክክለኛው ሰዓት በመግቢያው ላይ ይለጠፋል።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Fajr",
+                "am": "ሱብሒ"
+              },
+              "description": {
+                "en": "Around 5:10 am",
+                "am": "ከሌሊቱ 11:10 ገደማ"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Dhuhr",
+                "am": "ዙህር"
+              },
+              "description": {
+                "en": "Around 12:30 pm",
+                "am": "ከቀኑ 6:30 ገደማ"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Asr",
+                "am": "ዐስር"
+              },
+              "description": {
+                "en": "Around 3:45 pm",
+                "am": "ከቀኑ 9:45 ገደማ"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Maghrib",
+                "am": "መግሪብ"
+              },
+              "description": {
+                "en": "Around 6:35 pm",
+                "am": "ከምሽቱ 12:35 ገደማ"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Isha",
+                "am": "ዒሻ"
+              },
+              "description": {
+                "en": "Around 7:50 pm",
+                "am": "ከምሽቱ 1:50 ገደማ"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Jumu'ah (Friday)",
+                "am": "ጁሙዓ (ዓርብ)"
+              },
+              "description": {
+                "en": "Khutbah begins around 12:30 pm. Please come early.",
+                "am": "ኹጥባው ከቀኑ 6:30 ገደማ ይጀምራል። እባክዎ ቀደም ብለው ይምጡ።"
+              },
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "Before you come",
+            "am": "ከመምጣትዎ በፊት"
+          },
+          "body": {
+            "en": "There is a separate prayer area and wudu space for sisters.\n\nPlease keep phones on silent and leave shoes on the racks at the door.",
+            "am": "ለእህቶች የተለየ የሶላት ቦታ እና የውዱእ ማድረጊያ አለ።\n\nእባክዎ ስልክዎን ድምፅ አልባ ያድርጉ፤ ጫማዎንም በበሩ አጠገብ ባለው መደርደሪያ ላይ ያስቀምጡ።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Where we are",
+            "am": "የምንገኝበት"
+          },
+          "query": "Kolfe Keranio, Addis Ababa"
+        }
+      ]
+    },
+    {
+      "path": "/classes",
+      "title": {
+        "en": "Quran classes and programs",
+        "am": "የቁርኣን ትምህርት እና መርሃ ግብሮች"
+      },
+      "nav": {
+        "en": "Classes",
+        "am": "ትምህርት"
+      },
+      "description": {
+        "en": "Quran classes for children and adults, and community programs in Kolfe.",
+        "am": "ለልጆችና ለአዋቂዎች የቁርኣን ትምህርት እና የማህበረሰብ መርሃ ግብሮች በኮልፌ።"
+      },
+      "sections": [
+        {
+          "type": "services",
+          "heading": {
+            "en": "Quran classes",
+            "am": "የቁርኣን ትምህርት"
+          },
+          "intro": {
+            "en": "Classes are grouped by level. Ask us about times and any fees.",
+            "am": "ትምህርቱ በደረጃ የተከፋፈለ ነው። ስለ ሰዓቱ እና ስለ ክፍያ ይጠይቁን።"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Children's madrasa",
+                "am": "የልጆች መድረሳ"
+              },
+              "description": {
+                "en": "Reading the Quran, short surahs and basic manners, on weekends.",
+                "am": "የቁርኣን ንባብ፣ አጫጭር ሱራዎች እና መሠረታዊ ሥነ ምግባር፣ ቅዳሜና እሑድ።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Adult reading and tajweed",
+                "am": "የአዋቂዎች ንባብ እና ተጅዊድ"
+              },
+              "description": {
+                "en": "For beginners and those improving recitation. Evening classes.",
+                "am": "ለጀማሪዎችና ንባባቸውን ማሻሻል ለሚፈልጉ። የምሽት ትምህርት።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Sisters' class",
+                "am": "የእህቶች ትምህርት"
+              },
+              "description": {
+                "en": "Quran and basic fiqh taught by a female teacher.",
+                "am": "ቁርኣን እና መሠረታዊ ፊቅህ በሴት አስተማሪ።"
+              },
+              "icon": "school"
+            },
+            {
+              "title": {
+                "en": "Hifz (memorisation)",
+                "am": "ሂፍዝ (በቃል መያዝ)"
+              },
+              "description": {
+                "en": "Steady memorisation with regular review, by teacher's approval.",
+                "am": "በመደበኛ ክለሳ የሚደረግ ሂፍዝ፣ በአስተማሪው ፈቃድ።"
+              },
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "Community programs",
+            "am": "የማህበረሰብ መርሃ ግብሮች"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Weekly talk",
+                "am": "ሳምንታዊ ዳዕዋ"
+              },
+              "description": {
+                "en": "A short reminder after Maghrib, open to all.",
+                "am": "ከመግሪብ በኋላ አጭር ምክር፣ ለሁሉም ክፍት።"
+              },
+              "icon": "calendar"
+            },
+            {
+              "title": {
+                "en": "Ramadan iftar",
+                "am": "የረመዳን ኢፍጣር"
+              },
+              "description": {
+                "en": "Shared iftar at the mosque during Ramadan.",
+                "am": "በረመዳን ወር በመስጂዱ የጋራ ኢፍጣር።"
+              },
+              "icon": "utensils"
+            },
+            {
+              "title": {
+                "en": "Nikah and family advice",
+                "am": "ኒካሕ እና የቤተሰብ ምክር"
+              },
+              "description": {
+                "en": "Help with nikah arrangements and confidential family guidance.",
+                "am": "የኒካሕ ዝግጅት እና ሚስጥሩ የተጠበቀ የቤተሰብ ምክር።"
+              },
+              "icon": "heart"
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "heading": {
+            "en": "How to join",
+            "am": "እንዴት መመዝገብ ይቻላል"
+          },
+          "body": {
+            "en": "Send us a message on the contact page or speak to the office after any prayer. We will find the right class for you or your child.",
+            "am": "በ«ያግኙን» ገጽ መልእክት ይላኩልን ወይም ከማንኛውም ሶላት በኋላ ቢሮውን ያነጋግሩ። ለእርስዎ ወይም ለልጅዎ የሚስማማውን ክፍል እናገኛለን።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/giving",
+      "title": {
+        "en": "Giving",
+        "am": "ልገሳ"
+      },
+      "nav": {
+        "en": "Giving",
+        "am": "ልገሳ"
+      },
+      "description": {
+        "en": "Support the mosque and families in need through zakat and sadaqah.",
+        "am": "በዘካ እና በሶደቃ መስጂዱን እና የተቸገሩ ቤተሰቦችን ይደግፉ።"
+      },
+      "sections": [
+        {
+          "type": "about",
+          "heading": {
+            "en": "Give with us",
+            "am": "ከእኛ ጋር ይለግሱ"
+          },
+          "body": {
+            "en": "Your giving keeps the mosque open, supports our teachers and reaches families in our neighbourhood who need help.\n\nBank transfer: [bank name], account name Kolfe Al-Noor Mosque, account number [account number].\n\nYou can also give in person at the office. Please ask for a receipt.",
+            "am": "ልገሳዎ መስጂዱ ክፍት ሆኖ እንዲቆይ፣ አስተማሪዎቻችንን ለመደገፍ እና በሰፈራችን እርዳታ ለሚያስፈልጋቸው ቤተሰቦች ለመድረስ ያግዛል።\n\nበባንክ ለማስተላለፍ፦ [bank name]፣ የሂሳብ ስም ኮልፌ አል-ኑር መስጂድ፣ የሂሳብ ቁጥር [account number]።\n\nበቢሮም በአካል መስጠት ይችላሉ። እባክዎ ደረሰኝ ይጠይቁ።"
+          }
+        },
+        {
+          "type": "services",
+          "heading": {
+            "en": "Ways to give",
+            "am": "የመስጫ መንገዶች"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Zakat",
+                "am": "ዘካ"
+              },
+              "description": {
+                "en": "Passed on to eligible families in the community.",
+                "am": "በማህበረሰቡ ውስጥ ለሚገባቸው ቤተሰቦች ይደርሳል።"
+              },
+              "icon": "heart"
+            },
+            {
+              "title": {
+                "en": "Sadaqah",
+                "am": "ሶደቃ"
+              },
+              "description": {
+                "en": "General charity for food, school supplies and urgent needs.",
+                "am": "ለምግብ፣ ለትምህርት ቁሳቁስ እና ለአስቸኳይ ችግሮች የሚውል አጠቃላይ ሶደቃ።"
+              },
+              "icon": "check"
+            },
+            {
+              "title": {
+                "en": "Mosque upkeep",
+                "am": "የመስጂድ እንክብካቤ"
+              },
+              "description": {
+                "en": "Water, electricity, cleaning and repairs.",
+                "am": "ውሃ፣ መብራት፣ ጽዳት እና ጥገና።"
+              },
+              "icon": "home"
+            },
+            {
+              "title": {
+                "en": "Ramadan iftar",
+                "am": "የረመዳን ኢፍጣር"
+              },
+              "description": {
+                "en": "Help provide iftar meals for those fasting.",
+                "am": "ለጾመኞች የኢፍጣር ምግብ በማቅረብ ይተባበሩ።"
+              },
+              "icon": "utensils"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact",
+        "am": "ያግኙን"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "ያግኙን"
+      },
+      "description": {
+        "en": "Contact Kolfe Al-Noor Mosque about classes, support or any question.",
+        "am": "ስለ ትምህርት፣ ድጋፍ ወይም ማንኛውም ጥያቄ ኮልፌ አል-ኑር መስጂድን ያግኙ።"
+      },
+      "sections": [
+        {
+          "type": "form",
+          "id": "contact-form",
+          "kind": "contact",
+          "heading": {
+            "en": "Send us a message",
+            "am": "መልእክት ይላኩልን"
+          },
+          "intro": {
+            "en": "Ask about classes, request support or offer to volunteer. Requests for help are kept private.",
+            "am": "ስለ ትምህርት ይጠይቁ፣ ድጋፍ ይጠይቁ ወይም በበጎ ፈቃድ ለማገልገል ይመዝገቡ። የእርዳታ ጥያቄዎች በሚስጥር ይያዛሉ።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone",
+                "am": "ስልክ"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "topic",
+              "label": {
+                "en": "Topic",
+                "am": "ርዕስ"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Quran classes",
+                  "am": "የቁርኣን ትምህርት"
+                },
+                {
+                  "en": "Family support",
+                  "am": "የቤተሰብ ድጋፍ"
+                },
+                {
+                  "en": "Nikah",
+                  "am": "ኒካሕ"
+                },
+                {
+                  "en": "Volunteering",
+                  "am": "በጎ ፈቃድ"
+                },
+                {
+                  "en": "Giving",
+                  "am": "ልገሳ"
+                },
+                {
+                  "en": "Other",
+                  "am": "ሌላ"
+                }
+              ]
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Message",
+                "am": "መልእክት"
+              },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": {
+            "en": "Send",
+            "am": "ላክ"
+          },
+          "successMessage": {
+            "en": "Jazakallahu khairan. We will get back to you soon.",
+            "am": "ጀዛከላሁ ኸይር። በቅርቡ እናገኝዎታለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Call or visit",
+            "am": "ይደውሉ ወይም ይምጡ"
+          },
+          "intro": {
+            "en": "The office is open after Dhuhr and Asr on most days.",
+            "am": "ቢሮው በአብዛኛው ቀናት ከዙህር እና ከዐስር በኋላ ክፍት ነው።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Find the mosque",
+            "am": "መስጂዱን ያግኙ"
+          },
+          "query": "Kolfe Keranio, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

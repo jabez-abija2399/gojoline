@@ -34,11 +34,17 @@ export function themeVariables(theme: Theme, lang: Lang): Record<string, string>
     "--site-text": theme.text,
     "--site-muted": muted,
     "--site-line": tint(theme.text, 0.85),
-    "--site-focus": theme.accent,
+    "--site-focus": focusColor(theme),
     "--site-radius": radii[theme.radius],
     "--site-font-heading": amharicFirst + fonts[theme.font].heading,
     "--site-font-body": amharicFirst + fonts[theme.font].body,
   };
+}
+
+/** The focus ring must stand out on the page (3:1): accent if it can, else primary, else text. */
+export function focusColor(theme: Theme): string {
+  for (const c of [theme.accent, theme.primary]) if (contrast(c, theme.background) >= 3) return c;
+  return theme.text;
 }
 
 /** Softens body text for secondary copy while keeping at least ~4.5:1 on the background. */

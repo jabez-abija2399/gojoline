@@ -104,39 +104,7 @@
           "body": {
             "en": "We work with skilled weavers from Gullele and Shiro Meda, and our tailors finish every dress in our Merkato shop.\n\nFor holidays, weddings and graduations, come early so we have time to fit your dress perfectly.",
             "am": "ከጉለሌ እና ሽሮ ሜዳ ልምድ ካላቸው ሸማኔዎች ጋር እንሠራለን፤ እያንዳንዱን ቀሚስ ልብስ ሰፊዎቻችን በመርካቶ ሱቃችን ያጠናቅቃሉ።\n\nለበዓል፣ ለሠርግ እና ለምርቃት ቀሚስዎ በትክክል እንዲሆን ቀደም ብለው ይምጡ።"
-          },
-          "highlights": [
-            {
-              "value": {
-                "en": "15+",
-                "am": "15+"
-              },
-              "label": {
-                "en": "Years in Merkato",
-                "am": "ዓመታት በመርካቶ"
-              }
-            },
-            {
-              "value": {
-                "en": "7 days",
-                "am": "7 ቀን"
-              },
-              "label": {
-                "en": "Typical tailoring time",
-                "am": "የተለመደ የስፌት ጊዜ"
-              }
-            },
-            {
-              "value": {
-                "en": "Addis",
-                "am": "አዲስ አበባ"
-              },
-              "label": {
-                "en": "Delivery area",
-                "am": "የምናደርስበት"
-              }
-            }
-          ]
+          }
         },
         {
           "type": "services",
