@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Check } from "lucide-react";
 import type { ShowcaseSite } from "@/lib/landing/showcase";
 
 interface Props {
@@ -8,10 +9,12 @@ interface Props {
   labels: Record<string, string>;
   prompts: Record<string, string>;
   t: { you: string; bot: string; reply: string; pick: string; book: string };
+  /** The same build steps owners see in the builder. */
+  steps: string[];
 }
 
 /** Pick a kind of business and watch its site appear. Rotates by itself until someone picks. */
-export function HeroDemo({ sites, labels, prompts, t }: Props) {
+export function HeroDemo({ sites, labels, prompts, t, steps }: Props) {
   const [index, setIndex] = useState(0);
   const [auto, setAuto] = useState(true);
   useEffect(() => {
@@ -45,11 +48,21 @@ export function HeroDemo({ sites, labels, prompts, t }: Props) {
           <p className="font-semibold text-teal-soft">{t.you}</p>
           <p>{prompts[s.id]}</p>
         </div>
-        <div key={`b-${s.id}`} className="max-w-[88%] animate-in fade-in slide-in-from-bottom-2 rounded-2xl rounded-bl-sm bg-clay-soft px-4 py-3 delay-300 duration-500 fill-mode-both">
+        <ol key={`t-${s.id}`} aria-hidden="true" className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-muted">
+          {steps.map((step, i) => (
+            <li key={step} className="flex animate-in items-center gap-1.5 fade-in duration-300 fill-mode-both" style={{ animationDelay: `${150 + i * 180}ms` }}>
+              <span className="flex size-4 items-center justify-center rounded-full bg-teal text-white">
+                <Check className="size-3" strokeWidth={3} />
+              </span>
+              {step}
+            </li>
+          ))}
+        </ol>
+        <div key={`b-${s.id}`} className="max-w-[88%] animate-in fade-in slide-in-from-bottom-2 rounded-2xl rounded-bl-sm bg-clay-soft px-4 py-3 delay-700 duration-500 fill-mode-both">
           <p className="font-semibold">{t.bot}</p>
           <p>{t.reply}</p>
         </div>
-        <div key={`s-${s.id}`} className="animate-in fade-in zoom-in-95 overflow-hidden rounded-xl border border-line delay-500 duration-700 fill-mode-both" style={{ background: s.background, color: s.text }}>
+        <div key={`s-${s.id}`} className="animate-in fade-in zoom-in-95 overflow-hidden rounded-xl border border-line delay-1000 duration-700 fill-mode-both" style={{ background: s.background, color: s.text }}>
           <div className="flex items-center gap-1.5 border-b border-black/10 bg-white/70 px-3 py-2" aria-hidden="true">
             <span className="size-2.5 rounded-full bg-black/15" />
             <span className="size-2.5 rounded-full bg-black/15" />
@@ -64,7 +77,7 @@ export function HeroDemo({ sites, labels, prompts, t }: Props) {
             {s.items.map((it) => (
               <li key={it.name} className="flex justify-between gap-3 border-b border-black/10 pb-1.5 last:border-0">
                 <span className="truncate">{it.name}</span>
-                <span className="shrink-0 font-semibold">{it.price}</span>
+                {it.price && <span className="shrink-0 font-semibold">{it.price}</span>}
               </li>
             ))}
           </ul>

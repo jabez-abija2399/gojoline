@@ -115,6 +115,8 @@ export async function saveBillingSettings(_prev: SettingsState, form: FormData):
 
 /** Light, dark or follow the device, remembered for a year (admin pages only). */
 export async function setAdminTheme(form: FormData) {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) redirect("/");
   const theme = form.get("theme");
   const lang = form.get("lang") === "am" ? "am" : "en";
   const tab = String(form.get("tab") ?? "overview").replace(/[^a-z]/g, "").slice(0, 20);

@@ -2,7 +2,7 @@ import "server-only";
 import { presetSiteJson, type PresetId } from "@/lib/template/presets";
 import { readableOn } from "@/templates/site/src/lib/color";
 
-export const SHOWCASE = ["cafe", "hotel", "clinic", "shop"] as const satisfies readonly PresetId[];
+export const SHOWCASE = ["cafe", "hotel", "clinic", "shop", "personal"] as const satisfies readonly PresetId[];
 export type ShowcaseId = (typeof SHOWCASE)[number];
 
 /** What the hero demo shows for one business: taken from the real starter template. */
@@ -39,6 +39,9 @@ export function showcaseSites(locale: "en" | "am"): ShowcaseSite[] {
         for (const c of s.categories ?? []) for (const it of c.items) if (it.price) items.push({ name: pick(it.name), price: birr(it.price.amountMinor) });
         for (const it of s.items ?? []) if (it.price) items.push({ name: pick(it.title), price: birr(it.price.amountMinor) });
       }
+    // Sites without prices (a personal site) show what the owner offers instead.
+    if (items.length === 0)
+      for (const page of site.pages) for (const s of page.sections) if (s.type === "services") for (const it of s.items ?? []) items.push({ name: pick(it.title), price: "" });
     const { primary, accent, background, text } = site.theme;
     return { id, name: pick(site.name), tagline: pick(site.tagline), primary, accent, background, text, onPrimary: readableOn(primary), onAccent: readableOn(accent), items: items.slice(0, 3) };
   });

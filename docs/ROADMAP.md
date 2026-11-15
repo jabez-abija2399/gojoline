@@ -55,18 +55,29 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Privacy policy and terms pages (to be reviewed by a lawyer)
 - [ ] Eval targets met (see PRD): all met except the Amharic quality score (needs a native-speaker review)
 
+## Launch polish (2026-11-15)
+- [x] Email sign-in codes (Resend, `afridea.et`) and Google sign-in, live in production
+- [x] Manual payments with admin-editable payment details and prices
+- [x] Landing page redesign: live hero demo with the build steps, templates, pricing in Birr, FAQ
+- [x] Installable app (PWA) with offline page
+- [x] Builder asks which languages the site should have (English, Amharic or both) before the first build
+- [x] Live build timeline in the chat (understanding, writing, checking, fixing, ready)
+- [x] Admin dashboard: overview KPIs, needs-attention list, 30-day charts, owners search, dark mode
+- [x] Site template: motion and depth (CSS only, reduced-motion safe), bento services, editorial gallery, timeline section
+- [x] Personal website / portfolio template (12 templates in total)
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
-- Amharic in the 11 industry templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
+- Amharic in the 12 templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 
 
 ## Notes for deployment
 - **Live:** https://gojoline.afridea.et (until the founder's own domain; `gojoline.vercel.app` also works). Vercel project `gojoline`, functions in `fra1`, linked to GitHub on 2026-11-15 (pushes to `main` deploy to production). `gojoline.vercel.app` redirects (308) to `gojoline.afridea.et`; the Telegram webhook points at the new domain. Uptime: Sentry monitor on `/api/health` every 5 minutes.
 - Production env set on Vercel (2026-11-15): `DATABASE_URL` (Neon, pooled), `UPSTASH_REDIS_REST_URL`/`_TOKEN` (new free Upstash database `gojoline`, Frankfurt), `SAYSITE_ANTHROPIC_API_KEY`, `VERCEL_TOKEN`/`_TEAM_ID`/`_PROJECT_ID`, `SANDBOX_SNAPSHOT_ID`, `CSP_FRAME_ORIGINS`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET` (generated), `BETTER_AUTH_SECRET` (generated), `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL`, `SENTRY_DSN`, `AGENT_MODEL`. Telegram webhook registered to `/api/telegram/webhook`.
-- Still unset (features stay off until added): SMS/email sign-in provider, `PAYMENT_*`, `ADMIN_EMAILS`/`ADMIN_PHONES`, R2/Cloudflare, Chapa.
+- Email sign-in (Resend) and Google sign-in are set. Still unset (features stay off until added): SMS gateway, `PAYMENT_*`, `ADMIN_EMAILS`/`ADMIN_PHONES`, R2/Cloudflare, Chapa.
 - Sentry: project `gojoline` in the founder's Sentry organization. Set `SENTRY_DSN=https://28282cb223995ae0d77745325c298faf@o4512429782990848.ingest.us.sentry.io/4512432933371904` (a DSN is a public client key). Server errors only; no browser SDK.
 - Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
 - Database: Neon project `gojoline` (purple-brook-23584048, Frankfurt), database `gojoline`, migration `0000_init` applied. Set `DATABASE_URL` in the Vercel project (pooled connection string from the Neon console). Without it, dev and e2e use memory stores.
@@ -76,8 +87,6 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
-- **Email sign-in and payment emails:** add `RESEND_API_KEY` to the Vercel project `gojoline` (Settings → Environment Variables; the same key as the `saysite` project works, `afridea.et` is already verified in Resend). Until then production sign-in says it's not open. Copying it from `saysite` automatically was refused by the session's permission rules.
-- **Google sign-in:** add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to `gojoline`, and in Google Cloud Console add the redirect URI `https://gojoline.afridea.et/api/auth/callback/google` to that OAuth client. The button appears once both keys are set.
 - **SMS sign-in:** needs a gateway for Ethiopian numbers (e.g. AfroMessage); until then phone users are asked to use email or Google.
 - Vercel Sandbox snapshot storage: sandboxes start again (checked 2026-11-15); the code no longer leaves snapshots behind. The 47 old automatic snapshots can still be deleted in the Vercel project to free space (keep the 2 manual ones).
 - Eval targets: build success (100%), cost per first site (median $0.089) and cost per edit (median $0.0295, 2026-11-15) are met. Still open: the Amharic quality score, which needs a native-speaker review of `evals/.runs/`.
@@ -85,6 +94,5 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Takedown policy and terms: the report page and takedown flow work, but the rules sites must follow (acceptable use) need the founder's and a lawyer's wording before launch (Slice 8 terms page).
 - Payment details and prices: sign in as an admin (`ADMIN_EMAILS` is set to the founder's Vercel account email) and fill in Admin → Settings (Telebirr number, CBE account, account name, prices). Until then the Plan page says payments are coming soon.
 - Vercel plan: Hobby allows 10 sandboxes at a time (each owner editing uses one for up to 15 minutes). For more than ~10 owners editing at once, the team needs Vercel Pro. Plan changes are the founder's decision.
-- Sign-in code delivery: choose an SMS gateway for Ethiopian numbers (e.g. AfroMessage, Geez SMS) and/or an email service (e.g. Resend) and add its key. Until then production sign-in shows "not open yet" (`OtpSender` interface in `lib/providers/notify/otp.ts`; development prints codes in the server log).
 - Cloudflare R2/publishing credentials (`CLOUDFLARE_API_TOKEN`, `R2_*`): until added, store snapshots and publish through a fallback provider
 - Publishing domain (`gojoline.site` or similar): until bought, sites publish to `https://gojo-<name>.vercel.app` (one Vercel project per site)

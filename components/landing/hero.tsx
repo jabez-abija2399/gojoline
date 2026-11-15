@@ -6,7 +6,7 @@ import type { ShowcaseSite } from "@/lib/landing/showcase";
 import { InstallApp } from "@/components/pwa/install-app";
 import { HeroDemo } from "./hero-demo";
 
-export function Hero({ t, locale, sites, install }: { t: Messages["landing"]; locale: Locale; sites: ShowcaseSite[]; install: Messages["pwa"] }) {
+export function Hero({ t, locale, sites, install, steps }: { t: Messages["landing"]; locale: Locale; sites: ShowcaseSite[]; install: Messages["pwa"]; steps: string[] }) {
   const h = t.hero;
   return (
     <section aria-labelledby="hero-title" className="relative overflow-hidden">
@@ -33,7 +33,7 @@ export function Hero({ t, locale, sites, install }: { t: Messages["landing"]; lo
           </p>
           <InstallApp t={install} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-teal-soft bg-white px-4 font-medium text-teal hover:border-teal-mid" />
         </div>
-        <HeroDemo sites={sites} labels={t.demo.labels} prompts={t.demo.prompts} t={t.demo} />
+        <HeroDemo sites={sites} labels={t.demo.labels} prompts={t.demo.prompts} t={t.demo} steps={steps} />
       </div>
     </section>
   );
