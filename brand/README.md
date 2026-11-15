@@ -51,6 +51,7 @@ Chosen by the founder on 2026-11-15, replacing Terracotta Earth (clay and teal).
 | Faint (decorative only) | `#8A847B` | `#6E685F` |
 | Accent text / links | `#C2370F` | `#FF8A6B` |
 | Primary button (coral) | `#FF5B35`, hover `#FF7350`, ink text on it | same |
+| Coral tint (derived: error backgrounds, soft washes) | `#FFE9E2` | `#3A1E16` |
 | Live / success (lagoon) | `#0E7C66` | `#3DD6B0` |
 | Warning | `#A3530A` | `#FFB547` |
 | Danger | `#C81E3A` | `#FF6B7F` |

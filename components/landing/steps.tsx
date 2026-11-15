@@ -29,7 +29,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
     <section id="how" aria-labelledby="how-title" className="bg-ink text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-16">
         <div className="flex flex-col gap-8 lg:sticky lg:top-24 lg:self-start">
-          <h2 id="how-title" className="text-3xl display text-balance text-white sm:text-5xl">
+          <h2 id="how-title" className="text-[1.75rem] display text-balance text-white min-[400px]:text-3xl sm:text-5xl">
             {s.title}
           </h2>
           <ol className="flex flex-col">

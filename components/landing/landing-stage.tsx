@@ -49,6 +49,8 @@ interface Props {
   /** Background of the showcase (the mosaic), drawn on the server. */
   backdrop: React.ReactNode;
   /** Heading of the prompt section, written on the server. */
+  /** A link under the showcase (to all the templates). */
+  more: React.ReactNode;
   promptHeading: React.ReactNode;
   /** What follows the prompt box (the note, the install button). */
   promptFooter: React.ReactNode;
@@ -59,7 +61,7 @@ interface Props {
  * real builder with a real site for it, and the prompt box below is filled in ready to build.
  * The description waits while the visitor signs in, then their first site starts building.
  */
-export function LandingStage({ locale, sites, t, backdrop, promptHeading, promptFooter }: Props) {
+export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter }: Props) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -162,6 +164,7 @@ export function LandingStage({ locale, sites, t, backdrop, promptHeading, prompt
           </div>
         </figure>
         </div>
+        {more}
       </div>
 
       <section aria-labelledby="start-title" className="relative mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 md:py-24">

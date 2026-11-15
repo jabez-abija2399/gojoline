@@ -14,7 +14,7 @@ interface Shot {
  * card loads the whole page and scrolls through it. The whole page is fetched only then, so
  * nobody downloads twelve long pictures just by opening the landing page.
  */
-export function PanShot({ top, full }: { top: Shot; full: Shot }) {
+export function PanShot({ top, full, eager = false, first = false }: { top: Shot; full: Shot; /** In the first row: load at once, not lazily. */ eager?: boolean; /** The very first picture: the page's largest paint. */ first?: boolean }) {
   const [whole, setWhole] = useState(false);
   return (
     <span
@@ -23,7 +23,7 @@ export function PanShot({ top, full }: { top: Shot; full: Shot }) {
       }}
       className="relative block aspect-[4/5] overflow-hidden border-b border-line bg-sunken after:absolute after:inset-x-0 after:bottom-0 after:h-10 after:bg-gradient-to-t after:from-white after:to-transparent"
     >
-      <Image src={top.src} alt="" width={top.width} height={top.height} sizes="(min-width: 1024px) 256px, (min-width: 768px) 33vw, 50vw" loading="lazy" className="h-auto w-full" />
+      <Image src={top.src} alt="" width={top.width} height={top.height} sizes="(min-width: 1024px) 256px, (min-width: 768px) 33vw, 50vw" {...(first ? { priority: true } : { loading: eager ? ("eager" as const) : ("lazy" as const) })} className="h-auto w-full" />
       {whole && (
         <Image
           src={full.src}

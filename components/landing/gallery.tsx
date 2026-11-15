@@ -7,19 +7,20 @@ import { StartFromLink } from "./start-from-link";
 
 /** Twelve real Gojoline sites as a grid of cards. On a mouse, resting on one scrolls through its page. */
 export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
+  // This section is its own page (/templates), so its title is the page's h1.
   const href = `/${locale}/sign-in?next=/${locale}/build`;
   return (
-    <section id="examples" aria-labelledby="examples-title" className="py-16 md:py-24 below-fold">
+    <section aria-labelledby="examples-title" className="py-12 md:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 id="examples-title" className="mx-auto max-w-[18ch] text-center text-3xl display sm:text-5xl">
+        <h1 id="examples-title" className="mx-auto max-w-[18ch] text-center text-[2rem] display min-[400px]:text-4xl sm:text-6xl">
           {t.title}
-        </h2>
+        </h1>
         <p className="mx-auto mt-3 max-w-[60ch] text-center text-lg text-ink-muted">{t.intro}</p>
         <ul aria-label={t.listLabel} className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
-          {sites.map((s) => (
+          {sites.map((s, i) => (
             <li key={s.id}>
               <StartFromLink href={href} preset={s.id} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:-translate-y-1 hover:border-faint hover:shadow-xl">
-                <PanShot top={s.top} full={s.shot} />
+                <PanShot top={s.top} full={s.shot} eager={i < 4} first={i === 0} />
                 <span className="flex flex-1 flex-col p-3 sm:p-4">
                   <span className="font-display text-lg leading-snug font-bold">{labels[s.id]}</span>
                   <span className="truncate text-ink-muted">{s.name}</span>

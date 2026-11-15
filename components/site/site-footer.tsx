@@ -17,9 +17,16 @@ export function SiteFooter({ locale, t }: { locale: Locale; t: Messages }) {
           <p className="text-sunken">{t.footer.tagline}</p>
         </div>
         <div className="flex flex-col gap-1 text-sunken sm:items-end">
+          <nav aria-label={t.footer.pagesLabel} className="flex flex-wrap gap-x-6">
+            {(["templates", "pricing"] as const).map((k) => (
+              <a key={k} href={`/${locale}/${k}`} className="inline-flex min-h-11 min-w-11 items-center text-white underline underline-offset-4 hover:text-sunken">
+                {k === "pricing" ? t.landing.nav.prices : t.landing.nav.templates}
+              </a>
+            ))}
+          </nav>
           <nav aria-label={t.footer.linksLabel} className="flex flex-wrap gap-x-4">
             {(["privacy", "terms", "report"] as const).map((k) => (
-              <a key={k} href={`/${locale}/${k}`} className="inline-flex min-h-11 items-center text-white underline underline-offset-4 hover:text-sunken">
+              <a key={k} href={`/${locale}/${k}`} className="inline-flex min-h-11 min-w-11 items-center text-white underline underline-offset-4 hover:text-sunken">
                 {t.footer[k]}
               </a>
             ))}
