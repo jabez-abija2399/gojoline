@@ -6,7 +6,7 @@ import { ArrowRight, Loader2, Sparkles } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { LanguageChoice, type SiteLanguages } from "./language-choice";
-import { clearStartPrompt, saveStartPrompt } from "./start-prompt";
+import { clearStartPrompt, saveStartPrompt, takeLandingPrompt } from "./start-prompt";
 
 export type StartText = Pick<Messages["builder"], "startTitle" | "startAgainTitle" | "startBody" | "startPlaceholder" | "ideasLabel" | "ideas" | "startLang" | "langEn" | "langAm" | "langBothShort" | "newSite">;
 
@@ -30,7 +30,18 @@ export function StartBox({ t, locale, action, heading: Heading }: Props) {
 
   // Back on "Your sites" with a prompt still waiting means no new site was made for it:
   // drop it, so it can never start a build in a different site.
-  useEffect(clearStartPrompt, []);
+  // Unless the visitor described their business on the landing page before signing in:
+  // then that description starts their first site right away.
+  const handled = useRef(false);
+  useEffect(() => {
+    if (handled.current) return;
+    handled.current = true;
+    const fromLanding = takeLandingPrompt();
+    if (!fromLanding) return clearStartPrompt();
+    saveStartPrompt(fromLanding);
+    if (boxRef.current) boxRef.current.placeholder = fromLanding.text;
+    formRef.current?.requestSubmit();
+  }, []);
 
   return (
     <form

@@ -1,0 +1,146 @@
+{
+  "cafe": {
+    "en": {
+      "src": "/showcase/cafe-en.webp",
+      "width": 780,
+      "height": 7200
+    },
+    "am": {
+      "src": "/showcase/cafe-am.webp",
+      "width": 780,
+      "height": 7200
+    }
+  },
+  "clinic": {
+    "en": {
+      "src": "/showcase/clinic-en.webp",
+      "width": 780,
+      "height": 6664
+    },
+    "am": {
+      "src": "/showcase/clinic-am.webp",
+      "width": 780,
+      "height": 6410
+    }
+  },
+  "events": {
+    "en": {
+      "src": "/showcase/events-en.webp",
+      "width": 780,
+      "height": 5192
+    },
+    "am": {
+      "src": "/showcase/events-am.webp",
+      "width": 780,
+      "height": 5174
+    }
+  },
+  "hotel": {
+    "en": {
+      "src": "/showcase/hotel-en.webp",
+      "width": 780,
+      "height": 5136
+    },
+    "am": {
+      "src": "/showcase/hotel-am.webp",
+      "width": 780,
+      "height": 5198
+    }
+  },
+  "mosque": {
+    "en": {
+      "src": "/showcase/mosque-en.webp",
+      "width": 780,
+      "height": 6346
+    },
+    "am": {
+      "src": "/showcase/mosque-am.webp",
+      "width": 780,
+      "height": 6420
+    }
+  },
+  "ngo": {
+    "en": {
+      "src": "/showcase/ngo-en.webp",
+      "width": 780,
+      "height": 3194
+    },
+    "am": {
+      "src": "/showcase/ngo-am.webp",
+      "width": 780,
+      "height": 3342
+    }
+  },
+  "personal": {
+    "en": {
+      "src": "/showcase/personal-en.webp",
+      "width": 780,
+      "height": 5290
+    },
+    "am": {
+      "src": "/showcase/personal-am.webp",
+      "width": 780,
+      "height": 5332
+    }
+  },
+  "real-estate": {
+    "en": {
+      "src": "/showcase/real-estate-en.webp",
+      "width": 780,
+      "height": 6670
+    },
+    "am": {
+      "src": "/showcase/real-estate-am.webp",
+      "width": 780,
+      "height": 6818
+    }
+  },
+  "school": {
+    "en": {
+      "src": "/showcase/school-en.webp",
+      "width": 780,
+      "height": 6376
+    },
+    "am": {
+      "src": "/showcase/school-am.webp",
+      "width": 780,
+      "height": 6376
+    }
+  },
+  "shop": {
+    "en": {
+      "src": "/showcase/shop-en.webp",
+      "width": 780,
+      "height": 7038
+    },
+    "am": {
+      "src": "/showcase/shop-am.webp",
+      "width": 780,
+      "height": 6898
+    }
+  },
+  "tours": {
+    "en": {
+      "src": "/showcase/tours-en.webp",
+      "width": 780,
+      "height": 5502
+    },
+    "am": {
+      "src": "/showcase/tours-am.webp",
+      "width": 780,
+      "height": 5708
+    }
+  },
+  "worship": {
+    "en": {
+      "src": "/showcase/worship-en.webp",
+      "width": 780,
+      "height": 6688
+    },
+    "am": {
+      "src": "/showcase/worship-am.webp",
+      "width": 780,
+      "height": 6832
+    }
+  }
+}

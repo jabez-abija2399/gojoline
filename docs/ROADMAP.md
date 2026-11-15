@@ -66,13 +66,15 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Site template: motion and depth (CSS only, reduced-motion safe), bento services, editorial gallery, timeline section
 - [x] Personal website / portfolio template (12 templates in total)
 - [x] Builder redesign: one top bar, describe-your-business start box with ideas, next-step suggestions, phone-framed preview with a live address bar, Photos tab and add-photo button in the chat, version timeline
+- [x] Landing page rebuilt: real start box in the hero (carries the description through sign-in into a build), pictures of the 12 real template sites, measured numbers, woven-border motif, waitlist moved to its own page
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
-- The new builder strings in Amharic (start box, ideas, suggestions, photos) need the same native-speaker review.
+- Re-run `node scripts/showcase-shots.mjs` after changing the site template or a preset, so the landing page's pictures stay true.
+- The new builder and landing strings in Amharic (start box, ideas, suggestions, photos, gallery, numbers) need the same native-speaker review.
 - Amharic in the 12 templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 

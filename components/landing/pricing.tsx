@@ -13,12 +13,12 @@ export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing
   ];
   return (
     <section id="pricing" aria-labelledby="pricing-title" className="scroll-mt-20 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-20">
-        <h2 id="pricing-title" className="text-3xl font-bold sm:text-4xl">{t.title}</h2>
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
+        <h2 id="pricing-title" className="text-3xl font-bold sm:text-5xl">{t.title}</h2>
         <p className="mt-2 text-lg text-ink-muted">{t.intro}</p>
         <ul className="mt-10 grid gap-6 md:grid-cols-3 md:items-stretch">
           {plans.map((p) => (
-            <li key={p.id} className={`reveal relative flex flex-col gap-4 rounded-2xl border p-6 ${p.popular ? "border-teal bg-sand shadow-lg ring-2 ring-teal" : "border-line bg-white"}`}>
+            <li key={p.id} className={`reveal relative flex flex-col gap-4 rounded-3xl border p-6 ${p.popular ? "border-teal bg-sand shadow-lg ring-2 ring-teal" : "border-line bg-white"}`}>
               {p.popular && <span className="absolute -top-3 left-6 rounded-full bg-teal px-3 py-1 text-sm font-semibold text-white">{t.popular}</span>}
               <h3 className="text-xl font-bold">{planNames[p.id]}</h3>
               <p>

@@ -5,7 +5,7 @@ import type { Messages } from "@/lib/i18n";
 export function Faq({ t }: { t: Messages["landing"]["faq"] }) {
   return (
     <section aria-labelledby="faq-title" className="mx-auto max-w-3xl px-4 py-16 sm:px-6 md:py-20">
-      <h2 id="faq-title" className="text-3xl font-bold sm:text-4xl">{t.title}</h2>
+      <h2 id="faq-title" className="text-3xl font-bold sm:text-5xl">{t.title}</h2>
       <div className="mt-8 flex flex-col gap-3">
         {t.items.map((item) => (
           <details key={item.q} className="group rounded-xl border border-line bg-white open:border-teal-mid open:shadow-sm">

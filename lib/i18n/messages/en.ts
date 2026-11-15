@@ -23,16 +23,16 @@ export const en = {
       titleStart: "Describe your business.",
       titleEnd: "Get your home online.",
       subtitle: "Tell Gojoline about your café, shop, clinic, school or yourself, in Amharic or English. In about a minute you have a real website with booking forms and Telegram alerts, paid in Birr.",
-      cta: "Start free",
-      secondary: "See how it works",
       note: "Free to start · No card needed · Amharic and English",
+      promptLabel: "Describe your business",
+      build: "Build my site",
+      phoneCaption: "{name} is a real site made with Gojoline. Scroll it.",
+      phoneLabel: "Example site: {name}",
+      shotAlt: "The home page of {name}, as visitors see it on a phone",
     },
+    nav: { label: "On this page", examples: "Examples", how: "How it works", prices: "Prices", signIn: "Sign in" },
     demo: {
       pick: "Choose a kind of business",
-      you: "You",
-      bot: "Gojoline",
-      reply: "Your site is ready, in Amharic and English, with your prices and a booking form. Want to publish it?",
-      book: "Book now",
       prompts: {
         cafe: "We're a café in Bole: buna, macchiato and breakfast, open 7 am to 9 pm.",
         hotel: "A small hotel by Lake Tana with 20 rooms and airport pickup.",
@@ -43,11 +43,13 @@ export const en = {
       labels: { cafe: "Café", hotel: "Hotel", clinic: "Clinic", shop: "Shop", personal: "Personal" },
     },
     proof: [
-      { value: "1 min", label: "to a first site" },
-      { value: "2", label: "languages, your choice" },
+      { value: "~40 s", label: "to a first site" },
+      { value: "30 of 30", label: "test sites built right the first time" },
       { value: "12", label: "ready templates" },
-      { value: "0", label: "code to write" },
+      { value: "2", label: "languages, your choice" },
     ],
+    proofTitle: "Gojoline in numbers",
+    proofNote: "Measured on our own test builds, November 2026.",
     steps: {
       title: "How it works",
       intro: "Three steps, all from your phone.",
@@ -57,7 +59,7 @@ export const en = {
     },
     features: {
       title: "Everything a small business needs",
-      language: { title: "Amharic and English", body: "Choose Amharic, English or both. Clear Ge'ez fonts and a language switch." },
+      language: { title: "Amharic and English", body: "Choose Amharic, English or both. Clear Ge'ez fonts and a language switch.", try: "Try the switch", example: "From a real Gojoline site" },
       forms: { title: "Forms that reach you", body: "Contact, booking and order forms. Every new answer pings your Telegram." },
       edits: { title: "Edit by chatting", body: "Change prices, photos and text from the builder or straight from Telegram." },
       birr: { title: "Pay in Birr", body: "Start free. Pay by Telebirr or bank transfer, no foreign card needed." },
@@ -68,10 +70,11 @@ export const en = {
       title: "New booking on Telegram",
       body: "Abebe K. · Saturday 2:00 pm · 4 people",
     },
-    templates: {
-      title: "Start from a template",
-      intro: "A ready site for your kind of business, then make it yours by chatting.",
-      cta: "Try it free",
+    gallery: {
+      title: "Real sites, made with Gojoline",
+      intro: "Each of these is a real Gojoline site. Pick the one closest to your business, then make it yours by chatting.",
+      start: "Start from this",
+      listLabel: "Example sites",
     },
     pricing: {
       title: "Simple prices in Birr",
@@ -101,7 +104,6 @@ export const en = {
       title: "Your business deserves a home online",
       body: "Start free today. It takes about a minute to see your first site.",
       cta: "Start free",
-      waitlist: "Or join the waitlist for updates",
     },
   },
   waitlist: {
