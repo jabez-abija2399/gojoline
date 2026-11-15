@@ -259,7 +259,7 @@
     display: none;
   }
 }
-/* A thin scroll bar for chip rows that scroll sideways on phones. */
+/* Chip rows that scroll sideways on phones: no scroll bar, the cut-off chip shows there is more. */
 .chips-scroll {
   scrollbar-width: none;
 }

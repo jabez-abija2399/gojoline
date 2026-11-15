@@ -18,6 +18,7 @@ interface ControlsProps {
   className?: string;
 }
 
+const pill = "flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-sand px-3 text-sm";
 const iconButton = "flex size-11 shrink-0 items-center justify-center rounded-lg text-ink-muted transition-colors hover:bg-sand hover:text-teal aria-pressed:bg-teal-soft aria-pressed:text-teal disabled:opacity-40";
 
 /** The preview's "browser bar": screen size, where the site lives, reload, open. */
@@ -35,10 +36,17 @@ export function PreviewControls({ t, url, liveUrl, onReload, device, className =
           ))}
         </div>
       )}
-      <p className="flex min-h-9 min-w-0 flex-1 items-center gap-2 rounded-full bg-sand px-3 text-sm text-ink-muted">
-        {liveUrl ? <Globe aria-hidden="true" className="size-4 shrink-0 text-teal" /> : <Lock aria-hidden="true" className="size-4 shrink-0" />}
-        <span className="truncate">{liveUrl ? liveUrl.replace(/^https:\/\//, "") : t.previewPrivate}</span>
-      </p>
+      {liveUrl ? (
+        <a href={liveUrl} target="_blank" rel="noopener noreferrer" className={`${pill} font-medium text-teal hover:bg-teal-soft ${device ? "max-xl:hidden" : ""}`}>
+          <Globe aria-hidden="true" className="size-4 shrink-0" />
+          <span className="truncate underline underline-offset-4">{liveUrl.replace(/^https:\/\//, "")}</span>
+        </a>
+      ) : (
+        <p className={`${pill} text-ink-muted ${device ? "max-xl:hidden" : ""}`}>
+          <Lock aria-hidden="true" className="size-4 shrink-0" />
+          <span className="truncate">{t.previewPrivate}</span>
+        </p>
+      )}
       <button type="button" onClick={onReload} disabled={!url} title={t.previewReload} className={iconButton}>
         <RotateCw aria-hidden="true" className="size-5" />
         <span className="sr-only">{t.previewReload}</span>

@@ -193,7 +193,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
         <label htmlFor="chat-input" className="sr-only">
           {t.chatLabel}
         </label>
-        <div className="flex items-end gap-2 rounded-2xl border border-input bg-white p-1.5 shadow-sm transition-shadow has-[textarea:focus-visible]:border-teal has-[textarea:focus-visible]:shadow-[0_0_0_3px_var(--gojo-teal-soft)]">
+        <div className="flex items-end gap-2 rounded-2xl border border-input bg-white p-1.5 shadow-sm has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-teal-mid">
           <label
             title={t.photoAttach}
             className={`flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-xl text-teal transition-colors hover:bg-teal-soft has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal-mid ${attach.busy ? "opacity-60" : ""}`}

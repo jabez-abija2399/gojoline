@@ -49,7 +49,7 @@ export function StartBox({ t, locale, action, heading: Heading }: Props) {
         </Heading>
         <p className="max-w-[60ch] text-ink-muted">{t.startBody}</p>
       </div>
-      <div className="relative rounded-xl border border-input bg-white transition-shadow has-[textarea:focus-visible]:border-teal has-[textarea:focus-visible]:shadow-[0_0_0_3px_var(--gojo-teal-soft)]">
+      <div className="relative rounded-xl border border-input bg-white has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-teal-mid">
         <textarea
           ref={boxRef}
           id="start-text"
@@ -69,7 +69,7 @@ export function StartBox({ t, locale, action, heading: Heading }: Props) {
           <Sparkles aria-hidden="true" className="size-4 text-teal-mid" />
           {t.ideasLabel}
         </p>
-        <ul aria-labelledby="ideas-label" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+        <ul aria-labelledby="ideas-label" className="chips-scroll -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
           {IDEAS.map((id) => (
             <li key={id} className="shrink-0">
               <button

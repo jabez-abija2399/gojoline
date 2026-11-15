@@ -26,7 +26,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <main id="main" className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <h1 className="sr-only">{project.name || t.builder.untitled}</h1>
         <Builder
           locale={lang}
@@ -64,7 +64,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
           }))}
           initialVersions={versions.map((v) => ({ number: v.number, summary: v.summary, createdAt: v.createdAt.toISOString() }))}
         />
-      </main>
+      </div>
     </div>
   );
 }

@@ -43,7 +43,7 @@ export default async function ProjectsPage({
     timeStyle: "short",
   });
 
-  const tints = ["bg-teal-soft text-teal", "bg-clay-soft text-clay-hover", "bg-teal text-white", "bg-sand text-teal"];
+  const tints = ["bg-teal-soft text-teal", "bg-line text-ink", "bg-teal text-white", "bg-sand text-teal"];
 
   const templates = builder ? (
     <section aria-labelledby="templates-title" className="flex flex-col gap-3">
@@ -121,11 +121,11 @@ export default async function ProjectsPage({
                 </h1>
                 <InstallApp t={t.pwa} className={installClass} />
               </div>
-              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {projects.map((p, i) => {
                   const name = p.name || t.builder.untitled;
                   return (
-                    <li key={p.id}>
+                    <li key={p.id} className="min-w-0">
                       <Link
                         href={`/${lang}/build/${p.id}`}
                         className="group flex h-full min-h-20 items-center gap-4 rounded-2xl border border-line bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-mid hover:shadow-md"

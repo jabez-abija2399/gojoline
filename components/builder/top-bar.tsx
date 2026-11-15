@@ -60,7 +60,7 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
         <p className="truncate font-display text-base font-bold text-ink sm:text-lg">{siteName}</p>
         {status}
       </div>
-      <Link href={`/${locale}/dashboard/${projectId}`} className={`${quiet} shrink-0 text-teal sm:px-3`}>
+      <Link href={`/${locale}/dashboard/${projectId}`} className={`${quiet} shrink-0 text-teal max-sm:hidden sm:px-3`}>
         <LayoutDashboard aria-hidden="true" className="size-5 lg:hidden" />
         <span className="sr-only lg:not-sr-only">{text.dashboard}</span>
       </Link>
@@ -73,6 +73,10 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
       </div>
       {publish}
       <MoreMenu label={text.more}>
+        <Link href={`/${locale}/dashboard/${projectId}`} className={`${quiet} justify-start px-3 text-ink sm:hidden`}>
+          <LayoutDashboard aria-hidden="true" className="size-5 shrink-0 text-teal" />
+          {text.dashboard}
+        </Link>
         <Link href={`/${locale}/billing`} className={`${quiet} justify-start px-3 text-ink`}>
           <CreditCard aria-hidden="true" className="size-5 shrink-0 text-teal" />
           {text.plan}
@@ -109,7 +113,14 @@ function MoreMenu({ label, children }: { label: string; children: React.ReactNod
   }, [open]);
 
   return (
-    <div ref={wrapRef} className="relative shrink-0 lg:hidden">
+    <div
+      ref={wrapRef}
+      className="relative shrink-0 lg:hidden"
+      onBlur={(e) => {
+        // Tabbing out closes the menu, so it never covers what has focus.
+        if (!wrapRef.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+    >
       <button ref={buttonRef} type="button" aria-expanded={open} aria-controls="builder-more" onClick={() => setOpen((o) => !o)} className={`${quiet} text-ink aria-expanded:bg-sand`}>
         <MoreVertical aria-hidden="true" className="size-5" />
         <span className="sr-only">{label}</span>

@@ -109,13 +109,13 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
   }, [onLive, published]);
 
   const status = published ? (
-    <a href={published} target="_blank" rel="noopener noreferrer" className="flex min-w-0 items-center gap-1.5 text-sm text-ink-muted hover:text-teal">
+    <a href={published} target="_blank" rel="noopener noreferrer" className="relative flex min-w-0 items-center gap-1.5 text-sm text-ink-muted after:absolute after:inset-x-0 after:-inset-y-3 hover:text-teal">
       <span aria-hidden="true" className="relative flex size-2 shrink-0">
         <span className="absolute inline-flex size-full animate-ping rounded-full bg-teal-mid opacity-60 motion-reduce:hidden" />
         <span className="relative inline-flex size-2 rounded-full bg-teal" />
       </span>
       <span className="truncate">
-        {t.liveAt} <span className="font-medium text-teal underline underline-offset-4">{published.replace(/^https:\/\//, "")}</span>
+        <span className="max-sm:sr-only">{t.liveAt} </span><span className="font-medium text-teal underline underline-offset-4">{published.replace(/^https:\/\//, "")}</span>
       </span>
     </a>
   ) : (

@@ -128,7 +128,10 @@ export const PhotosPanel = memo(function PhotosPanel({ t, tp, projectId, photos,
                 <li key={a.name} className="msg-in flex flex-col gap-2 rounded-2xl border border-line bg-white p-2 shadow-sm">
                   {/* eslint-disable-next-line @next/next/no-img-element -- private, owner-only images from our API */}
                   <img src={`/api/projects/${projectId}/assets/${encodeURIComponent(a.name)}`} alt={label} width={a.width} height={a.height} loading="lazy" className="aspect-square w-full rounded-xl object-cover" />
-                  <span className="truncate px-1 text-sm text-ink-muted">{label}</span>
+                  <span className="flex flex-col px-1">
+                    <span className="font-medium">{label}</span>
+                    <span className="truncate text-sm text-ink-muted">{a.name}</span>
+                  </span>
                   <button
                     type="button"
                     aria-disabled={disabled}

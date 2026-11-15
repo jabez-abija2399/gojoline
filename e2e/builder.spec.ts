@@ -134,6 +134,7 @@ test("describe the business on Your sites: the new site opens and builds itself"
     // The less-used links sit behind "More".
     await page.getByRole("button", { name: "More" }).click();
     await expect(page.getByRole("link", { name: "Plan" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Dashboard" })).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page.getByRole("link", { name: "Plan" })).toBeHidden();
   }

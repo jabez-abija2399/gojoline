@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
-test("dashboard: answers, prices that update the live site, and photos", async ({ page }) => {
+test("dashboard: answers, prices that update the live site, and photos", async ({ page }, info) => {
   await signIn(page);
   await page.getByRole("button", { name: "Start a new site" }).click();
   const chat = page.getByRole("textbox", { name: "Your message" });
@@ -16,6 +16,8 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeVisible();
   await page.getByRole("button", { name: "Close" }).click();
 
+  // Phones keep the dashboard link behind "More".
+  if (info.project.name === "mobile") await page.getByRole("button", { name: "More" }).click();
   await page.getByRole("link", { name: "Dashboard" }).click();
   await expect(page.getByRole("heading", { name: "Your site's dashboard" })).toBeVisible();
   await expect(page.getByText("No answers yet")).toBeVisible();

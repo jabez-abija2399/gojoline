@@ -238,7 +238,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
     <ChatPanel
       t={t}
       hasSite={versions.length > 0}
-      celebrate={celebrate}
+      celebrate={celebrate && !liveUrl}
       onSeeSite={() => showTab("preview")}
       onPhotos={() => showSide("photos")}
       draft={draft}
@@ -296,7 +296,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         idPrefix="tab-m"
         className="flex overflow-x-auto border-b border-line bg-white p-1.5 lg:hidden"
       />
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+      <main id="main" className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <section id="panel-chat" role="tabpanel" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-e lg:border-line xl:w-[460px]`}>
           {chat}
         </section>
@@ -311,7 +311,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
             </section>
           ))}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
