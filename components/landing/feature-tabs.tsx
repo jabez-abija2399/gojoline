@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { FeatureItem, FeatureKey } from "./feature-options";
+import type { FeatureItem, FeatureKey } from "./features";
 
-/** The interactive part of option C: a list of features and the picture for the one picked. */
+/** The interactive part of the features section: a list of features and the picture for the one picked. */
 export function FeatureTabs({ items, panels, backdrop }: { items: FeatureItem[]; panels: Record<FeatureKey, React.ReactNode>; backdrop: React.ReactNode }) {
   const [active, setActive] = useState<FeatureKey>(items[0]!.key);
   return (
@@ -24,7 +24,7 @@ export function FeatureTabs({ items, panels, backdrop }: { items: FeatureItem[];
           );
         })}
       </ul>
-      <div className="relative isolate flex min-h-80 items-center justify-center overflow-hidden rounded-[1.75rem] bg-sun p-6 sm:p-10 lg:sticky lg:top-24 lg:self-start">
+      <div className="relative isolate flex min-h-80 items-center justify-center overflow-hidden rounded-[1.75rem] bg-coral p-6 sm:p-10 lg:sticky lg:top-24 lg:self-start">
         {backdrop}
         <div key={active} className="relative flex w-full animate-[pop-in_0.3s_ease-out] justify-center">
           {panels[active]}

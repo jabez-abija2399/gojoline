@@ -103,7 +103,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
         <p role="status" className="sr-only">
           {picked === null ? "" : t.picked.replace("{name}", site.name)}
         </p>
-        <figure role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-line bg-sun/20 p-4 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
+        <figure role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-line bg-coral-soft p-4 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
           {backdrop}
           <div aria-hidden="true" className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgb(18_18_18/0.45)] md:rounded-b-none md:border-b-0">
             <div className="flex items-center gap-3 border-b border-line px-3 py-2.5 sm:px-4">

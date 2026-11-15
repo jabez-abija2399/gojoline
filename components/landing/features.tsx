@@ -1,75 +1,122 @@
-import { Banknote, Bell, Globe, Languages, MessageSquareText, ShieldCheck } from "lucide-react";
-import type { Messages } from "@/lib/i18n";
+import { Banknote, Check, Lock, Send } from "lucide-react";
+import { FeatureTabs } from "./feature-tabs";
+import { Mosaic } from "./mosaic";
 
-interface Sample {
-  name: string;
-  tagline: string;
+export type FeatureKey = "language" | "forms" | "edits" | "birr" | "domain" | "safe";
+
+export interface FeatureItem {
+  key: FeatureKey;
+  title: string;
+  body: string;
 }
 
-const card = "reveal flex flex-col gap-3 rounded-3xl border border-line bg-white p-6 transition hover:border-faint hover:shadow-lg";
-const icon = "flex size-11 shrink-0 items-center justify-center rounded-xl bg-sunken text-ink";
+/** The words the small product pictures need, all from the app's own messages. */
+export interface MockText {
+  sample: { en: { name: string; tagline: string }; am: { name: string; tagline: string } };
+  langNames: { en: string; am: string };
+  noteTitle: string;
+  noteBody: string;
+  bot: string;
+  ask: string;
+  saved: string;
+  plan: string;
+  price: string;
+  address: string;
+  checking: string;
+  ready: string;
+}
 
-/** What a small business gets, as a grid of unequal cards; the language card really switches. */
-export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: Sample; am: Sample } }) {
-  const f = t.features;
-  const small = [
-    { icon: MessageSquareText, ...f.edits },
-    { icon: Banknote, ...f.birr },
-    { icon: Globe, ...f.domain },
-    { icon: ShieldCheck, ...f.safe },
-  ];
+const card = "w-full max-w-sm rounded-2xl bg-white text-ink shadow-[0_24px_60px_-24px_rgb(18_18_18/0.5)]";
+
+/** A small, real-looking piece of the product for each feature. Decoration: hidden from screen readers. */
+export function FeatureMock({ kind, m }: { kind: FeatureKey; m: MockText }) {
+  if (kind === "language")
+    return (
+      <div aria-hidden="true" className={`${card} flex flex-col gap-3 p-4`}>
+        <div className="flex w-fit gap-1 rounded-full bg-sunken p-1">
+          <span className="rounded-full bg-ink px-3 py-1.5 font-medium text-white">{m.langNames.en}</span>
+          <span lang="am" className="rounded-full px-3 py-1.5 font-medium text-ink-muted">
+            {m.langNames.am}
+          </span>
+        </div>
+        <div className="rounded-xl border border-line p-3">
+          <p className="font-display text-lg font-bold">{m.sample.en.name}</p>
+          <p className="text-ink-muted">{m.sample.en.tagline}</p>
+        </div>
+        <div lang="am" className="rounded-xl border border-line p-3">
+          <p className="font-display text-lg font-bold">{m.sample.am.name}</p>
+          <p className="text-ink-muted">{m.sample.am.tagline}</p>
+        </div>
+      </div>
+    );
+  if (kind === "forms")
+    return (
+      <div aria-hidden="true" className={`${card} overflow-hidden`}>
+        <p className="flex items-center gap-2 bg-ink px-4 py-2 font-semibold text-white">
+          <Send className="size-4" /> @{m.bot}
+        </p>
+        <p className="px-4 py-3">
+          <strong className="block">{m.noteTitle}</strong>
+          {m.noteBody}
+        </p>
+      </div>
+    );
+  if (kind === "edits")
+    return (
+      <div aria-hidden="true" className={`${card} flex flex-col gap-3 p-4`}>
+        <p className="ms-auto rounded-2xl rounded-br-sm bg-ink px-4 py-2.5 text-white">{m.ask}</p>
+        <p className="flex w-fit items-center gap-2 rounded-2xl rounded-bl-sm bg-sunken px-4 py-2.5 font-medium">
+          <span className="flex size-5 items-center justify-center rounded-full bg-lagoon text-white">
+            <Check className="size-3.5" strokeWidth={3} />
+          </span>
+          {m.saved}
+        </p>
+      </div>
+    );
+  if (kind === "birr")
+    return (
+      <div aria-hidden="true" className={`${card} flex items-center justify-between gap-4 p-5`}>
+        <div>
+          <p className="text-ink-muted">{m.plan}</p>
+          <p className="text-3xl display">{m.price}</p>
+        </div>
+        <span className="flex size-12 items-center justify-center rounded-full bg-coral text-on-coral">
+          <Banknote className="size-6" />
+        </span>
+      </div>
+    );
+  if (kind === "domain")
+    return (
+      <div aria-hidden="true" className={`${card} flex items-center gap-3 rounded-full px-5 py-4`}>
+        <Lock className="size-4 shrink-0 text-lagoon" />
+        <span className="truncate font-medium">{m.address}</span>
+      </div>
+    );
+  return (
+    <div aria-hidden="true" className={`${card} flex flex-col gap-2 p-4`}>
+      {[m.checking, m.ready].map((line) => (
+        <p key={line} className="flex items-center gap-2">
+          <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-lagoon text-white">
+            <Check className="size-3.5" strokeWidth={3} />
+          </span>
+          {line}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * What a small business gets: a list of features, and for the one picked, its piece of the
+ * product on a coral panel.
+ */
+export function Features({ title, items, m }: { title: string; items: FeatureItem[]; m: MockText }) {
   return (
     <section aria-labelledby="features-title" className="below-fold mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
       <h2 id="features-title" className="mx-auto max-w-[20ch] text-center text-3xl display sm:text-5xl">
-        {f.title}
+        {title}
       </h2>
-      <div className="mt-10 grid gap-4 md:grid-cols-6">
-        {/* Language: two radios and CSS show the same real site in either language. No script. */}
-        <div className={`${card} group/lang md:col-span-3 md:row-span-2`}>
-          <span aria-hidden="true" className={icon}>
-            <Languages className="size-5" />
-          </span>
-          <h3 className="text-2xl font-bold">{f.language.title}</h3>
-          <p className="text-ink-muted">{f.language.body}</p>
-          <fieldset className="mt-auto flex flex-col gap-3 rounded-2xl bg-paper p-4">
-            <legend className="sr-only">{f.language.try}</legend>
-            <p aria-hidden="true" className="font-medium text-ink-muted">
-              {f.language.try}
-            </p>
-            <div className="flex w-fit gap-1 rounded-full border border-line bg-white p-1">
-              {(["en", "am"] as const).map((l) => (
-                <label key={l} className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-4 font-medium transition-colors has-[:checked]:bg-ink has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-link">
-                  <input type="radio" name="feature-lang" value={l} defaultChecked={l === "en"} className="sr-only" />
-                  <span lang={l}>{f.language.names[l]}</span>
-                </label>
-              ))}
-            </div>
-            {(["en", "am"] as const).map((l) => (
-              <div key={l} lang={l} className={`flex-col gap-1 rounded-xl border border-line bg-white p-4 ${l === "en" ? "flex group-has-[[value=am]:checked]/lang:hidden" : "hidden group-has-[[value=am]:checked]/lang:flex"}`}>
-                <p className="font-display text-xl font-bold">{sample[l].name}</p>
-                <p className="text-ink-muted">{sample[l].tagline}</p>
-              </div>
-            ))}
-            <p className="text-ink-muted">{f.language.example}</p>
-          </fieldset>
-        </div>
-        <div className={`${card} md:col-span-3`}>
-          <span aria-hidden="true" className={icon}>
-            <Bell className="size-5" />
-          </span>
-          <h3 className="text-2xl font-bold">{f.forms.title}</h3>
-          <p className="text-ink-muted">{f.forms.body}</p>
-        </div>
-        {small.map(({ icon: Icon, title, body }, i) => (
-          <div key={title} className={`${card} ${i === 0 ? "md:col-span-3" : "md:col-span-2"}`}>
-            <span aria-hidden="true" className={icon}>
-              <Icon className="size-5" />
-            </span>
-            <h3 className="text-xl font-bold">{title}</h3>
-            <p className="text-ink-muted">{body}</p>
-          </div>
-        ))}
-      </div>
+      <FeatureTabs items={items} panels={Object.fromEntries(items.map((it) => [it.key, <FeatureMock key={it.key} kind={it.key} m={m} />])) as Record<FeatureKey, React.ReactNode>} backdrop={<Mosaic cols={40} rows={16} className="fill-white opacity-40" />} />
     </section>
   );
 }

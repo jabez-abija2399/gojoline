@@ -25,7 +25,7 @@ function scatter(cols: number, rows: number) {
 
 const CELL = 28;
 
-export function Mosaic({ cols = 60, rows = 14, className = "fill-sun" }: { cols?: number; rows?: number; className?: string }) {
+export function Mosaic({ cols = 60, rows = 14, className = "fill-coral" }: { cols?: number; rows?: number; className?: string }) {
   // One path per shade (four shades) instead of one element per square: the same picture in
   // a fraction of the markup.
   const shades = [0.35, 0.55, 0.75, 1];
