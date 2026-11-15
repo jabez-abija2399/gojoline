@@ -232,3 +232,14 @@
 .chips-scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* Landing page headings: medium weight and tight tracking read calmer than bold at display
+   sizes. Ge'ez script keeps its natural spacing and weight. */
+.display {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+:lang(am) .display {
+  font-weight: 700;
+  letter-spacing: 0;
+}

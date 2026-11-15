@@ -13,7 +13,7 @@ export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["
   return (
     <section id="examples" aria-labelledby="examples-title" className="scroll-mt-20 py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 id="examples-title" className="max-w-[18ch] text-3xl font-bold sm:text-5xl">
+        <h2 id="examples-title" className="max-w-[18ch] text-3xl display sm:text-5xl">
           {t.title}
         </h2>
         <p className="mt-3 max-w-[60ch] text-lg text-ink-muted">{t.intro}</p>

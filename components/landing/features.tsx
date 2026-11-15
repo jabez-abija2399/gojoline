@@ -20,7 +20,7 @@ export function Features({ t, sample }: { t: Messages["landing"]; sample: { en: 
   ];
   return (
     <section aria-labelledby="features-title" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
-      <h2 id="features-title" className="max-w-[20ch] text-3xl font-bold sm:text-5xl">
+      <h2 id="features-title" className="max-w-[20ch] text-3xl display sm:text-5xl">
         {f.title}
       </h2>
       <div className="mt-10 grid gap-4 md:grid-cols-6">

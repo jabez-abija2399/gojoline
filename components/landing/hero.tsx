@@ -19,8 +19,8 @@ export function Hero({ t, locale, ideas, text, install }: { t: Messages["landing
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07]" style={{ backgroundImage: GRAIN }} />
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-4 pt-8 pb-16 text-center sm:px-6 sm:pt-12 md:gap-6 md:pt-14 md:pb-24">
         <p className="rounded-full border border-line bg-white/70 px-3 py-1 font-medium text-ink backdrop-blur max-sm:hidden">{t.eyebrow}</p>
-        <h1 id="hero-title" className={`text-[2.5rem] font-bold text-balance sm:text-6xl ${locale === "am" ? "leading-[1.3]" : "leading-[1.05]"}`}>
-          <span className="sm:block">{t.titleStart}</span>{" "}
+        <h1 id="hero-title" className={`text-5xl display text-balance sm:text-7xl ${locale === "am" ? "leading-[1.3]" : "leading-[1.05]"}`}>
+          {t.titleStart}{" "}
           {/* The promise, marked with a highlighter. */}
           <span className="box-decoration-clone bg-[linear-gradient(transparent_62%,var(--gojo-sun)_62%,var(--gojo-sun)_92%,transparent_92%)] px-1 [line-height:inherit]">{t.titleEnd}</span>
         </h1>

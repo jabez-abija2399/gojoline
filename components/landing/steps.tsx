@@ -36,7 +36,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot }: { t: Messages[
   return (
     <section id="how" aria-labelledby="how-title" className="scroll-mt-20 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
-        <h2 id="how-title" className="text-3xl font-bold sm:text-5xl">
+        <h2 id="how-title" className="text-3xl display sm:text-5xl">
           {s.title}
         </h2>
         <p className="mt-3 text-lg text-ink-muted">{s.intro}</p>

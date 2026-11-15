@@ -39,7 +39,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
           install={t.pwa}
           text={{
             promptLabel: t.landing.hero.promptLabel,
-            placeholder: b.startPlaceholder,
+            placeholder: t.landing.hero.placeholder,
             pick: t.landing.demo.pick,
             build: t.landing.hero.build,
             langTitle: b.startLang,

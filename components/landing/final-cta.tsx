@@ -9,7 +9,7 @@ export function FinalCta({ t, locale }: { t: Messages["landing"]["final"]; local
       <div className="reveal mx-auto max-w-6xl overflow-hidden rounded-3xl bg-ink text-white">
         <div className="flex flex-col items-start gap-6 px-6 py-12 sm:px-12 md:flex-row md:items-center md:justify-between md:py-16">
           <div className="flex max-w-[48ch] flex-col gap-3">
-            <h2 id="final-title" className="text-3xl font-bold text-white sm:text-5xl">
+            <h2 id="final-title" className="text-3xl display text-white sm:text-5xl">
               {t.title}
             </h2>
             <p className="text-lg text-sunken">{t.body}</p>

@@ -4,7 +4,8 @@ import localFont from "next/font/local";
 // Self-hosted at build time by next/font. Only the heading font is preloaded (docs/QUALITY.md).
 export const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["700"],
+  // Variable font (one file): the landing page sets headings at 600, the app at 700.
+  weight: "variable",
   display: "swap",
   variable: "--font-outfit",
   preload: true,
