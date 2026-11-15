@@ -1,53 +1,38 @@
+import { ArrowRight, Check } from "lucide-react";
+import Link from "next/link";
 import type { Messages } from "@/lib/i18n";
-import { Button } from "@/components/ui/button";
+import type { Locale } from "@/lib/i18n/config";
+import type { ShowcaseSite } from "@/lib/landing/showcase";
+import { HeroDemo } from "./hero-demo";
 
-export function Hero({ t }: { t: Messages["landing"]["hero"] }) {
+export function Hero({ t, locale, sites }: { t: Messages["landing"]; locale: Locale; sites: ShowcaseSite[] }) {
+  const h = t.hero;
   return (
-    <section aria-labelledby="hero-title" className="mx-auto grid max-w-6xl gap-10 px-4 pt-12 pb-16 sm:px-6 md:grid-cols-[1.15fr_1fr] md:items-center md:pt-20 md:pb-24">
-      <div className="flex flex-col gap-6">
-        <p className="w-fit rounded-full bg-teal-soft px-3 py-1 text-base font-medium text-teal">{t.eyebrow}</p>
-        <h1 id="hero-title" className="text-4xl leading-tight font-bold sm:text-5xl">
-          {t.title}
-        </h1>
-        <p className="max-w-[60ch] text-lg text-ink-muted">{t.subtitle}</p>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button asChild size="lg">
-            <a href="#waitlist">{t.cta}</a>
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <a href="#how">{t.secondary}</a>
-          </Button>
+    <section aria-labelledby="hero-title" className="relative overflow-hidden">
+      {/* Soft brand-coloured light behind the hero; purely decorative. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_85%_10%,var(--color-clay-soft),transparent_70%),radial-gradient(50%_45%_at_0%_90%,var(--color-teal-soft),transparent_70%)]" />
+      <div className="relative mx-auto grid max-w-6xl gap-10 px-4 pt-10 pb-16 sm:px-6 md:grid-cols-[1.05fr_1fr] md:items-center md:pt-20 md:pb-24">
+        <div className="flex flex-col gap-6">
+          <p className="w-fit rounded-full border border-teal-soft bg-white/80 px-3 py-1 font-medium text-teal">{h.eyebrow}</p>
+          <h1 id="hero-title" className="text-4xl leading-[1.1] font-bold text-balance sm:text-6xl">
+            {h.titleStart} <span className="text-teal">{h.titleEnd}</span>
+          </h1>
+          <p className="max-w-[56ch] text-lg text-ink-muted">{h.subtitle}</p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link href={`/${locale}/sign-in?next=/${locale}/build`} className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-clay px-6 text-lg font-semibold text-white shadow-md shadow-clay/20 transition hover:bg-clay-hover">
+              {h.cta}
+              <ArrowRight aria-hidden="true" className="size-5 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <a href="#how" className="inline-flex min-h-12 items-center justify-center rounded-lg border border-line bg-white px-6 text-lg font-medium hover:border-teal-mid">
+              {h.secondary}
+            </a>
+          </div>
+          <p className="flex items-center gap-2 text-ink-muted">
+            <Check aria-hidden="true" className="size-4 text-teal" /> {h.note}
+          </p>
         </div>
+        <HeroDemo sites={sites} labels={t.demo.labels} prompts={t.demo.prompts} t={t.demo} />
       </div>
-      <figure aria-hidden="true" className="rounded-[20px] border border-line bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-4">
-          <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-teal px-4 py-3 text-white">
-            <p className="text-base font-semibold text-teal-soft">{t.chatUserLabel}</p>
-            <p>{t.chatUser}</p>
-          </div>
-          <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-clay-soft px-4 py-3 text-ink">
-            <p className="text-base font-semibold text-ink">{t.chatBotLabel}</p>
-            <p>{t.chatBot}</p>
-          </div>
-          <div className="overflow-hidden rounded-xl border border-line">
-            <div className="flex items-center gap-1.5 border-b border-line bg-sand px-3 py-2">
-              <span className="size-2.5 rounded-full bg-line" />
-              <span className="size-2.5 rounded-full bg-line" />
-              <span className="size-2.5 rounded-full bg-line" />
-            </div>
-            <div className="grid gap-2 p-4">
-              <div className="h-20 rounded-lg bg-teal" />
-              <div className="h-3 w-2/3 rounded bg-line" />
-              <div className="h-3 w-1/2 rounded bg-line" />
-              <div className="mt-1 grid grid-cols-3 gap-2">
-                <div className="h-12 rounded-md bg-clay-soft" />
-                <div className="h-12 rounded-md bg-teal-soft" />
-                <div className="h-12 rounded-md bg-clay-soft" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </figure>
     </section>
   );
 }

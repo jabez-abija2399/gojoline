@@ -41,7 +41,7 @@ describe("catalogs", () => {
   });
 
   it("Amharic strings are written in Ge'ez script", () => {
-    expect(am.landing.hero.title).toMatch(/[ሀ-፿]/);
+    expect(am.landing.hero.titleStart).toMatch(/[ሀ-፿]/);
   });
 
   it("formats placeholders", () => {

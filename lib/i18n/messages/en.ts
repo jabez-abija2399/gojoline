@@ -20,59 +20,87 @@ export const en = {
   landing: {
     hero: {
       eyebrow: "The website builder that speaks Amharic",
-      title: "Describe your business. Get your home online.",
-      subtitle:
-        "Tell Gojoline about your café, shop, clinic or school, in Amharic or English. In minutes you have a real website with booking forms and Telegram alerts, paid in Birr.",
-      cta: "Join the waitlist",
+      titleStart: "Describe your business.",
+      titleEnd: "Get your home online.",
+      subtitle: "Tell Gojoline about your café, shop, clinic or school, in Amharic or English. In about a minute you have a real website with booking forms and Telegram alerts, paid in Birr.",
+      cta: "Start free",
       secondary: "See how it works",
-      chatUserLabel: "You",
-      chatUser:
-        "We are a small café in Bole. Coffee, breakfast and fresh juice, open 7 am to 9 pm.",
-      chatBotLabel: "Gojoline",
-      chatBot:
-        "Your site is ready: menu, opening hours, map and a table booking form.",
+      note: "Free to start · No card needed · Amharic and English",
     },
+    demo: {
+      pick: "Choose a kind of business",
+      you: "You",
+      bot: "Gojoline",
+      reply: "Your site is ready, in Amharic and English, with your prices and a booking form. Want to publish it?",
+      book: "Book now",
+      prompts: {
+        cafe: "We're a café in Bole: buna, macchiato and breakfast, open 7 am to 9 pm.",
+        hotel: "A small hotel by Lake Tana with 20 rooms and airport pickup.",
+        clinic: "A family clinic in Megenagna. People should be able to book a visit.",
+        shop: "We sell habesha kemis in Merkato and take custom orders.",
+      },
+      labels: { cafe: "Café", hotel: "Hotel", clinic: "Clinic", shop: "Shop" },
+    },
+    proof: [
+      { value: "1 min", label: "to a first site" },
+      { value: "2", label: "languages on every site" },
+      { value: "11", label: "ready templates" },
+      { value: "0", label: "code to write" },
+    ],
     steps: {
       title: "How it works",
-      one: {
-        title: "Tell us about your business",
-        body: "Write or speak as you would to a friend. Gojoline asks two or three short questions.",
-      },
-      two: {
-        title: "See your site appear",
-        body: "A live preview builds in under a minute. Change anything by chatting: “make the header green”.",
-      },
-      three: {
-        title: "Publish and get customers",
-        body: "Go live on your own link. Bookings and orders arrive in your Telegram.",
-      },
+      intro: "Three steps, all from your phone.",
+      one: { title: "Tell us about your business", body: "Write as you would to a friend, in Amharic or English. Gojoline asks two or three short questions." },
+      two: { title: "See your site appear", body: "A live preview builds in about a minute. Change anything by chatting: “make the header green”, “add our new menu”." },
+      three: { title: "Publish and get customers", body: "Go live on your own link. Bookings and orders reach you on Telegram." },
     },
     features: {
       title: "Everything a small business needs",
-      language: {
-        title: "Amharic and English",
-        body: "Your site can speak both, with clear Ge'ez fonts and a language switch.",
-      },
-      forms: {
-        title: "Forms that reach you",
-        body: "Contact, booking and order forms. Every new entry pings your Telegram.",
-      },
-      edits: {
-        title: "Edit by chatting",
-        body: "Change prices, photos and text from the builder or straight from Telegram.",
-      },
-      birr: {
-        title: "Pay in Birr",
-        body: "Plans start free. Pay by Telebirr or bank transfer, no foreign card needed.",
-      },
+      language: { title: "Amharic and English", body: "Every site speaks both, with clear Ge'ez fonts and a language switch." },
+      forms: { title: "Forms that reach you", body: "Contact, booking and order forms. Every new answer pings your Telegram." },
+      edits: { title: "Edit by chatting", body: "Change prices, photos and text from the builder or straight from Telegram." },
+      birr: { title: "Pay in Birr", body: "Start free. Pay by Telebirr or bank transfer, no foreign card needed." },
+      safe: { title: "Safe and fast", body: "Every site is checked before it goes live and loads quickly on slow connections." },
+      domain: { title: "Your own address", body: "Start on a free link, then use your own web address on a paid plan." },
     },
-    audience: {
-      title: "Made for",
-      list: "Cafés and restaurants · Hotels · Clinics · Schools · Shops · Churches and mosques · Events · NGOs · Real estate · Tour operators",
+    telegram: {
+      title: "New booking on Telegram",
+      body: "Abebe K. · Saturday 2:00 pm · 4 people",
+    },
+    templates: {
+      title: "Start from a template",
+      intro: "A ready site for your kind of business, then make it yours by chatting.",
+      cta: "Try it free",
     },
     pricing: {
-      title: "Start free",
-      body: "Build and publish one site for free. Paid plans with your own domain start from 399 Birr a month.",
+      title: "Simple prices in Birr",
+      intro: "Start free. Upgrade when your business grows.",
+      free: "Free",
+      perMonth: "/ month",
+      popular: "Most popular",
+      cta: "Start free",
+      plans: {
+        free: ["1 site on a free link", "15 changes a month", "Forms and answers in your dashboard"],
+        starter: ["Your own web address", "50 changes a month", "Answers on Telegram", "No Gojoline badge"],
+        business: ["Up to 3 sites", "150 changes a month", "Edit your site from Telegram"],
+      },
+    },
+    faq: {
+      title: "Questions",
+      items: [
+        { q: "Do I need to know anything about websites?", a: "No. You describe your business in your own words, and Gojoline builds the site. You change it the same way, by chatting." },
+        { q: "Can my site be in Amharic and English?", a: "Yes. Every site can show both languages with a switch, and Gojoline writes natural Amharic, not word-for-word translation." },
+        { q: "How do I pay?", a: "In Birr, by Telebirr or bank transfer. Send the transaction number and a photo of the receipt; we switch your plan on, usually within a day." },
+        { q: "How do customers reach me?", a: "Through the booking, order and contact forms on your site. Every answer appears in your dashboard and, on paid plans, on your Telegram." },
+        { q: "Can I use my own domain?", a: "Yes, on the Starter and Business plans. Until then your site lives on a free Gojoline link." },
+        { q: "What if I don't like what it made?", a: "Just say what to change. Every version is saved, so you can always go back." },
+      ],
+    },
+    final: {
+      title: "Your business deserves a home online",
+      body: "Start free today. It takes about a minute to see your first site.",
+      cta: "Start free",
+      waitlist: "Or join the waitlist for updates",
     },
   },
   waitlist: {

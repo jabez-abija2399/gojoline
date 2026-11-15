@@ -3,6 +3,9 @@ import { expect, type Page } from "@playwright/test";
 
 /** Fails on serious or critical WCAG 2.2 AA violations (docs/QUALITY.md). */
 export async function expectNoSeriousA11yIssues(page: Page) {
+  // Check the settled page, not a frame mid-animation (half-faded text reads as low contrast).
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => undefined))));
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
