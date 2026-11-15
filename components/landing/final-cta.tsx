@@ -7,8 +7,8 @@ import { Mosaic } from "./mosaic";
 export function FinalCta({ t, locale }: { t: Messages["landing"]["final"]; locale: Locale }) {
   return (
     <section aria-labelledby="final-title" className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 md:pb-24 below-fold">
-      <div className="reveal relative isolate w-full overflow-hidden rounded-[2rem] bg-sun">
-        <Mosaic className="fill-white opacity-45" />
+      <div className="reveal relative isolate w-full overflow-hidden rounded-[2rem] bg-coral">
+        <Mosaic className="fill-white opacity-30" />
         <div className="relative flex flex-col items-center gap-6 px-6 py-16 text-center sm:px-12 md:py-28">
           <h2 id="final-title" className="max-w-[18ch] text-4xl display text-ink sm:text-6xl">
             {t.title}

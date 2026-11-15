@@ -19,7 +19,7 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates }
           <span className="relative inline-block whitespace-nowrap [line-height:inherit]">
             {t.titleEnd}
             {/* A brush stroke under the promise, drawn by hand rather than ruled. */}
-            <svg aria-hidden="true" focusable="false" viewBox="0 0 300 18" preserveAspectRatio="none" className="absolute inset-x-0 -bottom-[0.12em] -z-10 h-[0.22em] w-full text-sun">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 300 18" preserveAspectRatio="none" className="absolute inset-x-0 -bottom-[0.12em] -z-10 h-[0.22em] w-full text-coral">
               <path d="M4 12C60 4 120 3 180 6s86 4 116 1" fill="none" stroke="currentColor" strokeWidth="9" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
             </svg>
           </span>

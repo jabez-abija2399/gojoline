@@ -31,6 +31,9 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const cafe = { en: showcaseSites("en").find((s) => s.id === "cafe"), am: showcaseSites("am").find((s) => s.id === "cafe") };
   const sample = { en: { name: cafe.en?.name ?? "", tagline: cafe.en?.tagline ?? "" }, am: { name: cafe.am?.name ?? "", tagline: cafe.am?.tagline ?? "" } };
   const b = t.builder;
+  const f = t.landing.features;
+  const bot = services().telegram?.username ?? "gojoline_bot";
+  const { prices } = await services().billing.settings();
   // The example address is built the way publishing builds real ones, and its name is reserved.
   const exampleAddress = (services().publish?.publisher.urlFor(EXAMPLE_SLUG) ?? `https://gojo-${EXAMPLE_SLUG}.vercel.app`).replace(/^https:\/\//, "");
   return (
@@ -66,8 +69,25 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
           }}
         />
         <Proof t={t.landing} />
-        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={services().telegram?.username ?? "gojoline_bot"} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} languages={`${b.langEn} · ${b.langAm}`} />
-        <Features t={t.landing} sample={sample} />
+        <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={bot} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} languages={`${b.langEn} · ${b.langAm}`} />
+        <Features
+          title={f.title}
+          items={(["language", "forms", "edits", "birr", "domain", "safe"] as const).map((key) => ({ key, title: f[key].title, body: f[key].body }))}
+          m={{
+            sample,
+            langNames: f.language.names,
+            noteTitle: t.landing.telegram.title,
+            noteBody: t.landing.telegram.body,
+            bot,
+            ask: b.next.prices.label,
+            saved: b.versionSaved.replace("{n}", "2"),
+            plan: t.billing.plans.starter,
+            price: `${new Intl.NumberFormat("en-US").format(prices.starter_month / 100)} ${t.landing.pricing.birr} ${t.landing.pricing.perMonth}`,
+            address: exampleAddress,
+            checking: b.tlChecking,
+            ready: b.tlReady,
+          }}
+        />
         <Faq t={t.landing.faq} />
         <FinalCta t={t.landing.final} locale={lang} />
       </main>

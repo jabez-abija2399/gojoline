@@ -35,7 +35,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
           <ol className="flex flex-col">
             {steps.map((step, i) => (
               <li key={step.title} className="flex gap-4 border-t border-white/15 py-5">
-                <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-full bg-sun font-display font-bold text-on-coral">
+                <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-full bg-coral font-display font-bold text-on-coral">
                   {i + 1}
                 </span>
                 <div className="flex flex-col gap-1">
@@ -48,7 +48,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
         </div>
         <div aria-hidden="true" className="flex flex-col gap-4 sm:gap-6">
           {/* 1. What the owner writes. */}
-          <div className={`${panel} bg-sun`}>
+          <div className={`${panel} bg-coral`}>
             <Mosaic cols={28} rows={12} className="fill-white opacity-50" />
             <div className={`${card} flex flex-col gap-3 p-3`}>
               <p className="px-2 pt-2 text-lg">{prompt}</p>
@@ -64,7 +64,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
           </div>
           {/* 2. What the builder shows while it works, and the site that appears. */}
           <div className={`${panel} bg-paper`}>
-            <Mosaic cols={28} rows={12} className="fill-sun opacity-70" />
+            <Mosaic cols={28} rows={12} className="fill-coral opacity-40" />
             <div className="relative flex w-full max-w-lg items-end gap-4">
               <div className={`${card} flex-1 px-4 py-3`}>
                 <p className="font-semibold">{buildTitle}</p>

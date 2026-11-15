@@ -62,7 +62,7 @@ export const en = {
     },
     features: {
       title: "Everything your business needs",
-      language: { title: "Amharic and English", body: "Choose Amharic, English or both. Clear Ge'ez fonts and a language switch.", try: "Try the switch", example: "From a real Gojoline site", names: { en: "English", am: "አማርኛ" } },
+      language: { title: "Amharic and English", body: "Choose Amharic, English or both. Clear Ge'ez fonts and a language switch.", names: { en: "English", am: "አማርኛ" } },
       forms: { title: "Forms that reach you", body: "Contact, booking and order forms. Every new answer reaches you on Telegram." },
       edits: { title: "Edit by chatting", body: "Change prices, photos and text from the builder or straight from Telegram." },
       birr: { title: "Pay in Birr", body: "Start free. Pay by Telebirr or bank transfer, no foreign card needed." },
