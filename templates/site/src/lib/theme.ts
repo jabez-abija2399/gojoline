@@ -13,7 +13,7 @@ const fonts: Record<Theme["font"], { heading: string; body: string }> = {
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
   friendly: {
-    heading: '"Nunito", ui-rounded, "SF Pro Rounded", "Nunito", system-ui, "Noto Sans Ethiopic", sans-serif',
+    heading: '"Nunito", ui-rounded, "SF Pro Rounded", system-ui, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
 };
@@ -37,7 +37,9 @@ export function themeVariables(theme: Theme, lang: Lang): Record<string, string>
     "--site-line": tint(theme.text, 0.85),
     "--site-focus": focusColor(theme),
     "--site-radius": radii[theme.radius],
-    "--site-font-heading": amharicFirst + fonts[theme.font].heading,
+    // Amharic pages skip the Latin display font: a heading's spaces alone would make the
+    // browser download it, and its arrival would shift the page.
+    "--site-font-heading": lang === "am" ? amharicFirst + fonts[theme.font].body : fonts[theme.font].heading,
     "--site-font-body": amharicFirst + fonts[theme.font].body,
   };
 }

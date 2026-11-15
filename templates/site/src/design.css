@@ -141,9 +141,8 @@
     display: flex;
     gap: 0.5rem;
     border-top: 1px solid var(--site-line);
-    background: color-mix(in oklab, var(--site-background) 94%, transparent);
+    background: var(--site-background);
     padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom));
-    backdrop-filter: blur(8px);
   }
   .sticky-actions .btn {
     flex: 1;
