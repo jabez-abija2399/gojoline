@@ -35,6 +35,21 @@ test.describe("landing page", () => {
     });
   }
 
+  test("hero demo switches business; FAQ opens; Start free goes to sign-in", async ({ page }) => {
+    await page.goto("/en");
+    const clinic = page.getByRole("button", { name: "Clinic", exact: true });
+    await clinic.click();
+    await expect(clinic).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText("Megenagna Family Clinic")).toBeVisible();
+    await expect(page.getByText("A family clinic in Megenagna")).toBeVisible();
+    const question = page.getByText("How do I pay?");
+    await question.click();
+    await expect(page.getByText(/send the transaction number/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Simple prices in Birr" })).toBeVisible();
+    await page.getByRole("link", { name: "Start free" }).first().click();
+    await expect(page).toHaveURL(/\/en\/sign-in/);
+  });
+
   test("waitlist: shows errors, then success", async ({ page }) => {
     await page.goto("/en");
     const form = page.locator("#waitlist");
