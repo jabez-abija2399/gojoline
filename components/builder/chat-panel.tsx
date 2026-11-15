@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, Loader2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
@@ -11,6 +12,7 @@ export interface UiMessage {
   text: string;
   versionNumber?: number;
   tone?: "error";
+  action?: { href: string; label: string };
 }
 
 interface Props {
@@ -51,6 +53,7 @@ export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend 
             label={m.role === "owner" ? t.you : t.assistant}
             text={m.text}
             tone={m.tone}
+            action={m.action}
             note={m.versionNumber ? t.versionSaved.replace("{n}", String(m.versionNumber)) : undefined}
           />
         ))}
@@ -102,7 +105,7 @@ export function ChatPanel({ t, messages, working, stepLabel, streamText, onSend 
   );
 }
 
-function Bubble({ role, label, text, note, tone }: { role: "owner" | "assistant"; label: string; text: string; note?: string; tone?: "error" }) {
+function Bubble({ role, label, text, note, tone, action }: { role: "owner" | "assistant"; label: string; text: string; note?: string; tone?: "error"; action?: { href: string; label: string } }) {
   const own = role === "owner";
   return (
     <div className={`flex max-w-[90%] flex-col gap-1 ${own ? "self-end items-end" : "self-start"}`}>
@@ -115,6 +118,11 @@ function Bubble({ role, label, text, note, tone }: { role: "owner" | "assistant"
       >
         {text}
       </p>
+      {action && (
+        <Link href={action.href} className="inline-flex min-h-11 items-center rounded-lg bg-clay px-4 font-medium text-white hover:bg-clay-hover">
+          {action.label}
+        </Link>
+      )}
       {note && <span className="text-sm text-ink-muted">{note}</span>}
     </div>
   );

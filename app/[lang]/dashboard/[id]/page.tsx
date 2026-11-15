@@ -35,13 +35,13 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
 
   return (
     <>
-      <BuilderHeader locale={lang} t={t} user={user} backHref={`/${lang}/build/${id}`} backLabel={t.dashboard.backToBuilder} />
+      <BuilderHeader locale={lang} t={t} user={user} backHref={`/${lang}/build/${id}`} backLabel={t.dashboard.backToBuilder} navLinks={[{ href: `/${lang}/billing`, label: t.billing.link, icon: "plan" }]} />
       <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-5 px-4 py-8">
         <div>
           <h1 className="text-3xl font-bold">{t.dashboard.title}</h1>
           <p className="text-ink-muted">{project.name || t.builder.untitled}</p>
         </div>
-        <nav aria-label={t.dashboard.title} className="flex gap-1 overflow-x-auto rounded-xl border border-line bg-white p-1">
+        <nav aria-label={t.dashboard.title} className="flex flex-wrap gap-1 rounded-xl border border-line bg-white p-1">
           {TABS.map((x) => (
             <Link
               key={x}

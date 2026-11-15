@@ -75,20 +75,25 @@ export async function handleSubmission(deps: SubmitDeps, input: SubmitInput): Pr
   const ip = ipBucket(input.ip);
   const perIp = deps.limits?.perIpPerMinute ?? 5;
   const perDay = deps.limits?.perSitePerDay ?? 300;
-  const [byIp, byIpDay, bySite] = await Promise.all([
+  const [byIp, byIpDay, bySite, plan] = await Promise.all([
     deps.limiter.hit(`form:ip:${site.siteId}:${ip}`, perIp, 60_000),
     deps.limiter.hit(`form:ipday:${site.siteId}:${ip}`, 30, 86_400_000),
     deps.limiter.hit(`form:site:${site.siteId}`, perDay, 86_400_000),
+    deps.entitlements ? deps.entitlements(site.ownerId) : null,
   ]);
   if (!byIp.allowed || !byIpDay.allowed || !bySite.allowed) return deny(429, "too_many", allowOrigin);
-  const plan = deps.entitlements ? await deps.entitlements(site.ownerId) : null;
 
   const form = await deps.cloud.getForm(site.siteId, input.formKey);
   if (!form) return deny(404, "form_not_found", allowOrigin);
   const checked = checkSubmission(form, body.answers);
   if (!checked.ok) return { status: 422, body: { error: "invalid", field: checked.field }, allowOrigin };
-  if (plan && !(await deps.limiter.hit(`form:month:${site.siteId}`, plan.answersPerMonth, 30 * 86_400_000)).allowed) {
-    return deny(429, "plan_limit", allowOrigin);
+  if (plan) {
+    // One sender can use at most a tenth of the site's monthly answers, so nobody can
+    // switch off a site's forms by filling its allowance with junk.
+    const perIpMonth = Math.max(5, Math.floor(plan.answersPerMonth / 10));
+    const byIpMonth = await deps.limiter.hit(`form:ipmonth:${site.siteId}:${ip}`, perIpMonth, 30 * 86_400_000);
+    if (!byIpMonth.allowed) return deny(429, "too_many", allowOrigin);
+    if (!(await deps.limiter.hit(`form:month:${site.siteId}`, plan.answersPerMonth, 30 * 86_400_000)).allowed) return deny(429, "plan_limit", allowOrigin);
   }
 
   const lang = body.lang === "am" || body.lang === "en" ? body.lang : null;

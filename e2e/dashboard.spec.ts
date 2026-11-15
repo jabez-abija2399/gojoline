@@ -9,6 +9,8 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   await chat.press("Enter");
   await expect(page.getByText("Saved as version 1").first()).toBeVisible();
   await page.getByRole("button", { name: "Publish", exact: true }).click();
+  // The dialog fills in a suggested address first; type over it only after that.
+  await expect(page.getByLabel("Your site's address")).toHaveValue(/\w/);
   await page.getByLabel("Your site's address").fill(`bole-buna-${Date.now().toString(36)}`);
   await page.getByRole("button", { name: "Publish now" }).click();
   await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeVisible();

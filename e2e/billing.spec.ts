@@ -6,6 +6,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   await page.getByRole("link", { name: "Plan" }).click();
   await expect(page.getByRole("heading", { name: "Plan and payments", level: 1 })).toBeVisible();
   await expect(page.getByText("Your plan: Free")).toBeVisible();
+  await expect(page.locator('li[aria-current="true"]')).toContainText("Your plan");
   await expect(page.getByText("Telebirr: 0911000000")).toBeVisible();
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
@@ -18,10 +19,15 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   const reference = `E2E${Date.now().toString(36).toUpperCase()}${test.info().project.name.length}`;
   await page.getByLabel("Transaction number").fill(reference);
   await page.getByRole("button", { name: "Send for checking" }).click();
+  await expect(page.locator("main").getByRole("alert")).toContainText("add a photo");
+  await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
+  await expect(page.getByText("photo.jpg selected")).toBeVisible();
+  await page.getByRole("button", { name: "Send for checking" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Thank you" })).toBeFocused();
 
-  // The same transaction number cannot be used twice.
-  await page.getByLabel("Transaction number").fill(reference);
+  // The same transaction number cannot be used twice, even typed differently.
+  await page.getByLabel("Transaction number").fill(reference.toLowerCase().replace("E2E", "e2e-"));
+  await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
   await page.getByRole("button", { name: "Send for checking" }).click();
   await expect(page.locator("main").getByRole("alert")).toContainText("already sent");
 

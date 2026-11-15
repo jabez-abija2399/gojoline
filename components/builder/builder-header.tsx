@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { CreditCard, LayoutDashboard, LogOut } from "lucide-react";
 import type { Locale } from "@/lib/i18n/config";
 import type { Messages } from "@/lib/i18n";
 import { LanguageSwitch } from "@/components/site/language-switch";
@@ -13,14 +13,14 @@ export function BuilderHeader({
   backHref,
   backLabel,
   user,
-  navLink,
+  navLinks = [],
 }: {
   locale: Locale;
   t: Messages;
   backHref?: string;
   backLabel?: string;
   user?: CurrentUser | null;
-  navLink?: { href: string; label: string };
+  navLinks?: { href: string; label: string; icon: "dashboard" | "plan" }[];
 }) {
   const other: Locale = locale === "en" ? "am" : "en";
   return (
@@ -37,12 +37,15 @@ export function BuilderHeader({
         )}
       </div>
       <div className="flex items-center gap-1 sm:gap-2">
-        {navLink && (
-          <Link href={navLink.href} className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-2 font-medium text-teal hover:bg-sand sm:px-3">
-            <LayoutDashboard aria-hidden="true" className="size-5 sm:hidden" />
-            <span className="sr-only sm:not-sr-only">{navLink.label}</span>
-          </Link>
-        )}
+        {navLinks.map((link) => {
+          const Icon = link.icon === "plan" ? CreditCard : LayoutDashboard;
+          return (
+            <Link key={link.href} href={link.href} className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-2 font-medium text-teal hover:bg-sand sm:px-3">
+              <Icon aria-hidden="true" className="size-5 sm:hidden" />
+              <span className="sr-only sm:not-sr-only">{link.label}</span>
+            </Link>
+          );
+        })}
         {user && (
           <form action={signOut}>
             <input type="hidden" name="lang" value={locale} />

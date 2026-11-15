@@ -1,6 +1,8 @@
 import type { Entitlements, EntitlementsResolver } from "./entitlements";
 import { PLAN_FEATURES, PRODUCTS, ROLLOVER_CAP_MONTHS, TOPUP_CREDITS, type Product } from "./plans";
-import type { BillingStore, PaymentMethod } from "./store";
+import { canonicalReference, type BillingStore, type PaymentMethod } from "./store";
+
+const REFUNDS_PER_DAY = 5;
 
 const monthRef = (d: Date) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 
@@ -28,13 +30,21 @@ export class Billing {
     return entitlements;
   };
 
+  /** Grants already applied in this process: skips two queries on almost every edit. */
+  private granted = new Set<string>();
+
   /** Adds this month's edits once (idempotent), rolling unused ones over up to a cap. */
   async ensureMonthlyGrant(userId: string): Promise<void> {
     const { plan } = await this.plan(userId);
+    const ref = `${plan}:${monthRef(this.now())}`;
+    const key = `${userId}:${ref}`;
+    if (this.granted.has(key)) return;
     const allowance = PLAN_FEATURES[plan].monthlyEdits;
     const balance = await this.db.balance(userId);
     const grant = Math.max(0, Math.min(allowance, allowance * ROLLOVER_CAP_MONTHS - balance));
-    await this.db.addCredits(userId, grant, "monthly_grant", `${plan}:${monthRef(this.now())}`);
+    await this.db.addCredits(userId, grant, "monthly_grant", ref);
+    if (this.granted.size > 50_000) this.granted.clear();
+    this.granted.add(key);
   }
 
   async creditsLeft(userId: string): Promise<number> {
@@ -42,19 +52,26 @@ export class Billing {
     return this.db.balance(userId);
   }
 
-  /** Takes one AI edit credit for this request; false when none are left. */
+  /** Takes one AI edit credit for this request, atomically; false when none are left. */
   async consumeEdit(userId: string, ref: string): Promise<boolean> {
-    if ((await this.creditsLeft(userId)) < 1) return false;
-    return this.db.addCredits(userId, -1, "ai_edit", ref);
+    await this.ensureMonthlyGrant(userId);
+    return this.db.debit(userId, ref);
   }
 
-  /** Gives the credit back when a change failed (once per request). */
-  async refundEdit(userId: string, ref: string): Promise<void> {
-    await this.db.addCredits(userId, 1, "refund", ref);
+  /**
+   * Gives the credit back when a change failed on our side (once per request, and at most
+   * REFUNDS_PER_DAY a day so failed or abandoned runs can't become unlimited free AI).
+   */
+  async refundEdit(userId: string, ref: string): Promise<boolean> {
+    const today = new Date(this.now());
+    today.setUTCHours(0, 0, 0, 0);
+    if ((await this.db.countSince(userId, "refund", today)) >= REFUNDS_PER_DAY) return false;
+    return this.db.addCredits(userId, 1, "refund", ref);
   }
 
   async submitPayment(userId: string, input: { product: Product; method: PaymentMethod; reference: string; receipt: Buffer | null }) {
-    const payment = await this.db.createPayment({ userId, ...input, amountMinor: PRODUCTS[input.product].amountMinor });
+    const reference = canonicalReference(input.reference);
+    const payment = await this.db.createPayment({ userId, ...input, reference, amountMinor: PRODUCTS[input.product].amountMinor });
     if (payment) await this.db.audit({ actorId: userId, action: "payment.submitted", targetType: "payment", targetId: payment.id, data: { product: input.product, method: input.method } });
     return payment;
   }
@@ -66,18 +83,19 @@ export class Billing {
     const changed = await this.db.review(paymentId, decision === "approve" ? "approved" : "rejected", adminId, note);
     if (!changed) return "already_reviewed";
     if (decision === "approve") {
-      const product = PRODUCTS[payment.product];
-      if (product.plan) {
-        const current = await this.db.subscription(payment.userId);
-        const start = current && current.currentPeriodEnd > this.now() && current.plan === product.plan ? current.currentPeriodEnd : this.now();
-        const end = new Date(start);
-        if (product.period === "year") end.setUTCFullYear(end.getUTCFullYear() + 1);
-        else end.setUTCMonth(end.getUTCMonth() + 1);
-        await this.db.setSubscription({ userId: payment.userId, plan: product.plan, period: product.period, currentPeriodEnd: end });
-        // The new plan's allowance starts now.
-        await this.db.addCredits(payment.userId, PLAN_FEATURES[product.plan].monthlyEdits, "admin", `plan-start:${paymentId}`);
-      } else {
-        await this.db.addCredits(payment.userId, TOPUP_CREDITS, "topup", paymentId);
+      try {
+        const product = PRODUCTS[payment.product];
+        if (product.plan) {
+          await this.db.extendSubscription(payment.userId, product.plan, product.period, this.now());
+          // This month's allowance for the plan (same ref as the monthly grant, so it is given once).
+          await this.ensureMonthlyGrant(payment.userId);
+        } else {
+          await this.db.addCredits(payment.userId, TOPUP_CREDITS, "topup", paymentId);
+        }
+      } catch (error) {
+        // Nothing half-applied stays "approved": the admin can simply try again.
+        await this.db.unreview(paymentId);
+        throw error;
       }
     }
     await this.db.audit({ actorId: adminId, action: `payment.${decision === "approve" ? "approved" : "rejected"}`, targetType: "payment", targetId: paymentId, data: { userId: payment.userId, product: payment.product, amountMinor: payment.amountMinor, note } });
@@ -85,9 +103,15 @@ export class Billing {
   }
 }
 
-/** Admins are listed by the founder in env (verified email or phone). */
-export function isAdmin(user: { email: string | null; phone: string | null; verified: boolean } | null, env: NodeJS.ProcessEnv = process.env): boolean {
-  if (!user?.verified) return false;
+/** Admins are listed by the founder in env; only a verified email or verified phone counts. */
+export function isAdmin(
+  user: { email: string | null; phone: string | null; emailVerified: boolean; phoneVerified: boolean } | null,
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  if (!user) return false;
   const list = (v: string | undefined) => (v ?? "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
-  return (!!user.email && list(env.ADMIN_EMAILS).includes(user.email.toLowerCase())) || (!!user.phone && list(env.ADMIN_PHONES).includes(user.phone.toLowerCase()));
+  return (
+    (user.emailVerified && !!user.email && list(env.ADMIN_EMAILS).includes(user.email.toLowerCase())) ||
+    (user.phoneVerified && !!user.phone && list(env.ADMIN_PHONES).includes(user.phone.toLowerCase()))
+  );
 }

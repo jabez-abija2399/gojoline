@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, gte, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
-import { auditLog, creditLedger, payments, subscriptions } from "@/lib/db/schema";
+import { auditLog, creditBalances, creditLedger, payments, subscriptions, user } from "@/lib/db/schema";
 import type { Product } from "./plans";
 
 export interface Subscription {
@@ -36,6 +36,16 @@ export interface BillingStore {
   balance(userId: string): Promise<number>;
   /** Idempotent: false when (user, reason, ref) already exists. */
   addCredits(userId: string, delta: number, reason: LedgerReason, ref: string): Promise<boolean>;
+  /** Takes one credit atomically (parallel requests can't overspend); false when none are left. */
+  debit(userId: string, ref: string): Promise<boolean>;
+  /** Ledger entries of this kind since the given time (e.g. refunds today). */
+  countSince(userId: string, reason: LedgerReason, since: Date): Promise<number>;
+  /** Atomically extends (same plan, still active) or starts (otherwise) the subscription by one period. */
+  extendSubscription(userId: string, plan: Subscription["plan"], period: Subscription["period"], now: Date): Promise<void>;
+  /** Puts an approved/rejected payment back to pending (when applying the decision failed). */
+  unreview(id: string): Promise<void>;
+  /** Pending payments with the customer's contact, for admins only. */
+  pendingForAdmin(): Promise<(Payment & { contact: string | null })[]>;
   createPayment(p: { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null }): Promise<Payment | null>;
   paymentsFor(userId: string): Promise<Payment[]>;
   pendingPayments(): Promise<Payment[]>;
@@ -49,7 +59,7 @@ export interface BillingStore {
 
 export class MemoryBillingStore implements BillingStore {
   private subs = new Map<string, Subscription>();
-  private ledger: { userId: string; delta: number; reason: LedgerReason; ref: string }[] = [];
+  private ledger: { userId: string; delta: number; reason: LedgerReason; ref: string; at: Date }[] = [];
   private pays: (Payment & { receipt: Buffer | null })[] = [];
   private log: { actorId: string; action: string; targetType: string; targetId: string; data: Record<string, unknown> | null; createdAt: Date }[] = [];
 
@@ -64,17 +74,41 @@ export class MemoryBillingStore implements BillingStore {
   }
   async addCredits(userId: string, delta: number, reason: LedgerReason, ref: string) {
     if (this.ledger.some((l) => l.userId === userId && l.reason === reason && l.ref === ref)) return false;
-    this.ledger.push({ userId, delta, reason, ref });
+    this.ledger.push({ userId, delta, reason, ref, at: new Date() });
     return true;
   }
+  async debit(userId: string, ref: string) {
+    // Single-threaded: check and insert happen without an await in between.
+    const bal = this.ledger.filter((l) => l.userId === userId).reduce((n, l) => n + l.delta, 0);
+    if (bal < 1 || this.ledger.some((l) => l.userId === userId && l.reason === "ai_edit" && l.ref === ref)) return false;
+    this.ledger.push({ userId, delta: -1, reason: "ai_edit", ref, at: new Date() });
+    return true;
+  }
+  async countSince(userId: string, reason: LedgerReason, since: Date) {
+    return this.ledger.filter((l) => l.userId === userId && l.reason === reason && l.at >= since).length;
+  }
+  async extendSubscription(userId: string, plan: Subscription["plan"], period: Subscription["period"], now: Date) {
+    const cur = this.subs.get(userId);
+    const end = new Date(cur && cur.plan === plan && cur.currentPeriodEnd > now ? cur.currentPeriodEnd : now);
+    if (period === "year") end.setUTCFullYear(end.getUTCFullYear() + 1);
+    else end.setUTCMonth(end.getUTCMonth() + 1);
+    this.subs.set(userId, { userId, plan, period, currentPeriodEnd: end });
+  }
+  async unreview(id: string) {
+    const p = this.pays.find((x) => x.id === id);
+    if (p) Object.assign(p, { status: "pending", reviewedBy: null, reviewedAt: null });
+  }
+  async pendingForAdmin() {
+    return (await this.pendingPayments()).map((p) => ({ ...p, contact: null }));
+  }
   async createPayment(p: { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null }) {
-    if (this.pays.some((x) => x.method === p.method && x.reference === p.reference)) return null;
+    if (this.pays.some((x) => x.reference === p.reference)) return null;
     const pay = { ...p, id: randomUUID(), currency: "ETB" as const, hasReceipt: !!p.receipt, status: "pending" as const, reviewedBy: null, reviewedAt: null, note: null, createdAt: new Date() };
     this.pays.push(pay);
     return strip(pay);
   }
   async paymentsFor(userId: string) {
-    return this.pays.filter((p) => p.userId === userId).reverse().map(strip);
+    return this.pays.filter((p) => p.userId === userId).reverse().map(strip).map(forOwner);
   }
   async pendingPayments() {
     return this.pays.filter((p) => p.status === "pending").map(strip);
@@ -99,6 +133,9 @@ export class MemoryBillingStore implements BillingStore {
     return this.log.filter((l) => l.targetType === targetType && l.targetId === targetId);
   }
 }
+
+/** Owners don't see which admin reviewed their payment. */
+const forOwner = (p: Payment): Payment => ({ ...p, reviewedBy: null });
 
 function strip(p: Payment & { receipt: Buffer | null }): Payment {
   const { receipt, ...rest } = p;
@@ -134,12 +171,63 @@ export class DbBillingStore implements BillingStore {
       .onConflictDoUpdate({ target: subscriptions.userId, set: { plan: s.plan, period: s.period, currentPeriodEnd: s.currentPeriodEnd, updatedAt: new Date() } });
   }
   async balance(userId: string) {
-    const [row] = await this.db.select({ n: sql<number>`coalesce(sum(${creditLedger.delta}), 0)::int` }).from(creditLedger).where(eq(creditLedger.userId, userId));
+    const [row] = await this.db.select({ n: creditBalances.balance }).from(creditBalances).where(eq(creditBalances.userId, userId)).limit(1);
     return Number(row?.n ?? 0);
   }
+  /** One statement: the ledger row and the balance change happen together or not at all. */
   async addCredits(userId: string, delta: number, reason: LedgerReason, ref: string) {
-    const rows = await this.db.insert(creditLedger).values({ userId, delta, reason, ref }).onConflictDoNothing().returning({ id: creditLedger.id });
-    return rows.length === 1;
+    const rows = await this.db.execute(sql`
+      with ins as (
+        insert into credit_ledger (user_id, delta, reason, ref) values (${userId}, ${delta}, ${reason}, ${ref})
+        on conflict do nothing returning delta
+      )
+      insert into credit_balances (user_id, balance) select ${userId}, delta from ins
+      on conflict (user_id) do update set balance = credit_balances.balance + excluded.balance
+      returning 1 as ok`);
+    return rowsOf(rows).length === 1;
+  }
+  async debit(userId: string, ref: string) {
+    // The row lock makes concurrent debits wait and re-check balance >= 1.
+    const rows = await this.db.execute(sql`
+      with dec as (
+        update credit_balances set balance = balance - 1 where user_id = ${userId} and balance >= 1 returning user_id
+      )
+      insert into credit_ledger (user_id, delta, reason, ref) select user_id, -1, 'ai_edit', ${ref} from dec
+      returning 1 as ok`);
+    return rowsOf(rows).length === 1;
+  }
+  async countSince(userId: string, reason: LedgerReason, since: Date) {
+    const [row] = await this.db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(creditLedger)
+      .where(and(eq(creditLedger.userId, userId), eq(creditLedger.reason, reason), gte(creditLedger.createdAt, since)));
+    return Number(row?.n ?? 0);
+  }
+  async extendSubscription(userId: string, plan: Subscription["plan"], period: Subscription["period"], now: Date) {
+    const step = period === "year" ? sql`interval '1 year'` : sql`interval '1 month'`;
+    const at = now.toISOString();
+    await this.db.execute(sql`
+      insert into subscriptions (user_id, plan, period, current_period_end, updated_at)
+      values (${userId}, ${plan}, ${period}, ${at}::timestamptz + ${step}, ${at}::timestamptz)
+      on conflict (user_id) do update set
+        current_period_end = case
+          when subscriptions.plan = excluded.plan and subscriptions.current_period_end > ${at}::timestamptz
+          then subscriptions.current_period_end + ${step}
+          else ${at}::timestamptz + ${step} end,
+        plan = excluded.plan, period = excluded.period, updated_at = excluded.updated_at`);
+  }
+  async unreview(id: string) {
+    await this.db.update(payments).set({ status: "pending", reviewedBy: null, reviewedAt: null }).where(eq(payments.id, id));
+  }
+  async pendingForAdmin() {
+    const rows = await this.db
+      .select({ ...paymentCols, email: user.email, phone: user.phoneNumber })
+      .from(payments)
+      .innerJoin(user, eq(user.id, payments.userId))
+      .where(eq(payments.status, "pending"))
+      .orderBy(payments.createdAt)
+      .limit(200);
+    return rows.map(({ email, phone, ...p }) => ({ ...(p as Payment), contact: phone ?? (email.endsWith("@phone.gojoline.invalid") ? null : email) }));
   }
   async createPayment(p: { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null }) {
     const rows = await this.db
@@ -150,7 +238,7 @@ export class DbBillingStore implements BillingStore {
     return (rows[0] as Payment | undefined) ?? null;
   }
   async paymentsFor(userId: string) {
-    return (await this.db.select(paymentCols).from(payments).where(eq(payments.userId, userId)).orderBy(desc(payments.createdAt)).limit(50)) as Payment[];
+    return ((await this.db.select(paymentCols).from(payments).where(eq(payments.userId, userId)).orderBy(desc(payments.createdAt)).limit(50)) as Payment[]).map(forOwner);
   }
   async pendingPayments() {
     return (await this.db.select(paymentCols).from(payments).where(eq(payments.status, "pending")).orderBy(payments.createdAt).limit(200)) as Payment[];
@@ -181,4 +269,15 @@ export class DbBillingStore implements BillingStore {
       .where(and(eq(auditLog.targetType, targetType), eq(auditLog.targetId, targetId)))
       .orderBy(auditLog.createdAt);
   }
+}
+
+/** neon-http returns { rows }, PGlite returns { rows } too; some drivers return the array itself. */
+function rowsOf(result: unknown): unknown[] {
+  if (Array.isArray(result)) return result;
+  return ((result as { rows?: unknown[] }).rows ?? []) as unknown[];
+}
+
+/** Transaction numbers are compared without spaces, dashes or case, across all payment methods. */
+export function canonicalReference(raw: string): string {
+  return raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
 }

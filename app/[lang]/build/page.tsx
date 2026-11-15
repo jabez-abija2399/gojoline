@@ -28,7 +28,7 @@ export default async function ProjectsPage({ params, searchParams }: PageProps<"
 
   return (
     <>
-      <BuilderHeader locale={lang} t={t} user={user} navLink={{ href: `/${lang}/billing`, label: t.billing.link }} />
+      <BuilderHeader locale={lang} t={t} user={user} navLinks={[{ href: `/${lang}/billing`, label: t.billing.link, icon: "plan" }]} />
       <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-3xl font-bold">{t.builder.title}</h1>

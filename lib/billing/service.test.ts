@@ -32,6 +32,22 @@ describe("credits", () => {
   });
 });
 
+describe("atomic credits (Postgres)", () => {
+  it("never overspends with parallel edits and caps daily refunds", async () => {
+    const db = await testDb();
+    await makeUser(db, "u");
+    const b = new Billing(new DbBillingStore(db), () => new Date("2026-11-14T10:00:00Z"));
+    expect(await b.creditsLeft("u")).toBe(15);
+    const results = await Promise.all(Array.from({ length: 20 }, (_, i) => b.consumeEdit("u", `m${i}`)));
+    expect(results.filter(Boolean)).toHaveLength(15);
+    expect(await b.creditsLeft("u")).toBe(0);
+    const refunds = [];
+    for (let i = 0; i < 7; i++) refunds.push(await b.refundEdit("u", `m${i}`));
+    expect(refunds.filter(Boolean)).toHaveLength(5);
+    expect(await b.creditsLeft("u")).toBe(5);
+  }, 30_000);
+});
+
 describe("payments", () => {
   it("approving a plan extends it once; rejecting changes nothing; all audited (Postgres)", async () => {
     const db = await testDb();
@@ -41,13 +57,18 @@ describe("payments", () => {
     const b = new Billing(store, () => now);
     const p = await b.submitPayment("owner", { product: "starter_month", method: "telebirr", reference: "TB123", receipt: Buffer.from("img") });
     expect(p).toMatchObject({ amountMinor: 39_900, currency: "ETB", status: "pending", hasReceipt: true });
-    expect(await b.submitPayment("owner", { product: "starter_month", method: "telebirr", reference: "TB123", receipt: null })).toBeNull();
+    // The same transaction can't be sent again, even written differently or under another method.
+    expect(await b.submitPayment("owner", { product: "starter_month", method: "other", reference: "tb-12 3", receipt: null })).toBeNull();
 
     expect(await b.review("admin", p!.id, "approve", null)).toBe("ok");
     expect(await b.review("admin", p!.id, "approve", null)).toBe("already_reviewed");
     expect((await b.plan("owner")).plan).toBe("starter");
     expect((await b.plan("owner")).until?.toISOString()).toBe("2026-12-14T10:00:00.000Z");
     expect((await b.entitlements("owner")).customDomain).toBe(true);
+    // Starter's allowance once this month, not twice.
+    expect(await b.creditsLeft("owner")).toBe(50);
+    expect((await store.paymentsFor("owner"))[0]?.reviewedBy).toBeNull();
+    expect((await store.pendingForAdmin()).length).toBe(0);
 
     const top = await b.submitPayment("owner", { product: "topup", method: "cbe", reference: "FT999", receipt: null });
     const before = await b.creditsLeft("owner");
@@ -64,10 +85,13 @@ describe("payments", () => {
 describe("isAdmin", () => {
   const env = { ADMIN_EMAILS: "founder@gojoline.com", ADMIN_PHONES: "+251911000000" } as unknown as NodeJS.ProcessEnv;
   it("needs a verified listed email or phone", () => {
-    expect(isAdmin({ email: "Founder@gojoline.com", phone: null, verified: true }, env)).toBe(true);
-    expect(isAdmin({ email: null, phone: "+251911000000", verified: true }, env)).toBe(true);
-    expect(isAdmin({ email: "founder@gojoline.com", phone: null, verified: false }, env)).toBe(false);
-    expect(isAdmin({ email: "x@y.z", phone: null, verified: true }, env)).toBe(false);
+    const u = (email: string | null, phone: string | null, emailVerified: boolean, phoneVerified: boolean) => ({ email, phone, emailVerified, phoneVerified });
+    expect(isAdmin(u("Founder@gojoline.com", null, true, false), env)).toBe(true);
+    expect(isAdmin(u(null, "+251911000000", false, true), env)).toBe(true);
+    expect(isAdmin(u("founder@gojoline.com", null, false, false), env)).toBe(false);
+    // A verified phone doesn't make an unverified listed email count.
+    expect(isAdmin(u("founder@gojoline.com", "+251900000001", false, true), env)).toBe(false);
+    expect(isAdmin(u("x@y.z", null, true, false), env)).toBe(false);
     expect(isAdmin(null, env)).toBe(false);
   });
 });

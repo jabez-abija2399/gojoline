@@ -25,14 +25,14 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <BuilderHeader locale={lang} t={t} user={user} backHref={`/${lang}/build`} backLabel={t.builder.back} navLink={{ href: `/${lang}/dashboard/${id}`, label: t.dashboard.link }} />
+      <BuilderHeader locale={lang} t={t} user={user} backHref={`/${lang}/build`} backLabel={t.builder.back} navLinks={[{ href: `/${lang}/dashboard/${id}`, label: t.dashboard.link, icon: "dashboard" }, { href: `/${lang}/billing`, label: t.billing.link, icon: "plan" }]} />
       <main id="main" className="flex min-h-0 flex-1 flex-col">
         <h1 className="sr-only">{project.name || t.builder.untitled}</h1>
         <Builder
           locale={lang}
           projectId={id}
           t={t.builder}
-          noCreditsText={t.billing.noCredits}
+          noCredits={{ text: t.billing.noCredits, action: t.billing.getMore }}
           initialMessages={messages.map((m) => ({
             id: m.id,
             role: m.role,

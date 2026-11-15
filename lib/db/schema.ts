@@ -296,8 +296,16 @@ export const creditLedger = pgTable(
     ref: text("ref").notNull(),
     createdAt: createdAt(),
   },
-  (t) => [uniqueIndex("credit_ledger_ref_uq").on(t.userId, t.reason, t.ref), index("credit_ledger_user_idx").on(t.userId)],
+  (t) => [uniqueIndex("credit_ledger_ref_uq").on(t.userId, t.reason, t.ref)],
 );
+
+/** Running balance kept beside the ledger so a debit is one atomic `balance >= 1` update. */
+export const creditBalances = pgTable("credit_balances", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  balance: integer("balance").notNull().default(0),
+});
 
 /** Manual Birr payments (Telebirr / bank transfer) waiting for or after admin review. */
 export const payments = pgTable(
@@ -319,7 +327,7 @@ export const payments = pgTable(
     note: text("note"),
     createdAt: createdAt(),
   },
-  (t) => [index("payments_status_idx").on(t.status, t.createdAt), uniqueIndex("payments_reference_uq").on(t.method, t.reference)],
+  (t) => [index("payments_status_idx").on(t.status, t.createdAt), index("payments_user_idx").on(t.userId, t.createdAt), uniqueIndex("payments_reference_uq").on(t.reference)],
 );
 
 /** Who did what, for money and moderation actions. Append-only. */

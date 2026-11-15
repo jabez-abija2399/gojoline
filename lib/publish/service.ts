@@ -89,9 +89,27 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
   const latest = await deps.store.latestVersion(user.id, projectId);
   if (!latest) return { ok: false, error: "no_version" };
   const plan = deps.entitlements ? await deps.entitlements(user.id) : null;
-  if ((existing?.status ?? "pending") !== "published" && (await deps.sites.countPublished(user.id, projectId)) >= (plan?.maxSites ?? 1)) {
-    return { ok: false, error: "plan_limit" };
+  const firstLive = (existing?.status ?? "pending") !== "published";
+  // A new live site: one at a time per owner, so parallel publishes can't pass the site limit together.
+  const ownerToken = firstLive ? await deps.lock.acquire(`publish-owner:${user.id}`, 6 * 60_000) : null;
+  if (firstLive && !ownerToken) return { ok: false, error: "busy" };
+  try {
+    if (firstLive && (await deps.sites.countPublished(user.id, projectId)) >= (plan?.maxSites ?? 1)) {
+      return { ok: false, error: "plan_limit" };
+    }
+    return await deployLocked(deps, user, projectId, { existing, slug, latest, plan, project });
+  } finally {
+    if (ownerToken) await deps.lock.release(`publish-owner:${user.id}`, ownerToken);
   }
+}
+
+async function deployLocked(
+  deps: PublishDeps,
+  user: PublishUser,
+  projectId: string,
+  ctx: { existing: Site | null; slug: string; latest: NonNullable<Awaited<ReturnType<ProjectStore["latestVersion"]>>>; plan: Awaited<ReturnType<EntitlementsResolver>> | null; project: NonNullable<Awaited<ReturnType<ProjectStore["getProject"]>>> },
+): Promise<PublishOutcome> {
+  const { existing, slug, latest, plan, project } = ctx;
   // Claim the address in our database before anything is deployed (atomic, unique).
   if (!existing && !(await deps.sites.reserve(user.id, projectId, slug, deps.publisher.name))) return { ok: false, error: "slug_taken" };
 

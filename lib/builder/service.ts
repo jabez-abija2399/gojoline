@@ -1,4 +1,6 @@
 import "server-only";
+import { randomUUID } from "node:crypto";
+import { keywordCheck } from "@/lib/safety/keywords";
 import { runAgent, type AgentEvent } from "@/lib/agent/loop";
 import { agentSystemPrompt, userTurn } from "@/lib/agent/prompt";
 import type { LLMProvider, MessageParam } from "@/lib/providers/llm/types";
@@ -19,14 +21,14 @@ export interface BuilderDeps {
   lock: Lock;
   assets?: AssetStore;
   /** AI edit credits; when set, each request costs one credit, refunded if the change fails. */
-  credits?: { consume(userId: string, ref: string): Promise<boolean>; refund(userId: string, ref: string): Promise<void> };
+  credits?: { consume(userId: string, ref: string): Promise<boolean>; refund(userId: string, ref: string): Promise<unknown> };
 }
 
 export type BuilderEvent =
   | AgentEvent
   | { type: "preview"; url: string }
   | { type: "done"; message: ChatMessage; previewUrl: string }
-  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" };
+  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked" };
 
 const HISTORY_MESSAGES = 8;
 /** Longer than the longest agent run (route maxDuration is 300 s). */
@@ -73,20 +75,26 @@ export async function sendOwnerMessage(
   const { store } = deps;
   const project = await store.getProject(input.ownerId, input.projectId);
   if (!project) return input.onEvent({ type: "error", code: "not_found" });
+  // Clearly harmful requests (phishing, scams...) never reach the agent and cost no credit.
+  if (keywordCheck(input.text).length) return input.onEvent({ type: "error", code: "blocked" });
   const token = await deps.lock.acquire(`project:${project.id}`, LOCK_TTL_MS);
   if (!token) return input.onEvent({ type: "error", code: "busy" });
   let chargedRef: string | null = null;
   try {
-    const previous = await store.listMessages(input.ownerId, project.id, 50);
-    const ownerMsg = await store.addMessage(input.ownerId, { projectId: project.id, role: "owner", text: input.text });
-    if (deps.credits && !(await deps.credits.consume(input.ownerId, ownerMsg.id))) {
-      return input.onEvent({ type: "error", code: "no_credits" });
-    }
-    chargedRef = ownerMsg.id;
+    // Charge first: an unpaid request is never saved, so it can't ride along in later history.
+    const ref = randomUUID();
+    const [paid, previous, latest, photoList] = await Promise.all([
+      deps.credits ? deps.credits.consume(input.ownerId, ref) : true,
+      store.listMessages(input.ownerId, project.id, 50),
+      store.latestVersion(input.ownerId, project.id),
+      deps.assets?.list(input.ownerId, project.id),
+    ]);
+    if (!paid) return input.onEvent({ type: "error", code: "no_credits" });
+    chargedRef = deps.credits ? ref : null;
+    await store.addMessage(input.ownerId, { projectId: project.id, role: "owner", text: input.text });
 
-    const latest = await store.latestVersion(input.ownerId, project.id);
     // Boot the sandbox while the model reads the request; tools wait for it.
-    const photos = (await deps.assets?.list(input.ownerId, project.id)) ?? [];
+    const photos = photoList ?? [];
     const opening = deps.sandboxes.open(project.id, latest?.files ?? null).then(async (sb) => {
       if (deps.assets && photos.length) await sb.writeAssets(await deps.assets.files(input.ownerId, project.id));
       return sb;
@@ -122,7 +130,8 @@ export async function sendOwnerMessage(
         if (name) await store.renameProject(input.ownerId, project.id, name);
       }
     }
-    if (result.status === "failed" && chargedRef) {
+    // Refund failures on our side, not runs the owner walked away from.
+    if (result.status === "failed" && chargedRef && !input.signal?.aborted) {
       await deps.credits?.refund(input.ownerId, chargedRef);
       chargedRef = null;
     }
@@ -137,7 +146,7 @@ export async function sendOwnerMessage(
     chargedRef = null;
   } catch (error) {
     console.error("builder.sendOwnerMessage failed", error instanceof Error ? error.message : "unknown");
-    if (chargedRef) await deps.credits?.refund(input.ownerId, chargedRef).catch(() => undefined);
+    if (chargedRef && !input.signal?.aborted) await deps.credits?.refund(input.ownerId, chargedRef).catch(() => undefined);
     input.onEvent({ type: "error", code: "failed" });
   } finally {
     await deps.lock.release(`project:${project.id}`, token);

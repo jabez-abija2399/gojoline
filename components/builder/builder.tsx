@@ -14,7 +14,7 @@ type Tab = "chat" | "preview" | "versions" | "code";
 type Step = "reading" | "editing" | "checking" | "fixing" | null;
 
 interface Props {
-  noCreditsText: string;
+  noCredits: { text: string; action: string };
   locale: Locale;
   projectId: string;
   t: Messages["builder"];
@@ -25,7 +25,7 @@ interface Props {
 let localId = 0;
 const nextId = () => `local-${++localId}`;
 
-export function Builder({ locale, projectId, t, initialMessages, initialVersions, noCreditsText }: Props) {
+export function Builder({ locale, projectId, t, initialMessages, initialVersions, noCredits }: Props) {
   const [messages, setMessages] = useState<UiMessage[]>(initialMessages);
   const [versions, setVersions] = useState<UiVersion[]>(initialVersions);
   const [current, setCurrent] = useState<number | null>(initialVersions[0]?.number ?? null);
@@ -119,7 +119,8 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
               }
               case "error":
                 finished = true;
-                addAssistant(event.code === "busy" ? t.busy : event.code === "no_credits" ? noCreditsText : t.failed, { tone: "error" });
+                if (event.code === "no_credits") addAssistant(noCredits.text, { tone: "error", action: { href: `/${locale}/billing`, label: noCredits.action } });
+                else addAssistant(event.code === "busy" ? t.busy : event.code === "blocked" ? t.blocked : t.failed, { tone: "error" });
                 break;
             }
           }
@@ -133,7 +134,7 @@ export function Builder({ locale, projectId, t, initialMessages, initialVersions
         setStreamText("");
       }
     },
-    [projectId, t, addAssistant, noCreditsText],
+    [projectId, t, addAssistant, noCredits, locale],
   );
 
   const restore = useCallback(

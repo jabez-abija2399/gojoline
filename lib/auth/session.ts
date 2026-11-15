@@ -9,6 +9,8 @@ export interface CurrentUser {
   email: string | null;
   phone: string | null;
   verified: boolean;
+  emailVerified: boolean;
+  phoneVerified: boolean;
 }
 
 /** The signed-in user for this request, or null. */
@@ -25,5 +27,7 @@ export const currentUser = cache(async (): Promise<CurrentUser | null> => {
     email: realEmail,
     phone: u.phoneNumber ?? null,
     verified: Boolean(u.emailVerified && realEmail) || Boolean(u.phoneNumberVerified),
+    emailVerified: Boolean(u.emailVerified && realEmail),
+    phoneVerified: Boolean(u.phoneNumberVerified && u.phoneNumber),
   };
 });

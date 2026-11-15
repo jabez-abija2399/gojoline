@@ -1,4 +1,6 @@
 import "server-only";
+import { LLMContentClassifier } from "@/lib/safety/classifier";
+import { ContentGuard } from "@/lib/safety/guard";
 import { Redis } from "@upstash/redis";
 import type { BuilderDeps } from "@/lib/builder/service";
 import { getDb } from "@/lib/db/client";
@@ -152,7 +154,13 @@ export function services(): Services {
     const svc = globalForServices.gojoServices;
     if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r) };
     svc.publish = pickPublish(process.env, svc.builder);
-    if (svc.publish) svc.publish.entitlements = billing.entitlements;
+    if (svc.publish) {
+      svc.publish.entitlements = billing.entitlements;
+      // Keywords always; the AI check when an API key is set (never in e2e).
+      const key = process.env.SAYSITE_ANTHROPIC_API_KEY;
+      const classifier = key && !isE2E(process.env) ? new LLMContentClassifier(new AnthropicLLMProvider(key), usage, process.env.SAFETY_MODEL || "claude-haiku-5-5") : null;
+      svc.publish.guards = [new ContentGuard(classifier)];
+    }
     svc.cloud = svc.publish?.cloud ?? null;
     svc.telegram = pickTelegram(process.env);
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);
