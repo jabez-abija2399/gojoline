@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Locale } from "@/lib/i18n/config";
 import type { Messages } from "@/lib/i18n";
 import { LanguageSwitch } from "./language-switch";
+import { PhoneMenu } from "./phone-menu";
 
 /** `nav` is the marketing pages' floating bar: Templates, How it works, Prices, Sign in. */
 export function SiteHeader({ locale, t, nav = false, current }: { locale: Locale; t: Messages; nav?: boolean; current?: "templates" | "pricing" }) {
@@ -40,25 +41,28 @@ export function SiteHeader({ locale, t, nav = false, current }: { locale: Locale
             <Link href={signIn} className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 font-medium text-white hover:bg-ink-hover max-md:hidden">
               {t.landing.nav.start}
             </Link>
-            {/* Phones: the page links and Sign in live behind one button (native details, no script). */}
-            <details className="group relative md:hidden">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full bg-ink px-4 font-medium text-white [&::-webkit-details-marker]:hidden">
-                <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
-                  <path d="M4 7h16M4 12h16M4 17h16" />
-                </svg>
-                {t.landing.nav.menu}
-              </summary>
+            {/* Phones: the page links and Sign in live behind one button. */}
+            <PhoneMenu
+              label={
+                <>
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+                    <path d="M4 7h16M4 12h16M4 17h16" />
+                  </svg>
+                  {t.landing.nav.menu}
+                </>
+              }
+            >
               <nav aria-label={t.landing.nav.label} className="absolute end-0 top-full mt-3 flex w-60 flex-col gap-1 rounded-3xl border border-line bg-white p-2 shadow-xl">
-                {links.map((l) => (
+                {[...links, { href: signIn, label: t.landing.nav.signIn, key: "signin" }].map((l) => (
                   <Link key={l.key} href={l.href} aria-current={current === l.key ? "page" : undefined} className="flex min-h-11 items-center rounded-full px-4 font-medium text-ink hover:bg-sunken aria-[current=page]:bg-sunken">
                     {l.label}
                   </Link>
                 ))}
-                <Link href={signIn} className="flex min-h-11 items-center justify-center rounded-full bg-coral px-4 font-semibold text-on-coral hover:bg-coral-hover">
-                  {t.landing.nav.signIn}
+                <Link href={signIn} className="flex min-h-11 items-center justify-center rounded-full bg-ink px-4 font-semibold text-white hover:bg-ink-hover">
+                  {t.landing.nav.start}
                 </Link>
               </nav>
-            </details>
+            </PhoneMenu>
           </div>
         </div>
       </header>
