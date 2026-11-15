@@ -87,9 +87,9 @@ export function FeatureMock({ kind, m }: { kind: FeatureKey; m: MockText }) {
     );
   if (kind === "domain")
     return (
-      <div aria-hidden="true" className={`${card} flex items-center gap-3 rounded-full px-5 py-4`}>
+      <div aria-hidden="true" className={`${card} flex items-center gap-3 rounded-2xl px-4 py-4 sm:rounded-full sm:px-5`}>
         <Lock className="size-4 shrink-0 text-lagoon" />
-        <span className="truncate font-medium">{m.address}</span>
+        <span className="min-w-0 font-medium break-all">{m.address}</span>
       </div>
     );
   return (

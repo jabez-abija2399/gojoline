@@ -55,9 +55,9 @@ Chosen by the founder on 2026-11-15, replacing Terracotta Earth (clay and teal).
 | Live / success (lagoon) | `#0E7C66` | `#3DD6B0` |
 | Warning | `#A3530A` | `#FFB547` |
 | Danger | `#C81E3A` | `#FF6B7F` |
-| Highlight (sun, fill only) | `#FFD23F` | same |
+| Highlight (sun, fill only; not used on public pages since 2026-11-15) | `#FFD23F` | same |
 
-Rules: coral is for the one action you want people to take, always with ink text (white on coral fails contrast). Dark buttons and dark sections are ink. Sun is a fill (a highlighter stroke, a glow), never text. Lagoon means live or success, nothing else.
+Rules: coral is for the one action you want people to take (one coral button per screen) and may also fill decorative panels on public pages, always with ink text (white on coral fails contrast). Dark buttons and dark sections are ink. Sun is a fill (a highlighter stroke, a glow), never text. Lagoon means live or success, nothing else.
 
 Code: `tokens.css` (CSS variables, light and dark), `tokens.json`, `tailwind.preset.js`. In the app the classes are `bg-paper`, `bg-sunken`, `border-line`, `text-ink`, `text-ink-muted`, `text-faint`, `text-link`, `bg-coral text-on-coral`, `text-lagoon`, `text-warning`, `text-danger`, `bg-sun`.
 
