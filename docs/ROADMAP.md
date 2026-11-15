@@ -67,6 +67,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 
 ## Notes for deployment
+- **Live:** https://gojoline.vercel.app (Vercel project `gojoline`, functions in `fra1`, deployed with the Vercel CLI; the project is not yet connected to GitHub, so pushes don't deploy by themselves: run `vercel git connect` or deploy with the CLI).
+- Production env set on Vercel (2026-11-15): `DATABASE_URL` (Neon, pooled), `UPSTASH_REDIS_REST_URL`/`_TOKEN` (new free Upstash database `gojoline`, Frankfurt), `SAYSITE_ANTHROPIC_API_KEY`, `VERCEL_TOKEN`/`_TEAM_ID`/`_PROJECT_ID`, `SANDBOX_SNAPSHOT_ID`, `CSP_FRAME_ORIGINS`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET` (generated), `BETTER_AUTH_SECRET` (generated), `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL`, `SENTRY_DSN`, `AGENT_MODEL`. Telegram webhook registered to `/api/telegram/webhook`.
+- Still unset (features stay off until added): SMS/email sign-in provider, `PAYMENT_*`, `ADMIN_EMAILS`/`ADMIN_PHONES`, R2/Cloudflare, Chapa.
 - Sentry: project `gojoline` in the founder's Sentry organization. Set `SENTRY_DSN=https://28282cb223995ae0d77745325c298faf@o4512429782990848.ingest.us.sentry.io/4512432933371904` (a DSN is a public client key). Server errors only; no browser SDK.
 - Production rate limits need `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; without them the waitlist refuses submissions on Vercel (fails closed by design).
 - Database: Neon project `gojoline` (purple-brook-23584048, Frankfurt), database `gojoline`, migration `0000_init` applied. Set `DATABASE_URL` in the Vercel project (pooled connection string from the Neon console). Without it, dev and e2e use memory stores.
