@@ -1,5 +1,5 @@
 {
-  "id": "7cdacaa2-daf0-4a01-bc5d-ee978dcd7e46",
+  "id": "2b221d35-00c2-4f4d-a95e-005030b66322",
   "prevId": "c3c1f393-b426-45c3-a31b-94aa9a263951",
   "version": "7",
   "dialect": "postgresql",
@@ -565,26 +565,6 @@
           "primaryKey": false,
           "notNull": true,
           "default": 0
-        },
-        "refund_day": {
-          "name": "refund_day",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "refund_used": {
-          "name": "refund_used",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "refund_last": {
-          "name": "refund_last",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
         }
       },
       "indexes": {},
@@ -644,18 +624,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "size": {
-          "name": "size",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "note": {
-          "name": "note",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -691,27 +659,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "credit_ledger_user_time_idx": {
-          "name": "credit_ledger_user_time_idx",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
@@ -731,111 +678,6 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.discount_codes": {
-      "name": "discount_codes",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "code": {
-          "name": "code",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "percent_off": {
-          "name": "percent_off",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "amount_off_minor": {
-          "name": "amount_off_minor",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "products": {
-          "name": "products",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "max_uses": {
-          "name": "max_uses",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "uses": {
-          "name": "uses",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "first_payment_only": {
-          "name": "first_payment_only",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "per_customer_once": {
-          "name": "per_customer_once",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
-        },
-        "active": {
-          "name": "active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
-        },
-        "created_by": {
-          "name": "created_by",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "discount_codes_code_unique": {
-          "name": "discount_codes_code_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "code"
-          ]
-        }
-      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1129,30 +971,6 @@
         },
         "note": {
           "name": "note",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "original_amount_minor": {
-          "name": "original_amount_minor",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "discount_minor": {
-          "name": "discount_minor",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "discount_source": {
-          "name": "discount_source",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "discount_code": {
-          "name": "discount_code",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -1795,6 +1613,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "legacy_project_id": {
+          "name": "legacy_project_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "url": {
           "name": "url",
           "type": "text",
@@ -2097,12 +1921,6 @@
         "active_project_id": {
           "name": "active_project_id",
           "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "pending_edit": {
-          "name": "pending_edit",
-          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },

@@ -95,6 +95,8 @@ function scanJs(file: string, js: string, issues: ScanIssue[]) {
     ["remote-script", /createElement\(\s*["']script["']\s*\)/],
     // Assignments only (React itself compares `location.href == ...`).
     ["redirect", /\blocation\s*(?:\.\s*href)?\s*=(?!=)|\blocation\.(?:assign|replace)\(|\bwindow\.open\(/],
+    // Sites share a parent domain with others (and the app): no cookies at all from site code.
+    ["cookie", /\bdocument\s*\.\s*cookie\b|\bcookieStore\b/],
   ];
   for (const [rule, re] of rules) {
     const m = re.exec(js);

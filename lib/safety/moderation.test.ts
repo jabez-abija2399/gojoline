@@ -46,6 +46,52 @@ describe("takedown", () => {
     expect((await sites.byId(site.id))?.takedownDeployedAt).toBeNull();
   });
 
+  it("takes a site down on the host it still lives on (not moved yet)", async () => {
+    const sites = new MemorySiteStore();
+    await sites.reserve("owner", "p1", "old-site", "memory");
+    const site = await sites.savePublished("owner", { projectId: "p1", slug: "old-site", provider: "memory", providerProjectId: "prj", url: "https://old-site.sites.example", publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+    const reports = new MemoryReportStore(async () => null);
+    const legacy = new MemoryPublishProvider();
+    const publisher = Object.assign(new MemoryPublishProvider(), { name: "cloudflare" });
+    expect(await takeDownSite({ sites, reports, publisher, legacy, audit: async () => undefined }, "admin", site.id, "scam")).toBe("ok");
+    expect(legacy.published.get("old-site")![0]!.data.toString()).toContain("This site is not available");
+    expect(publisher.published.size).toBe(0);
+  });
+
+  it("reaches the old host while a move isn't confirmed, and refuses to report success without it", async () => {
+    const sites = new MemorySiteStore();
+    await sites.reserve("owner", "p1", "moved-site", "cloudflare");
+    const site = await sites.savePublished("owner", { projectId: "p1", slug: "moved-site", provider: "cloudflare", providerProjectId: "cf:moved-site", legacyProjectId: "prj_old", url: "https://moved-site.afridea.et", publishedVersion: 2, lastDeploymentId: "d", publishedAt: new Date() });
+    const reports = new MemoryReportStore(async () => null);
+    const publisher = Object.assign(new MemoryPublishProvider(), { name: "cloudflare" });
+    const legacy = new MemoryPublishProvider();
+    expect(await takeDownSite({ sites, reports, publisher, legacy: null, audit: async () => undefined }, "admin", site.id, "scam")).toBe("deploy_failed");
+    await sites.restore(site.id);
+    expect(await takeDownSite({ sites, reports, publisher, legacy, audit: async () => undefined }, "admin", site.id, "scam")).toBe("ok");
+    expect(publisher.published.get("moved-site")![0]!.data.toString()).toContain("This site is not available");
+    expect(legacy.published.get("moved-site")![0]!.data.toString()).toContain("This site is not available");
+  });
+
+  it("sees a move that finished just before the takedown, and tries every host even if one fails", async () => {
+    const sites = new MemorySiteStore();
+    await sites.reserve("owner", "p1", "racy", "memory");
+    const site = await sites.savePublished("owner", { projectId: "p1", slug: "racy", provider: "memory", providerProjectId: "prj", url: "u", publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+    const reports = new MemoryReportStore(async () => null);
+    const publisher = Object.assign(new MemoryPublishProvider(), { name: "cloudflare" });
+    const legacy = new MemoryPublishProvider();
+    // The move commits between the admin's read and the takedown flag.
+    const realTakeDown = sites.takeDown.bind(sites);
+    sites.takeDown = async (id, reason) => {
+      await sites.savePublished("owner", { projectId: "p1", slug: "racy", provider: "cloudflare", providerProjectId: "cf:racy", legacyProjectId: "prj", url: "u2", publishedVersion: 2, lastDeploymentId: "e", publishedAt: new Date() });
+      return realTakeDown(id, reason);
+    };
+    legacy.publish = async () => {
+      throw new Error("vercel down");
+    };
+    expect(await takeDownSite({ sites, reports, publisher, legacy, audit: async () => undefined }, "admin", site.id, "scam")).toBe("deploy_failed");
+    expect(publisher.published.get("racy")![0]!.data.toString()).toContain("This site is not available");
+  });
+
   it("the notice page has no scripts and both languages", () => {
     const html = takenDownPage();
     expect(html).not.toMatch(/<script/i);

@@ -60,6 +60,11 @@ describe("scanBuiltSite", () => {
     expect(scanBuiltSite([f("index.html", good), f("assets/a.js", "n=typeof t.contentWindow.location.href==`string`")])).toEqual([]);
   });
 
+  it("flags cookies set from site code", () => {
+    expect(scanBuiltSite([f("index.html", good), f("assets/a.js", 'document.cookie="x=1; domain=afridea.et"')]).map((i) => i.rule)).toContain("cookie");
+    expect(scanBuiltSite([f("index.html", good), f("assets/a.js", "cookieStore.set('x','1')")]).map((i) => i.rule)).toContain("cookie");
+  });
+
   it("flags redirects in the bundle", () => {
     expect(scanBuiltSite([f("index.html", good), f("assets/a.js", 'window.location.href="https://evil.example"')]).map((i) => i.rule)).toContain("redirect");
   });

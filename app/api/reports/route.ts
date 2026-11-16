@@ -37,7 +37,10 @@ export async function POST(request: Request) {
   if (!parsed.success) return json(400, { error: parsed.error.issues.some((i) => i.path[0] === "reason") ? "reason" : "site" });
 
   const publisher = svc.publish?.publisher ?? null;
-  const site = await moderation.sites.byAddress(addressCandidates(parsed.data.site, publisher ? (s) => publisher.urlFor(s) : null));
+  const legacy = svc.publish?.legacy ?? null;
+  // Sites not moved yet are still reached at the previous host's address.
+  const candidates = [...new Set([...addressCandidates(parsed.data.site, publisher ? (s) => publisher.urlFor(s) : null), ...(legacy ? addressCandidates(parsed.data.site, (s) => legacy.urlFor(s)) : [])])];
+  const site = await moderation.sites.byAddress(candidates);
   if (!site || site.status === "pending") return json(404, { error: "site" });
   // Production must have a real secret, or the stored key would be an unsalted hash of the network.
   const salt = process.env.BETTER_AUTH_SECRET || (process.env.NODE_ENV !== "production" || process.env.E2E === "1" ? "dev-only-salt" : undefined);
