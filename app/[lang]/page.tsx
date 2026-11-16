@@ -15,7 +15,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { serif } from "@/lib/fonts-landing";
 import { HERO_IDS, showcaseSites } from "@/lib/landing/showcase";
-import { firstSections } from "@/lib/landing/template-preview";
+import { firstSections } from "@/lib/landing/hero-sections";
 import { services } from "@/lib/server/services";
 import { EXAMPLE_SLUG } from "@/lib/sites/slug";
 

@@ -79,9 +79,3 @@ function summarize(s: RawSection, pick: (t: Text | undefined) => string): string
   const list = [...names, ...(s.categories ?? []).map((c) => pick(c.name)), ...(s.fields ?? []).map((f) => pick(f.label))].filter(Boolean);
   return list.slice(0, 12).join(", ");
 }
-
-/** A template home page's first sections, at both widths: what the landing page's live build assembles. */
-export function firstSections(id: string, locale: "en" | "am", count = 3): { d: Size; m: Size }[] {
-  const shots = (sections as Shots)[id]?.[locale] ?? (sections as Shots)[id]?.en;
-  return shots?.[0]?.parts.slice(0, count) ?? [];
-}

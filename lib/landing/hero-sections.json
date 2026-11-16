@@ -1,0 +1,392 @@
+{
+ "cafe": {
+  "en": [
+   {
+    "d": {
+     "src": "/hero/cafe-en-0-d.webp",
+     "width": 1280,
+     "height": 704
+    },
+    "m": {
+     "src": "/hero/cafe-en-0-m.webp",
+     "width": 585,
+     "height": 1104
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/cafe-en-1-d.webp",
+     "width": 1280,
+     "height": 1720
+    },
+    "m": {
+     "src": "/hero/cafe-en-1-m.webp",
+     "width": 585,
+     "height": 3611
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/cafe-en-2-d.webp",
+     "width": 1280,
+     "height": 680
+    },
+    "m": {
+     "src": "/hero/cafe-en-2-m.webp",
+     "width": 585,
+     "height": 1506
+    }
+   }
+  ],
+  "am": [
+   {
+    "d": {
+     "src": "/hero/cafe-am-0-d.webp",
+     "width": 1280,
+     "height": 704
+    },
+    "m": {
+     "src": "/hero/cafe-am-0-m.webp",
+     "width": 585,
+     "height": 1104
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/cafe-am-1-d.webp",
+     "width": 1280,
+     "height": 1686
+    },
+    "m": {
+     "src": "/hero/cafe-am-1-m.webp",
+     "width": 585,
+     "height": 3605
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/cafe-am-2-d.webp",
+     "width": 1280,
+     "height": 637
+    },
+    "m": {
+     "src": "/hero/cafe-am-2-m.webp",
+     "width": 585,
+     "height": 1386
+    }
+   }
+  ]
+ },
+ "hotel": {
+  "en": [
+   {
+    "d": {
+     "src": "/hero/hotel-en-0-d.webp",
+     "width": 1280,
+     "height": 704
+    },
+    "m": {
+     "src": "/hero/hotel-en-0-m.webp",
+     "width": 585,
+     "height": 1104
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/hotel-en-1-d.webp",
+     "width": 1280,
+     "height": 751
+    },
+    "m": {
+     "src": "/hero/hotel-en-1-m.webp",
+     "width": 585,
+     "height": 1559
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/hotel-en-2-d.webp",
+     "width": 1280,
+     "height": 1755
+    },
+    "m": {
+     "src": "/hero/hotel-en-2-m.webp",
+     "width": 585,
+     "height": 3330
+    }
+   }
+  ],
+  "am": [
+   {
+    "d": {
+     "src": "/hero/hotel-am-0-d.webp",
+     "width": 1280,
+     "height": 704
+    },
+    "m": {
+     "src": "/hero/hotel-am-0-m.webp",
+     "width": 585,
+     "height": 1104
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/hotel-am-1-d.webp",
+     "width": 1280,
+     "height": 777
+    },
+    "m": {
+     "src": "/hero/hotel-am-1-m.webp",
+     "width": 585,
+     "height": 1470
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/hotel-am-2-d.webp",
+     "width": 1280,
+     "height": 1772
+    },
+    "m": {
+     "src": "/hero/hotel-am-2-m.webp",
+     "width": 585,
+     "height": 3318
+    }
+   }
+  ]
+ },
+ "clinic": {
+  "en": [
+   {
+    "d": {
+     "src": "/hero/clinic-en-0-d.webp",
+     "width": 1280,
+     "height": 793
+    },
+    "m": {
+     "src": "/hero/clinic-en-0-m.webp",
+     "width": 585,
+     "height": 1808
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/clinic-en-1-d.webp",
+     "width": 1280,
+     "height": 1117
+    },
+    "m": {
+     "src": "/hero/clinic-en-1-m.webp",
+     "width": 585,
+     "height": 2846
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/clinic-en-2-d.webp",
+     "width": 1280,
+     "height": 277
+    },
+    "m": {
+     "src": "/hero/clinic-en-2-m.webp",
+     "width": 585,
+     "height": 551
+    }
+   }
+  ],
+  "am": [
+   {
+    "d": {
+     "src": "/hero/clinic-am-0-d.webp",
+     "width": 1280,
+     "height": 762
+    },
+    "m": {
+     "src": "/hero/clinic-am-0-m.webp",
+     "width": 585,
+     "height": 1842
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/clinic-am-1-d.webp",
+     "width": 1280,
+     "height": 1094
+    },
+    "m": {
+     "src": "/hero/clinic-am-1-m.webp",
+     "width": 585,
+     "height": 2762
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/clinic-am-2-d.webp",
+     "width": 1280,
+     "height": 281
+    },
+    "m": {
+     "src": "/hero/clinic-am-2-m.webp",
+     "width": 585,
+     "height": 567
+    }
+   }
+  ]
+ },
+ "shop": {
+  "en": [
+   {
+    "d": {
+     "src": "/hero/shop-en-0-d.webp",
+     "width": 1280,
+     "height": 1412
+    },
+    "m": {
+     "src": "/hero/shop-en-0-m.webp",
+     "width": 585,
+     "height": 1662
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/shop-en-1-d.webp",
+     "width": 1280,
+     "height": 872
+    },
+    "m": {
+     "src": "/hero/shop-en-1-m.webp",
+     "width": 585,
+     "height": 1181
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/shop-en-2-d.webp",
+     "width": 1280,
+     "height": 1904
+    },
+    "m": {
+     "src": "/hero/shop-en-2-m.webp",
+     "width": 585,
+     "height": 4143
+    }
+   }
+  ],
+  "am": [
+   {
+    "d": {
+     "src": "/hero/shop-am-0-d.webp",
+     "width": 1280,
+     "height": 1423
+    },
+    "m": {
+     "src": "/hero/shop-am-0-m.webp",
+     "width": 585,
+     "height": 1646
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/shop-am-1-d.webp",
+     "width": 1280,
+     "height": 862
+    },
+    "m": {
+     "src": "/hero/shop-am-1-m.webp",
+     "width": 585,
+     "height": 1101
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/shop-am-2-d.webp",
+     "width": 1280,
+     "height": 1947
+    },
+    "m": {
+     "src": "/hero/shop-am-2-m.webp",
+     "width": 585,
+     "height": 4083
+    }
+   }
+  ]
+ },
+ "personal": {
+  "en": [
+   {
+    "d": {
+     "src": "/hero/personal-en-0-d.webp",
+     "width": 1280,
+     "height": 803
+    },
+    "m": {
+     "src": "/hero/personal-en-0-m.webp",
+     "width": 585,
+     "height": 1872
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/personal-en-1-d.webp",
+     "width": 1280,
+     "height": 2250
+    },
+    "m": {
+     "src": "/hero/personal-en-1-m.webp",
+     "width": 585,
+     "height": 3794
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/personal-en-2-d.webp",
+     "width": 1280,
+     "height": 627
+    },
+    "m": {
+     "src": "/hero/personal-en-2-m.webp",
+     "width": 585,
+     "height": 1607
+    }
+   }
+  ],
+  "am": [
+   {
+    "d": {
+     "src": "/hero/personal-am-0-d.webp",
+     "width": 1280,
+     "height": 803
+    },
+    "m": {
+     "src": "/hero/personal-am-0-m.webp",
+     "width": 585,
+     "height": 1889
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/personal-am-1-d.webp",
+     "width": 1280,
+     "height": 2267
+    },
+    "m": {
+     "src": "/hero/personal-am-1-m.webp",
+     "width": 585,
+     "height": 3806
+    }
+   },
+   {
+    "d": {
+     "src": "/hero/personal-am-2-d.webp",
+     "width": 1280,
+     "height": 622
+    },
+    "m": {
+     "src": "/hero/personal-am-2-m.webp",
+     "width": 585,
+     "height": 1557
+    }
+   }
+  ]
+ }
+}

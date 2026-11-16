@@ -83,7 +83,9 @@ type State = Props & { ms: number; done: boolean; stepsDone: number; working: nu
 
 /** The real site, section by section: built ones show, the rest are their outline. The column
  *  scrolls (a transform) to follow the newest section while it's being built. */
-function SiteSections({ site, width, built, follow, priority }: { site: BuildSite; width: "d" | "m"; built: number; follow: boolean; priority: boolean }) {
+/** `first`: how the first picture loads ("preload" for the visible device's main picture). `animate`: fade new
+ *  sections in (only during a live build; the first view is simply there, for a fast first paint). */
+function SiteSections({ site, width, built, follow, first, animate }: { site: BuildSite; width: "d" | "m"; built: number; follow: boolean; first: "preload" | "eager" | "lazy"; animate: boolean }) {
   const ratios = site.sections.map((s) => (s[width].height / s[width].width) * 100);
   // How far down the newest built section starts, in percent of the column's width.
   const newest = Math.min(built, site.sections.length) - 1;
@@ -102,7 +104,16 @@ function SiteSections({ site, width, built, follow, priority }: { site: BuildSit
                 <div className="skeleton h-[40%] w-full rounded-lg" />
               </div>
               {shown && (
-                <Image src={pic.src} alt="" width={pic.width} height={pic.height} sizes={width === "d" ? "(min-width: 1280px) 640px, 50vw" : "260px"} priority={priority && i === 0} loading={priority && i === 0 ? undefined : "lazy"} className="relative h-auto w-full animate-[rise-in_0.5s_ease-out]" />
+                <Image
+                  src={pic.src}
+                  alt=""
+                  width={pic.width}
+                  height={pic.height}
+                  sizes={width === "d" ? "(min-width: 1280px) 640px, 50vw" : "260px"}
+                  priority={i === 0 && first === "preload"}
+                  loading={i === 0 && first === "preload" ? undefined : i === 0 && first === "eager" ? "eager" : "lazy"}
+                  className={`relative h-auto w-full ${animate ? "animate-[rise-in_0.5s_ease-out]" : ""}`}
+                />
               )}
             </div>
           );
@@ -232,11 +243,11 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
               <div className="relative min-h-0 flex-1 overflow-hidden bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:16px_16px] p-3">
                 {phoneView ? (
                   <div key="m" className="mx-auto h-full w-[38%] min-w-[9rem] animate-[pop-in_0.4s_ease-out] overflow-hidden rounded-[1.1rem] border-[5px] border-ink bg-white">
-                    <SiteSections site={site} width="m" built={built} follow={false} priority={false} />
+                    <SiteSections site={site} width="m" built={built} follow={false} first="lazy" animate={run > 0} />
                   </div>
                 ) : (
                   <div key="d" className="h-full overflow-hidden rounded-md border border-line bg-white shadow-sm">
-                    <SiteSections site={site} width="d" built={built} follow={!done} priority={priority} />
+                    <SiteSections site={site} width="d" built={built} follow={!done} first={priority ? "eager" : "lazy"} animate={run > 0} />
                   </div>
                 )}
                 <Toast booking={booking} show={ms >= BOOKED && run > 0} />
@@ -253,7 +264,7 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
 }
 
 /** Phones: the same build on a phone. The step on top, the site filling in below. */
-function PhoneView({ site, live, publish, booking, run, slug, ms, done, stepsDone, working, built }: State) {
+function PhoneView({ site, live, publish, booking, run, slug, priority, ms, done, stepsDone, working, built }: State) {
   return (
     <div aria-hidden="true" className="mx-auto w-[min(17.5rem,78vw)] md:hidden">
       <div className="rounded-[2.2rem] bg-ink p-2 shadow-[0_30px_70px_-30px_rgb(18_18_18/0.6)]">
@@ -277,7 +288,7 @@ function PhoneView({ site, live, publish, booking, run, slug, ms, done, stepsDon
             </div>
           </div>
           <div className="min-h-0 flex-1">
-            <SiteSections site={site} width="m" built={built} follow={!done} priority={false} />
+            <SiteSections site={site} width="m" built={built} follow={!done} first={priority ? "preload" : "lazy"} animate={run > 0} />
           </div>
           <div className={`flex items-center justify-end border-t border-line px-3 py-2 ${done ? "" : "hidden"}`}>
             <span className="rounded-full bg-ink px-3 py-1 font-medium text-white">{publish}</span>
