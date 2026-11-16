@@ -195,7 +195,7 @@ test("signed in: every way in leads to Your sites, never to the sign-in page", a
 
   await page.goto("/en/pricing");
   await expect(page.locator('a[href*="/sign-in"]')).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "See plans and payments" }).first()).toHaveAttribute("href", "/en/billing");
+  await expect(page.getByRole("link", { name: "Choose Starter" })).toHaveAttribute("href", /^\/en\/billing\?product=starter_/);
   await page.goto("/en/templates");
   await expect(page.locator('a[href*="/sign-in"]')).toHaveCount(0);
   await expectNoSeriousA11yIssues(page);
