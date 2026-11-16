@@ -9,7 +9,7 @@ import { useSite } from "../lib/context";
 export function Rail({ label, children }: { label: string; children: ReactNode }) {
   const { lang } = useSite();
   const ref = useRef<HTMLUListElement>(null);
-  const [state, setState] = useState({ overflow: false, start: true, end: false });
+  const [state, setState] = useState({ overflow: true, start: true, end: false });
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -45,12 +45,11 @@ export function Rail({ label, children }: { label: string; children: ReactNode }
       <ul ref={ref} tabIndex={0} aria-label={label} className="rail">
         {children}
       </ul>
-      {state.overflow && (
-        <div className="flex justify-end gap-2">
-          {arrow(-1)}
-          {arrow(1)}
-        </div>
-      )}
+      {/* The arrow row keeps its place; it hides when everything already fits. */}
+      <div className={`flex justify-end gap-2 ${state.overflow ? "" : "invisible"}`} aria-hidden={!state.overflow || undefined}>
+        {arrow(-1)}
+        {arrow(1)}
+      </div>
     </div>
   );
 }

@@ -5,9 +5,10 @@ export function Stamp({ text, className = "" }: { text: string; className?: stri
   const id = useId().replace(/:/g, "");
   const words = `${text} · ${text} · `;
   return (
-    <svg aria-hidden="true" viewBox="0 0 120 120" className={`stamp ${className}`}>
-      {/* The words turn as the page scrolls (motion.css); the square itself never turns, so it never sticks out. */}
-      <g className="stamp-spin">
+    <span aria-hidden="true" className={`stamp block ${className}`}>
+      {/* The words turn as the page scrolls (motion.css), as one layer; the page clips anything that would stick out. */}
+      <svg viewBox="0 0 120 120" className="stamp-turn block size-full">
+      <g>
       <defs>
         <path id={`stamp-${id}`} d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0" />
       </defs>
@@ -19,6 +20,7 @@ export function Stamp({ text, className = "" }: { text: string; className?: stri
       </text>
       <path d="M60 50l3 7h7l-6 4 2 7-6-4-6 4 2-7-6-4h7z" className="stamp-star" />
       </g>
-    </svg>
+      </svg>
+    </span>
   );
 }

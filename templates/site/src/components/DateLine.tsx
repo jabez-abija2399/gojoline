@@ -20,7 +20,8 @@ export function DateLine({ calendars }: { calendars: (keyof typeof CALENDAR)[] }
       }),
     );
   }, [calendars, lang]);
-  if (!line.length) return null;
+  // The line keeps its place before the date is known, so nothing below it moves.
+  if (!line.length) return <p aria-hidden="true" className="date-line invisible">{uiText("today", lang)}</p>;
   return (
     <p className="date-line">
       <span className="font-semibold">{uiText("today", lang)}</span>

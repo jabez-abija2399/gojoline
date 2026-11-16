@@ -116,9 +116,10 @@
   }
 }
 
+/* Starts faint, never invisible: hero text counts as shown at once (largest paint), most of all in Amharic. */
 @keyframes site-enter {
   from {
-    opacity: 0;
+    opacity: 0.15;
     transform: translateY(18px);
   }
   to {
@@ -309,9 +310,16 @@
     background: var(--site-primary-soft);
     box-shadow: 0 0 0 2px var(--site-primary);
   }
-  .schedule-tile[aria-current] .time-value {
-    color: var(--site-text);
-    font-size: 1.625rem;
+  .schedule-tile {
+    position: relative;
+  }
+  /* The badge sits on the tile's top edge, so marking the next time never changes the tile's size. */
+  .schedule-tile .next-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin: 0;
+    transform: translate(-50%, -55%);
   }
   .next-badge {
     display: inline-block;
@@ -583,12 +591,12 @@
   .marquee-row {
     animation: site-marquee 38s linear infinite;
   }
+  /* The stamp turns as one layer (the HTML wrapper), so its curved words aren't redrawn every frame. */
   @supports (animation-timeline: scroll()) {
-    .stamp-spin {
-      transform-box: view-box;
-      transform-origin: 50% 50%;
+    .stamp-turn {
       animation: site-spin linear both;
       animation-timeline: scroll(root);
+      will-change: transform;
     }
   }
   .photo-wall-col {

@@ -46,7 +46,7 @@ export function render(url: string): RenderedPage | null {
     page.path === "/" ? `<script type="application/ld+json">${jsonLd(lang, base)}</script>` : "",
     // The page's own content for the browser to pick up (hydration): the script bundle no
     // longer carries the whole site. Not executed; "<" is escaped so it can't close the tag.
-    `<script type="application/json" id="site-data">${JSON.stringify(pageData(page.path)).replace(/</g, "\\u003c")}</script>`,
+    `<script type="application/json" id="site-data">${JSON.stringify(pageData(page.path, lang)).replace(/</g, "\\u003c")}</script>`,
     // One font preload per page: Ge'ez for Amharic, the heading font otherwise.
     lang === "am"
       ? `<link rel="preload" href="/fonts/noto-sans-ethiopic-core.woff2" as="font" type="font/woff2" crossorigin>`
@@ -84,8 +84,8 @@ function jsonLd(lang: Lang, base: string | undefined): string {
  * The site with only this page's sections: other pages keep their path, title and menu label,
  * and the home page its opening hero (the header shows its main button on every page).
  */
-export function pageData(path: string): Site {
-  return {
+export function pageData(path: string, lang?: Lang): Site {
+  const data: Site = {
     ...site,
     pages: site.pages.map((p) => {
       if (p.path === path) return p;
@@ -93,6 +93,19 @@ export function pageData(path: string): Site {
       return { path: p.path, title: p.title, nav: p.nav, sections: hero };
     }),
   };
+  return lang ? (onlyLanguage(data, lang) as Site) : data;
+}
+
+/** Keeps one language of every text ({ en, am } → { am }): a page only shows its own language. */
+function onlyLanguage(value: unknown, lang: Lang): unknown {
+  if (Array.isArray(value)) return value.map((v) => onlyLanguage(v, lang));
+  if (!value || typeof value !== "object") return value;
+  const o = value as Record<string, unknown>;
+  const keys = Object.keys(o);
+  if (keys.length > 0 && keys.every((k) => k === "en" || k === "am") && keys.every((k) => typeof o[k] === "string")) {
+    return o[lang] !== undefined ? { [lang]: o[lang] } : o;
+  }
+  return Object.fromEntries(keys.map((k) => [k, k === "languages" ? o[k] : onlyLanguage(o[k], lang)]));
 }
 
 /** Public URL of the published site (set at publish time), if any. */
