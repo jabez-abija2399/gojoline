@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
-test("dashboard: answers, prices that update the live site, and photos", async ({ page }, info) => {
+test("dashboard: Home first, no Content section, old Content links open Home", async ({ page }, info) => {
   await signIn(page);
   await page.getByRole("button", { name: "Start a new site" }).click();
   const chat = page.getByRole("textbox", { name: "Your message" });
@@ -25,31 +25,15 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   await expect(page.getByRole("region", { name: "Latest messages" }).getByText("No messages yet")).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 
-  await page.getByRole("link", { name: "Content", exact: true }).click();
-  const firstPrice = page.getByLabel("Price in Birr (optional)").first();
-  await expect(firstPrice).toHaveValue("40");
-  // Typing a decimal keeps what was typed (it used to jump to 405).
-  await firstPrice.fill("45.5");
-  await expect(firstPrice).toHaveValue("45.5");
-  await expect(page.getByText("Shows as 45.50 Birr").first()).toBeVisible();
-  await page.getByRole("button", { name: "Save" }).first().click();
-  await expect(page.getByText("Saved and updated on your live site.")).toBeVisible();
-  await page.reload();
-  await expect(page.getByLabel("Price in Birr (optional)").first()).toHaveValue("45.5");
-  await expectNoSeriousA11yIssues(page);
-  await expectNoHorizontalScroll(page);
-
-  // Photos sit in the same Content section, under their own heading.
-  await expect(page.getByRole("heading", { name: "Photos" })).toBeVisible();
-  await expect(page.getByText("No photos yet.")).toBeVisible();
-  await page.locator('input[type="file"]').setInputFiles("e2e/fixtures/fake.jpg");
-  await expect(page.getByText("That file isn't a photo we can use")).toBeVisible();
-  await page.locator('input[type="file"]').setInputFiles("e2e/fixtures/photo.jpg");
-  await expect(page.getByText("Photo added.")).toBeVisible();
-  await expect(page.getByRole("img", { name: "Photo 1" })).toBeVisible();
-  await page.getByRole("button", { name: "Remove photo 1" }).click();
-  await expect(page.getByText("Photo removed.")).toBeVisible();
-  await expect(page.getByText("No photos yet.")).toBeVisible();
+  // No Content section: content changes go through the AI (and use changes). Old links open Home.
+  const tabs = page.getByRole("navigation", { name: "Your site's dashboard" });
+  await expect(tabs.getByRole("link")).toHaveText(["Home", "Messages", "Business info", "Settings"].map((n) => new RegExp(n)));
+  const dashboard = page.url().split("?")[0];
+  for (const old of ["content", "lists", "photos"]) {
+    await page.goto(`${dashboard}?tab=${old}`);
+    await expect(tabs.getByRole("link", { name: "Home", exact: true })).toHaveAttribute("aria-current", "page");
+    await expect(page.getByLabel("Price in Birr (optional)")).toHaveCount(0);
+  }
 });
 
 test("another owner can't see a dashboard", async ({ page, browser }) => {
@@ -101,7 +85,8 @@ test("overview: live status, real numbers, latest answers and what to do next", 
   // Built and published are ticked; the details, photos, Telegram and an own address are next.
   const next = page.getByRole("region", { name: "Next step" });
   await next.getByText("All steps (2 of 6 done)").click();
-  await expect(next.getByRole("link", { name: /Add your photos/ })).toHaveAttribute("href", /tab=content#photos/);
+  // Photos are added by asking the AI (it uses changes), so the step opens the builder.
+  await expect(next.getByRole("link", { name: /Ask the AI to add your photos/ })).toHaveAttribute("href", new RegExp(`/en/build/${projectId}$`));
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 
