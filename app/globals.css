@@ -465,3 +465,64 @@
     animation: none !important;
   }
 }
+
+/* ---- Numbers band: each card's small picture plays once when the band scrolls in. ----
+   Before that (and without script, and with reduced motion) everything is in its final place. */
+@media (prefers-reduced-motion: no-preference) {
+  .proof-card[data-animate]:not([data-inview]) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .proof-card[data-animate] {
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+    transition-delay: calc(var(--i) * 110ms);
+  }
+  [data-animate]:not([data-inview]) .proof-bar {
+    transform: scaleX(0);
+  }
+  [data-animate] .proof-bar {
+    transition: transform 1.3s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  [data-animate]:not([data-inview]) :is(.proof-dot, .proof-square) {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  [data-animate] :is(.proof-dot, .proof-square) {
+    transition:
+      opacity 0.3s ease,
+      transform 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
+    transition-delay: var(--d);
+  }
+  [data-animate] .proof-fan {
+    transform: translateX(var(--x)) rotate(var(--r));
+    transition: transform 0.8s 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  [data-animate]:not([data-inview]) .proof-fan {
+    transform: none;
+  }
+  [data-animate]:not([data-inview]) .proof-lang-a {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  [data-animate]:not([data-inview]) .proof-lang-b {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  [data-animate] :is(.proof-lang-a, .proof-lang-b) {
+    transition:
+      opacity 0.5s ease,
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  [data-animate] .proof-lang-a {
+    transition-delay: 0.45s;
+  }
+  [data-animate] .proof-lang-b {
+    transition-delay: 0.7s;
+  }
+}
+/* The fan's resting (finished) state, for reduced motion and before script. */
+.proof-fan {
+  transform: translateX(var(--x)) rotate(var(--r));
+}

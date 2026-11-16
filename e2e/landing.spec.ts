@@ -275,3 +275,13 @@ test("the screen's phone and computer buttons switch the preview", async ({ page
   await expect(page.locator("#hero-prompt")).toHaveValue(/habesha kemis/);
   await expectNoSeriousA11yIssues(page);
 });
+
+test("the numbers band plays once when it scrolls in, and shows its numbers", async ({ page }) => {
+  await page.goto("/en");
+  const band = page.locator('[aria-labelledby="proof-title"] [data-animate]').nth(1);
+  await expect(band).not.toHaveAttribute("data-inview");
+  await band.scrollIntoViewIfNeeded();
+  await expect(band).toHaveAttribute("data-inview", "true");
+  await expect(page.locator("[aria-labelledby=\"proof-title\"] li").nth(1)).toContainText("30 of 30", { timeout: 4000 });
+  await expectNoSeriousA11yIssues(page);
+});
