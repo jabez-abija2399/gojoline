@@ -45,6 +45,9 @@ export async function signIn(page: Page, opts: { lang?: "en" | "am"; contact?: s
 /** Phones keep the signed-in navigation behind "Menu"; large screens show it beside the page. */
 export async function openAppMenu(page: Page, lang: "en" | "am" = "en") {
   const menu = page.getByRole("button", { name: lang === "en" ? "Menu" : "ማውጫ", exact: true });
+  const account = page.getByRole("button", { name: lang === "en" ? /Account menu/ : /የመለያ ማውጫ/ });
+  // Wait until the page shows one of them: checking at once raced the first render on slow runs.
+  await expect(menu.or(account).first()).toBeVisible();
   if (await menu.isVisible()) await menu.click();
 }
 
