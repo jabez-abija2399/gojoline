@@ -179,7 +179,9 @@ export class CloudflarePublishProvider implements PublishProvider {
     if (!secret) throw new Error("domains_unavailable");
     const apex = apexOf(domain);
     const name = `_gojoline.${domain}`;
-    const value = `gojoline-verify=${createHmac("sha256", secret).update(`${slug}|${domain}`).digest("base64url").slice(0, 32)}`;
+    // A key of its own, derived from the server secret (not the session-signing key itself).
+    const key = createHmac("sha256", secret).update("gojoline-domain-proof-v1").digest();
+    const value = `gojoline-verify=${createHmac("sha256", key).update(`${slug}|${domain}`).digest("base64url").slice(0, 32)}`;
     return { type: "TXT", name: name.slice(0, -(apex.length + 1)), value };
   }
 

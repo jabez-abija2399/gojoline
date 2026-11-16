@@ -89,19 +89,31 @@ if (process.env.VERCEL_TOKEN && process.env.VERCEL_TEAM_ID) {
     }
     return data;
   };
-  const pages = async (path, key) => {
+  // Projects page with a continuation token (`from`), a project's domains with a timestamp (`until`).
+  const pages = async (path, key, cursor) => {
     const out = [];
     let next = null;
+    const seen = new Set();
     do {
-      const data = await v(`${path}${path.includes("?") ? "&" : "?"}limit=100${next ? `&until=${next}` : ""}`);
-      out.push(...(data[key] ?? []));
+      const data = await v(`${path}${path.includes("?") ? "&" : "?"}limit=100${next ? `&${cursor}=${encodeURIComponent(next)}` : ""}`);
+      const items = data[key] ?? [];
+      const fresh = items.filter((x) => !seen.has(x.id ?? x.name));
+      // A cursor the API ignores would repeat page 1 forever and miss the rest: stop instead.
+      if (next && !fresh.length && items.length) {
+        console.error(`✗ Vercel ${path}: paging returned the same items again; can't be sure every name is kept. Nothing was changed.`);
+        process.exit(1);
+      }
+      for (const x of fresh) seen.add(x.id ?? x.name);
+      out.push(...fresh);
+      const prev = next;
       next = data.pagination?.next ?? null;
+      if (next !== null && next === prev) next = null;
     } while (next);
     return out;
   };
-  const projects = await pages("/v9/projects", "projects");
+  const projects = await pages("/v10/projects", "projects", "from");
   for (const p of projects) {
-    for (const d of await pages(`/v9/projects/${p.id}/domains`, "domains")) {
+    for (const d of await pages(`/v9/projects/${p.id}/domains`, "domains", "until")) {
       if (d.name.startsWith("*.")) continue;
       if (d.name.endsWith(`.${base}`) || d.name === base) keep.add(d.name);
     }

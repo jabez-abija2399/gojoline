@@ -20,14 +20,14 @@ function fakeApi() {
     req.on("end", () => {
       const path = req.url!.replace(/[?&]per_page=100&page=1$/, "");
       calls.push({ method: req.method!, path, body });
-      const vercel = req.url!.startsWith("/v9/");
+      const vercel = req.url!.startsWith("/v9/") || req.url!.startsWith("/v10/");
       if (vercel && req.headers.authorization !== "Bearer good") {
         res.statusCode = 403;
         return res.end(JSON.stringify({ error: { message: "forbidden" } }));
       }
-      if (vercel && req.url!.startsWith("/v9/projects?")) {
-        const page2 = req.url!.includes("until=");
-        return res.end(JSON.stringify(page2 ? { projects: [{ id: "p2" }], pagination: { next: null } } : { projects: [{ id: "p1" }], pagination: { next: 123 } }));
+      if (vercel && req.url!.startsWith("/v10/projects?")) {
+        const page2 = req.url!.includes("from=tok2");
+        return res.end(JSON.stringify(page2 ? { projects: [{ id: "p2" }], pagination: { next: null } } : { projects: [{ id: "p1" }], pagination: { next: "tok2" } }));
       }
       if (vercel && req.url!.startsWith("/v9/projects/p1/domains")) return res.end(JSON.stringify({ domains: [{ name: "*.afridea.et" }, { name: "gojoline.afridea.et" }], pagination: { next: null } }));
       if (vercel && req.url!.startsWith("/v9/projects/p2/domains")) return res.end(JSON.stringify({ domains: [{ name: "shop.afridea.et" }], pagination: { next: null } }));

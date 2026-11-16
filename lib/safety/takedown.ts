@@ -47,13 +47,25 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
     await deps.reports.closeForSite(siteId, "actioned", adminId);
     return "ok" as const;
   };
-  if (!deps.publisher || (!site.providerProjectId && !site.legacyProjectId)) return done();
+  // Read again after the flag is set: a publish that finished in between (a move to a new host)
+  // must be seen, or the notice would miss where the content now is.
+  const now = (await deps.sites.byId(siteId)) ?? site;
+  if (!deps.publisher || (!now.providerProjectId && !now.legacyProjectId)) return done();
+  let targets;
   try {
-    // Every host the content could be on (the old one too while a move isn't confirmed).
-    const page = Buffer.from(takenDownPage());
-    for (const t of noticeTargets(site, deps.publisher, deps.legacy)) {
+    targets = noticeTargets(now, deps.publisher, deps.legacy);
+  } catch (error) {
+    reportError("takedown deploy failed", error, { siteId });
+    return "deploy_failed";
+  }
+  // Every host the content could be on (the old one too while a move isn't confirmed); one
+  // host failing doesn't stop the others.
+  const page = Buffer.from(takenDownPage());
+  let failed = false;
+  for (const t of targets) {
+    try {
       const r = await t.host.publish({
-        slug: site.slug,
+        slug: now.slug,
         files: [
           { path: "index.html", data: page },
           { path: "404.html", data: page },
@@ -62,12 +74,12 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
         providerProjectId: t.projectId,
       });
       await t.host.restrictOldDeployments?.(r.providerProjectId).catch((e: unknown) => reportError("takedown protect failed", e, { siteId }));
+    } catch (error) {
+      failed = true;
+      reportError("takedown deploy failed", error, { siteId, host: t.host.name });
     }
-    return done();
-  } catch (error) {
-    reportError("takedown deploy failed", error, { siteId });
-    return "deploy_failed";
   }
+  return failed ? "deploy_failed" : done();
 }
 
 export async function restoreSite(deps: ModerationDeps, adminId: string, siteId: string): Promise<ModerationResult> {

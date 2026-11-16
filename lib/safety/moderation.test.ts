@@ -72,6 +72,26 @@ describe("takedown", () => {
     expect(legacy.published.get("moved-site")![0]!.data.toString()).toContain("This site is not available");
   });
 
+  it("sees a move that finished just before the takedown, and tries every host even if one fails", async () => {
+    const sites = new MemorySiteStore();
+    await sites.reserve("owner", "p1", "racy", "memory");
+    const site = await sites.savePublished("owner", { projectId: "p1", slug: "racy", provider: "memory", providerProjectId: "prj", url: "u", publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+    const reports = new MemoryReportStore(async () => null);
+    const publisher = Object.assign(new MemoryPublishProvider(), { name: "cloudflare" });
+    const legacy = new MemoryPublishProvider();
+    // The move commits between the admin's read and the takedown flag.
+    const realTakeDown = sites.takeDown.bind(sites);
+    sites.takeDown = async (id, reason) => {
+      await sites.savePublished("owner", { projectId: "p1", slug: "racy", provider: "cloudflare", providerProjectId: "cf:racy", legacyProjectId: "prj", url: "u2", publishedVersion: 2, lastDeploymentId: "e", publishedAt: new Date() });
+      return realTakeDown(id, reason);
+    };
+    legacy.publish = async () => {
+      throw new Error("vercel down");
+    };
+    expect(await takeDownSite({ sites, reports, publisher, legacy, audit: async () => undefined }, "admin", site.id, "scam")).toBe("deploy_failed");
+    expect(publisher.published.get("racy")![0]!.data.toString()).toContain("This site is not available");
+  });
+
   it("the notice page has no scripts and both languages", () => {
     const html = takenDownPage();
     expect(html).not.toMatch(/<script/i);
