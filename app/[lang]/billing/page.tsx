@@ -36,8 +36,8 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
     <AppShell locale={lang} t={t} user={user}>
       <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-6 sm:py-10">
         <section aria-labelledby="plan-title" className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-5">
-          <h1 id="plan-title" className="text-3xl font-bold">{b.title}</h1>
-          <p className="text-lg font-semibold">{format(b.currentPlan, { plan: b.plans[plan] })}</p>
+          <h1 id="plan-title" className="text-2xl font-semibold tracking-tight">{b.title}</h1>
+          <p className="font-semibold">{format(b.currentPlan, { plan: b.plans[plan] })}</p>
           {until && <p className="text-ink-muted">{format(b.until, { date: dateFmt.format(until) })}</p>}
           <div className="flex flex-col gap-2 rounded-xl bg-paper p-4">
             <p className={`font-semibold ${credits <= 3 ? "text-warning" : "text-ink"}`}>{format(b.creditsLeft, { n: credits })}</p>
@@ -52,7 +52,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
           {(["free", "starter", "business"] as const).map((p) => (
             <li key={p} aria-current={p === plan ? "true" : undefined} className={`flex flex-col gap-2 rounded-xl border bg-white p-5 ${p === plan ? "border-ink ring-1 ring-ink" : "border-line"}`}>
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-xl font-bold">{b.plans[p]}</h2>
+                <h2 className="text-base font-semibold">{b.plans[p]}</h2>
                 {p === plan && <span className="rounded-full bg-sunken px-3 py-1 text-sm font-semibold text-ink">{b.currentBadge}</span>}
               </div>
               {p === "free" ? (
@@ -72,7 +72,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
         </p>
 
         <section aria-labelledby="pay-title" className="flex flex-col gap-4 rounded-xl border border-line bg-white p-5">
-          <h2 id="pay-title" className="text-2xl font-bold">{b.payTitle}</h2>
+          <h2 id="pay-title" className="text-lg font-semibold">{b.payTitle}</h2>
           {payReady ? (
             <>
               <ol className="flex list-decimal flex-col gap-1 ps-6 text-ink-muted">
@@ -93,7 +93,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
         </section>
 
         <section aria-labelledby="history-title" className="flex flex-col gap-3">
-          <h2 id="history-title" className="text-2xl font-bold">{b.history}</h2>
+          <h2 id="history-title" className="text-lg font-semibold">{b.history}</h2>
           {history.length === 0 ? (
             <p className="text-ink-muted">{b.historyEmpty}</p>
           ) : (

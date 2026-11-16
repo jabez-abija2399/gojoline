@@ -79,7 +79,7 @@ export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loadin
   // A phone-shaped frame on big screens; on a phone the preview simply fills the screen.
   const shell =
     device === "phone"
-      ? "h-full w-[390px] max-w-full rounded-xl border border-line lg:my-auto lg:max-h-[844px] lg:rounded-[2.25rem] lg:border-[10px] lg:border-ink lg:shadow-2xl"
+      ? "phone-frame h-full w-[390px] max-w-full rounded-xl border border-line lg:my-auto lg:max-h-[844px] lg:rounded-[2.25rem] lg:border-[10px] lg:border-ink lg:shadow-2xl"
       : "h-full w-full rounded-xl border border-line shadow-lg";
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-paper">
@@ -105,7 +105,7 @@ export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loadin
         ) : error ? (
           <div role="alert" className="flex max-w-md flex-col items-center gap-3 self-center rounded-2xl border border-line bg-white p-6 text-center text-ink-muted">
             <p>{t.previewError}</p>
-            <button type="button" onClick={onRetry} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint">
+            <button type="button" onClick={onRetry} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint text-sm lg:min-h-9">
               {t.retry}
             </button>
           </div>

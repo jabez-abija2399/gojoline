@@ -41,7 +41,7 @@ export function ListsPanel({ t, locale, projectId }: { t: Messages["dashboard"];
     return (
       <div role="alert" className="flex flex-col items-start gap-3 rounded-xl border border-line bg-white p-6">
         <p>{t.loadError}</p>
-        <button type="button" onClick={() => { setError(false); setAttempt((a) => a + 1); }} className="min-h-11 rounded-lg border border-line px-4 font-medium">{t.retry}</button>
+        <button type="button" onClick={() => { setError(false); setAttempt((a) => a + 1); }} className="min-h-11 rounded-lg border border-line px-4 font-medium text-sm lg:min-h-9">{t.retry}</button>
       </div>
     );
   if (!data)
@@ -105,7 +105,7 @@ function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["da
 
   return (
     <section aria-label={title} className="flex flex-col gap-4 rounded-xl border border-line bg-white p-4 sm:p-6">
-      <h2 className="text-xl font-bold">{title}</h2>
+      <h2 className="text-base font-semibold">{title}</h2>
       <ol className="flex flex-col gap-4">
         {rows.map((it, i) => {
           const base = `${list.key}-${it.id}`;
@@ -142,7 +142,7 @@ function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["da
                   type="button"
                   onClick={() => remove(i)}
                   aria-label={t.itemRemoveNamed.replace("{name}", pick(it.name) || String(i + 1))}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-destructive hover:bg-coral-soft"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-destructive hover:bg-coral-soft text-sm lg:min-h-9"
                 >
                   <Trash2 aria-hidden="true" className="size-4" /> {t.itemRemove}
                 </button>
@@ -152,10 +152,10 @@ function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["da
         })}
       </ol>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <button ref={addRef} type="button" onClick={add} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line px-4 font-medium hover:border-faint">
+        <button ref={addRef} type="button" onClick={add} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line px-4 font-medium hover:border-faint text-sm lg:min-h-9">
           <Plus aria-hidden="true" className="size-4" /> {t.itemAdd}
         </button>
-        <button type="button" onClick={save} aria-disabled={state.kind === "saving"} className="min-h-11 rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
+        <button type="button" onClick={save} aria-disabled={state.kind === "saving"} className="min-h-11 rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50 text-sm lg:min-h-9">
           {state.kind === "saving" ? t.saving : t.save}
         </button>
         {state.kind === "saved" && <p role="status" className="font-medium text-ink">{state.message}</p>}

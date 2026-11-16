@@ -350,6 +350,8 @@ export const en = {
     codeEmpty: "Nothing here yet.",
   },
   app: {
+    theme: "Theme",
+    themes: { light: "Light", dark: "Dark", system: "Device" },
     upgrade: "Upgrade",
     accountMenu: "Account menu",
     sidebarLabel: "Gojoline menu",

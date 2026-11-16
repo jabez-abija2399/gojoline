@@ -350,6 +350,8 @@ export const am: Messages = {
     codeEmpty: "እስካሁን ምንም የለም።",
   },
   app: {
+    theme: "ገጽታ",
+    themes: { light: "ብሩህ", dark: "ጨለማ", system: "እንደ መሣሪያው" },
     upgrade: "ያሻሽሉ",
     accountMenu: "የመለያ ማውጫ",
     sidebarLabel: "የጎጆላይን ማውጫ",

@@ -6,6 +6,7 @@ import { currentUser } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
+import { readTheme } from "@/lib/app/theme";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -20,12 +21,12 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
   const project = await builder.store.getProject(owner, id);
   if (!project) notFound();
   const t = getMessages(lang);
-  const [messages, versions, credits] = await Promise.all([builder.store.listMessages(owner, id), builder.store.listVersions(owner, id), services().billing.creditsLeft(owner)]);
+  const [messages, versions, credits, theme] = await Promise.all([builder.store.listMessages(owner, id), builder.store.listVersions(owner, id), services().billing.creditsLeft(owner), readTheme()]);
 
   const who = user.name || user.phone || user.email || "";
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden">
+    <div data-gojo-theme={theme} className="flex h-dvh flex-col overflow-hidden bg-paper leading-normal text-ink">
       <div className="flex min-h-0 flex-1 flex-col">
         <h1 className="sr-only">{project.name || t.builder.untitled}</h1>
         <Builder
@@ -44,6 +45,9 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
             language: t.common.languageSwitch,
             languageLabel: t.common.languageSwitchLabel,
             more: t.builder.menuMore,
+            theme: t.app.theme,
+            themes: t.app.themes,
+            themeValue: theme,
           }}
           photoText={{
             photoAdded: t.dashboard.photoAdded,

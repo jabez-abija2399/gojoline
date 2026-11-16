@@ -155,13 +155,13 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
         <div className="flex flex-col gap-4 p-5 sm:p-6">
           {phase.kind === "done" ? (
             <div role="status" className="flex flex-col gap-3">
-              <h2 id="publish-title" ref={doneRef} tabIndex={-1} className="flex items-center gap-2 text-2xl font-bold focus:outline-none">
+              <h2 id="publish-title" ref={doneRef} tabIndex={-1} className="flex items-center gap-2 text-lg font-semibold focus:outline-none">
                 <CheckCircle2 aria-hidden="true" className="size-6 shrink-0 text-ink" /> {t.publishedTitle}
               </h2>
               <p className="text-ink-muted">{t.publishedBody}</p>
               <p className="break-all rounded-lg bg-paper px-3 py-2 font-medium">{phase.url}</p>
               <div className="flex flex-col gap-2 sm:flex-row">
-                <a href={phase.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover">
+                <a href={phase.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover text-sm lg:min-h-9">
                   <ExternalLink aria-hidden="true" className="size-4" /> {t.publishedOpen}
                 </a>
                 <button
@@ -173,7 +173,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
                     );
                     setCopied(!!ok);
                   }}
-                  className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-faint"
+                  className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-faint text-sm lg:min-h-9"
                 >
                   {copied ? t.publishedCopied : t.publishedCopy}
                 </button>
@@ -181,7 +181,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
             </div>
           ) : (
             <>
-              <h2 id="publish-title" className="text-2xl font-bold">{t.publishTitle}</h2>
+              <h2 id="publish-title" className="text-lg font-semibold">{t.publishTitle}</h2>
               {address ? (
                 <p className="break-all rounded-lg bg-paper px-3 py-2 font-medium">{address}</p>
               ) : loading && !info ? (
@@ -228,7 +228,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
                 type="button"
                 onClick={publish}
                 aria-disabled={phase.kind === "publishing" || disabled}
-                className="min-h-12 rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50"
+                className="min-h-11 rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50 text-sm lg:min-h-9"
               >
                 {address ? t.publishUpdate : t.publishNow}
               </button>
@@ -239,7 +239,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
             type="button"
             onClick={close}
             aria-disabled={phase.kind === "publishing"}
-            className="min-h-11 self-end rounded-lg px-4 font-medium text-ink-muted hover:bg-paper aria-disabled:opacity-50"
+            className="min-h-11 self-end rounded-lg px-4 font-medium text-ink-muted hover:bg-paper aria-disabled:opacity-50 text-sm lg:min-h-9"
           >
             {t.close}
           </button>

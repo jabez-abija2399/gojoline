@@ -65,7 +65,7 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 font-medium">{t.method}</legend>
         {METHODS.map((m, i) => (
-          <label key={m} className="flex min-h-11 items-center gap-3">
+          <label key={m} className="flex min-h-11 items-center gap-3 text-sm lg:min-h-9">
             <input type="radio" name="method" value={m} defaultChecked={i === 0} className="size-5 accent-ink" />
             {t.methods[m]}
           </label>
@@ -89,7 +89,7 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
       </div>
       <div className="flex flex-col gap-2">
         <span id="pay-receipt-label" className="font-medium">{t.receipt}</span>
-        <label className="inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium hover:border-faint has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-link">
+        <label className="inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium hover:border-faint has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-link text-sm lg:min-h-9">
           <ImagePlus aria-hidden="true" className="size-5 text-ink" />
           {t.chooseReceipt}
           <input
@@ -111,7 +111,7 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
       {state.kind === "done" && (
         <p ref={doneRef} tabIndex={-1} role="status" className="rounded-lg border border-lagoon bg-white px-4 py-3 font-medium text-lagoon">{t.submitted}</p>
       )}
-      <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-lg bg-coral px-5 font-medium text-on-coral hover:bg-coral-hover aria-disabled:opacity-50">
+      <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-11 rounded-lg bg-coral px-5 font-medium text-on-coral hover:bg-coral-hover aria-disabled:opacity-50 text-sm lg:min-h-9">
         {state.kind === "sending" ? t.submitting : t.submit}
       </button>
     </form>

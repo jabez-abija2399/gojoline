@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAccountMenu, openAppMenu, signIn } from "./helpers";
 
 // Runs against the deterministic demo AI and in-memory sandbox (E2E=1): no cost, no network.
 async function newSite(page: import("@playwright/test").Page, lang: "en" | "am" = "en", signedIn = false) {
@@ -229,4 +229,31 @@ test("on a short window the recent sites scroll and never cover the changes-left
     cardTop: document.getElementById("credits-title")!.closest("a")!.getBoundingClientRect().top,
   }));
   expect(listBottom).toBeLessThanOrEqual(cardTop);
+});
+
+test("dark mode: chosen in the account menu, remembered, readable everywhere", async ({ page }) => {
+  await signIn(page);
+  await openAccountMenu(page);
+  await page.getByRole("button", { name: "Dark", exact: true }).click();
+  await expect(page.locator("#app-content").locator("xpath=..")).toHaveAttribute("data-gojo-theme", "dark");
+  await page.reload();
+  await expect(page.locator("[data-gojo-theme]").first()).toHaveAttribute("data-gojo-theme", "dark");
+  await expectNoSeriousA11yIssues(page);
+  await page.getByRole("tab", { name: "Templates" }).click();
+  await page.locator("form[data-preset=cafe] button").click();
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page.locator("[data-gojo-theme]").first()).toHaveAttribute("data-gojo-theme", "dark");
+  await expectNoSeriousA11yIssues(page);
+  await page.goto("/en/billing");
+  await expectNoSeriousA11yIssues(page);
+});
+
+test("the sidebar never scrolls", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "the desktop sidebar");
+  await signIn(page);
+  await page.setViewportSize({ width: 1280, height: 520 });
+  await page.goto("/en/build");
+  const side = page.locator("#app-sidebar");
+  expect(await side.evaluate((el) => el.scrollHeight - el.clientHeight)).toBeLessThanOrEqual(0);
+  expect(await side.evaluate((el) => getComputedStyle(el).overflowY)).toBe("hidden");
 });

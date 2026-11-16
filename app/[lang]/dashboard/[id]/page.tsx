@@ -39,14 +39,14 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
       <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-5 px-4 py-6 sm:py-10">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <Link href={`/${lang}/build`} className="-ms-2 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 font-medium text-ink-muted hover:bg-sunken hover:text-ink">
+            <Link href={`/${lang}/build`} className="-ms-2 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 font-medium text-ink-muted hover:bg-sunken hover:text-ink text-sm lg:min-h-9">
               <ArrowLeft aria-hidden="true" className="size-4" />
               {t.builder.back}
             </Link>
-            <h1 className="truncate text-3xl font-bold">{project.name || t.builder.untitled}</h1>
+            <h1 className="truncate text-2xl font-semibold tracking-tight">{project.name || t.builder.untitled}</h1>
             <p className="text-ink-muted">{t.dashboard.title}</p>
           </div>
-          <Link href={`/${lang}/build/${id}`} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-ink px-4 font-medium text-white transition-colors hover:bg-ink-hover">
+          <Link href={`/${lang}/build/${id}`} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-ink px-4 font-medium text-white transition-colors hover:bg-ink-hover text-sm lg:min-h-9">
             <Pencil aria-hidden="true" className="size-4" />
             {t.dashboard.backToBuilder}
           </Link>
@@ -57,7 +57,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
               key={x}
               href={`/${lang}/dashboard/${id}?tab=${x}`}
               aria-current={x === tab ? "page" : undefined}
-              className="inline-flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-lg px-3 font-medium text-ink-muted aria-[current=page]:bg-ink aria-[current=page]:text-white"
+              className="inline-flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-lg px-3 font-medium text-ink-muted aria-[current=page]:bg-ink aria-[current=page]:text-white text-sm lg:min-h-9"
             >
               {labels[x]}
             </Link>

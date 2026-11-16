@@ -105,7 +105,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
         {fresh ? (
           <div className="m-auto flex w-full max-w-sm flex-col items-center gap-3 py-4 text-center">
             <Image src="/brand/mark.svg" alt="" width={56} height={56} className="size-12 sm:size-14" />
-            <h2 className="text-2xl font-bold">{t.emptyTitle}</h2>
+            <h2 className="text-lg font-semibold">{t.emptyTitle}</h2>
             <p className="text-ink-muted">{t.welcome}</p>
             <p id="chat-ideas" className="mt-2 flex items-center gap-2 text-sm font-medium text-ink-muted">
               <Sparkles aria-hidden="true" className="size-4 text-faint" />
@@ -155,7 +155,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             <Confetti />
             <PartyPopper aria-hidden="true" className="relative mt-0.5 size-6 shrink-0 text-coral" />
             <div className="relative flex flex-col gap-1">
-              <p className="font-display text-lg font-bold">{t.readyTitle}</p>
+              <p className="font-display text-base font-semibold">{t.readyTitle}</p>
               <p className="text-sunken">{t.readyBody}</p>
             </div>
           </div>
@@ -270,7 +270,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             {!attach.note && !attach.error && t.composerHint}
           </span>
           {credits.left !== null && (
-            <Link href={credits.href} className={`-me-2 ms-auto inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 font-medium underline-offset-4 hover:underline ${credits.left <= 3 ? "text-warning" : "text-ink-muted"}`}>
+            <Link href={credits.href} className={`-me-2 ms-auto inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium underline-offset-4 hover:underline lg:min-h-9 ${credits.left <= 3 ? "text-warning" : "text-ink-muted"}`}>
               <Sparkles aria-hidden="true" className="size-3.5" />
               {credits.left <= 0 ? t.creditsNone : credits.left === 1 ? t.creditsLeftOne : t.creditsLeft.replace("{n}", String(credits.left))}
             </Link>
@@ -311,7 +311,7 @@ function Bubble({ role, label, text, note, tone, action, seeSite, undo, animate 
         {text}
       </p>
       {action && (
-        <Link href={action.href} className="inline-flex min-h-11 items-center rounded-lg bg-coral px-4 font-medium text-on-coral hover:bg-coral-hover">
+        <Link href={action.href} className="inline-flex min-h-11 items-center rounded-lg bg-coral px-4 font-medium text-on-coral hover:bg-coral-hover text-sm lg:min-h-9">
           {action.label}
         </Link>
       )}

@@ -265,3 +265,34 @@
 :lang(am) .text-xs {
   font-size: 0.8125rem;
 }
+
+/* Logos with dark text get their light version on dark backgrounds (signed-in area). */
+.logo-dark {
+  display: none;
+}
+[data-gojo-theme="dark"] .logo-dark {
+  display: block;
+}
+[data-gojo-theme="dark"] .logo-light {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  [data-gojo-theme="system"] .logo-dark {
+    display: block;
+  }
+  [data-gojo-theme="system"] .logo-light {
+    display: none;
+  }
+}
+
+/* The preview's phone stays a dark device in dark mode (its frame uses ink, which turns light). */
+@media (min-width: 1024px) {
+  [data-gojo-theme="dark"] .phone-frame {
+    border-color: #2b2926;
+  }
+}
+@media (min-width: 1024px) and (prefers-color-scheme: dark) {
+  [data-gojo-theme="system"] .phone-frame {
+    border-color: #2b2926;
+  }
+}

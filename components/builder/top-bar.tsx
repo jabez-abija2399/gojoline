@@ -7,6 +7,8 @@ import { ArrowLeft, CreditCard, LayoutDashboard, LogOut, MoreVertical } from "lu
 import { LanguageSwitch } from "@/components/site/language-switch";
 import { signOut } from "@/lib/auth/actions";
 import type { Locale } from "@/lib/i18n/config";
+import type { Theme } from "@/lib/app/theme-shared";
+import { ThemeSwitch } from "@/components/app/theme-switch";
 
 /** Words for the bar, picked on the server so the client gets only what it shows. */
 export interface TopBarText {
@@ -20,6 +22,9 @@ export interface TopBarText {
   language: string;
   languageLabel: string;
   more: string;
+  theme: string;
+  themes: Record<Theme, string>;
+  themeValue: Theme;
 }
 
 interface Props {
@@ -49,7 +54,7 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
 
   return (
     <header className="relative z-20 flex items-center gap-1 border-b border-line bg-white px-2 py-1.5 sm:gap-2 sm:px-4">
-      <Link href={`/${locale}`} aria-label={text.home} className="hidden min-h-11 min-w-11 shrink-0 items-center justify-center lg:inline-flex">
+      <Link href={`/${locale}`} aria-label={text.home} className="hidden min-h-11 min-w-11 shrink-0 items-center justify-center lg:inline-flex text-sm lg:min-h-9">
         <Image src="/brand/mark.svg" alt={text.logoAlt} width={36} height={36} className="size-9" />
       </Link>
       <Link href={`/${locale}/build`} aria-label={text.back} className={`${quiet} shrink-0 text-ink`}>
@@ -75,6 +80,9 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
           {text.plan}
         </Link>
         {signOutForm(`${quiet} w-full justify-start px-3 text-ink`, true)}
+        <div className="border-t border-line pt-1">
+          <ThemeSwitch initial={text.themeValue} label={text.theme} names={text.themes} />
+        </div>
         <div className="border-t border-line pt-2">{language}</div>
       </MoreMenu>
     </header>

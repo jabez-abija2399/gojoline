@@ -34,7 +34,7 @@ export function DomainSection({ t, projectId }: { t: Messages["builder"]; projec
     return (
       <div role="alert" className="flex flex-wrap items-center gap-3 border-t border-line pt-4 text-ink-muted">
         <p>{t.loadError}</p>
-        <button type="button" onClick={() => { setLoadFailed(false); setAttempt((a) => a + 1); }} className="min-h-11 rounded-lg border border-line px-4 font-medium text-ink">
+        <button type="button" onClick={() => { setLoadFailed(false); setAttempt((a) => a + 1); }} className="min-h-11 rounded-lg border border-line px-4 font-medium text-ink text-sm lg:min-h-9">
           {t.retry}
         </button>
       </div>
@@ -57,7 +57,7 @@ export function DomainSection({ t, projectId }: { t: Messages["builder"]; projec
 
   return (
     <section aria-labelledby="domain-title" className="flex flex-col gap-3 border-t border-line pt-4">
-      <h3 id="domain-title" className="text-lg font-bold">{t.domainTitle}</h3>
+      <h3 id="domain-title" className="text-base font-semibold">{t.domainTitle}</h3>
       {!entitled ? (
         <p className="text-ink-muted">{t.domainPaid}</p>
       ) : (
@@ -75,7 +75,7 @@ export function DomainSection({ t, projectId }: { t: Messages["builder"]; projec
                 className="min-h-11 rounded-lg border border-input px-3 text-base"
               />
             </div>
-            <button type="button" disabled={busy || !domain} onClick={() => submit("POST")} className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-faint disabled:opacity-50">
+            <button type="button" disabled={busy || !domain} onClick={() => submit("POST")} className="min-h-11 rounded-lg border border-line px-4 font-medium hover:border-faint disabled:opacity-50 text-sm lg:min-h-9">
               {busy ? t.domainChecking : t.domainConnect}
             </button>
           </div>
@@ -101,7 +101,7 @@ export function DomainSection({ t, projectId }: { t: Messages["builder"]; projec
                       </tbody>
                     </table>
                   </div>
-                  <button type="button" disabled={busy} onClick={() => submit("GET")} className="min-h-11 self-start rounded-lg border border-line px-4 font-medium hover:border-faint disabled:opacity-50">
+                  <button type="button" disabled={busy} onClick={() => submit("GET")} className="min-h-11 self-start rounded-lg border border-line px-4 font-medium hover:border-faint disabled:opacity-50 text-sm lg:min-h-9">
                     {busy ? t.domainChecking : t.domainCheck}
                   </button>
                 </>

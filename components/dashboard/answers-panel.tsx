@@ -45,7 +45,7 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
     return (
       <div role="alert" className="flex flex-col items-start gap-3 rounded-xl border border-line bg-white p-6">
         <p>{t.loadError}</p>
-        <button type="button" onClick={() => { setError(false); setAttempt((a) => a + 1); }} className="min-h-11 rounded-lg border border-line px-4 font-medium">{t.retry}</button>
+        <button type="button" onClick={() => { setError(false); setAttempt((a) => a + 1); }} className="min-h-11 rounded-lg border border-line px-4 font-medium text-sm lg:min-h-9">{t.retry}</button>
       </div>
     );
   if (rows === null)
@@ -63,9 +63,9 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2 sm:flex-row">
         {unread > 0 && (
-          <button type="button" onClick={markRead} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium hover:border-faint">{t.answersMarkRead}</button>
+          <button type="button" onClick={markRead} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium hover:border-faint text-sm lg:min-h-9">{t.answersMarkRead}</button>
         )}
-        <a href={`/api/projects/${projectId}/submissions/export`} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-white px-4 font-medium hover:border-faint">
+        <a href={`/api/projects/${projectId}/submissions/export`} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-white px-4 font-medium hover:border-faint text-sm lg:min-h-9">
           {t.answersExport}
         </a>
       </div>
@@ -83,7 +83,7 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
                   <dt className="font-medium text-ink-muted">{forms[r.formKey]?.labels[k]?.[locale] || forms[r.formKey]?.labels[k]?.en || k}</dt>
                   <dd className="min-w-0 [overflow-wrap:anywhere]">
                     {/^[+\d][\d\s\-()]{5,20}$/.test(v) ? (
-                      <a className="inline-flex min-h-11 items-center text-ink underline underline-offset-4" href={`tel:${v.replace(/[^\d+]/g, "")}`}>{v}</a>
+                      <a className="inline-flex min-h-11 items-center text-ink underline underline-offset-4 text-sm lg:min-h-9" href={`tel:${v.replace(/[^\d+]/g, "")}`}>{v}</a>
                     ) : (
                       v
                     )}

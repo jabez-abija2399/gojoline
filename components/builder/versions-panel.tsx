@@ -73,7 +73,7 @@ export const VersionsPanel = memo(function VersionsPanel({ t, locale, versions, 
                     setFailed(!ok);
                     setBusy(null);
                   }}
-                  className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border border-line px-4 font-medium transition-colors hover:border-faint hover:bg-sunken aria-disabled:opacity-50"
+                  className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border border-line px-4 font-medium transition-colors hover:border-faint hover:bg-sunken aria-disabled:opacity-50 text-sm lg:min-h-9"
                 >
                   <RotateCcw aria-hidden="true" className={`size-4 ${busy === v.number ? "animate-spin" : ""}`} />
                   {busy === v.number ? t.versionRestoring : t.versionRestore}

@@ -59,7 +59,7 @@ export const PhotosPanel = memo(function PhotosPanel({ t, tp, projectId, photos,
     return (
       <div role="alert" className="m-4 flex flex-col items-center gap-3 rounded-2xl border border-line bg-white p-6 text-center text-ink-muted">
         <p>{t.loadError}</p>
-        <button type="button" onClick={photos.retry} className="min-h-11 rounded-lg border border-line px-4 font-medium text-ink hover:border-faint">
+        <button type="button" onClick={photos.retry} className="min-h-11 rounded-lg border border-line px-4 font-medium text-ink hover:border-faint text-sm lg:min-h-9">
           {t.retry}
         </button>
       </div>
@@ -70,7 +70,7 @@ export const PhotosPanel = memo(function PhotosPanel({ t, tp, projectId, photos,
     <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 lg:p-6">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-bold">{t.photosTitle}</h2>
+          <h2 className="text-lg font-semibold">{t.photosTitle}</h2>
           <p className="max-w-[65ch] text-ink-muted">{t.photosHint}</p>
         </div>
         <label
@@ -137,11 +137,11 @@ export const PhotosPanel = memo(function PhotosPanel({ t, tp, projectId, photos,
                     aria-disabled={disabled}
                     onClick={() => !disabled && onUse(a.name)}
                     aria-label={`${t.photoUse}: ${label}`}
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-ink px-2 font-medium text-white transition-colors hover:bg-ink-hover aria-disabled:opacity-50"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-ink px-2 font-medium text-white transition-colors hover:bg-ink-hover aria-disabled:opacity-50 text-sm lg:min-h-9"
                   >
                     <Wand2 aria-hidden="true" className="size-4 shrink-0 max-sm:hidden" /> {t.photoUse}
                   </button>
-                  <button type="button" onClick={() => remove(a.name)} aria-label={tp.photoRemoveNamed.replace("{n}", String(i + 1))} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg font-medium text-destructive hover:bg-coral-soft">
+                  <button type="button" onClick={() => remove(a.name)} aria-label={tp.photoRemoveNamed.replace("{n}", String(i + 1))} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg font-medium text-destructive hover:bg-coral-soft text-sm lg:min-h-9">
                     <Trash2 aria-hidden="true" className="size-4" /> {tp.photoRemove}
                   </button>
                 </li>
