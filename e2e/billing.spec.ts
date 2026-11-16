@@ -72,7 +72,7 @@ test("an admin changes a price and the Plan page shows it", async ({ page }) => 
 });
 
 test("admin dashboard: overview, owners, and dark mode", async ({ page }) => {
-  await signIn(page, { contact: `admin-e2e-set-${test.info().project.name}@example.com` });
+  await signIn(page, { contact: `admin-e2e-dash-${test.info().project.name}@example.com` });
   await page.goto("/en/admin");
   await expect(page.getByRole("heading", { level: 1, name: "Overview" })).toBeVisible();
   await expect(page.getByText("Needs your attention")).toBeVisible();

@@ -305,13 +305,9 @@
 }
 
 /* A blinking caret at the end of the message being typed in the hero demo. */
-.typing-caret {
-  display: inline-block;
-  width: 2px;
-  height: 1.1em;
-  margin-inline-start: 2px;
-  vertical-align: -0.2em;
-  background: currentColor;
+.typing-caret::after {
+  content: "▍";
+  margin-inline-start: 1px;
   animation: caret 0.9s steps(1) infinite;
 }
 @keyframes caret {
@@ -321,7 +317,7 @@
 }
 
 /* Business types drifting by; paused under a pointer or keyboard focus. */
-.marquee-row {
+.marquee-wrap[data-running] .marquee-row {
   animation: marquee 48s linear infinite;
 }
 .marquee:hover .marquee-row,
@@ -356,31 +352,36 @@
 
 /* Hero: the brush stroke under the promise draws itself once; two soft glows drift slowly
    behind the headline (transform only, no blur filter, so cheap phones keep up). */
-.brush-draw path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: brush 0.9s 0.25s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+/* Drawn by growing from the left (transform only, so the GPU does it, not the main thread). */
+.brush-draw {
+  transform-origin: left center;
+  animation: brush 0.9s 0.25s cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 @keyframes brush {
-  to {
-    stroke-dashoffset: 0;
+  from {
+    transform: scaleX(0);
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  .brush-draw path {
-    stroke-dashoffset: 0;
+  to {
+    transform: scaleX(1);
   }
 }
 .hero-glow {
   position: absolute;
-  inset: -20% -10% auto;
+  /* A fixed top, so it never moves when the hero's height changes. */
+  top: -120px;
+  inset-inline: -10%;
   height: 620px;
   pointer-events: none;
   z-index: -1;
   background:
     radial-gradient(38% 46% at 30% 40%, color-mix(in oklab, var(--gojo-coral) 22%, transparent), transparent 70%),
     radial-gradient(34% 40% at 72% 30%, var(--gojo-coral-soft), transparent 70%);
-  animation: glow-drift 9s ease-in-out both;
+}
+/* It drifts on large screens only: on phones it stays still (one less layer to animate). */
+@media (min-width: 768px) {
+  .hero-glow {
+    animation: glow-drift 9s ease-in-out both;
+  }
 }
 @keyframes glow-drift {
   to {
@@ -434,7 +435,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-glow,
-  .typing-caret,
+  .typing-caret::after,
+  .brush-draw,
   .chip-progress,
   .marquee-row {
     animation: none !important;

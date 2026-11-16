@@ -216,7 +216,7 @@ test("landing motion: the demo plays itself and can be paused; reduced motion ke
   await expect(toggle).toBeFocused();
   await toggle.click();
   // After a few seconds the next business is shown by itself...
-  await expect(chips.getByRole("button", { name: "Hotel" })).toHaveAttribute("aria-pressed", "true", { timeout: 9000 });
+  await expect(chips.getByRole("button", { name: "Hotel" })).toHaveAttribute("aria-pressed", "true", { timeout: 15_000 });
   // ...until the visitor pauses it.
   await page.getByRole("button", { name: "Pause the demo" }).click();
   await page.waitForTimeout(7000);

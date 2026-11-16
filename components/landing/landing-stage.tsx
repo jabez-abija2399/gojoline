@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, Check, Lock, Pause, Play } from "lucide-react";
+import { TypingBubble } from "./typing-bubble";
 import { LanguageChoice, type SiteLanguages } from "@/components/builder/language-choice";
 import { clearLandingPrompt, saveLandingPrompt } from "@/components/builder/start-prompt";
 import type { Locale } from "@/lib/i18n/config";
@@ -81,7 +82,6 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
   const [inView, setInView] = useState(false);
   // How many times the picture changed: the first view is still, every change animates.
   const [shown, setShown] = useState(0);
-  const [typed, setTyped] = useState<number | null>(null);
   const figureRef = useRef<HTMLElement>(null);
   const [text, setText] = useState("");
   const [languages, setLanguages] = useState<SiteLanguages>([locale]);
@@ -92,20 +92,35 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
   // Autoplay only for people who haven't asked for less motion, and only while it can be seen.
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setTimeout(() => {
+    // Data saver or a slow connection: no autoplay (each business is a new picture).
+    const conn = (navigator as { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    if (conn?.saveData || /(^|-)2g|3g/.test(conn?.effectiveType ?? "")) return;
+    // Starts once the page has finished loading (no animation work while it starts up).
+    const begin = () => {
       setAuto(true);
       setAutoStarted(true);
-    }, 0);
+    };
+    let id: ReturnType<typeof setTimeout> | undefined;
+    const onLoad = () => (id = setTimeout(begin, 1500));
+    if (document.readyState === "complete") onLoad();
+    else addEventListener("load", onLoad, { once: true });
     const el = figureRef.current;
     const io = el ? new IntersectionObserver(([e]) => setInView(!!e?.isIntersecting), { threshold: 0.15 }) : null;
     if (el) io?.observe(el);
     return () => {
       clearTimeout(id);
+      removeEventListener("load", onLoad);
       io?.disconnect();
     };
   }, []);
   useEffect(() => {
     if (!auto || !inView) return;
+    // Fetch the next business's picture a second early, so it's there when it swaps in.
+    const nextShot = sites[(index + 1) % sites.length]!.shot;
+    const early = setTimeout(() => {
+      const img = new window.Image();
+      img.src = `/_next/image?url=${encodeURIComponent(nextShot.src)}&w=640&q=75`;
+    }, AUTO_MS - 1200);
     const id = setTimeout(() => {
       // A hidden tab waits; the timer starts again (full length) when it is shown.
       if (document.hidden) {
@@ -119,20 +134,11 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
       setIndex((i) => (i + 1) % sites.length);
       setShown((n) => n + 1);
     }, AUTO_MS);
-    return () => clearTimeout(id);
-  }, [auto, inView, index, sites.length, tick]);
-  // The owner's message types itself out after each change (its full size is kept, so nothing moves).
-  useEffect(() => {
-    if (shown === 0 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const full = [...sites[index]!.prompt].length;
-    let n = 0;
-    const tick = setInterval(() => {
-      n = Math.min(full, n + 2);
-      setTyped(n >= full ? null : n);
-      if (n >= full) clearInterval(tick);
-    }, 24);
-    return () => clearInterval(tick);
-  }, [shown, index, sites]);
+    return () => {
+      clearTimeout(id);
+      clearTimeout(early);
+    };
+  }, [auto, inView, index, sites, tick]);
   const site = sites[index]!;
   const next = `/${locale}/build`;
 
@@ -167,12 +173,11 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
           ))}
         </div>
           {/* Moving content that runs longer than five seconds can be paused (WCAG 2.2.2). */}
-          {autoStarted && picked === null && (
-            <button type="button" title={t.pauseDemo} onClick={() => setAuto((a) => !a)} aria-pressed={!auto} className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-faint">
-              {auto ? <Pause aria-hidden="true" className="size-4" /> : <Play aria-hidden="true" className="size-4" />}
-              <span className="sr-only">{t.pauseDemo}</span>
-            </button>
-          )}
+          {/* In the page from the start (so nothing moves when it appears); invisible until autoplay begins. */}
+          <button type="button" title={t.pauseDemo} onClick={() => setAuto((a) => !a)} aria-pressed={!auto} className={`inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-faint ${autoStarted && picked === null ? "" : "invisible"}`}>
+            {auto ? <Pause aria-hidden="true" className="size-4" /> : <Play aria-hidden="true" className="size-4" />}
+            <span className="sr-only">{t.pauseDemo}</span>
+          </button>
         </div>
 
         {/* The real builder, drawn with its own pieces: the chat on the left, a real site on the right. */}
@@ -189,7 +194,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
                 <span className="size-2.5 rounded-full bg-line" />
                 <span className="size-2.5 rounded-full bg-line" />
               </span>
-              <span className="flex min-w-0 flex-1 items-center justify-center gap-2 text-ink-muted">
+              <span className="flex min-w-0 flex-1 items-center justify-start gap-2 text-ink-muted sm:ps-8">
                 <Lock className="size-3.5 shrink-0" />
                 <span className="truncate">{site.name}</span>
               </span>
@@ -197,15 +202,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
             </div>
             <div className="grid md:grid-cols-[minmax(0,18rem)_1fr] lg:grid-cols-[minmax(0,22rem)_1fr]">
               <div key={`c-${site.id}`} className="flex flex-col gap-3 p-4 text-start md:border-e md:border-line">
-                <p className="relative ms-auto max-w-[92%] rounded-2xl rounded-br-sm bg-ink px-4 py-3 text-white">
-                  <span className={typed === null ? "" : "invisible"}>{site.prompt}</span>
-                  {typed !== null && (
-                    <span className="absolute inset-0 px-4 py-3">
-                      {[...site.prompt].slice(0, typed).join("")}
-                      <span className="typing-caret" />
-                    </span>
-                  )}
-                </p>
+                <TypingBubble text={site.prompt} run={shown} />
                 <div className="rounded-2xl rounded-bl-sm border border-line px-4 py-3">
                   <p className="font-semibold">{t.buildTitle}</p>
                   <ol className="mt-2 flex flex-col gap-1.5">

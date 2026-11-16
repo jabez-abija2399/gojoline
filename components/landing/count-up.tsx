@@ -15,12 +15,16 @@ export function CountUp({ value }: { value: string }) {
   useEffect(() => {
     const el = ref.current;
     if (!el || !match || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // Already on screen when the page opens: keep the real number (no flash to zero).
-    if (el.getBoundingClientRect().top < innerHeight) return;
     let raf = 0;
+    // The observer's first report says where the number is without forcing a layout: already on
+    // screen when the page opens means keep the real number (no flash to zero).
+    let first = true;
     const io = new IntersectionObserver(([e]) => {
+      const wasFirst = first;
+      first = false;
       if (!e?.isIntersecting) return;
       io.disconnect();
+      if (wasFirst) return;
       const start = performance.now();
       const step = (now: number) => {
         const p = Math.min(1, (now - start) / 1100);
