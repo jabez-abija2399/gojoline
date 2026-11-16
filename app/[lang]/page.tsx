@@ -22,7 +22,8 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   // Opening the installed app: signed-in owners go straight to their sites.
-  if ((await searchParams).source === "app" && (await currentUser())) redirect(`/${lang}/build`);
+  const sp = await searchParams;
+  if (sp.source === "app" && (await currentUser())) redirect(`/${lang}/build`);
   const t = getMessages(lang);
   const sites = showcaseSites(lang);
   const byId = new Map(sites.map((x) => [x.id, x]));
@@ -47,6 +48,9 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
       <SiteHeader locale={lang} t={t} nav />
       <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero
+          // Design options for the frame, to compare: ?hero=a (workspace), b (three phones), c (builder).
+          variant={(["a", "b", "c"] as const).find((v) => v === sp.hero) ?? "a"}
+          box={t.landing.box}
           signedIn={await looksSignedIn()}
           t={t.landing.hero}
           locale={lang}

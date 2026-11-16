@@ -6,6 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUp, BedDouble, Check, ChevronDown, ChevronRight, Coffee, Lock, Pause, Play, ShoppingBag, Sparkles, Stethoscope, UserRound } from "lucide-react";
 import { TypingBubble } from "./typing-bubble";
+import { BoxStory } from "./box-story";
+import { BoxWorkspace } from "./box-workspace";
+import type { Messages } from "@/lib/i18n";
 import { LanguageChoice, type SiteLanguages } from "@/components/builder/language-choice";
 import { clearLandingPrompt, saveLandingPrompt } from "@/components/builder/start-prompt";
 import type { Locale } from "@/lib/i18n/config";
@@ -60,6 +63,9 @@ interface Props {
   promptFooter: React.ReactNode;
   /** The last chip: every template ("More"). */
   moreChip: { href: string; label: string };
+  /** What the frame shows: a = the owner's workspace, b = the story in three phones, c = the builder. */
+  variant?: "a" | "b" | "c";
+  box: Messages["landing"]["box"];
   /** Phones: the picker that replaces the row of chips. */
   chooseLabel: string;
   /** Has a session cookie: the description goes straight to "Your sites" (no sign-in page). */
@@ -71,12 +77,15 @@ interface Props {
  * real builder with a real site for it, and the prompt box below is filled in ready to build.
  * The description waits while the visitor signs in, then their first site starts building.
  */
+/** Example addresses for the demo businesses (the same in both languages; addresses are Latin). */
+const EXAMPLE_SLUGS: Record<string, string> = { cafe: "bole-buna", hotel: "tana-lodge", clinic: "tena-clinic", shop: "habesha-style", personal: "hana-bekele" };
+
 const SITE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, shop: ShoppingBag, personal: UserRound } as const;
 
 /** How long each business stays on screen while the demo plays itself. */
 const AUTO_MS = 6000;
 
-export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, moreChip, chooseLabel, signedIn = false }: Props) {
+export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, moreChip, chooseLabel, variant = "a", box, signedIn = false }: Props) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -223,6 +232,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
         </p>
         <figure ref={figureRef} role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-coral/15 bg-[color-mix(in_oklab,var(--gojo-coral-soft)_55%,var(--gojo-paper))] p-3 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
           {backdrop}
+          {variant === "c" ? (
           <div aria-hidden="true" className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgb(18_18_18/0.45)] md:rounded-b-none md:border-b-0">
             <div className="flex items-center gap-3 border-b border-line px-3 py-2.5 sm:px-4">
               <span className="flex gap-1.5">
@@ -280,6 +290,11 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
               </div>
             </div>
           </div>
+          ) : variant === "a" ? (
+            <BoxWorkspace site={site} box={box} slug={EXAMPLE_SLUGS[site.id] ?? "my-site"} priority={index === 0} animate={shown > 0} />
+          ) : (
+            <BoxStory site={site} box={box} steps={t.buildSteps} buildTitle={t.buildTitle} priority={index === 0} animate={shown > 0} />
+          )}
         </figure>
         </div>
         {more}
