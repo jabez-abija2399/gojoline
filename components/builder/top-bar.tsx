@@ -31,7 +31,7 @@ interface Props {
   publish: React.ReactNode;
 }
 
-const quiet = "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-2 font-medium transition-colors hover:bg-paper";
+const quiet = "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-2 text-sm font-medium lg:min-h-9 lg:min-w-9 transition-colors hover:bg-paper";
 
 /** One bar for the whole builder: where you are, the site's status, Publish, and the rest. */
 export function TopBar({ locale, projectId, text, siteName, status, publish }: Props) {
@@ -57,7 +57,7 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
         <span className="hidden xl:inline">{text.back}</span>
       </Link>
       <div className="flex min-w-0 flex-1 flex-col justify-center ps-1 leading-tight">
-        <p className="truncate font-display text-base font-bold text-ink sm:text-lg">{siteName}</p>
+        <p className="truncate font-display text-sm font-semibold text-ink sm:text-base">{siteName}</p>
         {status}
       </div>
       <Link href={`/${locale}/dashboard/${projectId}`} className={`${quiet} shrink-0 text-ink max-sm:hidden sm:px-3`}>

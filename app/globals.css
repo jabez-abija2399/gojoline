@@ -259,3 +259,9 @@
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
 }
+
+/* Ge'ez script needs a little more size than Latin to stay readable: the 12 px notes of the
+   compact signed-in area become 13 px on Amharic pages. */
+:lang(am) .text-xs {
+  font-size: 0.8125rem;
+}

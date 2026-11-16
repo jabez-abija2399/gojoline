@@ -47,7 +47,7 @@ interface Props {
   recent: { id: string; name: string; live: boolean }[];
 }
 
-const item = "relative flex min-h-11 items-center gap-3 rounded-xl px-3 font-medium text-ink transition-colors hover:bg-white aria-[current=page]:bg-white aria-[current=page]:font-semibold aria-[current=page]:shadow-sm aria-[current=page]:ring-1 aria-[current=page]:ring-line aria-[current=page]:before:absolute aria-[current=page]:before:inset-y-2 aria-[current=page]:before:start-0 aria-[current=page]:before:w-[3px] aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-ink";
+const item = "relative flex min-h-11 items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium text-ink lg:min-h-9 transition-colors hover:bg-white aria-[current=page]:bg-white aria-[current=page]:font-semibold aria-[current=page]:shadow-sm aria-[current=page]:ring-1 aria-[current=page]:ring-line aria-[current=page]:before:absolute aria-[current=page]:before:inset-y-2 aria-[current=page]:before:start-0 aria-[current=page]:before:w-[3px] aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-ink";
 
 /**
  * The signed-in area's navigation: a column beside the page on large screens, a drawer
@@ -137,7 +137,7 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
         aria-label={text.sidebarLabel}
         role={open ? "dialog" : undefined}
         aria-modal={open ? true : undefined}
-        className={`flex w-72 shrink-0 flex-col gap-4 overflow-y-auto border-e border-line bg-sunken p-3 max-lg:fixed max-lg:inset-y-0 max-lg:start-0 max-lg:z-50 max-lg:max-w-[86vw] max-lg:shadow-2xl max-lg:transition-transform lg:sticky lg:top-0 lg:h-dvh lg:w-64 ${open ? "" : "max-lg:invisible max-lg:-translate-x-full"}`}
+        className={`flex w-72 shrink-0 flex-col gap-4 overflow-y-auto border-e border-line bg-sunken p-3 max-lg:fixed max-lg:inset-y-0 max-lg:start-0 max-lg:z-50 max-lg:max-w-[86vw] max-lg:shadow-2xl max-lg:transition-transform lg:sticky lg:top-0 lg:h-dvh lg:w-60 ${open ? "" : "max-lg:invisible max-lg:-translate-x-full"}`}
       >
         <div className="flex shrink-0 items-center justify-between gap-2">
           <Link href={home} aria-label={text.home} onClick={close} className="inline-flex min-h-11 items-center px-1">
@@ -151,33 +151,33 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
 
         <nav aria-label={text.mainNav} className="flex shrink-0 flex-col gap-1">
           <Link href={home} onClick={toSection("")} aria-current={current(home)} className={item}>
-            <Plus aria-hidden="true" className="size-5 shrink-0" />
+            <Plus aria-hidden="true" className="size-4 shrink-0" />
             {text.newSite}
           </Link>
           <Link href={`${home}#sites`} onClick={toSection("#sites")} className={item}>
-            <LayoutGrid aria-hidden="true" className="size-5 shrink-0" />
+            <LayoutGrid aria-hidden="true" className="size-4 shrink-0" />
             {text.sites}
           </Link>
           <Link href={`${home}#templates`} onClick={toSection("#templates")} className={item}>
-            <LayoutTemplate aria-hidden="true" className="size-5 shrink-0" />
+            <LayoutTemplate aria-hidden="true" className="size-4 shrink-0" />
             {text.templates}
           </Link>
           <Link href={billing} onClick={close} aria-current={current(billing)} className={item}>
-            <CreditCard aria-hidden="true" className="size-5 shrink-0" />
+            <CreditCard aria-hidden="true" className="size-4 shrink-0" />
             {text.plan}
           </Link>
         </nav>
 
         {recent.length > 0 && (
           <div className="flex min-h-24 flex-1 flex-col gap-1 overflow-hidden">
-            <p id="recent-title" className="px-3 text-sm font-semibold text-ink-muted">
+            <p id="recent-title" className="px-2.5 text-xs font-medium text-ink-muted">
               {text.recent}
             </p>
             <ul aria-labelledby="recent-title" className="-mx-1 flex min-h-0 flex-col overflow-y-auto px-1 pb-3 [mask-image:linear-gradient(to_bottom,black_calc(100%-1rem),transparent)]">
               {recent.map((p) => (
                 <li key={p.id}>
-                  <Link href={`${home}/${p.id}`} onClick={close} aria-current={pathname === `${home}/${p.id}` ? "page" : undefined} className={`${item} gap-2.5`}>
-                    <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-line font-display text-sm font-bold text-ink">
+                  <Link href={`${home}/${p.id}`} onClick={close} aria-current={pathname === `${home}/${p.id}` ? "page" : undefined} className={`${item} gap-2`}>
+                    <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-md bg-line font-display text-xs font-bold text-ink">
                       {[...p.name.trim()][0]?.toUpperCase() ?? "·"}
                     </span>
                     <span className="min-w-0 flex-1 truncate">{p.name}</span>
@@ -196,24 +196,24 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
 
         <div className="mt-auto flex shrink-0 flex-col gap-3">
           {credits !== null && (
-            <section aria-labelledby="credits-title" className="flex flex-col gap-2 rounded-2xl border border-line bg-white p-3">
-              <span className="w-fit rounded-full bg-sunken px-2.5 py-0.5 text-sm font-medium text-ink">{text.planBadge}</span>
-              <p id="credits-title" className={`flex items-center gap-2 font-semibold ${low ? "text-warning" : "text-ink"}`}>
+            <section aria-labelledby="credits-title" className="flex flex-col gap-2 rounded-xl border border-line bg-white p-3">
+              <span className="w-fit rounded-full bg-sunken px-2 py-0.5 text-xs font-medium text-ink">{text.planBadge}</span>
+              <p id="credits-title" className={`flex items-center gap-2 text-sm font-semibold ${low ? "text-warning" : "text-ink"}`}>
                 <Sparkles aria-hidden="true" className="size-4 shrink-0" />
                 {text.creditsLeft}
               </p>
               <span aria-hidden="true" className="block h-1.5 overflow-hidden rounded-full bg-sunken">
                 <span className={`block h-full rounded-full ${low ? "bg-warning" : "bg-ink"}`} style={{ width: `${Math.round(share * 100)}%` }} />
               </span>
-              <p className="text-sm text-ink-muted [@media(max-height:720px)]:hidden">{text.creditsHint.replace("{total}", String(monthly))}</p>
-              <Link href={billing} onClick={close} className="inline-flex min-h-11 items-center justify-center rounded-xl bg-ink px-4 font-medium text-white transition-colors hover:bg-ink-hover">
+              <p className="text-xs leading-relaxed text-ink-muted [@media(max-height:720px)]:hidden">{text.creditsHint.replace("{total}", String(monthly))}</p>
+              <Link href={billing} onClick={close} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-ink-hover lg:min-h-9">
                 {text.getMore}
               </Link>
             </section>
           )}
-          <InstallApp t={text.pwa} className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 font-medium text-ink hover:bg-white" />
+          <InstallApp t={text.pwa} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2.5 text-sm font-medium text-ink hover:bg-white lg:min-h-9" />
           <div className="flex items-center gap-2 border-t border-line pt-3">
-            <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ink font-display font-bold text-white">
+            <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ink font-display text-sm font-bold text-white">
               {[...who.trim()][0]?.toUpperCase() ?? "G"}
             </span>
             <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink" title={who}>
@@ -224,7 +224,7 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
           <form action={signOut}>
             <input type="hidden" name="lang" value={locale} />
             <button type="submit" className={`${item} w-full text-ink-muted`}>
-              <LogOut aria-hidden="true" className="size-5 shrink-0" />
+              <LogOut aria-hidden="true" className="size-4 shrink-0" />
               {text.signOut}
             </button>
           </form>

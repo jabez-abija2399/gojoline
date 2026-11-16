@@ -51,12 +51,12 @@ export function SitesGrid({ locale, sites, t }: { locale: string; sites: SiteCar
           const i = sites.indexOf(s);
           const badge =
             s.status === "live" ? (
-              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-lagoon bg-white px-2.5 py-0.5 text-sm font-semibold text-lagoon">
+              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-lagoon bg-white px-2 py-0.5 text-xs font-semibold text-lagoon">
                 <span aria-hidden="true" className="size-2 rounded-full bg-lagoon" />
                 {t.live}
               </span>
             ) : (
-              <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-sm font-semibold ${s.status === "taken_down" ? "bg-coral-soft text-destructive" : "bg-sunken text-ink-muted"}`}>{s.status === "taken_down" ? t.takenDown : t.draft}</span>
+              <span className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-xs font-semibold ${s.status === "taken_down" ? "bg-coral-soft text-destructive" : "bg-sunken text-ink-muted"}`}>{s.status === "taken_down" ? t.takenDown : t.draft}</span>
             );
           return (
             <li key={s.id} className="group relative flex min-w-0 overflow-hidden rounded-2xl border border-line bg-white transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md sm:flex-col">
@@ -66,18 +66,18 @@ export function SitesGrid({ locale, sites, t }: { locale: string; sites: SiteCar
                   <span className="size-2 rounded-full bg-ink/20" />
                   <span className="size-2 rounded-full bg-ink/20" />
                   <span className="size-2 rounded-full bg-ink/20" />
-                  <span className="ms-2 flex min-w-0 flex-1 items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-0.5 text-xs text-ink-muted">
+                  <span className="ms-2 flex min-w-0 flex-1 items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-0.5 text-[11px] text-ink-muted">
                     {!s.address && <Lock className="size-3 shrink-0" />}
                     <span className="truncate">{s.address?.text ?? (s.status === "taken_down" ? t.takenDown : t.draft)}</span>
                   </span>
                 </div>
                 <div className="flex flex-1 items-center justify-center">
-                  <span className="font-display text-4xl font-bold text-ink sm:text-6xl">{[...s.name.trim()][0]?.toUpperCase() ?? "+"}</span>
+                  <span className="font-display text-3xl font-bold text-ink sm:text-5xl">{[...s.name.trim()][0]?.toUpperCase() ?? "+"}</span>
                 </div>
               </div>
               <div className="flex min-w-0 flex-1 flex-col gap-2 p-3 sm:p-4">
                 <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-1">
-                  <h3 className="min-w-0 truncate font-sans text-base font-semibold">
+                  <h3 className="min-w-0 truncate font-sans text-sm font-semibold">
                     {/* The whole card opens the site; the links below sit above this cover. */}
                     <Link href={`/${locale}/build/${s.id}`} className="after:absolute after:inset-0 after:rounded-2xl focus-visible:outline-none focus-visible:after:outline focus-visible:after:outline-3 focus-visible:after:-outline-offset-3 focus-visible:after:outline-link">
                       {s.name}
@@ -85,16 +85,16 @@ export function SitesGrid({ locale, sites, t }: { locale: string; sites: SiteCar
                   </h3>
                   {badge}
                 </div>
-                <p className="text-sm text-ink-muted">{s.changed}</p>
+                <p className="text-xs text-ink-muted">{s.changed}</p>
                 <div className="relative z-10 -mx-1 mt-auto flex flex-wrap gap-1">
                   {s.address && (
-                    <a href={s.address.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-ink hover:bg-sunken">
+                    <a href={s.address.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-ink lg:min-h-8 hover:bg-sunken">
                       <ExternalLink aria-hidden="true" className="size-4" />
                       {t.visit}
                       <span className="sr-only">: {s.name}</span>
                     </a>
                   )}
-                  <Link href={`/${locale}/dashboard/${s.id}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-ink hover:bg-sunken">
+                  <Link href={`/${locale}/dashboard/${s.id}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-ink lg:min-h-8 hover:bg-sunken">
                     <Inbox aria-hidden="true" className="size-4" />
                     {t.answers}
                     <span className="sr-only">: {s.name}</span>

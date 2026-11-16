@@ -35,7 +35,7 @@ export function LanguageChoice({ title, labels, value, onChange, name, className
         {compact && (
           <span aria-hidden="true" className="flex items-center gap-1.5 ps-2.5 pe-1 text-ink-muted">
             <Globe className="size-4 shrink-0" />
-            <span className="max-sm:hidden">{title}</span>
+            <span className="text-sm max-sm:hidden">{title}</span>
           </span>
         )}
         {OPTIONS.map((opt) => {
@@ -45,7 +45,7 @@ export function LanguageChoice({ title, labels, value, onChange, name, className
             <label
               key={key}
               className={`inline-flex min-h-11 cursor-pointer items-center rounded-full font-medium transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-link ${
-                compact ? `px-2.5 sm:px-3 ${checked ? "bg-white text-ink shadow-sm" : "text-ink-muted hover:text-ink"}` : `border px-4 ${checked ? "border-ink bg-ink text-white" : "border-line bg-white hover:border-faint"}`
+                compact ? `px-2.5 text-sm lg:min-h-8 sm:px-3 ${checked ? "bg-white text-ink shadow-sm" : "text-ink-muted hover:text-ink"}` : `border px-4 ${checked ? "border-ink bg-ink text-white" : "border-line bg-white hover:border-faint"}`
               }`}
             >
               <input type="radio" name={name} className="sr-only" checked={checked} onChange={() => onChange(opt)} />

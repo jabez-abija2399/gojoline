@@ -45,7 +45,7 @@ export function HomeTabs({ label, labels, initial, sites, templates }: Props) {
 
   const panels: Record<Tab, React.ReactNode> = { sites, templates };
   return (
-    <div ref={wrapRef} className="flex scroll-mt-16 flex-col gap-4 rounded-3xl border border-line bg-white p-3 shadow-sm sm:p-5">
+    <div ref={wrapRef} className="flex scroll-mt-16 flex-col gap-4 rounded-2xl border border-line bg-white p-3 shadow-sm sm:p-4">
       <div ref={tabsRef}>
         <TabList tabs={TABS} labels={labels} icons={ICONS} active={tab} onChange={setTab} label={label} idPrefix="home-tab" className="flex w-full rounded-xl bg-sunken p-1 sm:w-fit" />
       </div>

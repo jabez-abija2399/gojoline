@@ -133,7 +133,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
       type="button"
       onClick={open}
       disabled={!canOpen}
-      className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-ink px-3 font-medium text-white transition-colors hover:bg-ink-hover disabled:opacity-50 sm:px-4"
+      className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-ink px-3 text-sm font-medium lg:min-h-9 text-white transition-colors hover:bg-ink-hover disabled:opacity-50 sm:px-4"
     >
       <Rocket aria-hidden="true" className="hidden size-4 sm:block" />
       {t.publish}

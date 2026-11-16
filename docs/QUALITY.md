@@ -6,7 +6,7 @@ Every slice meets these before it is ticked in `docs/ROADMAP.md`. They apply to 
 
 - Brand: only tokens from `brand/tokens.css`; Outfit for headings (the landing page's headlines use the serif Fraunces), Inter for UI, Noto Sans Ethiopic for Amharic. Coral is the action colour (one coral button per screen) and may also fill decorative panels on public pages; text on it is always ink, always with ink text.
 - Mobile-first: design at 360 px first, then 768 and 1280. No horizontal scroll at any width.
-- Touch targets at least 44 × 44 px; body text at least 16 px; line length 60 to 75 characters.
+- Touch targets at least 44 × 44 px on phones (36 px on large screens with a mouse); body text at least 16 px (text people read: descriptions, chat, form fields); labels on buttons, menus, tabs, chips and badges may be 14 px, small notes 12 px; line length 60 to 75 characters.
 - Every screen has designed empty, loading (skeletons, not spinners for content), error and success states.
 - Amharic is a first-class layout: test every screen with Amharic strings, which run longer and taller.
 - Simple language for non-technical users: no jargon ("deploy", "repository", "build error") in the UI; say "publish", "your site", "something went wrong, we're fixing it".

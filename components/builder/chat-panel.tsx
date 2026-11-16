@@ -55,7 +55,7 @@ interface Props {
 const amharic = /[ሀ-፿]/;
 const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 const NEXT = ["contact", "colours", "prices", "language"] as const;
-const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line bg-white px-4 font-medium text-ink transition-colors hover:border-faint hover:bg-sunken";
+const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line bg-white px-3.5 text-sm font-medium lg:min-h-9 text-ink transition-colors hover:border-faint hover:bg-sunken";
 
 export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits }: Props) {
   const [undoing, setUndoing] = useState(false);
@@ -324,13 +324,13 @@ function Bubble({ role, label, text, note, tone, action, seeSite, undo, animate 
       {(seeSite || undo) && (
         <div className="mt-1 flex flex-wrap gap-2">
           {seeSite && (
-            <button type="button" onClick={seeSite.onClick} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-ink bg-white px-4 font-medium text-ink hover:bg-sunken lg:hidden">
+            <button type="button" onClick={seeSite.onClick} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-ink bg-white px-3.5 text-sm lg:min-h-9 font-medium text-ink hover:bg-sunken lg:hidden">
               <Eye aria-hidden="true" className="size-4" />
               {seeSite.label}
             </button>
           )}
           {undo && (
-            <button type="button" aria-disabled={undo.busy} onClick={undo.onClick} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint hover:bg-sunken aria-disabled:opacity-60">
+            <button type="button" aria-disabled={undo.busy} onClick={undo.onClick} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3.5 text-sm lg:min-h-9 border border-line bg-white px-4 font-medium text-ink hover:border-faint hover:bg-sunken aria-disabled:opacity-60">
               {undo.busy ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <Undo2 aria-hidden="true" className="size-4" />}
               {undo.label}
             </button>

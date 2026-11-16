@@ -70,12 +70,12 @@ export function StartBox({ t, locale, action, title, autoStart }: Props) {
     >
       <input type="hidden" name="lang" value={locale} />
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-5xl">
+        <h1 className="text-2xl font-semibold tracking-tight text-balance sm:text-4xl">
           <label htmlFor="start-text">{title}</label>
         </h1>
-        <p className="max-w-[52ch] text-ink-muted sm:text-lg">{t.startBody}</p>
+        <p className="max-w-[52ch] text-ink-muted">{t.startBody}</p>
       </div>
-      <div className="w-full rounded-3xl border border-line bg-white p-2 shadow-xl shadow-ink/5 transition-shadow has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link">
+      <div className="w-full rounded-2xl border border-line bg-white p-2 shadow-xl shadow-ink/5 transition-shadow has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link">
         <textarea
           ref={boxRef}
           id="start-text"
@@ -87,7 +87,7 @@ export function StartBox({ t, locale, action, title, autoStart }: Props) {
           rows={3}
           maxLength={4000}
           placeholder={t.startPlaceholder}
-          className="block max-h-56 min-h-24 w-full resize-none rounded-2xl bg-transparent px-3 py-2.5 text-base [field-sizing:content] placeholder:text-ink-muted focus-visible:outline-none sm:px-4 sm:py-3 sm:text-lg"
+          className="block max-h-56 min-h-24 w-full resize-none rounded-2xl bg-transparent px-3 py-2.5 text-base [field-sizing:content] placeholder:text-ink-muted focus-visible:outline-none sm:px-4 sm:py-3"
         />
         <div className="flex flex-wrap items-center justify-between gap-2">
           <LanguageChoice compact title={t.startLang} labels={{ en: t.langEn, am: t.langAm, both: t.langBothShort }} value={languages} onChange={setLanguages} name="start-languages" />
@@ -95,7 +95,7 @@ export function StartBox({ t, locale, action, title, autoStart }: Props) {
         </div>
       </div>
       <div className="flex w-full flex-col items-center gap-2">
-        <p id="ideas-label" className="flex items-center gap-2 text-sm font-medium text-ink-muted">
+        <p id="ideas-label" className="flex items-center gap-2 text-xs font-medium text-ink-muted">
           <Sparkles aria-hidden="true" className="size-4 text-faint" />
           {t.ideasLabel}
         </p>
@@ -108,7 +108,7 @@ export function StartBox({ t, locale, action, title, autoStart }: Props) {
                   setText(t.ideas[id].text);
                   boxRef.current?.focus();
                 }}
-                className="min-h-11 rounded-full border border-line bg-white px-4 font-medium text-ink transition-colors hover:border-faint hover:bg-sunken"
+                className="min-h-11 rounded-full border border-line bg-white px-3.5 text-sm font-medium text-ink transition-colors hover:border-faint hover:bg-sunken lg:min-h-9"
               >
                 {t.ideas[id].label}
               </button>
@@ -127,7 +127,7 @@ function StartButton({ label }: { label: string }) {
       type="submit"
       aria-disabled={pending}
       onClick={(e) => pending && e.preventDefault()}
-      className="group inline-flex min-h-11 shrink-0 grow items-center justify-center gap-2 rounded-full bg-coral px-5 sm:grow-0 font-medium text-on-coral transition-colors hover:bg-coral-hover aria-disabled:opacity-60"
+      className="group inline-flex min-h-11 shrink-0 grow items-center justify-center gap-2 rounded-full bg-coral px-4 text-sm sm:grow-0 lg:min-h-9 font-medium text-on-coral transition-colors hover:bg-coral-hover aria-disabled:opacity-60"
     >
       {label}
       {pending ? <Loader2 aria-hidden="true" className="size-5 animate-spin" /> : <ArrowRight aria-hidden="true" className="size-5 transition-transform group-hover:translate-x-0.5" />}

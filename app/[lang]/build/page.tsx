@@ -60,7 +60,7 @@ export default async function ProjectsPage({
   // Each template is shown by a picture of the real site it gives.
   const templatesPanel = (
     <div className="flex flex-col gap-4">
-      <p className="max-w-[65ch] text-ink-muted">{b.templatesHint}</p>
+      <p className="max-w-[65ch] text-sm text-ink-muted">{b.templatesHint}</p>
       <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {showcaseSites(lang).map((site, i) => (
           <li key={site.id}>
@@ -71,7 +71,7 @@ export default async function ProjectsPage({
                 <span className="block aspect-[4/3] w-full overflow-hidden bg-sunken">
                   <Image src={site.top.src} alt="" width={site.top.width} height={site.top.height} sizes="(min-width: 1280px) 220px, (min-width: 768px) 30vw, 46vw" loading={cards.length === 0 && i < 4 ? "eager" : "lazy"} className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]" />
                 </span>
-                <span className="flex flex-1 items-center justify-between gap-2 p-3 font-medium">
+                <span className="flex flex-1 items-center justify-between gap-2 p-3 text-sm font-medium">
                   {b.templates[site.id]}
                   <ArrowRight aria-hidden="true" className="size-4 shrink-0 text-ink-muted transition group-hover:translate-x-0.5 group-hover:text-ink max-sm:hidden" />
                 </span>
@@ -88,7 +88,7 @@ export default async function ProjectsPage({
       <main id="main" className="relative flex w-full flex-1 flex-col overflow-x-clip">
         {/* A warm glow behind the start box: the one place on the page that asks for something. */}
         <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(60%_70%_at_50%_0%,var(--gojo-coral-soft),transparent)]" />
-        <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-14">
+        <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12">
           {builder && <PresetStart autoStart={cards.length === 0} />}
           {tooMany && (
             <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">

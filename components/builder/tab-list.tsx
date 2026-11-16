@@ -50,7 +50,7 @@ export function TabList<T extends string>({ tabs, labels, active, onChange, labe
             else return;
             e.preventDefault();
           }}
-          className="relative flex min-h-11 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-1.5 text-[15px] font-medium text-ink-muted transition-colors hover:bg-paper aria-selected:bg-ink aria-selected:text-white sm:flex-none sm:px-3 sm:text-base"
+          className="relative flex min-h-11 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-1.5 text-sm font-medium text-ink-muted lg:min-h-9 transition-colors hover:bg-paper aria-selected:bg-ink aria-selected:text-white sm:flex-none sm:px-3"
         >
           {Icon && <Icon aria-hidden="true" className="hidden size-4 shrink-0 min-[520px]:block" />}
           {labels[tab]}
