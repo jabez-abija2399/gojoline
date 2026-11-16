@@ -139,7 +139,7 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
         aria-modal={open ? true : undefined}
         className={`flex w-72 shrink-0 flex-col gap-4 overflow-y-auto border-e border-line bg-sunken p-3 max-lg:fixed max-lg:inset-y-0 max-lg:start-0 max-lg:z-50 max-lg:max-w-[86vw] max-lg:shadow-2xl max-lg:transition-transform lg:sticky lg:top-0 lg:h-dvh lg:w-64 ${open ? "" : "max-lg:invisible max-lg:-translate-x-full"}`}
       >
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex shrink-0 items-center justify-between gap-2">
           <Link href={home} aria-label={text.home} onClick={close} className="inline-flex min-h-11 items-center px-1">
             <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={text.logoAlt} width={125} height={32} className="h-8 w-auto" />
           </Link>
@@ -149,7 +149,7 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
           </button>
         </div>
 
-        <nav aria-label={text.mainNav} className="flex flex-col gap-1">
+        <nav aria-label={text.mainNav} className="flex shrink-0 flex-col gap-1">
           <Link href={home} onClick={toSection("")} aria-current={current(home)} className={item}>
             <Plus aria-hidden="true" className="size-5 shrink-0" />
             {text.newSite}
@@ -169,11 +169,11 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
         </nav>
 
         {recent.length > 0 && (
-          <div className="flex min-h-0 flex-col gap-1">
+          <div className="flex min-h-24 flex-1 flex-col gap-1 overflow-hidden">
             <p id="recent-title" className="px-3 text-sm font-semibold text-ink-muted">
               {text.recent}
             </p>
-            <ul aria-labelledby="recent-title" className="flex flex-col">
+            <ul aria-labelledby="recent-title" className="-mx-1 flex min-h-0 flex-col overflow-y-auto px-1 pb-3 [mask-image:linear-gradient(to_bottom,black_calc(100%-1rem),transparent)]">
               {recent.map((p) => (
                 <li key={p.id}>
                   <Link href={`${home}/${p.id}`} onClick={close} aria-current={pathname === `${home}/${p.id}` ? "page" : undefined} className={`${item} gap-2.5`}>
@@ -194,7 +194,7 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
           </div>
         )}
 
-        <div className="mt-auto flex flex-col gap-3">
+        <div className="mt-auto flex shrink-0 flex-col gap-3">
           {credits !== null && (
             <section aria-labelledby="credits-title" className="flex flex-col gap-2 rounded-2xl border border-line bg-white p-3">
               <span className="w-fit rounded-full bg-sunken px-2.5 py-0.5 text-sm font-medium text-ink">{text.planBadge}</span>
@@ -205,7 +205,7 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
               <span aria-hidden="true" className="block h-1.5 overflow-hidden rounded-full bg-sunken">
                 <span className={`block h-full rounded-full ${low ? "bg-warning" : "bg-ink"}`} style={{ width: `${Math.round(share * 100)}%` }} />
               </span>
-              <p className="text-sm text-ink-muted">{text.creditsHint.replace("{total}", String(monthly))}</p>
+              <p className="text-sm text-ink-muted [@media(max-height:720px)]:hidden">{text.creditsHint.replace("{total}", String(monthly))}</p>
               <Link href={billing} onClick={close} className="inline-flex min-h-11 items-center justify-center rounded-xl bg-ink px-4 font-medium text-white transition-colors hover:bg-ink-hover">
                 {text.getMore}
               </Link>

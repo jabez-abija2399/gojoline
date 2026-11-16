@@ -209,3 +209,20 @@ test("undo the newest change for free; the changes left are shown and the menu o
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 });
+
+test("on a short window the recent sites scroll and never cover the changes-left card", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "the desktop sidebar");
+  await signIn(page);
+  for (const id of ["cafe", "hotel", "clinic", "school", "shop"]) {
+    await page.goto("/en/build#templates");
+    await page.locator(`form[data-preset=${id}] button`).click();
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  }
+  await page.setViewportSize({ width: 1280, height: 560 });
+  await page.goto("/en/build");
+  const { listBottom, cardTop } = await page.evaluate(() => ({
+    listBottom: document.querySelector("[aria-labelledby=recent-title]")!.getBoundingClientRect().bottom,
+    cardTop: document.querySelector("[aria-labelledby=credits-title]")!.getBoundingClientRect().top,
+  }));
+  expect(listBottom).toBeLessThanOrEqual(cardTop);
+});
