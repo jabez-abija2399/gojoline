@@ -4,6 +4,7 @@ import { localePath, parsePath, t } from "./lib/i18n";
 import { headingFontFile, styleString, themeVariables } from "./lib/theme";
 import type { Lang, Site } from "./lib/types";
 import { publishMeta } from "./lib/meta";
+import { withBase } from "./lib/base";
 import { site } from "./site";
 
 export interface RenderedPage {
@@ -49,8 +50,8 @@ export function render(url: string): RenderedPage | null {
     `<script type="application/json" id="site-data">${JSON.stringify(pageData(page.path, lang)).replace(/</g, "\\u003c")}</script>`,
     // One font preload per page: Ge'ez for Amharic, the heading font otherwise.
     lang === "am"
-      ? `<link rel="preload" href="/fonts/noto-sans-ethiopic-core.woff2" as="font" type="font/woff2" crossorigin>`
-      : `<link rel="preload" href="/fonts/${headingFontFile[site.theme.font]}" as="font" type="font/woff2" crossorigin>`,
+      ? `<link rel="preload" href="${withBase("/fonts/noto-sans-ethiopic-core.woff2")}" as="font" type="font/woff2" crossorigin>`
+      : `<link rel="preload" href="${withBase(`/fonts/${headingFontFile[site.theme.font]}`)}" as="font" type="font/woff2" crossorigin>`,
   ]
     .filter(Boolean)
     .join("\n    ");

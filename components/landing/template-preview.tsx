@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, useState, useSyncExternalStore } from "react";
-import { Lock, Maximize2, Monitor, Smartphone } from "lucide-react";
+import { ExternalLink, Lock, Monitor, Smartphone } from "lucide-react";
 import type { PreviewPage } from "@/lib/landing/template-preview";
 
 export interface PreviewLabels {
@@ -12,7 +11,9 @@ export interface PreviewLabels {
   phone: string;
   /** "{page} · {n} sections" */
   pageHeading: string;
-  fullSize: string;
+  /** "{name}, live": the frame's accessible name */
+  liveTitle: string;
+  openTab: string;
   /** "Example address", read before the address bar's text. */
   address: string;
   /** "Sections on this page" */
@@ -30,12 +31,11 @@ const subscribe = (cb: () => void) => {
 };
 
 /**
- * The whole template, page by page and section by section, as pictures of the real site.
- * A large screen sees the computer layout and a phone or tablet the phone layout, until the visitor picks one;
- * any section opens full size in a new tab. The computer layout sits in a browser window and the
- * phone layout in a phone, both showing the address the site would have.
+ * The template's real site, running (the live demo): scroll it, tap anything, change page and
+ * language inside it. A large screen sees it in a monitor, a phone or tablet in a phone, until the
+ * visitor picks; both show the address the site would have. The section list jumps inside it.
  */
-export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /** "bole-buna-house.gojoline.site", or null to leave the bar empty */ host: string | null; t: PreviewLabels }) {
+export function TemplatePreviewer({ name, pages, host, t }: { name: string; pages: PreviewPage[]; /** "bole-buna-house.gojoline.site", or null to leave the bar empty */ host: string | null; t: PreviewLabels }) {
   const [page, setPage] = useState(0);
   const [view, setView] = useState<"auto" | "d" | "m">("auto");
   // Until the visitor picks, a large screen shows the computer layout and a smaller one the phone layout.
@@ -55,56 +55,35 @@ export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /*
     ) : (
       <span aria-hidden="true" className={`block rounded-full border border-line bg-white ${size}`} />
     );
-  const caption = (part: PreviewPage["parts"][number], i: number) => (
-    <figcaption className="sr-only">
-      <span className="flex items-baseline gap-2">
-        <span className="text-xs text-ink-muted tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-        <span className="font-semibold">{t.kinds[part.kind] ?? part.kind}</span>
-        {part.heading && (
-          <span aria-hidden="true" className="text-ink-muted max-sm:hidden">
-            ·
-          </span>
-        )}
-      </span>
-      {part.heading && <span className="min-w-0 text-ink-muted">{part.heading}</span>}
-      {part.summary && <span className="sr-only">{part.summary}</span>}
-    </figcaption>
+  // The live site loads once the page runs, in the one device that shows (never twice).
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
   );
-  /** Only the phone's first section loads at once (phones are most visitors); the rest, and every computer picture, load when near. */
-  const picture = (size: { src: string; width: number; height: number }, first: { eager: boolean; high: boolean }, rounded: string) => (
-    <a href={size.src} target="_blank" rel="noopener" className="group/pic relative block">
-      <Image src={size.src} alt="" width={size.width} height={size.height} unoptimized loading={first.eager ? "eager" : "lazy"} fetchPriority={first.high ? "high" : undefined} className={`block h-auto w-full bg-sunken ${rounded}`} />
-      <span className="absolute end-2 bottom-2 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white/90 px-3 text-xs font-medium text-ink shadow-sm opacity-90 transition group-hover/pic:opacity-100">
-        <Maximize2 aria-hidden="true" className="size-3.5" />
-        {t.fullSize}
-      </span>
-    </a>
-  );
-  const screens = useRef<Record<"d" | "m", HTMLDivElement | null>>({ d: null, m: null });
-  /** Scrolls the visible screen to section i (only inside the screen, never the page). */
+  const frames = useRef<Record<"d" | "m", HTMLIFrameElement | null>>({ d: null, m: null });
+  /** Scrolls the live site to section i (inside its own window, never the page). */
   const jump = (i: number) => {
-    const box = screens.current[shown];
-    const target = box?.querySelector<HTMLElement>(`[data-part="${i}"]`);
-    if (box && target) box.scrollTo({ top: target.offsetTop, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    const doc = frames.current[shown]?.contentDocument;
+    if (!doc) return;
+    const part = current.parts[i];
+    const target = part?.kind === "footer" ? doc.querySelector("footer") : doc.querySelectorAll("main > section")[i];
+    target?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   };
-  /** The page as one continuous site inside a device screen; scrolls by itself and with the keyboard. */
+  /** The live site inside a device screen. */
   const screen = (v: "d" | "m", height: string) => (
-    <div
-      ref={(el) => {
-        screens.current[v] = el;
-      }}
-      key={`${v}${page}`}
-      tabIndex={0}
-      role="region"
-      aria-label={t.screenLabel.replace("{page}", current.title)}
-      className={`relative overflow-y-auto overscroll-contain bg-sunken ${height}`}
-    >
-      {current.parts.map((part, i) => (
-        <figure key={i} data-part={i} className="relative m-0">
-          {caption(part, i)}
-          {picture(v === "d" ? part.d : part.m, v === "d" ? { eager: false, high: i === 0 } : { eager: i === 0, high: i === 0 }, "")}
-        </figure>
-      ))}
+    <div className={`relative bg-sunken ${height}`}>
+      {mounted && shown === v && (
+        <iframe
+          ref={(el) => {
+            frames.current[v] = el;
+          }}
+          key={current.src}
+          src={current.src}
+          title={t.liveTitle.replace("{name}", name)}
+          className="block size-full border-0 bg-white"
+        />
+      )}
     </div>
   );
   const button = "inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium transition";
@@ -120,16 +99,22 @@ export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /*
             ))}
           </div>
         )}
-        <div role="group" aria-label={t.view} className="flex w-fit gap-1 rounded-full border border-line bg-white p-1">
-          {(["d", "m"] as const).map((v) => {
-            const on = view === v;
-            return (
-              <button key={v} type="button" aria-pressed={shown === v} onClick={() => setView(v)} className={`${button} min-h-10 ${on ? "bg-coral-soft text-ink" : "text-ink-muted hover:text-ink"} ${view === "auto" ? (v === "d" ? "lg:bg-coral-soft lg:text-ink" : "max-lg:bg-coral-soft max-lg:text-ink") : ""}`}>
-                {v === "d" ? <Monitor aria-hidden="true" className="size-4" /> : <Smartphone aria-hidden="true" className="size-4" />}
-                {v === "d" ? t.desktop : t.phone}
-              </button>
-            );
-          })}
+        <div className="flex items-center gap-2">
+          <div role="group" aria-label={t.view} className="flex w-fit gap-1 rounded-full border border-line bg-white p-1">
+            {(["d", "m"] as const).map((v) => {
+              const on = view === v;
+              return (
+                <button key={v} type="button" aria-pressed={shown === v} onClick={() => setView(v)} className={`${button} min-h-10 ${on ? "bg-coral-soft text-ink" : "text-ink-muted hover:text-ink"} ${view === "auto" ? (v === "d" ? "lg:bg-coral-soft lg:text-ink" : "max-lg:bg-coral-soft max-lg:text-ink") : ""}`}>
+                  {v === "d" ? <Monitor aria-hidden="true" className="size-4" /> : <Smartphone aria-hidden="true" className="size-4" />}
+                  {v === "d" ? t.desktop : t.phone}
+                </button>
+              );
+            })}
+          </div>
+          <a href={current.src} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-link hover:underline">
+            <ExternalLink aria-hidden="true" className="size-4" />
+            <span className="max-sm:sr-only">{t.openTab}</span>
+          </a>
         </div>
       </div>
 

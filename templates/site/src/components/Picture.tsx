@@ -1,3 +1,4 @@
+import { withBase } from "../lib/base";
 import { useSite } from "../lib/context";
 import type { Image } from "../lib/types";
 import { Art } from "./Art";
@@ -35,11 +36,12 @@ export function Picture({ image, className = "", priority = false, sizes = "(min
     );
   }
   const stock = STOCK.test(image.src);
-  const base = image.src.replace(/\.webp$/, "");
-  const srcSet = stock ? `${base}-480.webp 480w, ${image.src} 800w${wide && HERO.test(image.src) ? `, ${base}-1600.webp 1600w` : ""}` : undefined;
+  const src = withBase(image.src);
+  const base = src.replace(/\.webp$/, "");
+  const srcSet = stock ? `${base}-480.webp 480w, ${src} 800w${wide && HERO.test(image.src) ? `, ${base}-1600.webp 1600w` : ""}` : undefined;
   return (
     <img
-      src={image.src}
+      src={src}
       srcSet={srcSet}
       alt={text(image.alt)}
       width={image.width ?? 1200}

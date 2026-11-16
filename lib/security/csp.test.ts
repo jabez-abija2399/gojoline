@@ -8,7 +8,7 @@ describe("CSP", () => {
     expect(csp).not.toContain("unsafe-eval");
     expect(csp).toContain("frame-ancestors 'none'");
     expect(csp).toContain("object-src 'none'");
-    expect(csp).toContain("frame-src 'none'");
+    expect(csp).toContain("frame-src 'self';");
     expect(csp).toContain("upgrade-insecure-requests");
   });
 
@@ -21,14 +21,14 @@ describe("CSP", () => {
       NODE_ENV: "production",
       CSP_FRAME_ORIGINS: "https://*.vercel.run, javascript:alert(1) http://evil.test https://* https://*.com",
     } as NodeJS.ProcessEnv);
-    expect(csp).toContain("frame-src https://*.vercel.run;");
+    expect(csp).toContain("frame-src 'self' https://*.vercel.run;");
     expect(csp).not.toContain("evil");
     expect(csp).not.toContain("javascript");
     expect(csp).not.toMatch(/https:\/\/\*(\.com)?[ ;]/);
   });
 
   it("frames nothing unless configured", () => {
-    expect(cspFromEnv("n", { NODE_ENV: "production" } as NodeJS.ProcessEnv)).toContain("frame-src 'none'");
+    expect(cspFromEnv("n", { NODE_ENV: "production" } as NodeJS.ProcessEnv)).toContain("frame-src 'self';");
   });
 
   it("nonces are unique and 128-bit", () => {

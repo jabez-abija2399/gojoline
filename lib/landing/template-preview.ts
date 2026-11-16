@@ -1,10 +1,7 @@
 import "server-only";
 import { PRESET_IDS, isPresetId, presetSiteJson, type PresetId } from "@/lib/template/presets";
-import sections from "./template-sections.json";
 
 type Text = { en?: string; am?: string };
-type Size = { src: string; width: number; height: number };
-type Shots = Record<string, Partial<Record<"en" | "am", { path: string; parts: { d: Size; m: Size }[] }[]>>>;
 interface RawSection {
   type: string;
   heading?: Text;
@@ -15,7 +12,7 @@ interface RawSection {
   fields?: { label?: Text }[];
 }
 
-/** One section of a template page: what it is, its title, and its picture at both widths. */
+/** One section of a template page: what it is and its title (the live demo shows it). */
 export interface PreviewPart {
   /** Section type ("hero", "cards"…), or "footer". */
   kind: string;
@@ -23,14 +20,14 @@ export interface PreviewPart {
   heading: string;
   /** What the section lists, in words, for people who can't see the picture. */
   summary: string;
-  d: Size;
-  m: Size;
 }
 
 export interface PreviewPage {
   title: string;
   /** Where the page lives on the site ("/", "/menu"). */
   path: string;
+  /** The live demo of this page in the visitor's language ("/demo/hotel/am/rooms"). */
+  src: string;
   parts: PreviewPart[];
 }
 
@@ -44,22 +41,20 @@ export interface TemplatePreview {
   next: PresetId;
 }
 
-/** Everything the preview page shows for one template, or null when there are no pictures for it. */
+/** Everything the preview page shows for one template: its pages, their sections, and where the live demo is. */
 export function templatePreview(id: string, locale: "en" | "am"): TemplatePreview | null {
   if (!isPresetId(id)) return null;
-  const shots = (sections as Shots)[id]?.[locale] ?? (sections as Shots)[id]?.en;
-  if (!shots) return null;
   const pick = (t: Text | undefined) => t?.[locale] ?? t?.en ?? "";
-  const site = JSON.parse(presetSiteJson(id)) as { name: Text; tagline?: Text; pages: { path: string; title: Text; nav?: Text; sections: RawSection[] }[] };
-  const pages = site.pages.flatMap((p) => {
-    const shot = shots.find((s) => s.path === p.path);
-    if (!shot) return [];
-    const parts = shot.parts.map((sizes, i) => {
-      const s = p.sections[i];
+  const site = JSON.parse(presetSiteJson(id)) as { name: Text; tagline?: Text; languages: ("en" | "am")[]; pages: { path: string; title: Text; nav?: Text; sections: RawSection[] }[] };
+  // The demo's first language has no prefix; the other is under /<lang> (scripts/template-demos.mjs).
+  const lang = site.languages.includes(locale) ? locale : site.languages[0]!;
+  const prefix = lang === site.languages[0] ? "" : `/${lang}`;
+  const pages = site.pages.map((p) => {
+    const parts = [...p.sections, null].map((s) => {
       const title = s ? pick(s.heading) || pick(s.quote) : "";
-      return { kind: s?.type ?? "footer", heading: title.length > 90 ? `${title.slice(0, 88).trimEnd()}…` : title, summary: s ? summarize(s, pick) : "", ...sizes };
+      return { kind: s?.type ?? "footer", heading: title.length > 90 ? `${title.slice(0, 88).trimEnd()}…` : title, summary: s ? summarize(s, pick) : "" };
     });
-    return [{ title: pick(p.nav ?? p.title), path: p.path, parts }];
+    return { title: pick(p.nav ?? p.title), path: p.path, src: `/demo/${id}${prefix}${p.path === "/" ? "" : p.path}`, parts };
   });
   const at = PRESET_IDS.indexOf(id);
   return {
