@@ -7,6 +7,7 @@ import { PLAN_FEATURES, PRODUCTS } from "@/lib/billing/plans";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
+import { ownerAllowance } from "@/lib/app/shell-data";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/billing">): Promise<Metadata> {
   const { lang } = await params;
@@ -23,7 +24,9 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
   const t = getMessages(lang);
   const b = t.billing;
   const billing = services().billing;
-  const [{ plan, until }, credits, history, settings] = await Promise.all([billing.plan(user.id), billing.creditsLeft(user.id), billing.store().paymentsFor(user.id), billing.settings()]);
+  // Shared with the sidebar's meter (one read per request).
+  const [allowance, history, settings] = await Promise.all([ownerAllowance(user.id), billing.store().paymentsFor(user.id), billing.settings()]);
+  const { plan, until, credits } = allowance ?? { plan: "free" as const, until: null, credits: 0 };
   const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
   const payReady = !!(settings.telebirrNumber || settings.cbeAccount);
   const birr = (minor: number) => format(b.price, { price: amount(minor) });

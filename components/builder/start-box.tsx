@@ -70,7 +70,7 @@ export function StartBox({ t, locale, action, title, autoStart }: Props) {
     >
       <input type="hidden" name="lang" value={locale} />
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
+        <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-5xl">
           <label htmlFor="start-text">{title}</label>
         </h1>
         <p className="max-w-[52ch] text-ink-muted sm:text-lg">{t.startBody}</p>

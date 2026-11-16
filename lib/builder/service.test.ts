@@ -58,6 +58,6 @@ describe("AI edit credits", () => {
   it("stops when credits run out", async () => {
     const { billing, send } = await setup();
     for (let i = 0; i < 15; i++) await billing.consumeEdit("u", `pre-${i}`);
-    expect(await send("Selam Cafe")).toEqual({ type: "error", code: "no_credits" });
+    expect(await send("Selam Cafe")).toEqual({ type: "error", code: "no_credits", credits: 0 });
   });
 });

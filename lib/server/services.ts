@@ -166,7 +166,7 @@ export function services(): Services {
       moderation: null,
     };
     const svc = globalForServices.gojoServices;
-    if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r) };
+    if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r), left: (u) => billing.creditsLeft(u) };
     svc.publish = pickPublish(process.env, svc.builder);
     if (svc.publish) {
       svc.publish.entitlements = billing.entitlements;

@@ -22,14 +22,14 @@ export interface BuilderDeps {
   lock: Lock;
   assets?: AssetStore;
   /** AI edit credits; when set, each request costs one credit, refunded if the change fails. */
-  credits?: { consume(userId: string, ref: string): Promise<boolean>; refund(userId: string, ref: string): Promise<unknown> };
+  credits?: { consume(userId: string, ref: string): Promise<boolean>; refund(userId: string, ref: string): Promise<unknown>; left?(userId: string): Promise<number> };
 }
 
 export type BuilderEvent =
   | AgentEvent
   | { type: "preview"; url: string }
-  | { type: "done"; message: ChatMessage; previewUrl: string; siteName?: string }
-  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked" };
+  | { type: "done"; message: ChatMessage; previewUrl: string; siteName?: string; credits?: number }
+  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked"; credits?: number };
 
 const HISTORY_MESSAGES = 8;
 /** Longer than the longest agent run (route maxDuration is 300 s). */
@@ -90,7 +90,7 @@ export async function sendOwnerMessage(
       store.latestVersion(input.ownerId, project.id),
       deps.assets?.list(input.ownerId, project.id),
     ]);
-    if (!paid) return input.onEvent({ type: "error", code: "no_credits" });
+    if (!paid) return input.onEvent({ type: "error", code: "no_credits", credits: 0 });
     chargedRef = deps.credits ? ref : null;
     await store.addMessage(input.ownerId, { projectId: project.id, role: "owner", text: input.text });
 
@@ -150,15 +150,21 @@ export async function sendOwnerMessage(
       status: result.status,
       versionNumber,
     });
-    input.onEvent({ type: "done", message, previewUrl: sandbox.previewUrl, ...(siteNameNow ? { siteName: siteNameNow } : {}) });
+    input.onEvent({ type: "done", message, previewUrl: sandbox.previewUrl, ...(siteNameNow ? { siteName: siteNameNow } : {}), ...(await creditsAfter(deps, input.ownerId)) });
     chargedRef = null;
   } catch (error) {
     reportError("builder.sendOwnerMessage failed", error, { projectId: project.id });
     if (chargedRef && !input.signal?.aborted) await deps.credits?.refund(input.ownerId, chargedRef).catch(() => undefined);
-    input.onEvent({ type: "error", code: "failed" });
+    input.onEvent({ type: "error", code: "failed", ...(await creditsAfter(deps, input.ownerId)) });
   } finally {
     await deps.lock.release(`project:${project.id}`, token);
   }
+}
+
+/** The owner's AI changes left after this request (refunds included), sent with the last event. */
+async function creditsAfter(deps: BuilderDeps, ownerId: string): Promise<{ credits?: number }> {
+  const n = await deps.credits?.left?.(ownerId).catch(() => undefined);
+  return typeof n === "number" ? { credits: n } : {};
 }
 
 /** Puts an older version back as a new version (history is never rewritten). */

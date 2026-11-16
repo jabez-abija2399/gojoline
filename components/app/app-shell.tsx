@@ -13,11 +13,13 @@ export async function AppShell({ locale, t, user, children }: { locale: Locale; 
       <Sidebar
         locale={locale}
         who={user.name || user.phone || user.email || ""}
-        credits={allowance.credits}
-        monthly={allowance.monthly}
+        credits={allowance?.credits ?? null}
+        monthly={allowance?.monthly ?? 0}
         recent={sites.slice(0, 6).map((s) => ({ id: s.project.id, name: s.project.name || t.builder.untitled, live: !!liveAddress(s.site) }))}
         text={{
-          navLabel: a.navLabel,
+          sidebarLabel: a.sidebarLabel,
+          mainNav: a.mainNav,
+          creditsChipLabel: a.creditsChipLabel,
           menu: a.menu,
           closeMenu: a.closeMenu,
           home: t.common.homeLink,
@@ -27,8 +29,8 @@ export async function AppShell({ locale, t, user, children }: { locale: Locale; 
           templates: a.templates,
           plan: a.plan,
           recent: a.recent,
-          planBadge: a.planBadge.replace("{plan}", t.billing.plans[allowance.plan]),
-          creditsLeft: allowance.credits > 0 ? a.creditsLeft : a.creditsNone,
+          planBadge: allowance ? a.planBadge.replace("{plan}", t.billing.plans[allowance.plan]) : "",
+          creditsLeft: !allowance ? "" : allowance.credits <= 0 ? a.creditsNone : allowance.credits === 1 ? a.creditsLeftOne : a.creditsLeft.replace("{n}", String(allowance.credits)),
           creditsShort: a.creditsShort,
           creditsHint: a.creditsHint,
           getMore: a.getMore,
@@ -39,7 +41,9 @@ export async function AppShell({ locale, t, user, children }: { locale: Locale; 
           pwa: t.pwa,
         }}
       />
-      <div className="flex min-w-0 flex-1 flex-col">{children}</div>
+      <div id="app-content" className="flex min-w-0 flex-1 flex-col">
+        {children}
+      </div>
     </div>
   );
 }

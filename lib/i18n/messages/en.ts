@@ -323,6 +323,7 @@ export const en = {
       photos: { label: "Add my photos" },
     },
     composerHint: "Enter to send · Shift + Enter for a new line",
+    creditsLeftOne: "1 change left",
     undo: "Undo this change",
     undoing: "Undoing...",
     creditsLeft: "{n} changes left",
@@ -349,6 +350,10 @@ export const en = {
     codeEmpty: "Nothing here yet.",
   },
   app: {
+    sidebarLabel: "Gojoline menu",
+    mainNav: "Main menu",
+    creditsLeftOne: "1 change left",
+    creditsChipLabel: "Changes left: {n}",
     navLabel: "Your account",
     menu: "Menu",
     closeMenu: "Close menu",

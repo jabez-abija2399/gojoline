@@ -323,6 +323,7 @@ export const am: Messages = {
       photos: { label: "ፎቶዎቼን ጨምር" },
     },
     composerHint: "ለመላክ Enter · ለአዲስ መስመር Shift + Enter",
+    creditsLeftOne: "1 ለውጥ ቀርቷል",
     undo: "ይህን ለውጥ ይመልሱ",
     undoing: "በመመለስ ላይ...",
     creditsLeft: "{n} ለውጦች ቀርተዋል",
@@ -349,6 +350,10 @@ export const am: Messages = {
     codeEmpty: "እስካሁን ምንም የለም።",
   },
   app: {
+    sidebarLabel: "የጎጆላይን ማውጫ",
+    mainNav: "ዋና ማውጫ",
+    creditsLeftOne: "1 ለውጥ ቀርቷል",
+    creditsChipLabel: "የቀሩ ለውጦች፦ {n}",
     navLabel: "የእርስዎ መለያ",
     menu: "ማውጫ",
     closeMenu: "ማውጫውን ዝጋ",

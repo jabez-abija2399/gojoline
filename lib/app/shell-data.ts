@@ -27,8 +27,13 @@ export const ownerSites = cache(async (ownerId: string): Promise<OwnerSite[]> =>
 /** Plan and AI changes left, for the sidebar's meter. */
 export const ownerAllowance = cache(async (ownerId: string) => {
   const billing = services().billing;
-  const [{ plan }, credits] = await Promise.all([billing.plan(ownerId), billing.creditsLeft(ownerId)]);
-  return { plan, credits, monthly: PLAN_FEATURES[plan].monthlyEdits };
+  try {
+    const [{ plan, until }, credits] = await Promise.all([billing.plan(ownerId), billing.creditsLeft(ownerId)]);
+    return { plan, until, credits, monthly: PLAN_FEATURES[plan].monthlyEdits };
+  } catch {
+    // The meter is a help, not the page: without it every signed-in page still opens.
+    return null;
+  }
 });
 
 /** Where a published site lives, without the protocol; null when it isn't live. */

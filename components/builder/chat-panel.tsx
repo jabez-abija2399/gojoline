@@ -16,6 +16,8 @@ export interface UiMessage {
   versionNumber?: number;
   tone?: "error";
   action?: { href: string; label: string };
+  /** A version brought back (undo or restore): undoing that would redo the change. */
+  restored?: boolean;
 }
 
 interface Props {
@@ -134,7 +136,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             note={m.versionNumber ? t.versionSaved.replace("{n}", String(m.versionNumber)) : undefined}
             seeSite={m.versionNumber && m.id === lastId && !working ? { label: t.seeSite, onClick: onSeeSite } : undefined}
             undo={
-              onUndo && m.versionNumber && m.id === lastId && !working
+              onUndo && m.versionNumber && !m.restored && m.id === lastId && !working
                 ? {
                     label: undoing ? t.undoing : t.undo,
                     busy: undoing,
@@ -268,9 +270,9 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             {!attach.note && !attach.error && t.composerHint}
           </span>
           {credits.left !== null && (
-            <Link href={credits.href} className={`ms-auto inline-flex min-h-6 items-center gap-1.5 rounded font-medium underline-offset-4 hover:underline ${credits.left <= 3 ? "text-warning" : "text-ink-muted"}`}>
+            <Link href={credits.href} className={`-me-2 ms-auto inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 font-medium underline-offset-4 hover:underline ${credits.left <= 3 ? "text-warning" : "text-ink-muted"}`}>
               <Sparkles aria-hidden="true" className="size-3.5" />
-              {credits.left > 0 ? t.creditsLeft.replace("{n}", String(credits.left)) : t.creditsNone}
+              {credits.left <= 0 ? t.creditsNone : credits.left === 1 ? t.creditsLeftOne : t.creditsLeft.replace("{n}", String(credits.left))}
             </Link>
           )}
         </div>

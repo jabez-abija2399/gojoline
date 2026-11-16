@@ -69,7 +69,7 @@ export default async function ProjectsPage({
               <input type="hidden" name="preset" value={site.id} />
               <PendingButton className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-line bg-white text-start transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md">
                 <span className="block aspect-[4/3] w-full overflow-hidden bg-sunken">
-                  <Image src={site.top.src} alt="" width={site.top.width} height={site.top.height} sizes="(min-width: 1280px) 220px, (min-width: 768px) 30vw, 46vw" loading={i < 4 ? "eager" : "lazy"} className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]" />
+                  <Image src={site.top.src} alt="" width={site.top.width} height={site.top.height} sizes="(min-width: 1280px) 220px, (min-width: 768px) 30vw, 46vw" loading={cards.length === 0 && i < 4 ? "eager" : "lazy"} className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]" />
                 </span>
                 <span className="flex flex-1 items-center justify-between gap-2 p-3 font-medium">
                   {b.templates[site.id]}

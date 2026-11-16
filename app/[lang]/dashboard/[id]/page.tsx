@@ -51,7 +51,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
             {t.dashboard.backToBuilder}
           </Link>
         </div>
-        <nav aria-label={t.dashboard.title} className="flex flex-wrap gap-1 rounded-xl border border-line bg-white p-1">
+        <nav aria-label={t.dashboard.title} className="grid grid-cols-2 gap-1 rounded-xl border border-line bg-white p-1 sm:flex">
           {TABS.map((x) => (
             <Link
               key={x}

@@ -68,7 +68,7 @@ export function SitesGrid({ locale, sites, t }: { locale: string; sites: SiteCar
                   <span className="size-2 rounded-full bg-ink/20" />
                   <span className="ms-2 flex min-w-0 flex-1 items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-0.5 text-xs text-ink-muted">
                     {!s.address && <Lock className="size-3 shrink-0" />}
-                    <span className="truncate">{s.address?.text ?? "gojoline.site"}</span>
+                    <span className="truncate">{s.address?.text ?? (s.status === "taken_down" ? t.takenDown : t.draft)}</span>
                   </span>
                 </div>
                 <div className="flex flex-1 items-center justify-center">

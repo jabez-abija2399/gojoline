@@ -1,21 +1,26 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Eye, FileText, History, Images, MessageCircle } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { nextTimeline, type Timeline } from "./build-timeline";
 import { ChatPanel, type UiMessage } from "./chat-panel";
-import { CodePanel } from "./code-panel";
 import type { SiteLanguages } from "./language-choice";
-import { PhotosPanel, type PhotoText } from "./photos-panel";
+import type { PhotoText } from "./photos-panel";
 import { PreviewControls, PreviewPanel, type Device } from "./preview-panel";
 import { PublishBar } from "./publish-bar";
 import { takeStartPrompt } from "./start-prompt";
 import { TabList } from "./tab-list";
 import { TopBar, type TopBarText } from "./top-bar";
 import { usePhotos } from "./use-photos";
-import { VersionsPanel, type UiVersion } from "./versions-panel";
+import type { UiVersion } from "./versions-panel";
+
+// Opened now and then, not on every visit: their code loads the first time they are shown.
+const VersionsPanel = dynamic(() => import("./versions-panel").then((m) => m.VersionsPanel));
+const PhotosPanel = dynamic(() => import("./photos-panel").then((m) => m.PhotosPanel));
+const CodePanel = dynamic(() => import("./code-panel").then((m) => m.CodePanel));
 
 type Tab = "chat" | "preview" | "photos" | "versions" | "code";
 type SideTab = Exclude<Tab, "chat">;
@@ -70,6 +75,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const [reloadKey, setReloadKey] = useState(0);
   const [mobileTab, setMobileTab] = useState<Tab>(templateName ? "preview" : "chat");
   const [deskTab, setDeskTab] = useState<SideTab>("preview");
+  // Side views mount the first time they are opened and then stay (they keep their state).
+  const [opened, setOpened] = useState<ReadonlySet<Tab>>(() => new Set<Tab>(["chat", "preview"]));
+  const markOpened = (tab: Tab) => setOpened((s) => (s.has(tab) ? s : new Set(s).add(tab)));
   // The photo list is fetched the first time the Photos view is opened.
   const [photosWanted, setPhotosWanted] = useState(false);
   const photos = usePhotos(projectId, photosWanted);
@@ -146,6 +154,8 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 break;
               case "done": {
                 finished = true;
+                // The server's count after charging (and any refund), so it is never guessed.
+                if (typeof event.credits === "number") setCredits(event.credits);
                 setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 const m = event.message;
                 if (m.status === "failed") addAssistant(t.reverted, { tone: "error" });
@@ -163,6 +173,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
               }
               case "error":
                 finished = true;
+                if (typeof event.credits === "number") setCredits(event.credits);
                 if (event.code === "no_credits") addAssistant(noCredits.text, { tone: "error", action: { href: `/${locale}/billing`, label: noCredits.action } });
                 // A refusal is a normal answer, not a system failure.
                 else if (event.code === "blocked") addAssistant(t.blocked);
@@ -178,11 +189,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         setWorking(false);
         setTimeline(null);
         setStreamText("");
-        // Ask rather than count: a failed change gives its credit back on the server.
-        fetch("/api/billing/credits")
-          .then((r) => (r.ok ? r.json() : null))
-          .then((d: { credits?: number } | null) => typeof d?.credits === "number" && setCredits(d.credits))
-          .catch(() => undefined);
       }
     },
     [projectId, t, addAssistant, noCredits, locale],
@@ -206,12 +212,14 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   }, []);
   const reload = useCallback(() => setReloadKey((k) => k + 1), []);
   const showTab = (tab: Tab) => {
+    markOpened(tab);
     setMobileTab(tab);
     if (tab === "preview") setPreviewFresh(false);
     if (tab === "photos") setPhotosWanted(true);
   };
 
   const showDesk = (tab: SideTab) => {
+    markOpened(tab);
     setDeskTab(tab);
     if (tab === "photos") setPhotosWanted(true);
   };
@@ -235,7 +243,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       setVersions(data.versions.map((v) => ({ ...v, createdAt: String(v.createdAt) })));
       setCurrent(data.version.number);
       setReloadKey((k) => k + 1);
-      addAssistant(t.versionRestoredFrom.replace("{n}", String(number)), { versionNumber: data.version.number });
+      addAssistant(t.versionRestoredFrom.replace("{n}", String(number)), { versionNumber: data.version.number, restored: true });
       return true;
     },
     [projectId, t, addAssistant],
@@ -247,6 +255,8 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const undo = useCallback(async () => {
     if (previous === null) return;
     if (!(await restore(previous).catch(() => false))) addAssistant(t.versionRestoreFailed, { tone: "error" });
+    // The button is gone with the change: keyboard focus goes to the message box.
+    setFocusChat((k) => k + 1);
   }, [previous, restore, addAssistant, t.versionRestoreFailed]);
 
   const chat = (
@@ -324,7 +334,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
           </div>
           {SIDE_TABS.map((tab) => (
             <section key={tab} id={`panel-${tab}`} role="tabpanel" aria-label={tabLabels[tab]} className={panelClass(tab)}>
-              {panels[tab]}
+              {opened.has(tab) && panels[tab]}
             </section>
           ))}
         </div>

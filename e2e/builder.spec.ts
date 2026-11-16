@@ -41,7 +41,7 @@ test("create a site, edit it by chat, see versions and restore", async ({ page }
   await page.goto("/en/build");
   const card = page.getByRole("main").getByRole("listitem").filter({ hasText: "Selam Coffee" });
   await expect(card.getByRole("link", { name: "Selam Coffee", exact: true })).toBeVisible();
-  await expect(card.getByText("Not published")).toBeVisible();
+  await expect(card.getByText("Not published", { exact: true }).last()).toBeVisible();
   await expect(card.getByText(/^Changed /)).toBeVisible();
 });
 
@@ -180,7 +180,7 @@ test("photos: add one in the builder and hand it to the chat", async ({ page }) 
   await expect(page.getByRole("img", { name: "Photo 2" })).toHaveCount(0);
 });
 
-test("undo the newest change for free; the changes left are shown and the menu opens on phones", async ({ page }) => {
+test("undo the newest change for free; the changes left are shown and the menu opens on phones", async ({ page }, info) => {
   await newSite(page);
   await chat(page).fill("Selam Coffee");
   await chat(page).press("Enter");
@@ -193,14 +193,19 @@ test("undo the newest change for free; the changes left are shown and the menu o
   await expect(page.getByRole("link", { name: "13 changes left" })).toBeVisible();
   await page.getByRole("button", { name: "Undo this change" }).click();
   await expect(page.getByRole("log", { name: "Chat" }).getByText("Brought back version 1")).toBeVisible();
+  // Undoing an undo would bring the change back: no second button, and focus is in the message box.
+  await expect(page.getByRole("button", { name: "Undo this change" })).toHaveCount(0);
+  await expect(chat(page)).toBeFocused();
   // Undo is a restore, not an AI change: the count stays.
   await expect(page.getByRole("link", { name: "13 changes left" })).toBeVisible();
 
   await page.goto("/en/build");
   await openAppMenu(page);
-  const nav = page.getByRole("complementary", { name: "Your account" });
+  const nav = page.getByRole(info.project.name === "mobile" ? "dialog" : "complementary", { name: "Gojoline menu" });
   await expect(nav.getByRole("link", { name: /Selam Coffee/ })).toBeVisible();
-  await expect(nav.getByRole("heading", { name: "13 changes left" })).toBeVisible();
+  await expect(nav.getByRole("region", { name: "13 changes left" })).toBeVisible();
+  // The page behind an open phone menu can't be reached.
+  if (info.project.name === "mobile") await expect(page.locator("#app-content")).toHaveAttribute("inert", "");
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 });
