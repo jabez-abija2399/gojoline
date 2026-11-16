@@ -101,7 +101,7 @@ export function birrToMinor(raw: string): number | null {
   return Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0") || "0");
 }
 
-/** A product's name from the messages; the top-up name carries {n} = TOPUP_CREDITS. */
-export function productName(names: Record<Product, string>, product: Product): string {
-  return names[product].replace("{n}", String(TOPUP_CREDITS));
+/** A product's name from the messages; the top-up name carries {n}, the changes in one pack (Admin → Settings). */
+export function productName(names: Record<Product, string>, product: Product, topupCredits: number = TOPUP_CREDITS): string {
+  return names[product].replace("{n}", String(topupCredits));
 }

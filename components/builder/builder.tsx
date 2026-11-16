@@ -15,6 +15,13 @@ import { takeStartPrompt } from "./start-prompt";
 import { TabList } from "./tab-list";
 import { TopBar, type TopBarText } from "./top-bar";
 import { usePhotos } from "./use-photos";
+import { format } from "@/lib/i18n/format";
+
+/** "Used 2 changes · 18 left" under an AI answer (a free first build says so). */
+function usageNote(t: Messages["builder"], charged: number, left: number, firstBuild: boolean): string {
+  if (charged === 0) return format(firstBuild ? t.usedFree : t.usedNone, { left });
+  return format(charged === 1 ? t.usedOne : t.usedMany, { n: charged, left });
+}
 import type { UiVersion } from "./versions-panel";
 
 // Opened now and then, not on every visit: their code loads the first time they are shown.
@@ -29,6 +36,8 @@ const TAB_ICONS = { chat: MessageCircle, preview: Eye, photos: Images, versions:
 
 interface Props {
   noCredits: { text: string; action: string };
+  /** When the next monthly changes arrive, e.g. "1 December". */
+  nextGrant: string;
   locale: Locale;
   projectId: string;
   t: Messages["builder"];
@@ -45,8 +54,18 @@ interface Props {
 let localId = 0;
 const nextId = () => `local-${++localId}`;
 
-export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits }: Props) {
+/** A bigger request waiting for "Go ahead" (nothing was run or charged yet). */
+export interface PendingConfirm {
+  text: string;
+  languages: SiteLanguages;
+  size: "medium" | "large";
+  cost: number;
+  left: number;
+}
+
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant }: Props) {
   const [credits, setCredits] = useState<number | null>(initialCredits);
+  const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
   // A site that only has its template version: show it first and say what to change.
   const templateId = initialVersions.length === 1 ? /^template:([a-z-]+)$/.exec(initialVersions[0]!.summary)?.[1] : undefined;
   const templateName = templateId ? (t.templates as Record<string, string>)[templateId] : undefined;
@@ -107,8 +126,10 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   }, []);
 
   const send = useCallback(
-    async (text: string, languages: SiteLanguages) => {
-      setMessages((m) => [...m, { id: nextId(), role: "owner", text }]);
+    async (text: string, languages: SiteLanguages, confirmSize?: PendingConfirm["size"]) => {
+      // Going ahead with a bigger request: its message is already in the chat.
+      if (!confirmSize) setMessages((m) => [...m, { id: nextId(), role: "owner", text }]);
+      setConfirm(null);
       setWorking(true);
       setTimeline({ steps: [{ key: "understand", done: false }], edits: 0, startedAt: Date.now() });
       setStreamText("");
@@ -117,7 +138,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         const res = await fetch(`/api/projects/${projectId}/messages`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, ...(versionsRef.current === 0 ? { languages } : {}) }),
+          body: JSON.stringify({ text, ...(versionsRef.current === 0 ? { languages } : {}), ...(confirmSize ? { confirmSize } : {}) }),
         });
         if (res.status === 429) return addAssistant(t.tooMany, { tone: "error" });
         if (!res.ok || !res.body) return addAssistant(t.failed, { tone: "error" });
@@ -152,14 +173,21 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 lastBuildFailed.current = !event.ok;
                 if (event.ok) setReloadKey((k) => k + 1);
                 break;
+              case "needs_confirm":
+                // Nothing ran: the owner sees the cost and decides.
+                finished = true;
+                if (typeof event.credits === "number") setCredits(event.credits);
+                setConfirm({ text, languages, size: event.size, cost: event.cost, left: event.credits });
+                break;
               case "done": {
                 finished = true;
                 // The server's count after charging (and any refund), so it is never guessed.
                 if (typeof event.credits === "number") setCredits(event.credits);
                 setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 const m = event.message;
-                if (m.status === "failed") addAssistant(t.reverted, { tone: "error" });
-                else addAssistant(m.text, { versionNumber: m.versionNumber });
+                const usage = typeof event.charged === "number" && typeof event.credits === "number" ? usageNote(t, event.charged, event.credits, versionsRef.current === 0 && m.status === "changed") : undefined;
+                if (m.status === "failed") addAssistant(event.tooBig ? t.tooBigFailed : t.reverted, { tone: "error", usage });
+                else addAssistant(event.tooBig ? [m.text, t.tooBigPartial].filter(Boolean).join("\n\n") : m.text, { versionNumber: m.versionNumber, usage });
                 if (typeof event.siteName === "string" && event.siteName) setName(event.siteName);
                 if (m.versionNumber) {
                   if (versionsRef.current === 0) setCelebrate(true);
@@ -174,7 +202,11 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
               case "error":
                 finished = true;
                 if (typeof event.credits === "number") setCredits(event.credits);
-                if (event.code === "no_credits") addAssistant(noCredits.text, { tone: "error", action: { href: `/${locale}/billing`, label: noCredits.action } });
+                if (event.code === "no_credits") {
+                  // Not enough for this request (but some left): say what it needs; none left: say so.
+                  const some = typeof event.cost === "number" && (event.credits ?? 0) > 0;
+                  addAssistant(some ? format(t.notEnough, { cost: event.cost, left: event.credits }) : noCredits.text, { tone: "error", action: { href: `/${locale}/billing`, label: noCredits.action } });
+                }
                 // A refusal is a normal answer, not a system failure.
                 else if (event.code === "blocked") addAssistant(t.blocked);
                 else addAssistant(event.code === "busy" ? t.busy : t.failed, { tone: "error" });
@@ -259,8 +291,23 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
     setFocusChat((k) => k + 1);
   }, [previous, restore, addAssistant, t.versionRestoreFailed]);
 
+  /** "Make it smaller": the request goes back into the message box, unsent and unpaid. */
+  const smaller = useCallback(() => {
+    if (!confirm) return;
+    setMessages((m) => {
+      const i = m.findLastIndex((x) => x.role === "owner" && x.text === confirm.text);
+      return i >= 0 ? [...m.slice(0, i), ...m.slice(i + 1)] : m;
+    });
+    setDraft(confirm.text);
+    setConfirm(null);
+    addAssistant(t.confirmSmallerHint);
+    setFocusChat((k) => k + 1);
+  }, [confirm, addAssistant, t.confirmSmallerHint]);
+
   const chat = (
     <ChatPanel
+      confirm={confirm ? { ...confirm, onGo: () => void send(confirm.text, confirm.languages, confirm.size), onSmaller: smaller } : undefined}
+      nextGrant={nextGrant}
       t={t}
       hasSite={versions.length > 0}
       celebrate={celebrate && !liveUrl}

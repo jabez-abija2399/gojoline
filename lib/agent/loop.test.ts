@@ -79,3 +79,54 @@ describe("runAgent", () => {
     expect(await ws.readFile("src/site.json")).toBe("a");
   });
 });
+
+describe("runAgent cost budget", () => {
+  // Each scripted turn costs 0.008 USD (8e6 nano-USD) on Opus 5.5.
+  const turn = 8_000_000;
+
+  it("asks the model to wrap up near the budget, stops past it, and keeps finished work that builds", async () => {
+    const ws = new MemoryWorkspace({ "src/site.json": "a" });
+    const llm = new ScriptedLLMProvider([
+      { content: [toolUseBlock("write_file", { path: "src/site.json", content: "b" })] },
+      { content: [toolUseBlock("write_file", { path: "src/site.json", content: "c" })] },
+      { content: [textBlock("never reached")] },
+    ]);
+    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: 2 * turn });
+    expect(llm.requests).toHaveLength(2);
+    expect(result.stoppedForBudget).toBe(true);
+    // The edits weren't built yet: the loop built them once, and they are kept.
+    expect(ws.builds).toBe(1);
+    expect(result.status).toBe("changed");
+    expect(await ws.readFile("src/site.json")).toBe("c");
+    // After the first turn (half the budget) nothing was said; after the second the note was added.
+    const lastUser = llm.requests[1]!.messages.at(-1)!;
+    expect(JSON.stringify(lastUser.content)).not.toContain("Budget note");
+  });
+
+  it("adds the wrap-up note once past 70% of the budget", async () => {
+    const ws = new MemoryWorkspace({ "src/site.json": "a" });
+    const llm = new ScriptedLLMProvider([
+      { content: [toolUseBlock("read_file", { path: "src/site.json" })] },
+      { content: [textBlock("Done.")] },
+    ]);
+    await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: turn + 1 });
+    expect(JSON.stringify(llm.requests[1]!.messages.at(-1)!.content)).toContain("Budget note");
+  });
+
+  it("undoes everything when the budget runs out and the site doesn't build", async () => {
+    const ws = new MemoryWorkspace({ "src/site.json": "ok" }, (f) => ({ ok: f.get("src/site.json") === "ok", output: "broken" }));
+    const llm = new ScriptedLLMProvider([{ content: [toolUseBlock("write_file", { path: "src/site.json", content: "half" })] }]);
+    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: turn });
+    expect(result.stoppedForBudget).toBe(true);
+    expect(result.status).toBe("failed");
+    expect(await ws.readFile("src/site.json")).toBe("ok");
+  });
+
+  it("takes fewer turns for small requests", async () => {
+    const ws = new MemoryWorkspace({ "src/site.json": "a" });
+    const llm = new ScriptedLLMProvider(Array.from({ length: 5 }, () => ({ content: [toolUseBlock("read_file", { path: "src/site.json" })] })));
+    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", maxTurns: 3 });
+    expect(result.turns).toBe(3);
+    expect(result.stoppedForBudget).toBe(false);
+  });
+});

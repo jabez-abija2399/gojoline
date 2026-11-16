@@ -117,3 +117,14 @@ export function quote(product: Product, baseMinor: number, opts: { offer: Launch
   if (fromOffer && fromOffer.discountMinor > 0) return { ...none, ...fromOffer, source: "offer" };
   return none;
 }
+
+/** The launch-offer price of a product now, or null when the offer doesn't apply to it. */
+export function offerPrice(offer: LaunchOffer | null, product: Product, baseMinor: number, now: Date): number | null {
+  const q = quote(product, baseMinor, { offer, code: null, now });
+  return q.source === "offer" ? q.finalMinor : null;
+}
+
+/** "31 Dec" (or the Amharic month), for "20% off until …". */
+export function offerUntilLabel(offer: LaunchOffer, locale: "en" | "am"): string {
+  return new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { day: "numeric", month: "short", timeZone: "Africa/Addis_Ababa" }).format(offerEndsAt(offer));
+}

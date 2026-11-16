@@ -179,7 +179,7 @@ export class MemoryBillingStore implements BillingStore {
     const c = this.codes.find((x) => x.code === code);
     return c ? { ...c } : null;
   }
-  async createDiscount(input: Omit<DiscountInput, "kind">, _by: string) {
+  async createDiscount(input: Omit<DiscountInput, "kind">) {
     if (this.codes.some((x) => x.code === input.code)) return null;
     const c: DiscountCode = { ...input, id: randomUUID(), uses: 0, active: true, createdAt: new Date() };
     this.codes.push(c);

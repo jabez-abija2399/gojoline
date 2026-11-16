@@ -7,30 +7,67 @@ import { format } from "@/lib/i18n/format";
 import { productName } from "@/lib/billing/plans";
 
 const PRODUCTS = ["starter_month", "starter_year", "business_month", "business_year", "topup"] as const;
+type ProductId = (typeof PRODUCTS)[number];
 const METHODS = ["telebirr", "cbe", "other"] as const;
 const MAX_RECEIPT_BYTES = 4_000_000;
 const FIELD_ERRORS = new Set(["reference", "duplicate"]);
 const RECEIPT_ERRORS = new Set(["receipt", "receipt_missing"]);
 
 type State = { kind: "idle" | "sending" | "done" } | { kind: "error"; code: string };
+/** A code checked by the server: what it takes off, or why it can't be used. */
+type CodeState = { kind: "none" } | { kind: "checking" } | { kind: "ok"; code: string; finalMinor: number; originalMinor: number; discountMinor: number; source: "code" | "offer" | null } | { kind: "error"; error: string };
 
-export function PaymentForm({ t, prices, initialProduct = "starter_month" }: { t: Messages["billing"]; prices: Record<(typeof PRODUCTS)[number], string>; initialProduct?: (typeof PRODUCTS)[number] }) {
+const birr = (minor: number) => new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(minor / 100);
+
+export function PaymentForm({
+  t,
+  prices,
+  topupCredits,
+  initialProduct = "starter_month",
+}: {
+  t: Messages["billing"];
+  /** Santim: the list price and the price now (launch offer included). */
+  prices: Record<ProductId, { base: number; final: number }>;
+  topupCredits: number;
+  initialProduct?: ProductId;
+}) {
   const [state, setState] = useState<State>({ kind: "idle" });
   const [fileName, setFileName] = useState<string | null>(null);
+  const [product, setProduct] = useState<ProductId>(initialProduct);
+  const [code, setCode] = useState<CodeState>({ kind: "none" });
   const refRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const codeRef = useRef<HTMLInputElement>(null);
   const doneRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
     if (state.kind === "done") doneRef.current?.focus();
   }, [state.kind]);
-  const errorText = state.kind === "error" ? ((t.errors as Record<string, string>)[state.code] ?? t.errors.failed) : null;
+  const errorText = state.kind === "error" ? ((t.errors as Record<string, string>)[state.code] ?? (t.codeErrors as Record<string, string>)[state.code] ?? t.errors.failed) : null;
   const refError = state.kind === "error" && FIELD_ERRORS.has(state.code);
   const receiptError = state.kind === "error" && RECEIPT_ERRORS.has(state.code);
+  const codeErrorText = code.kind === "error" ? ((t.codeErrors as Record<string, string>)[code.error] ?? (t.errors as Record<string, string>)[code.error] ?? t.errors.failed) : null;
 
-  const fail = (code: string) => {
-    setState({ kind: "error", code });
-    if (FIELD_ERRORS.has(code)) refRef.current?.focus();
-    else if (RECEIPT_ERRORS.has(code)) fileRef.current?.focus();
+  const fail = (failure: string) => {
+    if (failure.startsWith("code_")) {
+      setState({ kind: "idle" });
+      setCode({ kind: "error", error: failure });
+      codeRef.current?.focus();
+      return;
+    }
+    setState({ kind: "error", code: failure });
+    if (FIELD_ERRORS.has(failure)) refRef.current?.focus();
+    else if (RECEIPT_ERRORS.has(failure)) fileRef.current?.focus();
+  };
+
+  /** Asks the server what the code takes off this product (it checks the code again on sending). */
+  const check = async (forProduct: ProductId) => {
+    const typed = codeRef.current?.value.trim() ?? "";
+    if (!typed) return setCode({ kind: "none" });
+    setCode({ kind: "checking" });
+    const res = await fetch("/api/billing/quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ product: forProduct, code: typed }) }).catch(() => null);
+    const d = res ? await res.json().catch(() => ({})) : {};
+    if (res?.ok && d.quote) setCode({ kind: "ok", code: typed.toUpperCase(), ...d.quote });
+    else setCode({ kind: "error", error: typeof d.error === "string" ? d.error : "failed" });
   };
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -49,19 +86,73 @@ export function PaymentForm({ t, prices, initialProduct = "starter_month" }: { t
     if (res?.ok) {
       form.reset();
       setFileName(null);
+      setProduct(initialProduct);
+      setCode({ kind: "none" });
       setState({ kind: "done" });
     } else fail(typeof d.error === "string" ? d.error : "failed");
   };
+
+  // What the customer pays: the server's quote with a code, otherwise the price now (offer included).
+  const price = code.kind === "ok" ? { base: code.originalMinor, final: code.finalMinor } : prices[product];
+  const discounted = price.final < price.base;
+  const codeNote = code.kind !== "ok" ? null : code.source === "code" ? format(t.codeApplied, { code: code.code, amount: birr(code.discountMinor) }) : code.source === "offer" ? t.offerBetter : null;
 
   return (
     <form onSubmit={submit} noValidate className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <label htmlFor="pay-product" className="font-medium">{t.product}</label>
-        <select id="pay-product" name="product" defaultValue={initialProduct} className="min-h-11 rounded-lg border border-input bg-white px-3 text-base">
+        <select
+          id="pay-product"
+          name="product"
+          value={product}
+          onChange={(e) => {
+            const next = e.target.value as ProductId;
+            setProduct(next);
+            // An applied code is checked again for the new choice.
+            if (code.kind === "ok" || code.kind === "error") void check(next);
+          }}
+          className="min-h-11 rounded-lg border border-input bg-white px-3 text-base"
+        >
           {PRODUCTS.map((p) => (
-            <option key={p} value={p}>{`${productName(t.productNames, p)} · ${prices[p]}`}</option>
+            <option key={p} value={p}>{`${productName(t.productNames, p, topupCredits)} · ${format(t.price, { price: birr(prices[p].final) })}`}</option>
           ))}
         </select>
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="pay-code" className="font-medium">{t.codeLabel}</label>
+        <div className="flex gap-2">
+          <input
+            ref={codeRef}
+            id="pay-code"
+            name="code"
+            autoComplete="off"
+            autoCapitalize="characters"
+            spellCheck={false}
+            maxLength={20}
+            aria-describedby={codeErrorText ? "pay-code-hint pay-code-error" : "pay-code-hint"}
+            aria-invalid={!!codeErrorText || undefined}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                void check(product);
+              }
+            }}
+            onChange={() => code.kind !== "none" && code.kind !== "checking" && setCode({ kind: "none" })}
+            className="min-h-11 min-w-0 flex-1 rounded-lg border border-input px-3 font-mono text-base uppercase aria-invalid:border-destructive"
+          />
+          <button type="button" onClick={() => void check(product)} aria-disabled={code.kind === "checking"} className="min-h-11 shrink-0 rounded-lg border border-line bg-white px-4 text-sm font-medium hover:border-faint aria-disabled:opacity-50 lg:min-h-9">
+            {t.codeApply}
+          </button>
+        </div>
+        <p id="pay-code-hint" className="text-sm text-ink-muted">{t.codeHint}</p>
+        {codeErrorText && <p id="pay-code-error" role="alert" className="text-destructive">{codeErrorText}</p>}
+      </div>
+      <div role="status" aria-live="polite" className="flex flex-col gap-0.5 rounded-lg bg-paper px-4 py-3">
+        <p className="font-semibold">
+          {format(t.youPay, { price: birr(price.final) })}
+          {discounted && <span className="font-normal text-ink-muted"> {format(t.youPayWas, { price: birr(price.base) })}</span>}
+        </p>
+        {codeNote && <p className="text-sm text-ink-muted">{codeNote}</p>}
       </div>
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 font-medium">{t.method}</legend>

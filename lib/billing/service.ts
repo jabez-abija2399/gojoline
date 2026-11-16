@@ -71,7 +71,8 @@ export class Billing {
 
   /** A new discount code; null when the code already exists. Audited. */
   async createDiscount(adminId: string, input: DiscountInput): Promise<DiscountCode | null> {
-    const { kind: _kind, ...rest } = input;
+    // The kind only chooses which amount is set; the store keeps the amounts.
+    const rest = { code: input.code, percentOff: input.percentOff, amountOffMinor: input.amountOffMinor, products: input.products, maxUses: input.maxUses, expiresAt: input.expiresAt, firstPaymentOnly: input.firstPaymentOnly };
     const created = await this.db.createDiscount(rest, adminId);
     if (created) await this.db.audit({ actorId: adminId, action: "discount.created", targetType: "discount", targetId: created.id, data: { ...rest, expiresAt: rest.expiresAt?.toISOString() ?? null } });
     return created;
@@ -149,8 +150,6 @@ export class Billing {
   /** Plan, changes left, and what the Plan page explains about them. */
   async allowance(userId: string) {
     const [{ plan, until }, credits, cs] = await Promise.all([this.plan(userId), this.creditsLeft(userId), this.credits()]);
-    const yearAgo = new Date(this.now().getTime() - 365 * 86_400_000);
-    const bought = await this.db.sumSince(userId, ["topup", "admin"], yearAgo);
     return {
       plan,
       until,
@@ -159,10 +158,15 @@ export class Billing {
       rolloverMonths: cs.rollover[plan],
       /** Unused monthly changes kept at most (bought and gifted ones are kept on top). */
       keptMax: cs.monthly[plan] * cs.rollover[plan],
-      /** Bought or gifted changes still in the balance (they are spent last in the cap's eyes). */
-      bought: Math.min(credits, bought),
       nextGrant: nextMonthlyGrant(this.now()),
     };
+  }
+
+  /** Bought or gifted changes (last 12 months) still in the balance: the rollover cap never takes them. */
+  async boughtLeft(userId: string): Promise<number> {
+    const yearAgo = new Date(this.now().getTime() - 365 * 86_400_000);
+    const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, ["topup", "admin"], yearAgo)]);
+    return Math.max(0, Math.min(balance, bought));
   }
 
   /**

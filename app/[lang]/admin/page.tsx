@@ -12,9 +12,12 @@ import { format, getMessages } from "@/lib/i18n";
 import { adminStats, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
 import { BarChart } from "@/components/admin/bar-chart";
-import { setAdminTheme } from "./actions";
+import { setAdminTheme, toggleDiscountCode } from "./actions";
+import { CreditsForm } from "@/components/admin/credits-form";
+import { CodeForm, OfferForm } from "@/components/admin/discount-forms";
+import { planFeaturesWith } from "@/lib/billing/credits";
 import { OwnerActions } from "@/components/admin/owner-actions";
 import { PlanComparison } from "@/components/pricing/plan-comparison";
 import { monthlyRevenueMinor, type PlanFilter } from "@/lib/admin/stats";
@@ -32,7 +35,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["overview", "payments", "reports", "sites", "users", "costs", "settings"] as const;
+const TABS = ["overview", "payments", "reports", "sites", "users", "costs", "discounts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 type AdminUserPlan = (typeof PLAN_IDS)[number];
 
@@ -56,7 +59,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
   const theme = (["light", "dark", "system"] as const).find((x) => x === savedTheme) ?? "system";
   const counts = await adminStats().overview();
   const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports };
-  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, sites: Globe, users: Users, costs: Cpu, settings: Settings2 };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, sites: Globe, users: Users, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
   const navItem = (x: Tab, compact: boolean) => {
     const Icon = icons[x];
     return (
@@ -114,6 +117,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           {tab === "sites" && <Sites />}
           {tab === "users" && <UsersTab />}
           {tab === "costs" && <Costs />}
+          {tab === "discounts" && <Discounts />}
           {tab === "settings" && <Settings />}
         </main>
       </div>
@@ -414,7 +418,15 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 <li key={p.id} className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
                   <div className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
                     <p className="font-semibold">{productName(t.billing.productNames, p.product)}</p>
-                    <p className="font-semibold">{format(t.billing.price, { price: amount(p.amountMinor) })}</p>
+                    {p.discountMinor ? (
+                      <div className="flex flex-col">
+                        <p>{format(t.admin.payOriginal, { price: amount(p.originalAmountMinor ?? p.amountMinor) })}</p>
+                        <p>{format(t.admin.payDiscount, { amount: amount(p.discountMinor), what: p.discountSource === "offer" ? t.admin.payOffer : (p.discountCode ?? "") })}</p>
+                        <p className="font-semibold">{format(t.admin.payFinal, { price: amount(p.amountMinor) })}</p>
+                      </div>
+                    ) : (
+                      <p className="font-semibold">{format(t.billing.price, { price: amount(p.amountMinor) })}</p>
+                    )}
                     <p>{t.billing.methods[p.method]}: <span className="font-mono">{p.reference}</span></p>
                     <p className="break-all">{t.admin.user}: {p.contact ?? p.userId.slice(0, 8)}</p>
                     <p className="text-ink-muted">{dateFmt.format(p.createdAt)}</p>
@@ -508,19 +520,70 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
   }
 
   async function Settings() {
-    const s = await svc.billing.settings();
+    const [s, credits] = await Promise.all([svc.billing.settings(), svc.billing.credits()]);
     const birr = (minor: number) => (minor % 100 === 0 ? String(minor / 100) : `${Math.floor(minor / 100)}.${String(minor % 100).padStart(2, "0")}`);
     const values = { ...s, prices: Object.fromEntries(Object.entries(s.prices).map(([k, v]) => [k, birr(v)])) };
     return (
       <section aria-labelledby="settings-title" className="flex flex-col gap-4">
         <h2 id="settings-title" className="text-2xl font-bold">{t.admin.settingsTitle}</h2>
         <p className="text-ink-muted">{t.admin.settingsHint}</p>
-        <SettingsForm t={t.admin} tb={t.billing} lang={lang} values={values} />
+        <SettingsForm t={t.admin} tb={t.billing} lang={lang} values={values} topupCredits={credits.topupCredits} />
+        <div className="mt-4 border-t border-line pt-6">
+          <CreditsForm t={t.admin} planNames={t.billing.plans} lang={lang} values={credits} />
+        </div>
         <div className="mt-4 flex flex-col gap-2 border-t border-line pt-6">
           <p className="text-ink-muted">{t.admin.settingsIncludesHint}</p>
-          <PlanComparison t={{ ...t.plans.compare, title: t.admin.settingsIncludes }} planNames={t.billing.plans} id="admin-compare" />
+          <PlanComparison t={{ ...t.plans.compare, title: t.admin.settingsIncludes }} planNames={t.billing.plans} id="admin-compare" features={planFeaturesWith(credits)} />
         </div>
       </section>
+    );
+  }
+
+  async function Discounts() {
+    const [offer, codes, credits] = await Promise.all([svc.billing.launchOffer(), svc.billing.store().discounts(), svc.billing.credits()]);
+    const names = Object.fromEntries((["starter_month", "starter_year", "business_month", "business_year", "topup"] as const).map((p) => [p, productName(t.billing.productNames, p, credits.topupCredits)])) as Record<"starter_month" | "starter_year" | "business_month" | "business_year" | "topup", string>;
+    const dayFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeZone: "Africa/Addis_Ababa" });
+    return (
+      <div className="flex flex-col gap-6">
+        <OfferForm t={t.admin} names={names} lang={lang} value={offer} />
+        <section aria-labelledby="codes-title" className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h2 id="codes-title" className="text-xl font-bold">{t.admin.codesTitle}</h2>
+            <p className="text-ink-muted">{t.admin.codesHint}</p>
+          </div>
+          <CodeForm t={t.admin} names={names} lang={lang} />
+          {codes.length === 0 ? (
+            <p className="text-ink-muted">{t.admin.codesEmpty}</p>
+          ) : (
+            <ul aria-label={t.admin.codesCaption} className="flex flex-col gap-3">
+              {codes.map((c) => (
+                <li key={c.id} className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-mono text-lg font-semibold">{c.code}</p>
+                    <span className={`rounded-full px-3 py-1 text-sm font-semibold ${c.active ? "bg-sunken text-ink" : "border border-line bg-white text-ink-muted"}`}>{c.active ? t.admin.codeActive : t.admin.codeInactive}</span>
+                  </div>
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
+                    <div><dt className="text-ink-muted">{t.admin.colDiscount}</dt><dd className="font-semibold">{c.percentOff !== null ? format(t.admin.percentOff, { n: c.percentOff }) : format(t.admin.birrOff, { n: amount(c.amountOffMinor ?? 0) })}</dd></div>
+                    <div><dt className="text-ink-muted">{t.admin.colUses}</dt><dd className="font-semibold tabular-nums">{c.maxUses !== null ? format(t.admin.usesOf, { n: c.uses, max: c.maxUses }) : c.uses}</dd></div>
+                    <div><dt className="text-ink-muted">{t.admin.colLastDay}</dt><dd className="font-semibold">{c.expiresAt ? dayFmt.format(c.expiresAt) : t.admin.noEnd}</dd></div>
+                    <div><dt className="text-ink-muted">{t.admin.codeProducts}</dt><dd>{c.products.map((p) => names[p]).join(", ")}</dd></div>
+                  </dl>
+                  {c.firstPaymentOnly && <p className="text-sm text-ink-muted">{t.admin.firstOnly}</p>}
+                  <form action={toggleDiscountCode}>
+                    <input type="hidden" name="lang" value={lang} />
+                    <input type="hidden" name="id" value={c.id} />
+                    <input type="hidden" name="active" value={c.active ? "false" : "true"} />
+                    <button className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-sm font-medium hover:border-faint lg:min-h-9">
+                      {c.active ? t.admin.codeDeactivate : t.admin.codeActivate}
+                      <span className="sr-only"> {c.code}</span>
+                    </button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
     );
   }
 
