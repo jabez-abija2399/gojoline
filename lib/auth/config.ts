@@ -3,10 +3,10 @@ import { emailOTP, phoneNumber } from "better-auth/plugins";
 import { normalizeEthiopianPhone } from "@/lib/contact";
 import type { OtpSender } from "@/lib/providers/notify/otp";
 
-/** Placeholder email for phone-only accounts (never sent to; .invalid is a reserved TLD). */
 /** Session cookies are named gojo.session_token (__Secure-gojo.… on https). */
 export const AUTH_COOKIE_PREFIX = "gojo";
 
+/** Placeholder email for phone-only accounts (never sent to; .invalid is a reserved TLD). */
 export const phoneEmail = (phone: string) => `${phone.replace(/\D/g, "")}@phone.gojoline.invalid`;
 
 export const OTP_HTTP_PATHS = [
