@@ -9,9 +9,14 @@ const beds = (n) => t(`${n} ${n === 1 ? "bed" : "beds"}`, `${n} መኝታ`);
 const baths = (n) => t(`${n} ${n === 1 ? "bath" : "baths"}`, `${n} መታጠቢያ`);
 const area = (n) => t(`${n} m²`, `${n} ካሬ ሜትር`);
 
+// Each home carries more than one photo: visitors swipe them inside the card (1/3 counter), the
+// way the best property sites show a listing. No photo appears twice on one page.
 const listings = [
   {
     image: img("real-estate-card-midrise-apartments-balconies", "Mid-rise apartment building with glass balconies and large windows", "የመስታወት በረንዳዎችና ሰፋፊ መስኮቶች ያሉት የአፓርትመንት ሕንፃ"),
+    photos: [
+      img("hotel-card-standard-room", "Bright bedroom with a white bed and ochre cushions", "ነጭ አልጋና ቢጫማ ትራሶች ያሉት ብሩህ መኝታ ክፍል"),
+    ],
     badge: sale,
     subtitle: t("Bole, Addis Ababa", "ቦሌ፣ አዲስ አበባ"),
     title: t("2-bedroom apartment near Atlas", "ባለ 2 መኝታ አፓርትመንት፣ አትላስ አካባቢ"),
@@ -22,6 +27,9 @@ const listings = [
   },
   {
     image: img("real-estate-card-modern-villa-palms", "Modern white flat-roofed villa with planted terraces among palm trees", "በዘንባባ ዛፎች መካከል የሚገኝ ዘመናዊ ነጭ ቪላ ከአትክልት በረንዳዎቹ ጋር"),
+    photos: [
+      img("hotel-card-wooden-cabin-room", "Wood-panelled bedroom with a double bed and two wicker chairs", "የእንጨት ግድግዳ፣ ድርብ አልጋና ሁለት የሸምበቆ ወንበሮች ያሉት መኝታ ክፍል"),
+    ],
     badge: rent,
     subtitle: t("Old Airport, Addis Ababa", "ኦልድ ኤርፖርት፣ አዲስ አበባ"),
     title: t("4-bedroom villa with garden", "ባለ 4 መኝታ ቪላ ከአትክልት ግቢ ጋር"),
@@ -33,6 +41,9 @@ const listings = [
   },
   {
     image: img("real-estate-card-bright-living-room", "Bright living room with two grey sofas, a pale rug and sliding glass doors", "ሁለት ግራጫ ሶፋዎች፣ ነጣ ያለ ምንጣፍ እና ተንሸራታች የመስታወት በሮች ያሉት ብሩህ ሳሎን"),
+    photos: [
+      img("real-estate-hero-modern-apartment-corner-sky", "Top floors of the black-and-white apartment block against a pale blue sky", "በነጣ ሰማያዊ ሰማይ ሥር የሚታዩ የጥቁርና ነጭ አፓርትመንት ሕንፃው የላይኛው ፎቆች"),
+    ],
     badge: rent,
     subtitle: t("Kazanchis, Addis Ababa", "ካዛንቺስ፣ አዲስ አበባ"),
     title: t("Furnished 2-bedroom apartment", "ዕቃ የተሟላለት ባለ 2 መኝታ አፓርትመንት"),
@@ -40,6 +51,19 @@ const listings = [
     description: t("Move in with a suitcase. Fully furnished, fibre internet, 24-hour security and lift.", "ሻንጣዎን ብቻ ይዘው ይግቡ። ሙሉ ዕቃ፣ ፋይበር ኢንተርኔት፣ የ24 ሰዓት ጥበቃ እና ሊፍት አለው።"),
     price: birr(85000),
     priceNote: perMonth,
+    action: ask,
+  },
+  {
+    image: img("real-estate-gallery-master-bedroom", "Artist's impression of a master bedroom with a grey bed, oak panelling and globe lights", "የዋና መኝታ ክፍል የንድፍ ምስል፤ ግራጫ አልጋ፣ የእንጨት ግድግዳ እና ክብ መብራቶች"),
+    photos: [
+      img("business-card-construction", "Phase two on site: a curved building under construction with scaffolding and a crane", "በግንባታ ላይ ያለው ሁለተኛው ምዕራፍ፤ ርብራብና ክሬን ያለበት ክብ ቅርጽ ያለው ሕንፃ"),
+    ],
+    badge: sale,
+    subtitle: t("Ayat, Addis Ababa", "አያት፣ አዲስ አበባ"),
+    title: t("3-bedroom, Ayat Garden phase two", "ባለ 3 መኝታ፣ አያት ጋርደን ሁለተኛ ምዕራፍ"),
+    meta: [beds(3), baths(2), area(138)],
+    description: t("Under construction, handover in 18 months. The first picture is an artist's impression.", "በግንባታ ላይ፤ ርክክብ በ18 ወር ውስጥ። የመጀመሪያው ምስል የንድፍ ምስል ነው።"),
+    price: birr(9600000),
     action: ask,
   },
   {
@@ -60,16 +84,6 @@ const listings = [
     meta: [beds(1), baths(1), area(64)],
     description: t("Ready to move in. 30% down and the rest over 24 months, with no interest.", "ለመግባት ዝግጁ። 30% ቅድመ ክፍያ፣ ቀሪው በ24 ወር ያለ ወለድ።"),
     price: birr(4900000),
-    action: ask,
-  },
-  {
-    image: img("real-estate-gallery-master-bedroom", "Artist's impression of a master bedroom with a grey bed, oak panelling and globe lights", "የዋና መኝታ ክፍል የንድፍ ምስል፤ ግራጫ አልጋ፣ የእንጨት ግድግዳ እና ክብ መብራቶች"),
-    badge: sale,
-    subtitle: t("Ayat, Addis Ababa", "አያት፣ አዲስ አበባ"),
-    title: t("3-bedroom, Ayat Garden phase two", "ባለ 3 መኝታ፣ አያት ጋርደን ሁለተኛ ምዕራፍ"),
-    meta: [beds(3), baths(2), area(138)],
-    description: t("Under construction, handover in 18 months. The picture is an artist's impression.", "በግንባታ ላይ፤ ርክክብ በ18 ወር ውስጥ። ምስሉ የንድፍ ምስል ነው።"),
-    price: birr(9600000),
     action: ask,
   },
 ];
@@ -125,7 +139,9 @@ save("real-estate", {
       sections: [
         {
           type: "hero",
+          id: "top",
           variant: "immersive",
+          frame: true,
           eyebrow: t("Buy · Rent · Addis Ababa", "ግዢ · ኪራይ · አዲስ አበባ"),
           heading: t("Find your home in Addis", "በአዲስ አበባ ቤትዎን ያግኙ"),
           subheading: t("Apartments and houses we have visited ourselves, in Bole, Kazanchis, CMC, Ayat and Old Airport. Clear prices, checked title deeds.", "እኛው ራሳችን ሄደን ያየናቸው አፓርትመንቶችና ቤቶች፤ በቦሌ፣ በካዛንቺስ፣ በሲኤምሲ፣ በአያት እና በኦልድ ኤርፖርት። ግልጽ ዋጋ፣ የተጣራ ካርታ።"),
@@ -144,12 +160,13 @@ save("real-estate", {
           layout: "grid",
           eyebrow: t("Featured homes", "የተመረጡ ቤቶች"),
           heading: t("New on the market", "አዲስ ለገበያ የቀረቡ"),
-          intro: t("Every home is visited, measured and photographed by our own agents before it appears here.", "እያንዳንዱ ቤት እዚህ ከመውጣቱ በፊት በራሳችን ወኪሎች ተጎብኝቶ፣ ተለክቶና ፎቶ ተነስቶ ነው።"),
-          items: listings.slice(0, 3),
+          intro: t("Every home is visited, measured and photographed by our own agents before it appears here. Swipe a card to see inside.", "እያንዳንዱ ቤት እዚህ ከመውጣቱ በፊት በራሳችን ወኪሎች ተጎብኝቶ፣ ተለክቶና ፎቶ ተነስቶ ነው። ውስጡን ለማየት ፎቶውን ያንሸራቱ።"),
+          items: listings.slice(0, 4),
           action: link("See all properties", "ሁሉንም ቤቶች ይመልከቱ", "/listings"),
         },
         {
           type: "stats",
+          id: "numbers",
           tone: "dark",
           items: [
             { value: t("12", "12"), label: t("years in Addis Ababa", "ዓመታት በአዲስ አበባ") },
@@ -176,33 +193,10 @@ save("real-estate", {
           action: link("See available units", "ያሉትን ቤቶች ይመልከቱ", "/listings"),
         },
         {
-          type: "cards",
-          id: "areas",
-          layout: "scroll",
-          eyebrow: t("Where we work", "የምንሠራባቸው ሰፈሮች"),
-          heading: t("Choose your side of the city", "የሚመችዎን ሰፈር ይምረጡ"),
-          items: [
-            {
-              image: img("business-hero-addis-street", "A busy Addis Ababa avenue lined with glass mid-rise buildings at dusk", "በምሽት የመስታወት ሕንፃዎች የተሰለፉበት የአዲስ አበባ ሰፊ ጎዳና"),
-              title: t("Bole", "ቦሌ"),
-              subtitle: t("Close to the airport, cafés and offices", "ለአየር ማረፊያ፣ ለካፌዎችና ለቢሮዎች ቅርብ"),
-            },
-            {
-              image: img("business-card-addis-towers", "Glass high-rise towers in Addis Ababa above green trees", "ከአረንጓዴ ዛፎች በላይ የሚታዩ የአዲስ አበባ የመስታወት ሰማይ ጠቀስ ሕንፃዎች"),
-              title: t("Kazanchis", "ካዛንቺስ"),
-              subtitle: t("City-centre apartments, walk to work", "የመሃል ከተማ አፓርትመንቶች፣ ለሥራ ቅርብ"),
-            },
-            {
-              image: img("real-estate-about-addis-neighbourhood", "White and blue mid-rise blocks among dense green trees in Addis Ababa", "በአዲስ አበባ በጥቅጥቅ አረንጓዴ ዛፎች መካከል ያሉ ነጭና ሰማያዊ ሕንፃዎች"),
-              title: t("CMC and Ayat", "ሲኤምሲ እና አያት"),
-              subtitle: t("More space and green for families", "ለቤተሰብ ሰፊና አረንጓዴ"),
-            },
-            {
-              image: img("real-estate-gallery-kitchen-garden-window", "Modern kitchen with cream cabinets, an island and a large window onto trees", "ክሬም ቀለም ካቢኔቶች፣ የመሃል ጠረጴዛ እና ዛፎችን የሚያሳይ ሰፊ መስኮት ያለው ዘመናዊ ኩሽና"),
-              title: t("Old Airport", "ኦልድ ኤርፖርት"),
-              subtitle: t("Quiet streets, houses with gardens", "ጸጥ ያሉ መንገዶች፣ ግቢ ያላቸው ቤቶች"),
-            },
-          ],
+          type: "marquee",
+          id: "places",
+          tone: "primary",
+          items: [t("Bole", "ቦሌ"), t("Kazanchis", "ካዛንቺስ"), t("CMC", "ሲኤምሲ"), t("Ayat", "አያት"), t("Old Airport", "ኦልድ ኤርፖርት"), t("Sarbet", "ሳርቤት"), t("Gerji", "ገርጂ")],
         },
         {
           type: "services",
@@ -219,6 +213,7 @@ save("real-estate", {
         },
         {
           type: "testimonials",
+          id: "reviews",
           eyebrow: t("Clients say", "ደንበኞች ምን ይላሉ"),
           heading: t("People we have helped home", "ቤት እንዲያገኙ የረዳናቸው"),
           items: [
@@ -241,9 +236,10 @@ save("real-estate", {
         },
         {
           type: "cta",
+          id: "end",
           heading: t("See it before you decide", "ከመወሰንዎ በፊት ቤቱን ይዩት"),
           body: t("Tell us which home you like. We arrange the viewing within 24 hours.", "የወደዱትን ቤት ይንገሩን። በ24 ሰዓት ውስጥ ጉብኝቱን እናዘጋጃለን።"),
-          image: img("real-estate-hero-modern-apartment-corner-sky", "Top corner of a modern black-and-white apartment block against a pale blue sky", "በነጣ ሰማያዊ ሰማይ ሥር የሚታይ የዘመናዊ ጥቁርና ነጭ አፓርትመንት ሕንፃ ጥግ"),
+          image: img("business-hero-addis-street", "A busy Addis Ababa avenue lined with glass mid-rise buildings at dusk", "በምሽት የመስታወት ሕንፃዎች የተሰለፉበት የአዲስ አበባ ሰፊ ጎዳና"),
           primaryAction: view,
           secondaryAction: link("Call us", "ይደውሉልን", "tel:+251911000000"),
         },
@@ -261,7 +257,7 @@ save("real-estate", {
           eyebrow: t("Updated every week", "በየሳምንቱ ይታደሳል"),
           heading: t("Homes for sale and rent", "የሚሸጡና የሚከራዩ ቤቶች"),
           subheading: t("Rent is per month. Sale prices are in Birr and open to a fair offer.", "ኪራይ በወር ነው። የሽያጭ ዋጋ በብር ሲሆን ለተገቢ ድርድር ክፍት ነው።"),
-          image: img("real-estate-hero-modern-apartment-corner-sky", "Top corner of a modern black-and-white apartment block against a pale blue sky", "በነጣ ሰማያዊ ሰማይ ሥር የሚታይ የዘመናዊ ጥቁርና ነጭ አፓርትመንት ሕንፃ ጥግ"),
+          image: img("real-estate-hero-addis-skyline-trees", "Addis Ababa skyline with a tall glass tower rising above trees", "ከዛፎች በላይ ከፍ ያለ የመስታወት ሕንፃ የሚታይበት የአዲስ አበባ ሰማይ ጠቀስ ገጽታ"),
           primaryAction: view,
         },
         {
@@ -272,6 +268,46 @@ save("real-estate", {
           heading: t("Six homes picked for this week", "የዚህ ሳምንት ስድስት ምርጥ ቤቶች"),
           intro: t("Did not find it here? We have 42 homes on our books. Tell us your budget and area and we send you a shortlist.", "የሚፈልጉትን እዚህ አላገኙም? በመዝገባችን 42 ቤቶች አሉ። በጀትዎንና ሰፈርዎን ይንገሩን፤ የሚስማሙዎትን መርጠን እንልካለን።"),
           items: listings,
+        },
+        {
+          type: "tabs",
+          id: "areas",
+          eyebrow: t("What is around", "በአካባቢው ያለው"),
+          heading: t("Know the neighbourhood before you visit", "ከመጎብኘትዎ በፊት ሰፈሩን ይወቁ"),
+          items: [
+            {
+              label: t("Bole", "ቦሌ"),
+              heading: t("Close to the airport and the cafés", "ለአየር ማረፊያውና ለካፌዎቹ ቅርብ"),
+              body: t("Apartments above shops and offices, ten minutes from the airport. Busy by day, lively at night.", "ከአየር ማረፊያው አሥር ደቂቃ ርቀት ላይ፣ ከሱቆችና ከቢሮዎች በላይ ያሉ አፓርትመንቶች። ቀን ሥራ የሚበዛበት፣ ማታ የሚደምቅ ሰፈር።"),
+              image: img("business-hero-addis-street", "A busy Addis Ababa avenue lined with glass mid-rise buildings at dusk", "በምሽት የመስታወት ሕንፃዎች የተሰለፉበት የአዲስ አበባ ሰፊ ጎዳና"),
+              points: [t("Shops, banks and clinics a short walk away", "ሱቆች፣ ባንኮችና ክሊኒኮች በአጭር የእግር መንገድ"), t("Good for professionals and the diaspora", "ለባለሙያዎችና ለዳያስፖራ የሚመች")],
+              action: link("Ask about homes in Bole", "በቦሌ ስላሉ ቤቶች ይጠይቁ", "#callback"),
+            },
+            {
+              label: t("Kazanchis", "ካዛንቺስ"),
+              heading: t("City-centre living, walk to work", "የመሃል ከተማ ኑሮ፣ ለሥራ በእግር"),
+              body: t("Tall apartment buildings among offices, hotels and ministries. Most of our furnished rentals are here.", "በቢሮዎች፣ በሆቴሎችና በሚኒስቴር መሥሪያ ቤቶች መካከል ያሉ ረጃጅም የአፓርትመንት ሕንፃዎች። አብዛኞቹ ዕቃ የተሟላላቸው የኪራይ ቤቶቻችን እዚህ ናቸው።"),
+              image: img("business-card-addis-towers", "Glass high-rise towers in Addis Ababa above green trees", "ከአረንጓዴ ዛፎች በላይ የሚታዩ የአዲስ አበባ የመስታወት ሰማይ ጠቀስ ሕንፃዎች"),
+              points: [t("Furnished homes for short and long stays", "ለአጭርና ለረጅም ጊዜ የሚሆኑ ዕቃ የተሟላላቸው ቤቶች"), t("24-hour security in most buildings", "በአብዛኞቹ ሕንፃዎች የ24 ሰዓት ጥበቃ")],
+              action: link("Ask about homes in Kazanchis", "በካዛንቺስ ስላሉ ቤቶች ይጠይቁ", "#callback"),
+            },
+            {
+              label: t("CMC and Ayat", "ሲኤምሲ እና አያት"),
+              heading: t("More space and green for families", "ለቤተሰብ ሰፊና አረንጓዴ"),
+              body: t("Newer compounds on the east side of the city, with gardens, schools and quieter streets. More space for your Birr than in Bole.", "በከተማዋ ምሥራቅ በኩል ያሉ አዳዲስ ግቢዎች፤ የአትክልት ቦታ፣ ትምህርት ቤቶችና ጸጥ ያሉ መንገዶች አሏቸው። ከቦሌ ይልቅ በብርዎ ሰፋ ያለ ቤት ያገኛሉ።"),
+              image: img("real-estate-about-addis-neighbourhood", "White and blue mid-rise blocks among dense green trees in Addis Ababa", "በአዲስ አበባ በጥቅጥቅ አረንጓዴ ዛፎች መካከል ያሉ ነጭና ሰማያዊ ሕንፃዎች"),
+              points: [t("Light rail from Ayat to the city centre", "ከአያት ወደ መሃል ከተማ ቀላል ባቡር"), t("Most of our homes for sale are here", "አብዛኞቹ የሽያጭ ቤቶቻችን እዚህ ናቸው")],
+              action: link("Ask about homes in CMC and Ayat", "በሲኤምሲና በአያት ስላሉ ቤቶች ይጠይቁ", "#callback"),
+            },
+            {
+              label: t("Old Airport", "ኦልድ ኤርፖርት"),
+              heading: t("Quiet streets, houses with gardens", "ጸጥ ያሉ መንገዶች፣ ግቢ ያላቸው ቤቶች"),
+              body: t("Villas and G+1 houses in walled compounds, close to international schools and embassies.", "በአጥር በተከበቡ ግቢዎች ውስጥ ያሉ ቪላዎችና ጂ+1 ቤቶች፤ ለዓለም አቀፍ ትምህርት ቤቶችና ለኤምባሲዎች ቅርብ።"),
+              image: { art: "home", alt: t("Drawing of houses with gardens on a quiet street", "ጸጥ ባለ መንገድ ላይ ያሉ ግቢ ያላቸው ቤቶች ሥዕል") },
+              points: [t("Large compounds with parking", "ሰፊ ግቢና መኪና ማቆሚያ"), t("Most of our villas for rent are here", "አብዛኞቹ የኪራይ ቪላዎቻችን እዚህ ናቸው")],
+              action: link("Ask about homes in Old Airport", "በኦልድ ኤርፖርት ስላሉ ቤቶች ይጠይቁ", "#callback"),
+            },
+          ],
         },
         {
           type: "steps",
@@ -323,6 +359,7 @@ save("real-estate", {
           variant: "numbered",
           eyebrow: t("What we do", "የምንሠራው"),
           heading: t("Three ways we work for owners", "ለባለቤቶች የምንሰጣቸው ሦስት አገልግሎቶች"),
+          image: img("real-estate-card-bright-living-room", "Bright living room with two grey sofas, photographed for a listing", "ለማስታወቂያ ፎቶ የተነሳ፣ ሁለት ግራጫ ሶፋዎች ያሉት ብሩህ ሳሎን"),
           items: [
             { icon: "ruler", title: t("Valuation", "የዋጋ ግምት"), description: t("A site visit and a written estimate of the market price, for sale, rent or a bank loan.", "ቦታው ድረስ መጥተን ለሽያጭ፣ ለኪራይ ወይም ለባንክ ብድር የሚሆን የገበያ ዋጋ ግምት በጽሑፍ እንሰጣለን።"), price: birr(15000) },
             { icon: "camera", title: t("Selling", "ሽያጭ"), description: t("Professional photos, listing here and on Telegram, and viewings only with checked buyers.", "ጥራት ያለው ፎቶ፣ እዚህና በቴሌግራም ማስተዋወቅ፣ ጉብኝት ከተጣሩ ገዢዎች ጋር ብቻ።") },
