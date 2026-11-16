@@ -41,7 +41,7 @@ test("a template's preview shows every page and section before it is picked", as
   // Signed in, "Use this template" opens it as a new site straight away.
   await signIn(page);
   await page.goto("/en/templates/hotel");
-  await page.getByRole("button", { name: "Use this template" }).last().click();
+  await page.getByRole("button", { name: "Use this template" }).filter({ visible: true }).click();
   await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
   await expect(page.getByText("Your Hotel or guest house site is ready").first()).toBeAttached();
 });
@@ -56,15 +56,104 @@ test("the templates page: search and filters narrow the list, and a card opens t
   await expect(list.getByRole("listitem")).toHaveCount(1);
   await expect(page.getByText("1 result")).toBeVisible();
   await page.getByRole("searchbox", { name: "Search templates" }).fill("");
-  // Filters sit behind a button on phones.
-  const filters = page.getByRole("button", { name: "Filters" });
-  if (await filters.isVisible()) await filters.click();
-  await page.getByRole("button", { name: "Health and beauty" }).click();
+  // Categories are plain links, always in view.
+  await page.getByRole("navigation", { name: "Category" }).getByRole("link", { name: "Health and beauty" }).click();
+  await expect(page).toHaveURL(/\/en\/templates\?category=health$/);
   await expect(list.getByRole("listitem")).toHaveCount(2);
+  // Back and Forward follow the address.
+  await page.goBack();
+  await expect(list.getByRole("listitem")).toHaveCount(14);
+  await page.goForward();
+  await expect(page.getByRole("navigation", { name: "Category" }).getByRole("link", { name: "Health and beauty" })).toHaveAttribute("aria-current", "page");
+  await expect(list.getByRole("listitem")).toHaveCount(2);
+  // Other filters sit behind a button on phones.
+  const filters = page.getByRole("button", { name: "Filters", exact: true });
+  if (await filters.isVisible()) await filters.click();
   await page.getByRole("checkbox", { name: "Team or staff" }).check();
   await expect(page.getByRole("heading", { name: /Health and beauty/ })).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).first().click();
+  await expect(page).toHaveURL(/\/en\/templates$/);
   await expect(list.getByRole("listitem")).toHaveCount(14);
   await list.getByRole("link", { name: /Salon or barber/ }).click();
   await expect(page).toHaveURL(/\/en\/templates\/salon$/);
 });
+
+test.describe("templates without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("category chips are links that filter on the server", async ({ page }) => {
+    await page.goto("/en/templates?category=faith");
+    const chips = page.getByRole("navigation", { name: "Category" });
+    await expect(chips.getByRole("link", { name: "Faith and community" })).toHaveAttribute("aria-current", "page");
+    await expect(page.getByRole("heading", { level: 2, name: /Faith and community/ })).toBeVisible();
+    const list = page.getByRole("list", { name: "Example sites" });
+    await expect(list.getByRole("listitem")).toHaveCount(3);
+    // Each card says its category.
+    await expect(list.getByRole("link", { name: /Mosque/ })).toContainText("Faith and community");
+    // An unknown category shows everything.
+    await page.goto("/en/templates?category=nope");
+    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(14);
+  });
+});
+
+test("the gallery in Amharic: category chips, accessible, no sideways scroll", async ({ page }) => {
+  await page.goto("/am/templates?category=food");
+  const chips = page.getByRole("navigation", { name: "ምድብ" });
+  await expect(chips.getByRole("link", { name: "ምግብና መጠጥ" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("list", { name: "የምሳሌ ድረ-ገጾች" }).getByRole("listitem")).toHaveCount(1);
+  await expectNoHorizontalScroll(page);
+  await expectNoSeriousA11yIssues(page);
+});
+
+const CAFE = {
+  en: { crumbs: "Where you are", templates: "Templates", category: "Food and drink", current: "Café or restaurant", name: "Bole Buna House", who: "Juice bars", whoTitle: "Designed for", chips: "Key highlights", chip: "Menu with prices", chip2: "English and Amharic", use: "Use this template", address: "Example address", phone: "Phone", computer: "Computer" },
+  am: { crumbs: "ያሉበት ቦታ", templates: "አብነቶች", category: "ምግብና መጠጥ", current: "ካፌ ወይም ምግብ ቤት", name: "ቦሌ ቡና ቤት", who: "ጭማቂ ቤቶች", whoTitle: "የሚስማማቸው", chips: "ዋና ዋና ነገሮች", chip: "ምናሌ ከዋጋ ጋር", chip2: "እንግሊዝኛና አማርኛ", use: "ይህን አብነት ይጠቀሙ", address: "የምሳሌ አድራሻ", phone: "ስልክ", computer: "ኮምፒውተር" },
+};
+
+for (const lang of ["en", "am"] as const) {
+  test(`the café template in ${lang}: breadcrumb, who it suits, highlights, framed preview, one button`, async ({ page }) => {
+    const copy = CAFE[lang];
+    await page.goto(`/${lang}/templates/cafe`);
+    await expect(page.getByRole("heading", { level: 1, name: copy.name })).toBeVisible();
+
+    // Breadcrumb: Templates › Category › Template.
+    const crumbs = page.getByRole("navigation", { name: copy.crumbs });
+    await expect(crumbs.getByRole("listitem")).toHaveCount(3);
+    await expect(crumbs.getByRole("link", { name: copy.templates })).toHaveAttribute("href", `/${lang}/templates`);
+    await expect(crumbs.getByRole("link", { name: copy.category })).toHaveAttribute("href", `/${lang}/templates?category=food`);
+    await expect(crumbs.locator("[aria-current=page]")).toHaveText(copy.current);
+
+    // Who it suits and what it has, from the template's data.
+    await expect(page.getByRole("region", { name: copy.whoTitle }).getByRole("listitem").filter({ hasText: copy.who })).toBeVisible();
+    const chips = page.getByRole("region", { name: copy.chips }).getByRole("listitem");
+    await expect(chips.filter({ hasText: copy.chip })).toBeVisible();
+    await expect(chips.filter({ hasText: copy.chip2 })).toBeVisible();
+    expect(await chips.count()).toBeGreaterThanOrEqual(4);
+    // No database in e2e: no usage count, never a made-up one.
+    await expect(page.getByText(/Used by|ተጠቅመውበታል/)).toHaveCount(0);
+
+    // The preview sits in a frame with the address the site would get.
+    const wide = (page.viewportSize()?.width ?? 0) >= 1024;
+    const frame = page.locator(`[data-frame=${wide ? "browser" : "phone"}]`);
+    await expect(frame).toBeVisible();
+    await expect(frame.getByText(/bole-buna-house/)).toBeVisible();
+    await expect(frame.getByText(copy.address)).toBeAttached();
+
+    // Large screens: details beside the preview. Phones: details first, then the preview.
+    const aside = await page.getByRole("region", { name: copy.name }).boundingBox();
+    const box = await frame.boundingBox();
+    if (!aside || !box) throw new Error("layout not measured");
+    if (wide) expect(aside.x).toBeGreaterThanOrEqual(box.x + box.width);
+    else expect(aside.y + aside.height).toBeLessThanOrEqual(box.y);
+    // Exactly one "Use this template" in view: beside the preview, or in the bar at the bottom.
+    await expect(page.getByRole("link", { name: copy.use }).filter({ visible: true })).toHaveCount(1);
+    await expect(page.locator("[data-use-bar]")).toBeVisible({ visible: !wide });
+
+    await expectNoHorizontalScroll(page);
+    await expectNoSeriousA11yIssues(page);
+    // The other layout fits too.
+    await page.getByRole("button", { name: wide ? copy.phone : copy.computer }).click();
+    await expect(page.locator(`[data-frame=${wide ? "phone" : "browser"}]`)).toBeVisible();
+    await expectNoHorizontalScroll(page);
+  });
+}

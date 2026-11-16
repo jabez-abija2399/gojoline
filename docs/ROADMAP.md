@@ -81,6 +81,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Site template: four styles, two more heading fonts, full-screen and portrait heroes, picture cards, stats, steps, schedule and quote sections
 - [x] All templates rebuilt on the research with real photos, in English and Amharic, plus two new ones (company, salon): 14 in total
 - [x] Template preview pages: every page and section of a template, computer and phone, before it is picked
+- [ ] Template pages v2: categories with link chips, breadcrumb, "Designed for", key highlights backed by the template's sections, browser and phone frames with the would-be address, details column on large screens, "Used by N businesses" from real projects (shown from 10) (built and tested; design, performance and security reviews still to run)
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
@@ -95,6 +96,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
 - Landing page, from the reviews: the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
 - Re-run `node scripts/showcase-shots.mjs` and `node scripts/template-sections.mjs` after changing the site template or a preset, so the landing page's pictures and the template previews stay true.
+- Template pages v2 Amharic (2026-11-16) needs a native-speaker review: category names, "Designed for" lists and highlight wording in `lib/landing/template-info.ts`, and the new strings under `landing.gallery.categories` and `landing.templatePreview` in `lib/i18n/messages/am.ts`.
 - The new builder and landing strings in Amharic (start box, ideas, suggestions, photos, gallery, numbers) need the same native-speaker review.
 - Amharic in the 14 templates (`templates/site/presets/`, sources in `scripts/presets/`) was rewritten on 2026-11-16 and needs a native-speaker review; the church and mosque wording should be read by members of those communities.
 - Sample photos: a few niches have little that is truly Ethiopian (hotel rooms, mosque interiors, real-estate interiors, a habesha wedding). Commissioned or licensed Ethiopian photos would lift them. Add photos with `node scripts/stock-photos.mjs <folder>`.
