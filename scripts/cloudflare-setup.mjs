@@ -79,9 +79,10 @@ const b = await cf("GET", `/accounts/${account}/r2/buckets/${bucket}`);
 if (b.ok) log(`  ✓ ${bucket} exists`);
 else if (b.errors.some((e) => e.code === 10042)) fail("R2 is not enabled: Cloudflare dashboard → R2 Object Storage → enable it, then run again", b);
 else {
-  plan(`create bucket ${bucket}`);
+  // Eastern Europe is the nearest R2 region to Ethiopia (the edge cache serves repeat visits).
+  plan(`create bucket ${bucket} (location hint eeur)`);
   if (apply) {
-    const c = await cf("POST", `/accounts/${account}/r2/buckets`, { name: bucket });
+    const c = await cf("POST", `/accounts/${account}/r2/buckets`, { name: bucket, locationHint: "eeur" });
     if (!c.ok) fail("create bucket", c);
   }
 }
@@ -100,6 +101,7 @@ if (apply) {
       bindings: [
         { type: "r2_bucket", name: "SITES", bucket_name: bucket },
         { type: "plain_text", name: "APP_URL", text: appUrl },
+        { type: "plain_text", name: "BASE_DOMAIN", text: base },
       ],
     }),
   );

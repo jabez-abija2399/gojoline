@@ -13,6 +13,9 @@ export class MemoryStorageProvider implements StorageProvider {
   async delete(key: string) {
     this.objects.delete(key);
   }
+  async deleteMany(keys: string[]) {
+    for (const k of keys) this.objects.delete(k);
+  }
   async list(prefix: string, opts: { delimiter?: string } = {}) {
     const keys: string[] = [];
     const prefixes = new Set<string>();

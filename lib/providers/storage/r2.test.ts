@@ -46,6 +46,18 @@ describe("R2StorageProvider", () => {
     expect(calls[0]!.url).toContain("list-type=2");
   });
 
+  it("deletes many keys with DeleteObjects, 1000 per request", async () => {
+    const { calls, r2 } = fake([new Response("<DeleteResult/>"), new Response("<DeleteResult/>")]);
+    await r2.deleteMany(Array.from({ length: 1001 }, (_, i) => `sites/a/d/1/f${i}&.js`));
+    expect(calls).toHaveLength(2);
+    expect(calls[0]!.url).toBe(`https://${ACCOUNT}.r2.cloudflarestorage.com/gojoline?delete=`);
+    const h = calls[0]!.init.headers as Record<string, string>;
+    expect(h["content-md5"]).toMatch(/==$/);
+    expect(Buffer.from(calls[0]!.init.body as Uint8Array).toString()).toContain("<Key>sites/a/d/1/f0&amp;.js</Key>");
+    const failing = fake([new Response("<DeleteResult><Error><Key>x</Key></Error></DeleteResult>")]);
+    await expect(failing.r2.deleteMany(["x"])).rejects.toThrow();
+  });
+
   it("refuses an account ID that isn't one", () => {
     expect(() => new R2StorageProvider({ accountId: "abc", accessKeyId: "k", secretAccessKey: "s", bucket: "b" })).toThrow();
   });

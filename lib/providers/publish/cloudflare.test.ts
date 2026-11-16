@@ -27,7 +27,7 @@ describe("CloudflarePublishProvider", () => {
     const r = await cf.publish({ slug: "abeni", files: [file("index.html"), file("assets/a.js"), file("../evil.html"), file("/abs.html")], headers });
     expect(r.url).toBe("https://abeni.afridea.et");
     expect(r.providerProjectId).toBe("cf:abeni");
-    expect(json(storage, "sites/abeni/current.json")).toEqual({ deployment: r.deploymentId, headers });
+    expect(json(storage, "sites/abeni/current.json")).toEqual({ deployment: r.deploymentId, headers, files: ["assets/a.js", "index.html"] });
     expect(json(storage, "hosts/abeni.afridea.et.json")).toEqual({ site: "abeni" });
     expect(storage.objects.get(`sites/abeni/d/${r.deploymentId}/index.html`)?.contentType).toBe("text/html; charset=utf-8");
     expect([...storage.objects.keys()].filter((k) => k.includes("evil") || k.includes("abs"))).toEqual([]);

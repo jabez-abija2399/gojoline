@@ -53,7 +53,11 @@ describe("publishSite", () => {
     expect(r).toMatchObject({ ok: true, site: { provider: "cloudflare", url: "https://selam-coffee.afridea.et" } });
     expect(next.published.has("selam-coffee")).toBe(true);
     const forward = old.published.get("selam-coffee")!.map((f) => f.data.toString());
+    expect(old.redirects.get("selam-coffee")).toBe("https://selam-coffee.afridea.et");
     expect(forward[0]).toContain('http-equiv="refresh" content="0;url=https://selam-coffee.afridea.et"');
+    expect(forward[0]).toContain('<html lang="en">');
+    expect(forward[0]).toContain('<section lang="am"><h2>ይህ ድረ-ገጽ ተዛውሯል</h2>');
+    expect(forward[0]).not.toMatch(/<script/i);
     // Once moved, publishing no longer touches the old host.
     old.published.clear();
     expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);

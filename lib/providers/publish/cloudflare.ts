@@ -2,7 +2,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import type { DnsRecord } from "@/lib/sites/domain";
 import type { StorageProvider } from "@/lib/providers/storage/types";
-import type { DomainStatus, PublishFile, PublishProvider, PublishResult } from "./types";
+import type { DomainStatus, PublishInput, PublishProvider, PublishResult } from "./types";
 
 const API = "https://api.cloudflare.com/client/v4";
 const SLUG = /^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])$/;
@@ -93,7 +93,7 @@ export class CloudflarePublishProvider implements PublishProvider {
     }
   }
 
-  async publish(input: { slug: string; files: PublishFile[]; headers: { key: string; value: string }[]; providerProjectId?: string | null }): Promise<PublishResult> {
+  async publish(input: PublishInput): Promise<PublishResult> {
     const { slug } = input;
     if (!SLUG.test(slug)) throw new Error("Invalid slug");
     const saved = input.providerProjectId ?? null;
@@ -119,7 +119,8 @@ export class CloudflarePublishProvider implements PublishProvider {
     await Promise.all(Array.from({ length: Math.min(8, files.length) }, worker));
 
     // Switching the pointer makes the new version live everywhere at once.
-    await this.storage.put(`sites/${slug}/current.json`, JSON.stringify({ deployment, headers: input.headers }), { contentType: "application/json", cacheControl: "no-store" });
+    // The file list lets the Worker find a page without guessing (no misses on R2).
+    await this.storage.put(`sites/${slug}/current.json`, JSON.stringify({ deployment, headers: input.headers, files: files.map((f) => f.path).sort() }), { contentType: "application/json", cacheControl: "no-store" });
     if (!owner) await this.storage.put(this.hostKey(host), JSON.stringify({ site: slug }), { contentType: "application/json" });
     // Keep the previous version a little longer (requests already in flight), drop the rest.
     await this.prune(slug, deployment, 1).catch((e: unknown) => console.warn("prune failed", slug, e));
@@ -130,10 +131,7 @@ export class CloudflarePublishProvider implements PublishProvider {
   private async prune(slug: string, keep: string, previous: number) {
     const { prefixes } = await this.storage.list(`sites/${slug}/d/`, { delimiter: "/" });
     const ids = prefixes.map((p) => p.slice(`sites/${slug}/d/`.length, -1)).filter((id) => id !== keep).sort().reverse();
-    for (const id of ids.slice(previous)) {
-      const { keys } = await this.storage.list(`sites/${slug}/d/${id}/`);
-      for (const k of keys) await this.storage.delete(k);
-    }
+    await Promise.all(ids.slice(previous).map(async (id) => this.storage.deleteMany((await this.storage.list(`sites/${slug}/d/${id}/`)).keys)));
   }
 
   async restrictOldDeployments(providerProjectId: string): Promise<void> {

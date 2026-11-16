@@ -190,7 +190,7 @@ async function deployLocked(
       // Moved hosts: the old address now forwards to the new one (and stops showing old content).
       const page = Buffer.from(movedPage(result.url));
       await deps.legacy
-        .publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: existing.providerProjectId })
+        .publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: existing.providerProjectId, redirectTo: result.url })
         .then(() => deps.legacy?.restrictOldDeployments?.(existing.providerProjectId!))
         .catch((e: unknown) => reportError("old host forward failed", e, { projectId }));
     }

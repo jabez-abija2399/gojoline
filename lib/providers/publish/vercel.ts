@@ -1,6 +1,6 @@
 import "server-only";
 import { routingRecord, type DnsRecord } from "@/lib/sites/domain";
-import type { DomainStatus, PublishFile, PublishProvider, PublishResult } from "./types";
+import type { DomainStatus, PublishInput, PublishProvider, PublishResult } from "./types";
 
 interface ProjectDomain {
   name?: string;
@@ -114,13 +114,19 @@ export class VercelPublishProvider implements PublishProvider {
     return this.domainStatus(projectId, domain, info);
   }
 
-  async publish(input: { slug: string; files: PublishFile[]; headers: { key: string; value: string }[]; providerProjectId?: string | null }): Promise<PublishResult> {
+  async publish(input: PublishInput): Promise<PublishResult> {
     if (!/^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])$/.test(input.slug)) throw new Error("Invalid slug");
     const name = `${this.prefix}${input.slug}`;
     const projectId = await this.ensureProject(name, input.providerProjectId);
     // Defence in depth: the scanner already refuses these; the host config is always ours.
     const safeFiles = input.files.filter((f) => !/^(?:vercel\.json|api\/|\.vercel\/|middleware\.)/i.test(f.path));
-    const vercelJson = { cleanUrls: true, trailingSlash: false, headers: [{ source: "/(.*)", headers: input.headers }] };
+    const vercelJson = {
+      cleanUrls: true,
+      trailingSlash: false,
+      headers: [{ source: "/(.*)", headers: input.headers }],
+      // A site that moved hosts: every old address goes to the same page at the new one.
+      ...(input.redirectTo ? { redirects: [{ source: "/:path*", destination: `${input.redirectTo.replace(/\/$/, "")}/:path*`, permanent: true }] } : {}),
+    };
     const files = [
       ...safeFiles.map((f) => ({ file: f.path, data: f.data.toString("base64"), encoding: "base64" })),
       { file: "vercel.json", data: Buffer.from(JSON.stringify(vercelJson)).toString("base64"), encoding: "base64" },
