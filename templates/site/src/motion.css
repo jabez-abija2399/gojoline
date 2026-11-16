@@ -461,7 +461,9 @@
     padding-block: 0.375rem;
   }
   .header-overlay .header-cta {
-    box-shadow: 0 6px 20px -8px rgb(0 0 0 / 0.5);
+    box-shadow:
+      0 0 0 1.5px rgb(255 255 255 / 0.6),
+      0 6px 20px -8px rgb(0 0 0 / 0.5);
   }
   /* A small "scroll" cue at the foot of a full-screen photo. */
   .scroll-cue {

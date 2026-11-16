@@ -134,7 +134,11 @@ async function makeCards(ids) {
       const { width, height } = await sharp(hero).metadata();
       const h = Math.min(height, Math.round(width / 1.6));
       const w = Math.round(h * 1.6);
-      await sharp(hero).extract({ left: Math.round((width - w) / 2), top: 0, width: w, height: h }).resize(640, 400).webp({ quality: 62, effort: 6 }).toFile(join(outRoot, id, `${lang}-card.webp`));
+      // A full-screen photo hero has its words low down: take its lower part. Others: the top.
+      const preset = JSON.parse(readFileSync(join(root, "templates", "site", "presets", `${id}.json`), "utf8"));
+      const first = preset.pages[0].sections[0];
+      const low = first?.type === "hero" && (first.variant === "immersive" || first.variant === "banner");
+      await sharp(hero).extract({ left: Math.round((width - w) / 2), top: low ? height - h : 0, width: w, height: h }).resize(640, 400).webp({ quality: 62, effort: 6 }).toFile(join(outRoot, id, `${lang}-card.webp`));
     }
   }
   console.log(`Card pictures for ${ids.length} template(s).`);
