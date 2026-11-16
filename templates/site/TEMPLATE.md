@@ -110,6 +110,8 @@ Follow the order for the kind of business in the table above. For a kind that is
 
 On phones a bar with Call and Telegram (or WhatsApp) appears by itself when `business.phone`, `telegram` or `whatsapp` is set, so fill those in whenever the owner gives them. The `split` hero also shows the first `business.hours` lines beside its picture; don't repeat the hours in the hero `eyebrow`, use it for the place or what makes the business special.
 
+Owners can also change the phone, Telegram, WhatsApp, address, opening hours and a one-line banner in their dashboard without you; the live site shows those over `business` and `announcement` (it keeps yours when they set nothing).
+
 For a person, use first-person, warm copy; `highlights` and `facts` only with facts they gave; no prices unless they gave them; leave out `business.hours`.
 
 ## Design and motion

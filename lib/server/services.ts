@@ -43,6 +43,10 @@ import { MemoryCloudStore } from "@/lib/cloud/memory-store";
 import type { CloudStore, SubmissionNotifier } from "@/lib/cloud/types";
 import { DbAssetStore, MemoryAssetStore } from "@/lib/cloud/assets";
 import { BotApiClient, MemoryTelegramClient, type TelegramClient } from "@/lib/telegram/client";
+import { DbSiteSettingsStore, MemorySiteSettingsStore, type SiteSettingsStore } from "@/lib/site-info/store";
+import { MemoryVisitCounter, RedisVisitCounter } from "@/lib/visits/counter";
+import { DbVisitsDailyStore, MemoryVisitsDailyStore } from "@/lib/visits/daily";
+import type { VisitDeps } from "@/lib/visits/stats";
 import { TelegramNotifier } from "@/lib/telegram/notifier";
 import { DbTelegramStore, MemoryTelegramStore, type TelegramStore } from "@/lib/telegram/store";
 
@@ -163,6 +167,17 @@ interface Services {
   usageReport: UsageReport;
   /** Abuse reports and takedowns; null without a database or publishing. */
   moderation: ModerationDeps | null;
+  /** Business details and the share preview the owner edits in the dashboard. */
+  siteSettings: SiteSettingsStore;
+  /** Privacy-friendly visit counts (Redis live, Postgres daily; memory without them). */
+  visits: VisitDeps;
+}
+
+/** `ownerOf` serves the memory store only (the database joins projects instead). */
+function pickVisits(env: Env, ownerOf: (projectId: string) => Promise<string | null>): VisitDeps {
+  const db = getDb(env);
+  const redis = isE2E(env) ? null : redisFrom(env);
+  return { counter: redis ? new RedisVisitCounter(redis) : new MemoryVisitCounter(), daily: db ? new DbVisitsDailyStore(db) : new MemoryVisitsDailyStore(ownerOf) };
 }
 
 const globalForServices = globalThis as unknown as { gojoServices?: Services };
@@ -185,6 +200,8 @@ export function services(): Services {
       telegram: null,
       usageReport: usage as unknown as UsageReport,
       moderation: null,
+      siteSettings: db ? new DbSiteSettingsStore(db) : new MemorySiteSettingsStore(),
+      visits: { counter: new MemoryVisitCounter(), daily: new MemoryVisitsDailyStore(async () => null) },
     };
     const svc = globalForServices.gojoServices;
     if (svc.builder) {
@@ -203,8 +220,10 @@ export function services(): Services {
       svc.builder.sizer = key && !isE2E(process.env) ? new LLMRequestSizer(new AnthropicLLMProvider(key), usage, process.env.SIZE_MODEL || "claude-haiku-5-5") : new HeuristicSizer();
     }
     svc.publish = pickPublish(process.env, svc.builder);
+    svc.visits = pickVisits(process.env, async (id) => (await svc.publish?.cloud?.publicSite(id))?.ownerId ?? null);
     if (svc.publish) {
       svc.publish.entitlements = billing.entitlements;
+      svc.publish.settings = svc.siteSettings;
       // Keywords always; the AI check when an API key is set (never in e2e).
       const key = process.env.SAYSITE_ANTHROPIC_API_KEY;
       const classifier = key && !isE2E(process.env) ? new LLMContentClassifier(new AnthropicLLMProvider(key), usage, process.env.SAFETY_MODEL || "claude-haiku-5-5") : null;
