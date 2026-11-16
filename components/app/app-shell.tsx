@@ -15,6 +15,7 @@ export async function AppShell({ locale, t, user, children }: { locale: Locale; 
         who={user.name || user.phone || user.email || ""}
         credits={allowance?.credits ?? null}
         monthly={allowance?.monthly ?? 0}
+        canUpgrade={!allowance || allowance.plan !== "business"}
         recent={sites.slice(0, 6).map((s) => ({ id: s.project.id, name: s.project.name || t.builder.untitled, live: !!liveAddress(s.site) }))}
         text={{
           sidebarLabel: a.sidebarLabel,
@@ -34,6 +35,8 @@ export async function AppShell({ locale, t, user, children }: { locale: Locale; 
           creditsShort: a.creditsShort,
           creditsHint: a.creditsHint,
           getMore: a.getMore,
+          upgrade: a.upgrade,
+          accountMenu: a.accountMenu,
           live: a.live,
           signOut: t.auth.signOut,
           language: t.common.languageSwitch,

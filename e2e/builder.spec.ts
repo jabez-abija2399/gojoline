@@ -203,7 +203,11 @@ test("undo the newest change for free; the changes left are shown and the menu o
   await openAppMenu(page);
   const nav = page.getByRole(info.project.name === "mobile" ? "dialog" : "complementary", { name: "Gojoline menu" });
   await expect(nav.getByRole("link", { name: /Selam Coffee/ })).toBeVisible();
-  await expect(nav.getByRole("region", { name: "13 changes left" })).toBeVisible();
+  await expect(nav.getByRole("link", { name: /13 changes left/ })).toBeVisible();
+  // Sign out waits behind the account menu.
+  await expect(nav.getByRole("button", { name: "Sign out" })).toBeHidden();
+  await nav.getByRole("button", { name: /Account menu/ }).click();
+  await expect(nav.getByRole("button", { name: "Sign out" })).toBeVisible();
   // The page behind an open phone menu can't be reached.
   if (info.project.name === "mobile") await expect(page.locator("#app-content")).toHaveAttribute("inert", "");
   await expectNoSeriousA11yIssues(page);
@@ -222,7 +226,7 @@ test("on a short window the recent sites scroll and never cover the changes-left
   await page.goto("/en/build");
   const { listBottom, cardTop } = await page.evaluate(() => ({
     listBottom: document.querySelector("[aria-labelledby=recent-title]")!.getBoundingClientRect().bottom,
-    cardTop: document.querySelector("[aria-labelledby=credits-title]")!.getBoundingClientRect().top,
+    cardTop: document.getElementById("credits-title")!.closest("a")!.getBoundingClientRect().top,
   }));
   expect(listBottom).toBeLessThanOrEqual(cardTop);
 });

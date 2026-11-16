@@ -350,6 +350,8 @@ export const am: Messages = {
     codeEmpty: "እስካሁን ምንም የለም።",
   },
   app: {
+    upgrade: "ያሻሽሉ",
+    accountMenu: "የመለያ ማውጫ",
     sidebarLabel: "የጎጆላይን ማውጫ",
     mainNav: "ዋና ማውጫ",
     creditsLeftOne: "1 ለውጥ ቀርቷል",

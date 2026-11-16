@@ -7,10 +7,13 @@ interface Props {
   target: Locale;
   label: string;
   ariaLabel: string;
+  /** Replaces the default bordered button look (e.g. a row in a menu). */
+  className?: string;
+  children?: React.ReactNode;
 }
 
 /** Link to the same page in the other language. A plain <a> so the server re-renders in that locale. */
-export function LanguageSwitch({ target, label, ariaLabel }: Props) {
+export function LanguageSwitch({ target, label, ariaLabel, className, children }: Props) {
   const pathname = usePathname() ?? "/";
   const params = useSearchParams();
   // Keep the parts of the address that matter on the other side (where to go next, which site, which tab).
@@ -28,8 +31,9 @@ export function LanguageSwitch({ target, label, ariaLabel }: Props) {
       hrefLang={target}
       lang={target}
       title={ariaLabel}
-      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-line bg-white px-4 text-base font-medium text-ink transition-colors hover:border-faint hover:bg-sunken"
+      className={className ?? "inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-line bg-white px-4 text-base font-medium text-ink transition-colors hover:border-faint hover:bg-sunken"}
     >
+      {children}
       {label}
     </a>
   );

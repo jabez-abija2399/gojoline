@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { CreditCard, LayoutGrid, LayoutTemplate, LogOut, Menu, Plus, Sparkles, X } from "lucide-react";
+import { ChevronsUpDown, CreditCard, Globe, LayoutGrid, LayoutTemplate, LogOut, Menu, Plus, Sparkles, X, Zap } from "lucide-react";
 import { InstallApp } from "@/components/pwa/install-app";
 import { LanguageSwitch } from "@/components/site/language-switch";
 import { signOut } from "@/lib/auth/actions";
@@ -29,6 +29,8 @@ export interface SidebarText {
   creditsShort: string;
   creditsHint: string;
   getMore: string;
+  upgrade: string;
+  accountMenu: string;
   live: string;
   signOut: string;
   language: string;
@@ -44,6 +46,8 @@ interface Props {
   /** Null when the plan couldn't be read: the meter hides itself. */
   credits: number | null;
   monthly: number;
+  /** A bigger plan exists: the card says Upgrade. */
+  canUpgrade: boolean;
   recent: { id: string; name: string; live: boolean }[];
 }
 
@@ -53,7 +57,7 @@ const item = "relative flex min-h-11 items-center gap-2.5 rounded-lg px-2.5 text
  * The signed-in area's navigation: a column beside the page on large screens, a drawer
  * behind a Menu button on phones. Everything the owner can go to is here, in one place.
  */
-export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) {
+export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recent }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname() ?? "";
   const asideRef = useRef<HTMLElement>(null);
@@ -194,42 +198,108 @@ export function Sidebar({ locale, text, who, credits, monthly, recent }: Props) 
           </div>
         )}
 
-        <div className="mt-auto flex shrink-0 flex-col gap-3">
+        <div className="mt-auto flex shrink-0 flex-col gap-2">
           {credits !== null && (
-            <section aria-labelledby="credits-title" className="flex flex-col gap-2 rounded-xl border border-line bg-white p-3">
-              <span className="w-fit rounded-full bg-sunken px-2 py-0.5 text-xs font-medium text-ink">{text.planBadge}</span>
-              <p id="credits-title" className={`flex items-center gap-2 text-sm font-semibold ${low ? "text-warning" : "text-ink"}`}>
-                <Sparkles aria-hidden="true" className="size-4 shrink-0" />
-                {text.creditsLeft}
-              </p>
-              <span aria-hidden="true" className="block h-1.5 overflow-hidden rounded-full bg-sunken">
-                <span className={`block h-full rounded-full ${low ? "bg-warning" : "bg-ink"}`} style={{ width: `${Math.round(share * 100)}%` }} />
+            // One compact card: what's left, how much of the month, and the way to more.
+            <Link
+              href={billing}
+              onClick={close}
+              className="group flex items-center gap-3 rounded-xl border border-line bg-white p-2.5 shadow-sm transition hover:border-faint hover:shadow-md"
+            >
+              <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span id="credits-title" className={`flex items-center gap-1.5 text-sm font-semibold ${low ? "text-warning" : "text-ink"}`}>
+                  {text.creditsLeft}
+                </span>
+                <span aria-hidden="true" className="block h-1 overflow-hidden rounded-full bg-sunken">
+                  <span className={`block h-full rounded-full ${low ? "bg-warning" : "bg-ink"}`} style={{ width: `${Math.round(share * 100)}%` }} />
+                </span>
+                <span id="credits-plan" className="flex items-center gap-1 text-xs text-ink-muted">
+                  {text.planBadge}
+                  {canUpgrade && (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span className="font-semibold text-link">{text.upgrade}</span>
+                    </>
+                  )}
+                </span>
               </span>
-              <p className="text-xs leading-relaxed text-ink-muted [@media(max-height:720px)]:hidden">{text.creditsHint.replace("{total}", String(monthly))}</p>
-              <Link href={billing} onClick={close} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-ink-hover lg:min-h-9">
-                {text.getMore}
-              </Link>
-            </section>
+              <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[linear-gradient(135deg,var(--gojo-coral),var(--gojo-coral-hover)_55%,var(--gojo-coral-soft))] text-ink shadow-inner transition-transform group-hover:scale-105">
+                {canUpgrade ? <Zap className="size-5" /> : <Sparkles className="size-5" />}
+              </span>
+            </Link>
           )}
-          <InstallApp t={text.pwa} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2.5 text-sm font-medium text-ink hover:bg-white lg:min-h-9" />
-          <div className="flex items-center gap-2 border-t border-line pt-3">
-            <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ink font-display text-sm font-bold text-white">
-              {[...who.trim()][0]?.toUpperCase() ?? "G"}
-            </span>
-            <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink" title={who}>
-              {who}
-            </span>
-            <LanguageSwitch target={other} label={text.language} ariaLabel={text.languageLabel} />
-          </div>
-          <form action={signOut}>
-            <input type="hidden" name="lang" value={locale} />
-            <button type="submit" className={`${item} w-full text-ink-muted`}>
-              <LogOut aria-hidden="true" className="size-4 shrink-0" />
-              {text.signOut}
-            </button>
-          </form>
+          <AccountMenu locale={locale} other={other} who={who} text={text} billing={billing} onNavigate={close} />
         </div>
       </aside>
     </>
+  );
+}
+
+const menuRow = "flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium text-ink transition-colors hover:bg-sunken lg:min-h-9";
+
+/** The account row: who is signed in. Plan, app, language and sign out open from it. */
+function AccountMenu({ locale, other, who, text, billing, onNavigate }: { locale: Locale; other: Locale; who: string; text: SidebarText; billing: string; onNavigate: () => void }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    wrapRef.current?.querySelector<HTMLElement>("#account-menu a, #account-menu button")?.focus();
+    const outside = (e: PointerEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const escape = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      // The drawer listens for Escape too: close only this menu first.
+      e.stopImmediatePropagation();
+      setOpen(false);
+      buttonRef.current?.focus();
+    };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape, true);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", escape, true);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={wrapRef}
+      className="relative border-t border-line pt-2"
+      onBlur={(e) => {
+        if (!wrapRef.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+    >
+      <div id="account-menu" hidden={!open} className="absolute inset-x-0 bottom-full z-10 mb-2 flex animate-[pop-in_0.15s_ease-out] flex-col gap-0.5 rounded-xl border border-line bg-white p-1.5 shadow-xl">
+        <p className="truncate px-2.5 pt-1 pb-1.5 text-xs text-ink-muted" title={who}>
+          {who}
+        </p>
+        <Link href={billing} onClick={onNavigate} className={menuRow}>
+          <CreditCard aria-hidden="true" className="size-4 shrink-0" />
+          {text.plan}
+        </Link>
+        <InstallApp t={text.pwa} className={menuRow} />
+        <LanguageSwitch target={other} label={text.language} ariaLabel={text.languageLabel} className={menuRow}>
+          <Globe aria-hidden="true" className="size-4 shrink-0" />
+        </LanguageSwitch>
+        <form action={signOut} className="border-t border-line pt-0.5">
+          <input type="hidden" name="lang" value={locale} />
+          <button type="submit" className={`${menuRow} text-ink-muted`}>
+            <LogOut aria-hidden="true" className="size-4 shrink-0" />
+            {text.signOut}
+          </button>
+        </form>
+      </div>
+      <button ref={buttonRef} type="button" aria-expanded={open} aria-controls="account-menu" onClick={() => setOpen((o) => !o)} className="flex min-h-11 w-full items-center gap-2.5 rounded-lg px-1.5 text-start transition-colors hover:bg-white aria-expanded:bg-white">
+        <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ink font-display text-sm font-bold text-white">
+          {[...who.trim()][0]?.toUpperCase() ?? "G"}
+        </span>
+        <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{who}</span>
+        <ChevronsUpDown aria-hidden="true" className="size-4 shrink-0 text-ink-muted" />
+        <span className="sr-only">{text.accountMenu}</span>
+      </button>
+    </div>
   );
 }

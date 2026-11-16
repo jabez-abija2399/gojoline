@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn, openAppMenu } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn, openAccountMenu } from "./helpers";
 
 test("signed-out visitors are sent to sign in", async ({ page }) => {
   await page.goto("/en/build");
@@ -26,7 +26,7 @@ test("phone sign-in in Amharic, then sign out", async ({ page }) => {
   await signIn(page, { lang: "am", contact: `09${n}`, normalized: `+2519${n}` });
   await expect(page.locator("html")).toHaveAttribute("lang", "am");
   await expectNoSeriousA11yIssues(page);
-  await openAppMenu(page, "am");
+  await openAccountMenu(page, "am");
   await page.getByRole("button", { name: "ይውጡ" }).click();
   await expect(page).toHaveURL(/\/am$/);
   await page.goto("/am/build");

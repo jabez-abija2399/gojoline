@@ -350,6 +350,8 @@ export const en = {
     codeEmpty: "Nothing here yet.",
   },
   app: {
+    upgrade: "Upgrade",
+    accountMenu: "Account menu",
     sidebarLabel: "Gojoline menu",
     mainNav: "Main menu",
     creditsLeftOne: "1 change left",

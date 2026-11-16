@@ -47,3 +47,9 @@ export async function openAppMenu(page: Page, lang: "en" | "am" = "en") {
   const menu = page.getByRole("button", { name: lang === "en" ? "Menu" : "ማውጫ", exact: true });
   if (await menu.isVisible()) await menu.click();
 }
+
+/** Sign out, plan and language live in the account menu at the bottom of the sidebar. */
+export async function openAccountMenu(page: Page, lang: "en" | "am" = "en") {
+  await openAppMenu(page, lang);
+  await page.getByRole("button", { name: lang === "en" ? /Account menu/ : /የመለያ ማውጫ/ }).click();
+}
