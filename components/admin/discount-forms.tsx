@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
-import { createDiscountCode, saveLaunchOffer, type DiscountState } from "@/app/[lang]/admin/actions";
+import { createDiscountCode, saveLaunchOffer, switchLaunchOffer, type DiscountState } from "@/app/[lang]/admin/actions";
 import type { LaunchOffer } from "@/lib/billing/discounts";
 
 const PRODUCTS = ["starter_month", "starter_year", "business_month", "business_year", "topup"] as const;
@@ -13,13 +13,13 @@ type ProductNames = Record<(typeof PRODUCTS)[number], string>;
 function Submit({ label, working }: { label: string; working: string }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-11 lg:min-h-9 w-fit rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
+    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-11 pointer-fine:min-h-9 w-fit rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
       {pending ? working : label}
     </button>
   );
 }
 
-const input = "min-h-11 lg:min-h-9 rounded-lg border border-input bg-white px-3 text-base lg:text-sm aria-invalid:border-destructive";
+const input = "min-h-11 pointer-fine:min-h-9 rounded-lg border border-input bg-white px-3 text-base pointer-fine:text-sm aria-invalid:border-destructive";
 
 /** The error under a field: text, not only a red border (read out with the field). */
 function FieldError({ id, text }: { id: string; text: string }) {
@@ -31,8 +31,8 @@ function FieldError({ id, text }: { id: string; text: string }) {
 }
 
 /** A labelled text field that shows its own error when the server names it, and an optional hint. */
-function Field({ name, label, invalid, error, hint, className = "", ...rest }: { name: string; label: string; invalid: boolean; error: string; hint?: string; className?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
-  const described = [hint ? `${name}-hint` : "", invalid ? `${name}-error` : ""].filter(Boolean).join(" ") || undefined;
+function Field({ name, label, invalid, error, hint, describedBy, className = "", ...rest }: { name: string; label: string; invalid: boolean; error: string; hint?: string; describedBy?: string; className?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  const described = [hint ? `${name}-hint` : "", describedBy ?? "", invalid ? `${name}-error` : ""].filter(Boolean).join(" ") || undefined;
   return (
     <label className="flex flex-col gap-1">
       <span className="font-medium">{label}</span>
@@ -49,7 +49,7 @@ function ProductChoice({ legend, names, selected, invalid, error, idPrefix }: { 
     <fieldset aria-describedby={invalid ? `${idPrefix}-products-error` : undefined} className={`flex flex-col gap-1 rounded-xl border p-3 ${invalid ? "border-destructive" : "border-line"}`}>
       <legend className="px-1 font-medium">{legend}</legend>
       {PRODUCTS.map((p) => (
-        <label key={p} htmlFor={`${idPrefix}-${p}`} className="flex min-h-11 items-center gap-3 lg:min-h-9">
+        <label key={p} htmlFor={`${idPrefix}-${p}`} className="flex min-h-11 items-center gap-3 pointer-fine:min-h-9">
           <input id={`${idPrefix}-${p}`} type="checkbox" name="products" value={p} defaultChecked={selected.includes(p)} className="size-5 accent-ink" />
           {names[p]}
         </label>
@@ -81,31 +81,66 @@ function Message({ state, refEl, ok, invalid, t, label }: { state: DiscountState
   );
 }
 
-/** The launch offer's terms: percent, products, optional last day and name. On/off is the switch above it. */
-export function OfferForm({ t, names, lang, value }: { t: Messages["admin"]; names: ProductNames; lang: string; value: LaunchOffer | null }) {
+/** The one-click on/off switch: saves at once, says "Working…" while it does. */
+function SwitchButton({ label, working, primary }: { label: string; working: string; primary: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      aria-disabled={pending}
+      aria-describedby="offer-state"
+      onClick={(e) => pending && e.preventDefault()}
+      className={`inline-flex min-h-11 shrink-0 items-center rounded-lg px-4 text-sm font-semibold aria-disabled:opacity-50 pointer-fine:min-h-9 ${primary ? "bg-ink text-white hover:bg-ink-hover" : "border border-line bg-white text-ink hover:border-faint"}`}
+    >
+      {pending ? working : label}
+    </button>
+  );
+}
+
+/**
+ * The launch offer card: its state in words with the on/off switch, then the terms (percent,
+ * products, optional last day and name). Saving the terms never changes on/off.
+ */
+export function OfferForm({ t, names, lang, value, stateText, live }: { t: Messages["admin"]; names: ProductNames; lang: string; value: LaunchOffer | null; stateText: string; live: boolean }) {
   const [state, action] = useActionState<DiscountState, FormData>(saveLaunchOffer, { status: "idle" });
   const { formRef, msgRef } = useFocusAfter(state);
   const bad = (f: string) => state.status === "invalid" && state.field === f;
   const labels: Record<string, string> = { percent: t.offerPercent, until: t.offerUntil, products: t.offerProducts, name_en: t.offerNameEn, name_am: t.offerNameAm };
   return (
-    <form ref={formRef} action={action} aria-labelledby="offer-title" className="flex flex-col gap-3 rounded-xl border border-line bg-white p-3 sm:p-4">
-      <input type="hidden" name="lang" value={lang} />
-      <div className="flex flex-col gap-1">
-        <h2 id="offer-title" className="text-base font-semibold">{t.offerTitle}</h2>
-        <p className="text-xs text-ink-muted">{t.offerHint}</p>
+    <section aria-labelledby="offer-title" className={`flex flex-col gap-3 rounded-xl border bg-white p-3 sm:p-4 ${live ? "border-lagoon" : "border-line"}`}>
+      <h2 id="offer-title" className="text-base font-semibold">{t.offerTitle}</h2>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-paper p-3">
+        <p id="offer-state" className="flex min-w-0 items-center gap-2 font-semibold">
+          <span aria-hidden="true" className={`size-2.5 shrink-0 rounded-full ${live ? "bg-lagoon" : "bg-faint"}`} />
+          <span className="min-w-0">{stateText}</span>
+        </p>
+        {value && (
+          <form action={switchLaunchOffer}>
+            <input type="hidden" name="lang" value={lang} />
+            <input type="hidden" name="active" value={value.active ? "false" : "true"} />
+            <SwitchButton label={value.active ? t.offerSwitchOff : t.offerSwitchOn} working={t.working} primary={!value.active} />
+          </form>
+        )}
       </div>
-      <div className="grid gap-3 sm:grid-cols-2 sm:items-start">
-        <Field name="percent" label={t.offerPercent} invalid={bad("percent")} error={t.fieldInvalid} inputMode="numeric" maxLength={2} defaultValue={value?.percent ?? 20} />
-        <Field name="until" label={t.offerUntil} invalid={bad("until")} error={t.fieldInvalid} hint={t.offerUntilHint} type="date" defaultValue={value?.until ?? ""} />
-      </div>
-      <ProductChoice legend={t.offerProducts} names={names} selected={value?.products ?? []} invalid={bad("products")} error={t.chooseOne} idPrefix="offer" />
-      <div className="grid gap-3 sm:grid-cols-2 sm:items-start">
-        <Field name="name_en" label={t.offerNameEn} invalid={bad("name_en")} error={t.fieldInvalid} hint={t.offerNameHint} maxLength={40} defaultValue={value?.name?.en ?? ""} lang="en" />
-        <Field name="name_am" label={t.offerNameAm} invalid={bad("name_am")} error={t.fieldInvalid} maxLength={40} defaultValue={value?.name?.am ?? ""} lang="am" />
-      </div>
-      <Message state={state} refEl={msgRef} ok={t.done} invalid={t.offerInvalid} t={t} label={state.field ? labels[state.field] : undefined} />
-      <Submit label={t.offerSave} working={t.working} />
-    </form>
+      <p className="text-xs text-ink-muted">{t.offerHint}</p>
+      <form ref={formRef} action={action} aria-labelledby="offer-title" className="flex flex-col gap-3">
+        <input type="hidden" name="lang" value={lang} />
+        <div className="grid gap-3 sm:grid-cols-2 sm:items-start">
+          <Field name="percent" label={t.offerPercent} invalid={bad("percent")} error={t.fieldInvalid} inputMode="numeric" maxLength={2} defaultValue={value?.percent ?? 20} />
+          <Field name="until" label={t.offerUntil} invalid={bad("until")} error={t.fieldInvalid} hint={t.offerUntilHint} type="date" defaultValue={value?.until ?? ""} />
+        </div>
+        <ProductChoice legend={t.offerProducts} names={names} selected={value?.products ?? []} invalid={bad("products")} error={t.chooseOne} idPrefix="offer" />
+        <div className="flex flex-col gap-1">
+          <div className="grid gap-3 sm:grid-cols-2 sm:items-start">
+            <Field name="name_en" label={t.offerNameEn} invalid={bad("name_en")} error={t.fieldInvalid} describedBy="offer-name-hint" maxLength={40} defaultValue={value?.name?.en ?? ""} lang="en" />
+            <Field name="name_am" label={t.offerNameAm} invalid={bad("name_am")} error={t.fieldInvalid} describedBy="offer-name-hint" maxLength={40} defaultValue={value?.name?.am ?? ""} lang="am" />
+          </div>
+          <p id="offer-name-hint" className="text-xs text-ink-muted">{t.offerNameHint}</p>
+        </div>
+        <Message state={state} refEl={msgRef} ok={t.done} invalid={t.offerInvalid} t={t} label={state.field ? labels[state.field] : undefined} />
+        <Submit label={t.offerSave} working={t.working} />
+      </form>
+    </section>
   );
 }
 
@@ -128,7 +163,7 @@ export function CodeForm({ t, names, lang }: { t: Messages["admin"]; names: Prod
         <legend className="mb-1 font-medium">{t.codeKind}</legend>
         <div className="flex flex-wrap gap-x-6">
           {(["percent", "amount"] as const).map((k) => (
-            <label key={k} className="flex min-h-11 items-center gap-3 lg:min-h-9">
+            <label key={k} className="flex min-h-11 items-center gap-3 pointer-fine:min-h-9">
               <input type="radio" name="kind" value={k} checked={kind === k} onChange={() => setKind(k)} className="size-5 accent-ink" />
               {k === "percent" ? t.codeKindPercent : t.codeKindAmount}
             </label>
@@ -145,11 +180,11 @@ export function CodeForm({ t, names, lang }: { t: Messages["admin"]; names: Prod
         <Field name="maxUses" label={t.codeMaxUses} invalid={bad("maxUses")} error={t.fieldInvalid} inputMode="numeric" maxLength={6} />
         <Field name="expires" label={t.codeExpires} invalid={bad("expires")} error={t.fieldInvalid} type="date" />
       </div>
-      <label className="flex min-h-11 lg:min-h-9 items-center gap-3">
+      <label className="flex min-h-11 pointer-fine:min-h-9 items-center gap-3">
         <input type="checkbox" name="perCustomerOnce" defaultChecked className="size-5 shrink-0 accent-ink" />
         {t.codePerCustomer}
       </label>
-      <label className="flex min-h-11 lg:min-h-9 items-center gap-3">
+      <label className="flex min-h-11 pointer-fine:min-h-9 items-center gap-3">
         <input type="checkbox" name="firstPaymentOnly" className="size-5 shrink-0 accent-ink" />
         {t.codeFirstOnly}
       </label>

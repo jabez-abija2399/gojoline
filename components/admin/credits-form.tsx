@@ -13,7 +13,7 @@ const SIZES = ["small", "medium", "large"] as const;
 function Save({ t }: { t: Messages["admin"] }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-11 lg:min-h-9 w-fit rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
+    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-11 pointer-fine:min-h-9 w-fit rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
       {pending ? t.working : t.creditsSave}
     </button>
   );
@@ -47,7 +47,7 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
         maxLength={extra.decimal ? 6 : 5}
         aria-invalid={bad(name) || undefined}
         aria-describedby={[extra.hint ? `${name}-hint` : "", bad(name) ? `${name}-error` : ""].filter(Boolean).join(" ") || undefined}
-        className="min-h-11 lg:min-h-9 rounded-lg border border-input bg-white px-3 text-base lg:text-sm tabular-nums aria-invalid:border-destructive"
+        className="min-h-11 pointer-fine:min-h-9 rounded-lg border border-input bg-white px-3 text-base pointer-fine:text-sm tabular-nums aria-invalid:border-destructive"
       />
       {extra.hint && <span id={`${name}-hint`} className="text-xs text-ink-muted">{extra.hint}</span>}
       {bad(name) && <span id={`${name}-error`} className="text-sm font-medium text-destructive">{t.fieldInvalid}</span>}

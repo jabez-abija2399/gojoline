@@ -10,7 +10,7 @@ const PLAN_CHOICES = ["starter_month", "starter_year", "business_month", "busine
 function Submit({ label, t }: { label: string; t: Messages["admin"] }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-11 w-fit rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50 lg:min-h-9">
+    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-11 w-fit rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50 pointer-fine:min-h-9">
       {pending ? t.working : label}
     </button>
   );
@@ -37,7 +37,7 @@ function useResult(state: UserActionState, t: Messages["admin"], done: string) {
   return node;
 }
 
-const field = "min-h-11 lg:min-h-9 rounded-lg border border-input bg-white px-3 text-base lg:text-sm aria-invalid:border-destructive";
+const field = "min-h-11 pointer-fine:min-h-9 rounded-lg border border-input bg-white px-3 text-base pointer-fine:text-sm aria-invalid:border-destructive";
 
 /** Two admin actions on one owner: extra changes, and a plan change for comps or corrections. */
 export function OwnerActions({ t, userId, lang }: { t: Messages["admin"]; userId: string; lang: string }) {

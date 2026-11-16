@@ -53,7 +53,7 @@ export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel
         <span>{shortDay(data.at(-1)!.day)}</span>
       </div>
       <details className="text-xs">
-        <summary className="inline-flex min-h-11 lg:min-h-9 cursor-pointer items-center text-ink-muted">{tableLabel}</summary>
+        <summary className="inline-flex min-h-11 pointer-fine:min-h-9 cursor-pointer items-center text-ink-muted">{tableLabel}</summary>
         <table className="w-full">
           <thead>
             <tr className="text-ink-muted">

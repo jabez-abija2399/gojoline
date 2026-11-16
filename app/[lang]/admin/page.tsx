@@ -14,7 +14,7 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
 import { BarChart } from "@/components/admin/bar-chart";
-import { setAdminTheme, switchLaunchOffer, toggleDiscountCode } from "./actions";
+import { setAdminTheme, toggleDiscountCode } from "./actions";
 import { offerEndsAt, offerUntilLabel } from "@/lib/billing/discounts";
 import { offerProductsText } from "@/lib/billing/offer-text";
 import { CreditsForm } from "@/components/admin/credits-form";
@@ -69,7 +69,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         key={x}
         href={`/${lang}/admin?tab=${x}`}
         aria-current={x === tab ? "page" : undefined}
-        className={`flex min-h-11 lg:min-h-9 items-center gap-3 rounded-lg px-3 font-medium text-ink-muted transition-colors hover:bg-paper hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-white ${compact ? "shrink-0" : ""}`}
+        className={`flex min-h-11 pointer-fine:min-h-9 items-center gap-3 rounded-lg px-3 font-medium text-ink-muted transition-colors hover:bg-paper hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-white ${compact ? "shrink-0" : ""}`}
       >
         <Icon aria-hidden="true" className="size-5 shrink-0" />
         <span className="truncate">{t.admin.tabs[x]}</span>
@@ -81,7 +81,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
   return (
     <div data-gojo-theme={theme} className="admin-root flex min-h-screen flex-1 bg-paper text-sm text-ink">
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col gap-4 border-e border-line bg-white p-3 lg:flex">
-        <Link href={`/${lang}`} className="flex min-h-11 lg:min-h-9 items-center gap-2 font-display text-base font-bold">
+        <Link href={`/${lang}`} className="flex min-h-11 pointer-fine:min-h-9 items-center gap-2 font-display text-base font-bold">
           <Image src="/brand/mark.svg" alt="" width={32} height={32} className="size-8" />
           {t.admin.brand}
         </Link>
@@ -90,7 +90,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         </nav>
         <div className="mt-auto flex flex-col gap-3">
           <ThemeSwitch />
-          <Link href={`/${lang}/build`} className="inline-flex min-h-11 lg:min-h-9 items-center gap-2 rounded-lg px-3 font-medium text-ink-muted hover:bg-paper hover:text-ink">
+          <Link href={`/${lang}/build`} className="inline-flex min-h-11 pointer-fine:min-h-9 items-center gap-2 rounded-lg px-3 font-medium text-ink-muted hover:bg-paper hover:text-ink">
             <ArrowLeft aria-hidden="true" className="size-4" /> {t.admin.backToApp}
           </Link>
         </div>
@@ -139,9 +139,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         {!compact && <span className="px-1 text-xs font-medium text-ink-muted">{t.admin.theme}</span>}
         <div role="group" aria-label={t.admin.theme} className="flex gap-1 rounded-lg border border-line bg-paper p-1">
           {opts.map(({ v, Icon }) => (
-            <button key={v} name="theme" value={v} aria-pressed={theme === v} title={t.admin.themes[v]} className="flex min-h-11 lg:min-h-9 min-w-11 flex-1 items-center justify-center gap-1 rounded-md text-ink-muted aria-pressed:bg-ink aria-pressed:text-white">
+            <button key={v} name="theme" value={v} aria-pressed={theme === v} title={t.admin.themes[v]} className="flex min-h-11 min-w-11 flex-auto items-center justify-center gap-1 whitespace-nowrap rounded-md px-1.5 text-ink-muted aria-pressed:bg-ink aria-pressed:text-white">
               <Icon aria-hidden="true" className="size-4" />
-              <span className={compact ? "sr-only" : "text-sm"}>{t.admin.themes[v]}</span>
+              <span className={compact ? "sr-only" : "text-xs"}>{t.admin.themes[v]}</span>
             </button>
           ))}
         </div>
@@ -194,7 +194,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               const share = o.users ? Math.round((o.plans[p] / o.users) * 100) : 0;
               return (
                 <li key={p}>
-                  <Link href={`/${lang}/admin?tab=users&plan=${p}`} className="flex min-h-11 lg:min-h-9 flex-col gap-2 rounded-xl border border-line p-3 hover:border-faint">
+                  <Link href={`/${lang}/admin?tab=users&plan=${p}`} className="flex min-h-11 pointer-fine:min-h-9 flex-col gap-2 rounded-xl border border-line p-3 hover:border-faint">
                     <span className="flex items-baseline justify-between gap-2">
                       <span className="font-medium">{t.billing.plans[p]}</span>
                       <span className="font-display text-lg font-bold tabular-nums">{o.plans[p]}</span>
@@ -217,7 +217,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             <ul className="mt-3 flex flex-col gap-2">
               {attention.map(({ href, text, Icon }) => (
                 <li key={href}>
-                  <Link href={href} className="flex min-h-11 lg:min-h-9 items-center gap-3 rounded-xl bg-coral-soft px-4 font-medium text-ink hover:ring-2 hover:ring-coral">
+                  <Link href={href} className="flex min-h-11 pointer-fine:min-h-9 items-center gap-3 rounded-xl bg-coral-soft px-4 font-medium text-ink hover:ring-2 hover:ring-coral">
                     <Icon aria-hidden="true" className="size-5 text-link" /> {text}
                     <ArrowRight aria-hidden="true" className="ms-auto size-4" />
                   </Link>
@@ -274,7 +274,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           <ul className="flex flex-wrap gap-2">
             {chips.map((c) => (
               <li key={c.v}>
-                <Link href={link({ plan: c.v, user: null })} aria-current={c.v === plan ? "true" : undefined} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink-muted hover:text-ink aria-[current=true]:border-ink aria-[current=true]:bg-ink aria-[current=true]:text-white lg:min-h-9">
+                <Link href={link({ plan: c.v, user: null })} aria-current={c.v === plan ? "true" : undefined} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink-muted hover:text-ink aria-[current=true]:border-ink aria-[current=true]:bg-ink aria-[current=true]:text-white pointer-fine:min-h-9">
                   {c.label}
                   <span className="tabular-nums">{c.n}</span>
                 </Link>
@@ -287,9 +287,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           {plan !== "all" && <input type="hidden" name="plan" value={plan} />}
           <label className="flex-1">
             <span className="sr-only">{t.admin.searchLabel}</span>
-            <input name="q" defaultValue={q} placeholder={t.admin.searchLabel} maxLength={100} className="min-h-11 lg:min-h-9 w-full rounded-lg border border-input bg-white px-3 text-base lg:text-sm" />
+            <input name="q" defaultValue={q} placeholder={t.admin.searchLabel} maxLength={100} className="min-h-11 pointer-fine:min-h-9 w-full rounded-lg border border-input bg-white px-3 text-base pointer-fine:text-sm" />
           </label>
-          <button className="min-h-11 lg:min-h-9 rounded-lg bg-ink px-4 font-medium text-white">{t.admin.search}</button>
+          <button className="min-h-11 pointer-fine:min-h-9 rounded-lg bg-ink px-4 font-medium text-white">{t.admin.search}</button>
         </form>
         {selected && !detail && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-2 font-medium text-destructive">{t.admin.ownerNotFound}</p>}
         {detail && (
@@ -302,7 +302,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                   <h3 id="owner-title" className="text-base font-semibold [overflow-wrap:anywhere]">{detail.name || detail.contact || "—"}</h3>
                   {detail.name && <p className="text-ink-muted [overflow-wrap:anywhere]">{detail.contact}</p>}
                 </div>
-                <Link href={link({ user: null })} className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-line px-3 text-sm font-medium hover:border-faint lg:min-h-9">
+                <Link href={link({ user: null })} className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-line px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9">
                   <X aria-hidden="true" className="size-4" /> {t.admin.closeDetails}
                 </Link>
               </div>
@@ -377,7 +377,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                   <tr key={u.id} aria-current={u.id === detail?.id ? "true" : undefined} className="border-b border-line last:border-0 hover:bg-paper aria-[current=true]:bg-sunken">
                     <th scope="row" className="px-4 py-2 text-start font-normal">
                       {/* The visible name is the link text; "details" is added for screen readers. */}
-                      <Link href={link({ user: u.id })} className="block min-h-11 lg:min-h-9 rounded-md underline-offset-4 hover:underline">
+                      <Link href={link({ user: u.id })} className="block min-h-11 pointer-fine:min-h-9 rounded-md underline-offset-4 hover:underline">
                         <span className="block font-medium [overflow-wrap:anywhere]">{u.name || u.contact || u.id.slice(0, 8)}</span>
                         {u.name && <span className="block text-xs text-ink-muted [overflow-wrap:anywhere]">{u.contact}</span>}
                         <span className="sr-only">, {t.admin.colDetails}</span>
@@ -434,7 +434,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                     <p className="text-ink-muted">{dateFmt.format(p.createdAt)}</p>
                   </div>
                   {p.hasReceipt ? (
-                    <a href={`/api/admin/payments/${p.id}/receipt`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 lg:min-h-9 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.viewReceipt}</a>
+                    <a href={`/api/admin/payments/${p.id}/receipt`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 pointer-fine:min-h-9 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.viewReceipt}</a>
                   ) : (
                     <p className="text-ink-muted">{t.admin.noReceipt}</p>
                   )}
@@ -463,7 +463,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                   <span className="rounded-full bg-coral-soft px-3 py-1 text-xs font-semibold text-destructive">{format(t.admin.reportCount, { n: g.reports.length, people: g.reporters })}</span>
                 </div>
                 {g.url && (
-                  <a href={g.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 lg:min-h-9 w-fit items-center break-all font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>
+                  <a href={g.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 pointer-fine:min-h-9 w-fit items-center break-all font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>
                 )}
                 <ul className="flex flex-col gap-2">
                   {g.reports.slice(0, 10).map((r) => (
@@ -499,7 +499,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${site.status === "published" ? "border border-lagoon bg-white text-lagoon" : site.status === "taken_down" ? "bg-coral-soft text-destructive" : "bg-paper text-ink"}`}>{t.admin.siteStatus[site.status]}</span>
                 </div>
                 {site.url && site.status === "published" && (
-                  <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 lg:min-h-9 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>
+                  <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 pointer-fine:min-h-9 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>
                 )}
                 {site.takenDownReason && (
                   <p className="text-ink-muted">
@@ -509,7 +509,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 {site.status === "taken_down" && <ModerateForm t={t.admin} siteId={site.id} lang={lang} tab="sites" ops={site.takedownDeployedAt ? ["restore"] : ["retry", "restore"]} reason={site.takenDownReason ?? "admin"} />}
                 {site.status === "published" && (
                   <details>
-                    <summary className="inline-flex min-h-11 lg:min-h-9 cursor-pointer items-center font-medium text-destructive">{t.admin.takeDown}</summary>
+                    <summary className="inline-flex min-h-11 pointer-fine:min-h-9 cursor-pointer items-center font-medium text-destructive">{t.admin.takeDown}</summary>
                     <ModerateForm t={t.admin} siteId={site.id} lang={lang} tab="sites" ops={["take_down"]} />
                   </details>
                 )}
@@ -545,35 +545,15 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const [offer, codes, credits] = await Promise.all([svc.billing.launchOffer(), svc.billing.store().discounts(), svc.billing.credits()]);
     const names = Object.fromEntries((["starter_month", "starter_year", "business_month", "business_year", "topup"] as const).map((p) => [p, productName(t.billing.productNames, p, credits.topupCredits)])) as Record<"starter_month" | "starter_year" | "business_month" | "business_year" | "topup", string>;
     const dayFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeZone: "Africa/Addis_Ababa" });
-    /** The one-click on/off switch, with the offer's state in words. Saves at once (audited). */
-    function OfferSwitch() {
-      const end = offer ? offerEndsAt(offer) : null;
-      const date = offer ? offerUntilLabel(offer, lang as "en" | "am") : null;
-      const values = offer ? { percent: offer.percent, products: offerProductsText(offer.products, lang as "en" | "am", t.billing, credits.topupCredits), date: date ?? "" } : null;
-      const ended = !!offer?.active && end !== null && end < new Date();
-      const state = !offer ? t.admin.offerStateNone : !offer.active ? t.admin.offerStateOff : ended ? format(t.admin.offerStateEnded, values!) : format(date ? t.admin.offerStateOnUntil : t.admin.offerStateOn, values!);
-      return (
-        <section aria-labelledby="offer-state" className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3 sm:p-4 ${offer?.active && !ended ? "border-lagoon bg-white" : "border-line bg-white"}`}>
-          <p id="offer-state" className="flex min-w-0 items-center gap-2 font-semibold">
-            <span aria-hidden="true" className={`size-2.5 shrink-0 rounded-full ${offer?.active && !ended ? "bg-lagoon" : "bg-faint"}`} />
-            <span className="min-w-0">{state}</span>
-          </p>
-          {offer && (
-            <form action={switchLaunchOffer}>
-              <input type="hidden" name="lang" value={lang} />
-              <input type="hidden" name="active" value={offer.active ? "false" : "true"} />
-              <button className={`inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-semibold lg:min-h-9 ${offer.active ? "border border-line bg-white text-ink hover:border-faint" : "bg-ink text-white hover:bg-ink-hover"}`}>
-                {offer.active ? t.admin.offerSwitchOff : t.admin.offerSwitchOn}
-              </button>
-            </form>
-          )}
-        </section>
-      );
-    }
+    // The offer's state in words, beside its one-click switch.
+    const end = offer ? offerEndsAt(offer) : null;
+    const date = offer ? offerUntilLabel(offer, lang as "en" | "am") : null;
+    const values = offer ? { percent: offer.percent, products: offerProductsText(offer.products, lang as "en" | "am", t.billing, credits.topupCredits), date: date ?? "" } : null;
+    const ended = !!offer?.active && end !== null && end < new Date();
+    const stateText = !offer ? t.admin.offerStateNone : !offer.active ? t.admin.offerStateOff : ended ? format(t.admin.offerStateEnded, values!) : format(date ? t.admin.offerStateOnUntil : t.admin.offerStateOn, values!);
     return (
       <div className="flex flex-col gap-4">
-        <OfferSwitch />
-        <OfferForm t={t.admin} names={names} lang={lang} value={offer} />
+        <OfferForm t={t.admin} names={names} lang={lang} value={offer} stateText={stateText} live={!!offer?.active && !ended} />
         <section aria-labelledby="codes-title" className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <h2 id="codes-title" className="text-base font-semibold">{t.admin.codesTitle}</h2>
@@ -601,7 +581,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                     <input type="hidden" name="lang" value={lang} />
                     <input type="hidden" name="id" value={c.id} />
                     <input type="hidden" name="active" value={c.active ? "false" : "true"} />
-                    <button className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-sm font-medium hover:border-faint lg:min-h-9">
+                    <button className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-sm font-medium hover:border-faint pointer-fine:min-h-9">
                       {c.active ? t.admin.codeDeactivate : t.admin.codeActivate}
                       <span className="sr-only"> {c.code}</span>
                     </button>

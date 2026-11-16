@@ -194,7 +194,7 @@ test("launch offer: switched on in one click, struck-through prices, then no end
   test.skip(test.info().project.name !== "desktop", "one site-wide setting: runs once (checks 360 px inside)");
   await signIn(page, { contact: `admin-e2e-offer-${test.info().project.name}@example.com` });
   await page.goto("/en/admin?tab=discounts");
-  const form = page.locator("form").filter({ has: page.getByRole("heading", { name: "Launch offer" }) });
+  const form = page.getByRole("region", { name: "Launch offer" });
   await form.getByLabel("Percent off (1 to 90)").fill("20");
   await form.getByLabel("Last day (optional)").fill("2030-12-31");
   await expect(form.getByText("Leave empty to keep it on until you switch it off.")).toBeVisible();
