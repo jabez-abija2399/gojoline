@@ -5,8 +5,11 @@ import { randomUUID } from "node:crypto";
 import { canonicalReference, type BillingStore, type PaymentMethod, type Subscription } from "./store";
 
 const REFUNDS_PER_DAY = 5;
-/** Free first builds (a project's very first AI run) per owner per day, so new sites can't become unlimited free AI. */
-export const FREE_FIRST_BUILDS_PER_DAY = 3;
+/**
+ * Free first builds (a project's very first AI run) per owner per calendar month: one per site
+ * the plan allows (Free 1, Starter 1, Business 3), so new sites can't become a supply of free AI.
+ */
+export const freeFirstBuildsPerMonth = (plan: Entitlements["plan"]) => PLAN_FEATURES[plan].maxSites;
 
 const monthRef = (d: Date) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 
@@ -87,20 +90,23 @@ export class Billing {
   }
 
   /**
-   * A project's first build costs no change, at most FREE_FIRST_BUILDS_PER_DAY times a day per
-   * owner (every attempt counts, so failing or abandoned first builds can't loop for free).
+   * A project's first build costs no change, up to one per site the plan allows each calendar
+   * month (every attempt counts, so failing or abandoned first builds can't loop for free).
+   * Callers serialize this per owner (see the builder's lock), so parallel requests can't race past the cap.
    */
   async freeFirstBuild(userId: string, ref: string): Promise<boolean> {
-    const today = new Date(this.now());
-    today.setUTCHours(0, 0, 0, 0);
-    if ((await this.db.countSince(userId, "first_build", today)) >= FREE_FIRST_BUILDS_PER_DAY) return false;
+    const n = this.now();
+    const monthStart = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), 1));
+    const { plan } = await this.plan(userId);
+    if ((await this.db.countSince(userId, "first_build", monthStart)) >= freeFirstBuildsPerMonth(plan)) return false;
     return this.db.addCredits(userId, 0, "first_build", ref);
   }
 
   /** Admin gift of extra changes (comps, apologies). Each call is its own ledger row; audited. */
-  async adminGrantCredits(adminId: string, userId: string, n: number, reason: string): Promise<void> {
-    const ref = `admin:${randomUUID()}`;
-    await this.db.addCredits(userId, n, "admin", ref);
+  async adminGrantCredits(adminId: string, userId: string, n: number, reason: string, key: string = randomUUID()): Promise<void> {
+    // The form's one-time key: a double submit or retried request grants once.
+    const ref = `admin:${key}`;
+    if (!(await this.db.addCredits(userId, n, "admin", ref))) return;
     await this.db.audit({ actorId: adminId, action: "credits.granted", targetType: "user", targetId: userId, data: { n, reason, ref } });
   }
 

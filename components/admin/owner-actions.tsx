@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useMemo, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import type { Messages } from "@/lib/i18n";
 import { grantCredits, setOwnerPlan, type UserActionState } from "@/app/[lang]/admin/actions";
@@ -43,6 +43,9 @@ const field = "min-h-11 rounded-lg border border-input bg-white px-3 text-base a
 export function OwnerActions({ t, userId, lang }: { t: Messages["admin"]; userId: string; lang: string }) {
   const [grant, grantAction] = useActionState<UserActionState, FormData>(grantCredits, { status: "idle" });
   const [plan, planAction] = useActionState<UserActionState, FormData>(setOwnerPlan, { status: "idle" });
+  // One-time key per grant: a double submit or retried request grants once; a new key after each success.
+  // A new key after every answer; while a grant is in flight the key stays the same.
+  const grantKey = useMemo(() => (grant, crypto.randomUUID()), [grant]);
   const grantMsg = useResult(grant, t, t.grantDone);
   const planMsg = useResult(plan, t, t.planDone);
   return (
@@ -51,6 +54,7 @@ export function OwnerActions({ t, userId, lang }: { t: Messages["admin"]; userId
         <h4 className="font-semibold">{t.grantTitle}</h4>
         <input type="hidden" name="userId" value={userId} />
         <input type="hidden" name="lang" value={lang} />
+        <input type="hidden" name="key" value={grantKey} />
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">{t.grantN}</span>
           <input name="n" type="number" inputMode="numeric" min={1} max={500} step={1} required defaultValue={10} aria-invalid={grant.status === "invalid" || undefined} className={`${field} w-32`} />

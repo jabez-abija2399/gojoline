@@ -44,7 +44,7 @@ Defaults live in `lib/billing/plans.ts` (`PRODUCTS`, `PLAN_FEATURES`); prices ca
 | Business | 1,299 ETB/month or 12,990/year | Up to 3 sites, own domain per site and we connect it, no badge, 150 changes/month (roll over up to 2 months), 10,000 answers/month, Telegram alerts and edits by Telegram, 2 GB photos, priority support with setup help |
 | Extra changes | 249 ETB | 30 more AI changes |
 
-Every site's first build is free (up to 3 a day per owner); changes that fail on our side are refunded (up to 5 a day).
+Every site's first build is free (one per site the plan allows, each month); changes that fail on our side are refunded (up to 5 a day).
 
 ## Success metrics (private beta)
 

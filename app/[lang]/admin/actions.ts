@@ -117,7 +117,7 @@ export type UserActionState = { status: "idle" | "ok" | "invalid" | "reason_requ
 
 const userId = z.string().trim().min(1).max(200);
 const reason = z.string().trim().max(200);
-const grantInput = z.object({ userId, n: z.coerce.number().int().min(1).max(500), reason, lang: z.enum(["en", "am"]) });
+const grantInput = z.object({ userId, n: z.coerce.number().int().min(1).max(500), reason, key: z.uuid(), lang: z.enum(["en", "am"]) });
 const planInput = z.object({ userId, plan: z.enum(["starter_month", "starter_year", "business_month", "business_year", "free"]), reason, lang: z.enum(["en", "am"]) });
 
 /** Shared by the two owner actions: admin check, input, the owner exists, reason given. */
@@ -145,7 +145,7 @@ async function ownerAction<T extends { userId: string; reason: string; lang: "en
 
 /** Extra AI changes for an owner (1–500), with a reason in the audit log. */
 export async function grantCredits(_prev: UserActionState, form: FormData): Promise<UserActionState> {
-  return ownerAction(grantInput, form, (adminId, d) => services().billing.adminGrantCredits(adminId, d.userId, d.n, d.reason), "admin credit grant failed");
+  return ownerAction(grantInput, form, (adminId, d) => services().billing.adminGrantCredits(adminId, d.userId, d.n, d.reason, d.key), "admin credit grant failed");
 }
 
 /** Comps and corrections: start or extend Starter/Business by a month or a year, or end the plan now. */

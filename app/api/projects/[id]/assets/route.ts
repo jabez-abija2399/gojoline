@@ -24,6 +24,12 @@ export async function POST(request: Request, ctx: RouteContext<"/api/projects/[i
   const file = form?.get("file");
   if (!(file instanceof File)) return json(400, { error: "not_image" });
   if (file.size > MAX_UPLOAD_BYTES) return json(413, { error: "too_large" });
+  // One upload per owner at a time: parallel uploads can't all pass the quota check against the same total.
+  const lock = services().builder?.lock;
+  const lockKey = `assets:${r.user.id}`;
+  const token = lock ? await lock.acquire(lockKey, 60_000) : "none";
+  if (!token) return json(429, { error: "busy" });
+  try {
   const [existing, usedBytes, { storageBytes }] = await Promise.all([assets.list(r.user.id, id), assets.totalBytes(r.user.id), services().entitlements(r.user.id)]);
   // Checked before the (slow) re-encode, then again with the final size.
   const early = photoQuota({ count: existing.length, usedBytes, newBytes: 1, limitBytes: storageBytes });
@@ -35,4 +41,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/projects/[i
   const names = new Set(existing.map((a) => a.name));
   const asset = await assets.add(r.user.id, id, { name: assetName(file.name, (n) => names.has(n)), mime: img.mime, width: img.width, height: img.height, data: img.data });
   return json(201, { asset });
+  } finally {
+    if (lock && token !== "none") await lock.release(lockKey, token);
+  }
 }

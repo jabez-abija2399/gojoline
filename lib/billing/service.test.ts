@@ -59,12 +59,25 @@ describe("credits", () => {
     expect(await b.creditsLeft("u")).toBe(15);
   });
 
-  it("caps free first builds per day", async () => {
-    const b = new Billing(new MemoryBillingStore(), () => new Date("2026-11-14T10:00:00Z"));
+  it("caps free first builds at one per site the plan allows, each month", async () => {
+    const store = new MemoryBillingStore();
+    const b = new Billing(store, () => new Date("2026-11-14T10:00:00Z"));
     const got = [];
-    for (let i = 0; i < 5; i++) got.push(await b.freeFirstBuild("u", `r${i}`));
-    expect(got).toEqual([true, true, true, false, false]);
+    for (let i = 0; i < 3; i++) got.push(await b.freeFirstBuild("u", `r${i}`));
+    expect(got).toEqual([true, false, false]);
     expect(await b.creditsLeft("u")).toBe(10);
+    await store.setSubscription({ userId: "biz", plan: "business", period: "month", currentPeriodEnd: new Date("2026-12-14T00:00:00Z") });
+    const biz = [];
+    for (let i = 0; i < 4; i++) biz.push(await b.freeFirstBuild("biz", `b${i}`));
+    expect(biz).toEqual([true, true, true, false]);
+  });
+
+  it("an admin grant with the same key applies once", async () => {
+    const store = new MemoryBillingStore();
+    const b = new Billing(store, () => new Date("2026-11-14T10:00:00Z"));
+    await b.adminGrantCredits("admin", "u", 20, "sorry", "k1");
+    await b.adminGrantCredits("admin", "u", 20, "sorry", "k1");
+    expect(await store.balance("u")).toBe(20);
   });
 
   it("plan limits come from PLAN_FEATURES, photo storage included", async () => {

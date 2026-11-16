@@ -95,8 +95,19 @@ export async function sendOwnerMessage(
       store.latestVersion(input.ownerId, project.id),
       deps.assets?.list(input.ownerId, project.id),
     ]);
-    // A site's first build is free (a few a day), even with no changes left.
-    const free = !latest && deps.credits?.freeFirstBuild ? await deps.credits.freeFirstBuild(input.ownerId, ref) : false;
+    // A site's first build is free (one per site the plan allows, each month), even with no changes left.
+    // Held per owner: requests on different projects can't race past the monthly cap.
+    let free = false;
+    if (!latest && deps.credits?.freeFirstBuild) {
+      const fb = await deps.lock.acquire(`first-build:${input.ownerId}`, 30_000);
+      if (fb) {
+        try {
+          free = await deps.credits.freeFirstBuild(input.ownerId, ref);
+        } finally {
+          await deps.lock.release(`first-build:${input.ownerId}`, fb);
+        }
+      }
+    }
     const paid = free || (deps.credits ? await deps.credits.consume(input.ownerId, ref) : true);
     if (!paid) return input.onEvent({ type: "error", code: "no_credits", credits: 0 });
     chargedRef = deps.credits && !free ? ref : null;

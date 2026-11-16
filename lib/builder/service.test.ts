@@ -65,9 +65,9 @@ describe("AI edit credits", () => {
     expect(await send("Make the title bigger")).toEqual({ type: "error", code: "no_credits", credits: 0 });
   });
 
-  it("gives at most three free first builds a day", async () => {
+  it("gives one free first build per site the plan allows, each month", async () => {
     const { billing, send, newProject } = await setup();
-    for (let i = 0; i < 3; i++) expect((await send("Selam Cafe", await newProject())).type).toBe("done");
+    expect((await send("Selam Cafe", await newProject())).type).toBe("done");
     expect(await billing.creditsLeft("u")).toBe(10);
     expect((await send("Selam Cafe", await newProject())).type).toBe("done");
     expect(await billing.creditsLeft("u")).toBe(9);
