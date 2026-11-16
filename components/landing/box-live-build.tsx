@@ -91,9 +91,10 @@ export function BoxLiveBuild(props: Props) {
 }
 
 /** True once the window's load event has fired (false during server render and hydration). */
-function usePageLoaded() {
+function usePageLoaded(enabled: boolean) {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
+    if (!enabled) return;
     const done = () => setLoaded(true);
     if (document.readyState === "complete") {
       const t = setTimeout(done, 0);
@@ -101,7 +102,7 @@ function usePageLoaded() {
     }
     window.addEventListener("load", done, { once: true });
     return () => window.removeEventListener("load", done);
-  }, []);
+  }, [enabled]);
   return loaded;
 }
 
@@ -118,7 +119,7 @@ function SiteSections({ site, width, built, follow, first, animate }: { site: Bu
   const offset = follow && newest > 0 ? ratios.slice(0, newest).reduce((a, b) => a + b, 0) * 0.7 : 0;
   // With a preloaded first picture, the ones below it wait for the page to finish loading, so on
   // a slow phone the first picture gets the whole connection (they sit below the phone's fold).
-  const pageLoaded = usePageLoaded();
+  const pageLoaded = usePageLoaded(first === "preload");
   return (
     <div className="h-full overflow-hidden [container-type:inline-size]">
       <div className="transition-transform duration-700 ease-out" style={{ transform: `translateY(calc(${-offset} * 1cqw))` }}>
@@ -128,9 +129,9 @@ function SiteSections({ site, width, built, follow, first, animate }: { site: Bu
           return (
             <div key={`${site.id}-${width}-${i}`} className="relative overflow-hidden" style={{ aspectRatio: `${pic.width} / ${pic.height}` }}>
               <div className={`absolute inset-0 flex flex-col gap-3 bg-white p-[6%] transition-opacity duration-500 ${shown ? "opacity-0" : "opacity-100"}`}>
-                <div className="skeleton h-[8%] w-2/3 rounded" />
-                <div className="skeleton h-[5%] w-1/2 rounded" />
-                <div className="skeleton h-[40%] w-full rounded-lg" />
+                <div className={`skeleton h-[8%] w-2/3 rounded ${shown ? "[animation-play-state:paused]" : ""}`} />
+                <div className={`skeleton h-[5%] w-1/2 rounded ${shown ? "[animation-play-state:paused]" : ""}`} />
+                <div className={`skeleton h-[40%] w-full rounded-lg ${shown ? "[animation-play-state:paused]" : ""}`} />
               </div>
               {shown && (
                 <Image

@@ -10,7 +10,7 @@ import { Mosaic } from "./mosaic";
 export async function FinalCta({ t, locale, eyebrow, templates }: { t: Messages["landing"]["final"]; locale: Locale; eyebrow?: string; templates?: string }) {
   const signedIn = await looksSignedIn();
   return (
-    <section aria-labelledby="final-title" className="below-fold relative isolate overflow-hidden bg-ink text-white">
+    <section aria-labelledby="final-title" className="below-fold [contain-intrinsic-size:auto_560px]! relative isolate overflow-hidden bg-ink text-white">
       <Mosaic className="fill-coral opacity-[0.22]" />
       <span aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 bg-[radial-gradient(50%_70%_at_50%_100%,color-mix(in_oklab,var(--gojo-coral)_28%,transparent),transparent)]" />
       <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6 md:py-28">
