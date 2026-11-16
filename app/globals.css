@@ -25,6 +25,8 @@
   --color-warning: var(--gojo-warning);
   --color-danger: var(--gojo-danger);
   --color-sun: var(--gojo-sun);
+  --color-scrim: var(--gojo-scrim);
+  --color-device: var(--gojo-device);
 
   --font-display: var(--font-outfit), var(--font-ethiopic), system-ui, sans-serif;
   --font-sans: var(--font-inter), var(--font-ethiopic), system-ui, sans-serif;
@@ -154,11 +156,13 @@
 /* Dark mode (the admin area today): brand/tokens.css swaps the role colours under
    data-gojo-theme. Here "white" follows the panel colour, so cards turn dark and the text on
    ink buttons (which turn light) stays readable. Coral keeps its ink text in both modes. */
-[data-gojo-theme="dark"] {
+[data-gojo-theme="dark"],
+:root:has([data-gojo-theme="dark"]) {
   --color-white: var(--gojo-panel);
 }
 @media (prefers-color-scheme: dark) {
-  [data-gojo-theme="system"] {
+  [data-gojo-theme="system"],
+  :root:has([data-gojo-theme="system"]) {
     --color-white: var(--gojo-panel);
   }
 }
@@ -282,17 +286,5 @@
   }
   [data-gojo-theme="system"] .logo-light {
     display: none;
-  }
-}
-
-/* The preview's phone stays a dark device in dark mode (its frame uses ink, which turns light). */
-@media (min-width: 1024px) {
-  [data-gojo-theme="dark"] .phone-frame {
-    border-color: #2b2926;
-  }
-}
-@media (min-width: 1024px) and (prefers-color-scheme: dark) {
-  [data-gojo-theme="system"] .phone-frame {
-    border-color: #2b2926;
   }
 }

@@ -25,6 +25,8 @@
   --gojo-warning: #A3530A;
   --gojo-danger: #C81E3A;
   --gojo-sun: #FFD23F;         /* highlight: fills only, never text */
+  --gojo-scrim: rgb(18 18 18 / 0.5); /* veil behind drawers and dialogs: dark in both modes */
+  --gojo-device: #2B2926;      /* the preview's phone frame: a dark device in both modes */
 
   /* Typography */
   --gojo-font-display: "Outfit", system-ui, sans-serif;
@@ -39,8 +41,10 @@
 
 /* Dark values of the same roles. Apply by setting data-gojo-theme="dark" on a container
    (the admin area does); "system" follows the device. */
-[data-gojo-theme="dark"] {
+[data-gojo-theme="dark"],
+:root:has([data-gojo-theme="dark"]) {
   color-scheme: dark;
+  --gojo-scrim: rgb(0 0 0 / 0.65);
   --gojo-paper: #121110;
   --gojo-sunken: #0C0B0A;
   --gojo-panel: #181614;
@@ -56,8 +60,10 @@
   --gojo-danger: #FF6B7F;
 }
 @media (prefers-color-scheme: dark) {
-  [data-gojo-theme="system"] {
+  [data-gojo-theme="system"],
+  :root:has([data-gojo-theme="system"]) {
     color-scheme: dark;
+    --gojo-scrim: rgb(0 0 0 / 0.65);
     --gojo-paper: #121110;
     --gojo-sunken: #0C0B0A;
     --gojo-panel: #181614;

@@ -231,10 +231,26 @@ test("on a short window the recent sites scroll and never cover the changes-left
   expect(listBottom).toBeLessThanOrEqual(cardTop);
 });
 
-test("dark mode: chosen in the account menu, remembered, readable everywhere", async ({ page }) => {
+test("dark mode: chosen in the account menu, remembered, readable everywhere", async ({ page }, info) => {
   await signIn(page);
+  await page.goto("/en/billing");
   await openAccountMenu(page);
   await page.getByRole("button", { name: "Dark", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Dark", exact: true })).toHaveAttribute("aria-pressed", "true");
+  // The whole page goes dark, not only the area inside it (scroll bars, overscroll).
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme)).toBe("dark");
+  if (info.project.name === "mobile") {
+    // The veil behind the open menu stays dark (it is not built from ink, which turns light).
+    const veil = await page.locator("#app-sidebar").locator("xpath=preceding-sibling::div[1]").evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(veil).toMatch(/rgba?\(0, 0, 0/);
+    await page.keyboard.press("Escape");
+    await page.keyboard.press("Escape");
+  }
+  // Back shows the earlier page in the new theme too.
+  await page.goto("/en/build");
+  await page.goBack();
+  await expect(page.locator("[data-gojo-theme]").first()).toHaveAttribute("data-gojo-theme", "dark");
+  await page.goto("/en/build");
   await expect(page.locator("#app-content").locator("xpath=..")).toHaveAttribute("data-gojo-theme", "dark");
   await page.reload();
   await expect(page.locator("[data-gojo-theme]").first()).toHaveAttribute("data-gojo-theme", "dark");
@@ -256,4 +272,15 @@ test("the sidebar never scrolls", async ({ page }, info) => {
   const side = page.locator("#app-sidebar");
   expect(await side.evaluate((el) => el.scrollHeight - el.clientHeight)).toBeLessThanOrEqual(0);
   expect(await side.evaluate((el) => getComputedStyle(el).overflowY)).toBe("hidden");
+});
+
+test("on a phone held sideways the account menu can still be reached", async ({ page }, info) => {
+  test.skip(info.project.name !== "mobile", "phones only");
+  await signIn(page, { lang: "am" });
+  await page.setViewportSize({ width: 740, height: 360 });
+  await page.getByRole("button", { name: "ማውጫ", exact: true }).click();
+  const account = page.getByRole("button", { name: /የመለያ ማውጫ/ });
+  await account.scrollIntoViewIfNeeded();
+  await account.click();
+  await expect(page.getByRole("button", { name: "ይውጡ" })).toBeVisible();
 });

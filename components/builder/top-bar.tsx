@@ -54,7 +54,7 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
 
   return (
     <header className="relative z-20 flex items-center gap-1 border-b border-line bg-white px-2 py-1.5 sm:gap-2 sm:px-4">
-      <Link href={`/${locale}`} aria-label={text.home} className="hidden min-h-11 min-w-11 shrink-0 items-center justify-center lg:inline-flex text-sm lg:min-h-9">
+      <Link href={`/${locale}`} aria-label={text.home} className="hidden min-h-11 min-w-11 shrink-0 items-center justify-center lg:inline-flex">
         <Image src="/brand/mark.svg" alt={text.logoAlt} width={36} height={36} className="size-9" />
       </Link>
       <Link href={`/${locale}/build`} aria-label={text.back} className={`${quiet} shrink-0 text-ink`}>

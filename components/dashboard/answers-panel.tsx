@@ -83,7 +83,7 @@ export function AnswersPanel({ t, locale, projectId }: { t: Messages["dashboard"
                   <dt className="font-medium text-ink-muted">{forms[r.formKey]?.labels[k]?.[locale] || forms[r.formKey]?.labels[k]?.en || k}</dt>
                   <dd className="min-w-0 [overflow-wrap:anywhere]">
                     {/^[+\d][\d\s\-()]{5,20}$/.test(v) ? (
-                      <a className="inline-flex min-h-11 items-center text-ink underline underline-offset-4 text-sm lg:min-h-9" href={`tel:${v.replace(/[^\d+]/g, "")}`}>{v}</a>
+                      <a className="inline-flex min-h-11 items-center text-ink underline underline-offset-4 lg:min-h-9" href={`tel:${v.replace(/[^\d+]/g, "")}`}>{v}</a>
                     ) : (
                       v
                     )}

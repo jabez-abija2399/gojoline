@@ -94,7 +94,7 @@ export function TelegramPanel({ t, locale, bot }: { t: Messages["dashboard"]; lo
           {url && (
             <p role="status" className="text-ink-muted">
               {format(t.tgOpenHint, { bot })}{" "}
-              <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center font-medium text-ink underline underline-offset-4 text-sm lg:min-h-9">
+              <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center font-medium text-ink underline underline-offset-4 lg:min-h-9">
                 {t.tgOpenLink}
               </a>
             </p>

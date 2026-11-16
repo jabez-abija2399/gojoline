@@ -97,7 +97,7 @@ export default async function ProjectsPage({
           )}
           {!builder ? (
             <>
-              <h1 className="text-3xl font-bold">{b.title}</h1>
+              <h1 className="text-2xl font-semibold tracking-tight">{b.title}</h1>
               <p className="rounded-xl border border-line bg-white p-6 text-ink-muted">{b.unavailable}</p>
             </>
           ) : (

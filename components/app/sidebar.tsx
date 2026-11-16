@@ -138,14 +138,14 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
           </Link>
         )}
       </header>
-      {open && <div aria-hidden="true" onClick={dismiss} className="fixed inset-0 z-40 bg-ink/40 lg:hidden" />}
+      {open && <div aria-hidden="true" onClick={dismiss} className="fixed inset-0 z-40 bg-scrim lg:hidden" />}
       <aside
         ref={asideRef}
         id="app-sidebar"
         aria-label={text.sidebarLabel}
         role={open ? "dialog" : undefined}
         aria-modal={open ? true : undefined}
-        className={`flex w-72 shrink-0 flex-col gap-3 overflow-hidden border-e border-line bg-sunken p-3 max-lg:fixed max-lg:inset-y-0 max-lg:start-0 max-lg:z-50 max-lg:max-w-[86vw] max-lg:shadow-2xl max-lg:transition-transform lg:sticky lg:top-0 lg:h-dvh lg:w-60 ${open ? "" : "max-lg:invisible max-lg:-translate-x-full"}`}
+        className={`flex w-72 shrink-0 flex-col gap-3 border-e max-lg:overflow-y-auto lg:overflow-hidden border-line bg-sunken p-3 max-lg:fixed max-lg:inset-y-0 max-lg:start-0 max-lg:z-50 max-lg:max-w-[86vw] max-lg:shadow-2xl max-lg:transition-transform lg:sticky lg:top-0 lg:h-dvh lg:w-60 ${open ? "" : "max-lg:invisible max-lg:-translate-x-full"}`}
       >
         <div className="flex shrink-0 items-center justify-between gap-2">
           <Link href={home} aria-label={text.home} onClick={close} className="inline-flex min-h-11 items-center px-1">
@@ -228,7 +228,7 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
                   )}
                 </span>
               </span>
-              <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[linear-gradient(135deg,var(--gojo-coral),var(--gojo-coral-hover)_55%,var(--gojo-coral-soft))] text-ink shadow-inner transition-transform group-hover:scale-105">
+              <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[linear-gradient(135deg,var(--gojo-coral),var(--gojo-coral-hover)_55%,var(--gojo-coral-soft))] text-on-coral shadow-inner transition-transform group-hover:scale-105">
                 {canUpgrade ? <Zap className="size-5" /> : <Sparkles className="size-5" />}
               </span>
             </Link>

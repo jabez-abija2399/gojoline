@@ -75,7 +75,7 @@ export function StartBox({ t, locale, action, title, autoStart }: Props) {
         </h1>
         <p className="max-w-[52ch] text-ink-muted">{t.startBody}</p>
       </div>
-      <div className="w-full rounded-2xl border border-line bg-white p-2 shadow-xl shadow-ink/5 transition-shadow has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link">
+      <div className="w-full rounded-2xl border border-line bg-white p-2 shadow-xl shadow-black/5 transition-shadow has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link">
         <textarea
           ref={boxRef}
           id="start-text"

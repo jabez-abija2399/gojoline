@@ -79,7 +79,7 @@ export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loadin
   // A phone-shaped frame on big screens; on a phone the preview simply fills the screen.
   const shell =
     device === "phone"
-      ? "phone-frame h-full w-[390px] max-w-full rounded-xl border border-line lg:my-auto lg:max-h-[844px] lg:rounded-[2.25rem] lg:border-[10px] lg:border-ink lg:shadow-2xl"
+      ? "phone-frame h-full w-[390px] max-w-full rounded-xl border border-line lg:my-auto lg:max-h-[844px] lg:rounded-[2.25rem] lg:border-[10px] lg:border-device lg:shadow-2xl"
       : "h-full w-full rounded-xl border border-line shadow-lg";
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-paper">

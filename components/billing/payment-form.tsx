@@ -65,7 +65,7 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 font-medium">{t.method}</legend>
         {METHODS.map((m, i) => (
-          <label key={m} className="flex min-h-11 items-center gap-3 text-sm lg:min-h-9">
+          <label key={m} className="flex min-h-11 items-center gap-3 lg:min-h-9">
             <input type="radio" name="method" value={m} defaultChecked={i === 0} className="size-5 accent-ink" />
             {t.methods[m]}
           </label>
