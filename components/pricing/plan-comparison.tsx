@@ -2,7 +2,7 @@ import { Check, Minus } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import { planComparison, type Cell } from "@/lib/billing/compare";
-import { PLAN_IDS, type PlanId } from "@/lib/billing/plans";
+import { PLAN_IDS, type PlanFeatures, type PlanId } from "@/lib/billing/plans";
 
 const num = (n: number) => new Intl.NumberFormat("en-US").format(n);
 
@@ -42,8 +42,8 @@ function CellView({ cell, t }: { cell: Cell; t: Messages["plans"]["compare"] }) 
  * Admin → Settings, so everyone sees the same thing. All three plans fit at 360 px (narrow
  * feature column, small cells); on anything narrower it scrolls inside its own focusable box.
  */
-export function PlanComparison({ t, planNames, headingLevel = 2, id = "compare" }: { t: Messages["plans"]["compare"]; planNames: Record<PlanId, string>; headingLevel?: 2 | 3; id?: string }) {
-  const rows = planComparison();
+export function PlanComparison({ t, planNames, headingLevel = 2, id = "compare", features }: { t: Messages["plans"]["compare"]; planNames: Record<PlanId, string>; headingLevel?: 2 | 3; id?: string; features?: Record<PlanId, PlanFeatures> }) {
+  const rows = planComparison(features);
   const H = headingLevel === 2 ? "h2" : "h3";
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="flex scroll-mt-24 flex-col gap-3">

@@ -4,6 +4,7 @@ import type { PaymentNoticeDeps } from "@/lib/billing/notify";
 import { emailSender } from "@/lib/providers/notify/pick";
 import { DbSettingsStore, MemorySettingsStore } from "@/lib/billing/settings";
 import { LLMContentClassifier } from "@/lib/safety/classifier";
+import { HeuristicSizer, LLMRequestSizer } from "@/lib/agent/size";
 import { ContentGuard } from "@/lib/safety/guard";
 import { DbReportStore, MemoryReportStore, type ReportStore } from "@/lib/safety/reports";
 import type { ModerationDeps } from "@/lib/safety/takedown";
@@ -33,6 +34,8 @@ import { Billing } from "@/lib/billing/service";
 import { DbBillingStore, MemoryBillingStore } from "@/lib/billing/store";
 import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { VercelPublishProvider } from "@/lib/providers/publish/vercel";
+import { CloudflarePublishProvider } from "@/lib/providers/publish/cloudflare";
+import { R2StorageProvider } from "@/lib/providers/storage/r2";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
 import { DbCloudStore } from "@/lib/cloud/db-store";
@@ -108,8 +111,26 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, assets: builder.assets, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined };
   if (isE2E(env)) return { ...base, publisher: new MemoryPublishProvider() };
-  if (!env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID) return null;
-  return { ...base, publisher: new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) };
+  const vercel = env.VERCEL_TOKEN && env.VERCEL_TEAM_ID ? new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) : null;
+  const cloudflare = pickCloudflarePublish(env);
+  // Cloudflare once it's configured; sites still on the Vercel fallback move on their next publish.
+  if (cloudflare) return { ...base, publisher: cloudflare, legacy: vercel };
+  return vercel ? { ...base, publisher: vercel } : null;
+}
+
+/** Sites on R2 + the sites Worker at *.PUBLISH_BASE_DOMAIN (see scripts/cloudflare-setup.mjs). */
+function pickCloudflarePublish(env: Env): CloudflarePublishProvider | null {
+  if (!env.R2_ACCOUNT_ID || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY || !env.PUBLISH_BASE_DOMAIN) return null;
+  const storage = new R2StorageProvider({ accountId: env.R2_ACCOUNT_ID, accessKeyId: env.R2_ACCESS_KEY_ID, secretAccessKey: env.R2_SECRET_ACCESS_KEY, bucket: env.R2_BUCKET || "gojoline" });
+  // The app's own token may only manage custom hostnames (never DNS, Workers or routes: those
+  // are set up from the founder's machine with CLOUDFLARE_API_TOKEN, see the setup script).
+  return new CloudflarePublishProvider({
+    storage,
+    baseDomain: env.PUBLISH_BASE_DOMAIN,
+    apiToken: env.CLOUDFLARE_SAAS_TOKEN || undefined,
+    zoneId: env.CLOUDFLARE_ZONE_ID || undefined,
+    ownershipSecret: env.BETTER_AUTH_SECRET || undefined,
+  });
 }
 
 function pickTelegram(env: Env): Services["telegram"] {
@@ -166,7 +187,21 @@ export function services(): Services {
       moderation: null,
     };
     const svc = globalForServices.gojoServices;
-    if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r), left: (u) => billing.creditsLeft(u), freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r) };
+    if (svc.builder) {
+      svc.builder.credits = {
+        consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
+        refund: (u, r, n, meta) => billing.refundEdit(u, r, n, meta),
+        left: (u) => billing.creditsLeft(u),
+        freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
+        pricing: async () => {
+          const cs = await billing.credits();
+          return { sizeCredits: cs.sizeCredits, capCentsPerCredit: cs.capCentsPerCredit };
+        },
+      };
+      // Claude Haiku sizes requests when an API key is set (never in e2e: the word list does).
+      const key = process.env.SAYSITE_ANTHROPIC_API_KEY;
+      svc.builder.sizer = key && !isE2E(process.env) ? new LLMRequestSizer(new AnthropicLLMProvider(key), usage, process.env.SIZE_MODEL || "claude-haiku-5-5") : new HeuristicSizer();
+    }
     svc.publish = pickPublish(process.env, svc.builder);
     if (svc.publish) {
       svc.publish.entitlements = billing.entitlements;
@@ -184,7 +219,7 @@ export function services(): Services {
             const s = await siteAdmin.byId(id);
             return s ? { slug: s.slug, url: s.url, status: s.status } : null;
           });
-      svc.moderation = { sites: siteAdmin, reports, publisher: svc.publish?.publisher ?? null, audit: (e) => billing.store().audit(e) };
+      svc.moderation = { sites: siteAdmin, reports, publisher: svc.publish?.publisher ?? null, legacy: svc.publish?.legacy ?? null, audit: (e) => billing.store().audit(e) };
     }
     svc.telegram = pickTelegram(process.env);
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);

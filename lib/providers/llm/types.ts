@@ -27,6 +27,8 @@ export interface LLMRequest {
   signal?: AbortSignal;
   /** For usage logging. */
   purpose: string;
+  /** Forces a call to this tool (structured answers from small classifiers). */
+  toolChoice?: { type: "tool"; name: string };
   /** Per-request limits for short, blocking calls (defaults: the SDK's, which allow minutes). */
   timeoutMs?: number;
   maxRetries?: number;

@@ -73,6 +73,10 @@ export class DbSiteStore implements SiteStore, SiteAdminStore {
     return row!;
   }
 
+  async clearLegacy(ownerId: string, projectId: string): Promise<void> {
+    await this.db.update(sites).set({ legacyProjectId: null }).where(and(eq(sites.projectId, projectId), eq(sites.ownerId, ownerId)));
+  }
+
   async markDomainVerified(ownerId: string, projectId: string): Promise<void> {
     await this.db
       .update(sites)

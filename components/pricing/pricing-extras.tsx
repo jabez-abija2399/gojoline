@@ -3,8 +3,8 @@ import Link from "next/link";
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import type { Locale } from "@/lib/i18n/config";
-import { TOPUP_CREDITS } from "@/lib/billing/plans";
 import { formatBirr } from "./plan-highlights";
+import { OfferBadge, WasPrice } from "./offer-price";
 
 /** Where people reach us (the brand's Telegram bot; also on the legal pages). */
 export const CONTACT_URL = "https://t.me/gojoline_bot";
@@ -29,7 +29,22 @@ export function PricingNotes({ t }: { t: Messages["plans"]["notes"] }) {
 }
 
 /** Extra changes (price from settings) and done-for-you setup (ask us). */
-export function PricingExtras({ t, locale, topupMinor, topupHref }: { t: Messages["plans"]["extras"]; locale: Locale; topupMinor: number; topupHref?: string }) {
+export function PricingExtras({
+  t,
+  locale,
+  topupMinor,
+  topupCredits,
+  topupHref,
+  offer,
+}: {
+  t: Messages["plans"]["extras"];
+  locale: Locale;
+  topupMinor: number;
+  topupCredits: number;
+  topupHref?: string;
+  /** The launch offer on extra changes: its price, badge and "was …" text. */
+  offer?: { priceMinor: number; badge: string; was: string; birr: string } | null;
+}) {
   return (
     <section aria-labelledby="extras-title" className="flex flex-col gap-4">
       <h2 id="extras-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">{t.title}</h2>
@@ -38,7 +53,11 @@ export function PricingExtras({ t, locale, topupMinor, topupHref }: { t: Message
           <h3 className="flex items-center gap-2 text-lg font-semibold">
             <Sparkles aria-hidden="true" className="size-5 shrink-0" /> {t.topupTitle}
           </h3>
-          <p className="flex-1 text-ink-muted">{format(t.topupBody, { n: TOPUP_CREDITS, price: formatBirr(topupMinor) })}</p>
+          {offer && <OfferBadge text={offer.badge} />}
+          <p className="flex-1 text-ink-muted">
+            {format(t.topupBody, { n: topupCredits, price: formatBirr(offer?.priceMinor ?? topupMinor) })}
+            {offer && <> <WasPrice price={`${formatBirr(topupMinor)} ${offer.birr}`} was={offer.was} /></>}
+          </p>
           <Link href={topupHref ?? `/${locale}/sign-in?next=/${locale}/billing`} className="inline-flex min-h-11 w-fit items-center rounded-full border border-line px-5 font-semibold hover:border-faint lg:min-h-9">
             {t.topupCta}
           </Link>

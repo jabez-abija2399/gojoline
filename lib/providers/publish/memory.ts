@@ -1,5 +1,5 @@
 import { routingRecord } from "@/lib/sites/domain";
-import type { DomainStatus, PublishFile, PublishProvider } from "./types";
+import type { DomainStatus, PublishFile, PublishInput, PublishProvider } from "./types";
 
 /** e2e/test stand-in: keeps the last published files per slug. */
 export class MemoryPublishProvider implements PublishProvider {
@@ -20,8 +20,10 @@ export class MemoryPublishProvider implements PublishProvider {
   async checkDomain(_project: string, domain: string): Promise<DomainStatus> {
     return { status: this.domains.get(domain) ? "active" : "pending", records: [routingRecord(domain, domain.split(".").slice(-2).join("."))] };
   }
-  async publish(input: { slug: string; files: PublishFile[] }) {
+  readonly redirects = new Map<string, string>();
+  async publish(input: PublishInput) {
     this.published.set(input.slug, input.files);
+    if (input.redirectTo) this.redirects.set(input.slug, input.redirectTo);
     return { url: this.urlFor(input.slug), deploymentId: `dpl_${Date.now()}`, providerProjectId: `prj_${input.slug}` };
   }
 }

@@ -17,6 +17,9 @@ import { handleUpdate, type BotDeps } from "./bot";
 import { MemoryTelegramClient } from "./client";
 import { TelegramNotifier } from "./notifier";
 import { MemoryTelegramStore } from "./store";
+import { HeuristicSizer } from "@/lib/agent/size";
+import { Billing } from "@/lib/billing/service";
+import { MemoryBillingStore } from "@/lib/billing/store";
 
 const starter = readFileSync("templates/site/src/site.json", "utf8");
 let deps: BotDeps;
@@ -118,6 +121,67 @@ describe("telegram bot", () => {
     await handleUpdate(deps, msg("", { text: undefined, photo: [{ file_id: "f1", width: 50, height: 40 }] }));
     expect(last()).toContain("Photo saved as telegram-photo-");
     expect(await builder.assets!.list("alice", two.id)).toHaveLength(1);
+  });
+
+  it("asks for YES before a bigger change, then runs it and says what it used", async () => {
+    const billing = new Billing(new MemoryBillingStore());
+    deps.builder = {
+      ...builder,
+      sizer: new HeuristicSizer(),
+      credits: {
+        consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
+        refund: (u, r, n) => billing.refundEdit(u, r, n),
+        left: (u) => billing.creditsLeft(u),
+        pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15 }),
+      },
+    };
+    await linked();
+    const p = await builder.store.createProject("alice", { name: "Bole Buna", locale: "en" });
+    await builder.store.addVersion("alice", { projectId: p.id, summary: "v1", files: { "src/site.json": starter } });
+    await handleUpdate(deps, msg("Redesign the whole website"));
+    expect(last()).toContain("uses 4 changes (you have 10). Reply YES");
+    expect(await billing.creditsLeft("alice")).toBe(10);
+    await handleUpdate(deps, msg("yes"));
+    expect(last()).toContain("Used 4 changes · 6 left.");
+    expect(await billing.creditsLeft("alice")).toBe(6);
+    // A second "yes" has nothing waiting: it's an ordinary (small) message.
+    expect((await store.byUser("alice"))?.pendingEdit).toBeNull();
+    // Another message replaces a waiting one.
+    await handleUpdate(deps, msg("Add three new pages for rooms, food and events"));
+    expect((await store.byUser("alice"))?.pendingEdit?.size).toBe("large");
+    await handleUpdate(deps, msg("Selam Cafe"));
+    expect((await store.byUser("alice"))?.pendingEdit).toBeNull();
+    expect(await billing.creditsLeft("alice")).toBe(5);
+  });
+
+  it("runs a waiting change only on an explicit yes, and a photo drops it", async () => {
+    const billing = new Billing(new MemoryBillingStore());
+    deps.builder = {
+      ...builder,
+      sizer: new HeuristicSizer(),
+      credits: {
+        consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
+        refund: (u, r, n) => billing.refundEdit(u, r, n),
+        left: (u) => billing.creditsLeft(u),
+        pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15 }),
+      },
+    };
+    await linked();
+    const p = await builder.store.createProject("alice", { name: "Bole Buna", locale: "en" });
+    await builder.store.addVersion("alice", { projectId: p.id, summary: "v1", files: { "src/site.json": starter } });
+    await handleUpdate(deps, msg("Redesign the whole website"));
+    expect((await store.byUser("alice"))?.pendingEdit).toMatchObject({ size: "large", cost: 4 });
+    // "ok" is an ordinary message: it replaces the waiting change instead of running it.
+    await handleUpdate(deps, msg("ok"));
+    expect((await store.byUser("alice"))?.pendingEdit).toBeNull();
+    expect(await billing.creditsLeft("alice")).toBe(9);
+    await handleUpdate(deps, msg("Redesign the whole website"));
+    client.files.set("f2", await sharp({ create: { width: 40, height: 40, channels: 3, background: "#000" } }).jpeg().toBuffer());
+    await handleUpdate(deps, msg("", { text: undefined, photo: [{ file_id: "f2", width: 40, height: 40 }] }));
+    expect((await store.byUser("alice"))?.pendingEdit).toBeNull();
+    await handleUpdate(deps, msg("Redesign the whole website"));
+    await handleUpdate(deps, msg("  አዎ "));
+    expect(await billing.creditsLeft("alice")).toBe(5);
   });
 
   it("disconnects with /stop", async () => {

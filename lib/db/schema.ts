@@ -1,4 +1,4 @@
-import { bigint, boolean, customType, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { bigint, boolean, customType, date, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
@@ -175,6 +175,8 @@ export const sites = pgTable(
     slug: text("slug").notNull().unique(),
     provider: text("provider").notNull(),
     providerProjectId: text("provider_project_id"),
+    /** The previous host's project after a move, until its forward is confirmed (takedowns reach it too). */
+    legacyProjectId: text("legacy_project_id"),
     url: text("url"),
     status: text("status", { enum: ["pending", "published", "taken_down"] }).notNull(),
     publishedVersion: integer("published_version"),
@@ -260,6 +262,8 @@ export const telegramLinks = pgTable("telegram_links", {
   locale: text("locale", { enum: ["en", "am"] }).notNull(),
   /** Which site bot edits apply to (the owner picks with /sites). */
   activeProjectId: uuid("active_project_id"),
+  /** A bigger bot edit waiting for the owner's "yes" (request, size, when asked). */
+  pendingEdit: jsonb("pending_edit").$type<{ projectId: string; text: string; size: "medium" | "large"; cost: number; at: string }>(),
   linkedAt: createdAt(),
 });
 
@@ -302,9 +306,13 @@ export const creditLedger = pgTable(
     delta: integer("delta").notNull(),
     reason: text("reason", { enum: ["monthly_grant", "topup", "ai_edit", "refund", "admin", "first_build"] }).notNull(),
     ref: text("ref").notNull(),
+    /** AI changes: how big the request was (small, medium, large), for the owner's history. */
+    size: text("size", { enum: ["small", "medium", "large"] }),
+    /** A short description shown in the owner's history (the start of the request). */
+    note: text("note"),
     createdAt: createdAt(),
   },
-  (t) => [uniqueIndex("credit_ledger_ref_uq").on(t.userId, t.reason, t.ref)],
+  (t) => [uniqueIndex("credit_ledger_ref_uq").on(t.userId, t.reason, t.ref), index("credit_ledger_user_time_idx").on(t.userId, t.createdAt)],
 );
 
 /** Running balance kept beside the ledger so a debit is one atomic `balance >= 1` update. */
@@ -313,6 +321,11 @@ export const creditBalances = pgTable("credit_balances", {
     .primaryKey()
     .references(() => user.id, { onDelete: "cascade" }),
   balance: integer("balance").notNull().default(0),
+  /** Changes given back today (refund_day, UTC), so the daily refund cap is checked in the same atomic update. */
+  refundDay: date("refund_day", { mode: "string" }),
+  refundUsed: integer("refund_used").notNull().default(0),
+  /** What the last refund gave (read back by the same statement that wrote it). */
+  refundLast: integer("refund_last").notNull().default(0),
 });
 
 /** Manual Birr payments (Telebirr / bank transfer) waiting for or after admin review. */
@@ -333,6 +346,12 @@ export const payments = pgTable(
     reviewedBy: text("reviewed_by"),
     reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
     note: text("note"),
+    /** Price before a discount (null when none applied); amount_minor is what the customer pays. */
+    originalAmountMinor: integer("original_amount_minor"),
+    discountMinor: integer("discount_minor"),
+    /** "code" (a discount code) or "offer" (the site-wide launch offer). */
+    discountSource: text("discount_source", { enum: ["code", "offer"] }),
+    discountCode: text("discount_code"),
     createdAt: createdAt(),
   },
   (t) => [index("payments_status_idx").on(t.status, t.createdAt), index("payments_user_idx").on(t.userId, t.createdAt), uniqueIndex("payments_reference_uq").on(t.reference)],
@@ -384,4 +403,25 @@ export const appSettings = pgTable("app_settings", {
   value: jsonb("value").$type<Record<string, unknown>>().notNull(),
   updatedBy: text("updated_by"),
   updatedAt: updatedAt(),
+});
+
+/** Discount codes made by admins. Never deleted (payments keep the code); switched off instead. */
+export const discountCodes = pgTable("discount_codes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  /** Upper case A–Z and 0–9, 3 to 20 characters. */
+  code: text("code").notNull().unique(),
+  /** Exactly one of percent_off (1–90) or amount_off_minor (santim) is set. */
+  percentOff: integer("percent_off"),
+  amountOffMinor: integer("amount_off_minor"),
+  products: jsonb("products").$type<string[]>().notNull(),
+  maxUses: integer("max_uses"),
+  /** Counted when a payment with the code is approved. */
+  uses: integer("uses").notNull().default(0),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  firstPaymentOnly: boolean("first_payment_only").notNull().default(false),
+  /** Each customer can use the code once (on by default). */
+  perCustomerOnce: boolean("per_customer_once").notNull().default(true),
+  active: boolean("active").notNull().default(true),
+  createdBy: text("created_by").notNull(),
+  createdAt: createdAt(),
 });

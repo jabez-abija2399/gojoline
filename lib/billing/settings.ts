@@ -2,6 +2,8 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/lib/db/client";
 import { appSettings } from "@/lib/db/schema";
+import { mergeCreditSettings, type CreditSettings } from "./credits";
+import { launchOfferSchema, type LaunchOffer } from "./discounts";
 import { PRODUCTS, type Product } from "./plans";
 
 /** What admins can change without a deploy. Prices in integer santim; never floats. */
@@ -59,4 +61,16 @@ export async function loadBillingSettings(store: SettingsStore, env: NodeJS.Proc
   const merged = { ...base, ...saved, prices: { ...base.prices, ...((saved.prices as object) ?? {}) } };
   const parsed = billingSettingsSchema.safeParse(merged);
   return parsed.success ? parsed.data : base;
+}
+
+/** Credit amounts (monthly changes, rollover, sizes, cost cap): saved values over the defaults. */
+export async function loadCreditSettings(store: SettingsStore): Promise<CreditSettings> {
+  return mergeCreditSettings(await store.get("credits").catch(() => null));
+}
+
+/** The launch offer, or null when none was saved (or the saved one is invalid). */
+export async function loadLaunchOffer(store: SettingsStore): Promise<LaunchOffer | null> {
+  const saved = await store.get("offer").catch(() => null);
+  const parsed = launchOfferSchema.safeParse(saved);
+  return parsed.success ? parsed.data : null;
 }

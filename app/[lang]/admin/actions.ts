@@ -9,6 +9,8 @@ import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { billingSettingsSchema } from "@/lib/billing/settings";
 import { birrToMinor } from "@/lib/billing/plans";
+import { creditSettingsSchema, usdToCents } from "@/lib/billing/credits";
+import { discountInputSchema, launchOfferSchema, PRODUCT_IDS } from "@/lib/billing/discounts";
 import { dismissReports, restoreSite, takeDownSite } from "@/lib/safety/takedown";
 import { refreshTemplateUsage } from "@/lib/landing/template-usage";
 import { after } from "next/server";
@@ -17,7 +19,7 @@ import { adminStats, paymentNotices, services } from "@/lib/server/services";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
 
-export type ReviewState = { status: "idle" | "ok" | "not_found" | "already_reviewed" | "invalid" | "forbidden" | "failed" };
+export type ReviewState = { status: "idle" | "ok" | "not_found" | "already_reviewed" | "discount_unavailable" | "invalid" | "forbidden" | "failed" };
 
 export async function reviewPayment(_prev: ReviewState, form: FormData): Promise<ReviewState> {
   const user = await currentUser();
@@ -107,6 +109,116 @@ export async function saveBillingSettings(_prev: SettingsState, form: FormData):
   revalidatePath(`/${lang}/admin`);
   revalidatePath(`/${lang}/billing`);
   return { status: "ok" };
+}
+
+export type CreditsState = { status: "idle" | "ok" | "invalid" | "forbidden" | "failed"; field?: string };
+
+/** A whole number typed in a form field, or NaN (so validation names the field). */
+const whole = (v: FormDataEntryValue | null) => (typeof v === "string" && /^\s*\d{1,6}\s*$/.test(v) ? Number(v) : NaN);
+
+/** Monthly changes, rollover, pack size, changes per request size and the cost cap. Audited. */
+export async function saveCreditSettings(_prev: CreditsState, form: FormData): Promise<CreditsState> {
+  const user = await currentUser();
+  if (!user || !isAdmin(user)) return { status: "forbidden" };
+  const cap = usdToCents(String(form.get("capUsd") ?? ""));
+  if (cap === null) return { status: "invalid", field: "capUsd" };
+  const plans = ["free", "starter", "business"] as const;
+  const sizes = ["small", "medium", "large"] as const;
+  const parsed = creditSettingsSchema.safeParse({
+    monthly: Object.fromEntries(plans.map((p) => [p, whole(form.get(`monthly_${p}`))])),
+    rollover: Object.fromEntries(plans.map((p) => [p, whole(form.get(`rollover_${p}`))])),
+    topupCredits: whole(form.get("topupCredits")),
+    sizeCredits: Object.fromEntries(sizes.map((x) => [x, whole(form.get(`size_${x}`))])),
+    capCentsPerCredit: cap,
+  });
+  if (!parsed.success) {
+    const path = parsed.error.issues[0]?.path ?? [];
+    const field = path[0] === "monthly" ? `monthly_${String(path[1])}` : path[0] === "rollover" ? `rollover_${String(path[1])}` : path[0] === "sizeCredits" ? `size_${String(path[1])}` : path[0] === "capCentsPerCredit" ? "capUsd" : String(path[0] ?? "");
+    return { status: "invalid", field };
+  }
+  try {
+    await services().billing.saveCreditSettings(user.id, parsed.data);
+  } catch (error) {
+    reportError("credit settings save failed", error);
+    return { status: "failed" };
+  }
+  const lang = form.get("lang") === "am" ? "am" : "en";
+  for (const path of [`/${lang}/admin`, `/${lang}/billing`, `/${lang}/pricing`, `/${lang}`]) revalidatePath(path);
+  return { status: "ok" };
+}
+
+export type DiscountState = { status: "idle" | "ok" | "invalid" | "exists" | "forbidden" | "failed"; field?: string };
+
+const products = (form: FormData) => form.getAll("products").map(String).filter((p) => (PRODUCT_IDS as string[]).includes(p));
+
+/** The launch offer: percent off chosen products until a date (shown with the old price struck through). Audited. */
+export async function saveLaunchOffer(_prev: DiscountState, form: FormData): Promise<DiscountState> {
+  const user = await currentUser();
+  if (!user || !isAdmin(user)) return { status: "forbidden" };
+  const parsed = launchOfferSchema.safeParse({ active: form.get("active") === "on", percent: whole(form.get("percent")), products: products(form), until: String(form.get("until") ?? "") });
+  if (!parsed.success) return { status: "invalid", field: String(parsed.error.issues[0]?.path[0] ?? "") };
+  try {
+    await services().billing.saveLaunchOffer(user.id, parsed.data);
+  } catch (error) {
+    reportError("launch offer save failed", error);
+    return { status: "failed" };
+  }
+  const lang = form.get("lang") === "am" ? "am" : "en";
+  for (const path of [`/${lang}/admin`, `/${lang}/billing`, `/${lang}/pricing`, `/${lang}`]) revalidatePath(path);
+  return { status: "ok" };
+}
+
+/** A new discount code (percent or whole Birr off, products, uses, last day, first payment only). Audited. */
+export async function createDiscountCode(_prev: DiscountState, form: FormData): Promise<DiscountState> {
+  const user = await currentUser();
+  if (!user || !isAdmin(user)) return { status: "forbidden" };
+  const kind = form.get("kind") === "amount" ? "amount" : "percent";
+  const amount = birrToMinor(String(form.get("amount") ?? ""));
+  const rawMax = String(form.get("maxUses") ?? "").trim();
+  const rawDate = String(form.get("expires") ?? "").trim();
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? new Date(`${rawDate}T23:59:59.999+03:00`) : rawDate ? new Date(NaN) : null;
+  const parsed = discountInputSchema.safeParse({
+    code: String(form.get("code") ?? ""),
+    kind,
+    percentOff: kind === "percent" ? whole(form.get("percent")) : null,
+    amountOffMinor: kind === "amount" ? (amount ?? NaN) : null,
+    products: products(form),
+    maxUses: rawMax ? whole(rawMax) : null,
+    expiresAt: date && !Number.isNaN(date.getTime()) ? date : date ? "bad" : null,
+    firstPaymentOnly: form.get("firstPaymentOnly") === "on",
+    perCustomerOnce: form.get("perCustomerOnce") === "on",
+  });
+  if (!parsed.success) {
+    const f = String(parsed.error.issues[0]?.path[0] ?? "");
+    return { status: "invalid", field: f === "percentOff" ? "percent" : f === "amountOffMinor" ? "amount" : f === "expiresAt" ? "expires" : f === "kind" ? (kind === "percent" ? "percent" : "amount") : f };
+  }
+  try {
+    const created = await services().billing.createDiscount(user.id, parsed.data);
+    if (!created) return { status: "exists", field: "code" };
+  } catch (error) {
+    reportError("discount create failed", error);
+    return { status: "failed" };
+  }
+  revalidatePath(`/${form.get("lang") === "am" ? "am" : "en"}/admin`);
+  return { status: "ok" };
+}
+
+/** Switches a code off or on again (never deleted). Audited. */
+export async function toggleDiscountCode(form: FormData) {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) redirect("/");
+  const lang = form.get("lang") === "am" ? "am" : "en";
+  const id = z.uuid().safeParse(form.get("id"));
+  let done: "ok" | "failed" | "not_found" = "failed";
+  if (id.success) {
+    try {
+      done = (await services().billing.setDiscountActive(me.id, id.data, form.get("active") === "true")) ? "ok" : "not_found";
+    } catch (error) {
+      reportError("discount toggle failed", error);
+    }
+  }
+  revalidatePath(`/${lang}/admin`);
+  redirect(`/${lang}/admin?tab=discounts&done=${done}`);
 }
 
 export type UserActionState = { status: "idle" | "ok" | "invalid" | "reason_required" | "forbidden" | "not_found" | "failed" };

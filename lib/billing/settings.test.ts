@@ -7,6 +7,9 @@ import { Billing } from "./service";
 import { loadBillingSettings, MemorySettingsStore } from "./settings";
 import { MemoryBillingStore } from "./store";
 
+
+const paid = <T,>(r: { ok: true; payment: T } | { ok: false }) => (r.ok ? r.payment : null);
+
 describe("billing settings", () => {
   it("defaults to plans.ts and env, and admins can change prices for new payments only", async () => {
     const settings = new MemorySettingsStore();
@@ -14,12 +17,12 @@ describe("billing settings", () => {
     const b = new Billing(store, () => new Date("2026-11-15T10:00:00Z"), settings);
     const env = { PAYMENT_TELEBIRR_NUMBER: "0911" } as unknown as NodeJS.ProcessEnv;
     expect((await loadBillingSettings(settings, env)).telebirrNumber).toBe("0911");
-    const before = await b.submitPayment("u", { product: "starter_month", method: "telebirr", reference: "AAA111", receipt: null });
+    const before = paid(await b.submitPayment("u", { product: "starter_month", method: "telebirr", reference: "AAA111", receipt: null }));
     expect(before?.amountMinor).toBe(49_900);
     const s = await b.settings();
     await b.saveSettings("admin", { ...s, prices: { ...s.prices, starter_month: 45_000 }, telebirrNumber: "0911 22 33 44" });
     expect((await b.settings()).prices.starter_month).toBe(45_000);
-    const after = await b.submitPayment("u", { product: "starter_month", method: "telebirr", reference: "BBB222", receipt: null });
+    const after = paid(await b.submitPayment("u", { product: "starter_month", method: "telebirr", reference: "BBB222", receipt: null }));
     expect(after?.amountMinor).toBe(45_000);
     expect((await store.payment(before!.id))?.amountMinor).toBe(49_900);
     expect((await store.auditFor("settings", "billing"))[0]?.action).toBe("settings.billing");

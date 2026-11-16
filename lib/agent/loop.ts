@@ -1,10 +1,20 @@
 import type { Effort, LLMProvider, MessageParam, SystemBlock } from "@/lib/providers/llm/types";
 import { usageRecord, type UsageLogger } from "@/lib/providers/llm/usage-log";
+import { priceOf } from "@/lib/providers/llm/pricing";
 import { agentTools, runTool } from "./tools";
 import type { Workspace } from "./workspace";
 
 export const MAX_FIX_ATTEMPTS = 3;
 const MAX_TURNS = 16;
+const MAX_OUTPUT_TOKENS = 32_000;
+/** Fewer output tokens than this aren't worth a turn (a tool call with a small edit). */
+const MIN_USEFUL_TOKENS = 1024;
+/** Rough characters per token, used only to estimate what the next turn's input will cost. */
+const CHARS_PER_TOKEN = 3;
+/** Past this share of the budget the model is asked to finish what it is doing and stop. */
+const BUDGET_WARN_SHARE = 0.7;
+const BUDGET_NOTE =
+  "Budget note from Gojoline: this request has nearly used its budget. Finish the step you are on, run the build if you changed files, and reply briefly. If parts of the request are not done, say which, so the owner can ask for them separately.";
 
 export type AgentEvent =
   | { type: "text"; delta: string }
@@ -27,6 +37,14 @@ export interface AgentRunInput {
   signal?: AbortSignal;
   /** Lower for small edits to an existing site (cheaper, faster); medium for first builds. */
   effort?: Effort;
+  /** Fewer turns for small requests (default 16). */
+  maxTurns?: number;
+  /**
+   * AI cost allowed for this request, in nano-USD. Near it the model is asked to wrap up; past
+   * it no further model call is made, the site is built, and if it doesn't build every change
+   * is undone (a site is never left half-written).
+   */
+  budgetNanoUsd?: number;
 }
 
 export interface AgentRunResult {
@@ -39,6 +57,8 @@ export interface AgentRunResult {
   fixAttempts: number;
   costNanoUsd: number;
   turns: number;
+  /** The run stopped because it reached its cost budget. */
+  stoppedForBudget: boolean;
 }
 
 /**
@@ -56,24 +76,61 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
   let cost = 0;
   let replyParts: string[] = [];
   let turns = 0;
+  let stoppedForBudget = false;
+  let warned = false;
+  const budget = input.budgetNanoUsd ?? Infinity;
+  const maxTurns = Math.min(MAX_TURNS, input.maxTurns ?? MAX_TURNS);
 
   const emit = (e: AgentEvent) => input.onEvent?.(e);
+  const price = priceOf(input.model);
+  const fixedChars = JSON.stringify(input.system).length + JSON.stringify(agentTools).length;
+  let lastInputCost = 0;
+  let lastChars = 0;
+  /**
+   * What the next turn's input will cost: the last turn's input (mostly cache reads) plus the
+   * new messages at the full input price. The first turn is priced as if nothing were cached.
+   */
+  const estimateInputCost = () => {
+    const chars = JSON.stringify(messages).length;
+    const fresh = lastInputCost === 0 ? chars + fixedChars : Math.max(0, chars - lastChars);
+    return Math.ceil(lastInputCost * 1.1 + (fresh / CHARS_PER_TOKEN) * price.input);
+  };
+  /** Adds the wrap-up note to the next user turn, once, when the budget is nearly used. */
+  const noteBudget = () => {
+    if (warned || cost < budget * BUDGET_WARN_SHARE) return;
+    warned = true;
+    const last = messages.at(-1);
+    if (last?.role === "user" && Array.isArray(last.content)) last.content.push({ type: "text", text: BUDGET_NOTE });
+  };
 
-  while (turns < MAX_TURNS) {
+  while (turns < maxTurns) {
     if (input.signal?.aborted) break;
+    // Each turn may only write what the remaining budget pays for, so one long answer can't
+    // blow far past the cap (at most MIN_USEFUL_TOKENS over). Not enough left for its input: wrap up.
+    let maxTokens = MAX_OUTPUT_TOKENS;
+    if (Number.isFinite(budget)) {
+      const left = budget - cost - estimateInputCost();
+      if (left < 0) {
+        stoppedForBudget = true;
+        break;
+      }
+      maxTokens = Math.max(MIN_USEFUL_TOKENS, Math.min(MAX_OUTPUT_TOKENS, Math.floor(left / price.output)));
+    }
     turns += 1;
     const response = await input.llm.complete({
       model: input.model,
       system: input.system,
       tools: agentTools,
       messages,
-      maxTokens: 32_000,
+      maxTokens,
       effort: input.effort ?? "medium",
       onText: (delta) => emit({ type: "text", delta }),
       signal: input.signal,
       purpose: "agent",
     });
     cost += response.costNanoUsd;
+    lastInputCost = response.usage.inputTokens * price.input + response.usage.cacheReadTokens * price.cacheRead + response.usage.cacheWriteTokens * price.cacheWrite;
+    lastChars = JSON.stringify(messages).length;
     await input.usage.log(usageRecord(response, { ...input.context, purpose: "agent" }));
     messages.push({ role: "assistant", content: response.content });
 
@@ -108,6 +165,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
           failedBuilds += 1;
           if (failedBuilds > MAX_FIX_ATTEMPTS) break;
           messages.push({ role: "user", content: [{ type: "text", text: `The site does not build yet. Fix these problems:\n${build.output.slice(0, 8000)}` }] });
+          noteBudget();
           continue;
         }
       }
@@ -138,7 +196,17 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       results.push({ type: "tool_result" as const, tool_use_id: block.id, content: outcome.content, is_error: outcome.isError });
     }
     messages.push({ role: "user", content: results });
+    noteBudget();
     if (failedBuilds > MAX_FIX_ATTEMPTS) break;
+  }
+
+  // Stopped early (budget or turns) with edits not yet built: build once now, so finished
+  // work is kept when it builds and everything is undone when it doesn't.
+  if (changed.size > 0 && editedSinceBuild && !input.signal?.aborted && failedBuilds <= MAX_FIX_ATTEMPTS) {
+    const build = await input.workspace.runBuild();
+    emit({ type: "build", ok: build.ok });
+    lastBuildOk = build.ok;
+    editedSinceBuild = false;
   }
 
   const buildBroken = changed.size > 0 && (lastBuildOk !== true || editedSinceBuild);
@@ -156,6 +224,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       fixAttempts: Math.max(0, failedBuilds - 1),
       costNanoUsd: cost,
       turns,
+      stoppedForBudget,
     };
   }
 
@@ -167,5 +236,6 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
     fixAttempts: Math.max(0, failedBuilds),
     costNanoUsd: cost,
     turns,
+    stoppedForBudget,
   };
 }

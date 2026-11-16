@@ -7,6 +7,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
 import { readTheme } from "@/lib/app/theme";
+import { nextMonthlyGrant } from "@/lib/billing/credits";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -59,6 +60,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
             loading: t.dashboard.loading,
           }}
           initialCredits={credits}
+          nextGrant={new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { day: "numeric", month: "long" }).format(nextMonthlyGrant(new Date()))}
           noCredits={{ text: t.billing.noCredits, action: t.billing.getMore }}
           initialMessages={messages.map((m) => ({
             id: m.id,

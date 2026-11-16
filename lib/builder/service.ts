@@ -12,6 +12,16 @@ import { LazySiteSandbox } from "@/lib/providers/sandbox/lazy";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
 import { templateFiles } from "@/lib/template/files";
 import type { ChatMessage, ProjectStore } from "@/lib/projects/types";
+import { biggerSize, FIRST_BUILD_CAP_CENTS, MAX_TURNS_BY_SIZE, sizeRank, type RequestSize } from "@/lib/billing/credits";
+import type { LedgerMeta } from "@/lib/billing/store";
+import type { RequestSizer } from "@/lib/agent/size";
+
+/** Changes and cost cap per request size (from Admin → Settings). */
+export interface SizePricing {
+  sizeCredits: Record<RequestSize, number>;
+  /** AI cost allowed per change charged, in US cents. */
+  capCentsPerCredit: number;
+}
 
 export interface BuilderDeps {
   store: ProjectStore;
@@ -21,21 +31,45 @@ export interface BuilderDeps {
   model: string;
   lock: Lock;
   assets?: AssetStore;
-  /** AI edit credits; when set, each request costs one credit, refunded if the change fails. */
+  /**
+   * AI changes (credits); when set, each request costs the changes for its size, given back
+   * if the change fails on our side.
+   */
   credits?: {
-    consume(userId: string, ref: string): Promise<boolean>;
-    refund(userId: string, ref: string): Promise<unknown>;
+    consume(userId: string, ref: string, n: number, meta?: LedgerMeta): Promise<boolean>;
+    refund(userId: string, ref: string, n: number, meta?: LedgerMeta): Promise<unknown>;
     left?(userId: string): Promise<number>;
-    /** True when this request is a free first build (a project with no saved version yet, within the daily cap). */
+    /** True when this request is a free first build (a project with no saved version yet, within the monthly cap). */
     freeFirstBuild?(userId: string, ref: string): Promise<boolean>;
+    /** Changes per size and the cost cap; without it every request is small (one change). */
+    pricing?(): Promise<SizePricing>;
   };
+  /** Sizes requests before they run; without it every request is small. */
+  sizer?: RequestSizer;
 }
+
+/** Without admin settings: one change per request, no confirmation, the default cap. */
+const ONE_CHANGE: SizePricing = { sizeCredits: { small: 1, medium: 1, large: 1 }, capCentsPerCredit: 15 };
 
 export type BuilderEvent =
   | AgentEvent
   | { type: "preview"; url: string }
-  | { type: "done"; message: ChatMessage; previewUrl: string; siteName?: string; credits?: number }
-  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked"; credits?: number };
+  /** A medium or large request waits for the owner's OK; nothing was charged or saved. */
+  | { type: "needs_confirm"; size: RequestSize; cost: number; credits: number }
+  | {
+      type: "done";
+      message: ChatMessage;
+      previewUrl: string;
+      siteName?: string;
+      credits?: number;
+      /** Changes this request used after any refund (0 for a free first build or a refunded failure). */
+      charged?: number;
+      size?: RequestSize;
+      /** The request stopped at its cost cap: done in part (changed) or not at all (failed). */
+      tooBig?: boolean;
+    }
+  /** no_credits: fewer changes left than this request needs (`cost`), or none at all. */
+  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked"; credits?: number; cost?: number };
 
 const HISTORY_MESSAGES = 8;
 /** Longer than the longest agent run (route maxDuration is 300 s). */
@@ -75,9 +109,26 @@ function starterSiteJson(): string {
   return starter;
 }
 
+/** A short description for the owner's history of changes. */
+const historyNote = (text: string) => {
+  const one = text.replace(/\s+/g, " ").trim();
+  return one.length > 80 ? `${one.slice(0, 79)}…` : one;
+};
+
 export async function sendOwnerMessage(
   deps: BuilderDeps,
-  input: { ownerId: string; projectId: string; text: string; languages?: ("en" | "am")[]; onEvent: (e: BuilderEvent) => void; signal?: AbortSignal },
+  input: {
+    ownerId: string;
+    projectId: string;
+    text: string;
+    languages?: ("en" | "am")[];
+    onEvent: (e: BuilderEvent) => void;
+    signal?: AbortSignal;
+    /** The size the owner agreed to pay for; the server sizes the request again and never charges less than it finds. */
+    confirmSize?: RequestSize;
+    /** The changes the owner agreed to pay; if the request now costs more (settings changed), it asks again. */
+    confirmCost?: number;
+  },
 ): Promise<void> {
   const { store } = deps;
   const project = await store.getProject(input.ownerId, input.projectId);
@@ -87,6 +138,7 @@ export async function sendOwnerMessage(
   const token = await deps.lock.acquire(`project:${project.id}`, LOCK_TTL_MS);
   if (!token) return input.onEvent({ type: "error", code: "busy" });
   let chargedRef: string | null = null;
+  let chargedN = 0;
   try {
     // Charge first: an unpaid request is never saved, so it can't ride along in later history.
     const ref = randomUUID();
@@ -108,9 +160,32 @@ export async function sendOwnerMessage(
         }
       }
     }
-    const paid = free || (deps.credits ? await deps.credits.consume(input.ownerId, ref) : true);
-    if (!paid) return input.onEvent({ type: "error", code: "no_credits", credits: 0 });
+    // Size the request (skipped for a free first build: it costs nothing whatever its size).
+    const pricing = (await deps.credits?.pricing?.()) ?? ONE_CHANGE;
+    let size: RequestSize = "small";
+    if (!free && deps.credits) {
+      size = deps.sizer ? await deps.sizer.size(input.text, { userId: input.ownerId, projectId: project.id }).catch(() => "small" as const) : "small";
+      // Building a site that has no version yet is never a small job.
+      if (!latest) size = biggerSize(size, "medium");
+    }
+    const cost = free || !deps.credits ? 0 : pricing.sizeCredits[size];
+    // A bigger request that costs more than a small one waits for the owner's OK.
+    if (size !== "small" && cost > pricing.sizeCredits.small) {
+      const left = (await deps.credits?.left?.(input.ownerId).catch(() => undefined)) ?? 0;
+      // Never more than the owner has, and never more than one change without asking first.
+      if (left < cost) return input.onEvent({ type: "error", code: "no_credits", credits: left, cost });
+      const agreed = input.confirmSize && sizeRank(input.confirmSize) >= sizeRank(size) && input.confirmCost !== undefined && input.confirmCost >= cost;
+      if (!agreed) return input.onEvent({ type: "needs_confirm", size, cost, credits: left });
+    }
+    const meta: LedgerMeta = { size, note: historyNote(input.text) };
+    const paid = free || (deps.credits ? await deps.credits.consume(input.ownerId, ref, cost, meta) : true);
+    if (!paid) {
+      const left = (await deps.credits?.left?.(input.ownerId).catch(() => undefined)) ?? 0;
+      return input.onEvent({ type: "error", code: "no_credits", credits: left, ...(cost > 1 ? { cost } : {}) });
+    }
     chargedRef = deps.credits && !free ? ref : null;
+    chargedN = chargedRef ? cost : 0;
+    const refund = () => deps.credits?.refund(input.ownerId, ref, cost, meta);
     await store.addMessage(input.ownerId, { projectId: project.id, role: "owner", text: input.text });
 
     // Boot the sandbox while the model reads the request; tools wait for it.
@@ -136,6 +211,9 @@ export async function sendOwnerMessage(
       signal: input.signal,
       // Changing an existing site is usually small: less thinking costs less (measured in evals).
       effort: latest ? "low" : "medium",
+      // Spending follows what the owner pays: a cap per change charged (free first builds have their own).
+      budgetNanoUsd: free ? FIRST_BUILD_CAP_CENTS * 10_000_000 : deps.credits ? cost * pricing.capCentsPerCredit * 10_000_000 : undefined,
+      maxTurns: MAX_TURNS_BY_SIZE[free || !latest ? "first_build" : size],
     });
 
     const sandbox = await opening;
@@ -157,10 +235,13 @@ export async function sendOwnerMessage(
         }
       }
     }
-    // Refund failures on our side, not runs the owner walked away from.
-    if (result.status === "failed" && chargedRef && !input.signal?.aborted) {
-      await deps.credits?.refund(input.ownerId, chargedRef);
+    // Refund failures on our side, not runs the owner walked away from, and not requests too big
+    // for their budget (the AI work was done and paid for; the owner is told to split it).
+    let charged = chargedRef ? cost : 0;
+    if (result.status === "failed" && chargedRef && !input.signal?.aborted && !result.stoppedForBudget) {
+      await refund();
       chargedRef = null;
+      charged = 0;
     }
     const message = await store.addMessage(input.ownerId, {
       projectId: project.id,
@@ -169,11 +250,19 @@ export async function sendOwnerMessage(
       status: result.status,
       versionNumber,
     });
-    input.onEvent({ type: "done", message, previewUrl: sandbox.previewUrl, ...(siteNameNow ? { siteName: siteNameNow } : {}), ...(await creditsAfter(deps, input.ownerId)) });
+    input.onEvent({
+      type: "done",
+      message,
+      previewUrl: sandbox.previewUrl,
+      ...(siteNameNow ? { siteName: siteNameNow } : {}),
+      ...(deps.credits ? { charged, size } : {}),
+      ...(result.stoppedForBudget ? { tooBig: true } : {}),
+      ...(await creditsAfter(deps, input.ownerId)),
+    });
     chargedRef = null;
   } catch (error) {
     reportError("builder.sendOwnerMessage failed", error, { projectId: project.id });
-    if (chargedRef && !input.signal?.aborted) await deps.credits?.refund(input.ownerId, chargedRef).catch(() => undefined);
+    if (chargedRef && !input.signal?.aborted) await deps.credits?.refund(input.ownerId, chargedRef, chargedN).catch(() => undefined);
     input.onEvent({ type: "error", code: "failed", ...(await creditsAfter(deps, input.ownerId)) });
   } finally {
     await deps.lock.release(`project:${project.id}`, token);

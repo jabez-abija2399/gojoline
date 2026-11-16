@@ -86,4 +86,9 @@ export class MemorySiteStore implements SiteStore, SiteAdminStore {
     this.sites.set(input.projectId, site);
     return site;
   }
+
+  async clearLegacy(ownerId: string, projectId: string) {
+    const s = this.sites.get(projectId);
+    if (s && s.ownerId === ownerId) s.legacyProjectId = null;
+  }
 }

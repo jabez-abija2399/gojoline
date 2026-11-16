@@ -7,7 +7,12 @@ import type { RateLimiter } from "@/lib/rate-limit";
 import { publishSite, type PublishDeps } from "@/lib/publish/service";
 import { escapeHtml, type TelegramClient } from "./client";
 import { botText, fill } from "./messages";
-import type { TelegramLink, TelegramStore } from "./store";
+import type { PendingEdit, TelegramLink, TelegramStore } from "./store";
+
+/** A bigger edit waits this long for the owner's "yes". */
+const PENDING_TTL_MS = 15 * 60_000;
+/** Only an explicit yes runs a bigger change (not "ok" or "go", which people send for other reasons). */
+const YES = /^(yes|አዎ)$/i;
 
 export interface BotDeps {
   store: TelegramStore;
@@ -84,6 +89,8 @@ export async function handleUpdate(deps: BotDeps, raw: unknown): Promise<void> {
   const project = projects.find((p) => p.id === link.activeProjectId) ?? projects[0]!;
   if (deps.canEditByTelegram && !(await deps.canEditByTelegram(link.userId))) return say(t.planEdits);
 
+  // A photo (with or without a caption) is a new message: anything waiting for "yes" is dropped.
+  if (msg.photo?.length && link.pendingEdit) await deps.store.setPendingEdit(link.userId, null);
   if (msg.photo?.length) {
     // Same per-owner limits as the web dashboard and builder.
     if (!(await deps.limiter.hit(`upload:o:${link.userId}`, 60, 3_600_000)).allowed) return say(t.tooMany);
@@ -94,6 +101,14 @@ export async function handleUpdate(deps: BotDeps, raw: unknown): Promise<void> {
     return edit(deps, link, project.id, `${msg.caption.trim()}\n(Use the new photo /images/${saved}.)`, say);
   }
   if (!text || text.startsWith("/")) return say(t.help);
+  // "Yes" to a bigger change asked about a moment ago runs that change (on the site it was for).
+  const pending = link.pendingEdit ?? null;
+  if (YES.test(text.trim()) && pending) {
+    await deps.store.setPendingEdit(link.userId, null);
+    if (Date.now() - Date.parse(pending.at) > PENDING_TTL_MS || !projects.some((p) => p.id === pending.projectId)) return say(t.confirmExpired);
+    return edit(deps, link, pending.projectId, pending.text, say, { size: pending.size, cost: pending.cost });
+  }
+  if (pending) await deps.store.setPendingEdit(link.userId, null);
   return edit(deps, link, project.id, text, say);
 }
 
@@ -113,35 +128,48 @@ async function savePhoto(deps: BotDeps, link: TelegramLink, projectId: string, f
 }
 
 /** Runs the owner's request through the builder agent, then republishes if the site is live. */
-async function edit(deps: BotDeps, link: TelegramLink, projectId: string, request: string, say: (html: string) => Promise<void>) {
+type Confirmed = { size: PendingEdit["size"]; cost: number };
+
+async function edit(deps: BotDeps, link: TelegramLink, projectId: string, request: string, say: (html: string) => Promise<void>, confirmed?: Confirmed) {
   try {
-    await runEdit(deps, link, projectId, request, say);
+    await runEdit(deps, link, projectId, request, say, confirmed);
   } catch (error) {
     reportError("telegram edit failed", error, { projectId });
     await say(botText[link.locale].failed).catch(() => undefined);
   }
 }
 
-async function runEdit(deps: BotDeps, link: TelegramLink, projectId: string, request: string, say: (html: string) => Promise<void>) {
+async function runEdit(deps: BotDeps, link: TelegramLink, projectId: string, request: string, say: (html: string) => Promise<void>, confirmed?: Confirmed) {
   const t = botText[link.locale];
   // Bot edits share the web builder's per-owner AI limit (no separate allowance).
   if (!(await deps.limiter.hit(`ai-message:o:${link.userId}`, Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR) || 40, 3_600_000)).allowed) return say(t.tooMany);
   await say(t.working);
-  let outcome: { status?: string; reply?: string; error?: string } = {};
+  let outcome: { status?: string; reply?: string; error?: string; cost?: number; credits?: number; charged?: number; tooBig?: boolean; confirm?: { size: PendingEdit["size"]; cost: number; credits: number } } = {};
   await sendOwnerMessage(deps.builder!, {
     ownerId: link.userId,
     projectId,
     text: request,
+    confirmSize: confirmed?.size,
+    confirmCost: confirmed?.cost,
     onEvent: (e) => {
-      if (e.type === "done") outcome = { status: e.message.status, reply: e.message.text };
-      if (e.type === "error") outcome = { error: e.code };
+      if (e.type === "done") outcome = { status: e.message.status, reply: e.message.text, charged: e.charged, credits: e.credits, tooBig: e.tooBig };
+      if (e.type === "error") outcome = { error: e.code, cost: e.cost, credits: e.credits };
+      if (e.type === "needs_confirm" && e.size !== "small") outcome = { confirm: { size: e.size, cost: e.cost, credits: e.credits } };
     },
   });
+  if (outcome.confirm) {
+    // Nothing ran or was charged: the request waits for "yes" (the next other message replaces it).
+    await deps.store.setPendingEdit(link.userId, { projectId, text: request, size: outcome.confirm.size, cost: outcome.confirm.cost, at: new Date().toISOString() });
+    return say(fill(t.confirm, { cost: String(outcome.confirm.cost), left: String(outcome.confirm.credits) }));
+  }
   if (outcome.error === "busy") return say(t.busy);
   if (outcome.error === "blocked") return say(t.blocked);
-  if (outcome.error === "no_credits") return say(t.noCredits);
+  if (outcome.error === "no_credits") return say(outcome.cost && (outcome.credits ?? 0) > 0 ? fill(t.notEnough, { cost: String(outcome.cost), left: String(outcome.credits ?? 0) }) : t.noCredits);
+  if (outcome.status === "failed" && outcome.tooBig) return say(t.tooBig);
   if (outcome.error || outcome.status === "failed") return say(t.failed);
-  const reply = escapeHtml(outcome.reply ?? "");
+  // Bigger changes say what they used, so the cost is never a surprise.
+  const used = (outcome.charged ?? 0) > 1 && typeof outcome.credits === "number" ? `\n${fill(t.used, { n: String(outcome.charged), left: String(outcome.credits) })}` : "";
+  const reply = escapeHtml(outcome.reply ?? "") + used;
   if (outcome.status === "changed" && deps.publish) {
     const site = await deps.publish.sites.getByProject(link.userId, projectId);
     if (site?.status === "published" && (await deps.limiter.hit(`publish:o:${link.userId}`, Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR) || 20, 3_600_000)).allowed) {
