@@ -74,6 +74,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Signed-in area redesign after Lovable and other AI builders: sidebar / phone drawer with changes-left meter, greeting + one prompt box, site cards with live state, real template pictures, free Undo under each AI change, changes left in the builder (research in `docs/research/builder-ux-2026-11.md`)
 - [x] Dark mode for the signed-in area; one compact type scale on every screen
 - [x] Site dashboard Overview: live status and sharing, real numbers, 14-day answers chart, latest answers, setup checklist
+- [x] Landing page motion and interactive sections (self-playing demo, marquee, before/after slider, counting numbers); public pages adapt to signed-in visitors
 
 ## Niche templates (2026-11-16)
 - [x] Research per niche: the best sites of each kind, written up as briefs (`docs/research/templates/`)

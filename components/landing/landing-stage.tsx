@@ -74,6 +74,10 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
   const [picked, setPicked] = useState<number | null>(null);
   // The demo plays by itself while it is on screen, until the visitor takes over or pauses it.
   const [auto, setAuto] = useState(false);
+  // Once autoplay has started, the pause/play control stays (until the visitor picks a business).
+  const [autoStarted, setAutoStarted] = useState(false);
+  // Bumped to re-arm the timer (after the tab comes back, or when the demo comes back into view).
+  const [tick, setTick] = useState(0);
   const [inView, setInView] = useState(false);
   // How many times the picture changed: the first view is still, every change animates.
   const [shown, setShown] = useState(0);
@@ -88,7 +92,10 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
   // Autoplay only for people who haven't asked for less motion, and only while it can be seen.
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setTimeout(() => setAuto(true), 0);
+    const id = setTimeout(() => {
+      setAuto(true);
+      setAutoStarted(true);
+    }, 0);
     const el = figureRef.current;
     const io = el ? new IntersectionObserver(([e]) => setInView(!!e?.isIntersecting), { threshold: 0.15 }) : null;
     if (el) io?.observe(el);
@@ -100,15 +107,23 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
   useEffect(() => {
     if (!auto || !inView) return;
     const id = setTimeout(() => {
-      if (document.hidden) return;
+      // A hidden tab waits; the timer starts again (full length) when it is shown.
+      if (document.hidden) {
+        const back = () => {
+          document.removeEventListener("visibilitychange", back);
+          setTick((n) => n + 1);
+        };
+        document.addEventListener("visibilitychange", back);
+        return;
+      }
       setIndex((i) => (i + 1) % sites.length);
       setShown((n) => n + 1);
     }, AUTO_MS);
     return () => clearTimeout(id);
-  }, [auto, inView, index, sites.length]);
+  }, [auto, inView, index, sites.length, tick]);
   // The owner's message types itself out after each change (its full size is kept, so nothing moves).
   useEffect(() => {
-    if (shown === 0) return;
+    if (shown === 0 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const full = [...sites[index]!.prompt].length;
     let n = 0;
     const tick = setInterval(() => {
@@ -124,7 +139,8 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
   return (
     <>
       <div className="flex flex-col items-center gap-8 md:gap-10">
-        <div role="group" aria-label={t.chipsLabel} className="flex w-full flex-wrap items-center justify-center gap-2 px-4 sm:px-0">
+        <div className="flex w-full flex-wrap items-center justify-center gap-2 px-4 sm:px-0">
+        <div role="group" aria-label={t.chipsLabel} className="flex flex-wrap items-center justify-center gap-2">
           <span aria-hidden="true" className="shrink-0 pe-1 font-medium text-ink max-sm:basis-full max-sm:text-center">
             {t.chipsLabel}
           </span>
@@ -145,13 +161,14 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
             >
               {s.label}
               {auto && i === index && (
-                <span key={`bar-${shown}`} aria-hidden="true" className="chip-progress absolute inset-x-3 bottom-1 h-0.5 origin-left rounded-full bg-white/70" style={{ animationDuration: `${AUTO_MS}ms`, animationPlayState: inView ? "running" : "paused" }} />
+                <span key={`bar-${shown}-${tick}-${inView}`} aria-hidden="true" className="chip-progress absolute inset-x-0 bottom-0 h-[3px] origin-left bg-white/70" style={{ animationDuration: `${AUTO_MS}ms`, animationPlayState: inView ? "running" : "paused" }} />
               )}
             </button>
           ))}
+        </div>
           {/* Moving content that runs longer than five seconds can be paused (WCAG 2.2.2). */}
-          {(auto || shown > 0) && picked === null && (
-            <button type="button" onClick={() => setAuto((a) => !a)} aria-pressed={!auto} className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-faint">
+          {autoStarted && picked === null && (
+            <button type="button" title={t.pauseDemo} onClick={() => setAuto((a) => !a)} aria-pressed={!auto} className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-faint">
               {auto ? <Pause aria-hidden="true" className="size-4" /> : <Play aria-hidden="true" className="size-4" />}
               <span className="sr-only">{t.pauseDemo}</span>
             </button>

@@ -20,7 +20,7 @@ export const am: Messages = {
   },
   landing: {
     hero: {
-      pauseDemo: "ማሳያውን ያቁሙ",
+      pauseDemo: "ማሳያውን ለአፍታ ያቁሙ",
       eyebrow: "አማርኛ የሚናገር የድረ-ገጽ ገንቢ",
       titleStart: "ጎጆዎን",
       titleEnd: "ኦንላይን ይገንቡ",
@@ -34,7 +34,7 @@ export const am: Messages = {
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",
       build: "ድረ-ገጼን ሥራልኝ",
     },
-    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", openApp: "ጎጆላይንን ይክፈቱ", menu: "ማውጫ", seeTemplates: "14ቱንም አብነቶች ይመልከቱ" },
+    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", seeTemplates: "14ቱንም አብነቶች ይመልከቱ" },
     demo: {
       pick: "የንግድ ዓይነት ይምረጡ",
       prompts: {
@@ -52,15 +52,14 @@ export const am: Messages = {
       { value: "14", label: "ዝግጁ አብነቶች" },
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
-    marquee: { title: "ለሁሉም ዓይነት ንግድ የተሠራ" },
+    marquee: { title: "ለሁሉም ዓይነት ንግድ እና ማኅበረሰብ የተሠራ", pause: "የሚንቀሳቀሰውን ዝርዝር ለአፍታ ያቁሙ" },
     compare: {
-      title: "ከአንድ መልዕክት ወደ እውነተኛ ድረ-ገጽ",
+      title: "ልዩነቱን ይመልከቱ",
       body: "ለጓደኛዎ እንደሚነግሩት ስለ ንግድዎ ይጻፉ። ጎጆላይን ደንበኞችዎ የሚጎበኙት፣ ቦታ የሚያስይዙበት እና የሚያዝዙበት ድረ-ገጽ ያደርገዋል።",
       before: "የእርስዎ መልዕክት",
       after: "የእርስዎ ድረ-ገጽ",
       slider: "መልዕክትዎን እና ድረ-ገጽዎን ለማነጻጸር ያንሸራትቱ",
       from: "ሰላም ቡና",
-      time: "9:41",
     },
     proofTitle: "ጎጆላይን በቁጥር",
     proofNote: "በራሳችን የሙከራ ግንባታዎች የተለካ፤ ኅዳር 2019 ዓ.ም.",
@@ -99,7 +98,7 @@ export const am: Messages = {
       perMonth: "/ በወር",
       popular: "በብዛት የሚመረጥ",
       cta: "በነጻ ይጀምሩ",
-      ctaSignedIn: "ይህን ዕቅድ ይምረጡ",
+      ctaSignedIn: "ዕቅዶችን እና ክፍያዎችን ይመልከቱ",
       plans: {
         free: ["1 ድረ-ገጽ በነጻ ሊንክ", "በወር 15 ለውጦች", "ቅጾች እና መልሶች በዳሽቦርድዎ"],
         starter: ["የራስዎ የድረ-ገጽ አድራሻ", "በወር 50 ለውጦች", "መልሶች በቴሌግራም", "የጎጆላይን ምልክት የለም"],

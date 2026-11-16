@@ -5,7 +5,8 @@ import { expect, type Page } from "@playwright/test";
 export async function expectNoSeriousA11yIssues(page: Page) {
   // Check the settled page, not a frame mid-animation (half-faded text reads as low contrast).
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => undefined))));
+  // A paused animation (the visitor paused the demo or the moving list) never finishes: wait at most 3 s.
+  await page.evaluate(() => Promise.race([Promise.all(document.getAnimations().map((a) => a.finished.catch(() => undefined))), new Promise((r) => setTimeout(r, 3000))]));
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();

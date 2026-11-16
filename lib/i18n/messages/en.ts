@@ -33,7 +33,7 @@ export const en = {
       picked: "Showing {name}. An example description was added to the box below.",
       build: "Build my site",
     },
-    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", openApp: "Open Gojoline", menu: "Menu", seeTemplates: "See all 14 templates" },
+    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", seeTemplates: "See all 14 templates" },
     demo: {
       pick: "Choose a kind of business",
       prompts: {
@@ -51,15 +51,14 @@ export const en = {
       { value: "14", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
-    marquee: { title: "Made for every kind of business" },
+    marquee: { title: "Made for every kind of business and community", pause: "Pause the moving list" },
     compare: {
-      title: "From one message to a real website",
+      title: "See the difference",
       body: "Write about your business the way you'd tell a friend. Gojoline turns it into a site your customers can visit, book and order from.",
       before: "Your message",
       after: "Your website",
       slider: "Slide to compare your message and your website",
       from: "Selam Coffee",
-      time: "9:41",
     },
     proofTitle: "Gojoline in numbers",
     proofNote: "Measured on our own test builds, November 2026.",
@@ -98,7 +97,7 @@ export const en = {
       perMonth: "/ month",
       popular: "Most popular",
       cta: "Start free",
-      ctaSignedIn: "Choose this plan",
+      ctaSignedIn: "See plans and payments",
       plans: {
         free: ["1 site on a free link", "15 changes a month", "Forms and answers in your dashboard"],
         starter: ["Your own web address", "50 changes a month", "Answers on Telegram", "No Gojoline badge"],

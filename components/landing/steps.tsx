@@ -33,7 +33,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
             {s.title}
           </h2>
           <ol className="relative flex flex-col">
-            <span aria-hidden="true" className="steps-line absolute start-[13px] top-5 bottom-5 -z-0 w-0.5 rounded-full bg-coral/60" />
+            <span aria-hidden="true" className="steps-line absolute start-[13px] top-5 bottom-5 -z-0 w-0.5 rounded-full bg-white/20" />
             {steps.map((step, i) => (
               <li key={step.title} className="flex gap-4 border-t border-white/15 py-5">
                 <span aria-hidden="true" className="relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full bg-coral font-display font-bold text-on-coral ring-4 ring-ink">

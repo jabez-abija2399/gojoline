@@ -325,7 +325,8 @@
   animation: marquee 48s linear infinite;
 }
 .marquee:hover .marquee-row,
-.marquee:focus-within .marquee-row {
+.marquee:focus-within .marquee-row,
+.marquee-wrap[data-paused] .marquee-row {
   animation-play-state: paused;
 }
 @keyframes marquee {
@@ -340,11 +341,15 @@
     mask-image: none;
   }
   .marquee-row {
+    flex: 1 1 100%;
+    min-width: 0;
     flex-wrap: wrap;
     justify-content: center;
-    row-gap: 0.75rem;
+    row-gap: 0.25rem;
+    padding-inline-end: 0;
   }
-  .marquee-row[aria-hidden] {
+  .marquee-row[aria-hidden],
+  .marquee-toggle {
     display: none;
   }
 }
@@ -374,8 +379,8 @@
   z-index: -1;
   background:
     radial-gradient(38% 46% at 30% 40%, color-mix(in oklab, var(--gojo-coral) 22%, transparent), transparent 70%),
-    radial-gradient(34% 40% at 72% 30%, color-mix(in oklab, var(--gojo-sun) 30%, transparent), transparent 70%);
-  animation: glow-drift 18s ease-in-out infinite alternate;
+    radial-gradient(34% 40% at 72% 30%, var(--gojo-coral-soft), transparent 70%);
+  animation: glow-drift 9s ease-in-out both;
 }
 @keyframes glow-drift {
   to {

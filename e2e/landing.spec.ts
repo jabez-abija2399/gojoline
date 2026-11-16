@@ -174,7 +174,10 @@ test("signed in: every way in leads to Your sites, never to the sign-in page", a
   await page.goto("/en");
   const header = page.getByRole("banner");
   if (info.project.name === "mobile") await header.locator("summary").click();
-  await expect(header.getByRole("link", { name: "Open Gojoline" }).filter({ visible: true })).toHaveAttribute("href", "/en/build");
+  const toSites = header.getByRole("link", { name: "Your sites" }).filter({ visible: true });
+  // One way in, not two links to the same page.
+  await expect(toSites).toHaveCount(1);
+  await expect(toSites).toHaveAttribute("href", "/en/build");
   await expect(header.getByRole("link", { name: "Sign in" }).filter({ visible: true })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Open your sites" })).toHaveAttribute("href", "/en/build");
   await expect(page.locator('a[href*="/sign-in"]')).toHaveCount(0);
@@ -188,7 +191,7 @@ test("signed in: every way in leads to Your sites, never to the sign-in page", a
 
   await page.goto("/en/pricing");
   await expect(page.locator('a[href*="/sign-in"]')).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Choose this plan" }).first()).toHaveAttribute("href", "/en/billing");
+  await expect(page.getByRole("link", { name: "See plans and payments" }).first()).toHaveAttribute("href", "/en/billing");
   await page.goto("/en/templates");
   await expect(page.locator('a[href*="/sign-in"]')).toHaveCount(0);
   await expectNoSeriousA11yIssues(page);
@@ -200,16 +203,29 @@ test("signed out: the landing page offers sign-in and a free start", async ({ pa
 });
 
 test("landing motion: the demo plays itself and can be paused; reduced motion keeps it still", async ({ page, browser }) => {
+  // It waits for the demo to move on by itself, twice.
+  test.setTimeout(75_000);
   await page.goto("/en");
   const chips = page.getByRole("group", { name: "Gojoline for" });
   await chips.scrollIntoViewIfNeeded();
   await expect(chips.getByRole("button", { name: "Café" })).toHaveAttribute("aria-pressed", "true");
+  // Pausing straight away keeps the control (and focus) so it can be played again.
+  const toggle = page.getByRole("button", { name: "Pause the demo" });
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(toggle).toBeFocused();
+  await toggle.click();
   // After a few seconds the next business is shown by itself...
   await expect(chips.getByRole("button", { name: "Hotel" })).toHaveAttribute("aria-pressed", "true", { timeout: 9000 });
   // ...until the visitor pauses it.
-  await chips.getByRole("button", { name: "Pause the demo" }).click();
+  await page.getByRole("button", { name: "Pause the demo" }).click();
   await page.waitForTimeout(7000);
   await expect(chips.getByRole("button", { name: "Hotel" })).toHaveAttribute("aria-pressed", "true");
+
+  // The moving list of businesses can be paused on any device.
+  const listToggle = page.getByRole("button", { name: "Pause the moving list" });
+  await listToggle.click();
+  await expect(listToggle).toHaveAttribute("aria-pressed", "true");
 
   // Before and after: a slider anyone can move with the keyboard.
   const slider = page.getByRole("slider", { name: "Slide to compare your message and your website" });

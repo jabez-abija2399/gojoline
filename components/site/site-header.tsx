@@ -18,8 +18,7 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
   // Signed in already: every way in goes to the owner's sites instead of the sign-in page.
   const signedIn = await looksSignedIn();
   const signIn = signedIn ? `/${locale}/build` : `/${locale}/sign-in?next=/${locale}/build`;
-  const enterLabel = signedIn ? t.landing.nav.mySites : t.landing.nav.signIn;
-  const startLabel = signedIn ? t.landing.nav.openApp : t.landing.nav.start;
+  const startLabel = signedIn ? t.landing.nav.mySites : t.landing.nav.start;
   const links = [
     { href: `/${locale}/templates`, label: t.landing.nav.templates, key: "templates" },
     { href: `/${locale}#how`, label: t.landing.nav.how, key: "how" },
@@ -39,9 +38,11 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
             ))}
           </nav>
           <div className="flex items-center gap-1">
-            <Link href={signIn} className={`inline-flex min-h-11 items-center rounded-full px-3 font-medium text-ink hover:bg-sunken max-md:hidden ${signedIn ? "hidden" : ""}`}>
-              {enterLabel}
-            </Link>
+            {!signedIn && (
+              <Link href={signIn} className="inline-flex min-h-11 items-center rounded-full px-3 font-medium text-ink hover:bg-sunken max-md:hidden">
+                {t.landing.nav.signIn}
+              </Link>
+            )}
             <span className="[&>a]:rounded-full [&>a]:border-0 [&>a]:px-3 [&>a]:hover:bg-sunken">{language}</span>
             <Link href={signIn} className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 font-medium text-white hover:bg-ink-hover max-md:hidden">
               {startLabel}

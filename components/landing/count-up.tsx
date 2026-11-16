@@ -15,6 +15,8 @@ export function CountUp({ value }: { value: string }) {
   useEffect(() => {
     const el = ref.current;
     if (!el || !match || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Already on screen when the page opens: keep the real number (no flash to zero).
+    if (el.getBoundingClientRect().top < innerHeight) return;
     let raf = 0;
     const io = new IntersectionObserver(([e]) => {
       if (!e?.isIntersecting) return;

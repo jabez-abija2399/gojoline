@@ -5,7 +5,7 @@ import { useState } from "react";
 import { CheckCheck, MoveHorizontal } from "lucide-react";
 
 interface Props {
-  t: { title: string; body: string; before: string; after: string; slider: string; from: string; time: string };
+  t: { title: string; body: string; before: string; after: string; slider: string; from: string };
   message: string;
   shot: { src: string; width: number; height: number };
 }
@@ -16,7 +16,7 @@ interface Props {
  * work without extra code; only clip-path changes (no layout work).
  */
 export function Compare({ t, message, shot }: Props) {
-  const [pos, setPos] = useState(50);
+  const [pos, setPos] = useState(62);
   return (
     <section aria-labelledby="compare-title" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24 below-fold">
       <div className="mx-auto mb-10 flex max-w-2xl flex-col items-center gap-3 text-center">
@@ -34,14 +34,14 @@ export function Compare({ t, message, shot }: Props) {
         {/* Before: the message, clipped at the slider. */}
         <div aria-hidden="true" className="absolute inset-0 flex flex-col bg-sunken" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
           <div className="flex items-center gap-3 border-b border-line bg-white px-4 py-3">
-            <span className="flex size-9 items-center justify-center rounded-full bg-coral font-display font-bold text-on-coral">{[...t.from][0]}</span>
-            <span className="font-semibold">{t.from}</span>
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-coral-soft font-display font-bold text-ink">{[...t.from][0]}</span>
+            <span className="truncate font-semibold">{t.from}</span>
           </div>
           <div className="flex flex-1 flex-col justify-end gap-3 bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:16px_16px] p-4">
-            <p className="ms-auto max-w-[85%] rounded-2xl rounded-br-sm bg-ink px-4 py-3 text-white">
+            <p className="me-auto max-w-[78%] rounded-2xl rounded-bl-sm bg-ink px-4 py-3 text-white">
               {message}
-              <span className="mt-1 flex items-center justify-end gap-1 text-xs text-white/70">
-                {t.time} <CheckCheck className="size-3.5" />
+              <span className="mt-1 flex items-center justify-end text-white/70">
+                <CheckCheck className="size-3.5" />
               </span>
             </p>
           </div>
@@ -55,7 +55,7 @@ export function Compare({ t, message, shot }: Props) {
         </div>
         <label className="absolute inset-0">
           <span className="sr-only">{t.slider}</span>
-          <input type="range" min={0} max={100} value={pos} onChange={(e) => setPos(Number(e.target.value))} className="h-full w-full cursor-ew-resize opacity-0" />
+          <input type="range" min={0} max={100} value={pos} aria-valuetext={`${pos}%`} onChange={(e) => setPos(Number(e.target.value))} className="h-full w-full cursor-ew-resize touch-pan-y opacity-0" />
         </label>
       </div>
     </section>

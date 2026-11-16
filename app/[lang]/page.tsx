@@ -75,7 +75,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
           }}
         />
         <Proof t={t.landing} />
-        <Marquee title={t.landing.marquee.title} names={t.builder.templates} />
+        <Marquee title={t.landing.marquee.title} names={t.builder.templates} pause={t.landing.marquee.pause} />
         <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={bot} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} languages={`${b.langEn} · ${b.langAm}`} />
         <Compare t={t.landing.compare} message={t.landing.demo.prompts.cafe} shot={stageSites[0]?.shot ?? { src: "", width: 1, height: 1 }} />
         <Features

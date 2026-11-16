@@ -1,5 +1,6 @@
 import { BedDouble, Briefcase, Church, Coffee, GraduationCap, HeartHandshake, House, MoonStar, Mountain, PartyPopper, Scissors, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
+import { MarqueeToggle } from "./marquee-toggle";
 
 const ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound, business: Briefcase, salon: Scissors } as const;
 
@@ -8,14 +9,14 @@ const ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: Gra
  * twice so the loop is seamless; it pauses under a pointer or focus and stands still (wrapped)
  * for people who prefer less motion. Screen readers get the list once.
  */
-export function Marquee({ title, names }: { title: string; names: Messages["builder"]["templates"] }) {
+export function Marquee({ title, names, pause }: { title: string; names: Messages["builder"]["templates"]; /** "Pause the moving list". */ pause: string }) {
   const items = (Object.keys(ICONS) as (keyof typeof ICONS)[]).filter((k) => k in names);
   const row = (hidden: boolean) => (
     <ul aria-hidden={hidden || undefined} className="marquee-row flex shrink-0 gap-3 pe-3">
       {items.map((k) => {
         const Icon = ICONS[k];
         return (
-          <li key={k} className="flex shrink-0 items-center gap-2.5 rounded-full border border-line bg-white px-4 py-2.5 font-medium whitespace-nowrap text-ink shadow-sm">
+          <li key={k} className="flex shrink-0 items-center gap-2.5 px-3 py-2 font-medium whitespace-nowrap text-ink">
             <span className="flex size-8 items-center justify-center rounded-full bg-coral-soft text-ink">
               <Icon aria-hidden="true" className="size-4" />
             </span>
@@ -30,10 +31,12 @@ export function Marquee({ title, names }: { title: string; names: Messages["buil
       <h2 id="marquee-title" className="mb-6 px-4 text-center font-medium text-ink-muted">
         {title}
       </h2>
-      <div className="marquee group relative flex [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-        {row(false)}
-        {row(true)}
-      </div>
+      <MarqueeToggle label={pause}>
+        <div className="marquee group relative flex w-full [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          {row(false)}
+          {row(true)}
+        </div>
+      </MarqueeToggle>
     </section>
   );
 }
