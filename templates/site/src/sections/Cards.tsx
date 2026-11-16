@@ -203,7 +203,7 @@ function Body({ item, large = false }: { item: CardItem; large?: boolean }) {
       {item.meta && item.meta.length > 0 && (
         <ul className="meta flex flex-wrap gap-x-3 gap-y-1 text-muted">
           {item.meta.map((m, i) => (
-            <li key={section.items.indexOf(item)} className="meta-item">
+            <li key={i} className="meta-item">
               {text(m)}
             </li>
           ))}
