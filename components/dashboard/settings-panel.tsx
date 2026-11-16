@@ -133,7 +133,7 @@ function SeoSection({ t, projectId, s }: { t: T; projectId: string; s: SettingsS
   const [seo, setSeo] = useState<Seo | null>(null);
   const [photos, setPhotos] = useState<{ name: string }[]>([]);
   const [failed, setFailed] = useState(false);
-  const [save, setSave] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [save, setSave] = useState<"idle" | "saving" | "saved" | "error" | "blocked">("idle");
   const lang: Lang = s.languages[0] ?? "en";
 
   useEffect(() => {
@@ -159,7 +159,7 @@ function SeoSection({ t, projectId, s }: { t: T; projectId: string; s: SettingsS
     if (save === "saving") return;
     setSave("saving");
     const res = await fetch(`/api/projects/${projectId}/seo`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(seo) }).catch(() => null);
-    setSave(res?.ok ? "saved" : "error");
+    setSave(res?.ok ? "saved" : res?.status === 422 ? "blocked" : "error");
   };
   const inLang = (key: string, l: Lang) => format(key, { lang: t.languageNames[l] });
   const title = seo?.title?.[lang] || s.siteName;
@@ -215,7 +215,7 @@ function SeoSection({ t, projectId, s }: { t: T; projectId: string; s: SettingsS
               <button type="submit" aria-disabled={save === "saving" || undefined} className="inline-flex min-h-11 w-fit items-center rounded-lg bg-ink px-5 text-sm font-semibold text-white hover:bg-ink-hover aria-disabled:opacity-60">
                 {save === "saving" ? t.saving : t.save}
               </button>
-              <p role={save === "error" ? "alert" : "status"} className={save === "error" ? "text-danger" : "text-ink"}>{save === "saved" ? t.seoSaved : save === "error" ? t.infoErrors.failed : ""}</p>
+              <p role={save === "error" || save === "blocked" ? "alert" : "status"} className={save === "error" || save === "blocked" ? "text-danger" : "text-ink"}>{save === "saved" ? t.seoSaved : save === "blocked" ? t.infoErrors.blocked : save === "error" ? t.infoErrors.failed : ""}</p>
               {save === "saved" && (s.status === "live" || s.status === "resting") && <PublishNow t={t} projectId={projectId} />}
             </div>
           </div>

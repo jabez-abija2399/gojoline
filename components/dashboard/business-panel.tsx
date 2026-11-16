@@ -85,7 +85,7 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
     const d = res ? await res.json().catch(() => ({})) : {};
     if (res?.ok) return setSave({ kind: "saved", text: state.live ? (state.outdated ? t.infoOutdated : t.savedInfo) : t.savedNotLive });
     const errors = t.infoErrors as Record<string, string>;
-    setSave({ kind: "error", text: errors[d.field] ?? errors.failed });
+    setSave({ kind: "error", text: (d.error === "blocked" ? errors.blocked : errors[d.field]) ?? errors.failed });
   };
 
   const labels = { days: t.info.days, closed: t.info.closed, closedToday: t.info.closedTodayNotice, closedForNow: t.info.closedForNowNotice };

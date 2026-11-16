@@ -52,7 +52,7 @@ export async function loadHome(ownerId: string, projectId: string, locale: "en" 
     svc.telegram?.store.byUser(ownerId).catch(() => null) ?? null,
     ownerAllowance(ownerId),
     svc.siteSettings.get(ownerId, projectId).catch(() => ({ business: null, seo: null })),
-    visitStats(svc.visits, ownerId, projectId).catch(() => noVisits()),
+    visitStats({ ...svc.visits, owns: async (o, p) => Boolean(await builder.store.getProject(o, p)) }, ownerId, projectId).catch(() => noVisits()),
   ]);
   const { site, address } = header;
   const messages = answerStats(perDay, header.counts);

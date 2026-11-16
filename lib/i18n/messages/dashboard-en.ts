@@ -116,6 +116,7 @@ export const dashboardEn = {
   savedNotLive: "Saved. Your site shows it once it's published.",
   infoOutdated: "Publish your site once more so it shows these. After that, changes here show at once.",
   infoErrors: {
+    blocked: "This text can't go on your site. Please change it.",
     phone: "Check the phone number, like 0911 22 33 44.",
     whatsapp: "Check the WhatsApp number, like 0911 22 33 44.",
     telegram: "A Telegram username has 5 to 32 letters, numbers or _.",

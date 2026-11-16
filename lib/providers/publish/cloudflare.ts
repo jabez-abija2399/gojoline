@@ -124,7 +124,7 @@ export class CloudflarePublishProvider implements PublishProvider {
 
     // Switching the pointer makes the new version live everywhere at once.
     // The file list lets the Worker find a page without guessing (no misses on R2).
-    await this.storage.put(`sites/${slug}/current.json`, JSON.stringify({ deployment, headers: input.headers, files: files.map((f) => f.path).sort() }), { contentType: "application/json", cacheControl: "no-store" });
+    await this.storage.put(`sites/${slug}/current.json`, JSON.stringify({ deployment, headers: input.headers, files: files.map((f) => f.path).sort(), ...(input.takedown ? { takedown: true } : {}) }), { contentType: "application/json", cacheControl: "no-store" });
     if (!owner) await this.storage.put(this.hostKey(host), JSON.stringify({ site: slug }), { contentType: "application/json" });
     // Keep the previous version a little longer (requests already in flight), drop the rest.
     await this.prune(slug, deployment, 1).catch((e: unknown) => console.warn("prune failed", slug, e));
@@ -139,12 +139,15 @@ export class CloudflarePublishProvider implements PublishProvider {
   }
 
   /** Flags the current pointer; the Worker then answers pages with its resting page (503). */
-  async setResting(providerProjectId: string, resting: boolean): Promise<void> {
+  async setResting(providerProjectId: string, resting: boolean, expectDeployment?: string | null): Promise<void> {
     const slug = slugOf(providerProjectId);
     const key = `sites/${slug}/current.json`;
     const raw = await this.storage.get(key);
     if (!raw) throw new Error("Hosting project is missing");
     const pointer = JSON.parse(raw.toString()) as Record<string, unknown>;
+    // A takedown notice is never switched, and a pointer that moved on isn't overwritten.
+    if (pointer.takedown) throw new Error("taken_down");
+    if (expectDeployment && pointer.deployment !== expectDeployment) throw new Error("pointer_changed");
     if (resting) pointer.resting = true;
     else delete pointer.resting;
     await this.storage.put(key, JSON.stringify(pointer), { contentType: "application/json", cacheControl: "no-store" });

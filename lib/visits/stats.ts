@@ -36,7 +36,7 @@ export interface VisitStats {
   /** The last 7 days, people per source and device. */
   sources: Partial<Record<Source, number>>;
   devices: Partial<Record<Device, number>>;
-  /** Anything counted ever (so the page can tell "no visitors yet" from "none this fortnight"). */
+  /** Anything counted in these 14 days (the empty state shows only when there is nothing to chart). */
   any: boolean;
 }
 
@@ -45,13 +45,13 @@ export interface VisitStats {
  * last 3 from the live counter, and finished days among them are written back (a top-up, so a
  * missed cron run loses nothing while the live counts still exist). Owner-scoped.
  */
-export async function visitStats(deps: VisitDeps, ownerId: string, projectId: string, now = Date.now(), days = 14): Promise<VisitStats> {
+export async function visitStats(deps: VisitDeps & { owns: (ownerId: string, projectId: string) => Promise<boolean> }, ownerId: string, projectId: string, now = Date.now(), days = 14): Promise<VisitStats> {
   const dayAt = (i: number) => addisDay(now - i * DAY);
+  // Live counts are keyed by project only: never read or write them for someone else's.
+  if (!(await deps.owns(ownerId, projectId))) return { perDay: Array.from({ length: days }, (_, k) => ({ day: dayAt(days - 1 - k), value: 0 })), thisWeek: 0, lastWeek: 0, sources: {}, devices: {}, any: false };
   const stored = await deps.daily.range(ownerId, projectId, dayAt(days - 1), dayAt(0));
   const byDay = new Map<string, DayCounts>(stored.map((r) => [r.day, r]));
-  // The caller checked ownership for the live part: range() above is owner-scoped, and the
-  // dashboard only asks for its own project.
-  const live = await Promise.all(Array.from({ length: LIVE_DAYS }, (_, i) => deps.counter.day(projectId, dayAt(i)).catch(() => null)));
+  const live = await deps.counter.days(projectId, Array.from({ length: LIVE_DAYS }, (_, i) => dayAt(i))).catch(() => [] as (DayCounts | null)[]);
   await Promise.all(
     live.map(async (c, i) => {
       if (!c) return;

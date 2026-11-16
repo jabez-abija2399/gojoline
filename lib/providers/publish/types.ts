@@ -19,6 +19,8 @@ export interface PublishInput {
   providerProjectId?: string | null;
   /** Hosts that support it answer every path with a permanent redirect to the same path here. */
   redirectTo?: string;
+  /** An admin takedown notice: it wins over the owner's resting switch. */
+  takedown?: boolean;
 }
 
 export interface PublishResult {
@@ -48,8 +50,10 @@ export interface PublishProvider {
   /**
    * The owner's offline switch: pages show a resting page until it is switched back, without a
    * new build. Hosts without it rely on the live site's own check (GET .../info says offline).
+   * With `expectDeployment`, it refuses when the live deployment has changed (a takedown or a
+   * publish got there first), and it never touches a takedown notice.
    */
-  setResting?(providerProjectId: string, resting: boolean): Promise<void>;
+  setResting?(providerProjectId: string, resting: boolean, expectDeployment?: string | null): Promise<void>;
   /** After a takedown: older deployment URLs stop being public (the site address shows the notice). */
   restrictOldDeployments?(providerProjectId: string): Promise<void>;
 }

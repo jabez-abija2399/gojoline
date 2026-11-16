@@ -16,6 +16,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/projects/[i
   const deps = services().publish;
   if (!deps) return json(503, { error: "unavailable" });
   const out = await setSiteOffline(deps, r.user.id, id, parsed.data.offline);
+  services().publicSites.invalidate(id);
   if (!out.ok) return json(out.error === "not_found" ? 404 : 409, { error: out.error });
   return json(200, { offline: Boolean(out.site.offlineAt) });
 }

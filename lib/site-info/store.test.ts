@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DbProjectStore } from "@/lib/projects/db-store";
+import { DbSiteStore } from "@/lib/sites/db-store";
 import { makeUser, testDb } from "@/test/db";
 import { seoEnv } from "./seo";
 import { DbSiteSettingsStore, MemorySiteSettingsStore, type SiteSettingsStore } from "./store";
@@ -25,6 +26,23 @@ describe("site settings stores", () => {
       await expect(store.saveBusiness("bob", projectId, { phone: "0911000000" }), name).rejects.toThrow();
       expect((await store.publicBusiness(projectId))?.phone, name).toBe("0911223344");
     }
+  }, 30_000);
+});
+
+describe("publicEntry", () => {
+  it("joins the site and its business details in one read", async () => {
+    const db = await testDb();
+    await makeUser(db, "alice");
+    const p = await new DbProjectStore(db).createProject("alice", { name: "Selam", locale: "en" });
+    const settings = new DbSiteSettingsStore(db);
+    expect(await settings.publicEntry(p.id)).toBeNull();
+    const sites = new DbSiteStore(db);
+    await sites.reserve("alice", p.id, "selam", "memory");
+    await sites.savePublished("alice", { projectId: p.id, slug: "selam", provider: "memory", providerProjectId: "prj", url: "https://selam.x", publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+    expect(await settings.publicEntry(p.id)).toMatchObject({ site: { status: "published", offline: false, url: "https://selam.x" }, business: null });
+    await settings.saveBusiness("alice", p.id, { phone: "0911223344" });
+    await sites.setOffline("alice", p.id, true);
+    expect(await settings.publicEntry(p.id)).toMatchObject({ site: { offline: true }, business: { phone: "0911223344" } });
   }, 30_000);
 });
 

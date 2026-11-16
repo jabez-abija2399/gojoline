@@ -24,7 +24,7 @@ export async function setSiteOffline(deps: Pick<PublishDeps, "sites" | "publishe
     if (!updated) return { ok: false, error: "not_live" };
     if (updated.providerProjectId) {
       try {
-        await publisherFor(updated, deps.publisher, deps.legacy).setResting?.(updated.providerProjectId, offline);
+        await publisherFor(updated, deps.publisher, deps.legacy).setResting?.(updated.providerProjectId, offline, updated.lastDeploymentId);
       } catch (e) {
         // The live site's own check still shows the resting page; the next switch retries.
         reportError("resting switch failed", e, { projectId });

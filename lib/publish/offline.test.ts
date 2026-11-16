@@ -7,6 +7,8 @@ import { MemorySandboxProvider } from "@/lib/providers/sandbox/memory";
 import { MemorySiteSettingsStore } from "@/lib/site-info/store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
 import { setSiteOffline } from "./offline";
+import { takeDownSite } from "@/lib/safety/takedown";
+import { MemoryReportStore } from "@/lib/safety/reports";
 import { SITE_RUNTIME, publishSite, type PublishDeps } from "./service";
 
 const siteTs = `export const site = { name: { en: "Selam Coffee" } }`;
@@ -88,6 +90,34 @@ describe("setSiteOffline", () => {
     };
     expect(await setSiteOffline(deps, "alice", id, true)).toMatchObject({ ok: true });
     expect((await sites.getByProject("alice", id))?.offlineAt).toBeInstanceOf(Date);
+  });
+});
+
+describe("takedown and the resting switch", () => {
+  const moderation = () => ({ sites, reports: new MemoryReportStore(async () => null), publisher, lock: deps.lock, audit: async () => undefined });
+
+  it("a takedown after resting replaces it, and the owner can't switch the notice back", async () => {
+    const id = await published();
+    await setSiteOffline(deps, "alice", id, true);
+    const site = (await sites.getByProject("alice", id))!;
+    expect(await takeDownSite(moderation(), "admin", site.id, "spam")).toBe("ok");
+    expect(publisher.resting.has("prj_selam-coffee")).toBe(false);
+    expect(publisher.takedowns.has("prj_selam-coffee")).toBe(true);
+    expect(await setSiteOffline(deps, "alice", id, false)).toEqual({ ok: false, error: "taken_down" });
+  });
+
+  it("a takedown waits for an offline switch in progress, then wins", async () => {
+    const id = await published();
+    const site = (await sites.getByProject("alice", id))!;
+    const token = await deps.lock.acquire(`project:${id}`, 60_000);
+    const down = takeDownSite(moderation(), "admin", site.id, "spam");
+    await new Promise((r) => setTimeout(r, 300));
+    // The switch held the lock: the notice isn't up yet.
+    expect(publisher.takedowns.size).toBe(0);
+    await deps.lock.release(`project:${id}`, token!);
+    expect(await down).toBe("ok");
+    expect(publisher.takedowns.has("prj_selam-coffee")).toBe(true);
+    await expect(publisher.setResting("prj_selam-coffee", true)).rejects.toThrow("taken_down");
   });
 });
 

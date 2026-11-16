@@ -139,6 +139,13 @@ describe("sites worker", () => {
     expect((await get("https://abeni.afridea.et/assets/app-1.js", e)).status).toBe(200);
   });
 
+  it("serves a takedown notice even if the resting flag is still on", async () => {
+    const e = env({ extra: { "sites/abeni/current.json": pointer({ files: FILES, resting: true, takedown: true }) } });
+    const r = await get("https://abeni.afridea.et/", e);
+    expect(r.status).toBe(200);
+    expect(await r.text()).toBe("<h1>home</h1>");
+  });
+
   it("keeps its page text equal to the app's messages", () => {
     for (const l of ["en", "am"] as const) {
       const m = getMessages(l).safety;

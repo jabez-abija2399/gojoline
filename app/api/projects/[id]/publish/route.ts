@@ -35,6 +35,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/projects/[i
   if (!parsed.success) return json(400, { error: "slug_format" });
   const outcome = await publishSite(s.deps, s.user, id, parsed.data.slug);
   if (outcome.ok) refreshTemplateUsage();
+  if (outcome.ok) services().publicSites.invalidate(id);
   if (outcome.ok) return json(200, { url: outcome.site.url, slug: outcome.site.slug, publishedVersion: outcome.site.publishedVersion });
   // Scan details stay on the server; the owner gets a plain reason.
   if (outcome.issues) console.warn("publish blocked by scan", id, outcome.issues.map((i) => `${i.rule}:${i.file}`).join(","));

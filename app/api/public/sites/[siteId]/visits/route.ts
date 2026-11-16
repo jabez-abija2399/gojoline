@@ -1,6 +1,8 @@
 import { after } from "next/server";
 import { z } from "zod";
+import { readCapped } from "@/lib/api/body";
 import { allowedOrigin, cors } from "@/lib/cloud/cors";
+import { ipAllowed } from "@/lib/cloud/ip-limit";
 import { reportError } from "@/lib/observability/report";
 import { clientIp } from "@/lib/server/request";
 import { services } from "@/lib/server/services";
@@ -15,21 +17,24 @@ const ids = z.object({ siteId: z.uuid() });
 
 export async function OPTIONS(request: Request, ctx: Ctx) {
   const params = ids.safeParse(await ctx.params);
-  const cloud = services().cloud;
-  if (!params.success || !cloud) return new Response(null, { status: 404 });
-  const allowed = allowedOrigin(await cloud.publicSite(params.data.siteId), request.headers.get("origin"));
+  if (!params.success) return new Response(null, { status: 404 });
+  if (!(await ipAllowed(services().rateLimiter, "visit", await clientIp(), 120))) return new Response(null, { status: 429 });
+  const allowed = allowedOrigin((await services().publicSites.get(params.data.siteId))?.site ?? null, request.headers.get("origin"));
   return new Response(null, { status: allowed ? 204 : 403, headers: cors(allowed, "POST") });
 }
 
 export async function POST(request: Request, ctx: Ctx) {
   const params = ids.safeParse(await ctx.params);
   const svc = services();
-  if (!params.success || !svc.cloud) return new Response(null, { status: 404 });
-  if (Number(request.headers.get("content-length") ?? 0) > MAX_VISIT_BYTES) return new Response(null, { status: 413 });
-  const raw = await request.text();
+  if (!params.success) return new Response(null, { status: 404 });
+  const ip = await clientIp();
+  // Limit by address before reading the body or the database.
+  if (!(await ipAllowed(svc.rateLimiter, "visit", ip, 120))) return new Response(null, { status: 429 });
+  const raw = await readCapped(request, MAX_VISIT_BYTES);
+  if (raw === null) return new Response(null, { status: 413 });
   const r = await recordVisit(
-    { publicSite: (id) => svc.cloud!.publicSite(id), counter: svc.visits.counter, limiter: svc.rateLimiter },
-    { projectId: params.data.siteId, origin: request.headers.get("origin"), siteKey: request.headers.get("x-site-key"), ip: await clientIp(), userAgent: request.headers.get("user-agent") ?? "", raw },
+    { publicSite: async (id) => (await svc.publicSites.get(id))?.site ?? null, counter: svc.visits.counter, limiter: svc.rateLimiter },
+    { projectId: params.data.siteId, origin: request.headers.get("origin"), siteKey: request.headers.get("x-site-key"), ip, userAgent: request.headers.get("user-agent") ?? "", fetchSite: request.headers.get("sec-fetch-site"), raw },
   ).catch((e: unknown) => {
     reportError("visit failed", e);
     return { status: 204, allowOrigin: null, count: undefined };

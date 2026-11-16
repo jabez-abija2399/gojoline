@@ -205,7 +205,7 @@ async function deployLocked(
       runtimeVersion: SITE_RUNTIME,
     });
     // Resting sites stay resting: the new deployment replaced the host's flag.
-    if (site.offlineAt) await deps.publisher.setResting?.(result.providerProjectId, true).catch((e: unknown) => reportError("resting switch failed", e, { projectId }));
+    if (site.offlineAt) await deps.publisher.setResting?.(result.providerProjectId, true, result.deploymentId).catch((e: unknown) => reportError("resting switch failed", e, { projectId }));
     if (legacyProjectId && deps.legacy) {
       // The old address forwards to the new one (same path) and stops showing old content.
       // A failure is retried on the next publish; until then takedowns also reach the old host.

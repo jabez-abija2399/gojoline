@@ -21,7 +21,9 @@ export class MemoryPublishProvider implements PublishProvider {
     return { status: this.domains.get(domain) ? "active" : "pending", records: [routingRecord(domain, domain.split(".").slice(-2).join("."))] };
   }
   readonly resting = new Set<string>();
+  readonly takedowns = new Set<string>();
   async setResting(providerProjectId: string, on: boolean) {
+    if (this.takedowns.has(providerProjectId)) throw new Error("taken_down");
     if (on) this.resting.add(providerProjectId);
     else this.resting.delete(providerProjectId);
   }
@@ -30,6 +32,8 @@ export class MemoryPublishProvider implements PublishProvider {
     this.published.set(input.slug, input.files);
     // A new deployment replaces the pointer, like Cloudflare's: the resting flag goes with it.
     this.resting.delete(`prj_${input.slug}`);
+    if (input.takedown) this.takedowns.add(`prj_${input.slug}`);
+    else this.takedowns.delete(`prj_${input.slug}`);
     if (input.redirectTo) this.redirects.set(input.slug, input.redirectTo);
     return { url: this.urlFor(input.slug), deploymentId: `dpl_${Date.now()}`, providerProjectId: `prj_${input.slug}` };
   }

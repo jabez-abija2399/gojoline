@@ -5,7 +5,7 @@ import { emailSender } from "@/lib/providers/notify/pick";
 import { DbSettingsStore, MemorySettingsStore } from "@/lib/billing/settings";
 import { LLMContentClassifier } from "@/lib/safety/classifier";
 import { HeuristicSizer, LLMRequestSizer } from "@/lib/agent/size";
-import { ContentGuard } from "@/lib/safety/guard";
+import { ContentGuard, checkOwnerText } from "@/lib/safety/guard";
 import { DbReportStore, MemoryReportStore, type ReportStore } from "@/lib/safety/reports";
 import type { ModerationDeps } from "@/lib/safety/takedown";
 import type { SiteAdminStore } from "@/lib/sites/types";
@@ -47,6 +47,7 @@ import { DbSiteSettingsStore, MemorySiteSettingsStore, type SiteSettingsStore } 
 import { MemoryVisitCounter, RedisVisitCounter } from "@/lib/visits/counter";
 import { DbVisitsDailyStore, MemoryVisitsDailyStore } from "@/lib/visits/daily";
 import type { VisitDeps } from "@/lib/visits/stats";
+import { PublicSiteCache } from "@/lib/cloud/site-cache";
 import { TelegramNotifier } from "@/lib/telegram/notifier";
 import { DbTelegramStore, MemoryTelegramStore, type TelegramStore } from "@/lib/telegram/store";
 
@@ -171,6 +172,10 @@ interface Services {
   siteSettings: SiteSettingsStore;
   /** Privacy-friendly visit counts (Redis live, Postgres daily; memory without them). */
   visits: VisitDeps;
+  /** Content check for words owners put live from the dashboard (rules, plus AI when configured). */
+  checkText: (texts: string[], ctx: { userId: string; projectId: string }) => ReturnType<typeof checkOwnerText>;
+  /** Sites as the public Data API sees them, cached a minute per server (info and visits routes). */
+  publicSites: PublicSiteCache;
 }
 
 /** `ownerOf` serves the memory store only (the database joins projects instead). */
@@ -202,6 +207,8 @@ export function services(): Services {
       moderation: null,
       siteSettings: db ? new DbSiteSettingsStore(db) : new MemorySiteSettingsStore(),
       visits: { counter: new MemoryVisitCounter(), daily: new MemoryVisitsDailyStore(async () => null) },
+      checkText: (texts, ctx) => checkOwnerText(texts, null, ctx),
+      publicSites: new PublicSiteCache(async () => null),
     };
     const svc = globalForServices.gojoServices;
     if (svc.builder) {
@@ -220,6 +227,12 @@ export function services(): Services {
       svc.builder.sizer = key && !isE2E(process.env) ? new LLMRequestSizer(new AnthropicLLMProvider(key), usage, process.env.SIZE_MODEL || "claude-haiku-5-5") : new HeuristicSizer();
     }
     svc.publish = pickPublish(process.env, svc.builder);
+    const settingsDb = svc.siteSettings instanceof DbSiteSettingsStore ? svc.siteSettings : null;
+    svc.publicSites = new PublicSiteCache(async (id) => {
+      if (settingsDb) return settingsDb.publicEntry(id);
+      const site = await svc.publish?.cloud?.publicSite(id);
+      return site ? { site, business: await svc.siteSettings.publicBusiness(id) } : null;
+    });
     svc.visits = pickVisits(process.env, async (id) => (await svc.publish?.cloud?.publicSite(id))?.ownerId ?? null);
     if (svc.publish) {
       svc.publish.entitlements = billing.entitlements;
@@ -228,6 +241,7 @@ export function services(): Services {
       const key = process.env.SAYSITE_ANTHROPIC_API_KEY;
       const classifier = key && !isE2E(process.env) ? new LLMContentClassifier(new AnthropicLLMProvider(key), usage, process.env.SAFETY_MODEL || "claude-haiku-5-5") : null;
       svc.publish.guards = [new ContentGuard(classifier)];
+      svc.checkText = (texts, ctx) => checkOwnerText(texts, classifier, ctx);
     }
     svc.cloud = svc.publish?.cloud ?? null;
     const siteAdmin = (svc.publish?.sites as unknown as SiteAdminStore | undefined) ?? (db ? new DbSiteStore(db) : null);
@@ -238,7 +252,7 @@ export function services(): Services {
             const s = await siteAdmin.byId(id);
             return s ? { slug: s.slug, url: s.url, status: s.status } : null;
           });
-      svc.moderation = { sites: siteAdmin, reports, publisher: svc.publish?.publisher ?? null, legacy: svc.publish?.legacy ?? null, audit: (e) => billing.store().audit(e) };
+      svc.moderation = { sites: siteAdmin, reports, publisher: svc.publish?.publisher ?? null, legacy: svc.publish?.legacy ?? null, lock: svc.publish?.lock, audit: (e) => billing.store().audit(e), invalidate: (id) => globalForServices.gojoServices?.publicSites.invalidate(id) };
     }
     svc.telegram = pickTelegram(process.env);
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);

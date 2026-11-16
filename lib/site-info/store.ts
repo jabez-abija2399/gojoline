@@ -1,6 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
-import { siteSettings } from "@/lib/db/schema";
+import { siteSettings, sites } from "@/lib/db/schema";
+import type { PublicEntry } from "@/lib/cloud/site-cache";
 import { businessInfo, type BusinessInfo } from "./business";
 import { seoSettings, type SeoSettings } from "./seo";
 
@@ -69,5 +70,18 @@ export class DbSiteSettingsStore implements SiteSettingsStore {
   async publicBusiness(projectId: string) {
     const [r] = await this.db.select({ business: siteSettings.business }).from(siteSettings).where(eq(siteSettings.projectId, projectId)).limit(1);
     return parseBusiness(r?.business);
+  }
+
+  /** The public Data API's view of a site and its business details, in one query. */
+  async publicEntry(projectId: string): Promise<PublicEntry | null> {
+    const [r] = await this.db
+      .select({ siteId: sites.id, projectId: sites.projectId, ownerId: sites.ownerId, siteKey: sites.siteKey, status: sites.status, url: sites.url, customDomain: sites.customDomain, offlineAt: sites.offlineAt, business: siteSettings.business })
+      .from(sites)
+      .leftJoin(siteSettings, eq(siteSettings.projectId, sites.projectId))
+      .where(eq(sites.projectId, projectId))
+      .limit(1);
+    if (!r) return null;
+    const { offlineAt, business, ...site } = r;
+    return { site: { ...site, offline: offlineAt !== null }, business: parseBusiness(business) };
   }
 }

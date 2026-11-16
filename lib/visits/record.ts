@@ -33,8 +33,14 @@ export interface VisitInput {
   siteKey: string | null;
   ip: string;
   userAgent: string;
+  /** Sec-Fetch-Site: a beacon from the site itself is cross-site or same-site. */
+  fetchSite: string | null;
   raw: string;
 }
+
+/** New people one address can add per site per day; views per site per day. */
+export const MAX_PEOPLE_PER_IP = 5;
+export const MAX_VIEWS_PER_DAY = 50_000;
 
 const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
 const sameKey = (a: string, b: string) => {
@@ -64,6 +70,8 @@ export async function recordVisit(deps: VisitDeps, input: VisitInput): Promise<{
   if (!body.success) return { status: 400, allowOrigin };
   const key = input.siteKey ?? body.data.key ?? "";
   if (!site.siteKey || !key || !sameKey(key, site.siteKey)) return { status: 403, allowOrigin };
+  // Browsers say where a request came from; anything but another site (the published one) is ignored.
+  if (input.fetchSite && input.fetchSite !== "cross-site" && input.fetchSite !== "same-site") return { status: 204, allowOrigin };
   if (site.offline || isBot(input.userAgent)) return { status: 204, allowOrigin };
 
   const now = (deps.now ?? Date.now)();
@@ -71,10 +79,11 @@ export async function recordVisit(deps: VisitDeps, input: VisitInput): Promise<{
   const salt = await deps.counter.salt(day);
   // Rate limit per hashed IP (60 views a minute per site), never the IP in the clear.
   const ipHash = sha256(`${salt}:ip:${input.ip}`).slice(0, 24);
-  if (!(await deps.limiter.hit(`visit:${site.projectId}:${ipHash}`, 60, 60_000)).allowed) return { status: 429, allowOrigin };
+  const [perIp, perSite] = await Promise.all([deps.limiter.hit(`visit:${site.projectId}:${ipHash}`, 60, 60_000), deps.limiter.hit(`visit:day:${site.projectId}:${day}`, MAX_VIEWS_PER_DAY, 86_400_000)]);
+  if (!perIp.allowed || !perSite.allowed) return { status: 429, allowOrigin };
 
   const visitorId = sha256(`${salt}${site.projectId}${input.ip}${input.userAgent}`);
   const own = siteOrigins(site).map((o) => new URL(o).hostname);
-  const meta = { source: sourceOf(body.data.ref, body.data.src, own), device: deviceOf(input.userAgent) };
+  const meta = { source: sourceOf(body.data.ref, body.data.src, own), device: deviceOf(input.userAgent), ip: ipHash, maxPerIp: MAX_PEOPLE_PER_IP };
   return { status: 204, allowOrigin, count: () => deps.counter.record(site.projectId, day, visitorId, meta) };
 }

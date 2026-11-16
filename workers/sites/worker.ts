@@ -42,6 +42,8 @@ interface Pointer {
   fileSet?: Set<string>;
   /** The owner took the site offline: pages show the resting page (files stay for when it's back). */
   resting?: boolean;
+  /** An admin's takedown notice: always served as it is, never the resting page. */
+  takedown?: boolean;
 }
 
 const TYPES: Record<string, string> = {
@@ -212,7 +214,7 @@ const worker = {
     const { slug, pointer } = site;
     const list = candidates(url.pathname);
     if (!list) return notFound(env, "page", 400);
-    if (pointer.resting && list.some((c) => c.endsWith(".html"))) return resting();
+    if (pointer.resting && !pointer.takedown && list.some((c) => c.endsWith(".html"))) return resting();
     const root = `sites/${slug}/d/${pointer.deployment}/`;
 
     // With the file list the path is known without touching R2; older pointers are probed.

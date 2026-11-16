@@ -41,6 +41,11 @@ describe("CloudflarePublishProvider", () => {
     await cf.setResting("cf:abeni", false);
     expect(json(storage, "sites/abeni/current.json")).toEqual({ deployment: r.deploymentId, headers, files: ["index.html"] });
     await expect(cf.setResting("cf:nobody", true)).rejects.toThrow();
+    // A pointer that moved on (a newer publish or a takedown) is never overwritten.
+    await expect(cf.setResting("cf:abeni", true, "older")).rejects.toThrow("pointer_changed");
+    await cf.publish({ slug: "abeni", files: [file("index.html")], headers, providerProjectId: "cf:abeni", takedown: true });
+    expect(json(storage, "sites/abeni/current.json").takedown).toBe(true);
+    await expect(cf.setResting("cf:abeni", true)).rejects.toThrow("taken_down");
   });
 
   it("keeps the previous deployment and drops older ones; a takedown keeps only the current one", async () => {
