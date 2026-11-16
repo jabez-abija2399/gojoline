@@ -72,7 +72,7 @@ export function TelegramPanel({ t, locale, bot }: { t: Messages["dashboard"]; lo
     );
 
   return (
-    <section aria-labelledby="tg-title" className="flex flex-col gap-4 rounded-xl border border-line bg-white p-4 sm:p-6">
+    <section aria-labelledby="tg-title" className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:p-6">
       <h2 id="tg-title" className="text-base font-semibold">{t.tgTitle}</h2>
       {error && <p role="alert" className="text-destructive">{error}</p>}
       {status === "error" ? (

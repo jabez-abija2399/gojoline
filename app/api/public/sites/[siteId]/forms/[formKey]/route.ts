@@ -1,22 +1,11 @@
 import { z } from "zod";
-import { handleSubmission, siteOrigins } from "@/lib/cloud/submit";
+import { allowedOrigin, cors } from "@/lib/cloud/cors";
+import { handleSubmission } from "@/lib/cloud/submit";
 import { clientIp } from "@/lib/server/request";
 import { services } from "@/lib/server/services";
 
 /** Public Data API: published sites post their form answers here (CORS, per-site key). */
 type Ctx = RouteContext<"/api/public/sites/[siteId]/forms/[formKey]">;
-
-function cors(origin: string | null): Record<string, string> {
-  return origin
-    ? {
-        "Access-Control-Allow-Origin": origin,
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, X-Site-Key",
-        "Access-Control-Max-Age": "86400",
-        Vary: "Origin",
-      }
-    : { Vary: "Origin" };
-}
 
 const ids = z.object({ siteId: z.uuid(), formKey: z.string().regex(/^[a-z][a-z0-9-]{1,40}$/) });
 
@@ -26,8 +15,8 @@ export async function OPTIONS(request: Request, ctx: Ctx) {
   if (!params.success || !cloud) return new Response(null, { status: 404 });
   const site = await cloud.publicSite(params.data.siteId);
   const origin = request.headers.get("origin");
-  const allowed = site && origin && siteOrigins(site).includes(origin) ? origin : null;
-  return new Response(null, { status: allowed ? 204 : 403, headers: cors(allowed) });
+  const allowed = allowedOrigin(site, origin);
+  return new Response(null, { status: allowed ? 204 : 403, headers: cors(allowed, "POST") });
 }
 
 export async function POST(request: Request, ctx: Ctx) {
@@ -54,5 +43,5 @@ export async function POST(request: Request, ctx: Ctx) {
       body,
     },
   );
-  return Response.json(result.body, { status: result.status, headers: { ...cors(result.allowOrigin), "Cache-Control": "no-store" } });
+  return Response.json(result.body, { status: result.status, headers: { ...cors(result.allowOrigin, "POST"), "Cache-Control": "no-store" } });
 }

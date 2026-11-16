@@ -1,4 +1,5 @@
 import type { DayPoint } from "@/lib/admin/stats";
+import { normalizePhone } from "./phone";
 
 const DAY = 86_400_000;
 /** Days are Addis Ababa days (UTC+3, no daylight saving): an answer at 1 am belongs to that day. */
@@ -8,7 +9,8 @@ export const addisDay = (t: number) => new Date(t + ADDIS).toISOString().slice(0
 
 export interface AnswerStats {
   total: number;
-  unread: number;
+  /** Messages still New (waiting for an answer). */
+  waiting: number;
   /** The last 7 days (today included), and the 7 before them (for the trend). */
   thisWeek: number;
   lastWeek: number;
@@ -20,7 +22,7 @@ export interface AnswerStats {
  * Counts for the site dashboard: `perDay` from the database's count per day (at least the last
  * 14 days), `counts` the exact totals, so a busy site is never under-counted.
  */
-export function answerStats(perDay: { day: string; count: number }[], counts: { total: number; unread: number }, now = Date.now(), days = 14): AnswerStats {
+export function answerStats(perDay: { day: string; count: number }[], counts: { total: number; waiting: number }, now = Date.now(), days = 14): AnswerStats {
   const byDay = new Map(perDay.map((d) => [d.day, d.count]));
   const series: DayPoint[] = [];
   for (let i = days - 1; i >= 0; i--) {
@@ -28,7 +30,7 @@ export function answerStats(perDay: { day: string; count: number }[], counts: { 
     series.push({ day, value: byDay.get(day) ?? 0 });
   }
   const sum = (from: number, to: number) => series.slice(from, to).reduce((n, d) => n + d.value, 0);
-  return { total: counts.total, unread: counts.unread, thisWeek: sum(days - 7, days), lastWeek: sum(days - 14, days - 7), perDay: series };
+  return { total: counts.total, waiting: counts.waiting, thisWeek: sum(days - 7, days), lastWeek: sum(days - 14, days - 7), perDay: series };
 }
 
 export type Trend = { kind: "up" | "down"; n: number } | { kind: "same" | "first" | "new" | "none" };
@@ -41,25 +43,31 @@ export function weekTrend(s: Pick<AnswerStats, "thisWeek" | "lastWeek" | "total"
   return d === 0 ? { kind: "same" } : { kind: d > 0 ? "up" : "down", n: Math.abs(d) };
 }
 
-export type SetupStep = "build" | "publish" | "photos" | "telegram" | "domain";
+export type SetupStep = "build" | "publish" | "info" | "photos" | "telegram" | "domain";
 
 /** What makes a site complete, in the order an owner usually does it. */
-export function setupSteps(s: { hasVersion: boolean; live: boolean; photos: number; telegram: boolean; ownDomain: boolean }): { id: SetupStep; done: boolean }[] {
+export function setupSteps(s: { hasVersion: boolean; live: boolean; info: boolean; photos: number; telegram: boolean; ownDomain: boolean }): { id: SetupStep; done: boolean }[] {
   return [
     { id: "build", done: s.hasVersion },
     { id: "publish", done: s.live },
+    { id: "info", done: s.info },
     { id: "photos", done: s.photos > 0 },
     { id: "telegram", done: s.telegram },
     { id: "domain", done: s.ownDomain },
   ];
 }
 
-/** The first few values of an answer, for a one-line preview ("Abebe · 0911… · 2 people"). */
-export function answerPreview(data: Record<string, string>, max = 3): string {
-  return Object.values(data)
-    .map((v) => v.trim().replace(/\s+/g, " "))
-    .filter(Boolean)
-    .slice(0, max)
-    .map((v) => ([...v].length > 40 ? `${[...v].slice(0, 39).join("")}…` : v))
-    .join(" · ");
+
+/** The one step the Home page offers next: the first one not done (null when all are). */
+export function nextStep<T extends { done: boolean }>(steps: T[]): T | null {
+  return steps.find((s) => !s.done) ?? null;
+}
+
+/** Who wrote and how to reach them, for the latest-messages list: "Abebe Kebede · 0911 000 000". */
+export function messagePreview(data: Record<string, string>): string {
+  const values = Object.values(data).map((v) => v.trim().replace(/\s+/g, " ")).filter(Boolean);
+  const phone = values.find((v) => normalizePhone(v));
+  const name = values.find((v) => v !== phone && !/^\d+([.,]\d+)?$/.test(v));
+  const short = (v: string) => ([...v].length > 40 ? `${[...v].slice(0, 39).join("")}…` : v);
+  return [name, phone].filter((v): v is string => Boolean(v)).map(short).join(" · ");
 }

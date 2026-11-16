@@ -40,6 +40,10 @@ interface Pointer {
   /** The deployment's files (older pointers lack it: then paths are probed). */
   files?: string[];
   fileSet?: Set<string>;
+  /** The owner took the site offline: pages show the resting page (files stay for when it's back). */
+  resting?: boolean;
+  /** An admin's takedown notice: always served as it is, never the resting page. */
+  takedown?: boolean;
 }
 
 const TYPES: Record<string, string> = {
@@ -138,6 +142,8 @@ export const TEXT = {
     notFoundLink: "Make a site with Gojoline",
     pageMissingTitle: "This page doesn't exist",
     pageMissingLink: "Go to the home page",
+    restingTitle: "This site is resting",
+    restingBody: "It is closed for now. Please come back soon.",
   },
   am: {
     notFoundTitle: "በዚህ አድራሻ ድረ-ገጽ የለም",
@@ -145,10 +151,21 @@ export const TEXT = {
     notFoundLink: "በጎጆላይን ድረ-ገጽ ይሥሩ",
     pageMissingTitle: "ይህ ገጽ የለም",
     pageMissingLink: "ወደ መነሻ ገጹ ይሂዱ",
+    restingTitle: "ይህ ድረ-ገጽ ለጊዜው አርፏል",
+    restingBody: "ለጊዜው ዝግ ነው። እባክዎ በቅርቡ ይመለሱ።",
   },
 };
 
 const STYLE = `body{font-family:system-ui,"Noto Sans Ethiopic",sans-serif;max-width:36rem;margin:0 auto;padding:3rem 1rem;color:#121212;background:#FBF9F6;line-height:1.6}h1,h2{font-size:1.5rem;margin:0 0 .5rem}section{margin-bottom:2.5rem}a{color:#C2370F;display:inline-block;min-height:44px;line-height:44px}`;
+
+const PAGE_HEADERS = { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff", "x-robots-tag": "noindex", "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" };
+
+/** The owner took the site offline for a while: 503 with Retry-After, so search engines keep it. */
+export function resting() {
+  const section = (l: "en" | "am") => `<${l === "en" ? "h1" : "h2"}>${TEXT[l].restingTitle}</${l === "en" ? "h1" : "h2"}><p>${TEXT[l].restingBody}</p>`;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${TEXT.en.restingTitle}</title><style>${STYLE}</style></head><body><main><section>${section("en")}</section><section lang="am">${section("am")}</section></main></body></html>`;
+  return new Response(html, { status: 503, headers: { ...PAGE_HEADERS, "retry-after": "86400" } });
+}
 
 /** No site at this address ("site"), or a site without its own 404 page ("page"). */
 export function notFound(env: Env, kind: "site" | "page" = "site", status = 404) {
@@ -197,6 +214,7 @@ const worker = {
     const { slug, pointer } = site;
     const list = candidates(url.pathname);
     if (!list) return notFound(env, "page", 400);
+    if (pointer.resting && !pointer.takedown && list.some((c) => c.endsWith(".html"))) return resting();
     const root = `sites/${slug}/d/${pointer.deployment}/`;
 
     // With the file list the path is known without touching R2; older pointers are probed.

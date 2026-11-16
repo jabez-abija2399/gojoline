@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
+import { formatBirr, parseBirr } from "@/lib/dashboard/money";
 
 type Lang = "en" | "am";
 type Text = Partial<Record<Lang, string>>;
@@ -55,7 +56,6 @@ export function ListsPanel({ t, locale, projectId }: { t: Messages["dashboard"];
 
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-ink-muted">{t.listsHint}</p>
       {data.lists.map((l) => (
         <ListEditor key={l.key} t={t} locale={locale} projectId={projectId} languages={data.languages} list={l} />
       ))}
@@ -94,7 +94,7 @@ function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["da
     if (state.kind === "saving") return;
     if (rows.some((r) => !PRICE.test(r.price))) return setState({ kind: "error", message: t.listErrors.invalid });
     setState({ kind: "saving" });
-    const items = rows.map((r) => ({ ref: r.ref, name: r.name, description: r.description, priceMinor: r.price === "" ? null : Math.round(Number(r.price) * 100) }));
+    const items = rows.map((r) => ({ ref: r.ref, name: r.name, description: r.description, priceMinor: r.price === "" ? null : parseBirr(r.price) }));
     const res = await fetch(`/api/projects/${projectId}/lists`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: list.key, items }) }).catch(() => null);
     const d = res ? await res.json().catch(() => ({})) : {};
     if (res?.ok) setState({ kind: "saved", message: d.republished ? t.savedLive : t.saved });
@@ -104,8 +104,8 @@ function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["da
   const inLang = (lang: Lang) => (languages.length > 1 ? ` · ${t.itemLang.replace("{lang}", t.languageNames[lang])}` : "");
 
   return (
-    <section aria-label={title} className="flex flex-col gap-4 rounded-xl border border-line bg-white p-4 sm:p-6">
-      <h2 className="text-base font-semibold">{title}</h2>
+    <section aria-labelledby={`list-${list.key}`} className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:p-6">
+      <h2 id={`list-${list.key}`} className="text-lg font-semibold">{title || t.listUntitled}</h2>
       <ol className="flex flex-col gap-4">
         {rows.map((it, i) => {
           const base = `${list.key}-${it.id}`;
@@ -137,6 +137,7 @@ function ListEditor({ t, locale, projectId, languages, list }: { t: Messages["da
                     className="min-h-11 w-40 rounded-lg border border-input px-3 text-base"
                   />
                   {!priceOk && <p id={`${base}-price-error`} className="text-destructive">{t.priceInvalid}</p>}
+                  {priceOk && parseBirr(it.price) !== null && <p className="text-sm text-ink-muted">{t.priceShows.replace("{price}", formatBirr(parseBirr(it.price)!, t.birr))}</p>}
                 </div>
                 <button
                   type="button"

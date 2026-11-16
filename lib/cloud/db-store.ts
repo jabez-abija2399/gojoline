@@ -1,4 +1,6 @@
-import { and, desc, eq, gte, inArray, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
+import type { MessageStatus } from "@/lib/dashboard/message-status";
+import { MESSAGE_STATUSES, canMove } from "@/lib/dashboard/message-status";
 import type { Database } from "@/lib/db/client";
 import { formSubmissions, siteForms, sites } from "@/lib/db/schema";
 import { formDef, type FormDef } from "./forms";
@@ -9,11 +11,13 @@ export class DbCloudStore implements CloudStore {
 
   async publicSite(projectId: string) {
     const [row] = await this.db
-      .select({ siteId: sites.id, projectId: sites.projectId, ownerId: sites.ownerId, siteKey: sites.siteKey, status: sites.status, url: sites.url, customDomain: sites.customDomain })
+      .select({ siteId: sites.id, projectId: sites.projectId, ownerId: sites.ownerId, siteKey: sites.siteKey, status: sites.status, url: sites.url, customDomain: sites.customDomain, offlineAt: sites.offlineAt })
       .from(sites)
       .where(eq(sites.projectId, projectId))
       .limit(1);
-    return row ?? null;
+    if (!row) return null;
+    const { offlineAt, ...rest } = row;
+    return { ...rest, offline: offlineAt !== null };
   }
 
   async saveForms(siteId: string, forms: FormDef[]) {
@@ -30,7 +34,16 @@ export class DbCloudStore implements CloudStore {
     return parsed?.success ? parsed.data : null;
   }
 
-  async addSubmission(input: Omit<Submission, "id" | "readAt" | "createdAt">) {
+  async getForms(siteId: string, formKeys: string[]) {
+    if (!formKeys.length) return [];
+    const rows = await this.db.select().from(siteForms).where(and(eq(siteForms.siteId, siteId), inArray(siteForms.formKey, formKeys)));
+    return rows.flatMap((r) => {
+      const parsed = formDef.safeParse(r.definition);
+      return parsed.success ? [parsed.data] : [];
+    });
+  }
+
+  async addSubmission(input: Omit<Submission, "id" | "readAt" | "status" | "createdAt">) {
     const [row] = await this.db.insert(formSubmissions).values(input).returning();
     return row as Submission;
   }
@@ -47,10 +60,10 @@ export class DbCloudStore implements CloudStore {
 
   async countSubmissions(ownerId: string, projectId: string) {
     const [row] = await this.db
-      .select({ total: sql<number>`count(*)::int`, unread: sql<number>`count(*) filter (where ${formSubmissions.readAt} is null)::int` })
+      .select({ total: sql<number>`count(*)::int`, waiting: sql<number>`count(*) filter (where ${formSubmissions.status} = 'new')::int` })
       .from(formSubmissions)
       .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId)));
-    return { total: Number(row?.total ?? 0), unread: Number(row?.unread ?? 0) };
+    return { total: Number(row?.total ?? 0), waiting: Number(row?.waiting ?? 0) };
   }
 
   async answersPerDay(ownerId: string, projectId: string, since: Date) {
@@ -63,11 +76,24 @@ export class DbCloudStore implements CloudStore {
     return rows.map((r) => ({ day: r.day, count: Number(r.count) }));
   }
 
-  async markRead(ownerId: string, projectId: string, ids: string[]) {
-    if (!ids.length) return;
-    await this.db
+  async setStatus(ownerId: string, projectId: string, ids: string[], status: MessageStatus) {
+    if (!ids.length) return 0;
+    // Only rows whose current status may move to the new one (see canMove).
+    const from = MESSAGE_STATUSES.filter((s) => canMove(s, status));
+    if (!from.length) return 0;
+    const rows = await this.db
       .update(formSubmissions)
-      .set({ readAt: new Date() })
-      .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId), inArray(formSubmissions.id, ids), isNull(formSubmissions.readAt)));
+      .set({ status, readAt: sql`coalesce(${formSubmissions.readAt}, now())` })
+      .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId), inArray(formSubmissions.id, ids), inArray(formSubmissions.status, from)))
+      .returning({ id: formSubmissions.id });
+    return rows.length;
+  }
+
+  async deleteSubmission(ownerId: string, projectId: string, id: string) {
+    const rows = await this.db
+      .delete(formSubmissions)
+      .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId), eq(formSubmissions.id, id)))
+      .returning({ id: formSubmissions.id });
+    return rows.length > 0;
   }
 }

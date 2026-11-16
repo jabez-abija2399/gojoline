@@ -20,17 +20,18 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   if (info.project.name === "mobile") await page.getByRole("button", { name: "More" }).click();
   await page.getByRole("link", { name: "Dashboard" }).click();
   await expect(page.getByText("Your site's dashboard")).toBeVisible();
-  // The overview comes first; with no answers yet it says so.
-  await expect(page.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
-  await expect(page.getByRole("region", { name: "Latest answers" }).getByText("No answers yet")).toBeVisible();
+  // Home comes first; with no messages yet it says so.
+  await expect(page.getByRole("link", { name: "Home", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("region", { name: "Latest messages" }).getByText("No messages yet")).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 
-  await page.getByRole("link", { name: "Prices and lists" }).click();
+  await page.getByRole("link", { name: "Content", exact: true }).click();
   const firstPrice = page.getByLabel("Price in Birr (optional)").first();
   await expect(firstPrice).toHaveValue("40");
   // Typing a decimal keeps what was typed (it used to jump to 405).
   await firstPrice.fill("45.5");
   await expect(firstPrice).toHaveValue("45.5");
+  await expect(page.getByText("Shows as 45.50 Birr").first()).toBeVisible();
   await page.getByRole("button", { name: "Save" }).first().click();
   await expect(page.getByText("Saved and updated on your live site.")).toBeVisible();
   await page.reload();
@@ -38,7 +39,8 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 
-  await page.getByRole("link", { name: "Photos" }).click();
+  // Photos sit in the same Content section, under their own heading.
+  await expect(page.getByRole("heading", { name: "Photos" })).toBeVisible();
   await expect(page.getByText("No photos yet.")).toBeVisible();
   await page.locator('input[type="file"]').setInputFiles("e2e/fixtures/fake.jpg");
   await expect(page.getByText("That file isn't a photo we can use")).toBeVisible();
@@ -83,23 +85,23 @@ test("overview: live status, real numbers, latest answers and what to do next", 
   await page.goto(`/en/dashboard/${projectId}`);
 
   await expect(page.getByRole("heading", { name: "Your site is live" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Copy link" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Share on Telegram" })).toHaveAttribute("href", /^https:\/\/t\.me\/share\/url\?url=https/);
-  const kpi = (label: string) => page.getByRole("listitem").filter({ hasText: label });
-  await expect(kpi("New answers")).toContainText("3");
-  await expect(kpi("Last 7 days")).toContainText("Your first answers!");
-  await expect(kpi("All answers")).toContainText("3");
-  await expect(page.getByRole("figure").filter({ hasText: "Answers in the last 14 days" })).toBeVisible();
-  const latest = page.getByRole("region", { name: "Latest answers" });
-  await expect(latest.getByText("Abebe Kebede · 0911000000 · 1")).toBeVisible();
-  await expect(latest.getByRole("link").first()).toHaveAttribute("href", /tab=answers/);
+  await expect(page.getByRole("button", { name: "Share", exact: true })).toBeVisible();
+  const kpi = (label: string) => page.getByRole("listitem").filter({ hasText: new RegExp(`^${label}`) });
+  await expect(kpi("Waiting for an answer")).toContainText("3");
+  await expect(kpi("Messages")).toContainText("your first week");
+  // No visitors yet: the empty state says what to do, with the QR code one tap away.
+  await expect(page.getByText("No visitors yet: share your link or QR code.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Show QR code" })).toBeVisible();
+  const latest = page.getByRole("region", { name: "Latest messages" });
+  await expect(latest.getByText("Abebe Kebede · 0911000000")).toBeVisible();
+  await expect(latest.getByRole("link").first()).toHaveAttribute("href", /tab=messages/);
   await expect(latest.getByText("Booking").first()).toBeVisible();
-  // The Answers tab says how many are new.
-  await expect(page.getByRole("navigation").getByRole("link", { name: /Answers 3 New/ })).toBeVisible();
-  // Built and published are ticked; photos, Telegram and an own address are next.
-  const setup = page.getByRole("region", { name: "Make the most of your site" });
-  await expect(setup.getByText("2 of 5 done")).toBeVisible();
-  await expect(setup.getByRole("link", { name: /Add your photos/ })).toHaveAttribute("href", /tab=photos/);
+  // The Messages tab says how many are new.
+  await expect(page.getByRole("navigation").getByRole("link", { name: /Messages 3 waiting for an answer/i })).toBeVisible();
+  // Built and published are ticked; the details, photos, Telegram and an own address are next.
+  const next = page.getByRole("region", { name: "Next step" });
+  await next.getByText("All steps (2 of 6 done)").click();
+  await expect(next.getByRole("link", { name: /Add your photos/ })).toHaveAttribute("href", /tab=content#photos/);
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 
