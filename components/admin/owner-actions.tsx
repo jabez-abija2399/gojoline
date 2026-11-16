@@ -45,7 +45,8 @@ export function OwnerActions({ t, userId, lang }: { t: Messages["admin"]; userId
   const [plan, planAction] = useActionState<UserActionState, FormData>(setOwnerPlan, { status: "idle" });
   // One-time key per grant: a double submit or retried request grants once; a new key after each success.
   // A new key after every answer; while a grant is in flight the key stays the same.
-  const grantKey = useMemo(() => (grant, crypto.randomUUID()), [grant]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- `grant` is the trigger: a new key after each answer.
+  const grantKey = useMemo(() => crypto.randomUUID(), [grant]);
   const grantMsg = useResult(grant, t, t.grantDone);
   const planMsg = useResult(plan, t, t.planDone);
   return (
