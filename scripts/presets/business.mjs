@@ -2,6 +2,8 @@ import { t, img, link, birr, save } from "./lib.mjs";
 
 const quote = link("Request a quote", "ዋጋ ይጠይቁ", "/#quote");
 
+const similar = link("Ask about a similar project", "ተመሳሳይ ሥራ ይጠይቁ", "/#quote");
+
 const services = [
   { icon: "chart", title: t("Feasibility studies", "የአዋጭነት ጥናት"), description: t("Market, technical and financial study of a new project, in the format banks and the investment commission ask for.", "ለአዲስ ፕሮጀክት የገበያ፣ የቴክኒክና የፋይናንስ ጥናት፤ ባንኮችና የኢንቨስትመንት ኮሚሽን በሚጠይቁት ቅርጸት።"), price: birr(180000) },
   { icon: "briefcase", title: t("Business plans", "የቢዝነስ ዕቅድ"), description: t("A clear plan with five-year figures, ready for a loan or an investor.", "የአምስት ዓመት አኃዝ ያለው ግልጽ ዕቅድ፤ ለብድር ወይም ለባለሀብት ዝግጁ።"), price: birr(60000) },
@@ -20,6 +22,7 @@ const projects = [
     title: t("Feasibility study for a 12-storey building", "ለባለ 12 ፎቅ ሕንፃ የአዋጭነት ጥናት"),
     meta: [t("Feasibility study", "የአዋጭነት ጥናት"), t("7 weeks", "7 ሳምንት")],
     description: t("The developer's bank approved 60% of the building cost on the first application.", "የአልሚው ባንክ በመጀመሪያው ማመልከቻ የግንባታ ወጪውን 60% ብድር ፈቀደ።"),
+    action: similar,
   },
   {
     image: img("business-card-warehouse", "Large warehouse aisle with orange pallet racking and workers in hi-vis vests", "ብርቱካናማ መደርደሪያዎች ያሉት ሰፊ መጋዘን እና አንጸባራቂ ሰደርያ የለበሱ ሠራተኞች"),
@@ -28,6 +31,7 @@ const projects = [
     title: t("Stock system for a goods importer", "ለአስመጪ ድርጅት የክምችት ሥርዓት"),
     meta: [t("Operations", "አሠራር ማሻሻያ"), t("3 months", "3 ወር")],
     description: t("Orders now leave the warehouse in one day instead of three, with stock counted every week.", "ትዕዛዝ በሦስት ቀን ፋንታ በአንድ ቀን ከመጋዘን ይወጣል፤ ክምችቱም በየሳምንቱ ይቆጠራል።"),
+    action: similar,
   },
   {
     image: img("business-card-analytics", "A person in a navy blazer working on a laptop showing pie and bar charts", "ጥቁር ሰማያዊ ኮት የለበሰ ሰው ቻርቶችን በሚያሳይ ላፕቶፕ ላይ ሲሠራ"),
@@ -36,6 +40,7 @@ const projects = [
     title: t("Financial model for a dairy plant", "ለወተት ማቀነባበሪያ የፋይናንስ ሞዴል"),
     meta: [t("Business plan", "የቢዝነስ ዕቅድ"), t("5 weeks", "5 ሳምንት")],
     description: t("The owners see cost per litre every month and raised 48 million Birr to add a second line.", "ባለቤቶቹ የአንድ ሊትር ወጪን በየወሩ ያያሉ፤ ሁለተኛ መስመር ለመጨመርም 48 ሚሊዮን ብር አግኝተዋል።"),
+    action: similar,
   },
   {
     image: img("business-card-addis-towers", "Glass high-rise towers in Addis Ababa above green trees under a blue sky", "በሰማያዊ ሰማይ ሥር ከአረንጓዴ ዛፎች በላይ የሚታዩ የአዲስ አበባ የመስታወት ሕንፃዎች"),
@@ -44,6 +49,25 @@ const projects = [
     title: t("Market study for a supermarket chain", "ለሱፐርማርኬት ሰንሰለት የገበያ ጥናት"),
     meta: [t("Market research", "የገበያ ጥናት"), t("6 weeks", "6 ሳምንት")],
     description: t("We surveyed 1,200 households in four sub-cities. The client opened in the two areas we ranked first.", "በአራት ክፍለ ከተሞች 1,200 አባወራዎችን ጠይቀናል። ደንበኛችን አንደኛ ባወጣናቸው ሁለት አካባቢዎች ቅርንጫፍ ከፍቷል።"),
+    action: similar,
+  },
+  {
+    image: img("shop-about-loom-weaving-hands", "A weaver's hands holding a tape measure over checked cloth on a wooden hand loom", "በእንጨት የእጅ ሸማኔ መሣሪያ ላይ ያለ ጨርቅን በሜትር የሚለኩ የሸማኔ እጆች"),
+    badge: t("Manufacturing", "ማኑፋክቸሪንግ"),
+    subtitle: t("Arba Minch, South Ethiopia", "አርባ ምንጭ፣ ደቡብ ኢትዮጵያ"),
+    title: t("Business plan for a weaving workshop", "ለሽመና ወርክሾፕ የቢዝነስ ዕቅድ"),
+    meta: [t("Business plan", "የቢዝነስ ዕቅድ"), t("4 weeks", "4 ሳምንት")],
+    description: t("A plan for twenty looms and a shop in Addis. The workshop received a loan from a microfinance institution on the first try.", "ለሃያ የሽመና መሣሪያዎችና ለአዲስ አበባ ሱቅ የተዘጋጀ ዕቅድ። ወርክሾፑ በመጀመሪያ ሙከራው ከአነስተኛ የፋይናንስ ተቋም ብድር አገኘ።"),
+    action: similar,
+  },
+  {
+    image: img("real-estate-card-apartment-block-yellow-balconies", "New white apartment block with yellow balcony railings on a green hillside", "በአረንጓዴ ኮረብታ ላይ የቆመ ቢጫ የበረንዳ አጥር ያለው አዲስ ነጭ የአፓርትመንት ሕንፃ"),
+    badge: t("Real estate", "ሪል እስቴት"),
+    subtitle: t("Ayat, Addis Ababa", "አያት፣ አዲስ አበባ"),
+    title: t("Demand study for an apartment project", "ለአፓርትመንት ፕሮጀክት የፍላጎት ጥናት"),
+    meta: [t("Market research", "የገበያ ጥናት"), t("5 weeks", "5 ሳምንት")],
+    description: t("We showed that buyers wanted smaller homes. The developer changed the plan to more one-bedroom units, and they sold first.", "ገዢዎች አነስ ያሉ ቤቶችን እንደሚፈልጉ አሳየን። አልሚው ዕቅዱን ቀይሮ ባለ አንድ መኝታ ቤቶችን አበዛ፤ እነሱም ቀድመው ተሸጡ።"),
+    action: similar,
   },
 ];
 
@@ -81,21 +105,40 @@ save("business", {
       sections: [
         {
           type: "hero",
+          id: "top",
           variant: "split",
-          eyebrow: t("Business consulting · Addis Ababa · Since 2012", "የቢዝነስ አማካሪ · አዲስ አበባ · ከ2004 ዓ.ም. ጀምሮ"),
+          eyebrow: t("Business consulting · Addis Ababa", "የቢዝነስ አማካሪ · አዲስ አበባ"),
           heading: t("Decide with numbers, not guesses", "በግምት ሳይሆን በመረጃ ይወስኑ"),
           subheading: t("Feasibility studies, business plans and market research that Ethiopian banks and investors accept. For a first shop or a new factory.", "የኢትዮጵያ ባንኮችና ባለሀብቶች የሚቀበሏቸው የአዋጭነት ጥናቶች፣ የቢዝነስ ዕቅዶች እና የገበያ ጥናቶች። ለመጀመሪያ ሱቅም ሆነ ለአዲስ ፋብሪካ።"),
           image: img("business-gallery-three-colleagues", "Three men in smart-casual clothes discussing around a white table with laptops", "ሦስት ወንዶች ላፕቶፖች ባሉበት ነጭ ጠረጴዛ ዙሪያ ሲወያዩ"),
           primaryAction: quote,
           secondaryAction: link("Our projects", "ሥራዎቻችን", "/projects"),
+          stamp: t("Kokeb Advisory · Since 2012", "ኮከብ አማካሪ · ከ2004 ዓ.ም. ጀምሮ"),
+          hours: false,
+        },
+        {
+          type: "marquee",
+          id: "sectors",
+          tone: "light",
+          items: [
+            t("Real estate", "ሪል እስቴት"),
+            t("Manufacturing", "ማኑፋክቸሪንግ"),
+            t("Agro-processing", "አግሮ ፕሮሰሲንግ"),
+            t("Import and trade", "አስመጪና ንግድ"),
+            t("Retail", "ችርቻሮ"),
+            t("Hotels", "ሆቴል"),
+            t("Health", "ጤና"),
+            t("Education", "ትምህርት"),
+          ],
         },
         {
           type: "stats",
+          id: "numbers",
           tone: "dark",
           items: [
             { value: t("14", "14"), label: t("years of practice", "ዓመታት በሥራ ላይ") },
             { value: t("320+", "320+"), label: t("studies and plans delivered", "የተረከቡ ጥናቶችና ዕቅዶች") },
-            { value: t("2.1 bn Br", "2.1 ቢ ብር"), label: t("in loans our clients secured", "ደንበኞቻችን ያገኙት ብድር") },
+            { value: t("2.1 bn", "2.1 ቢሊዮን"), label: t("Birr in loans our clients secured", "ብር ብድር ደንበኞቻችን አግኝተዋል") },
             { value: t("9 of 10", "90%"), label: t("clients come back", "ደንበኞች ተመልሰው ይመጣሉ") },
           ],
         },
@@ -111,11 +154,11 @@ save("business", {
         {
           type: "cards",
           id: "projects",
-          layout: "grid",
+          layout: "stack",
           eyebrow: t("Recent projects", "የቅርብ ጊዜ ሥራዎች"),
           heading: t("Work that changed a decision", "ውሳኔን የቀየሩ ሥራዎች"),
           intro: t("We do not publish client names. We are glad to put you in touch with them.", "የደንበኞቻችንን ስም አናወጣም። ከፈለጉ ግን ልናገናኝዎ ደስተኞች ነን።"),
-          items: projects.slice(0, 3),
+          items: projects.slice(0, 4),
           action: link("See all projects", "ሁሉንም ሥራዎች ይመልከቱ", "/projects"),
         },
         {
@@ -172,6 +215,7 @@ save("business", {
         },
         {
           type: "testimonials",
+          id: "reviews",
           eyebrow: t("Clients say", "ደንበኞች ምን ይላሉ"),
           heading: t("Trusted with big decisions", "በትልልቅ ውሳኔዎች የታመንን"),
           items: [
@@ -198,6 +242,7 @@ save("business", {
         },
         {
           type: "cta",
+          id: "end",
           heading: t("Planning something new?", "አዲስ ነገር አቅደዋል?"),
           body: t("Bring the idea. We will tell you honestly what it takes.", "ሐሳብዎን ይዘው ይምጡ። የሚጠይቀውን በግልጽ እንነግርዎታለን።"),
           image: img("business-hero-addis-street", "A busy Addis Ababa avenue lined with glass mid-rise buildings at dusk", "በምሽት የመስታወት ሕንፃዎች የተሰለፉበት የአዲስ አበባ ሰፊ ጎዳና"),
@@ -223,7 +268,9 @@ save("business", {
         },
         {
           type: "services",
-          variant: "list",
+          id: "prices",
+          variant: "numbered",
+          image: img("business-card-analytics", "A person in a navy blazer working on a laptop showing pie and bar charts", "ጥቁር ሰማያዊ ኮት የለበሰ ሰው ቻርቶችን በሚያሳይ ላፕቶፕ ላይ ሲሠራ"),
           eyebrow: t("Starting prices", "መነሻ ዋጋዎች"),
           heading: t("What each service includes", "እያንዳንዱ አገልግሎት የሚያካትተው"),
           intro: t("Prices are the lowest we charge for each service, before VAT. Accounting is per month.", "ዋጋዎቹ ለእያንዳንዱ አገልግሎት የምናስከፍለው ዝቅተኛው ሲሆኑ ተ.እ.ታን አይጨምሩም። የሂሳብ አያያዝ በወር ነው።"),
@@ -272,10 +319,11 @@ save("business", {
       sections: [
         {
           type: "cards",
-          layout: "feature",
+          id: "work",
+          layout: "grid",
           eyebrow: t("Selected projects", "የተመረጡ ሥራዎች"),
-          heading: t("Four projects, four results", "አራት ሥራ፣ አራት ውጤት"),
-          intro: t("Each one started with a question the owner could not answer alone.", "እያንዳንዱ የጀመረው ባለቤቱ ብቻውን ሊመልሰው ባልቻለ ጥያቄ ነው።"),
+          heading: t("Six projects, six results", "ስድስት ሥራ፣ ስድስት ውጤት"),
+          intro: t("Each one started with a question the owner could not answer alone. Choose a sector to see our work in it.", "እያንዳንዱ የጀመረው ባለቤቱ ብቻውን ሊመልሰው ባልቻለ ጥያቄ ነው። በአንድ ዘርፍ ያለንን ሥራ ለማየት ዘርፉን ይምረጡ።"),
           items: projects,
         },
         {

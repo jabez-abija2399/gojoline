@@ -31,8 +31,9 @@
       "sections": [
         {
           "type": "hero",
+          "id": "top",
           "variant": "split",
-          "eyebrow": { "en": "Business consulting · Addis Ababa · Since 2012", "am": "የቢዝነስ አማካሪ · አዲስ አበባ · ከ2004 ዓ.ም. ጀምሮ" },
+          "eyebrow": { "en": "Business consulting · Addis Ababa", "am": "የቢዝነስ አማካሪ · አዲስ አበባ" },
           "heading": { "en": "Decide with numbers, not guesses", "am": "በግምት ሳይሆን በመረጃ ይወስኑ" },
           "subheading": { "en": "Feasibility studies, business plans and market research that Ethiopian banks and investors accept. For a first shop or a new factory.", "am": "የኢትዮጵያ ባንኮችና ባለሀብቶች የሚቀበሏቸው የአዋጭነት ጥናቶች፣ የቢዝነስ ዕቅዶች እና የገበያ ጥናቶች። ለመጀመሪያ ሱቅም ሆነ ለአዲስ ፋብሪካ።" },
           "image": {
@@ -46,10 +47,28 @@
           "secondaryAction": {
             "label": { "en": "Our projects", "am": "ሥራዎቻችን" },
             "href": "/projects"
-          }
+          },
+          "stamp": { "en": "Kokeb Advisory · Since 2012", "am": "ኮከብ አማካሪ · ከ2004 ዓ.ም. ጀምሮ" },
+          "hours": false
+        },
+        {
+          "type": "marquee",
+          "id": "sectors",
+          "tone": "light",
+          "items": [
+            { "en": "Real estate", "am": "ሪል እስቴት" },
+            { "en": "Manufacturing", "am": "ማኑፋክቸሪንግ" },
+            { "en": "Agro-processing", "am": "አግሮ ፕሮሰሲንግ" },
+            { "en": "Import and trade", "am": "አስመጪና ንግድ" },
+            { "en": "Retail", "am": "ችርቻሮ" },
+            { "en": "Hotels", "am": "ሆቴል" },
+            { "en": "Health", "am": "ጤና" },
+            { "en": "Education", "am": "ትምህርት" }
+          ]
         },
         {
           "type": "stats",
+          "id": "numbers",
           "tone": "dark",
           "items": [
             {
@@ -61,8 +80,8 @@
               "label": { "en": "studies and plans delivered", "am": "የተረከቡ ጥናቶችና ዕቅዶች" }
             },
             {
-              "value": { "en": "2.1 bn Br", "am": "2.1 ቢ ብር" },
-              "label": { "en": "in loans our clients secured", "am": "ደንበኞቻችን ያገኙት ብድር" }
+              "value": { "en": "2.1 bn", "am": "2.1 ቢሊዮን" },
+              "label": { "en": "Birr in loans our clients secured", "am": "ብር ብድር ደንበኞቻችን አግኝተዋል" }
             },
             {
               "value": { "en": "9 of 10", "am": "90%" },
@@ -113,7 +132,7 @@
         {
           "type": "cards",
           "id": "projects",
-          "layout": "grid",
+          "layout": "stack",
           "eyebrow": { "en": "Recent projects", "am": "የቅርብ ጊዜ ሥራዎች" },
           "heading": { "en": "Work that changed a decision", "am": "ውሳኔን የቀየሩ ሥራዎች" },
           "intro": { "en": "We do not publish client names. We are glad to put you in touch with them.", "am": "የደንበኞቻችንን ስም አናወጣም። ከፈለጉ ግን ልናገናኝዎ ደስተኞች ነን።" },
@@ -130,7 +149,11 @@
                 { "en": "Feasibility study", "am": "የአዋጭነት ጥናት" },
                 { "en": "7 weeks", "am": "7 ሳምንት" }
               ],
-              "description": { "en": "The developer's bank approved 60% of the building cost on the first application.", "am": "የአልሚው ባንክ በመጀመሪያው ማመልከቻ የግንባታ ወጪውን 60% ብድር ፈቀደ።" }
+              "description": { "en": "The developer's bank approved 60% of the building cost on the first application.", "am": "የአልሚው ባንክ በመጀመሪያው ማመልከቻ የግንባታ ወጪውን 60% ብድር ፈቀደ።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
             },
             {
               "image": {
@@ -144,7 +167,11 @@
                 { "en": "Operations", "am": "አሠራር ማሻሻያ" },
                 { "en": "3 months", "am": "3 ወር" }
               ],
-              "description": { "en": "Orders now leave the warehouse in one day instead of three, with stock counted every week.", "am": "ትዕዛዝ በሦስት ቀን ፋንታ በአንድ ቀን ከመጋዘን ይወጣል፤ ክምችቱም በየሳምንቱ ይቆጠራል።" }
+              "description": { "en": "Orders now leave the warehouse in one day instead of three, with stock counted every week.", "am": "ትዕዛዝ በሦስት ቀን ፋንታ በአንድ ቀን ከመጋዘን ይወጣል፤ ክምችቱም በየሳምንቱ ይቆጠራል።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
             },
             {
               "image": {
@@ -158,7 +185,29 @@
                 { "en": "Business plan", "am": "የቢዝነስ ዕቅድ" },
                 { "en": "5 weeks", "am": "5 ሳምንት" }
               ],
-              "description": { "en": "The owners see cost per litre every month and raised 48 million Birr to add a second line.", "am": "ባለቤቶቹ የአንድ ሊትር ወጪን በየወሩ ያያሉ፤ ሁለተኛ መስመር ለመጨመርም 48 ሚሊዮን ብር አግኝተዋል።" }
+              "description": { "en": "The owners see cost per litre every month and raised 48 million Birr to add a second line.", "am": "ባለቤቶቹ የአንድ ሊትር ወጪን በየወሩ ያያሉ፤ ሁለተኛ መስመር ለመጨመርም 48 ሚሊዮን ብር አግኝተዋል።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/business-card-addis-towers.webp",
+                "alt": { "en": "Glass high-rise towers in Addis Ababa above green trees under a blue sky", "am": "በሰማያዊ ሰማይ ሥር ከአረንጓዴ ዛፎች በላይ የሚታዩ የአዲስ አበባ የመስታወት ሕንፃዎች" }
+              },
+              "badge": { "en": "Retail", "am": "ችርቻሮ ንግድ" },
+              "subtitle": { "en": "Addis Ababa", "am": "አዲስ አበባ" },
+              "title": { "en": "Market study for a supermarket chain", "am": "ለሱፐርማርኬት ሰንሰለት የገበያ ጥናት" },
+              "meta": [
+                { "en": "Market research", "am": "የገበያ ጥናት" },
+                { "en": "6 weeks", "am": "6 ሳምንት" }
+              ],
+              "description": { "en": "We surveyed 1,200 households in four sub-cities. The client opened in the two areas we ranked first.", "am": "በአራት ክፍለ ከተሞች 1,200 አባወራዎችን ጠይቀናል። ደንበኛችን አንደኛ ባወጣናቸው ሁለት አካባቢዎች ቅርንጫፍ ከፍቷል።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
             }
           ],
           "action": {
@@ -249,6 +298,7 @@
         },
         {
           "type": "testimonials",
+          "id": "reviews",
           "eyebrow": { "en": "Clients say", "am": "ደንበኞች ምን ይላሉ" },
           "heading": { "en": "Trusted with big decisions", "am": "በትልልቅ ውሳኔዎች የታመንን" },
           "items": [
@@ -319,6 +369,7 @@
         },
         {
           "type": "cta",
+          "id": "end",
           "heading": { "en": "Planning something new?", "am": "አዲስ ነገር አቅደዋል?" },
           "body": { "en": "Bring the idea. We will tell you honestly what it takes.", "am": "ሐሳብዎን ይዘው ይምጡ። የሚጠይቀውን በግልጽ እንነግርዎታለን።" },
           "image": {
@@ -359,7 +410,12 @@
         },
         {
           "type": "services",
-          "variant": "list",
+          "id": "prices",
+          "variant": "numbered",
+          "image": {
+            "src": "/stock/business-card-analytics.webp",
+            "alt": { "en": "A person in a navy blazer working on a laptop showing pie and bar charts", "am": "ጥቁር ሰማያዊ ኮት የለበሰ ሰው ቻርቶችን በሚያሳይ ላፕቶፕ ላይ ሲሠራ" }
+          },
           "eyebrow": { "en": "Starting prices", "am": "መነሻ ዋጋዎች" },
           "heading": { "en": "What each service includes", "am": "እያንዳንዱ አገልግሎት የሚያካትተው" },
           "intro": { "en": "Prices are the lowest we charge for each service, before VAT. Accounting is per month.", "am": "ዋጋዎቹ ለእያንዳንዱ አገልግሎት የምናስከፍለው ዝቅተኛው ሲሆኑ ተ.እ.ታን አይጨምሩም። የሂሳብ አያያዝ በወር ነው።" },
@@ -472,10 +528,11 @@
       "sections": [
         {
           "type": "cards",
-          "layout": "feature",
+          "id": "work",
+          "layout": "grid",
           "eyebrow": { "en": "Selected projects", "am": "የተመረጡ ሥራዎች" },
-          "heading": { "en": "Four projects, four results", "am": "አራት ሥራ፣ አራት ውጤት" },
-          "intro": { "en": "Each one started with a question the owner could not answer alone.", "am": "እያንዳንዱ የጀመረው ባለቤቱ ብቻውን ሊመልሰው ባልቻለ ጥያቄ ነው።" },
+          "heading": { "en": "Six projects, six results", "am": "ስድስት ሥራ፣ ስድስት ውጤት" },
+          "intro": { "en": "Each one started with a question the owner could not answer alone. Choose a sector to see our work in it.", "am": "እያንዳንዱ የጀመረው ባለቤቱ ብቻውን ሊመልሰው ባልቻለ ጥያቄ ነው። በአንድ ዘርፍ ያለንን ሥራ ለማየት ዘርፉን ይምረጡ።" },
           "items": [
             {
               "image": {
@@ -489,7 +546,11 @@
                 { "en": "Feasibility study", "am": "የአዋጭነት ጥናት" },
                 { "en": "7 weeks", "am": "7 ሳምንት" }
               ],
-              "description": { "en": "The developer's bank approved 60% of the building cost on the first application.", "am": "የአልሚው ባንክ በመጀመሪያው ማመልከቻ የግንባታ ወጪውን 60% ብድር ፈቀደ።" }
+              "description": { "en": "The developer's bank approved 60% of the building cost on the first application.", "am": "የአልሚው ባንክ በመጀመሪያው ማመልከቻ የግንባታ ወጪውን 60% ብድር ፈቀደ።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
             },
             {
               "image": {
@@ -503,7 +564,11 @@
                 { "en": "Operations", "am": "አሠራር ማሻሻያ" },
                 { "en": "3 months", "am": "3 ወር" }
               ],
-              "description": { "en": "Orders now leave the warehouse in one day instead of three, with stock counted every week.", "am": "ትዕዛዝ በሦስት ቀን ፋንታ በአንድ ቀን ከመጋዘን ይወጣል፤ ክምችቱም በየሳምንቱ ይቆጠራል።" }
+              "description": { "en": "Orders now leave the warehouse in one day instead of three, with stock counted every week.", "am": "ትዕዛዝ በሦስት ቀን ፋንታ በአንድ ቀን ከመጋዘን ይወጣል፤ ክምችቱም በየሳምንቱ ይቆጠራል።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
             },
             {
               "image": {
@@ -517,7 +582,11 @@
                 { "en": "Business plan", "am": "የቢዝነስ ዕቅድ" },
                 { "en": "5 weeks", "am": "5 ሳምንት" }
               ],
-              "description": { "en": "The owners see cost per litre every month and raised 48 million Birr to add a second line.", "am": "ባለቤቶቹ የአንድ ሊትር ወጪን በየወሩ ያያሉ፤ ሁለተኛ መስመር ለመጨመርም 48 ሚሊዮን ብር አግኝተዋል።" }
+              "description": { "en": "The owners see cost per litre every month and raised 48 million Birr to add a second line.", "am": "ባለቤቶቹ የአንድ ሊትር ወጪን በየወሩ ያያሉ፤ ሁለተኛ መስመር ለመጨመርም 48 ሚሊዮን ብር አግኝተዋል።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
             },
             {
               "image": {
@@ -531,7 +600,47 @@
                 { "en": "Market research", "am": "የገበያ ጥናት" },
                 { "en": "6 weeks", "am": "6 ሳምንት" }
               ],
-              "description": { "en": "We surveyed 1,200 households in four sub-cities. The client opened in the two areas we ranked first.", "am": "በአራት ክፍለ ከተሞች 1,200 አባወራዎችን ጠይቀናል። ደንበኛችን አንደኛ ባወጣናቸው ሁለት አካባቢዎች ቅርንጫፍ ከፍቷል።" }
+              "description": { "en": "We surveyed 1,200 households in four sub-cities. The client opened in the two areas we ranked first.", "am": "በአራት ክፍለ ከተሞች 1,200 አባወራዎችን ጠይቀናል። ደንበኛችን አንደኛ ባወጣናቸው ሁለት አካባቢዎች ቅርንጫፍ ከፍቷል።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/shop-about-loom-weaving-hands.webp",
+                "alt": { "en": "A weaver's hands holding a tape measure over checked cloth on a wooden hand loom", "am": "በእንጨት የእጅ ሸማኔ መሣሪያ ላይ ያለ ጨርቅን በሜትር የሚለኩ የሸማኔ እጆች" }
+              },
+              "badge": { "en": "Manufacturing", "am": "ማኑፋክቸሪንግ" },
+              "subtitle": { "en": "Arba Minch, South Ethiopia", "am": "አርባ ምንጭ፣ ደቡብ ኢትዮጵያ" },
+              "title": { "en": "Business plan for a weaving workshop", "am": "ለሽመና ወርክሾፕ የቢዝነስ ዕቅድ" },
+              "meta": [
+                { "en": "Business plan", "am": "የቢዝነስ ዕቅድ" },
+                { "en": "4 weeks", "am": "4 ሳምንት" }
+              ],
+              "description": { "en": "A plan for twenty looms and a shop in Addis. The workshop received a loan from a microfinance institution on the first try.", "am": "ለሃያ የሽመና መሣሪያዎችና ለአዲስ አበባ ሱቅ የተዘጋጀ ዕቅድ። ወርክሾፑ በመጀመሪያ ሙከራው ከአነስተኛ የፋይናንስ ተቋም ብድር አገኘ።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-card-apartment-block-yellow-balconies.webp",
+                "alt": { "en": "New white apartment block with yellow balcony railings on a green hillside", "am": "በአረንጓዴ ኮረብታ ላይ የቆመ ቢጫ የበረንዳ አጥር ያለው አዲስ ነጭ የአፓርትመንት ሕንፃ" }
+              },
+              "badge": { "en": "Real estate", "am": "ሪል እስቴት" },
+              "subtitle": { "en": "Ayat, Addis Ababa", "am": "አያት፣ አዲስ አበባ" },
+              "title": { "en": "Demand study for an apartment project", "am": "ለአፓርትመንት ፕሮጀክት የፍላጎት ጥናት" },
+              "meta": [
+                { "en": "Market research", "am": "የገበያ ጥናት" },
+                { "en": "5 weeks", "am": "5 ሳምንት" }
+              ],
+              "description": { "en": "We showed that buyers wanted smaller homes. The developer changed the plan to more one-bedroom units, and they sold first.", "am": "ገዢዎች አነስ ያሉ ቤቶችን እንደሚፈልጉ አሳየን። አልሚው ዕቅዱን ቀይሮ ባለ አንድ መኝታ ቤቶችን አበዛ፤ እነሱም ቀድመው ተሸጡ።" },
+              "action": {
+                "label": { "en": "Ask about a similar project", "am": "ተመሳሳይ ሥራ ይጠይቁ" },
+                "href": "/#quote"
+              }
             }
           ]
         },

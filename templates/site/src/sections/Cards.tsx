@@ -62,7 +62,7 @@ export function Cards({ section }: { section: CardsSection }) {
                 </>
               );
               return (
-                <li key={i} className="index-row reveal" style={{ "--i": 0 } as React.CSSProperties}>
+                <li key={section.items.indexOf(item)} className="index-row reveal" style={{ "--i": 0 } as React.CSSProperties}>
                   {item.action ? (
                     <a href={href(item.action.href)} className="index-inner">
                       {row}
@@ -78,7 +78,7 @@ export function Cards({ section }: { section: CardsSection }) {
           // Cards that pile up as the page scrolls: each one pins a little lower than the last.
           <ul className="stack flex flex-col gap-6">
             {items.map((item, i) => (
-              <li key={i} style={{ "--i": i } as React.CSSProperties} className="stack-card card grid overflow-hidden md:grid-cols-[1.1fr_1fr]">
+              <li key={section.items.indexOf(item)} style={{ "--i": i } as React.CSSProperties} className="stack-card card grid overflow-hidden md:grid-cols-[1.1fr_1fr]">
                 <div className="relative">
                   <Picture image={item.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[16/10] size-full md:aspect-auto md:min-h-[24rem]" />
                   <Badge item={item} />
@@ -92,7 +92,7 @@ export function Cards({ section }: { section: CardsSection }) {
         ) : layout === "feature" ? (
           <ul className="flex flex-col gap-12 md:gap-20">
             {items.map((item, i) => (
-              <li key={i} className="reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
+              <li key={section.items.indexOf(item)} className="reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
                 <div className={`zoom wipe relative rounded-site ${arch} ${i % 2 === 1 ? "md:order-last" : ""}`}>
                   <Picture image={item.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
                   <Badge item={item} />
@@ -120,7 +120,7 @@ export function Cards({ section }: { section: CardsSection }) {
               );
               const cls = `zoom relative isolate block h-[26rem] w-[72vw] flex-none snap-start overflow-hidden rounded-site sm:w-80 ${arch}`;
               return (
-                <li key={i} className="flex-none">
+                <li key={section.items.indexOf(item)} className="flex-none">
                   {item.action ? (
                     <a href={href(item.action.href)} className={cls}>
                       {inner}
@@ -136,7 +136,7 @@ export function Cards({ section }: { section: CardsSection }) {
         ) : layout === "people" ? (
           <ul className={`grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 ${n >= 4 ? "md:grid-cols-4" : "md:grid-cols-3"}`}>
             {items.map((item, i) => (
-              <li key={i} style={{ "--i": i % 4 } as React.CSSProperties} className="reveal flex flex-col gap-3">
+              <li key={section.items.indexOf(item)} style={{ "--i": i % 4 } as React.CSSProperties} className="reveal flex flex-col gap-3">
                 <div className={`zoom rounded-site ${arch}`}>
                   <Picture image={item.image?.src ? item.image : { art: "portrait", alt: item.title }} sizes="(min-width: 768px) 25vw, 120px" className="aspect-[4/5] w-full rounded-site" />
                 </div>
@@ -151,7 +151,7 @@ export function Cards({ section }: { section: CardsSection }) {
         ) : (
           <ul className={`dim-others grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
             {items.map((item, i) => (
-              <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className="card pcard reveal lift flex flex-col overflow-hidden">
+              <li key={section.items.indexOf(item)} style={{ "--i": i % 3 } as React.CSSProperties} className="card pcard reveal lift flex flex-col overflow-hidden">
                 <div className="zoom relative">
                   {item.photos && item.photos.length > 0 && item.image ? (
                     <CardPhotos photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
@@ -203,7 +203,7 @@ function Body({ item, large = false }: { item: CardItem; large?: boolean }) {
       {item.meta && item.meta.length > 0 && (
         <ul className="meta flex flex-wrap gap-x-3 gap-y-1 text-muted">
           {item.meta.map((m, i) => (
-            <li key={i} className="meta-item">
+            <li key={section.items.indexOf(item)} className="meta-item">
               {text(m)}
             </li>
           ))}
