@@ -146,6 +146,8 @@ export const en = {
       phone: "Phone",
       pageHeading: "{page} · {n} sections",
       fullSize: "Full size",
+      sectionsLabel: "Sections on this page: tap one to jump to it",
+      screenLabel: "{page} page preview, scroll to see it all",
       previous: "Previous template",
       next: "Next template",
       more: "More templates",
