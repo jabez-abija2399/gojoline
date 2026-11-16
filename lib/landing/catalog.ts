@@ -1,16 +1,7 @@
 import "server-only";
 import { PRESET_IDS, presetSiteJson, type PresetId } from "@/lib/template/presets";
 import sections from "./template-sections.json";
-
-/** How the templates page groups the kinds of business. */
-export const TEMPLATE_GROUPS = {
-  hospitality: ["cafe", "hotel", "tours", "events"],
-  health: ["clinic", "salon"],
-  business: ["shop", "business", "real-estate"],
-  community: ["school", "worship", "mosque", "ngo"],
-  personal: ["personal"],
-} as const satisfies Record<string, readonly PresetId[]>;
-export type TemplateGroup = keyof typeof TEMPLATE_GROUPS;
+import { TEMPLATE_INFO, type TemplateCategory } from "./template-info";
 
 /** What a template's pages include, read from its sections (filters on the templates page). */
 export const TEMPLATE_FEATURES = ["prices", "booking", "gallery", "team", "times", "reviews", "map"] as const;
@@ -20,7 +11,7 @@ export type TemplateStyle = (typeof TEMPLATE_STYLES)[number];
 
 export interface CatalogItem {
   id: PresetId;
-  group: TemplateGroup;
+  category: TemplateCategory;
   style: TemplateStyle;
   features: TemplateFeature[];
   /** The sample business: its name and line, searched as well. */
@@ -61,11 +52,10 @@ export function templateCatalog(locale: "en" | "am"): CatalogItem[] {
     const lang = shots[id]?.[locale] ? locale : shots[id]?.en ? "en" : null;
     if (!lang) return [];
     const site = JSON.parse(presetSiteJson(id)) as { name: Text; tagline?: Text; theme: { style?: TemplateStyle }; pages: { sections: Section[] }[] };
-    const group = (Object.entries(TEMPLATE_GROUPS) as [TemplateGroup, readonly PresetId[]][]).find(([, ids]) => ids.includes(id))?.[0] ?? "business";
     return [
       {
         id,
-        group,
+        category: TEMPLATE_INFO[id].category,
         style: site.theme.style ?? "warm",
         features: featuresOf(site.pages.flatMap((p) => p.sections)),
         name: pick(site.name),

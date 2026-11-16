@@ -16,8 +16,8 @@ export class DbProjectStore implements ProjectStore {
     return rows.length === 1;
   }
 
-  async createProject(ownerId: string, input: { name: string; locale: "en" | "am" }): Promise<Project> {
-    const [row] = await this.db.insert(projects).values({ ownerId, name: input.name, locale: input.locale }).returning();
+  async createProject(ownerId: string, input: { name: string; locale: "en" | "am"; templateId?: string | null }): Promise<Project> {
+    const [row] = await this.db.insert(projects).values({ ownerId, name: input.name, locale: input.locale, templateId: input.templateId ?? null }).returning();
     return row!;
   }
 

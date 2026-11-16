@@ -29,6 +29,8 @@ export interface PreviewPart {
 
 export interface PreviewPage {
   title: string;
+  /** Where the page lives on the site ("/", "/menu"). */
+  path: string;
   parts: PreviewPart[];
 }
 
@@ -57,7 +59,7 @@ export function templatePreview(id: string, locale: "en" | "am"): TemplatePrevie
       const title = s ? pick(s.heading) || pick(s.quote) : "";
       return { kind: s?.type ?? "footer", heading: title.length > 90 ? `${title.slice(0, 88).trimEnd()}…` : title, summary: s ? summarize(s, pick) : "", ...sizes };
     });
-    return [{ title: pick(p.nav ?? p.title), parts }];
+    return [{ title: pick(p.nav ?? p.title), path: p.path, parts }];
   });
   const at = PRESET_IDS.indexOf(id);
   return {

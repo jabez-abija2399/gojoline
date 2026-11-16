@@ -12,9 +12,9 @@ export class MemoryProjectStore implements ProjectStore {
     return p && p.ownerId === ownerId ? p : null;
   }
 
-  async createProject(ownerId: string, input: { name: string; locale: "en" | "am" }) {
+  async createProject(ownerId: string, input: { name: string; locale: "en" | "am"; templateId?: string | null }) {
     const now = new Date();
-    const project: Project = { id: randomUUID(), ownerId, name: input.name, locale: input.locale, createdAt: now, updatedAt: now };
+    const project: Project = { id: randomUUID(), ownerId, name: input.name, locale: input.locale, templateId: input.templateId ?? null, createdAt: now, updatedAt: now };
     this.projects.set(project.id, project);
     return project;
   }

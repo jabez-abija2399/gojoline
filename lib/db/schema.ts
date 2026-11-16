@@ -85,10 +85,12 @@ export const projects = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     name: text("name").notNull().default(""),
     locale: text("locale", { enum: ["en", "am"] }).notNull(),
+    /** The template (preset id) the project started from; null for chat-first sites and older rows. */
+    templateId: text("template_id"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index("projects_owner_idx").on(t.ownerId, t.updatedAt)],
+  (t) => [index("projects_owner_idx").on(t.ownerId, t.updatedAt), index("projects_template_idx").on(t.templateId, t.ownerId).where(sql`${t.templateId} is not null`)],
 );
 
 export const messages = pgTable(

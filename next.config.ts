@@ -26,7 +26,15 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Template pictures (public/templates/) change only when the templates are re-shot: cache them a day,
+      // and serve a stale copy for a week while refreshing. Pictures only, never a page or a redirect.
+      {
+        source: "/templates/:path(.+\\.(?:webp|png|jpe?g|avif))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
+    ];
   },
 };
 

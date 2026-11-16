@@ -25,7 +25,12 @@ export async function createProject(form: FormData) {
   // Starting from an industry template gives a ready site as version 1 (no AI cost).
   const preset = form.get("preset");
   // Named after the kind of business until the owner gives the real name (not the example's).
-  const project = await builder.store.createProject(owner, { name: isPresetId(preset) ? getMessages(lang).builder.templates[preset] : "", locale: lang });
+  const project = await builder.store.createProject(owner, {
+    name: isPresetId(preset) ? getMessages(lang).builder.templates[preset] : "",
+    locale: lang,
+    // Recorded so the templates page can say how many businesses use each one.
+    templateId: isPresetId(preset) ? preset : null,
+  });
   if (isPresetId(preset)) await builder.store.addVersion(owner, { projectId: project.id, summary: `template:${preset}`, files: presetVersionFiles(preset) });
   redirect(`/${lang}/build/${project.id}`);
 }
