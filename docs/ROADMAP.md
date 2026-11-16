@@ -86,16 +86,25 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Motion and interaction kit in the site template, from motion research on the best sites of each niche; all 14 templates use it
 - [x] Template previews run the real site (live demos inside Gojoline), on computer and phone
 
+## Credits and discounts (2026-11-16)
+- [x] Request sizes (small 1, medium 2, large 4 changes) sized by Claude Haiku with a word-list fallback; bigger requests ask first in the builder and on Telegram; multi-change debit and refund, atomic
+- [x] AI cost cap per request (US$0.15 per change, first build US$0.40) and fewer agent turns for small requests; the site is never left half-written
+- [x] Admin → Settings → Changes (credits): monthly changes, rollover, pack size, changes per size, cost cap (audited, from the next monthly top-up)
+- [x] Plan page: next monthly date, rollover, bought changes, changes per size, history of every change; builder shows what each answer used, low and zero notes
+- [x] Discount codes and launch offer (Admin → Discounts), price shown before sending, use counted on approval
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Credits and discounts (2026-11-16): the Amharic for request sizes, the bigger-change question, the history and the discount screens needs the native-speaker review. A stricter daily limit for requests stopped at their cost cap was considered and not built (they are no longer refunded). Measure Haiku sizing against real requests (cost is logged as "size"); the 2 s timeout falls back to the word list. The landing page's feature card still shows the plain Starter price (not the launch offer). The design, performance and security review agents could not be run from this session (no sub-agent tool); a self-review was done instead.
 - Performance: phone LCP on `/templates` and template pages is ~3.5 s (budget 2.5 s), same as before template pages v2. Causes are site-wide: ~170 KB shared JS, the Ethiopic font preloaded on English pages, three Latin fonts, lazy pictures inside Chrome's load distance. Needs its own slice (2026-11-16).
 - Set `PUBLISH_BASE_DOMAIN` in production once the customer-site domain exists; until then the template browser frame shows an empty address bar (never a guessed address).
 - e2e: `billing.spec.ts` "a pricing Choose button keeps the yearly choice through sign-in" failed once on the phone project in a full run (2026-11-16) and passed 6 of 6 alone; probably the same first-render timing as the menu helper fixed that day.
 - e2e: `safety.spec.ts` "someone reports a live site and an admin takes it down" failed once on desktop in a full run (2026-11-16, the report's thank-you status never appeared) and passed 12 of 12 alone; watch for it under load.
 - e2e: `builder.spec.ts` "dark mode: chosen in the account menu…" on the phone project times out opening the account menu about one run in five, on `main` too (2026-11-16); passes on retry. Not yet traced.
 - e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
+- e2e: `credits.spec.ts` "discount code: an admin makes one…" failed once on desktop in a full run (2026-11-16) and then passed 32 of 32 (alone, repeated, and in a second full run); probably another admin test saving settings at the same moment. Watch for it.
 - Site dashboard: a visitors count needs privacy-friendly visit counting on published sites (not built; no number is shown until it exists). A QR code of the site's address to print for the shop would suit owners well.
 - The Answers tab still reads 200 full answers and each form one after another; a `formHeadings` query would make it and the overview lighter (performance review).
 - Every signed-in page shows its main content after about 3 s on a slow phone (budget 2.5 s): the largest shared script takes about 400 ms to start; not caused by one page (performance review).

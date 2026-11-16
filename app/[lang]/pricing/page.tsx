@@ -13,6 +13,9 @@ import { serif } from "@/lib/fonts-landing";
 import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
+import { creditSettings, launchOffer, planFeatures } from "@/lib/app/shell-data";
+import { offerPrice, offerUntilLabel } from "@/lib/billing/discounts";
+import { format } from "@/lib/i18n";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/pricing">): Promise<Metadata> {
   const { lang } = await params;
@@ -28,16 +31,24 @@ export default async function PricingPage({ params, searchParams }: PageProps<"/
   if (!isLocale(lang)) notFound();
   const period = periodFrom((await searchParams).billing);
   const t = getMessages(lang);
-  const { prices } = await services().billing.settings();
+  const [{ prices }, features, credits, offer] = await Promise.all([services().billing.settings(), planFeatures(), creditSettings(), launchOffer()]);
+  const topupOffer = offerPrice(offer, "topup", prices.topup, new Date());
   return (
     <>
       <SiteHeader locale={lang} t={t} nav current="pricing" />
       <main id="main" tabIndex={-1} className={`${serif.variable} flex-1 focus:outline-none`}>
-        <Pricing t={t} locale={lang} prices={prices} period={period} />
+        <Pricing t={t} locale={lang} prices={prices} period={period} features={features} offer={offer} />
         <div className="mx-auto flex max-w-6xl flex-col gap-12 px-4 py-8 sm:px-6 md:py-12">
-          <PlanComparison t={t.plans.compare} planNames={t.billing.plans} />
+          <PlanComparison t={t.plans.compare} planNames={t.billing.plans} features={features} />
           <PricingNotes t={t.plans.notes} />
-          <PricingExtras t={t.plans.extras} locale={lang} topupMinor={prices.topup} topupHref={(await looksSignedIn()) ? `/${lang}/billing` : undefined} />
+          <PricingExtras
+            t={t.plans.extras}
+            locale={lang}
+            topupMinor={prices.topup}
+            topupCredits={credits.topupCredits}
+            topupHref={(await looksSignedIn()) ? `/${lang}/billing` : undefined}
+            offer={topupOffer !== null && offer ? { priceMinor: topupOffer, badge: format(t.billing.offerBadge, { percent: offer.percent, date: offerUntilLabel(offer, lang) }), was: t.billing.was, birr: t.landing.pricing.birr } : null}
+          />
         </div>
         <Faq t={t.landing.faq} />
         <FinalCta t={t.landing.final} locale={lang} />

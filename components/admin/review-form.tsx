@@ -34,7 +34,7 @@ export function ReviewForm({ t, id, lang }: { t: Messages["admin"]; id: string; 
     if (state.status !== "idle") statusRef.current?.focus();
   }, [state]);
   const message =
-    state.status === "ok" ? t.done : state.status === "already_reviewed" ? t.alreadyReviewed : state.status === "forbidden" ? t.forbidden : state.status === "idle" ? null : t.failed;
+    state.status === "ok" ? t.done : state.status === "already_reviewed" ? t.alreadyReviewed : state.status === "discount_unavailable" ? t.discountUnavailable : state.status === "forbidden" ? t.forbidden : state.status === "idle" ? null : t.failed;
 
   return (
     <form

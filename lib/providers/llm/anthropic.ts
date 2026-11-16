@@ -24,6 +24,7 @@ export class AnthropicLLMProvider implements LLMProvider {
         max_tokens: req.maxTokens,
         system: withCacheBreakpoint(req.system),
         tools: req.tools.map(withEagerStreaming),
+        ...(req.toolChoice ? { tool_choice: req.toolChoice } : {}),
         messages: req.messages,
         // Caches the growing conversation between agent-loop turns.
         cache_control: { type: "ephemeral" },

@@ -1,10 +1,19 @@
 import type { Entitlements, EntitlementsResolver } from "./entitlements";
-import { entitlementsOf, PLAN_FEATURES, PRODUCTS, TOPUP_CREDITS, type Product } from "./plans";
-import { loadBillingSettings, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
+import { nextMonthlyGrant, type CreditSettings } from "./credits";
+import { CODE_PATTERN, codeProblem, publicCodeProblem, normalizeCode, quote, type CodeProblem, type DiscountCode, type DiscountInput, type LaunchOffer, type Quote } from "./discounts";
+import { entitlementsOf, PLAN_FEATURES, PRODUCTS, type Product } from "./plans";
+import { loadBillingSettings, loadCreditSettings, loadLaunchOffer, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
 import { randomUUID } from "node:crypto";
-import { canonicalReference, type BillingStore, type PaymentMethod, type Subscription } from "./store";
+import { canonicalReference, type BillingStore, type LedgerMeta, type Payment, type PaymentMethod, type Subscription } from "./store";
 
-const REFUNDS_PER_DAY = 5;
+/**
+ * Changes given back per owner per day when AI changes fail on our side (counted in changes,
+ * not requests: three large failures or a dozen small ones), so failed or abandoned runs
+ * can't become unlimited free AI.
+ */
+export const REFUND_CREDITS_PER_DAY = 12;
+/** Credit settings are read on every AI request: kept this long per server instance. */
+const CREDIT_SETTINGS_TTL_MS = 10_000;
 /**
  * Free first builds (a project's very first AI run) per owner per calendar month: one per site
  * the plan allows (Free 1, Starter 1, Business 3), so new sites can't become a supply of free AI.
@@ -29,6 +38,51 @@ export class Billing {
     const before = await this.settings();
     await this.settingsStore.set("billing", next as unknown as Record<string, unknown>, adminId);
     await this.db.audit({ actorId: adminId, action: "settings.billing", targetType: "settings", targetId: "billing", data: { before, after: next } });
+  }
+
+  private creditMemo: { at: number; value: CreditSettings } | null = null;
+
+  /** Monthly changes, rollover, sizes and cost cap (admin-editable, with safe defaults). */
+  async credits(): Promise<CreditSettings> {
+    const memo = this.creditMemo;
+    if (memo && Date.now() - memo.at < CREDIT_SETTINGS_TTL_MS) return memo.value;
+    const value = await loadCreditSettings(this.settingsStore);
+    this.creditMemo = { at: Date.now(), value };
+    return value;
+  }
+
+  /** Takes effect from each owner's next monthly grant; nobody loses changes they have. Audited. */
+  async saveCreditSettings(adminId: string, next: CreditSettings): Promise<void> {
+    const before = await loadCreditSettings(this.settingsStore);
+    await this.settingsStore.set("credits", next as unknown as Record<string, unknown>, adminId);
+    this.creditMemo = null;
+    await this.db.audit({ actorId: adminId, action: "settings.credits", targetType: "settings", targetId: "credits", data: { before, after: next } });
+  }
+
+  launchOffer(): Promise<LaunchOffer | null> {
+    return loadLaunchOffer(this.settingsStore);
+  }
+
+  async saveLaunchOffer(adminId: string, next: LaunchOffer): Promise<void> {
+    const before = await this.launchOffer();
+    await this.settingsStore.set("offer", next as unknown as Record<string, unknown>, adminId);
+    await this.db.audit({ actorId: adminId, action: "settings.offer", targetType: "settings", targetId: "offer", data: { before, after: next } });
+  }
+
+  /** A new discount code; null when the code already exists. Audited. */
+  async createDiscount(adminId: string, input: DiscountInput): Promise<DiscountCode | null> {
+    // The kind only chooses which amount is set; the store keeps the amounts.
+    const rest = { code: input.code, percentOff: input.percentOff, amountOffMinor: input.amountOffMinor, products: input.products, maxUses: input.maxUses, expiresAt: input.expiresAt, firstPaymentOnly: input.firstPaymentOnly, perCustomerOnce: input.perCustomerOnce };
+    const created = await this.db.createDiscount(rest, adminId);
+    if (created) await this.db.audit({ actorId: adminId, action: "discount.created", targetType: "discount", targetId: created.id, data: { ...rest, expiresAt: rest.expiresAt?.toISOString() ?? null } });
+    return created;
+  }
+
+  /** Codes are switched off, never deleted (payments keep them). Audited. */
+  async setDiscountActive(adminId: string, id: string, active: boolean): Promise<DiscountCode | null> {
+    const changed = await this.db.setDiscountActive(id, active);
+    if (changed) await this.db.audit({ actorId: adminId, action: active ? "discount.activated" : "discount.deactivated", targetType: "discount", targetId: id, data: { code: changed.code } });
+    return changed;
   }
 
   /** Direct store access for read-only listings. */
@@ -56,7 +110,9 @@ export class Billing {
     const ref = `${plan}:${monthRef(this.now())}`;
     const key = `${userId}:${ref}`;
     if (this.granted.has(key)) return;
-    const { monthlyEdits: allowance, rolloverMonths } = PLAN_FEATURES[plan];
+    const cs = await this.credits();
+    const allowance = cs.monthly[plan];
+    const rolloverMonths = cs.rollover[plan];
     const yearAgo = new Date(this.now().getTime() - 365 * 86_400_000);
     const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, ["topup", "admin"], yearAgo)]);
     // Bought or gifted changes never eat into the rollover cap: only unused monthly changes are capped.
@@ -72,21 +128,41 @@ export class Billing {
     return this.db.balance(userId);
   }
 
-  /** Takes one AI edit credit for this request, atomically; false when none are left. */
-  async consumeEdit(userId: string, ref: string): Promise<boolean> {
+  /** Takes `n` AI changes for this request, atomically; false when fewer than n are left. */
+  async consumeEdit(userId: string, ref: string, n = 1, meta: LedgerMeta = {}): Promise<boolean> {
     await this.ensureMonthlyGrant(userId);
-    return this.db.debit(userId, ref);
+    return this.db.debit(userId, ref, n, meta);
   }
 
   /**
-   * Gives the credit back when a change failed on our side (once per request, and at most
-   * REFUNDS_PER_DAY a day so failed or abandoned runs can't become unlimited free AI).
+   * Gives the `n` changes back when a change failed on our side (once per request). At most
+   * REFUND_CREDITS_PER_DAY changes a day; past that, only what is left of the day's cap.
    */
-  async refundEdit(userId: string, ref: string): Promise<boolean> {
-    const today = new Date(this.now());
-    today.setUTCHours(0, 0, 0, 0);
-    if ((await this.db.countSince(userId, "refund", today)) >= REFUNDS_PER_DAY) return false;
-    return this.db.addCredits(userId, 1, "refund", ref);
+  async refundEdit(userId: string, ref: string, n = 1, meta: LedgerMeta = {}): Promise<boolean> {
+    const day = this.now().toISOString().slice(0, 10);
+    return (await this.db.refund(userId, ref, n, REFUND_CREDITS_PER_DAY, day, meta)) > 0;
+  }
+
+  /** Plan, changes left, and what the Plan page explains about them. */
+  async allowance(userId: string) {
+    const [{ plan, until }, credits, cs] = await Promise.all([this.plan(userId), this.creditsLeft(userId), this.credits()]);
+    return {
+      plan,
+      until,
+      credits,
+      monthly: cs.monthly[plan],
+      rolloverMonths: cs.rollover[plan],
+      /** Unused monthly changes kept at most (bought and gifted ones are kept on top). */
+      keptMax: cs.monthly[plan] * cs.rollover[plan],
+      nextGrant: nextMonthlyGrant(this.now()),
+    };
+  }
+
+  /** Bought or gifted changes (last 12 months) still in the balance: the rollover cap never takes them. */
+  async boughtLeft(userId: string): Promise<number> {
+    const yearAgo = new Date(this.now().getTime() - 365 * 86_400_000);
+    const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, ["topup", "admin"], yearAgo)]);
+    return Math.max(0, Math.min(balance, bought));
   }
 
   /**
@@ -133,22 +209,68 @@ export class Billing {
     });
   }
 
-  async submitPayment(userId: string, input: { product: Product; method: PaymentMethod; reference: string; receipt: Buffer | null }) {
-    const reference = canonicalReference(input.reference);
-    // The price at the time of payment is recorded on the payment (later price changes don't affect it).
-    const { prices } = await this.settings();
-    const payment = await this.db.createPayment({ userId, ...input, reference, amountMinor: prices[input.product] });
-    if (payment) await this.db.audit({ actorId: userId, action: "payment.submitted", targetType: "payment", targetId: payment.id, data: { product: input.product, method: input.method } });
-    return payment;
+  /**
+   * The price to pay for a product now: the launch offer or a discount code, whichever takes
+   * more off (they never stack). A code that can't be used says why.
+   */
+  async quote(userId: string, product: Product, rawCode?: string | null): Promise<{ ok: true; quote: Quote } | { ok: false; error: CodeProblem }> {
+    const now = this.now();
+    const [{ prices }, offer] = await Promise.all([this.settings(), this.launchOffer()]);
+    let code: DiscountCode | null = null;
+    const typed = rawCode ? normalizeCode(rawCode) : "";
+    if (typed) {
+      code = CODE_PATTERN.test(typed) ? await this.db.discountByCode(typed) : null;
+      const [paidBefore, usedBefore] = await Promise.all([
+        code?.firstPaymentOnly ? this.db.hasApprovedPayment(userId) : false,
+        code?.perCustomerOnce ? this.db.hasUsedCode(userId, code.code) : false,
+      ]);
+      const problem = codeProblem(code, product, now, paidBefore, usedBefore);
+      if (problem) return { ok: false, error: publicCodeProblem(problem) };
+    }
+    return { ok: true, quote: quote(product, prices[product], { offer, code, now }) };
   }
 
-  /** Admin decision. Approving a plan extends it; a top-up adds credits. Each payment applies once. */
-  async review(adminId: string, paymentId: string, decision: "approve" | "reject", note: string | null): Promise<"ok" | "not_found" | "already_reviewed"> {
+  async submitPayment(
+    userId: string,
+    input: { product: Product; method: PaymentMethod; reference: string; receipt: Buffer | null; code?: string | null },
+  ): Promise<{ ok: true; payment: Payment } | { ok: false; error: "duplicate" | CodeProblem }> {
+    const reference = canonicalReference(input.reference);
+    // The price at the time of payment is recorded on the payment (later price changes don't affect it).
+    const q = await this.quote(userId, input.product, input.code);
+    if (!q.ok) return q;
+    const { finalMinor, originalMinor, discountMinor, source, code } = q.quote;
+    const discount = source ? { originalAmountMinor: originalMinor, discountMinor, discountSource: source, discountCode: code } : {};
+    const payment = await this.db.createPayment({ userId, product: input.product, method: input.method, receipt: input.receipt, reference, amountMinor: finalMinor, ...discount });
+    if (!payment) return { ok: false, error: "duplicate" };
+    await this.db.audit({ actorId: userId, action: "payment.submitted", targetType: "payment", targetId: payment.id, data: { product: input.product, method: input.method, ...discount } });
+    return { ok: true, payment };
+  }
+
+  /**
+   * Admin decision. Approving a plan extends it; a top-up adds changes. Each payment applies
+   * once. A discount code's use is counted here (not on submit), atomically against its maximum.
+   */
+  async review(adminId: string, paymentId: string, decision: "approve" | "reject", note: string | null): Promise<"ok" | "not_found" | "already_reviewed" | "discount_unavailable"> {
     const payment = await this.db.payment(paymentId);
     if (!payment) return "not_found";
     const changed = await this.db.review(paymentId, decision === "approve" ? "approved" : "rejected", adminId, note);
     if (!changed) return "already_reviewed";
     if (decision === "approve") {
+      const code = payment.discountSource === "code" ? payment.discountCode : null;
+      if (code) {
+        let usable: boolean;
+        try {
+          usable = await this.db.useDiscount(code, payment.userId, paymentId, payment.createdAt);
+        } catch (error) {
+          await this.db.unreview(paymentId);
+          throw error;
+        }
+        // The code ran out (or this isn't the customer's first payment): left pending for the admin to reject.
+        if (!usable) {
+          await this.db.unreview(paymentId);
+          return "discount_unavailable";
+        }
+      }
       try {
         const product = PRODUCTS[payment.product];
         if (product.plan) {
@@ -156,15 +278,22 @@ export class Billing {
           // This month's allowance for the plan (same ref as the monthly grant, so it is given once).
           await this.ensureMonthlyGrant(payment.userId);
         } else {
-          await this.db.addCredits(payment.userId, TOPUP_CREDITS, "topup", paymentId);
+          await this.db.addCredits(payment.userId, (await this.credits()).topupCredits, "topup", paymentId);
         }
       } catch (error) {
         // Nothing half-applied stays "approved": the admin can simply try again.
+        if (code) await this.db.releaseDiscountUse(code).catch(() => undefined);
         await this.db.unreview(paymentId);
         throw error;
       }
     }
-    await this.db.audit({ actorId: adminId, action: `payment.${decision === "approve" ? "approved" : "rejected"}`, targetType: "payment", targetId: paymentId, data: { userId: payment.userId, product: payment.product, amountMinor: payment.amountMinor, note } });
+    await this.db.audit({
+      actorId: adminId,
+      action: `payment.${decision === "approve" ? "approved" : "rejected"}`,
+      targetType: "payment",
+      targetId: paymentId,
+      data: { userId: payment.userId, product: payment.product, amountMinor: payment.amountMinor, discountCode: payment.discountCode, discountMinor: payment.discountMinor, note },
+    });
     return "ok";
   }
 }

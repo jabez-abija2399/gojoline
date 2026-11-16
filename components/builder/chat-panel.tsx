@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, CheckCircle2, Eye, ImagePlus, Loader2, PartyPopper, Sparkles, Undo2 } from "lucide-react";
+import { AlertTriangle, ArrowUp, CheckCircle2, Eye, ImagePlus, Loader2, PartyPopper, Sparkles, Undo2 } from "lucide-react";
+import { format } from "@/lib/i18n/format";
 import type { Messages } from "@/lib/i18n";
 import { BuildTimeline, type Timeline } from "./build-timeline";
 import { LanguageChoice, type SiteLanguages } from "./language-choice";
@@ -18,6 +19,8 @@ export interface UiMessage {
   action?: { href: string; label: string };
   /** A version brought back (undo or restore): undoing that would redo the change. */
   restored?: boolean;
+  /** What this AI answer used, e.g. "Used 2 changes · 18 left". */
+  usage?: string;
 }
 
 interface Props {
@@ -50,6 +53,10 @@ interface Props {
   onUndo?: () => Promise<void>;
   /** AI changes left, and where to get more. Null while unknown. */
   credits: { left: number | null; href: string };
+  /** A bigger request waiting for the owner's OK. */
+  confirm?: { size: "medium" | "large"; cost: number; left: number; onGo: () => void; onSmaller: () => void; onDiscard: () => void };
+  /** When the next monthly changes arrive, for the "no changes left" note. */
+  nextGrant: string;
 }
 
 const amharic = /[ሀ-፿]/;
@@ -57,11 +64,19 @@ const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 const NEXT = ["contact", "colours", "prices", "language"] as const;
 const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line bg-white px-3.5 text-sm font-medium lg:min-h-9 text-ink transition-colors hover:border-faint hover:bg-sunken";
 
-export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits }: Props) {
+export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits, confirm, nextGrant }: Props) {
   const [undoing, setUndoing] = useState(false);
   const [attach, setAttach] = useState<{ busy: boolean; note?: string; error?: string }>({ busy: false });
   const listRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLTextAreaElement>(null);
+  const goRef = useRef<HTMLButtonElement>(null);
+  // Shown once the run that asked has finished (the card is hidden while working).
+  const waiting = !!confirm && !working;
+  // The question about a bigger change takes focus, so it is read out and can be answered at once.
+  useEffect(() => {
+    if (waiting) goRef.current?.focus();
+  }, [waiting]);
+  const out = credits.left !== null && credits.left <= 0;
 
   useEffect(() => {
     // An empty chat starts at its top (the greeting); a conversation follows its newest line.
@@ -86,7 +101,10 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
 
   const submit = () => {
     const text = draft.trim();
+    // A new message while a bigger request waits replaces it (the waiting one was never run).
     if (!text || working) return;
+    // The waiting request is dropped from the chat (it was never run).
+    confirm?.onDiscard();
     setDraft("");
     setAttach({ busy: false });
     onSend(text);
@@ -133,7 +151,9 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             text={m.text}
             tone={m.tone}
             action={m.action}
+            quietAction={out}
             note={m.versionNumber ? t.versionSaved.replace("{n}", String(m.versionNumber)) : undefined}
+            usage={m.usage}
             seeSite={m.versionNumber && m.id === lastId && !working ? { label: t.seeSite, onClick: onSeeSite } : undefined}
             undo={
               onUndo && m.versionNumber && !m.restored && m.id === lastId && !working
@@ -160,6 +180,21 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             </div>
           </div>
         )}
+        {confirm && !working && (
+          <div role="group" aria-labelledby="confirm-cost" className="msg-in flex max-w-[90%] flex-col gap-3 self-start rounded-2xl rounded-bl-sm border border-ink bg-white p-4">
+            <p className="sr-only">{t.confirmLabel}</p>
+            <p id="confirm-cost" className="font-medium">{format(confirm.size === "large" ? t.confirmLarge : t.confirmMedium, { n: confirm.cost })}</p>
+            <p className="text-sm text-ink-muted">{format(t.confirmLeft, { left: confirm.left })}</p>
+            <div className="flex flex-wrap gap-2">
+              <button ref={goRef} type="button" onClick={confirm.onGo} className="inline-flex min-h-11 items-center rounded-lg bg-coral px-4 text-sm font-medium text-on-coral hover:bg-coral-hover lg:min-h-9">
+                {t.confirmGo}
+              </button>
+              <button type="button" onClick={confirm.onSmaller} className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-sm font-medium text-ink hover:border-faint hover:bg-sunken lg:min-h-9">
+                {t.confirmSmaller}
+              </button>
+            </div>
+          </div>
+        )}
         {working && timeline && <BuildTimeline t={t} timeline={timeline} streamText={streamText} />}
         {working && !timeline && (
           <p role="status" className="flex items-center gap-2 font-medium text-ink">
@@ -168,7 +203,8 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
           </p>
         )}
       </div>
-      {hasSite && !working && (
+      {/* With no changes left, the suggestions would only lead to "no changes": room for the note instead. */}
+      {hasSite && !working && !out && (
         <div className="flex flex-col gap-2 border-t border-line bg-white pt-2 lg:pt-3">
           <p id="chat-next" className="flex items-center gap-2 px-4 text-sm font-medium text-ink-muted max-lg:sr-only">
             <Sparkles aria-hidden="true" className="size-4 text-faint" />
@@ -202,6 +238,27 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
         >
           <p className="text-sm text-ink-muted max-sm:hidden">{t.langHint}</p>
         </LanguageChoice>
+      )}
+      {credits.left !== null && credits.left <= 3 && !working && !confirm && (
+        // Running low or out: say so before the next request, with where to get more.
+        <div className={`flex gap-x-3 gap-y-2 border-t border-line bg-paper px-4 py-2 text-sm ${out ? "flex-col" : "items-center"}`}>
+          <p className="flex min-w-0 flex-1 items-start gap-2">
+            <AlertTriangle aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-warning" />
+            <span className={out ? "" : "max-sm:line-clamp-2"}>
+              {out ? format(t.zeroCredits, { date: nextGrant }) : credits.left === 1 ? t.lowCreditsOne : format(t.lowCredits, { n: credits.left })}
+            </span>
+          </p>
+          {out ? (
+            // Nothing else can be done here: buying more is this screen's one coral action.
+            <Link href={credits.href} className="inline-flex min-h-11 items-center justify-center self-end rounded-lg bg-coral px-4 font-medium text-on-coral hover:bg-coral-hover">
+              {t.zeroCreditsAction}
+            </Link>
+          ) : (
+            <Link href={credits.href} className="inline-flex min-h-11 shrink-0 items-center font-semibold text-ink underline underline-offset-4 lg:min-h-9">
+              {t.lowCreditsAction}
+            </Link>
+          )}
+        </div>
       )}
       <form
         className="flex flex-col gap-1 bg-white p-3"
@@ -251,7 +308,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
           <button
             type="submit"
             aria-disabled={working || !draft.trim()}
-            className={`flex size-11 shrink-0 items-center justify-center rounded-xl transition aria-disabled:opacity-50 not-aria-disabled:hover:scale-105 ${messages.at(-1)?.action ? "bg-ink text-white hover:bg-ink-hover" : "bg-coral text-on-coral hover:bg-coral-hover"}`}
+            className={`flex size-11 shrink-0 items-center justify-center rounded-xl transition aria-disabled:opacity-50 not-aria-disabled:hover:scale-105 ${messages.at(-1)?.action || confirm || out ? "bg-ink text-white hover:bg-ink-hover" : "bg-coral text-on-coral hover:bg-coral-hover"}`}
           >
             {working ? <Loader2 aria-hidden="true" className="size-5 animate-spin" /> : <ArrowUp aria-hidden="true" className="size-5" />}
             <span className="sr-only">{t.send}</span>
@@ -286,15 +343,18 @@ interface BubbleProps {
   label: string;
   text: string;
   note?: string;
+  usage?: string;
   tone?: "error";
   action?: { href: string; label: string };
+  /** Another coral button is on screen (no changes left): this link is drawn in ink. */
+  quietAction?: boolean;
   seeSite?: { label: string; onClick: () => void };
   undo?: { label: string; busy: boolean; onClick: () => void };
   /** Only messages added in this visit ease in; saved history is simply there. */
   animate?: boolean;
 }
 
-function Bubble({ role, label, text, note, tone, action, seeSite, undo, animate }: BubbleProps) {
+function Bubble({ role, label, text, note, usage, tone, action, quietAction, seeSite, undo, animate }: BubbleProps) {
   const own = role === "owner";
   return (
     <div className={`${animate ? "msg-in " : ""}flex max-w-[90%] flex-col gap-1 ${own ? "items-end self-end" : "self-start"}`}>
@@ -311,7 +371,7 @@ function Bubble({ role, label, text, note, tone, action, seeSite, undo, animate 
         {text}
       </p>
       {action && (
-        <Link href={action.href} className="inline-flex min-h-11 items-center rounded-lg bg-coral px-4 font-medium text-on-coral hover:bg-coral-hover text-sm lg:min-h-9">
+        <Link href={action.href} className={`inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-medium lg:min-h-9 ${quietAction ? "bg-ink text-white hover:bg-ink-hover" : "bg-coral text-on-coral hover:bg-coral-hover"}`}>
           {action.label}
         </Link>
       )}
@@ -319,6 +379,12 @@ function Bubble({ role, label, text, note, tone, action, seeSite, undo, animate 
         <span className="flex items-center gap-1.5 text-sm text-ink-muted">
           <CheckCircle2 aria-hidden="true" className="size-4 text-faint" />
           {note}
+        </span>
+      )}
+      {usage && (
+        <span className="flex items-center gap-1.5 text-sm text-ink-muted">
+          <Sparkles aria-hidden="true" className="size-4 text-faint" />
+          {usage}
         </span>
       )}
       {(seeSite || undo) && (

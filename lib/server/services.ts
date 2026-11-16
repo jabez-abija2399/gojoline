@@ -4,6 +4,7 @@ import type { PaymentNoticeDeps } from "@/lib/billing/notify";
 import { emailSender } from "@/lib/providers/notify/pick";
 import { DbSettingsStore, MemorySettingsStore } from "@/lib/billing/settings";
 import { LLMContentClassifier } from "@/lib/safety/classifier";
+import { HeuristicSizer, LLMRequestSizer } from "@/lib/agent/size";
 import { ContentGuard } from "@/lib/safety/guard";
 import { DbReportStore, MemoryReportStore, type ReportStore } from "@/lib/safety/reports";
 import type { ModerationDeps } from "@/lib/safety/takedown";
@@ -186,7 +187,21 @@ export function services(): Services {
       moderation: null,
     };
     const svc = globalForServices.gojoServices;
-    if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r), left: (u) => billing.creditsLeft(u), freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r) };
+    if (svc.builder) {
+      svc.builder.credits = {
+        consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
+        refund: (u, r, n, meta) => billing.refundEdit(u, r, n, meta),
+        left: (u) => billing.creditsLeft(u),
+        freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
+        pricing: async () => {
+          const cs = await billing.credits();
+          return { sizeCredits: cs.sizeCredits, capCentsPerCredit: cs.capCentsPerCredit };
+        },
+      };
+      // Claude Haiku sizes requests when an API key is set (never in e2e: the word list does).
+      const key = process.env.SAYSITE_ANTHROPIC_API_KEY;
+      svc.builder.sizer = key && !isE2E(process.env) ? new LLMRequestSizer(new AnthropicLLMProvider(key), usage, process.env.SIZE_MODEL || "claude-haiku-5-5") : new HeuristicSizer();
+    }
     svc.publish = pickPublish(process.env, svc.builder);
     if (svc.publish) {
       svc.publish.entitlements = billing.entitlements;

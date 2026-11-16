@@ -24,7 +24,7 @@ function Save({ t }: { t: Messages["admin"] }) {
 }
 
 /** Prices (Birr) and the accounts customers pay into. */
-export function SettingsForm({ t, tb, lang, values }: { t: Messages["admin"]; tb: Messages["billing"]; lang: string; values: { prices: Record<string, string>; telebirrNumber: string; cbeAccount: string; accountName: string } }) {
+export function SettingsForm({ t, tb, lang, values, topupCredits }: { t: Messages["admin"]; tb: Messages["billing"]; lang: string; values: { prices: Record<string, string>; telebirrNumber: string; cbeAccount: string; accountName: string }; topupCredits: number }) {
   // The yearly saving follows what the admin types (prices as typed, before saving).
   const [typed, setTyped] = useState(values.prices);
   const saving = (plan: "starter" | "business") => {
@@ -58,7 +58,7 @@ export function SettingsForm({ t, tb, lang, values }: { t: Messages["admin"]; tb
             {g.fields.map((p) =>
               field(
                 `price_${p}`,
-                `${productName(tb.productNames, p)} (${t.settingsBirr})`,
+                `${productName(tb.productNames, p, topupCredits)} (${t.settingsBirr})`,
                 values.prices[p] ?? "",
                 { inputMode: "decimal", maxLength: 12, onChange: (e) => setTyped((x) => ({ ...x, [p]: e.target.value })) },
                 g.plan && p.endsWith("_year") ? saving(g.plan) : undefined,
