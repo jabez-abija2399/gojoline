@@ -33,7 +33,9 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates, 
           locale={locale}
           sites={sites}
           t={text}
-          backdrop={<Mosaic />}
+          backdrop={<Mosaic className="fill-coral opacity-30" />}
+          moreChip={{ href: templates.href, label: t.moreChip }}
+          chooseLabel={t.choose}
           more={
             <Link href={templates.href} className="group inline-flex min-h-11 items-center gap-1 font-medium text-link underline-offset-4 hover:underline">
               {templates.label}

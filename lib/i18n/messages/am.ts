@@ -29,6 +29,8 @@ export const am: Messages = {
       promptLabel: "ስለ ንግድዎ ይጻፉ",
       placeholder: "ለካፌዎ፣ ለሱቅዎ፣ ለክሊኒክዎ… ድረ-ገጽ እንዲሠራ ጎጆላይንን ይጠይቁ",
       chipsLabel: "ጎጆላይን ለማን?",
+      moreChip: "ተጨማሪ",
+      choose: "የንግድ ዓይነትዎን ይምረጡ",
       promptTitle: "ንግድዎ ምን ያስፈልገዋል?",
       showcaseLabel: "የጎጆላይን ገንቢ ለ{name} ከሠራው ድረ-ገጽ ጋር",
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",

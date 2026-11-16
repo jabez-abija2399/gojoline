@@ -28,6 +28,8 @@ export const en = {
       promptLabel: "Describe your business",
       placeholder: "Ask Gojoline to build a website for your café, shop, clinic…",
       chipsLabel: "Gojoline for",
+      moreChip: "More",
+      choose: "Choose your business",
       promptTitle: "What does your business need?",
       showcaseLabel: "The Gojoline builder with the site it made for {name}",
       picked: "Showing {name}. An example description was added to the box below.",

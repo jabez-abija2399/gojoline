@@ -42,6 +42,8 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   return (
     <>
       <div aria-hidden="true" className="read-progress" />
+      <div aria-hidden="true" className="pointer-events-none fixed inset-y-0 start-10 z-0 border-s border-line max-xl:hidden" />
+      <div aria-hidden="true" className="pointer-events-none fixed inset-y-0 end-10 z-0 border-e border-line max-xl:hidden" />
       <SiteHeader locale={lang} t={t} nav />
       <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero

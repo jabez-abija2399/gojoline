@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Check, Lock, Pause, Play } from "lucide-react";
+import Link from "next/link";
+import { ArrowUp, BedDouble, Check, ChevronDown, ChevronRight, Coffee, Lock, Pause, Play, ShoppingBag, Sparkles, Stethoscope, UserRound } from "lucide-react";
 import { TypingBubble } from "./typing-bubble";
 import { LanguageChoice, type SiteLanguages } from "@/components/builder/language-choice";
 import { clearLandingPrompt, saveLandingPrompt } from "@/components/builder/start-prompt";
@@ -57,6 +58,10 @@ interface Props {
   promptHeading: React.ReactNode;
   /** What follows the prompt box (the note, the install button). */
   promptFooter: React.ReactNode;
+  /** The last chip: every template ("More"). */
+  moreChip: { href: string; label: string };
+  /** Phones: the picker that replaces the row of chips. */
+  chooseLabel: string;
   /** Has a session cookie: the description goes straight to "Your sites" (no sign-in page). */
   signedIn?: boolean;
 }
@@ -66,10 +71,12 @@ interface Props {
  * real builder with a real site for it, and the prompt box below is filled in ready to build.
  * The description waits while the visitor signs in, then their first site starts building.
  */
+const SITE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, shop: ShoppingBag, personal: UserRound } as const;
+
 /** How long each business stays on screen while the demo plays itself. */
 const AUTO_MS = 6000;
 
-export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, signedIn = false }: Props) {
+export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, moreChip, chooseLabel, signedIn = false }: Props) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -141,40 +148,69 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
   }, [auto, inView, index, sites, tick]);
   const site = sites[index]!;
   const next = `/${locale}/build`;
+  const pick = (i: number) => {
+    setAuto(false);
+    setIndex(i);
+    setPicked(i);
+    setShown((n) => n + 1);
+    // Never replace the visitor's own words: only an empty box or an earlier example.
+    if (!text.trim() || sites.some((x) => x.prompt === text)) setText(sites[i]!.prompt);
+  };
 
   return (
     <>
       <div className="flex flex-col items-center gap-8 md:gap-10">
-        <div className="flex w-full flex-wrap items-center justify-center gap-2 px-4 sm:px-0">
-        <div role="group" aria-label={t.chipsLabel} className="flex flex-wrap items-center justify-center gap-2">
-          <span aria-hidden="true" className="shrink-0 pe-1 font-medium text-ink max-sm:basis-full max-sm:text-center">
-            {t.chipsLabel}
-          </span>
-          {sites.map((s, i) => (
-            <button
-              key={s.id}
-              type="button"
-              aria-pressed={i === index}
-              onClick={() => {
-                setAuto(false);
-                setIndex(i);
-                setPicked(i);
-                setShown((n) => n + 1);
-                // Never replace the visitor's own words: only an empty box or an earlier example.
-                if (!text.trim() || sites.some((x) => x.prompt === text)) setText(s.prompt);
-              }}
-              className="relative min-h-11 shrink-0 overflow-hidden rounded-full border border-line bg-white px-4 font-medium text-ink transition-colors hover:border-faint aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
-            >
-              {s.label}
-              {auto && i === index && (
-                <span key={`bar-${shown}-${tick}-${inView}`} aria-hidden="true" className="chip-progress absolute inset-x-0 bottom-0 h-[3px] origin-left bg-white/70" style={{ animationDuration: `${AUTO_MS}ms`, animationPlayState: inView ? "running" : "paused" }} />
-              )}
-            </button>
-          ))}
-        </div>
-          {/* Moving content that runs longer than five seconds can be paused (WCAG 2.2.2). */}
-          {/* In the page from the start (so nothing moves when it appears); invisible until autoplay begins. */}
-          <button type="button" title={t.pauseDemo} onClick={() => setAuto((a) => !a)} aria-pressed={!auto} className={`inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-faint ${autoStarted && picked === null ? "" : "invisible"}`}>
+        <div className="flex w-full items-center justify-center gap-2 px-4 sm:px-0">
+          {/* Phones: one picker, as on the product sites this page learns from. */}
+          <label className="relative flex min-h-12 w-full max-w-xs items-center gap-3 rounded-full border border-line bg-white ps-2 pe-10 shadow-sm sm:hidden has-[select:focus-visible]:outline has-[select:focus-visible]:outline-3 has-[select:focus-visible]:outline-offset-2 has-[select:focus-visible]:outline-link">
+            {(() => {
+              const Icon = SITE_ICONS[site.id as keyof typeof SITE_ICONS] ?? Sparkles;
+              return (
+                <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-coral text-on-coral">
+                  <Icon className="size-4" />
+                </span>
+              );
+            })()}
+            <span className="sr-only">{chooseLabel}</span>
+            <select value={index} onChange={(e) => pick(Number(e.target.value))} className="absolute inset-0 w-full cursor-pointer appearance-none rounded-full bg-transparent ps-12 pe-10 font-medium text-ink focus-visible:outline-none">
+              {sites.map((s, i) => (
+                <option key={s.id} value={i}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown aria-hidden="true" className="pointer-events-none absolute end-3 size-4 text-ink-muted" />
+          </label>
+          <div role="group" aria-label={t.chipsLabel} className="flex flex-wrap items-center justify-center gap-2 max-sm:hidden">
+            <span aria-hidden="true" className="shrink-0 pe-1 font-medium text-ink">
+              {t.chipsLabel}
+            </span>
+            {sites.map((s, i) => {
+              const Icon = SITE_ICONS[s.id as keyof typeof SITE_ICONS] ?? Sparkles;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  aria-pressed={i === index}
+                  onClick={() => pick(i)}
+                  className="relative inline-flex min-h-11 shrink-0 items-center gap-2 overflow-hidden rounded-full border border-line bg-white ps-3 pe-4 font-medium text-ink transition-colors hover:border-faint aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+                >
+                  <Icon aria-hidden="true" className="size-4 shrink-0" />
+                  {s.label}
+                  {auto && i === index && (
+                    <span key={`bar-${shown}-${tick}-${inView}`} aria-hidden="true" className="chip-progress absolute inset-x-0 bottom-0 h-[3px] origin-left bg-white/70" style={{ animationDuration: `${AUTO_MS}ms`, animationPlayState: inView ? "running" : "paused" }} />
+                  )}
+                </button>
+              );
+            })}
+            <Link href={moreChip.href} className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-line bg-white ps-4 pe-3 font-medium text-ink transition-colors hover:border-faint">
+              {moreChip.label}
+              <ChevronRight aria-hidden="true" className="size-4" />
+            </Link>
+          </div>
+          {/* Moving content that runs longer than five seconds can be paused (WCAG 2.2.2).
+              In the page from the start (so nothing moves when it appears); invisible until autoplay begins. */}
+          <button type="button" title={t.pauseDemo} onClick={() => setAuto((a) => !a)} aria-pressed={!auto} className={`inline-flex size-9 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-sunken hover:text-ink max-sm:size-11 ${autoStarted && picked === null ? "" : "invisible"}`}>
             {auto ? <Pause aria-hidden="true" className="size-4" /> : <Play aria-hidden="true" className="size-4" />}
             <span className="sr-only">{t.pauseDemo}</span>
           </button>
@@ -185,7 +221,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
         <p role="status" className="sr-only">
           {picked === null ? "" : t.picked.replace("{name}", site.name)}
         </p>
-        <figure ref={figureRef} role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-line bg-coral-soft p-4 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
+        <figure ref={figureRef} role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-coral/15 bg-[color-mix(in_oklab,var(--gojo-coral-soft)_55%,var(--gojo-paper))] p-3 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
           {backdrop}
           <div aria-hidden="true" className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgb(18_18_18/0.45)] md:rounded-b-none md:border-b-0">
             <div className="flex items-center gap-3 border-b border-line px-3 py-2.5 sm:px-4">
