@@ -30,11 +30,11 @@ test("a template's preview shows every page and section before it is picked", as
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
   // Each section is named: what it is and its own title.
-  await expect(page.locator("figcaption:visible", { hasText: "Rooms and suites" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Rooms and suites/ })).toBeVisible();
   // Other pages of the template, and the phone layout.
   await page.getByRole("button", { name: "Dining" }).click();
   await expect(page.getByRole("button", { name: "Dining" })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("figcaption:visible", { hasText: "Fresh from the lake, cooked at home" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Fresh from the lake, cooked at home/ })).toBeVisible();
   await page.getByRole("button", { name: "Phone" }).click();
   await expect(page.getByRole("button", { name: "Phone" })).toHaveAttribute("aria-pressed", "true");
   await expectNoHorizontalScroll(page);

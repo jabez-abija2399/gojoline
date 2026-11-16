@@ -147,6 +147,8 @@ export const am: Messages = {
       phone: "ስልክ",
       pageHeading: "{page} · {n} ክፍሎች",
       fullSize: "ሙሉ መጠን",
+      sectionsLabel: "በዚህ ገጽ ያሉ ክፍሎች፦ ለመሄድ አንዱን ይንኩ",
+      screenLabel: "የ{page} ገጽ ቅድመ እይታ፣ ሁሉንም ለማየት ያሸብልሉ",
       previous: "ቀዳሚ አብነት",
       next: "ቀጣይ አብነት",
       more: "ሌሎች አብነቶች",

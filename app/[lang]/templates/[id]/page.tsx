@@ -168,7 +168,7 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
               <TemplatePreviewer
                 pages={preview.pages}
                 host={exampleAddress(preview.id)}
-                t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, pageHeading: p.pageHeading, fullSize: p.fullSize, address: p.address, kinds: p.kinds }}
+                t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, pageHeading: p.pageHeading, fullSize: p.fullSize, address: p.address, sectionsLabel: p.sectionsLabel, screenLabel: p.screenLabel, kinds: p.kinds }}
               />
             </section>
           </div>
