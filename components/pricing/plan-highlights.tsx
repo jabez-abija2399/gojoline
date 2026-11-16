@@ -13,10 +13,10 @@ export function highlightText(h: Highlight, t: Messages["plans"]["hl"]): string 
 }
 
 /** The plan's key features as a checked list, generated from PLAN_FEATURES. */
-export function PlanHighlights({ plan, t, className = "" }: { plan: PlanId; t: Messages["plans"]["hl"]; className?: string }) {
+export function PlanHighlights({ plan, t, className = "", limit }: { plan: PlanId; t: Messages["plans"]["hl"]; className?: string; limit?: number }) {
   return (
     <ul className={`flex flex-col gap-2 ${className}`}>
-      {planHighlights(plan).map((h) => (
+      {planHighlights(plan).slice(0, limit).map((h) => (
         <li key={h.key} className="flex gap-2">
           <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-ink" strokeWidth={2.5} />
           <span>{highlightText(h, t)}</span>

@@ -28,7 +28,7 @@ export function BillingToggle({ t, period, basePath, monthsFree }: { t: Messages
               className="inline-flex min-h-11 items-center gap-2 rounded-full px-4 font-semibold text-ink-muted hover:text-ink aria-[current=true]:bg-ink aria-[current=true]:text-white lg:min-h-9"
             >
               {o.label}
-              {o.v === "year" && monthsFree > 0 && <span className="rounded-full bg-coral-soft px-2 py-0.5 text-xs font-bold text-ink">{format(t.yearlyBadge, { months: monthsFree })}</span>}
+              {o.v === "year" && monthsFree > 0 && <span className="rounded-full bg-coral-soft px-2 py-0.5 text-sm font-semibold text-ink">{format(t.yearlyBadge, { months: monthsFree })}</span>}
             </Link>
           </li>
         ))}

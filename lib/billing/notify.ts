@@ -1,7 +1,7 @@
 import { simpleEmail, type EmailSender } from "@/lib/providers/notify/email";
 import { escapeHtml, type TelegramClient } from "@/lib/telegram/client";
 import type { TelegramStore } from "@/lib/telegram/store";
-import type { Product } from "./plans";
+import { TOPUP_CREDITS, type Product } from "./plans";
 import type { BillingStore, Payment } from "./store";
 
 const names: Record<Product, { en: string; am: string }> = {
@@ -9,7 +9,7 @@ const names: Record<Product, { en: string; am: string }> = {
   starter_year: { en: "Starter, 1 year", am: "ስታርተር፣ 1 ዓመት" },
   business_month: { en: "Business, 1 month", am: "ቢዝነስ፣ 1 ወር" },
   business_year: { en: "Business, 1 year", am: "ቢዝነስ፣ 1 ዓመት" },
-  topup: { en: "50 extra changes", am: "50 ተጨማሪ ለውጦች" },
+  topup: { en: `${TOPUP_CREDITS} extra changes`, am: `${TOPUP_CREDITS} ተጨማሪ ለውጦች` },
 };
 const birr = (minor: number) => `${new Intl.NumberFormat("en-US").format(minor / 100)} Birr`;
 

@@ -1,8 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import type { Messages } from "@/lib/i18n";
+import { format } from "@/lib/i18n/format";
+import { birrToMinor, monthsFree, productName, yearlySaving } from "@/lib/billing/plans";
 import { saveBillingSettings, type SettingsState } from "@/app/[lang]/admin/actions";
 
 /** Price fields grouped the way customers see them: each plan's month and year, then extras. */
@@ -22,7 +24,16 @@ function Save({ t }: { t: Messages["admin"] }) {
 }
 
 /** Prices (Birr) and the accounts customers pay into. */
-export function SettingsForm({ t, tb, lang, values, savings }: { t: Messages["admin"]; tb: Messages["billing"]; lang: string; values: { prices: Record<string, string>; telebirrNumber: string; cbeAccount: string; accountName: string }; savings: Record<"starter" | "business", string> }) {
+export function SettingsForm({ t, tb, lang, values }: { t: Messages["admin"]; tb: Messages["billing"]; lang: string; values: { prices: Record<string, string>; telebirrNumber: string; cbeAccount: string; accountName: string } }) {
+  // The yearly saving follows what the admin types (prices as typed, before saving).
+  const [typed, setTyped] = useState(values.prices);
+  const saving = (plan: "starter" | "business") => {
+    const [m, y] = [birrToMinor(typed[`${plan}_month`] ?? ""), birrToMinor(typed[`${plan}_year`] ?? "")];
+    if (m === null || y === null) return "";
+    const months = monthsFree(m, y);
+    const amount = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(yearlySaving(m, y) / 100);
+    return months > 0 ? format(t.settingsYearSaving, { amount, months }) : t.settingsYearNoSaving;
+  };
   const [state, action] = useActionState<SettingsState, FormData>(saveBillingSettings, { status: "idle" });
   const msgRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
@@ -33,7 +44,7 @@ export function SettingsForm({ t, tb, lang, values, savings }: { t: Messages["ad
     <label key={name} className="flex flex-col gap-1">
       <span className="font-medium">{label}</span>
       <input name={name} defaultValue={value} aria-invalid={bad(name) || undefined} aria-describedby={hint ? `${name}-hint` : undefined} className="min-h-11 rounded-lg border border-input bg-white px-3 text-base aria-invalid:border-destructive" {...extra} />
-      {hint && <span id={`${name}-hint`} className="text-sm text-lagoon">{hint}</span>}
+      {hint !== undefined && <span id={`${name}-hint`} className="min-h-5 text-sm font-medium text-ink">{hint}</span>}
     </label>
   );
   return (
@@ -44,7 +55,15 @@ export function SettingsForm({ t, tb, lang, values, savings }: { t: Messages["ad
         {GROUPS.map((g) => (
           <fieldset key={g.plan ?? "extras"} className="grid gap-3 rounded-xl border border-line p-4 sm:grid-cols-2 sm:items-start">
             <legend className="px-1 font-semibold">{g.plan ? tb.plans[g.plan] : tb.topup}</legend>
-            {g.fields.map((p) => field(`price_${p}`, `${tb.productNames[p]} (${t.settingsBirr})`, values.prices[p] ?? "", { inputMode: "decimal", maxLength: 12 }, g.plan && p.endsWith("_year") ? savings[g.plan] : undefined))}
+            {g.fields.map((p) =>
+              field(
+                `price_${p}`,
+                `${productName(tb.productNames, p)} (${t.settingsBirr})`,
+                values.prices[p] ?? "",
+                { inputMode: "decimal", maxLength: 12, onChange: (e) => setTyped((x) => ({ ...x, [p]: e.target.value })) },
+                g.plan && p.endsWith("_year") ? saving(g.plan) : undefined,
+              ),
+            )}
           </fieldset>
         ))}
       </fieldset>

@@ -25,7 +25,7 @@ export function Pricing({ t, locale, prices, period }: { t: Messages; locale: Lo
             const month = p === "free" ? 0 : prices[`${p}_month`];
             const year = p === "free" ? 0 : prices[`${p}_year`];
             return (
-              <li key={p} className={`reveal relative flex flex-col gap-4 rounded-3xl border p-6 ${popular ? "border-ink bg-paper shadow-lg ring-2 ring-ink" : "border-line bg-white"}`}>
+              <li key={p} className={`reveal relative flex flex-col gap-4 rounded-3xl border p-6 ${popular ? "pt-9 " : ""}${popular ? "border-ink bg-paper shadow-lg ring-2 ring-ink" : "border-line bg-white"}`}>
                 {popular && <span className="absolute -top-4 start-6 rounded-full bg-ink px-3 py-1 font-semibold text-white">{t.landing.pricing.popular}</span>}
                 <h2 className="text-xl font-bold">{t.billing.plans[p]}</h2>
                 <div className="flex min-h-[5.5rem] flex-col gap-1">
@@ -44,7 +44,8 @@ export function Pricing({ t, locale, prices, period }: { t: Messages; locale: Lo
                 </div>
                 <PlanHighlights plan={p} t={tp.hl} className="flex-1" />
                 <Link
-                  href={p === "free" ? `/${locale}/sign-in?next=/${locale}/build` : `/${locale}/sign-in?next=/${locale}/billing`}
+                  // Paid plans preselect what to pay for (month or year, as switched above) on the Plan page.
+                  href={p === "free" ? `/${locale}/sign-in?next=/${locale}/build` : `/${locale}/sign-in?next=${encodeURIComponent(`/${locale}/billing?product=${p}_${period}`)}`}
                   className={`inline-flex min-h-12 items-center justify-center rounded-full px-5 text-center font-semibold ${popular ? "bg-ink text-white hover:bg-ink-hover" : "border border-line hover:border-faint"}`}
                 >
                   {p === "free" ? tp.ctaFree : format(tp.ctaPaid, { plan: t.billing.plans[p] })}

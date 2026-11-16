@@ -18,7 +18,7 @@ import { setAdminTheme } from "./actions";
 import { OwnerActions } from "@/components/admin/owner-actions";
 import { PlanComparison } from "@/components/pricing/plan-comparison";
 import { monthlyRevenueMinor, type PlanFilter } from "@/lib/admin/stats";
-import { monthsFree, PLAN_IDS, yearlySaving } from "@/lib/billing/plans";
+import { PLAN_IDS, productName } from "@/lib/billing/plans";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): Promise<Metadata> {
   const { lang } = await params;
@@ -260,7 +260,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
       return `/${lang}/admin?${params.toString()}`;
     };
     const chips: { v: PlanFilter; label: string; n: number }[] = [{ v: "all", label: t.admin.planAll, n: counts.users }, ...PLAN_IDS.map((p) => ({ v: p, label: t.billing.plans[p], n: counts.plans[p] }))];
-    const planBadge = (p: AdminUserPlan) => <span className={`inline-block rounded-full px-2.5 py-1 text-sm font-semibold ${p === "free" ? "bg-paper text-ink-muted" : "bg-sunken text-ink"}`}>{t.billing.plans[p]}</span>;
+    const planBadge = (p: AdminUserPlan) => <span className={`inline-block rounded-full px-2.5 py-1 text-sm font-semibold ${p === "free" ? "border border-line bg-white text-ink-muted" : "bg-sunken text-ink"}`}>{t.billing.plans[p]}</span>;
     return (
       <section aria-labelledby="users-title" className="flex flex-col gap-4">
         <h2 id="users-title" className="sr-only">{t.admin.tabs.users}</h2>
@@ -287,13 +287,14 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         </form>
         {selected && !detail && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 font-medium text-destructive">{t.admin.ownerNotFound}</p>}
         {detail && (
-          <FocusOnMount>
+          // A new key per owner: opening another owner moves focus (and scroll) to the panel again.
+          <FocusOnMount key={detail.id} className="scroll-mt-44 lg:scroll-mt-28">
             <section aria-labelledby="owner-kicker owner-title" className="flex flex-col gap-4 rounded-2xl border border-ink bg-white p-4 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p id="owner-kicker" className="text-sm font-medium text-ink-muted">{t.admin.detailTitle}</p>
-                  <h3 id="owner-title" className="break-words text-xl font-bold">{detail.name || detail.contact || "—"}</h3>
-                  <p className="break-all text-ink-muted">{detail.contact}</p>
+                  <h3 id="owner-title" className="text-xl font-bold [overflow-wrap:anywhere]">{detail.name || detail.contact || "—"}</h3>
+                  {detail.name && <p className="text-ink-muted [overflow-wrap:anywhere]">{detail.contact}</p>}
                 </div>
                 <Link href={link({ user: null })} className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-line px-3 text-sm font-medium hover:border-faint lg:min-h-9">
                   <X aria-hidden="true" className="size-4" /> {t.admin.closeDetails}
@@ -338,7 +339,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                     <ul className="flex flex-col gap-1">
                       {detail.payments.map((pay) => (
                         <li key={pay.id} className="flex flex-wrap items-center justify-between gap-2 border-t border-line py-2 first:border-0">
-                          <span>{t.billing.productNames[pay.product]} · {format(t.billing.price, { price: amount(pay.amountMinor) })}</span>
+                          <span>{productName(t.billing.productNames, pay.product)} · {format(t.billing.price, { price: amount(pay.amountMinor) })}</span>
                           <span className="text-sm text-ink-muted">{t.billing.status[pay.status]} · {joinedFmt.format(pay.createdAt)}</span>
                         </li>
                       ))}
@@ -354,34 +355,41 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           <p className="text-ink-muted">{t.admin.usersEmpty}</p>
         ) : (
           <div className="relative overflow-x-auto rounded-2xl border border-line bg-white">
-            <table className="w-full min-w-[760px] text-start">
+            <table className="w-full text-start md:min-w-[760px]">
               <thead className="sticky top-0 bg-white">
                 <tr className="border-b border-line text-sm text-ink-muted">
                   <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colOwner}</th>
-                  <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colJoined}</th>
-                  <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colPlan}</th>
-                  <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colCredits}</th>
-                  <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colSites}</th>
-                  <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colAiCost}</th>
+                  <th scope="col" className="hidden px-4 py-3 text-start font-medium md:table-cell">{t.admin.colJoined}</th>
+                  <th scope="col" className="hidden px-4 py-3 text-start font-medium md:table-cell">{t.admin.colPlan}</th>
+                  <th scope="col" className="hidden px-4 py-3 text-end font-medium md:table-cell">{t.admin.colCredits}</th>
+                  <th scope="col" className="hidden px-4 py-3 text-end font-medium md:table-cell">{t.admin.colSites}</th>
+                  <th scope="col" className="hidden px-4 py-3 text-end font-medium md:table-cell">{t.admin.colAiCost}</th>
                 </tr>
               </thead>
               <tbody>
                 {list.map((u) => (
                   <tr key={u.id} aria-current={u.id === detail?.id ? "true" : undefined} className="border-b border-line last:border-0 hover:bg-paper aria-[current=true]:bg-sunken">
                     <th scope="row" className="px-4 py-3 text-start font-normal">
-                      <Link href={link({ user: u.id })} aria-label={format(t.admin.openDetails, { name: u.name || u.contact || u.id.slice(0, 8) })} className="block min-h-11 rounded-md underline-offset-4 hover:underline">
-                        <span className="block font-medium">{u.name || "—"}</span>
-                        <span className="block break-all text-sm text-ink-muted">{u.contact}</span>
+                      {/* The visible name is the link text; "details" is added for screen readers. */}
+                      <Link href={link({ user: u.id })} className="block min-h-11 rounded-md underline-offset-4 hover:underline">
+                        <span className="block font-medium [overflow-wrap:anywhere]">{u.name || u.contact || u.id.slice(0, 8)}</span>
+                        {u.name && <span className="block text-sm text-ink-muted [overflow-wrap:anywhere]">{u.contact}</span>}
+                        <span className="sr-only">, {t.admin.colDetails}</span>
                       </Link>
+                      {/* Phones: the plan and changes left under the name instead of extra columns. */}
+                      <span className="mt-2 flex flex-wrap items-center gap-2 text-sm text-ink-muted md:hidden">
+                        {planBadge(u.plan)}
+                        <span className="tabular-nums">{format(t.admin.creditsShort, { n: u.credits })}</span>
+                      </span>
                     </th>
-                    <td className="px-4 py-3 text-sm tabular-nums">{joinedFmt.format(u.joined)}</td>
-                    <td className="px-4 py-3">
+                    <td className="hidden px-4 py-3 text-sm tabular-nums md:table-cell">{joinedFmt.format(u.joined)}</td>
+                    <td className="hidden px-4 py-3 md:table-cell">
                       {planBadge(u.plan)}
                       {u.until && <span className="mt-1 block text-sm text-ink-muted tabular-nums">{format(t.admin.untilShort, { date: joinedFmt.format(u.until) })}</span>}
                     </td>
-                    <td className="px-4 py-3 text-end tabular-nums">{u.credits}</td>
-                    <td className="px-4 py-3 text-end tabular-nums">{u.sites}</td>
-                    <td className="px-4 py-3 text-end tabular-nums">{usd(u.aiCost30Nano)}</td>
+                    <td className="hidden px-4 py-3 text-end tabular-nums md:table-cell">{u.credits}</td>
+                    <td className="hidden px-4 py-3 text-end tabular-nums md:table-cell">{u.sites}</td>
+                    <td className="hidden px-4 py-3 text-end tabular-nums md:table-cell">{usd(u.aiCost30Nano)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -405,7 +413,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
               {pending.map((p) => (
                 <li key={p.id} className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
                   <div className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
-                    <p className="font-semibold">{t.billing.productNames[p.product]}</p>
+                    <p className="font-semibold">{productName(t.billing.productNames, p.product)}</p>
                     <p className="font-semibold">{format(t.billing.price, { price: amount(p.amountMinor) })}</p>
                     <p>{t.billing.methods[p.method]}: <span className="font-mono">{p.reference}</span></p>
                     <p className="break-all">{t.admin.user}: {p.contact ?? p.userId.slice(0, 8)}</p>
@@ -503,16 +511,11 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const s = await svc.billing.settings();
     const birr = (minor: number) => (minor % 100 === 0 ? String(minor / 100) : `${Math.floor(minor / 100)}.${String(minor % 100).padStart(2, "0")}`);
     const values = { ...s, prices: Object.fromEntries(Object.entries(s.prices).map(([k, v]) => [k, birr(v)])) };
-    const saving = (p: "starter" | "business") => {
-      const [m, y] = [s.prices[`${p}_month`], s.prices[`${p}_year`]];
-      return monthsFree(m, y) > 0 ? format(t.admin.settingsYearSaving, { amount: amount(yearlySaving(m, y)), months: monthsFree(m, y) }) : t.admin.settingsYearNoSaving;
-    };
-    const savings = { starter: saving("starter"), business: saving("business") };
     return (
       <section aria-labelledby="settings-title" className="flex flex-col gap-4">
         <h2 id="settings-title" className="text-2xl font-bold">{t.admin.settingsTitle}</h2>
         <p className="text-ink-muted">{t.admin.settingsHint}</p>
-        <SettingsForm t={t.admin} tb={t.billing} lang={lang} values={values} savings={savings} />
+        <SettingsForm t={t.admin} tb={t.billing} lang={lang} values={values} />
         <div className="mt-4 flex flex-col gap-2 border-t border-line pt-6">
           <p className="text-ink-muted">{t.admin.settingsIncludesHint}</p>
           <PlanComparison t={{ ...t.plans.compare, title: t.admin.settingsIncludes }} planNames={t.billing.plans} id="admin-compare" />

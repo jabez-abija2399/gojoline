@@ -93,3 +93,15 @@ export function monthsFree(monthMinor: number, yearMinor: number): number {
 export function storageLabel(bytes: number): string {
   return bytes >= 1024 * MB && bytes % (1024 * MB) === 0 ? `${bytes / (1024 * MB)} GB` : `${Math.round(bytes / MB)} MB`;
 }
+
+/** "499" or "499.50" Birr (commas allowed) → santim, without floating point; null when not a price. */
+export function birrToMinor(raw: string): number | null {
+  const m = /^(\d{1,7})(?:\.(\d{1,2}))?$/.exec(raw.trim().replace(/,/g, ""));
+  if (!m) return null;
+  return Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0") || "0");
+}
+
+/** A product's name from the messages; the top-up name carries {n} = TOPUP_CREDITS. */
+export function productName(names: Record<Product, string>, product: Product): string {
+  return names[product].replace("{n}", String(TOPUP_CREDITS));
+}

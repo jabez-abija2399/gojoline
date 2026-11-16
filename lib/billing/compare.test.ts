@@ -39,7 +39,14 @@ describe("plan copy", () => {
   it("names the top-up with TOPUP_CREDITS in both languages", async () => {
     const { en } = await import("@/lib/i18n/messages/en");
     const { am } = await import("@/lib/i18n/messages/am");
-    const { TOPUP_CREDITS } = await import("./plans");
-    for (const m of [en, am]) expect(m.billing.productNames.topup).toContain(String(TOPUP_CREDITS));
+    const { productName, TOPUP_CREDITS } = await import("./plans");
+    expect(productName(en.billing.productNames, "topup")).toBe(`${TOPUP_CREDITS} extra changes`);
+    expect(productName(am.billing.productNames, "topup")).toBe(`${TOPUP_CREDITS} ተጨማሪ ለውጦች`);
+    expect(productName(en.billing.productNames, "starter_year")).toBe("Starter, 1 year");
+  });
+
+  it("parses Birr prices without floats", async () => {
+    const { birrToMinor } = await import("./plans");
+    expect(["499", "4,990", "499.5", "499.50", "abc", "1.234", ""].map(birrToMinor)).toEqual([49_900, 499_000, 49_950, 49_950, null, null, null]);
   });
 });

@@ -8,6 +8,7 @@ import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { billingSettingsSchema } from "@/lib/billing/settings";
+import { birrToMinor } from "@/lib/billing/plans";
 import { dismissReports, restoreSite, takeDownSite } from "@/lib/safety/takedown";
 import { after } from "next/server";
 import { noticeDecision } from "@/lib/billing/notify";
@@ -75,13 +76,6 @@ export async function moderateSite(_prev: ModerateState, form: FormData): Promis
 }
 
 export type SettingsState = { status: "idle" | "ok" | "invalid" | "forbidden" | "failed"; field?: string };
-
-/** "399" or "399.50" Birr → santim, without floating point. */
-function birrToMinor(raw: string): number | null {
-  const m = /^(\d{1,7})(?:\.(\d{1,2}))?$/.exec(raw.trim().replace(/,/g, ""));
-  if (!m) return null;
-  return Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0") || "0");
-}
 
 export async function saveBillingSettings(_prev: SettingsState, form: FormData): Promise<SettingsState> {
   const user = await currentUser();
