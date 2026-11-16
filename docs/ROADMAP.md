@@ -85,10 +85,18 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Template pages v2: categories with link chips, breadcrumb, "Designed for", "What's included" backed by the template's sections, browser and phone frames, details column on large screens, "Used by N businesses" (verified owners with a live site, shown from 10); design, performance and security reviews run and fixed (2026-11-16)
 - [x] Motion and interaction kit in the site template, from motion research on the best sites of each niche; all 14 templates use it
 
+## Credits and discounts (2026-11-16)
+- [x] Request sizes (small 1, medium 2, large 4 changes) sized by Claude Haiku with a word-list fallback; bigger requests ask first in the builder and on Telegram; multi-change debit and refund, atomic
+- [x] AI cost cap per request (US$0.15 per change, first build US$0.40) and fewer agent turns for small requests; the site is never left half-written
+- [x] Admin → Settings → Changes (credits): monthly changes, rollover, pack size, changes per size, cost cap (audited, from the next monthly top-up)
+- [x] Plan page: next monthly date, rollover, bought changes, changes per size, history of every change; builder shows what each answer used, low and zero notes
+- [x] Discount codes and launch offer (Admin → Discounts), price shown before sending, use counted on approval
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Credits and discounts (2026-11-16): the Amharic for request sizes, the bigger-change question, the history and the discount screens needs the native-speaker review. Measure Haiku sizing against real requests (cost is logged as "size"); the 2 s timeout falls back to the word list. The landing page's feature card still shows the plain Starter price (not the launch offer). The design, performance and security review agents could not be run from this session (no sub-agent tool); a self-review was done instead.
 - Performance: phone LCP on `/templates` and template pages is ~3.5 s (budget 2.5 s), same as before template pages v2. Causes are site-wide: ~170 KB shared JS, the Ethiopic font preloaded on English pages, three Latin fonts, lazy pictures inside Chrome's load distance. Needs its own slice (2026-11-16).
 - Set `PUBLISH_BASE_DOMAIN` in production once the customer-site domain exists; until then the template browser frame shows an empty address bar (never a guessed address).
 - e2e: `billing.spec.ts` "a pricing Choose button keeps the yearly choice through sign-in" failed once on the phone project in a full run (2026-11-16) and passed 6 of 6 alone; probably the same first-render timing as the menu helper fixed that day.

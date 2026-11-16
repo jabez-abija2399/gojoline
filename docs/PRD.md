@@ -27,7 +27,7 @@ Ethiopian small businesses (cafés, restaurants, shops, salons, clinics, hotels,
 | Payments in sites | Chapa payment button (sandbox until licensed) |
 | Publishing | Free subdomain; custom domains on paid plans |
 | Templates | Café/restaurant, hotel, clinic, school, shop, church/mosque, events, NGO, real estate, tour operator |
-| Billing | Plans and AI edit credits; manual Birr payment (Telebirr/CBE receipt upload, admin approval, audit log) |
+| Billing | Plans and AI changes (credits) sized by request; manual Birr payment (Telebirr/CBE receipt upload, admin approval, audit log); discount codes and a launch offer |
 | Trust and safety | Content checks on prompts and pages, verification before publish, report-abuse link, rate limits |
 | Admin | Approve payments, review reports, take sites down, view costs per user |
 
@@ -35,7 +35,7 @@ Ethiopian small businesses (cafés, restaurants, shops, salons, clinics, hotels,
 
 ## Plans (hypotheses to test)
 
-Defaults live in `lib/billing/plans.ts` (`PRODUCTS`, `PLAN_FEATURES`); prices can be changed in Admin → Settings.
+Defaults live in `lib/billing/plans.ts` (`PRODUCTS`, `PLAN_FEATURES`) and `lib/billing/credits.ts`; prices, monthly changes, rollover, the extra-changes pack, changes per request size and the AI cost cap can be changed in Admin → Settings (credit changes apply from each owner's next monthly top-up; nobody loses changes they have).
 
 | Plan | Price | Includes |
 | --- | --- | --- |
@@ -44,7 +44,11 @@ Defaults live in `lib/billing/plans.ts` (`PRODUCTS`, `PLAN_FEATURES`); prices ca
 | Business | 1,299 ETB/month or 12,990/year | Up to 3 sites, own domain per site and we connect it, no badge, 150 changes/month (roll over up to 2 months), 10,000 answers/month, Telegram alerts and edits by Telegram, 2 GB photos, priority support with setup help |
 | Extra changes | 249 ETB | 30 more AI changes |
 
-Every site's first build is free (one per site the plan allows, each month); changes that fail on our side are refunded (up to 5 a day).
+Every site's first build is free (one per site the plan allows, each month); changes that fail on our side are refunded (up to 12 changes a day).
+
+**Changes per request.** Each request is sized before it runs (Claude Haiku, with a word list as fallback): small (text, price, photo, colour) 1 change, medium (a new section or page, a bigger restyle) 2, large (several pages, a new design) 4. Medium and large requests show the cost and ask first (“Go ahead” / “Make it smaller”; on Telegram, reply YES); nothing is charged more than the owner has. Each request has an AI cost cap of US$0.15 per change it uses (a free first build US$0.40); at the cap the agent stops, keeps finished work that builds, and otherwise undoes everything and gives the changes back. The Plan page shows changes left, the next monthly date, rollover, bought changes and the history of every change added or used.
+
+**Discounts.** Admins make discount codes (percent 1–90 or whole Birr off, chosen products, optional most uses, last day and first-payment-only) and can switch them off (never deleted), and set a site-wide launch offer (percent off chosen products until a date, shown with the old price struck through). A code and the offer never stack: the better one applies. Prices after a discount are rounded down to whole Birr, never below 1 Birr. A code's use is counted when its payment is approved.
 
 ## Success metrics (private beta)
 
