@@ -285,13 +285,13 @@
           },
           "body": {
             "en": "We buy green coffee from Sidama and Yirgacheffe and roast it here in a clay pan before the doors open. By the time you walk in, the whole house smells of it.\n\nThe café is run by one family. Come for a quick macchiato at the counter, or sit down for the full ceremony with popcorn and incense.",
-            "am": "ጥሬ ቡናውን ከሲዳማና ከይርጋጨፌ ገዝተን በር ከመክፈታችን በፊት እዚሁ በብረት ምጣድ እንቆላለን። እርስዎ ሲገቡ ቤቱ በሙሉ በቡና መዓዛ ታውዷል።\n\nካፌውን የሚያስተዳድረው አንድ ቤተሰብ ነው። ለፈጣን ማኪያቶ ብቅ ይበሉ፤ አሊያም ተቀምጠው ከፈንዲሻና ከዕጣን ጋር ሙሉውን ሥነ ሥርዓት ያጣጥሙ።"
+            "am": "ጥሬ ቡናውን ከሲዳማና ከይርጋጨፌ ገዝተን በር ከመክፈታችን በፊት እዚሁ በሸክላ ምጣድ እንቆላለን። እርስዎ ሲገቡ ቤቱ በሙሉ በቡና መዓዛ ታውዷል።\n\nካፌውን የሚያስተዳድረው አንድ ቤተሰብ ነው። ለፈጣን ማኪያቶ ብቅ ይበሉ፤ አሊያም ተቀምጠው ከፈንዲሻና ከዕጣን ጋር ሙሉውን ሥነ ሥርዓት ያጣጥሙ።"
           },
           "image": {
             "src": "/stock/cafe-about-roasted-beans-pan.webp",
             "alt": {
               "en": "Hands holding a clay pan of freshly roasted coffee beans",
-              "am": "አዲስ የተቆላ ቡና የያዘ የሸክላ ብረት ምጣድ በእጅ"
+              "am": "አዲስ የተቆላ ቡና የያዘ የሸክላ ምጣድ በእጅ"
             }
           },
           "imageSide": "end",
@@ -346,7 +346,7 @@
               "src": "/stock/cafe-gallery-pastries-coffee.webp",
               "alt": {
                 "en": "A café table with a latte, a croissant, a fruit danish and doughnuts",
-                "am": "ማኪያቶ፣ ክሯሷን፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ"
+                "am": "ማኪያቶ፣ ክሮሳንት፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ"
               }
             },
             {
@@ -904,7 +904,7 @@
                 {
                   "name": {
                     "en": "Croissant",
-                    "am": "ክሯሷን"
+                    "am": "ክሮሳንት"
                   },
                   "price": {
                     "amountMinor": 12000,
@@ -914,7 +914,7 @@
                     "src": "/stock/cafe-gallery-pastries-coffee.webp",
                     "alt": {
                       "en": "A café table with a latte, a croissant, a fruit danish and doughnuts",
-                      "am": "ማኪያቶ፣ ክሯሷን፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ"
+                      "am": "ማኪያቶ፣ ክሮሳንት፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ"
                     }
                   }
                 },
@@ -1146,7 +1146,7 @@
               },
               "description": {
                 "en": "In a clay pan over charcoal, stirred by hand until dark and glossy.",
-                "am": "በከሰል ላይ በብረት ምጣድ፣ እስኪጠቁርና እስኪያብረቀርቅ በእጅ እያማሰልን።"
+                "am": "በከሰል ላይ በሸክላ ምጣድ፣ እስኪጠቁርና እስኪያብረቀርቅ በእጅ እያማሰልን።"
               }
             },
             {
