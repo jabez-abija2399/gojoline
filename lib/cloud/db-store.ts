@@ -53,14 +53,14 @@ export class DbCloudStore implements CloudStore {
     return { total: Number(row?.total ?? 0), unread: Number(row?.unread ?? 0) };
   }
 
-  async submissionsSince(ownerId: string, projectId: string, since: Date, limit = 2000) {
+  async answersPerDay(ownerId: string, projectId: string, since: Date) {
+    const day = sql<string>`to_char((${formSubmissions.createdAt} at time zone 'Africa/Addis_Ababa')::date, 'YYYY-MM-DD')`;
     const rows = await this.db
-      .select()
+      .select({ day, count: sql<number>`count(*)::int` })
       .from(formSubmissions)
       .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId), gte(formSubmissions.createdAt, since)))
-      .orderBy(desc(formSubmissions.createdAt))
-      .limit(limit);
-    return rows as Submission[];
+      .groupBy(day);
+    return rows.map((r) => ({ day: r.day, count: Number(r.count) }));
   }
 
   async markRead(ownerId: string, projectId: string, ids: string[]) {

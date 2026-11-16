@@ -24,6 +24,11 @@ describe("DbProjectStore", () => {
   it("numbers versions 1, 2, 3 and returns the latest", async () => {
     const p = await store.createProject("alice", { name: "", locale: "en" });
     for (const n of [1, 2, 3]) await store.addVersion("alice", { projectId: p.id, summary: `v${n}`, files: { "src/site.ts": `v${n}` } });
+    // Counted without reading the versions, and only for their owner.
+    const stats = await store.versionStats("alice", p.id);
+    expect(stats.count).toBe(3);
+    expect(stats.lastAt).toBeInstanceOf(Date);
+    expect(await store.versionStats("bob", p.id)).toEqual({ count: 0, lastAt: null });
     expect((await store.listVersions("alice", p.id)).map((v) => v.number)).toEqual([3, 2, 1]);
     expect((await store.latestVersion("alice", p.id))?.files["src/site.ts"]).toBe("v3");
     expect((await store.getVersion("alice", p.id, 2))?.summary).toBe("v2");

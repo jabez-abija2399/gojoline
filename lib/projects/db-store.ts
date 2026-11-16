@@ -84,6 +84,14 @@ export class DbProjectStore implements ProjectStore {
     throw new Error("unreachable");
   }
 
+  async versionStats(ownerId: string, projectId: string): Promise<{ count: number; lastAt: Date | null }> {
+    const [row] = await this.db
+      .select({ count: sql<number>`count(*)::int`, lastAt: sql<string | null>`max(${projectVersions.createdAt})` })
+      .from(projectVersions)
+      .where(and(eq(projectVersions.projectId, projectId), eq(projectVersions.ownerId, ownerId)));
+    return { count: Number(row?.count ?? 0), lastAt: row?.lastAt ? new Date(row.lastAt) : null };
+  }
+
   async listVersions(ownerId: string, projectId: string): Promise<VersionSummary[]> {
     return this.db
       .select({

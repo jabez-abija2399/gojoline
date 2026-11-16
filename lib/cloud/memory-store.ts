@@ -1,3 +1,4 @@
+import { addisDay } from "@/lib/dashboard/stats";
 import { randomUUID } from "node:crypto";
 import type { SiteStore } from "@/lib/sites/types";
 import type { FormDef } from "./forms";
@@ -34,8 +35,14 @@ export class MemoryCloudStore implements CloudStore {
     const mine = this.submissions.filter((s) => s.ownerId === ownerId && s.projectId === projectId);
     return { total: mine.length, unread: mine.filter((s) => !s.readAt).length };
   }
-  async submissionsSince(ownerId: string, projectId: string, since: Date, limit = 2000) {
-    return this.submissions.filter((s) => s.ownerId === ownerId && s.projectId === projectId && s.createdAt >= since).reverse().slice(0, limit);
+  async answersPerDay(ownerId: string, projectId: string, since: Date) {
+    const days = new Map<string, number>();
+    for (const s of this.submissions) {
+      if (s.ownerId !== ownerId || s.projectId !== projectId || s.createdAt < since) continue;
+      const day = addisDay(s.createdAt.getTime());
+      days.set(day, (days.get(day) ?? 0) + 1);
+    }
+    return [...days].map(([day, count]) => ({ day, count }));
   }
   async markRead(ownerId: string, projectId: string, ids: string[]) {
     for (const s of this.submissions) if (s.ownerId === ownerId && s.projectId === projectId && ids.includes(s.id)) s.readAt ??= new Date();

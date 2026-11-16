@@ -31,16 +31,17 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
   if (!user) redirect(`/${lang}/sign-in?next=/${lang}/dashboard/${id}`);
   const builder = services().builder;
   if (!builder) redirect(`/${lang}/build`);
-  const project = await builder.store.getProject(user.id, id);
+  const rawTab = (await searchParams).tab;
+  const tab = TABS.find((x) => x === rawTab) ?? "overview";
+  // All reads start together (every one is scoped to this owner). Every tab shows the site's
+  // state and the New count; only the overview loads the rest.
+  const [header, overview] = await Promise.all([loadHeader(user.id, id), tab === "overview" ? loadOverview(user.id, id, lang) : null]);
+  // The sidebar's list already holds the project; an older one (past its 100) is looked up.
+  const project = header.project ?? (await builder.store.getProject(user.id, id));
   if (!project) notFound();
   const t = getMessages(lang);
   const d = t.dashboard;
-  const rawTab = (await searchParams).tab;
-  const tab = TABS.find((x) => x === rawTab) ?? "overview";
   const labels = { overview: d.tabOverview, answers: d.tabAnswers, lists: d.tabLists, photos: d.tabPhotos, telegram: d.tabTelegram };
-  // Every tab shows the site's state and the New count; only the overview loads the rest.
-  const header = await loadHeader(user.id, id);
-  const overview = tab === "overview" ? await loadOverview(user.id, id, lang, header) : null;
   const name = project.name || t.builder.untitled;
   const status = { live: d.statusLive, draft: d.statusDraft, taken_down: d.statusTakenDown }[header.status];
 

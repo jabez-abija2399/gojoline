@@ -81,6 +81,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 ## Follow-ups
 - e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
 - Site dashboard: a visitors count needs privacy-friendly visit counting on published sites (not built; no number is shown until it exists). A QR code of the site's address to print for the shop would suit owners well.
+- The Answers tab still reads 200 full answers and each form one after another; a `formHeadings` query would make it and the overview lighter (performance review).
+- Every signed-in page shows its main content after about 3 s on a slow phone (budget 2.5 s): the largest shared script takes about 400 ms to start; not caused by one page (performance review).
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
 - Landing page, from the reviews: real photos in the starter templates would make the gallery stronger (they show placeholder shapes now); the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
 - Re-run `node scripts/showcase-shots.mjs` after changing the site template or a preset, so the landing page's pictures stay true.

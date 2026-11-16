@@ -34,8 +34,8 @@ export interface CloudStore {
   markRead(ownerId: string, projectId: string, ids: string[]): Promise<void>;
   /** Owner-scoped exact counts (no row limit). */
   countSubmissions(ownerId: string, projectId: string): Promise<{ total: number; unread: number }>;
-  /** Owner-scoped answers since a moment, newest first (for recent charts). */
-  submissionsSince(ownerId: string, projectId: string, since: Date, limit?: number): Promise<Submission[]>;
+  /** Owner-scoped number of answers per Addis Ababa day since a moment ("YYYY-MM-DD"), counted by the database. */
+  answersPerDay(ownerId: string, projectId: string, since: Date): Promise<{ day: string; count: number }[]>;
 }
 
 /** Tells the owner about a new submission (Telegram in Slice 5). */

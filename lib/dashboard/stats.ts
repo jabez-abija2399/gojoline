@@ -1,43 +1,34 @@
 import type { DayPoint } from "@/lib/admin/stats";
-import type { Submission } from "@/lib/cloud/types";
 
 const DAY = 86_400_000;
 /** Days are Addis Ababa days (UTC+3, no daylight saving): an answer at 1 am belongs to that day. */
 const ADDIS = 3 * 3_600_000;
-const dayKey = (t: number) => new Date(t + ADDIS).toISOString().slice(0, 10);
+/** The Addis Ababa calendar day of a moment, as "YYYY-MM-DD". */
+export const addisDay = (t: number) => new Date(t + ADDIS).toISOString().slice(0, 10);
 
 export interface AnswerStats {
   total: number;
   unread: number;
-  /** The last 7 days, and the 7 before them (for the trend). */
+  /** The last 7 days (today included), and the 7 before them (for the trend). */
   thisWeek: number;
   lastWeek: number;
-  /** One point per day, oldest first, ending today (UTC). */
+  /** One point per day, oldest first, ending today (Addis Ababa days). */
   perDay: DayPoint[];
-  lastAt: Date | null;
 }
 
 /**
- * Counts for the site dashboard. `answers` are the recent ones (at least the last 14 days);
- * `counts` are exact totals from the database, so a busy site is never under-counted.
+ * Counts for the site dashboard: `perDay` from the database's count per day (at least the last
+ * 14 days), `counts` the exact totals, so a busy site is never under-counted.
  */
-export function answerStats(answers: Pick<Submission, "createdAt" | "readAt">[], counts: { total: number; unread: number }, now = Date.now(), days = 14): AnswerStats {
-  const today = Date.parse(dayKey(now)) - ADDIS;
-  const perDay = new Map<string, number>();
-  for (let i = days - 1; i >= 0; i--) perDay.set(dayKey(today - i * DAY), 0);
-  let thisWeek = 0;
-  let lastWeek = 0;
-  let lastAt: Date | null = null;
-  for (const a of answers) {
-    const t = a.createdAt.getTime();
-    const age = now - t;
-    if (age < 7 * DAY) thisWeek++;
-    else if (age < 14 * DAY) lastWeek++;
-    const key = dayKey(t);
-    if (perDay.has(key)) perDay.set(key, perDay.get(key)! + 1);
-    if (!lastAt || t > lastAt.getTime()) lastAt = a.createdAt;
+export function answerStats(perDay: { day: string; count: number }[], counts: { total: number; unread: number }, now = Date.now(), days = 14): AnswerStats {
+  const byDay = new Map(perDay.map((d) => [d.day, d.count]));
+  const series: DayPoint[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const day = addisDay(now - i * DAY);
+    series.push({ day, value: byDay.get(day) ?? 0 });
   }
-  return { total: counts.total, unread: counts.unread, thisWeek, lastWeek, perDay: [...perDay].map(([day, value]) => ({ day, value })), lastAt };
+  const sum = (from: number, to: number) => series.slice(from, to).reduce((n, d) => n + d.value, 0);
+  return { total: counts.total, unread: counts.unread, thisWeek: sum(days - 7, days), lastWeek: sum(days - 14, days - 7), perDay: series };
 }
 
 export type Trend = { kind: "up" | "down"; n: number } | { kind: "same" | "first" | "new" | "none" };

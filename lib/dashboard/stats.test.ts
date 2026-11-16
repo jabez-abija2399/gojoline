@@ -1,28 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { answerPreview, answerStats, setupSteps, weekTrend } from "./stats";
+import { addisDay, answerPreview, answerStats, setupSteps, weekTrend } from "./stats";
 
 const now = Date.UTC(2026, 10, 16, 12);
-const ago = (days: number, read = true) => ({ createdAt: new Date(now - days * 86_400_000), readAt: read ? new Date(now) : null });
 
 describe("answerStats", () => {
-  it("counts this week, last week, unread and per day", () => {
-    const s = answerStats([ago(0, false), ago(0.2), ago(3, false), ago(8), ago(13), ago(40)], { total: 812, unread: 2 }, now);
+  it("builds 14 Addis days, the last 7 against the 7 before, with exact totals", () => {
+    const s = answerStats([{ day: "2026-11-16", count: 2 }, { day: "2026-11-13", count: 1 }, { day: "2026-11-08", count: 1 }, { day: "2026-11-03", count: 1 }, { day: "2026-10-01", count: 9 }], { total: 812, unread: 2 }, now);
     // Totals are the exact database counts, not the rows that were read.
     expect(s).toMatchObject({ total: 812, unread: 2, thisWeek: 3, lastWeek: 2 });
     expect(s.perDay).toHaveLength(14);
+    expect(s.perDay[0]?.day).toBe("2026-11-03");
     expect(s.perDay.at(-1)).toEqual({ day: "2026-11-16", value: 2 });
-    expect(s.perDay.reduce((n, d) => n + d.value, 0)).toBe(5); // the 40-day-old one is outside
-    expect(s.lastAt?.getTime()).toBe(now);
-  });
-  it("counts by Addis Ababa days", () => {
-    // 22:30 UTC on the 15th is 01:30 on the 16th in Addis Ababa.
-    const late = { createdAt: new Date(Date.UTC(2026, 10, 15, 22, 30)), readAt: null };
-    expect(answerStats([late], { total: 1, unread: 1 }, now).perDay.at(-1)).toEqual({ day: "2026-11-16", value: 1 });
   });
   it("is empty without answers", () => {
     const s = answerStats([], { total: 0, unread: 0 }, now);
-    expect(s).toMatchObject({ total: 0, unread: 0, thisWeek: 0, lastWeek: 0, lastAt: null });
+    expect(s).toMatchObject({ total: 0, unread: 0, thisWeek: 0, lastWeek: 0 });
     expect(s.perDay.every((d) => d.value === 0)).toBe(true);
+  });
+});
+
+describe("addisDay", () => {
+  it("counts by Addis Ababa days", () => {
+    // 22:30 UTC on the 15th is 01:30 on the 16th in Addis Ababa.
+    expect(addisDay(Date.UTC(2026, 10, 15, 22, 30))).toBe("2026-11-16");
+    expect(addisDay(Date.UTC(2026, 10, 15, 20, 59))).toBe("2026-11-15");
   });
 });
 

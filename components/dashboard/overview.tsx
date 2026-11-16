@@ -40,11 +40,11 @@ export function OverviewPanel({ o, t, locale, projectId, siteName, supportBot }:
     <div className="flex flex-col gap-4">
       {/* Is the site out in the world, and the quickest ways to share it. */}
       <section aria-labelledby="site-state" className={`${card} relative overflow-hidden p-5 sm:p-6`}>
-        <span aria-hidden="true" className={`pointer-events-none absolute -end-20 -top-24 size-64 rounded-full blur-3xl ${o.status === "live" ? "bg-lagoon/15" : o.status === "taken_down" ? "bg-danger/15" : "bg-coral-soft"}`} />
+        <span aria-hidden="true" className={`pointer-events-none absolute inset-0 ${o.status === "live" ? "bg-[radial-gradient(40%_80%_at_100%_0%,color-mix(in_oklab,var(--gojo-lagoon)_16%,transparent),transparent)]" : o.status === "taken_down" ? "bg-[radial-gradient(40%_80%_at_100%_0%,color-mix(in_oklab,var(--gojo-danger)_16%,transparent),transparent)]" : "bg-[radial-gradient(40%_80%_at_100%_0%,var(--gojo-coral-soft),transparent)]"}`} />
         <div className="relative flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <h2 id="site-state" className="flex items-center gap-2 text-lg font-semibold">
-              {o.status === "live" ? <span aria-hidden="true" className="relative flex size-2.5"><span className="absolute inline-flex size-full animate-ping rounded-full bg-lagoon opacity-60 motion-reduce:hidden" /><span className="relative inline-flex size-2.5 rounded-full bg-lagoon" /></span> : o.status === "taken_down" ? <TriangleAlert aria-hidden="true" className="size-5 text-danger" /> : <Lock aria-hidden="true" className="size-4 text-ink-muted" />}
+              {o.status === "live" ? <span aria-hidden="true" className="relative flex size-2.5"><span className="absolute inline-flex size-full animate-[ping_1.2s_cubic-bezier(0,0,0.2,1)_3] rounded-full bg-lagoon opacity-60 motion-reduce:hidden" /><span className="relative inline-flex size-2.5 rounded-full bg-lagoon" /></span> : o.status === "taken_down" ? <TriangleAlert aria-hidden="true" className="size-5 text-danger" /> : <Lock aria-hidden="true" className="size-4 text-ink-muted" />}
               {o.status === "live" ? t.liveTitle : o.status === "taken_down" ? t.takenDownTitle : t.draftTitle}
             </h2>
             <p className="max-w-[60ch] text-ink-muted">{o.status === "live" ? t.liveBody : o.status === "taken_down" ? t.takenDownBody : t.draftBody}</p>
