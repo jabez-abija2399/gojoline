@@ -1,4 +1,6 @@
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, MessageCircle, Send, Wallet } from "lucide-react";
+
+const PILLAR_ICONS = [MessageCircle, Send, Wallet];
 import Link from "next/link";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
@@ -9,7 +11,7 @@ import { LandingStage, type StageSite, type StageText } from "./landing-stage";
  * Headline, then the real product: pick a business and the builder below shows a real site
  * for it. Then one box to describe your own.
  */
-export function Hero({ t, locale, sites, text, install, promptTitle, templates, signedIn, live, you, assistant }: { live: Messages["landing"]["live"]; you: string; assistant: string; t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string; templates: { href: string; label: string }; signedIn: boolean }) {
+export function Hero({ t, locale, sites, text, install, promptTitle, templates, signedIn, live, you, assistant, pillars, pillarsLabel }: { pillars: Messages["landing"]["pillars"]; pillarsLabel: string; live: Messages["landing"]["live"]; you: string; assistant: string; t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string; templates: { href: string; label: string }; signedIn: boolean }) {
   return (
     <div className="relative isolate overflow-x-clip">
       <div aria-hidden="true" className="hero-glow" />
@@ -26,7 +28,7 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates, 
         </h1>
         <p className="max-w-[56ch] text-ink-muted sm:text-lg">{t.subtitle}</p>
       </section>
-      <div className="mx-auto mt-5 max-w-7xl sm:px-6 md:mt-6">
+      <div className="mx-auto mt-5 max-w-[90rem] sm:px-6 md:mt-6">
         <LandingStage
           signedIn={signedIn}
           locale={locale}
@@ -38,10 +40,27 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates, 
           you={you}
           assistant={assistant}
           more={
-            <Link href={templates.href} className="group inline-flex min-h-11 items-center gap-1 font-medium text-link underline-offset-4 hover:underline">
-              {templates.label}
-              <ArrowRight aria-hidden="true" className="size-4 transition-transform group-hover:translate-x-1" />
-            </Link>
+            <>
+              {/* Three things every site gets, under the screen as the reference does under its product. */}
+              <ul aria-label={pillarsLabel} className="mx-auto mt-10 grid w-full max-w-6xl gap-6 px-4 text-start sm:px-0 md:mt-12 md:grid-cols-3 md:gap-8">
+                {pillars.map((p, i) => {
+                  const Icon = PILLAR_ICONS[i] ?? MessageCircle;
+                  return (
+                    <li key={p.title} className={`flex flex-col gap-2 border-t-2 pt-4 ${i === 0 ? "border-ink" : "border-line"}`}>
+                      <h3 className="flex items-center gap-2 font-sans text-lg font-semibold text-ink">
+                        <Icon aria-hidden="true" className="size-5 shrink-0" />
+                        {p.title}
+                      </h3>
+                      <p className="text-ink-muted">{p.body}</p>
+                    </li>
+                  );
+                })}
+              </ul>
+              <Link href={templates.href} className="group mt-6 inline-flex min-h-11 items-center gap-1 font-medium text-link underline-offset-4 hover:underline">
+                {templates.label}
+                <ArrowRight aria-hidden="true" className="size-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </>
           }
           promptHeading={
             <h2 id="start-title" className="text-3xl display text-balance sm:text-5xl">

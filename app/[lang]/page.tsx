@@ -30,7 +30,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const byId = new Map(sites.map((x) => [x.id, x]));
   const stageSites = HERO_IDS.flatMap((id) => {
     const x = byId.get(id);
-    return x ? [{ id, label: t.landing.demo.labels[id], name: x.name, prompt: t.landing.demo.prompts[id], shot: x.brand ?? x.top, sections: firstSections(id, lang) }] : [];
+    return x ? [{ id, label: t.landing.demo.labels[id], name: x.name, prompt: t.landing.demo.prompts[id], shot: x.brand ?? x.top, sections: firstSections(id, lang), marked: t.landing.demo.marked[id] }] : [];
   });
   // The same café, in both languages, for the language card.
   const cafe = { en: showcaseSites("en").find((s) => s.id === "cafe"), am: showcaseSites("am").find((s) => s.id === "cafe") };
@@ -50,6 +50,8 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
       <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero
           live={t.landing.live}
+          pillars={t.landing.pillars}
+          pillarsLabel={t.landing.pillarsLabel}
           you={b.you}
           assistant={b.assistant}
           signedIn={await looksSignedIn()}
@@ -76,6 +78,10 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
             showcaseLabel: t.landing.hero.showcaseLabel,
             picked: t.landing.hero.picked,
             pauseDemo: t.landing.hero.pauseDemo,
+            previewSizes: b.previewTitle,
+            ideasLabel: b.ideasLabel,
+            previewPhone: b.previewPhone,
+            previewDesktop: b.previewDesktop,
             noteTitle: t.landing.telegram.title,
             noteBody: t.landing.telegram.body,
             saved: b.versionSaved.replace("{n}", "1"),
