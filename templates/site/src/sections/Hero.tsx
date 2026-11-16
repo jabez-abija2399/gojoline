@@ -147,7 +147,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
               <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 225px" className="aspect-[4/3] w-full rounded-site" />
             </div>
           </div>
-          {section.stamp && <Stamp text={text(section.stamp)} className="absolute -end-4 -top-8 size-24 md:-end-8 md:size-32" />}
+          {section.stamp && <Stamp text={text(section.stamp)} className="absolute end-2 -top-8 size-24 md:-end-8 md:size-32" />}
           {chip && (
             <p className="info-chip enter flex items-center gap-3 font-semibold" style={{ "--i": 5 } as React.CSSProperties}>
               <span aria-hidden="true" className="info-dot" />

@@ -162,7 +162,7 @@ save("shop", {
           heading: t("What we make and gather", "የምንሠራውና የምንሰበስበው"),
           intro: t("Clothes from our own looms, and handmade pieces from makers across the country.", "ከራሳችን ሸማ የወጡ ልብሶች እና ከመላ አገሪቱ የእጅ ባለሙያዎች የተገኙ ሥራዎች።"),
           items: [
-            { image: img("shop-hero-habesha-dress-field", "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል"), title: t("Habesha kemis", "የሀበሻ ቀሚስ"), subtitle: t("Everyday, holiday and wedding", "የዘወትር፣ የበዓልና የሠርግ"), action: link("See the dresses", "ቀሚሶቹን ይመልከቱ", "/products") },
+            { image: img("shop-hero-habesha-dress-field", "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል"), title: t("Habesha kemis", "የሀበሻ ቀሚስ"), subtitle: t("Holiday and wedding", "የበዓልና የሠርግ"), action: link("See the dresses", "ቀሚሶቹን ይመልከቱ", "/products") },
             { image: img("shop-about-spinning-yarn", "A woman in an embroidered grey traditional dress and silver jewellery working thread in her hands", "ጥልፍ ያለው ግራጫ ባህላዊ ልብስና የብር ጌጥ ያደረገች ሴት ክር በእጇ ስትፈትል"), title: t("Netela and gabi", "ነጠላና ጋቢ"), subtitle: t("Straight from the loom", "በቀጥታ ከሸማው"), action: link("See netela and gabi", "ነጠላና ጋቢ ይመልከቱ", "/products") },
             { image: img("cafe-gallery-bread-baskets", "Hands cutting round bread in a woven basket, with more woven baskets around", "በስፌት ውስጥ ያለ ክብ ድፎ ዳቦ የሚቆርሱ እጆች፣ በዙሪያው ሌሎች ስፌቶች"), title: t("Home and kitchen", "ለቤትና ለማዕድ ቤት"), subtitle: t("Mesob, baskets, jebena", "መሶብ፣ ስፌት፣ ጀበና"), action: link("See handmade goods", "የእጅ ሥራዎቹን ይመልከቱ", "/products") },
           ],

@@ -196,7 +196,7 @@
                 "alt": { "en": "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "am": "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል" }
               },
               "title": { "en": "Habesha kemis", "am": "የሀበሻ ቀሚስ" },
-              "subtitle": { "en": "Everyday, holiday and wedding", "am": "የዘወትር፣ የበዓልና የሠርግ" },
+              "subtitle": { "en": "Holiday and wedding", "am": "የበዓልና የሠርግ" },
               "action": {
                 "label": { "en": "See the dresses", "am": "ቀሚሶቹን ይመልከቱ" },
                 "href": "/products"
