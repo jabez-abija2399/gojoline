@@ -10,7 +10,7 @@ export function About({ section }: { section: AboutSection }) {
     <section id={section.id ?? "about"} className="section bg-surface">
       <div className="container-site grid items-center gap-10 md:grid-cols-2 md:gap-14">
         <div className={`reveal depth-frame me-3.5 mb-3.5 ${section.imageSide === "end" ? "md:order-last" : ""}`}>
-          <div className="zoom rounded-site">
+          <div className={`zoom wipe rounded-site ${section.imageShape === "arch" ? "arch" : ""}`}>
             <Picture image={section.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
           </div>
         </div>

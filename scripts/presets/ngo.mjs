@@ -1,6 +1,6 @@
 import { t, img, link, birr, save } from "./lib.mjs";
 
-const donate = link("Donate", "ይለግሱ", "/#give");
+const donate = link("Donate", "ይለግሱ", "/#giving");
 const ourWork = link("Our work", "ሥራችን", "/work");
 
 const P = {
@@ -18,7 +18,7 @@ const programmes = [
     badge: t("Largest programme", "ትልቁ መርሐ ግብር"),
     meta: [t("14 schools", "14 ትምህርት ቤቶች"), t("Grades 5 to 10", "ከ5ኛ እስከ 10ኛ ክፍል")],
     description: t("A school kit each September, tutoring three afternoons a week and a girls' club in every partner school.", "በየመስከረሙ የትምህርት ቁሳቁስ፣ በሳምንት ሦስት ከሰዓት ማጠናከሪያ ትምህርት እና በእያንዳንዱ አጋር ትምህርት ቤት የሴቶች ክበብ።"),
-    action: link("Sponsor a school kit", "የትምህርት ቁሳቁስ ይደግፉ", "/#give"),
+    action: link("Sponsor a school kit", "የትምህርት ቁሳቁስ ይደግፉ", "/#giving"),
   },
   {
     image: P.savings,
@@ -26,7 +26,7 @@ const programmes = [
     title: t("Women's savings groups", "የሴቶች የቁጠባ ቡድኖች"),
     meta: [t("38 groups", "38 ቡድኖች"), t("760 members", "760 አባላት")],
     description: t("Twenty women save together every week, lend to each other and start small businesses with training from our team.", "ሃያ ሴቶች በየሳምንቱ አብረው ይቆጥባሉ፣ እርስ በርስ ይበዳደራሉ፣ በቡድናችን ሥልጠና ታግዘውም አነስተኛ ንግድ ይጀምራሉ።"),
-    action: link("Fund a new group", "አዲስ ቡድን ይደግፉ", "/#give"),
+    action: link("Fund a new group", "አዲስ ቡድን ይደግፉ", "/#giving"),
   },
   {
     image: P.farm,
@@ -34,7 +34,7 @@ const programmes = [
     title: t("Home gardens and seed", "የጓሮ አትክልትና ዘር"),
     meta: [t("410 households", "410 አባወራዎች"), t("9 kebeles", "9 ቀበሌዎች")],
     description: t("Improved seed, enset and vegetable gardens, and a farmer trainer who visits every household each month.", "ምርጥ ዘር፣ የእንሰትና የአትክልት ጓሮ፣ እንዲሁም እያንዳንዱን ቤተሰብ በየወሩ የሚጎበኝ የግብርና አሠልጣኝ።"),
-    action: link("Give seed for a family", "ለአንድ ቤተሰብ ዘር ይስጡ", "/#give"),
+    action: link("Give seed for a family", "ለአንድ ቤተሰብ ዘር ይስጡ", "/#giving"),
   },
   {
     image: P.trees,
@@ -46,17 +46,37 @@ const programmes = [
   },
 ];
 
+const giveBox = {
+  type: "give",
+  id: "giving",
+  eyebrow: t("Give today", "ዛሬ ይለግሱ"),
+  heading: t("Choose your gift", "ልገሳዎን ይምረጡ"),
+  intro: t("Pick an amount and see what it does. Every gift gets a receipt, and every donor a report each September.", "መጠን ይምረጡ፤ ምን እንደሚሠራም ይመልከቱ። ለእያንዳንዱ ልገሳ ደረሰኝ፣ ለእያንዳንዱ ለጋሽም በየመስከረሙ ሪፖርት ይደርሳል።"),
+  amounts: [
+    { price: birr(500), impact: t("Seedlings for a school club to plant one bare slope above the lake.", "አንድ የትምህርት ቤት ክበብ ከሐይቁ በላይ ያለን አንድ የተራቆተ ተዳፋት የሚተክልበት ችግኝ።") },
+    { price: birr(1200), impact: t("Vegetable seed for one family and a season of visits from a farmer trainer.", "ለአንድ ቤተሰብ የአትክልት ዘርና ለአንድ የምርት ወቅት የግብርና አሠልጣኝ ጉብኝት።") },
+    { price: birr(2500), impact: t("A year of uniform, shoes, bag and exercise books for one girl.", "ለአንዲት ተማሪ የአንድ ዓመት የደንብ ልብስ፣ ጫማ፣ ቦርሳና ደብተር።") },
+    { price: birr(5000), impact: t("School kits for two girls, and a year of tutoring three afternoons a week.", "ለሁለት ሴት ተማሪዎች የትምህርት ቁሳቁስና በሳምንት ሦስት ከሰዓት የአንድ ዓመት ማጠናከሪያ ትምህርት።") },
+  ],
+  monthly: true,
+  action: link("Give", "{amount} ይለግሱ", "#give"),
+  goal: { raised: birr(186400), target: birr(300000), label: t("120 school kits by September", "እስከ መስከረም 120 የትምህርት ቁሳቁሶች") },
+  image: img("ngo-gallery-smiling-girl", "A smiling girl in an embroidered traditional dress with a crowd blurred behind her", "ጥልፍ ያለው የባህል ልብስ የለበሰች ፈገግተኛ ልጅ፤ ከኋላዋ ሕዝብ ደብዘዝ ብሎ ይታያል"),
+};
+
 const giveForm = {
   type: "form",
   id: "give",
   kind: "contact",
   heading: t("Donate", "ይለግሱ"),
+  eyebrow: t("Your pledge", "ቃልዎ"),
   intro: t("Tell us what you would like to give. We call you the same day with our Telebirr and bank details, and send a receipt for every gift.", "ምን ያህል መለገስ እንደሚፈልጉ ይንገሩን። በዕለቱ ደውለን የቴሌብርና የባንክ መረጃችንን እንሰጥዎታለን፤ ለእያንዳንዱ ልገሳም ደረሰኝ እንልካለን።"),
   fields: [
     { name: "name", label: t("Your name", "ስምዎ"), type: "text", required: true },
     { name: "phone", label: t("Phone number", "ስልክ ቁጥር"), type: "tel", required: true },
-    { name: "gift", label: t("Your gift", "ልገሳዎ"), type: "select", required: true, options: [t("500 Birr: seedlings for a school club", "500 ብር፦ ለትምህርት ቤት ክበብ ችግኞች"), t("1,200 Birr: seed for one family", "1,200 ብር፦ ለአንድ ቤተሰብ ዘር"), t("2,500 Birr: a school kit for one girl", "2,500 ብር፦ ለአንዲት ተማሪ የትምህርት ቁሳቁስ"), t("Another amount", "ሌላ መጠን")] },
-    { name: "frequency", label: t("How often", "በምን ያህል ጊዜ"), type: "select", options: [t("Once", "አንድ ጊዜ"), t("Every month", "በየወሩ")] },
+    { name: "amount", label: t("Amount in Birr", "መጠን በብር"), type: "number", required: true },
+    { name: "frequency", label: t("How often", "በምን ያህል ጊዜ"), type: "select", required: true, options: [t("Once", "አንድ ጊዜ"), t("Monthly", "በየወሩ")] },
+    { name: "towards", label: t("Where it should go", "የሚውልበት"), type: "select", options: [t("Where it is needed most", "በይበልጥ በሚያስፈልግበት"), t("Girls in school", "ሴት ልጆች በትምህርት ቤት"), t("Women's savings groups", "የሴቶች የቁጠባ ቡድኖች"), t("Home gardens and seed", "የጓሮ አትክልትና ዘር"), t("Trees for the lake hills", "ዛፎች ለሐይቁ ኮረብቶች")] },
     { name: "note", label: t("Anything we should know", "ልንረዳው የሚገባ ነገር ካለ"), type: "textarea" },
   ],
   submitLabel: t("Send my pledge", "ቃሌን ላክ"),
@@ -86,15 +106,19 @@ save("ngo", {
         {
           type: "hero",
           variant: "split",
-          eyebrow: t("Lake Hawassa · since 2016", "ሀዋሳ ሐይቅ ዙሪያ · ከ2008 ዓ.ም."),
+          hours: false,
+          id: "top",
+          eyebrow: t("Girls' education · Lake Hawassa", "የሴት ልጆች ትምህርት · ሀዋሳ ሐይቅ"),
           heading: t("Every girl finishes school", "ሴት ልጅ ሁሉ ትምህርቷን ትጨርስ"),
           subheading: t("We work with 14 schools and 38 women's savings groups so that girls stay in class and their families can pay for it.", "ሴት ልጆች ከትምህርት እንዳይቀሩ፣ ቤተሰቦቻቸውም ወጪውን እንዲችሉ ከ14 ትምህርት ቤቶችና ከ38 የሴቶች የቁጠባ ቡድኖች ጋር እንሠራለን።"),
           image: img("ngo-about-girl-clapping-community", "A smiling girl in a red embroidered top clapping among women and children at a community gathering", "በማኅበረሰብ ስብሰባ ላይ በሴቶችና በልጆች መካከል ፈገግ ብላ የምታጨበጭብ ቀይ ጥልፍ ልብስ የለበሰች ልጅ"),
           primaryAction: donate,
           secondaryAction: ourWork,
         },
+        giveBox,
         {
           type: "stats",
+          id: "numbers",
           tone: "dark",
           heading: t("Our work in numbers, 2016 to 2025", "ሥራችን በቁጥር፣ ከ2008 እስከ 2017 ዓ.ም."),
           items: [
@@ -105,7 +129,13 @@ save("ngo", {
           ],
         },
         {
+          type: "marquee",
+          tone: "light",
+          items: [t("Girls in school", "ሴት ልጆች በትምህርት ቤት"), t("Mothers who save", "የሚቆጥቡ እናቶች"), t("Seed for every garden", "ዘር ለየጓሮው"), t("Trees on bare hills", "ዛፍ ለተራቆቱ ኮረብቶች"), t("Planned with the village", "ከመንደሩ ጋር የታቀደ")],
+        },
+        {
           type: "about",
+          id: "about",
           eyebrow: t("Who we are", "እኛ ማን ነን"),
           heading: t("Started by teachers and parents", "በመምህራንና በወላጆች የተጀመረ"),
           body: t(
@@ -129,6 +159,7 @@ save("ngo", {
         },
         {
           type: "quote",
+          id: "story",
           quote: t("With my first loan I bought two sacks of barley to sell. Now I pay my daughters' school costs myself, and I am the one who lends.", "በመጀመሪያው ብድሬ ሁለት ኩንታል ገብስ ገዝቼ ሸጥኩ። ዛሬ የልጆቼን የትምህርት ወጪ ራሴ እሸፍናለሁ፤ አበዳሪዋም እኔ ነኝ።"),
           name: t("Almaz D.", "አልማዝ ደ."),
           role: t("Treasurer of a savings group in Tula", "በቱላ የቁጠባ ቡድን ገንዘብ ያዥ"),
@@ -139,17 +170,18 @@ save("ngo", {
           variant: "numbered",
           id: "gifts",
           eyebrow: t("Where gifts go", "ልገሳዎ የሚውልበት"),
-          heading: t("What your gift pays for", "ልገሳዎ ምን ይሸፍናል"),
+          heading: t("What happens to your gift", "ልገሳዎ ምን ይሆናል"),
           intro: t("Out of every 100 Birr, 86 goes to programmes, 9 to running the office and 5 to raising funds.", "ከእያንዳንዱ 100 ብር 86ቱ ለመርሐ ግብሮች፣ 9ኙ ለቢሮ ሥራ፣ 5ቱ ለገቢ ማሰባሰቢያ ይውላል።"),
           items: [
-            { title: t("Seed for one family", "ለአንድ ቤተሰብ ዘር"), description: t("Vegetable seed and a season of visits from a farmer trainer.", "የአትክልት ዘር እና ለአንድ የምርት ወቅት የግብርና አሠልጣኝ ጉብኝት።"), price: birr(1200) },
-            { title: t("A school kit for one girl", "ለአንዲት ተማሪ የትምህርት ቁሳቁስ"), description: t("Uniform, shoes, bag, exercise books and pens for a full year.", "ለአንድ ሙሉ ዓመት የደንብ ልብስ፣ ጫማ፣ ቦርሳ፣ ደብተርና እስክሪብቶ።"), price: birr(2500) },
-            { title: t("A new savings group", "አዲስ የቁጠባ ቡድን"), description: t("A cash box, record books and six months of training for twenty women.", "የገንዘብ ሣጥን፣ መዝገቦች እና ለሃያ ሴቶች የስድስት ወር ሥልጠና።"), price: birr(18000) },
+            { title: t("A receipt the same day", "በዕለቱ ደረሰኝ"), description: t("We call you, confirm your gift and send a stamped receipt by Telegram or in person.", "ደውለን ልገሳዎን እናረጋግጣለን፤ ማኅተም ያለው ደረሰኝ በቴሌግራም ወይም በአካል እንሰጥዎታለን።") },
+            { title: t("Spent where you chose", "በመረጡት ቦታ ይውላል"), description: t("Your gift goes to the programme you picked. Kits are bought in Hawassa and handed out at school.", "ልገሳዎ ለመረጡት መርሐ ግብር ይውላል። ቁሳቁሶች ከሀዋሳ ተገዝተው በትምህርት ቤቱ ይታደላሉ።") },
+            { title: t("A report every September", "በየመስከረሙ ሪፖርት"), description: t("What was bought, for which school or group, and what changed, with photos.", "ምን እንደተገዛ፣ ለየትኛው ትምህርት ቤት ወይም ቡድን እንደዋለና ምን እንደተለወጠ፣ ከፎቶዎች ጋር።") },
           ],
         },
         giveForm,
         {
           type: "faq",
+          id: "faq",
           heading: t("Before you give", "ከመለገስዎ በፊት"),
           items: [
             { question: t("How do I send my gift?", "ልገሳዬን እንዴት እልካለሁ?"), answer: t("By Telebirr, bank transfer or in person at our office in Piazza. Fill in the form and we call you with the details.", "በቴሌብር፣ በባንክ ዝውውር ወይም ፒያሳ ባለው ቢሯችን በአካል። ቅጹን ይሙሉ፤ ደውለን ዝርዝሩን እንነግርዎታለን።") },
@@ -160,6 +192,7 @@ save("ngo", {
         },
         {
           type: "cta",
+          id: "end",
           heading: t("2,500 Birr keeps one girl in school this year", "2,500 ብር አንዲት ልጅን ዘንድሮ በትምህርት ያቆያል"),
           body: t("Give once or every month. Or give a few hours as a volunteer.", "አንድ ጊዜ ወይም በየወሩ ይለግሱ። አልያም በበጎ ፈቃደኝነት ጥቂት ሰዓታት ይስጡ።"),
           image: img("ngo-hero-highland-huts-meadow", "Two thatched round houses in a green meadow of yellow flowers with terraced hills behind", "ቢጫ አበባ በሞላው አረንጓዴ መስክ ላይ ሁለት የሳር ክዳን ጎጆዎች፤ ከኋላቸው እርከን ያላቸው ኮረብቶች"),
@@ -182,7 +215,14 @@ save("ngo", {
           subheading: t("We work in 9 kebeles within an hour of Hawassa: Tula, Dore Bafano, Wondo Genet and their neighbours.", "ከሀዋሳ በአንድ ሰዓት ርቀት ውስጥ ባሉ 9 ቀበሌዎች እንሠራለን፦ ቱላ፣ ዶሬ ባፋኖ፣ ወንዶ ገነትና አጎራባቾቻቸው።"),
           image: img("ngo-hero-highland-huts-meadow", "Two thatched round houses in a green meadow of yellow flowers with terraced hills behind", "ቢጫ አበባ በሞላው አረንጓዴ መስክ ላይ ሁለት የሳር ክዳን ጎጆዎች፤ ከኋላቸው እርከን ያላቸው ኮረብቶች"),
         },
-        { type: "cards", layout: "feature", eyebrow: t("Programmes", "መርሐ ግብሮች"), heading: t("What we do, and where", "ምን እንሠራለን፣ የት"), items: programmes },
+        {
+          type: "tabs",
+          id: "programmes",
+          eyebrow: t("Programmes", "መርሐ ግብሮች"),
+          heading: t("What we do, and where", "ምን እንሠራለን፣ የት"),
+          intro: t("Four programmes that work together. Choose one to see it.", "አብረው የሚሠሩ አራት መርሐ ግብሮች። ለማየት አንዱን ይምረጡ።"),
+          items: programmes.map((p) => ({ label: p.subtitle, heading: p.title, body: p.description, image: p.image, points: p.meta, action: p.action })),
+        },
         {
           type: "about",
           eyebrow: t("Results", "ውጤት"),

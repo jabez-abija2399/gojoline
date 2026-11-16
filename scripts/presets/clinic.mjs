@@ -63,6 +63,11 @@ const bookingForm = {
 save("clinic", {
   name: t("Megenagna Family Clinic", "መገናኛ የቤተሰብ ክሊኒክ"),
   tagline: t("Everyday care for adults and children in Megenagna", "ለአዋቂዎችና ለልጆች የዕለት ተዕለት ሕክምና በመገናኛ"),
+  announcement: [
+    t("Open every day, Sunday mornings too", "በየቀኑ ክፍት ነን፤ እሑድ ጠዋትም"),
+    t("Most lab results in 2 hours", "አብዛኛው የላብራቶሪ ውጤት በ2 ሰዓት"),
+    t("Book on Telegram or call 0911 000 000", "በቴሌግራም ቀጠሮ ይያዙ ወይም 0911 000 000 ይደውሉ"),
+  ],
   languages: ["en", "am"],
   theme: { primary: "#0F766E", accent: "#134E4A", background: "#F0FDFA", text: "#0F172A", font: "modern", radius: "medium", style: "clean" },
   business: {
@@ -99,21 +104,25 @@ save("clinic", {
         {
           type: "services",
           id: "services",
-          variant: "bento",
+          variant: "list",
           eyebrow: t("How we can help", "የምንረዳዎ"),
           heading: t("Care for every age", "ለሁሉም ዕድሜ ሕክምና"),
-          intro: t("Most families find everything they need here, without crossing the city.", "አብዛኛው ቤተሰብ የሚፈልገውን ሁሉ ከተማ ሳያቋርጥ እዚሁ ያገኛል።"),
+          intro: t("Most families find everything they need here, without crossing the city. The price of any test is told to you before it is done.", "አብዛኛው ቤተሰብ የሚፈልገውን ሁሉ ከተማ ሳያቋርጥ እዚሁ ያገኛል። የማንኛውም ምርመራ ዋጋ ከመሠራቱ በፊት ይነገርዎታል።"),
+          image: img("clinic-gallery-blood-pressure", "A clinician fitting a blood-pressure cuff on a seated young man", "ባለሙያ ለተቀመጠ ወጣት የደም ግፊት መለኪያ ሲያስር"),
           items: [
-            { icon: "stethoscope", title: t("Feeling unwell", "ሕመም ሲሰማዎ"), description: t("Fever, cough, stomach trouble, headaches, infections. See a doctor the same day, with tests done on the spot if you need them. We also follow up blood pressure, diabetes and asthma, so the doctor who knows your history is the one who adjusts your medicine.", "ትኩሳት፣ ሳል፣ የሆድ ሕመም፣ ራስ ምታት፣ ኢንፌክሽን። በዕለቱ ሐኪም ያያሉ፤ ምርመራ ካስፈለገም እዚሁ ይሠራል። የደም ግፊት፣ የስኳርና የአስም ክትትልም እናደርጋለን፤ መድኃኒትዎን የሚያስተካክለው ታሪክዎን የሚያውቀው ሐኪም ነው።"), price: birr(400) },
-            { icon: "baby", title: t("Children's health", "የሕፃናት ጤና"), description: t("A children's doctor for babies and children up to 14.", "እስከ 14 ዓመት ላሉ ሕፃናትና ልጆች የሕፃናት ሐኪም።"), price: birr(400) },
-            { icon: "heart", title: t("Pregnancy care", "የእርግዝና ክትትል"), description: t("Follow-up visits and ultrasound from the first weeks.", "ከመጀመሪያዎቹ ሳምንታት ጀምሮ ክትትልና አልትራሳውንድ።"), price: birr(900) },
-            { icon: "flask", title: t("Laboratory", "ላብራቶሪ"), description: t("Blood, urine and stool tests. Most results in two hours.", "የደም፣ የሽንትና የሰገራ ምርመራ። አብዛኛው ውጤት በሁለት ሰዓት።") },
-            { icon: "pill", title: t("Pharmacy", "መድኃኒት ቤት"), description: t("Collect your medicine before you leave, with clear instructions.", "መድኃኒትዎን ከግልጽ የአወሳሰድ መመሪያ ጋር ሳይወጡ ይውሰዱ።") },
-            { icon: "sparkles", title: t("Teeth and gums", "ጥርስና ድድ"), description: t("Check-ups, cleaning and fillings, Tuesdays and Thursdays.", "ምርመራ፣ እጥበትና ሙሌት፤ ማክሰኞና ሐሙስ።"), price: birr(500) },
+            { icon: "stethoscope", title: t("Feeling unwell", "ሕመም ሲሰማዎ"), description: t("Fever, cough, stomach trouble, headaches, infections. See a doctor the same day.", "ትኩሳት፣ ሳል፣ የሆድ ሕመም፣ ራስ ምታት፣ ኢንፌክሽን። በዕለቱ ሐኪም ያያሉ።"), price: birr(400) },
+            { icon: "heart", title: t("Blood pressure and diabetes", "የደም ግፊትና ስኳር"), description: t("Regular follow-up with the doctor who knows your history and adjusts your medicine.", "ታሪክዎን በሚያውቅና መድኃኒትዎን በሚያስተካክል ሐኪም መደበኛ ክትትል።"), price: birr(400) },
+            { icon: "baby", title: t("Children's health", "የሕፃናት ጤና"), description: t("A children's doctor for babies and children up to 14: fevers, growth checks, vaccination advice.", "እስከ 14 ዓመት ላሉ ሕፃናትና ልጆች የሕፃናት ሐኪም፤ ትኩሳት፣ የዕድገት ክትትል፣ የክትባት ምክር።"), price: birr(400) },
+            { icon: "users", title: t("Pregnancy care", "የእርግዝና ክትትል"), description: t("Follow-up visits and ultrasound in a private room, from the first weeks to the last.", "ከመጀመሪያው ሳምንት እስከ መጨረሻው ክትትልና አልትራሳውንድ በግል ክፍል።"), price: birr(900) },
+            { icon: "flask", title: t("Laboratory", "ላብራቶሪ"), description: t("Blood, urine, stool, sugar, malaria and typhoid tests. Most results in two hours.", "የደም፣ የሽንት፣ የሰገራ፣ የስኳር፣ የወባና የታይፎይድ ምርመራ። አብዛኛው ውጤት በሁለት ሰዓት።") },
+            { icon: "sparkles", title: t("Teeth and gums", "ጥርስና ድድ"), description: t("Check-ups, cleaning, fillings and help with toothache, Tuesdays and Thursdays.", "ምርመራ፣ እጥበት፣ ሙሌትና ለጥርስ ሕመም መፍትሔ፤ ማክሰኞና ሐሙስ።"), price: birr(500) },
+            { icon: "pill", title: t("Pharmacy", "መድኃኒት ቤት"), description: t("Collect your medicine before you leave, with clear instructions on how to take it.", "መድኃኒትዎን ከግልጽ የአወሳሰድ መመሪያ ጋር ሳይወጡ ይውሰዱ።") },
+            { icon: "message", title: t("Results on Telegram", "ውጤት በቴሌግራም"), description: t("Ask at the front desk and your lab results are sent to your phone.", "በእንግዳ መቀበያው ይጠይቁ፤ የላብራቶሪ ውጤትዎ ወደ ስልክዎ ይላካል።") },
           ],
         },
         {
           type: "stats",
+          id: "numbers",
           tone: "dark",
           items: [
             { value: t("12", "12"), label: t("years serving Megenagna", "ዓመታት በመገናኛ አገልግሎት") },
@@ -134,6 +143,7 @@ save("clinic", {
         },
         {
           type: "about",
+          id: "lab",
           eyebrow: t("Under one roof", "በአንድ ቦታ"),
           heading: t("Tests and answers in one visit", "ምርመራና መልስ በአንድ ጉብኝት"),
           body: t(
@@ -151,6 +161,7 @@ save("clinic", {
         },
         {
           type: "steps",
+          id: "visit",
           eyebrow: t("Your visit", "ጉብኝትዎ"),
           heading: t("How a visit works", "ሲመጡ ምን ይጠብቅዎታል"),
           items: [
@@ -163,6 +174,7 @@ save("clinic", {
         },
         {
           type: "testimonials",
+          id: "reviews",
           eyebrow: t("Patients say", "ታካሚዎች ምን ይላሉ"),
           heading: t("Trusted by families nearby", "የአካባቢው ቤተሰቦች የሚተማመኑበት"),
           items: [
@@ -173,6 +185,8 @@ save("clinic", {
         },
         {
           type: "faq",
+          id: "faq",
+          eyebrow: t("Good to know", "ማወቅ ያለብዎ"),
           heading: t("Before you come", "ከመምጣትዎ በፊት"),
           items: [
             { question: t("Do I need an appointment?", "ቀጠሮ ያስፈልገኛል?"), answer: t("No. You can walk in any time we are open. With an appointment you are seen at your time instead of waiting your turn.", "አያስፈልግም። ክፍት በሆንበት ሰዓት ሁሉ መምጣት ይችላሉ። ቀጠሮ ካለዎት ግን ተራ ሳይጠብቁ በሰዓትዎ ይታያሉ።") },

@@ -36,13 +36,41 @@ function snippet(text: string, index: number) {
   return text.slice(Math.max(0, index - 20), index + 60).replace(/\s+/g, " ");
 }
 
+/** A tag's attributes by real name (the first of a repeated name wins, as in browsers). */
+function attributes(attrs: string): { map: Map<string, string>; repeated: boolean } {
+  const map = new Map<string, string>();
+  let repeated = false;
+  for (const a of attrs.matchAll(/(?:^|\s)([\w:-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g)) {
+    const name = a[1]!.toLowerCase();
+    if (map.has(name)) repeated = true;
+    else map.set(name, a[2] ?? a[3] ?? a[4] ?? "");
+  }
+  return { map, repeated };
+}
+
 function scanHtml(file: string, html: string, opts: ScanOptions, issues: ScanIssue[]) {
   const add = (rule: string, index: number) => issues.push({ file, rule, detail: snippet(html, index) });
+  let dataBlocks = 0;
   for (const m of html.matchAll(/<script\b([^>]*)>/gi)) {
-    const attrs = m[1] ?? "";
-    const src = /\bsrc\s*=\s*["']([^"']*)["']/i.exec(attrs)?.[1];
-    // Structured data blocks are not executed (and CSP blocks inline scripts anyway).
-    if (!src && /\btype\s*=\s*["']application\/ld\+json["']/i.test(attrs)) continue;
+    const { map, repeated } = attributes(m[1] ?? "");
+    const src = map.get("src");
+    const type = (map.get("type") ?? "").trim().toLowerCase();
+    // Data blocks are never executed (and CSP blocks inline scripts anyway): structured data
+    // for search engines, and once per page the page's own content for hydration. Exact
+    // attributes only, no repeats, and the content must be JSON.
+    if (!src && !repeated && (type === "application/ld+json" || (type === "application/json" && map.get("id") === "site-data"))) {
+      const end = html.toLowerCase().indexOf("</script", m.index! + m[0].length);
+      const body = end === -1 ? "" : html.slice(m.index! + m[0].length, end);
+      let json = true;
+      try {
+        JSON.parse(body);
+      } catch {
+        json = false;
+      }
+      if (type === "application/json" && ++dataBlocks > 1) add("inline-script", m.index!);
+      else if (!json) add("inline-script", m.index!);
+      continue;
+    }
     if (!src) add("inline-script", m.index!);
     else if (!/^\/assets\/[\w.-]+\.js$/.test(src)) add("external-script", m.index!);
   }

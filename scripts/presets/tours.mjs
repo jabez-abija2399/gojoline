@@ -21,10 +21,19 @@ const P = {
   path: img("tours-about-pilgrims-red-path", "Men in white cotton shawls talking on a red-earth path between rock walls", "ነጭ ነጠላ የለበሱ ሰዎች በአለት ግድግዳዎች መካከል ባለ ቀይ አፈር መንገድ ላይ ሲነጋገሩ"),
 };
 
+// Badges are trip kinds: with two or more kinds the trip cards get filter pills by themselves
+// (the "Art & Culture / Nature & Adventure" pills of armenia.travel and andBeyond's interest chips).
+const kind = {
+  culture: t("History and culture", "ታሪክና ባህል"),
+  trek: t("Trekking", "የእግር ጉዞ"),
+  adventure: t("Adventure", "ጀብዱ"),
+  short: t("Short trips", "አጫጭር ጉዞዎች"),
+};
+
 const trips = [
   {
     image: P.stGeorge,
-    badge: t("Best seller", "በጣም ተመራጭ"),
+    badge: kind.culture,
     subtitle: t("Addis → Lalibela → Addis", "አዲስ አበባ → ላሊበላ → አዲስ አበባ"),
     title: t("Lalibela rock churches", "የላሊበላ ውቅር አብያተ ክርስቲያናት"),
     meta: [t("4 days", "4 ቀን"), t("Easy", "ቀላል"), t("2 to 8 people", "ከ2 እስከ 8 ሰው")],
@@ -35,7 +44,7 @@ const trips = [
   },
   {
     image: P.simien,
-    badge: t("Trek", "የእግር ጉዞ"),
+    badge: kind.trek,
     subtitle: t("Gondar → Geech → Chenek", "ጎንደር → ግጭ → ጨነቅ"),
     title: t("Simien Mountains trek", "የስሜን ተራሮች የእግር ጉዞ"),
     meta: [t("6 days", "6 ቀን"), t("Moderate", "መካከለኛ"), t("4 nights camping", "4 አዳር በድንኳን")],
@@ -46,6 +55,7 @@ const trips = [
   },
   {
     image: P.dallol,
+    badge: kind.adventure,
     subtitle: t("Semera → Erta Ale → Dallol", "ሰመራ → ኤርታ አሌ → ዳሎል"),
     title: t("Danakil Depression", "የዳናኪል ዝቅተኛ ሥፍራ"),
     meta: [t("4 days", "4 ቀን"), t("Hard", "ከባድ"), t("4x4 convoy", "በ4x4 መኪኖች")],
@@ -56,7 +66,7 @@ const trips = [
   },
   {
     image: P.gondar,
-    badge: t("Classic", "ዋናው ጉዞ"),
+    badge: kind.culture,
     subtitle: t("Bahir Dar → Gondar → Lalibela", "ባሕር ዳር → ጎንደር → ላሊበላ"),
     title: t("The historic north", "ታሪካዊው ሰሜን"),
     meta: [t("8 days", "8 ቀን"), t("Easy", "ቀላል"), t("3 flights", "3 በረራ")],
@@ -67,7 +77,7 @@ const trips = [
   },
   {
     image: P.falls,
-    badge: t("Weekend", "የሳምንት መጨረሻ"),
+    badge: kind.short,
     subtitle: t("Addis → Bahir Dar → Addis", "አዲስ አበባ → ባሕር ዳር → አዲስ አበባ"),
     title: t("Blue Nile Falls and Lake Tana", "ጢስ ዓባይና ጣና ሐይቅ"),
     meta: [t("3 days", "3 ቀን"), t("Easy", "ቀላል"), t("Good for families", "ለቤተሰብ ምቹ")],
@@ -78,6 +88,7 @@ const trips = [
   },
   {
     image: P.market,
+    badge: kind.short,
     subtitle: t("Merkato → Entoto → Piazza", "መርካቶ → እንጦጦ → ፒያሳ"),
     title: t("Addis in a day", "አዲስ አበባ በአንድ ቀን"),
     meta: [t("1 day", "1 ቀን"), t("Easy", "ቀላል"), t("Lunch included", "ምሳን ጨምሮ")],
@@ -130,7 +141,10 @@ save("tours", {
       sections: [
         {
           type: "hero",
+          id: "top",
           variant: "immersive",
+          // The photo opens out of a rounded frame as the page scrolls (armenia.travel's soft-edged hero).
+          frame: true,
           eyebrow: t("Ethiopia tours since 2014", "ከ2006 ዓ.ም. ጀምሮ የኢትዮጵያ ጉዞዎች"),
           heading: t("Walk the roof of Africa", "በአፍሪካ ጣሪያ ላይ ይራመዱ"),
           subheading: t("Rock churches, high trails and salt deserts, with guides who grew up beside them.", "ውቅር አብያተ ክርስቲያናት፣ የደጋ መንገዶችና የጨው በረሃዎች፤ በአጠገባቸው ካደጉ አስጎብኚዎች ጋር።"),
@@ -143,6 +157,12 @@ save("tours", {
             { value: t("3,400+", "3,400+"), label: t("travellers hosted", "ያስተናገድናቸው ተጓዦች") },
             { value: t("$620", "$620"), label: t("4 days in Lalibela, from", "4 ቀን በላሊበላ፣ መነሻ ዋጋ") },
           ],
+        },
+        {
+          type: "marquee",
+          id: "places",
+          tone: "dark",
+          items: [t("Lalibela", "ላሊበላ"), t("Simien Mountains", "ስሜን ተራሮች"), t("Danakil", "ዳናኪል"), t("Gondar", "ጎንደር"), t("Lake Tana", "ጣና ሐይቅ"), t("Addis Ababa", "አዲስ አበባ")],
         },
         {
           type: "cards",
@@ -158,6 +178,7 @@ save("tours", {
           type: "cards",
           id: "destinations",
           layout: "scroll",
+          imageShape: "arch",
           eyebrow: t("Where we go", "የምንሄድባቸው"),
           heading: t("Four places, four worlds", "አራት ሥፍራዎች፣ አራት ዓለማት"),
           items: [
@@ -169,6 +190,7 @@ save("tours", {
         },
         {
           type: "services",
+          id: "why",
           variant: "bento",
           eyebrow: t("Why Selam Trails", "ለምን ሰላም ትሬልስ"),
           heading: t("Travel with people who live here", "እዚሁ ከሚኖሩ ሰዎች ጋር ይጓዙ"),
@@ -182,6 +204,7 @@ save("tours", {
         },
         {
           type: "steps",
+          id: "how",
           eyebrow: t("How it works", "አካሄዱ"),
           heading: t("Three steps to the trail", "ወደ ጉዞ ሦስት እርምጃ"),
           items: [
@@ -193,6 +216,7 @@ save("tours", {
         },
         {
           type: "about",
+          id: "guide",
           eyebrow: t("Your guide", "አስጎብኚዎ"),
           heading: t("Started on the Lalibela road", "በላሊበላ መንገድ ላይ የተጀመረ"),
           body: t(
@@ -206,6 +230,7 @@ save("tours", {
         },
         {
           type: "testimonials",
+          id: "reviews",
           eyebrow: t("Travellers say", "ተጓዦች ምን ይላሉ"),
           heading: t("Stories from the road", "ከመንገድ የተገኙ አስተያየቶች"),
           items: [
@@ -217,6 +242,8 @@ save("tours", {
         enquiry,
         {
           type: "faq",
+          id: "faq",
+          eyebrow: t("Good to know", "ማወቅ ያለብዎት"),
           heading: t("Before you travel", "ከመጓዝዎ በፊት"),
           items: [
             { question: t("When is the best time to come?", "ለጉዞ የሚመረጠው ወቅት መቼ ነው?"), answer: t("October to March is dry and clear. The Simien is greenest in September and October; the Danakil is coolest from November to February.", "ከጥቅምት እስከ መጋቢት ደረቅና ጥርት ያለ ነው። ስሜን በመስከረምና በጥቅምት በጣም ይለመልማል፤ ዳናኪል ከኅዳር እስከ የካቲት ይቀዘቅዛል።") },
@@ -227,6 +254,7 @@ save("tours", {
         },
         {
           type: "cta",
+          id: "plan",
           heading: t("Your dates, our roads", "ቀኑ የእርስዎ፣ መንገዱ የእኛ"),
           body: t("Send your dates today and have a full plan tomorrow.", "ቀንዎን ዛሬ ይላኩ፤ ሙሉ ዕቅድ ነገ ይደርስዎታል።"),
           image: P.misty,

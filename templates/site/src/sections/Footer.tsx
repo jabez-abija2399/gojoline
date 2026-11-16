@@ -87,6 +87,9 @@ export function Footer() {
           </div>
         </div>
       </div>
+      {/* The name, very large, to close the page. */}
+      {/* The elegant and bold styles close with the name, very large; drawn by CSS from data-name, so it's decoration only. */}
+      {(site.theme.style === "editorial" || site.theme.style === "bold") && <p aria-hidden="true" data-name={text(site.name)} style={{ "--chars": [...text(site.name)].length } as React.CSSProperties} className="footer-wordmark container-site" />}
     </footer>
   );
 }

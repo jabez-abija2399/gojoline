@@ -102,6 +102,12 @@ describe("publishSite", () => {
     expect(hasExampleDetails(site([{ type: "cards", layout: "people", items: [{ title: doctor }] }]))).toBe(true);
     expect(hasExampleDetails(site([{ type: "cards", layout: "people", items: [{ title: { en: "Dr. Real Name" }, image: { src: "/stock/clinic-card-doctor-portrait.webp" } }] }]))).toBe(true);
     expect(hasExampleDetails(site([{ type: "quote", quote: { en: "Our own words" }, name: { en: "The owner" }, image: { src: "/stock/ngo-card-woman-farmer.webp" } }]))).toBe(true);
+    const ngo = JSON.parse(presetSiteJson("ngo")) as { pages: { sections: { type: string; goal?: unknown }[] }[] };
+    const give = ngo.pages.flatMap((p) => p.sections).find((s) => s.type === "give" && s.goal);
+    if (give) {
+      expect(hasExampleDetails(site([give]))).toBe(true);
+      expect(hasExampleDetails(site([{ ...give, goal: { raised: { amountMinor: 1, currency: "ETB" }, target: { amountMinor: 2, currency: "ETB" } } }]))).toBe(false);
+    }
     expect(hasExampleDetails(site([{ type: "cards", layout: "people", items: [{ title: { en: "Dr. Real Name" }, image: { src: "/images/me.webp" } }] }, { type: "testimonials", items: [{ quote: { en: "A real review" }, name: "A." }] }, { type: "cards", layout: "grid", items: [{ title: { en: "Room" }, image: { src: "/stock/hotel-card-standard-room.webp" } }] }]))).toBe(false);
   });
 

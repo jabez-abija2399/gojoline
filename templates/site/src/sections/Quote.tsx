@@ -1,4 +1,5 @@
 import { Picture } from "../components/Picture";
+import { SplitWords } from "../components/SplitWords";
 import { useSite } from "../lib/context";
 import type { QuoteSection } from "../lib/types";
 
@@ -10,7 +11,7 @@ export function Quote({ section }: { section: QuoteSection }) {
     <section id={section.id} className="section bg-primary-soft">
       <figure className={`container-site reveal grid items-center gap-8 ${section.image ? "md:grid-cols-[1fr_2fr] md:gap-14" : ""}`}>
         {section.image && (
-          <div className="zoom mx-auto w-full max-w-xs rounded-site md:max-w-none">
+          <div className="zoom wipe mx-auto w-full max-w-xs rounded-site md:max-w-none">
             <Picture image={section.image} sizes="(min-width: 768px) 33vw, 160px" className="aspect-[4/5] w-full rounded-site" />
           </div>
         )}
@@ -18,7 +19,9 @@ export function Quote({ section }: { section: QuoteSection }) {
           <span aria-hidden="true" className="quote-mark">
             “
           </span>
-          <blockquote className="pull-quote">{text(section.quote)}</blockquote>
+          <blockquote className="pull-quote ink-words">
+            <SplitWords text={text(section.quote)} />
+          </blockquote>
           {name && (
             <figcaption>
               <span className="font-semibold">{name}</span>

@@ -95,3 +95,19 @@ describe("the site template's public folder", () => {
     expect(issues.filter((i) => i.rule === "file-type")).toEqual([]);
   });
 });
+
+describe("page data blocks", () => {
+  const page = (head: string) => [{ path: "index.html", data: Buffer.from(`<!doctype html><html><head>${head}</head><body><div id="root"></div></body></html>`) }];
+  const rules = (head: string) => scanBuiltSite(page(head)).map((i) => i.rule);
+  it("allows one JSON block with the page's own data and structured data", () => {
+    expect(rules('<script type="application/json" id="site-data">{"a":1}</script><script type="application/ld+json">{"@type":"LocalBusiness"}</script>')).toEqual([]);
+  });
+  it("refuses lookalikes, repeats and blocks that aren't JSON", () => {
+    expect(rules('<script data-type="application/json" data-id="site-data">alert(1)</script>')).toContain("inline-script");
+    expect(rules('<script type="module" type="application/json" id="site-data">alert(1)</script>')).toContain("inline-script");
+    expect(rules('<script type="application/json" id="site-data">{}</script><script type="application/json" id="site-data">{}</script>')).toContain("inline-script");
+    expect(rules('<script type="application/json" id="site-data">alert(1)</script>')).toContain("inline-script");
+    expect(rules('<script type="application/ld+json">alert(1)</script>')).toContain("inline-script");
+  });
+});
+
