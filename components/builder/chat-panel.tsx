@@ -70,7 +70,8 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
   const listRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLTextAreaElement>(null);
   const goRef = useRef<HTMLButtonElement>(null);
-  const waiting = !!confirm;
+  // Shown once the run that asked has finished (the card is hidden while working).
+  const waiting = !!confirm && !working;
   // The question about a bigger change takes focus, so it is read out and can be answered at once.
   useEffect(() => {
     if (waiting) goRef.current?.focus();

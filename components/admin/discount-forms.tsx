@@ -71,7 +71,7 @@ function useFocusAfter(state: DiscountState) {
 
 function Message({ state, refEl, ok, invalid, t, label }: { state: DiscountState; refEl: React.RefObject<HTMLParagraphElement | null>; ok: string; invalid: string; t: Messages["admin"]; label?: string }) {
   if (state.status === "idle") return null;
-  const text = state.status === "ok" ? ok : state.status === "exists" ? t.codeExists : state.status === "invalid" ? (label ? `${format(t.fieldInvalidNamed, { field: label })} ${invalid}` : invalid) : state.status === "forbidden" ? t.forbidden : t.failed;
+  const text = state.status === "ok" ? ok : state.status === "exists" ? t.codeExists : state.status === "invalid" ? (label ? format(t.fieldInvalidNamed, { field: label }) : invalid) : state.status === "forbidden" ? t.forbidden : t.failed;
   return (
     <p ref={refEl} tabIndex={-1} role={state.status === "ok" ? "status" : "alert"} className={state.status === "ok" ? "font-medium text-ink" : "text-destructive"}>
       {text}
