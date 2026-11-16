@@ -195,7 +195,7 @@ save("real-estate", {
         {
           type: "marquee",
           id: "places",
-          tone: "primary",
+          tone: "light",
           items: [t("Bole", "ቦሌ"), t("Kazanchis", "ካዛንቺስ"), t("CMC", "ሲኤምሲ"), t("Ayat", "አያት"), t("Old Airport", "ኦልድ ኤርፖርት"), t("Sarbet", "ሳርቤት"), t("Gerji", "ገርጂ")],
         },
         {

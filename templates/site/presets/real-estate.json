@@ -227,7 +227,7 @@
         {
           "type": "marquee",
           "id": "places",
-          "tone": "primary",
+          "tone": "light",
           "items": [
             { "en": "Bole", "am": "ቦሌ" },
             { "en": "Kazanchis", "am": "ካዛንቺስ" },
