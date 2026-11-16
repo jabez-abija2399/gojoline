@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowUp, BedDouble, Check, ChevronDown, ChevronRight, Coffee, Lock, Pause, Play, ShoppingBag, Sparkles, Stethoscope, UserRound } from "lucide-react";
 import { TypingBubble } from "./typing-bubble";
 import { BoxStory } from "./box-story";
+import { BoxLiveBuild, BUILD_CYCLE_MS } from "./box-live-build";
 import { BoxWorkspace } from "./box-workspace";
 import type { Messages } from "@/lib/i18n";
 import { LanguageChoice, type SiteLanguages } from "@/components/builder/language-choice";
@@ -63,8 +64,11 @@ interface Props {
   promptFooter: React.ReactNode;
   /** The last chip: every template ("More"). */
   moreChip: { href: string; label: string };
-  /** What the frame shows: a = the owner's workspace, b = the story in three phones, c = the builder. */
-  variant?: "a" | "b" | "c";
+  /** What the frame shows: d = a live build (default), a = workspace, b = three phones, c = the builder. */
+  variant?: "a" | "b" | "c" | "d";
+  live: Messages["landing"]["live"];
+  you: string;
+  assistant: string;
   box: Messages["landing"]["box"];
   /** Phones: the picker that replaces the row of chips. */
   chooseLabel: string;
@@ -85,7 +89,9 @@ const SITE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, shop: 
 /** How long each business stays on screen while the demo plays itself. */
 const AUTO_MS = 6000;
 
-export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, moreChip, chooseLabel, variant = "a", box, signedIn = false }: Props) {
+export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, moreChip, chooseLabel, variant = "d", box, live, you, assistant, signedIn = false }: Props) {
+  // A live build takes longer than a picture swap: the next business waits for it to finish.
+  const cycleMs = variant === "d" ? BUILD_CYCLE_MS : AUTO_MS;
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -115,6 +121,8 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
     const begin = () => {
       setAuto(true);
       setAutoStarted(true);
+      // The live build plays for the business on screen first.
+      if (variant === "d") setShown((n) => n + 1);
     };
     let id: ReturnType<typeof setTimeout> | undefined;
     const onLoad = () => (id = setTimeout(begin, 1500));
@@ -128,7 +136,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
       removeEventListener("load", onLoad);
       io?.disconnect();
     };
-  }, []);
+  }, [variant]);
   useEffect(() => {
     if (!auto || !inView) return;
     // Fetch the next business's picture a second early, so it's there when it swaps in.
@@ -136,7 +144,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
     const early = setTimeout(() => {
       const img = new window.Image();
       img.src = `/_next/image?url=${encodeURIComponent(nextShot.src)}&w=640&q=75`;
-    }, AUTO_MS - 1200);
+    }, cycleMs - 1200);
     const id = setTimeout(() => {
       // A hidden tab waits; the timer starts again (full length) when it is shown.
       if (document.hidden) {
@@ -149,12 +157,12 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
       }
       setIndex((i) => (i + 1) % sites.length);
       setShown((n) => n + 1);
-    }, AUTO_MS);
+    }, cycleMs);
     return () => {
       clearTimeout(id);
       clearTimeout(early);
     };
-  }, [auto, inView, index, sites, tick]);
+  }, [auto, inView, index, sites, tick, cycleMs]);
   const site = sites[index]!;
   const next = `/${locale}/build`;
   const pick = (i: number) => {
@@ -207,7 +215,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
                   <Icon aria-hidden="true" className="size-4 shrink-0" />
                   {s.label}
                   {auto && i === index && (
-                    <span key={`bar-${shown}-${tick}-${inView}`} aria-hidden="true" className="chip-progress absolute inset-x-0 bottom-0 h-[3px] origin-left bg-white/70" style={{ animationDuration: `${AUTO_MS}ms`, animationPlayState: inView ? "running" : "paused" }} />
+                    <span key={`bar-${shown}-${tick}-${inView}`} aria-hidden="true" className="chip-progress absolute inset-x-0 bottom-0 h-[3px] origin-left bg-white/70" style={{ animationDuration: `${cycleMs}ms`, animationPlayState: inView ? "running" : "paused" }} />
                   )}
                 </button>
               );
@@ -232,7 +240,9 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
         </p>
         <figure ref={figureRef} role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-coral/15 bg-[color-mix(in_oklab,var(--gojo-coral-soft)_55%,var(--gojo-paper))] p-3 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
           {backdrop}
-          {variant === "c" ? (
+          {variant === "d" ? (
+            <BoxLiveBuild site={site} live={live} you={you} assistant={assistant} publish={t.publish} booking={{ title: t.noteTitle, body: t.noteBody }} run={shown} slug={EXAMPLE_SLUGS[site.id] ?? "my-site"} priority={index === 0} />
+          ) : variant === "c" ? (
           <div aria-hidden="true" className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgb(18_18_18/0.45)] md:rounded-b-none md:border-b-0">
             <div className="flex items-center gap-3 border-b border-line px-3 py-2.5 sm:px-4">
               <span className="flex gap-1.5">

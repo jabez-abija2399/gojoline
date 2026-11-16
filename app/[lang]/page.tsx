@@ -49,8 +49,11 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
       <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero
           // Design options for the frame, to compare: ?hero=a (workspace), b (three phones), c (builder).
-          variant={(["a", "b", "c"] as const).find((v) => v === sp.hero) ?? "a"}
+          variant={(["a", "b", "c", "d"] as const).find((v) => v === sp.hero) ?? "d"}
           box={t.landing.box}
+          live={t.landing.live}
+          you={b.you}
+          assistant={b.assistant}
           signedIn={await looksSignedIn()}
           t={t.landing.hero}
           locale={lang}

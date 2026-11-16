@@ -53,6 +53,15 @@ export const en = {
       { value: "14", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
+    live: {
+      reply: "Here's your site for {name}: a warm home page, your prices, a booking form, in English and Amharic.",
+      steps: ["Designing the look", "Writing your home page", "Adding your prices", "Adding a booking form", "Translating to Amharic", "Checking on phone and computer"],
+      edited: "Edited",
+      building: "Building…",
+      ready: "Ready to publish",
+      readyIn: "Ready in about 40 s",
+      thinking: "Thinking",
+    },
     box: {
       overview: "Overview",
       answers: "Answers",
