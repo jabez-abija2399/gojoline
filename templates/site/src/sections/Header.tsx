@@ -1,3 +1,4 @@
+import { withBase } from "../lib/base";
 import { languageNames, localePath, uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
 
@@ -25,7 +26,7 @@ export function Header({ overlay = false, framed = false }: { overlay?: boolean;
   const switcher = otherLangs.map((l) => (
     <a
       key={l}
-      href={localePath(page.path, l, site)}
+      href={withBase(localePath(page.path, l, site))}
       lang={l}
       hrefLang={l}
       className="nav-link nav-lang flex min-h-11 items-center rounded-site border px-3 font-medium"

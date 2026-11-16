@@ -40,7 +40,7 @@ export const config = {
   matcher: [
     {
       // Pages only: skip API routes, Next internals and files with an extension.
-      source: "/((?!api|_next/static|_next/image|.*\\.[a-zA-Z0-9]+$).*)",
+      source: "/((?!api|demo|_next/static|_next/image|.*\\.[a-zA-Z0-9]+$).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },

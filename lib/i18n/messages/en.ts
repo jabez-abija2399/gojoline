@@ -137,6 +137,9 @@ export const en = {
       fullSize: "Full size",
       previous: "Previous template",
       next: "Next template",
+      liveTitle: "{name}, live",
+      openTab: "Open in a new tab",
+      hint: "This is the real site, working: scroll it, tap anything, change pages and language. Names, prices and photos are examples you replace with your own.",
       more: "More templates",
       kinds: {
         hero: "Top of the page",

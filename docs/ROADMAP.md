@@ -83,6 +83,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] All templates rebuilt on the research with real photos, in English and Amharic, plus two new ones (company, salon): 14 in total
 - [x] Template preview pages: every page and section of a template, computer and phone, before it is picked
 - [x] Motion and interaction kit in the site template, from motion research on the best sites of each niche; all 14 templates use it
+- [x] Template previews run the real site (live demos inside Gojoline), on computer and phone
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
@@ -96,7 +97,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Every signed-in page shows its main content after about 3 s on a slow phone (budget 2.5 s): the largest shared script takes about 400 ms to start; not caused by one page (performance review).
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
 - Landing page, from the reviews: the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
-- Re-run `node scripts/showcase-shots.mjs` and `node scripts/template-sections.mjs` after changing the site template or a preset, so the landing page's pictures and the template previews stay true.
+- Re-run `node scripts/template-demos.mjs`, `node scripts/template-sections.mjs` (cards) and `node scripts/showcase-shots.mjs` after changing the site template or a preset, so the live demos, cards and landing pictures stay true.
 - The new builder and landing strings in Amharic (start box, ideas, suggestions, photos, gallery, numbers) need the same native-speaker review.
 - Amharic in the 14 templates (`templates/site/presets/`, sources in `scripts/presets/`) was rewritten on 2026-11-16 and needs a native-speaker review; the church and mosque wording should be read by members of those communities.
 - Sample photos: a few niches have little that is truly Ethiopian (hotel rooms, mosque interiors, real-estate interiors, a habesha wedding). Commissioned or licensed Ethiopian photos would lift them. Add photos with `node scripts/stock-photos.mjs <folder>`.

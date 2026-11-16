@@ -27,7 +27,8 @@ export function buildCsp(opts: CspOptions): string {
     "img-src": ["'self'", "blob:", "data:", ...images],
     "font-src": ["'self'"],
     "connect-src": ["'self'", ...connect, ...(opts.isDev ? ["ws:"] : [])],
-    "frame-src": frames.length ? frames : ["'none'"],
+    // Our own pages may be framed (live template demos on the preview pages), plus the preview sandbox.
+    "frame-src": ["'self'", ...frames],
     "worker-src": ["'self'", "blob:"],
     "manifest-src": ["'self'"],
     "media-src": ["'self'"],

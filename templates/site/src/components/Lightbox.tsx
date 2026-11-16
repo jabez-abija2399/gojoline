@@ -1,4 +1,5 @@
 import { useEffect, useRef, type PointerEvent } from "react";
+import { withBase } from "../lib/base";
 import { uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
 import type { Image } from "../lib/types";
@@ -17,7 +18,8 @@ export function Lightbox({ images, index, onChange, onClose }: { images: Image[]
   const n = images.length;
   const go = (dir: 1 | -1) => index !== null && onChange((index + dir + n) % n);
   const image = index !== null ? images[index] : undefined;
-  const src = image?.src && /^\/stock\/[a-z0-9-]+-hero-[a-z0-9-]+\.webp$/.test(image.src) ? image.src.replace(/\.webp$/, "-1600.webp") : image?.src;
+  const raw = image?.src && /^\/stock\/[a-z0-9-]+-hero-[a-z0-9-]+\.webp$/.test(image.src) ? image.src.replace(/\.webp$/, "-1600.webp") : image?.src;
+  const src = raw ? withBase(raw) : raw;
   return (
     <dialog
       ref={ref}

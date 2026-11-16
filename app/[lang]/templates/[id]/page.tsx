@@ -69,11 +69,10 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
               <p className="text-ink-muted">
                 {pageWord} · {format(p.sectionCount, { n: String(preview.sectionCount) })} · {p.languages}
               </p>
-              <p className="text-ink-muted">{p.samples}</p>
             </div>
           </header>
 
-          <TemplatePreviewer pages={preview.pages} t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, pageHeading: p.pageHeading, fullSize: p.fullSize, kinds: p.kinds }} />
+          <TemplatePreviewer name={preview.name} pages={preview.pages} t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, liveTitle: p.liveTitle, openTab: p.openTab, hint: p.hint }} />
 
           <nav aria-label={p.more} className="flex flex-col gap-3 border-t border-line pt-6 sm:flex-row sm:justify-between">
             <Link href={`/${lang}/templates/${preview.prev}`} className="inline-flex min-h-11 items-center gap-2 font-medium text-link">
