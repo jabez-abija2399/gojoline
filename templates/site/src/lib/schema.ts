@@ -49,7 +49,12 @@ function socialUrl(hosts: string[]) {
 const link = z.object({ label: text, href: safeHref }).strict();
 const fact = z.object({ value: text, label: text }).strict();
 const price = z.object({ amountMinor: z.number().int().nonnegative().max(1_000_000_000_000), currency: z.enum(["ETB", "USD"]) }).strict();
-const id = z.string().regex(/^[a-z][a-z0-9-]{0,40}$/).optional();
+// Names the page itself uses are reserved.
+const id = z
+  .string()
+  .regex(/^[a-z][a-z0-9-]{0,40}$/)
+  .refine((v) => !["root", "main", "site-data"].includes(v), "This id is used by the page itself; choose another")
+  .optional();
 const icon = z.enum(["coffee", "utensils", "bed", "stethoscope", "school", "shopping-bag", "church", "calendar", "heart", "home", "map", "scissors", "car", "star", "phone", "check", "wifi", "clock", "users", "shield", "leaf", "award", "globe", "briefcase", "camera", "music", "book", "sparkles", "truck", "key", "building", "sun", "plane", "moon", "droplet", "mail", "message", "baby", "palette", "wrench", "chart", "graduation", "pill", "flask", "mountain", "tree", "gift", "ruler", "bath", "pin", "laptop", "handshake", "mic", "flower", "dumbbell", "bus"]);
 
 export const formFieldSchema = z
