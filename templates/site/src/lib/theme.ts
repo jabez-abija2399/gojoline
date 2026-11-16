@@ -16,6 +16,14 @@ const fonts: Record<Theme["font"], { heading: string; body: string }> = {
     heading: '"Nunito", ui-rounded, "SF Pro Rounded", system-ui, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
+  elegant: {
+    heading: '"Cormorant Garamond", "Iowan Old Style", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
+    body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
+  },
+  grotesk: {
+    heading: '"Bricolage Grotesque", system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
+    body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
+  },
 };
 
 const radii: Record<Theme["radius"], string> = { none: "0", small: "6px", medium: "12px", large: "20px" };
@@ -60,7 +68,7 @@ function mixToward(text: string, bg: string): string {
 }
 
 /** The bundled heading font file for a theme (for a preload on Latin-script pages). */
-export const headingFontFile: Record<Theme["font"], string> = { modern: "outfit-latin.woff2", classic: "fraunces-latin.woff2", friendly: "nunito-latin.woff2" };
+export const headingFontFile: Record<Theme["font"], string> = { modern: "outfit-latin.woff2", classic: "fraunces-latin.woff2", friendly: "nunito-latin.woff2", elegant: "cormorant-latin.woff2", grotesk: "bricolage-latin.woff2" };
 
 export function styleString(vars: Record<string, string>): string {
   return Object.entries(vars)

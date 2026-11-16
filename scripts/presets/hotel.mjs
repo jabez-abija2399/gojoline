@@ -1,0 +1,259 @@
+import { t, img, link, birr, save } from "./lib.mjs";
+
+const book = link("Check availability", "ክፍል ይጠይቁ", "/#booking");
+const rooms = [
+  {
+    image: img("hotel-card-standard-room", "Bright double room with a white bed and ochre cushions", "ነጭ አልጋና ቢጫ ትራሶች ያሉት ብሩህ ክፍል"),
+    subtitle: t("Garden side", "በአትክልቱ በኩል"),
+    title: t("Garden Room", "የአትክልት ክፍል"),
+    meta: [t("2 guests", "2 እንግዶች"), t("Double bed", "ድርብ አልጋ"), t("22 m²", "22 ካሬ ሜትር")],
+    description: t("A calm room that opens onto the garden. Hot shower, fast Wi-Fi and breakfast on the terrace.", "ወደ አትክልቱ የሚከፈት ጸጥ ያለ ክፍል። ሙቅ ሻወር፣ ፈጣን ዋይፋይ እና በበረንዳው ላይ ቁርስ።"),
+    price: birr(3500),
+    priceNote: t("per night, with breakfast", "በአዳር፣ ቁርስን ጨምሮ"),
+    action: book,
+  },
+  {
+    image: img("hotel-card-wooden-cabin-room", "Wood-panelled room with a double bed and two wicker chairs", "በእንጨት የተለበጠ ክፍል፣ ድርብ አልጋና ሁለት የሸምበቆ ወንበሮች"),
+    subtitle: t("Lake side", "በሐይቁ በኩል"),
+    title: t("Lake View Room", "የሐይቅ እይታ ክፍል"),
+    badge: t("Most booked", "በብዛት የሚያዝ"),
+    meta: [t("2 guests", "2 እንግዶች"), t("King bed", "ትልቅ አልጋ"), t("Balcony", "በረንዳ"), t("28 m²", "28 ካሬ ሜትር")],
+    description: t("Wake up to the lake. A private balcony for morning coffee and the best sunsets in Bahir Dar.", "በሐይቁ እይታ ይንቁ። ለጠዋት ቡና የሚሆን የግል በረንዳ እና የባሕር ዳር ምርጥ የፀሐይ መጥለቅ።"),
+    price: birr(4800),
+    priceNote: t("per night, with breakfast", "በአዳር፣ ቁርስን ጨምሮ"),
+    action: book,
+  },
+  {
+    image: img("hotel-card-thatched-suite", "Large thatched suite with a draped four-poster bed and armchairs", "ሰፊ የሳር ክዳን ስዊት፣ መጋረጃ ያለው አልጋና ወንበሮች"),
+    subtitle: t("For families", "ለቤተሰብ"),
+    title: t("Tana Family Suite", "የጣና የቤተሰብ ስዊት"),
+    meta: [t("4 guests", "4 እንግዶች"), t("2 rooms", "2 ክፍሎች"), t("Sitting area", "የመቀመጫ ክፍል"), t("46 m²", "46 ካሬ ሜትር")],
+    description: t("Two rooms under a traditional thatched roof, with space for the whole family to sit together.", "በባህላዊ የሳር ክዳን ሥር ሁለት ክፍሎች፤ መላው ቤተሰብ አብሮ የሚቀመጥበት ሰፊ ቦታ።"),
+    price: birr(7200),
+    priceNote: t("per night, with breakfast", "በአዳር፣ ቁርስን ጨምሮ"),
+    action: book,
+  },
+];
+
+const bookingForm = {
+  type: "form",
+  id: "booking",
+  kind: "booking",
+  heading: t("Check availability", "ክፍል ይጠይቁ"),
+  intro: t("Tell us your dates. We answer by phone or Telegram within a few hours, and you pay when you arrive.", "ቀኖችዎን ይንገሩን። በጥቂት ሰዓታት ውስጥ በስልክ ወይም በቴሌግራም እንመልሳለን፤ ክፍያ ሲደርሱ ነው።"),
+  fields: [
+    { name: "name", label: t("Your name", "ስምዎ"), type: "text", required: true },
+    { name: "phone", label: t("Phone number", "ስልክ ቁጥር"), type: "tel", required: true },
+    { name: "arrival", label: t("Arrival date", "የሚገቡበት ቀን"), type: "date", required: true },
+    { name: "nights", label: t("Nights", "የአዳር ብዛት"), type: "number", required: true },
+    { name: "room", label: t("Room", "ክፍል"), type: "select", options: [t("Garden Room", "የአትክልት ክፍል"), t("Lake View Room", "የሐይቅ እይታ ክፍል"), t("Tana Family Suite", "የጣና የቤተሰብ ስዊት")] },
+  ],
+  submitLabel: t("Send request", "ጥያቄውን ላክ"),
+  successMessage: t("Thank you. We will call you shortly to confirm your room.", "እናመሰግናለን። ክፍልዎን ለማረጋገጥ በቅርቡ እንደውልልዎታለን።"),
+};
+
+save("hotel", {
+  name: t("Tana Shore Lodge", "ጣና ሾር ሎጅ"),
+  tagline: t("A quiet lodge on the shore of Lake Tana, Bahir Dar", "በባሕር ዳር፣ በጣና ሐይቅ ዳርቻ የሚገኝ ጸጥ ያለ ሎጅ"),
+  languages: ["en", "am"],
+  theme: { primary: "#A65A2E", accent: "#1F3A2E", background: "#F6F0E6", text: "#2A211C", font: "elegant", radius: "none", style: "editorial" },
+  business: {
+    phone: "+251 911 000 000",
+    telegram: "yourbusiness",
+    address: t("Lakeside road, near St. George Church, Bahir Dar", "የሐይቅ ዳር መንገድ፣ ቅዱስ ጊዮርጊስ ቤተ ክርስቲያን አጠገብ፣ ባሕር ዳር"),
+    hours: [
+      { days: t("Reception", "እንግዳ መቀበያ"), time: t("Open 24 hours", "24 ሰዓት ክፍት") },
+      { days: t("Restaurant, every day", "ምግብ ቤት፣ በየቀኑ"), time: t("6:30 am to 10:00 pm", "ከጠዋቱ 12:30 እስከ ምሽቱ 4 ሰዓት") },
+    ],
+  },
+  pages: [
+    {
+      path: "/",
+      title: t("Home", "መነሻ"),
+      nav: t("Home", "መነሻ"),
+      sections: [
+        {
+          type: "hero",
+          variant: "immersive",
+          eyebrow: t("Bahir Dar · Lake Tana", "ባሕር ዳር · ጣና ሐይቅ"),
+          heading: t("Rest where the lake begins", "ሐይቁ በሚጀምርበት ይረፉ"),
+          subheading: t("Twelve quiet rooms, a garden that runs to the water, and coffee roasted in front of you every afternoon.", "አሥራ ሁለት ጸጥ ያሉ ክፍሎች፣ እስከ ውሃው የሚዘልቅ አትክልት እና በየከሰዓቱ በፊትዎ የሚቆላ ቡና።"),
+          image: img("hotel-hero-lodge-pool-dusk", "The lodge lit by lanterns at dusk, reflected in the water", "ሎጁ በምሽት በፋኖስ ደምቆ፣ በውሃው ላይ ሲንጸባረቅ"),
+          primaryAction: book,
+          secondaryAction: link("See the rooms", "ክፍሎቹን ይመልከቱ", "/rooms"),
+          facts: [
+            { value: t("12", "12"), label: t("rooms and suites", "ክፍሎችና ስዊቶች") },
+            { value: t("15 min", "15 ደቂቃ"), label: t("from Bahir Dar airport", "ከባሕር ዳር አየር ማረፊያ") },
+            { value: t("3,500 Br", "3,500 ብር"), label: t("a night, with breakfast", "በአዳር፣ ከቁርስ ጋር") },
+          ],
+        },
+        {
+          type: "about",
+          eyebrow: t("Welcome", "እንኳን ደህና መጡ"),
+          heading: t("A family lodge, kept the slow way", "በቤተሰብ የሚተዳደር፣ በእርጋታ የሚያዝ ሎጅ"),
+          body: t(
+            "We built Tana Shore for travellers who want the lake, not the noise. Rooms are spread through an old garden, and every one is a short walk from the water.\n\nBreakfast is cooked to order, the coffee ceremony starts at four, and our own boat leaves for the island monasteries each morning.",
+            "ጣና ሾርን የሠራነው ጫጫታን ሳይሆን ሐይቁን ለሚሹ መንገደኞች ነው። ክፍሎቹ በአረጀ አትክልት ውስጥ ተበታትነው ይገኛሉ፤ እያንዳንዱም ከውሃው ጥቂት እርምጃ ነው።\n\nቁርስ በትዕዛዝ ይዘጋጃል፣ የቡና ሥነ ሥርዓቱ በአሥር ሰዓት ይጀምራል፣ የራሳችን ጀልባም በየጠዋቱ ወደ ደሴት ገዳማት ትሄዳለች።",
+          ),
+          image: img("hotel-about-coffee-ceremony-host", "Our host pouring coffee from a clay jebena", "አስተናጋጃችን ከጀበና ቡና ስትቀዳ"),
+          imageSide: "end",
+          points: [t("Breakfast and Wi-Fi included in every room", "ቁርስና ዋይፋይ በሁሉም ክፍል ተካትቷል"), t("Free pickup from the airport", "ከአየር ማረፊያ ነፃ መቀበያ"), t("Boat trips to the monasteries, arranged at reception", "ወደ ገዳማት የጀልባ ጉዞ፣ በእንግዳ መቀበያ ይዘጋጃል")],
+          action: link("Our story", "ታሪካችን", "/contact"),
+        },
+        {
+          type: "cards",
+          id: "rooms",
+          layout: "feature",
+          eyebrow: t("Stay", "ማረፊያ"),
+          heading: t("Rooms and suites", "ክፍሎችና ስዊቶች"),
+          intro: t("Every room has a hot shower, a mosquito net, fast Wi-Fi and breakfast.", "ሁሉም ክፍል ሙቅ ሻወር፣ የወባ ትንኝ መከላከያ አጎበር፣ ፈጣን ዋይፋይ እና ቁርስ አለው።"),
+          items: rooms,
+        },
+        {
+          type: "services",
+          variant: "list",
+          id: "amenities",
+          eyebrow: t("Included", "የተካተቱ"),
+          heading: t("Everything you need, nothing you don't", "የሚያስፈልግዎ ሁሉ አለ"),
+          items: [
+            { icon: "coffee", title: t("Breakfast", "ቁርስ"), description: t("Cooked to order, served on the terrace from 6:30.", "በትዕዛዝ የሚዘጋጅ፣ ከ12:30 ጀምሮ በበረንዳው።") },
+            { icon: "wifi", title: t("Fast Wi-Fi", "ፈጣን ዋይፋይ"), description: t("In every room and in the garden.", "በሁሉም ክፍልና በአትክልቱ ውስጥ።") },
+            { icon: "car", title: t("Airport pickup", "ከአየር ማረፊያ መቀበያ"), description: t("Free for every guest. Tell us your flight.", "ለሁሉም እንግዳ ነፃ። የበረራ ሰዓትዎን ይንገሩን።") },
+            { icon: "droplet", title: t("Hot water, day and night", "ሙቅ ውሃ ቀንና ሌሊት"), description: t("Solar heated, with a backup generator.", "በፀሐይ ኃይል የሚሞቅ፣ ተጠባባቂ ጀነሬተር ያለው።") },
+            { icon: "shield", title: t("Safe parking", "አስተማማኝ የመኪና ማቆሚያ"), description: t("Inside the compound, guarded all night.", "በግቢው ውስጥ፣ ሌሊቱን ሙሉ የሚጠበቅ።") },
+            { icon: "sun", title: t("Boat trips", "የጀልባ ጉዞ"), description: t("To the island monasteries and the Blue Nile outlet.", "ወደ ደሴት ገዳማትና ወደ ዓባይ መውጫ።") },
+          ],
+        },
+        {
+          type: "cards",
+          id: "experiences",
+          layout: "scroll",
+          eyebrow: t("While you are here", "እዚህ ሳሉ"),
+          heading: t("Slow days by the water", "በውሃው ዳር የእርጋታ ቀናት"),
+          items: [
+            { image: img("hotel-gallery-jebena-coffee-pour", "Coffee poured from a clay jebena into a small cup", "ከጀበና ወደ ስኒ የሚቀዳ ቡና"), title: t("Coffee ceremony", "የቡና ሥነ ሥርዓት"), subtitle: t("Every day at 4 pm", "በየቀኑ በ10 ሰዓት") },
+            { image: img("hotel-card-dining-bread-baskets", "Traditional bread being cut beside woven baskets", "በመሶብ አጠገብ የሚቆረስ ድፎ ዳቦ"), title: t("Lakeside restaurant", "የሐይቅ ዳር ምግብ ቤት"), subtitle: t("Fresh tilapia and home cooking", "ትኩስ ዓሣና የቤት ምግብ"), action: link("See the menu", "ምናሌውን ይመልከቱ", "/dining") },
+            { image: img("hotel-card-spa-massage", "A guest receiving a back massage", "እንግዳ የጀርባ ማሳጅ ስትወስድ"), title: t("Massage", "ማሳጅ"), subtitle: t("By appointment", "በቀጠሮ") },
+            { image: img("hotel-gallery-bush-dining-acacia", "A long dinner table set outdoors under an acacia", "ከግራር ዛፍ ሥር የተዘጋጀ ረጅም የእራት ጠረጴዛ"), title: t("Dinner outdoors", "ከቤት ውጭ እራት"), subtitle: t("For groups and celebrations", "ለቡድንና ለበዓላት") },
+          ],
+        },
+        {
+          type: "gallery",
+          eyebrow: t("Gallery", "ፎቶዎች"),
+          heading: t("A look around", "አካባቢውን ይመልከቱ"),
+          images: [
+            img("hotel-about-thatched-lounge", "The open lounge under a high thatched roof", "በከፍተኛ የሳር ክዳን ሥር ያለው ክፍት ሳሎን"),
+            img("hotel-gallery-veranda-dusk", "The veranda and garden at dusk", "በረንዳውና አትክልቱ በምሽት"),
+            img("tours-card-blue-nile-falls", "The Blue Nile Falls in full flow, a short drive from the lodge", "ከሎጁ በአጭር ጉዞ የሚደረስበት የዓባይ ፏፏቴ በሙላት ሲፈስ"),
+          ],
+        },
+        {
+          type: "testimonials",
+          eyebrow: t("Guests say", "እንግዶች ምን ይላሉ"),
+          heading: t("Kind words from our guests", "ከእንግዶቻችን የተሰጡ አስተያየቶች"),
+          items: [
+            { quote: t("The quietest nights we had in Ethiopia. Breakfast on the terrace was the best part of each day.", "በኢትዮጵያ ያሳለፍናቸው እጅግ ጸጥ ያሉ ሌሊቶች። በበረንዳው ላይ የነበረው ቁርስ የየቀኑ ምርጥ ጊዜ ነበር።"), name: "Sara M.", role: t("Stayed 3 nights", "3 አዳር ቆይታ") },
+            { quote: t("They met us at the airport and arranged the boat to the monasteries. Everything was easy.", "ከአየር ማረፊያ ተቀብለው ወደ ገዳማት የሚወስደንን ጀልባ አዘጋጁልን። ሁሉም ነገር ቀላል ነበር።"), name: "Dawit T.", role: t("Family trip", "የቤተሰብ ጉዞ") },
+          ],
+        },
+        bookingForm,
+        {
+          type: "faq",
+          heading: t("Good to know", "ማወቅ ያለብዎ"),
+          items: [
+            { question: t("When can I check in and out?", "መግቢያና መውጫ ሰዓት መቼ ነው?"), answer: t("Check-in is from 1 pm and check-out is until 11 am. Reception is open all night.", "መግቢያ ከቀኑ 7 ሰዓት ጀምሮ፣ መውጫ እስከ ጠዋቱ 5 ሰዓት ነው። እንግዳ መቀበያው ሌሊቱን ሙሉ ክፍት ነው።") },
+            { question: t("How do I pay?", "ክፍያ እንዴት ነው?"), answer: t("You pay at the lodge in cash, by Telebirr or by bank transfer.", "ክፍያ በሎጁ በጥሬ ገንዘብ፣ በቴሌብር ወይም በባንክ ዝውውር ይፈጸማል።") },
+            { question: t("Is breakfast included?", "ቁርስ ተካትቷል?"), answer: t("Yes, for every guest, every morning.", "አዎ፣ ለሁሉም እንግዳ በየጠዋቱ።") },
+          ],
+        },
+        { type: "map", heading: t("Find us on the lakeside road", "በሐይቅ ዳር መንገድ ያገኙናል"), query: "Lakeside road, Bahir Dar" },
+        {
+          type: "cta",
+          heading: t("Your room by the lake is waiting", "በሐይቁ ዳር ያለው ክፍልዎ እየጠበቀዎ ነው"),
+          body: t("Best price when you book with us directly.", "በቀጥታ ከእኛ ሲይዙ ምርጥ ዋጋ ያገኛሉ።"),
+          image: img("hotel-hero-infinity-pool-hills", "The pool terrace looking over the hills", "ተራሮችን የሚመለከተው የመዋኛ በረንዳ"),
+          primaryAction: book,
+          secondaryAction: link("Call us", "ይደውሉልን", "tel:+251911000000"),
+        },
+      ],
+    },
+    {
+      path: "/rooms",
+      title: t("Rooms", "ክፍሎች"),
+      nav: t("Rooms", "ክፍሎች"),
+      description: t("Garden rooms, lake view rooms and a family suite at Tana Shore Lodge.", "በጣና ሾር ሎጅ የአትክልት ክፍሎች፣ የሐይቅ እይታ ክፍሎች እና የቤተሰብ ስዊት።"),
+      sections: [
+        { type: "cards", layout: "grid", eyebrow: t("Stay", "ማረፊያ"), heading: t("Choose your room", "ክፍልዎን ይምረጡ"), intro: t("Prices are per night for the room and include breakfast, Wi-Fi and airport pickup.", "ዋጋዎቹ ለክፍሉ በአዳር ሲሆኑ ቁርስ፣ ዋይፋይ እና ከአየር ማረፊያ መቀበያን ያካትታሉ።"), items: rooms },
+        {
+          type: "steps",
+          eyebrow: t("Booking", "አያያዝ"),
+          heading: t("How to book", "እንዴት እንደሚይዙ"),
+          items: [
+            { title: t("Send your dates", "ቀኖችዎን ይላኩ"), description: t("Use the form, call us or write on Telegram.", "ቅጹን ይሙሉ፣ ይደውሉ ወይም በቴሌግራም ይጻፉ።") },
+            { title: t("We confirm", "እናረጋግጣለን"), description: t("We call back within a few hours with your room.", "በጥቂት ሰዓታት ውስጥ ደውለን ክፍልዎን እናረጋግጣለን።") },
+            { title: t("Pay on arrival", "ሲደርሱ ይክፈሉ"), description: t("Cash, Telebirr or bank transfer at reception.", "በእንግዳ መቀበያ በጥሬ ገንዘብ፣ በቴሌብር ወይም በባንክ።") },
+          ],
+          action: book,
+        },
+      ],
+    },
+    {
+      path: "/dining",
+      title: t("Dining", "ምግብ ቤት"),
+      nav: t("Dining", "ምግብ ቤት"),
+      sections: [
+        {
+          type: "hero",
+          variant: "banner",
+          eyebrow: t("Lakeside restaurant", "የሐይቅ ዳር ምግብ ቤት"),
+          heading: t("Fresh from the lake, cooked at home", "ከሐይቁ ትኩስ፣ በቤት አሠራር"),
+          subheading: t("Open to everyone, every day from 6:30 am to 10 pm.", "ለሁሉም ክፍት፣ በየቀኑ ከጠዋቱ 12:30 እስከ ምሽቱ 4 ሰዓት።"),
+          image: img("hotel-card-dining-bread-baskets", "Traditional bread being cut beside woven baskets", "በመሶብ አጠገብ የሚቆረስ ድፎ ዳቦ"),
+        },
+        {
+          type: "menu",
+          heading: t("Menu", "ምናሌ"),
+          categories: [
+            {
+              name: t("From the lake", "ከሐይቁ"),
+              items: [
+                { name: t("Grilled tilapia", "የተጠበሰ ዓሣ"), description: t("Whole fish with lemon, salad and bread", "ሙሉ ዓሣ ከሎሚ፣ ሰላጣና ዳቦ ጋር"), price: birr(420), tag: t("Popular", "ተወዳጅ") },
+                { name: t("Fish goulash", "የዓሣ ጉላሽ"), description: t("With injera or rice", "ከእንጀራ ወይም ከሩዝ ጋር"), price: birr(360) },
+              ],
+            },
+            {
+              name: t("Traditional", "ባህላዊ"),
+              items: [
+                { name: t("Shiro", "ሽሮ"), description: t("Served hot in a clay pot", "በሸክላ ድስት ትኩስ የሚቀርብ"), price: birr(180), tag: t("Fasting", "የጾም") },
+                { name: t("Beyaynetu", "በያይነቱ"), description: t("A plate of fasting dishes on injera", "በእንጀራ ላይ የጾም ወጦች"), price: birr(240), tag: t("Fasting", "የጾም") },
+                { name: t("Lamb tibs", "የበግ ጥብስ"), price: birr(460) },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: "/contact",
+      title: t("Contact", "አድራሻ"),
+      nav: t("Contact", "አድራሻ"),
+      sections: [
+        { type: "contact", heading: t("Talk to us", "ያነጋግሩን"), intro: t("Reception answers the phone and Telegram day and night.", "እንግዳ መቀበያው ስልክና ቴሌግራም ቀንም ሌሊትም ይመልሳል።") },
+        {
+          type: "form",
+          id: "message",
+          kind: "contact",
+          heading: t("Send a message", "መልእክት ይላኩ"),
+          fields: [
+            { name: "name", label: t("Your name", "ስምዎ"), type: "text", required: true },
+            { name: "phone", label: t("Phone number", "ስልክ ቁጥር"), type: "tel", required: true },
+            { name: "message", label: t("Message", "መልእክት"), type: "textarea", required: true },
+          ],
+          submitLabel: t("Send", "ላክ"),
+          successMessage: t("Thank you. We will answer soon.", "እናመሰግናለን። በቅርቡ እንመልሳለን።"),
+        },
+        { type: "map", heading: t("Where we are", "የምንገኝበት"), query: "Lakeside road, Bahir Dar" },
+      ],
+    },
+  ],
+});

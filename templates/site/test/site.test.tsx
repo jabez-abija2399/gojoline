@@ -131,3 +131,27 @@ describe("drawings, questions and the closing band", () => {
     }
   });
 });
+
+describe("niche sections", () => {
+  const base = { name: { en: "T" }, languages: ["en"], theme: { primary: "#8A4B24", accent: "#2F3E2E", background: "#FBF7F2", text: "#1F1A17", font: "elegant", radius: "none", style: "editorial" }, business: {} };
+  const page = (sections: unknown[]) => ({ ...base, pages: [{ path: "/", title: { en: "Home" }, sections }] });
+  it("accepts cards, stats, steps, schedule and quote", () => {
+    const result = siteSchema.safeParse(
+      page([
+        { type: "hero", variant: "immersive", heading: { en: "H" }, image: { src: "/stock/hotel-hero-lodge-pool-dusk.webp", alt: { en: "a" } }, facts: [{ value: { en: "12" }, label: { en: "rooms" } }] },
+        { type: "cards", layout: "feature", heading: { en: "Rooms" }, items: [{ title: { en: "Room" }, price: { amountMinor: 350000, currency: "ETB" }, priceNote: { en: "per night" }, meta: [{ en: "2 guests" }], badge: { en: "New" } }] },
+        { type: "stats", items: [{ value: { en: "1" }, label: { en: "a" } }, { value: { en: "2" }, label: { en: "b" } }] },
+        { type: "steps", heading: { en: "How" }, items: [{ title: { en: "One" } }, { title: { en: "Two" } }] },
+        { type: "schedule", layout: "tiles", heading: { en: "Times" }, items: [{ time: { en: "5:10" }, title: { en: "Fajr" } }] },
+        { type: "quote", quote: { en: "Q" } },
+      ]),
+    );
+    expect(result.success).toBe(true);
+  });
+  it("rejects unknown layouts, styles and too many facts", () => {
+    expect(siteSchema.safeParse(page([{ type: "cards", layout: "carousel", heading: { en: "x" }, items: [{ title: { en: "x" } }] }])).success).toBe(false);
+    expect(siteSchema.safeParse({ ...page([{ type: "quote", quote: { en: "Q" } }]), theme: { ...base.theme, style: "fancy" } }).success).toBe(false);
+    const fact = { value: { en: "1" }, label: { en: "a" } };
+    expect(siteSchema.safeParse(page([{ type: "hero", heading: { en: "H" }, facts: [fact, fact, fact, fact, fact] }])).success).toBe(false);
+  });
+});

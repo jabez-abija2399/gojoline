@@ -9,6 +9,7 @@ export function Timeline({ section }: { section: TimelineSection }) {
     <section id={section.id ?? "timeline"} className="section">
       <div className="container-site flex flex-col gap-8">
         <div className="flex flex-col gap-3">
+          {section.eyebrow && <p className="eyebrow">{text(section.eyebrow)}</p>}
           <SectionTitle>{text(section.heading)}</SectionTitle>
           {section.intro && <p className="max-w-[60ch] text-muted">{text(section.intro)}</p>}
         </div>

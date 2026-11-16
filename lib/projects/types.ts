@@ -46,6 +46,8 @@ export interface ProjectStore {
   listMessages(ownerId: string, projectId: string, limit?: number): Promise<ChatMessage[]>;
   addVersion(ownerId: string, version: Omit<Version, "id" | "number" | "createdAt">): Promise<Version>;
   listVersions(ownerId: string, projectId: string): Promise<VersionSummary[]>;
+  /** How many versions and when the newest was saved (one small query). */
+  versionStats(ownerId: string, projectId: string): Promise<{ count: number; lastAt: Date | null }>;
   getVersion(ownerId: string, projectId: string, number: number): Promise<Version | null>;
   latestVersion(ownerId: string, projectId: string): Promise<Version | null>;
 }

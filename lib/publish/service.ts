@@ -9,6 +9,8 @@ import type { ProjectStore } from "@/lib/projects/types";
 import type { PublishFile, PublishProvider } from "@/lib/providers/publish/types";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
 import { checkSlug, suggestSlug } from "@/lib/sites/slug";
+import { libraryPhoto } from "@/lib/template/files";
+import { PRESET_IDS, presetSiteJson } from "@/lib/template/presets";
 import type { Site, SiteStore } from "@/lib/sites/types";
 import { takenDownPage } from "@/lib/safety/takedown";
 import { publishedSiteHeaders, scanBuiltSite, type ScanIssue } from "./scan";
@@ -142,6 +144,14 @@ async function deployLocked(
       return { ok: false, error: "build_failed" };
     }
 
+    // Sample photos are published from our own library, never from the sandbox's copy: a name
+    // that isn't in the library is dropped.
+    build.files = build.files.flatMap((f) => {
+      const name = /^stock\/([a-z0-9-]+\.webp)$/.exec(f.path)?.[1];
+      if (!f.path.startsWith("stock/")) return [f];
+      const data = name ? libraryPhoto(name) : null;
+      return data ? [{ path: f.path, data }] : [];
+    });
     const issues = scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] });
     if (issues.length) return { ok: false, error: "blocked", issues };
     for (const guard of deps.guards ?? []) {
@@ -199,19 +209,52 @@ async function deployLocked(
 /** Telegram names the starter templates use as examples. Anyone could register them and receive a site's customers. */
 export const EXAMPLE_TELEGRAM = /^@?(yourbusiness|yourchurch|bolebunahouse)$/i;
 
-/** True while a site still shows a template's placeholders (in any text value). */
+type Json = Record<string, unknown>;
+const isStock = (image: unknown) => typeof (image as Json | undefined)?.src === "string" && ((image as Json).src as string).startsWith("/stock/");
+const texts = (v: unknown): string[] => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v as Json).filter((x): x is string => typeof x === "string") : []);
+
+/** The reviews, quotes and people a site shows, with whether each sits beside a sample photo. */
+function peopleAndQuotes(site: unknown): { text: string; samplePhoto: boolean }[] {
+  const out: { text: string; samplePhoto: boolean }[] = [];
+  const pages = (site as Json | null)?.pages;
+  for (const page of Array.isArray(pages) ? pages : []) {
+    for (const s of (Array.isArray((page as Json).sections) ? (page as Json).sections : []) as Json[]) {
+      const items = (Array.isArray(s.items) ? s.items : []) as Json[];
+      if (s.type === "testimonials") for (const i of items) for (const t of texts(i.quote)) out.push({ text: t, samplePhoto: false });
+      if (s.type === "quote") for (const t of texts(s.quote)) out.push({ text: t, samplePhoto: Boolean(s.name) && isStock(s.image) });
+      if (s.type === "cards" && s.layout === "people") for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: isStock(i.image) });
+    }
+  }
+  return out;
+}
+
+let sampleTexts: Set<string> | null = null;
+/** Every review, quote and person's name the starter templates show as examples. */
+function templateSamples(): Set<string> {
+  sampleTexts ??= new Set(PRESET_IDS.flatMap((id) => peopleAndQuotes(JSON.parse(presetSiteJson(id))).map((p) => p.text.trim())));
+  return sampleTexts;
+}
+
+/**
+ * True while a site still shows a template's examples: the placeholder phone or Telegram name,
+ * [bracketed] text, a template's invented reviews, quotes or staff, or a named person shown
+ * with a sample photo (a stranger's face must never stand for someone at the business).
+ */
 export function hasExampleDetails(siteJson: string): boolean {
   let found = false;
   const walk = (v: unknown) => {
     if (found) return;
-    if (typeof v === "string") found = /\+251 ?911 ?000 ?000/.test(v) || /\[[^\]\n]{2,40}\]/.test(v) || EXAMPLE_TELEGRAM.test(v.trim()) || /t\.me\/(yourbusiness|yourchurch|bolebunahouse)\b/i.test(v);
+    if (typeof v === "string") found = /\+251 ?911 ?000 ?000/.test(v) || /\b0911 ?000 ?000\b/.test(v) || /\[[^\]\n]{2,40}\]/.test(v) || EXAMPLE_TELEGRAM.test(v.trim()) || /t\.me\/(yourbusiness|yourchurch|bolebunahouse)\b/i.test(v);
     else if (Array.isArray(v)) v.forEach(walk);
     else if (v && typeof v === "object") Object.values(v).forEach(walk);
   };
   try {
-    walk(JSON.parse(siteJson));
+    const site = JSON.parse(siteJson) as unknown;
+    walk(site);
+    if (found) return true;
+    const samples = templateSamples();
+    return peopleAndQuotes(site).some((p) => p.samplePhoto || samples.has(p.text.trim()));
   } catch {
     return false;
   }
-  return found;
 }

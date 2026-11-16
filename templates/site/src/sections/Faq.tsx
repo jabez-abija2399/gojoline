@@ -9,6 +9,7 @@ export function Faq({ section }: { section: FaqSection }) {
     <section id={section.id ?? "faq"} className="section">
       <div className="container-site grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-16">
         <div className="reveal flex flex-col gap-3">
+          {section.eyebrow && <p className="eyebrow">{text(section.eyebrow)}</p>}
           <SectionTitle>{text(section.heading)}</SectionTitle>
           {section.intro && <p className="max-w-[45ch] text-muted">{text(section.intro)}</p>}
         </div>

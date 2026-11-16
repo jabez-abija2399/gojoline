@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNull, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { formSubmissions, siteForms, sites } from "@/lib/db/schema";
 import { formDef, type FormDef } from "./forms";
@@ -43,6 +43,24 @@ export class DbCloudStore implements CloudStore {
       .orderBy(desc(formSubmissions.createdAt))
       .limit(limit);
     return rows as Submission[];
+  }
+
+  async countSubmissions(ownerId: string, projectId: string) {
+    const [row] = await this.db
+      .select({ total: sql<number>`count(*)::int`, unread: sql<number>`count(*) filter (where ${formSubmissions.readAt} is null)::int` })
+      .from(formSubmissions)
+      .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId)));
+    return { total: Number(row?.total ?? 0), unread: Number(row?.unread ?? 0) };
+  }
+
+  async answersPerDay(ownerId: string, projectId: string, since: Date) {
+    const day = sql<string>`to_char((${formSubmissions.createdAt} at time zone 'Africa/Addis_Ababa')::date, 'YYYY-MM-DD')`;
+    const rows = await this.db
+      .select({ day, count: sql<number>`count(*)::int` })
+      .from(formSubmissions)
+      .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId), gte(formSubmissions.createdAt, since)))
+      .groupBy(day);
+    return rows.map((r) => ({ day: r.day, count: Number(r.count) }));
   }
 
   async markRead(ownerId: string, projectId: string, ids: string[]) {

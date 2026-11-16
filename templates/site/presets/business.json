@@ -1,0 +1,631 @@
+{
+  "name": { "en": "Kokeb Advisory", "am": "ኮከብ አማካሪ" },
+  "tagline": { "en": "Feasibility studies, business plans and market research in Addis Ababa", "am": "በአዲስ አበባ የአዋጭነት ጥናት፣ የቢዝነስ ዕቅድ እና የገበያ ጥናት" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#0F5B46", "accent": "#0B2E26", "background": "#F7F5EF", "text": "#17211D", "font": "grotesk", "radius": "medium", "style": "clean" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "email": "hello@example.com",
+    "telegram": "yourbusiness",
+    "address": { "en": "4th floor, Guinea Conakry Street, Kazanchis, Addis Ababa", "am": "ካዛንቺስ፣ ጊኒ ኮናክሪ ጎዳና፣ 4ኛ ፎቅ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Monday to Friday", "am": "ከሰኞ እስከ ዓርብ" },
+        "time": { "en": "8:30 am to 5:30 pm", "am": "ከጠዋቱ 2:30 እስከ ቀኑ 11:30" }
+      },
+      {
+        "days": { "en": "Saturday", "am": "ቅዳሜ" },
+        "time": { "en": "9:00 am to 1:00 pm", "am": "ከጠዋቱ 3 እስከ ቀኑ 7 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Home", "am": "መነሻ" },
+      "description": { "en": "Kokeb Advisory prepares feasibility studies, business plans and market research for Ethiopian companies.", "am": "ኮከብ አማካሪ ለኢትዮጵያ ድርጅቶች የአዋጭነት ጥናት፣ የቢዝነስ ዕቅድ እና የገበያ ጥናት ያዘጋጃል።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "eyebrow": { "en": "Business consulting · Addis Ababa · Since 2012", "am": "የቢዝነስ አማካሪ · አዲስ አበባ · ከ2004 ዓ.ም. ጀምሮ" },
+          "heading": { "en": "Decide with numbers, not guesses", "am": "በግምት ሳይሆን በመረጃ ይወስኑ" },
+          "subheading": { "en": "Feasibility studies, business plans and market research that Ethiopian banks and investors accept. For a first shop or a new factory.", "am": "የኢትዮጵያ ባንኮችና ባለሀብቶች የሚቀበሏቸው የአዋጭነት ጥናቶች፣ የቢዝነስ ዕቅዶች እና የገበያ ጥናቶች። ለመጀመሪያ ሱቅም ሆነ ለአዲስ ፋብሪካ።" },
+          "image": {
+            "src": "/stock/business-gallery-three-colleagues.webp",
+            "alt": { "en": "Three men in smart-casual clothes discussing around a white table with laptops", "am": "ሦስት ወንዶች ላፕቶፖች ባሉበት ነጭ ጠረጴዛ ዙሪያ ሲወያዩ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Request a quote", "am": "ዋጋ ይጠይቁ" },
+            "href": "/#quote"
+          },
+          "secondaryAction": {
+            "label": { "en": "Our projects", "am": "ሥራዎቻችን" },
+            "href": "/projects"
+          }
+        },
+        {
+          "type": "stats",
+          "tone": "dark",
+          "items": [
+            {
+              "value": { "en": "14", "am": "14" },
+              "label": { "en": "years of practice", "am": "ዓመታት በሥራ ላይ" }
+            },
+            {
+              "value": { "en": "320+", "am": "320+" },
+              "label": { "en": "studies and plans delivered", "am": "የተረከቡ ጥናቶችና ዕቅዶች" }
+            },
+            {
+              "value": { "en": "2.1 bn Br", "am": "2.1 ቢ ብር" },
+              "label": { "en": "in loans our clients secured", "am": "ደንበኞቻችን ያገኙት ብድር" }
+            },
+            {
+              "value": { "en": "9 of 10", "am": "90%" },
+              "label": { "en": "clients come back", "am": "ደንበኞች ተመልሰው ይመጣሉ" }
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "variant": "bento",
+          "id": "services",
+          "eyebrow": { "en": "What we do", "am": "የምንሠራው" },
+          "heading": { "en": "Six services, one team", "am": "ስድስት አገልግሎት፣ አንድ ቡድን" },
+          "intro": { "en": "From the first idea to the day the loan is approved, and the books that follow.", "am": "ከመጀመሪያው ሐሳብ ብድሩ እስከሚፈቀድበት ቀን፣ ከዚያም በኋላ እስካለው የሂሳብ ሥራ።" },
+          "items": [
+            {
+              "icon": "chart",
+              "title": { "en": "Feasibility studies", "am": "የአዋጭነት ጥናት" },
+              "description": { "en": "Market, technical and financial study of a new project, in the format banks and the investment commission ask for.", "am": "ለአዲስ ፕሮጀክት የገበያ፣ የቴክኒክና የፋይናንስ ጥናት፤ ባንኮችና የኢንቨስትመንት ኮሚሽን በሚጠይቁት ቅርጸት።" }
+            },
+            {
+              "icon": "briefcase",
+              "title": { "en": "Business plans", "am": "የቢዝነስ ዕቅድ" },
+              "description": { "en": "A clear plan with five-year figures, ready for a loan or an investor.", "am": "የአምስት ዓመት አኃዝ ያለው ግልጽ ዕቅድ፤ ለብድር ወይም ለባለሀብት ዝግጁ።" }
+            },
+            {
+              "icon": "users",
+              "title": { "en": "Market research", "am": "የገበያ ጥናት" },
+              "description": { "en": "Surveys, competitor checks and demand estimates from the field, not from a desk.", "am": "ከቢሮ ሳይሆን ከመስክ የተሰበሰበ የደንበኛ ዳሰሳ፣ የተወዳዳሪ ቅኝት እና የፍላጎት ግምት።" }
+            },
+            {
+              "icon": "book",
+              "title": { "en": "Accounting and tax", "am": "የሂሳብ አያያዝና ግብር" },
+              "description": { "en": "Monthly books, VAT and payroll filed on time, so there are no penalties.", "am": "ወርሃዊ የሂሳብ መዝገብ፣ ተ.እ.ታ እና የደመወዝ ግብር በጊዜው ይገባል፤ ቅጣት የለም።" }
+            },
+            {
+              "icon": "key",
+              "title": { "en": "Licences and permits", "am": "ንግድ ፈቃድና ምዝገባ" },
+              "description": { "en": "Company registration, trade licence and investment permit, handled from start to finish.", "am": "የድርጅት ምዝገባ፣ የንግድ ፈቃድ እና የኢንቨስትመንት ፈቃድ ከመጀመሪያ እስከ መጨረሻ እንጨርሳለን።" }
+            },
+            {
+              "icon": "handshake",
+              "title": { "en": "People and structure", "am": "የሰው ኃይልና አደረጃጀት" },
+              "description": { "en": "Job descriptions, salary scales and a staff manual that fit the labour law.", "am": "ከአሠሪና ሠራተኛ ሕግ ጋር የሚስማማ የሥራ መዘርዝር፣ የደመወዝ ስኬል እና የሠራተኛ መመሪያ።" }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "projects",
+          "layout": "grid",
+          "eyebrow": { "en": "Recent projects", "am": "የቅርብ ጊዜ ሥራዎች" },
+          "heading": { "en": "Work that changed a decision", "am": "ውሳኔን የቀየሩ ሥራዎች" },
+          "intro": { "en": "We do not publish client names. We are glad to put you in touch with them.", "am": "የደንበኞቻችንን ስም አናወጣም። ከፈለጉ ግን ልናገናኝዎ ደስተኞች ነን።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/business-card-construction.webp",
+                "alt": { "en": "Curved multi-storey building under construction with scaffolding and a tower crane", "am": "በግንባታ ላይ ያለ ባለ ብዙ ፎቅ ሕንፃ ከመወጣጫ እና ከክሬን ጋር" }
+              },
+              "badge": { "en": "Real estate", "am": "ሪል እስቴት" },
+              "subtitle": { "en": "Bole, Addis Ababa", "am": "ቦሌ፣ አዲስ አበባ" },
+              "title": { "en": "Feasibility study for a 12-storey building", "am": "ለባለ 12 ፎቅ ሕንፃ የአዋጭነት ጥናት" },
+              "meta": [
+                { "en": "Feasibility study", "am": "የአዋጭነት ጥናት" },
+                { "en": "7 weeks", "am": "7 ሳምንት" }
+              ],
+              "description": { "en": "The developer's bank approved 60% of the building cost on the first application.", "am": "የአልሚው ባንክ በመጀመሪያው ማመልከቻ የግንባታ ወጪውን 60% ብድር ፈቀደ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/business-card-warehouse.webp",
+                "alt": { "en": "Large warehouse aisle with orange pallet racking and workers in hi-vis vests", "am": "ብርቱካናማ መደርደሪያዎች ያሉት ሰፊ መጋዘን እና አንጸባራቂ ሰደርያ የለበሱ ሠራተኞች" }
+              },
+              "badge": { "en": "Import and trade", "am": "አስመጪና ንግድ" },
+              "subtitle": { "en": "Kality, Addis Ababa", "am": "ቃሊቲ፣ አዲስ አበባ" },
+              "title": { "en": "Stock system for a goods importer", "am": "ለአስመጪ ድርጅት የክምችት ሥርዓት" },
+              "meta": [
+                { "en": "Operations", "am": "አሠራር ማሻሻያ" },
+                { "en": "3 months", "am": "3 ወር" }
+              ],
+              "description": { "en": "Orders now leave the warehouse in one day instead of three, with stock counted every week.", "am": "ትዕዛዝ በሦስት ቀን ፋንታ በአንድ ቀን ከመጋዘን ይወጣል፤ ክምችቱም በየሳምንቱ ይቆጠራል።" }
+            },
+            {
+              "image": {
+                "src": "/stock/business-card-analytics.webp",
+                "alt": { "en": "A person in a navy blazer working on a laptop showing pie and bar charts", "am": "ጥቁር ሰማያዊ ኮት የለበሰ ሰው ቻርቶችን በሚያሳይ ላፕቶፕ ላይ ሲሠራ" }
+              },
+              "badge": { "en": "Manufacturing", "am": "ማኑፋክቸሪንግ" },
+              "subtitle": { "en": "Bishoftu, Oromia", "am": "ቢሾፍቱ፣ ኦሮሚያ" },
+              "title": { "en": "Financial model for a dairy plant", "am": "ለወተት ማቀነባበሪያ የፋይናንስ ሞዴል" },
+              "meta": [
+                { "en": "Business plan", "am": "የቢዝነስ ዕቅድ" },
+                { "en": "5 weeks", "am": "5 ሳምንት" }
+              ],
+              "description": { "en": "The owners see cost per litre every month and raised 48 million Birr to add a second line.", "am": "ባለቤቶቹ የአንድ ሊትር ወጪን በየወሩ ያያሉ፤ ሁለተኛ መስመር ለመጨመርም 48 ሚሊዮን ብር አግኝተዋል።" }
+            }
+          ],
+          "action": {
+            "label": { "en": "See all projects", "am": "ሁሉንም ሥራዎች ይመልከቱ" },
+            "href": "/projects"
+          }
+        },
+        {
+          "type": "steps",
+          "id": "process",
+          "eyebrow": { "en": "How we work", "am": "አሠራራችን" },
+          "heading": { "en": "Four steps, no surprises", "am": "አራት እርምጃ፣ ያልተጠበቀ ነገር የለም" },
+          "items": [
+            {
+              "title": { "en": "Free first meeting", "am": "ነፃ የመጀመሪያ ውይይት" },
+              "description": { "en": "One hour at your office or ours to understand the decision you face.", "am": "ያለብዎትን ውሳኔ ለመረዳት በእርስዎ ወይም በእኛ ቢሮ የአንድ ሰዓት ውይይት።" }
+            },
+            {
+              "title": { "en": "Fixed price in writing", "am": "የተቆረጠ ዋጋ በጽሑፍ" },
+              "description": { "en": "Within three working days you get the scope, the price and the delivery date.", "am": "በሦስት የሥራ ቀን ውስጥ የሥራውን ወሰን፣ ዋጋውንና የማስረከቢያ ቀኑን ያገኛሉ።" }
+            },
+            {
+              "title": { "en": "Field work and analysis", "am": "የመስክ ሥራና ትንተና" },
+              "description": { "en": "We collect the data ourselves and show you the first findings half way.", "am": "መረጃውን ራሳችን እንሰበስባለን፤ በሥራው አጋማሽም የመጀመሪያ ግኝቶችን እናሳይዎታለን።" }
+            },
+            {
+              "title": { "en": "Report and follow-up", "am": "ሪፖርትና ክትትል" },
+              "description": { "en": "A report you can hand to the bank, and we come with you to present it.", "am": "ለባንክ የሚቀርብ ሪፖርት እናስረክባለን፤ ሲያቀርቡትም አብረንዎ እንገኛለን።" }
+            }
+          ],
+          "action": {
+            "label": { "en": "Request a quote", "am": "ዋጋ ይጠይቁ" },
+            "href": "/#quote"
+          }
+        },
+        {
+          "type": "about",
+          "id": "about",
+          "eyebrow": { "en": "About us", "am": "ስለ እኛ" },
+          "heading": { "en": "Small enough to know your business", "am": "ሥራዎን በቅርበት የምናውቅ ቡድን" },
+          "body": { "en": "Kokeb Advisory began in 2012 with two economists and a borrowed desk in Kazanchis. We are now eleven: economists, accountants and an engineer.\n\nThe partner you meet on the first day writes your report. We say so when the numbers do not support a project, because that advice is worth the most.", "am": "ኮከብ አማካሪ በ2004 ዓ.ም. ካዛንቺስ ውስጥ በሁለት የኢኮኖሚ ባለሙያዎችና በተውሶ ጠረጴዛ ተጀመረ። ዛሬ አሥራ አንድ ነን፤ የኢኮኖሚ ባለሙያዎች፣ የሂሳብ ባለሙያዎች እና አንድ መሐንዲስ።\n\nበመጀመሪያው ቀን ያገኙት አጋር ራሱ ሪፖርትዎን ይጽፋል። አኃዙ ፕሮጀክቱን ካልደገፈ በግልጽ እንነግርዎታለን፤ ከሁሉ የሚበልጠው ምክር ይህ ነውና።" },
+          "image": {
+            "src": "/stock/business-about-office.webp",
+            "alt": { "en": "Modern office corridor with glass partition walls, pendant lamps and a lounge area", "am": "የመስታወት ግድግዳዎች፣ ተንጠልጣይ መብራቶች እና የእንግዳ መቀመጫ ያለው ዘመናዊ ቢሮ" }
+          },
+          "imageSide": "end",
+          "points": [
+            { "en": "Fixed price agreed before we start", "am": "ሥራ ከመጀመራችን በፊት የተስማማንበት ቋሚ ዋጋ" },
+            { "en": "Reports in English and Amharic", "am": "ሪፖርቶች በእንግሊዝኛና በአማርኛ" },
+            { "en": "Your figures stay confidential", "am": "መረጃዎ በምስጢር ይጠበቃል" }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "team",
+          "layout": "people",
+          "eyebrow": { "en": "Our team", "am": "ቡድናችን" },
+          "heading": { "en": "The partners you will work with", "am": "አብረዋቸው የሚሠሩ አጋሮች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-hero-man-turtleneck.webp",
+                "alt": { "en": "Studio portrait of a man with a short beard in a black turtleneck", "am": "አጭር ጺም ያለው ጥቁር ሹራብ የለበሰ ወንድ የስቱዲዮ ፎቶ" }
+              },
+              "title": { "en": "Samuel B.", "am": "ሳሙኤል በ." },
+              "subtitle": { "en": "Managing partner", "am": "ዋና አጋር" },
+              "description": { "en": "Economist. Feasibility studies and bank financing.", "am": "የኢኮኖሚ ባለሙያ። የአዋጭነት ጥናትና የባንክ ብድር።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-hero-woman-orange-blazer.webp",
+                "alt": { "en": "Confident young woman with natural hair, arms crossed, in an orange blazer", "am": "እጆቿን አጣምራ የቆመች ብርቱካናማ ኮት የለበሰች በራስ የምትተማመን ወጣት ሴት" }
+              },
+              "title": { "en": "Hanna T.", "am": "ሐና ተ." },
+              "subtitle": { "en": "Partner, research", "am": "አጋር፣ የጥናት ክፍል" },
+              "description": { "en": "Leads market surveys and field teams.", "am": "የገበያ ዳሰሳዎችንና የመስክ ቡድኖችን ትመራለች።" }
+            },
+            {
+              "image": {
+                "src": "/stock/salon-card-afro.webp",
+                "alt": { "en": "Portrait of a woman with a round afro wearing a black jacket against a grey wall", "am": "ጥቁር ጃኬት የለበሰች አፍሮ ጸጉር ያላት ሴት በግራጫ ግድግዳ ፊት" }
+              },
+              "title": { "en": "Liya M.", "am": "ሊያ መ." },
+              "subtitle": { "en": "Partner, finance", "am": "አጋር፣ የፋይናንስ ክፍል" },
+              "description": { "en": "Accountant. Financial models, tax and audits.", "am": "የሂሳብ ባለሙያ። የፋይናንስ ሞዴል፣ ግብር እና ኦዲት።" }
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "eyebrow": { "en": "Clients say", "am": "ደንበኞች ምን ይላሉ" },
+          "heading": { "en": "Trusted with big decisions", "am": "በትልልቅ ውሳኔዎች የታመንን" },
+          "items": [
+            {
+              "quote": { "en": "The bank asked two questions and approved the loan. Every answer was already in the study.", "am": "ባንኩ ሁለት ጥያቄ ብቻ ጠይቆ ብድሩን ፈቀደ። መልሱ ሁሉ ጥናቱ ውስጥ ነበር።" },
+              "name": "Getachew W.",
+              "role": { "en": "Developer, Bole", "am": "አልሚ፣ ቦሌ" }
+            },
+            {
+              "quote": { "en": "They told us not to open the third branch. It saved us more than their fee many times over.", "am": "ሦስተኛውን ቅርንጫፍ አትክፈቱ አሉን። ከከፈልናቸው ብዙ እጥፍ አድኖልናል።" },
+              "name": "Rahel D.",
+              "role": { "en": "Owner, supermarket chain", "am": "ባለቤት፣ የሱፐርማርኬት ሰንሰለት" }
+            },
+            {
+              "quote": { "en": "For the first time I know what one litre costs me. I look at the sheet every Monday.", "am": "አንድ ሊትር ስንት እንደሚያስወጣኝ ለመጀመሪያ ጊዜ አወቅሁ። ሰንጠረዡን በየሰኞው አየዋለሁ።" },
+              "name": "Abdi H.",
+              "role": { "en": "Director, dairy plant", "am": "ሥራ አስኪያጅ፣ የወተት ማቀነባበሪያ" }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "quote",
+          "kind": "contact",
+          "heading": { "en": "Request a quote", "am": "ዋጋ ይጠይቁ" },
+          "intro": { "en": "Tell us what you are planning. A partner calls you within one working day, and the first meeting is free.", "am": "ያቀዱትን ይንገሩን። አንድ አጋራችን በአንድ የሥራ ቀን ውስጥ ይደውልልዎታል፤ የመጀመሪያው ውይይት ነፃ ነው።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "company",
+              "label": { "en": "Company (if any)", "am": "ድርጅት (ካለ)" },
+              "type": "text"
+            },
+            {
+              "name": "service",
+              "label": { "en": "Service", "am": "አገልግሎት" },
+              "type": "select",
+              "required": true,
+              "options": [
+                { "en": "Feasibility studies", "am": "የአዋጭነት ጥናት" },
+                { "en": "Business plans", "am": "የቢዝነስ ዕቅድ" },
+                { "en": "Market research", "am": "የገበያ ጥናት" },
+                { "en": "Accounting and tax", "am": "የሂሳብ አያያዝና ግብር" },
+                { "en": "Licences and permits", "am": "ንግድ ፈቃድና ምዝገባ" },
+                { "en": "People and structure", "am": "የሰው ኃይልና አደረጃጀት" },
+                { "en": "Not sure yet", "am": "ገና አልወሰንኩም" }
+              ]
+            },
+            {
+              "name": "message",
+              "label": { "en": "Tell us about the project", "am": "ስለ ፕሮጀክቱ በአጭሩ" },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": { "en": "Send request", "am": "ጥያቄውን ይላኩ" },
+          "successMessage": { "en": "Thank you. A partner will call you within one working day.", "am": "እናመሰግናለን። አጋራችን በአንድ የሥራ ቀን ውስጥ ይደውልልዎታል።" }
+        },
+        {
+          "type": "cta",
+          "heading": { "en": "Planning something new?", "am": "አዲስ ነገር አቅደዋል?" },
+          "body": { "en": "Bring the idea. We will tell you honestly what it takes.", "am": "ሐሳብዎን ይዘው ይምጡ። የሚጠይቀውን በግልጽ እንነግርዎታለን።" },
+          "image": {
+            "src": "/stock/business-hero-addis-street.webp",
+            "alt": { "en": "A busy Addis Ababa avenue lined with glass mid-rise buildings at dusk", "am": "በምሽት የመስታወት ሕንፃዎች የተሰለፉበት የአዲስ አበባ ሰፊ ጎዳና" }
+          },
+          "primaryAction": {
+            "label": { "en": "Request a quote", "am": "ዋጋ ይጠይቁ" },
+            "href": "/#quote"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call us", "am": "ይደውሉልን" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/services",
+      "title": { "en": "Services", "am": "አገልግሎቶች" },
+      "nav": { "en": "Services", "am": "አገልግሎቶች" },
+      "description": { "en": "Feasibility studies, business plans, market research, accounting, licences and HR support, with starting prices in Birr.", "am": "የአዋጭነት ጥናት፣ የቢዝነስ ዕቅድ፣ የገበያ ጥናት፣ የሂሳብ አያያዝ፣ ፈቃድ እና የሰው ኃይል ድጋፍ፤ ከመነሻ ዋጋቸው ጋር።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "banner",
+          "eyebrow": { "en": "Services and prices", "am": "አገልግሎቶችና ዋጋ" },
+          "heading": { "en": "Clear work for a clear price", "am": "ግልጽ ሥራ በግልጽ ዋጋ" },
+          "subheading": { "en": "Starting prices are below. Your exact price depends on the size of the project and is fixed before we begin.", "am": "መነሻ ዋጋዎቹ ከታች አሉ። ትክክለኛው ዋጋ በፕሮጀክቱ ስፋት ይወሰናል፤ ሥራ ከመጀመራችን በፊትም ይቆረጣል።" },
+          "image": {
+            "src": "/stock/business-hero-addis-street.webp",
+            "alt": { "en": "A busy Addis Ababa avenue lined with glass mid-rise buildings at dusk", "am": "በምሽት የመስታወት ሕንፃዎች የተሰለፉበት የአዲስ አበባ ሰፊ ጎዳና" }
+          },
+          "primaryAction": {
+            "label": { "en": "Request a quote", "am": "ዋጋ ይጠይቁ" },
+            "href": "/#quote"
+          }
+        },
+        {
+          "type": "services",
+          "variant": "list",
+          "eyebrow": { "en": "Starting prices", "am": "መነሻ ዋጋዎች" },
+          "heading": { "en": "What each service includes", "am": "እያንዳንዱ አገልግሎት የሚያካትተው" },
+          "intro": { "en": "Prices are the lowest we charge for each service, before VAT. Accounting is per month.", "am": "ዋጋዎቹ ለእያንዳንዱ አገልግሎት የምናስከፍለው ዝቅተኛው ሲሆኑ ተ.እ.ታን አይጨምሩም። የሂሳብ አያያዝ በወር ነው።" },
+          "items": [
+            {
+              "icon": "chart",
+              "title": { "en": "Feasibility studies", "am": "የአዋጭነት ጥናት" },
+              "description": { "en": "Market, technical and financial study of a new project, in the format banks and the investment commission ask for.", "am": "ለአዲስ ፕሮጀክት የገበያ፣ የቴክኒክና የፋይናንስ ጥናት፤ ባንኮችና የኢንቨስትመንት ኮሚሽን በሚጠይቁት ቅርጸት።" },
+              "price": { "amountMinor": 18000000, "currency": "ETB" }
+            },
+            {
+              "icon": "briefcase",
+              "title": { "en": "Business plans", "am": "የቢዝነስ ዕቅድ" },
+              "description": { "en": "A clear plan with five-year figures, ready for a loan or an investor.", "am": "የአምስት ዓመት አኃዝ ያለው ግልጽ ዕቅድ፤ ለብድር ወይም ለባለሀብት ዝግጁ።" },
+              "price": { "amountMinor": 6000000, "currency": "ETB" }
+            },
+            {
+              "icon": "users",
+              "title": { "en": "Market research", "am": "የገበያ ጥናት" },
+              "description": { "en": "Surveys, competitor checks and demand estimates from the field, not from a desk.", "am": "ከቢሮ ሳይሆን ከመስክ የተሰበሰበ የደንበኛ ዳሰሳ፣ የተወዳዳሪ ቅኝት እና የፍላጎት ግምት።" },
+              "price": { "amountMinor": 12000000, "currency": "ETB" }
+            },
+            {
+              "icon": "book",
+              "title": { "en": "Accounting and tax", "am": "የሂሳብ አያያዝና ግብር" },
+              "description": { "en": "Monthly books, VAT and payroll filed on time, so there are no penalties.", "am": "ወርሃዊ የሂሳብ መዝገብ፣ ተ.እ.ታ እና የደመወዝ ግብር በጊዜው ይገባል፤ ቅጣት የለም።" },
+              "price": { "amountMinor": 1200000, "currency": "ETB" }
+            },
+            {
+              "icon": "key",
+              "title": { "en": "Licences and permits", "am": "ንግድ ፈቃድና ምዝገባ" },
+              "description": { "en": "Company registration, trade licence and investment permit, handled from start to finish.", "am": "የድርጅት ምዝገባ፣ የንግድ ፈቃድ እና የኢንቨስትመንት ፈቃድ ከመጀመሪያ እስከ መጨረሻ እንጨርሳለን።" },
+              "price": { "amountMinor": 2500000, "currency": "ETB" }
+            },
+            {
+              "icon": "handshake",
+              "title": { "en": "People and structure", "am": "የሰው ኃይልና አደረጃጀት" },
+              "description": { "en": "Job descriptions, salary scales and a staff manual that fit the labour law.", "am": "ከአሠሪና ሠራተኛ ሕግ ጋር የሚስማማ የሥራ መዘርዝር፣ የደመወዝ ስኬል እና የሠራተኛ መመሪያ።" },
+              "price": { "amountMinor": 4500000, "currency": "ETB" }
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "eyebrow": { "en": "How we charge", "am": "የክፍያ አሠራር" },
+          "heading": { "en": "One price, agreed with a handshake and a contract", "am": "አንድ ዋጋ፣ በውል የጸና" },
+          "body": { "en": "We do not bill by the hour. You get one price for the whole job, and it does not change unless you change the scope.\n\nYou pay 40% to start and the rest when you have the final report in your hands.", "am": "በሰዓት አናስከፍልም። ለሥራው በሙሉ አንድ ዋጋ ይሰጥዎታል፤ የሥራውን ወሰን እርስዎ ካልቀየሩ በቀር አይለወጥም።\n\nሥራ ሲጀመር 40%፣ ቀሪውን ደግሞ የመጨረሻው ሪፖርት እጅዎ ሲገባ ይከፍላሉ።" },
+          "image": {
+            "src": "/stock/business-gallery-handshake.webp",
+            "alt": { "en": "Close-up of two businesspeople shaking hands in an office", "am": "ሁለት የሥራ ሰዎች ቢሮ ውስጥ እጅ ለእጅ ሲጨባበጡ" }
+          },
+          "imageSide": "start",
+          "highlights": [
+            {
+              "value": { "en": "40%", "am": "40%" },
+              "label": { "en": "to start", "am": "ሥራ ሲጀመር" }
+            },
+            {
+              "value": { "en": "60%", "am": "60%" },
+              "label": { "en": "on delivery", "am": "ሲረከቡ" }
+            }
+          ],
+          "action": {
+            "label": { "en": "Request a quote", "am": "ዋጋ ይጠይቁ" },
+            "href": "/#quote"
+          }
+        },
+        {
+          "type": "faq",
+          "heading": { "en": "Before you ask for a quote", "am": "ዋጋ ከመጠየቅዎ በፊት" },
+          "items": [
+            {
+              "question": { "en": "How long does a feasibility study take?", "am": "የአዋጭነት ጥናት ምን ያህል ጊዜ ይወስዳል?" },
+              "answer": { "en": "Four to eight weeks, depending on how much field work the project needs.", "am": "ፕሮጀክቱ እንደሚጠይቀው የመስክ ሥራ መጠን ከአራት እስከ ስምንት ሳምንት።" }
+            },
+            {
+              "question": { "en": "Will the bank accept your study?", "am": "ባንኩ ጥናታችሁን ይቀበላል?" },
+              "answer": { "en": "We write to the format each bank asks for and go with you to present it. The loan decision is the bank's.", "am": "እያንዳንዱ ባንክ በሚጠይቀው ቅርጸት እንጽፋለን፤ ሲያቀርቡትም አብረንዎ እንገኛለን። ብድሩን የሚወስነው ግን ባንኩ ነው።" }
+            },
+            {
+              "question": { "en": "Do you work outside Addis Ababa?", "am": "ከአዲስ አበባ ውጭ ትሠራላችሁ?" },
+              "answer": { "en": "Yes. We have done field work in Oromia, Amhara, Sidama and Dire Dawa. Travel is included in the price.", "am": "አዎ። በኦሮሚያ፣ በአማራ፣ በሲዳማ እና በድሬዳዋ የመስክ ሥራ ሠርተናል። የጉዞ ወጪ በዋጋው ውስጥ ተካትቷል።" }
+            },
+            {
+              "question": { "en": "My business is small. Is this for me?", "am": "ሥራዬ አነስተኛ ነው። ለእኔ ይሆናል?" },
+              "answer": { "en": "Yes. A business plan for a small shop or workshop starts at 60,000 Birr.", "am": "አዎ። ለአነስተኛ ሱቅ ወይም ወርክሾፕ የቢዝነስ ዕቅድ ከ60,000 ብር ይጀምራል።" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "heading": { "en": "Not sure which service you need?", "am": "የትኛው አገልግሎት እንደሚያስፈልግዎ አላወቁም?" },
+          "body": { "en": "Describe the decision in a few lines. We will point you to the right one.", "am": "ያለብዎትን ውሳኔ በጥቂት መስመር ይግለጹልን። ትክክለኛውን እንጠቁምዎታለን።" },
+          "primaryAction": {
+            "label": { "en": "Request a quote", "am": "ዋጋ ይጠይቁ" },
+            "href": "/#quote"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call us", "am": "ይደውሉልን" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/projects",
+      "title": { "en": "Projects", "am": "ሥራዎች" },
+      "nav": { "en": "Projects", "am": "ሥራዎች" },
+      "description": { "en": "Recent consulting projects by Kokeb Advisory: real estate, trade, manufacturing and retail.", "am": "የኮከብ አማካሪ የቅርብ ጊዜ ሥራዎች፤ በሪል እስቴት፣ በንግድ፣ በማኑፋክቸሪንግ እና በችርቻሮ።" },
+      "sections": [
+        {
+          "type": "cards",
+          "layout": "feature",
+          "eyebrow": { "en": "Selected projects", "am": "የተመረጡ ሥራዎች" },
+          "heading": { "en": "Four projects, four results", "am": "አራት ሥራ፣ አራት ውጤት" },
+          "intro": { "en": "Each one started with a question the owner could not answer alone.", "am": "እያንዳንዱ የጀመረው ባለቤቱ ብቻውን ሊመልሰው ባልቻለ ጥያቄ ነው።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/business-card-construction.webp",
+                "alt": { "en": "Curved multi-storey building under construction with scaffolding and a tower crane", "am": "በግንባታ ላይ ያለ ባለ ብዙ ፎቅ ሕንፃ ከመወጣጫ እና ከክሬን ጋር" }
+              },
+              "badge": { "en": "Real estate", "am": "ሪል እስቴት" },
+              "subtitle": { "en": "Bole, Addis Ababa", "am": "ቦሌ፣ አዲስ አበባ" },
+              "title": { "en": "Feasibility study for a 12-storey building", "am": "ለባለ 12 ፎቅ ሕንፃ የአዋጭነት ጥናት" },
+              "meta": [
+                { "en": "Feasibility study", "am": "የአዋጭነት ጥናት" },
+                { "en": "7 weeks", "am": "7 ሳምንት" }
+              ],
+              "description": { "en": "The developer's bank approved 60% of the building cost on the first application.", "am": "የአልሚው ባንክ በመጀመሪያው ማመልከቻ የግንባታ ወጪውን 60% ብድር ፈቀደ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/business-card-warehouse.webp",
+                "alt": { "en": "Large warehouse aisle with orange pallet racking and workers in hi-vis vests", "am": "ብርቱካናማ መደርደሪያዎች ያሉት ሰፊ መጋዘን እና አንጸባራቂ ሰደርያ የለበሱ ሠራተኞች" }
+              },
+              "badge": { "en": "Import and trade", "am": "አስመጪና ንግድ" },
+              "subtitle": { "en": "Kality, Addis Ababa", "am": "ቃሊቲ፣ አዲስ አበባ" },
+              "title": { "en": "Stock system for a goods importer", "am": "ለአስመጪ ድርጅት የክምችት ሥርዓት" },
+              "meta": [
+                { "en": "Operations", "am": "አሠራር ማሻሻያ" },
+                { "en": "3 months", "am": "3 ወር" }
+              ],
+              "description": { "en": "Orders now leave the warehouse in one day instead of three, with stock counted every week.", "am": "ትዕዛዝ በሦስት ቀን ፋንታ በአንድ ቀን ከመጋዘን ይወጣል፤ ክምችቱም በየሳምንቱ ይቆጠራል።" }
+            },
+            {
+              "image": {
+                "src": "/stock/business-card-analytics.webp",
+                "alt": { "en": "A person in a navy blazer working on a laptop showing pie and bar charts", "am": "ጥቁር ሰማያዊ ኮት የለበሰ ሰው ቻርቶችን በሚያሳይ ላፕቶፕ ላይ ሲሠራ" }
+              },
+              "badge": { "en": "Manufacturing", "am": "ማኑፋክቸሪንግ" },
+              "subtitle": { "en": "Bishoftu, Oromia", "am": "ቢሾፍቱ፣ ኦሮሚያ" },
+              "title": { "en": "Financial model for a dairy plant", "am": "ለወተት ማቀነባበሪያ የፋይናንስ ሞዴል" },
+              "meta": [
+                { "en": "Business plan", "am": "የቢዝነስ ዕቅድ" },
+                { "en": "5 weeks", "am": "5 ሳምንት" }
+              ],
+              "description": { "en": "The owners see cost per litre every month and raised 48 million Birr to add a second line.", "am": "ባለቤቶቹ የአንድ ሊትር ወጪን በየወሩ ያያሉ፤ ሁለተኛ መስመር ለመጨመርም 48 ሚሊዮን ብር አግኝተዋል።" }
+            },
+            {
+              "image": {
+                "src": "/stock/business-card-addis-towers.webp",
+                "alt": { "en": "Glass high-rise towers in Addis Ababa above green trees under a blue sky", "am": "በሰማያዊ ሰማይ ሥር ከአረንጓዴ ዛፎች በላይ የሚታዩ የአዲስ አበባ የመስታወት ሕንፃዎች" }
+              },
+              "badge": { "en": "Retail", "am": "ችርቻሮ ንግድ" },
+              "subtitle": { "en": "Addis Ababa", "am": "አዲስ አበባ" },
+              "title": { "en": "Market study for a supermarket chain", "am": "ለሱፐርማርኬት ሰንሰለት የገበያ ጥናት" },
+              "meta": [
+                { "en": "Market research", "am": "የገበያ ጥናት" },
+                { "en": "6 weeks", "am": "6 ሳምንት" }
+              ],
+              "description": { "en": "We surveyed 1,200 households in four sub-cities. The client opened in the two areas we ranked first.", "am": "በአራት ክፍለ ከተሞች 1,200 አባወራዎችን ጠይቀናል። ደንበኛችን አንደኛ ባወጣናቸው ሁለት አካባቢዎች ቅርንጫፍ ከፍቷል።" }
+            }
+          ]
+        },
+        {
+          "type": "stats",
+          "tone": "soft",
+          "heading": { "en": "Where our work has been", "am": "ሥራችን የደረሰባቸው ዘርፎች" },
+          "items": [
+            {
+              "value": { "en": "96", "am": "96" },
+              "label": { "en": "real estate and construction", "am": "ሪል እስቴትና ግንባታ" }
+            },
+            {
+              "value": { "en": "84", "am": "84" },
+              "label": { "en": "manufacturing and agro-processing", "am": "ማኑፋክቸሪንግና አግሮ ፕሮሰሲንግ" }
+            },
+            {
+              "value": { "en": "77", "am": "77" },
+              "label": { "en": "import, trade and retail", "am": "አስመጪ፣ ንግድና ችርቻሮ" }
+            },
+            {
+              "value": { "en": "63", "am": "63" },
+              "label": { "en": "hotels, health and education", "am": "ሆቴል፣ ጤናና ትምህርት" }
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "quote": { "en": "A good study sometimes says no. That answer has saved our clients more money than any yes.", "am": "ጥሩ ጥናት አንዳንዴ «አይሆንም» ይላል። ይህ መልስ ከየትኛውም «ይሆናል» በላይ ለደንበኞቻችን ገንዘብ አድኗል።" },
+          "name": { "en": "Samuel B.", "am": "ሳሙኤል በ." },
+          "role": { "en": "Managing partner", "am": "ዋና አጋር" }
+        },
+        {
+          "type": "about",
+          "eyebrow": { "en": "After the report", "am": "ከሪፖርቱ በኋላ" },
+          "heading": { "en": "We stay until the deal is signed", "am": "ስምምነቱ እስኪፈረም አብረንዎ ነን" },
+          "body": { "en": "Most of our clients need the study for someone else: a bank, a partner, a regulator. So we come to that meeting with you, answer the technical questions and revise the figures if the terms change.", "am": "አብዛኞቹ ደንበኞቻችን ጥናቱን የሚፈልጉት ለሌላ አካል ነው፤ ለባንክ፣ ለሸሪክ ወይም ለተቆጣጣሪ መሥሪያ ቤት። ስለዚህ በዚያ ስብሰባ ላይ አብረንዎ እንገኛለን፣ የቴክኒክ ጥያቄዎችን እንመልሳለን፣ ሁኔታዎች ከተቀየሩም አኃዙን እናስተካክላለን።" },
+          "image": {
+            "src": "/stock/business-about-handshake-team.webp",
+            "alt": { "en": "Three formally dressed men laughing and shaking hands outdoors", "am": "ሙሉ ልብስ የለበሱ ሦስት ወንዶች ከቤት ውጭ እየሳቁ ሲጨባበጡ" }
+          },
+          "imageSide": "end",
+          "action": {
+            "label": { "en": "Request a quote", "am": "ዋጋ ይጠይቁ" },
+            "href": "/#quote"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": { "en": "Contact", "am": "ያግኙን" },
+      "nav": { "en": "Contact", "am": "ያግኙን" },
+      "description": { "en": "Call, write or visit Kokeb Advisory in Kazanchis, Addis Ababa.", "am": "ኮከብ አማካሪን ይደውሉ፣ ይጻፉ ወይም ካዛንቺስ ቢሯችን ይምጡ።" },
+      "sections": [
+        {
+          "type": "contact",
+          "heading": { "en": "Talk to a partner", "am": "ከአጋራችን ጋር ይነጋገሩ" },
+          "intro": { "en": "Call or write on Telegram. For a meeting, tell us a day and we will keep an hour for you.", "am": "ይደውሉ ወይም በቴሌግራም ይጻፉ። ለስብሰባ የሚመችዎትን ቀን ይንገሩን፤ አንድ ሰዓት እንይዝልዎታለን።" }
+        },
+        {
+          "type": "form",
+          "id": "message",
+          "kind": "contact",
+          "heading": { "en": "Send a message", "am": "መልእክት ይላኩ" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "message",
+              "label": { "en": "How can we help?", "am": "ምን እንርዳዎ?" },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": { "en": "Send", "am": "ላክ" },
+          "successMessage": { "en": "Thank you. We will answer within one working day.", "am": "እናመሰግናለን። በአንድ የሥራ ቀን ውስጥ እንመልሳለን።" }
+        },
+        {
+          "type": "map",
+          "heading": { "en": "Our office in Kazanchis", "am": "የካዛንቺስ ቢሯችን" },
+          "query": "Kazanchis, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

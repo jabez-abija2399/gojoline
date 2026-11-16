@@ -32,6 +32,10 @@ export interface CloudStore {
   /** Owner-scoped. */
   listSubmissions(ownerId: string, projectId: string, limit?: number): Promise<Submission[]>;
   markRead(ownerId: string, projectId: string, ids: string[]): Promise<void>;
+  /** Owner-scoped exact counts (no row limit). */
+  countSubmissions(ownerId: string, projectId: string): Promise<{ total: number; unread: number }>;
+  /** Owner-scoped number of answers per Addis Ababa day since a moment ("YYYY-MM-DD"), counted by the database. */
+  answersPerDay(ownerId: string, projectId: string, since: Date): Promise<{ day: string; count: number }[]>;
 }
 
 /** Tells the owner about a new submission (Telegram in Slice 5). */

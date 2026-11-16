@@ -20,7 +20,9 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   if (info.project.name === "mobile") await page.getByRole("button", { name: "More" }).click();
   await page.getByRole("link", { name: "Dashboard" }).click();
   await expect(page.getByText("Your site's dashboard")).toBeVisible();
-  await expect(page.getByText("No answers yet")).toBeVisible();
+  // The overview comes first; with no answers yet it says so.
+  await expect(page.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("region", { name: "Latest answers" }).getByText("No answers yet")).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 
   await page.getByRole("link", { name: "Prices and lists" }).click();
@@ -60,4 +62,52 @@ test("another owner can't see a dashboard", async ({ page, browser }) => {
   expect((await other.request.get(`/api/projects/${id}/submissions`)).status()).toBe(404);
   expect((await other.request.get(`/api/projects/${id}/lists`)).status()).toBe(404);
   await other.close();
+});
+
+test("overview: live status, real numbers, latest answers and what to do next", async ({ page, browser }, info) => {
+  await signIn(page);
+  await page.getByRole("button", { name: "Start a new site" }).click();
+  const chat = page.getByRole("textbox", { name: "Your message" });
+  await chat.fill("Bole Buna");
+  await chat.press("Enter");
+  await expect(page.getByText("Saved as version 1").first()).toBeVisible();
+  const projectId = page.url().split("/").pop()!;
+  await page.getByRole("button", { name: "Publish", exact: true }).click();
+  await expect(page.getByLabel("Your site's address")).toHaveValue(/\w/);
+  await page.getByLabel("Your site's address").fill(`overview-${info.project.name}-${Date.now().toString(36)}`);
+  await page.getByRole("button", { name: "Publish now" }).click();
+  await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeVisible();
+
+  const seeded = await page.request.post("/api/test/answers", { data: { projectId, count: 3 } });
+  expect(seeded.status()).toBe(200);
+  await page.goto(`/en/dashboard/${projectId}`);
+
+  await expect(page.getByRole("heading", { name: "Your site is live" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Copy link" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Share on Telegram" })).toHaveAttribute("href", /^https:\/\/t\.me\/share\/url\?url=https/);
+  const kpi = (label: string) => page.getByRole("listitem").filter({ hasText: label });
+  await expect(kpi("New answers")).toContainText("3");
+  await expect(kpi("Last 7 days")).toContainText("Your first answers!");
+  await expect(kpi("All answers")).toContainText("3");
+  await expect(page.getByRole("figure").filter({ hasText: "Answers in the last 14 days" })).toBeVisible();
+  const latest = page.getByRole("region", { name: "Latest answers" });
+  await expect(latest.getByText("Abebe Kebede · 0911000000 · 1")).toBeVisible();
+  await expect(latest.getByRole("link").first()).toHaveAttribute("href", /tab=answers/);
+  await expect(latest.getByText("Booking").first()).toBeVisible();
+  // The Answers tab says how many are new.
+  await expect(page.getByRole("navigation").getByRole("link", { name: /Answers 3 New/ })).toBeVisible();
+  // Built and published are ticked; photos, Telegram and an own address are next.
+  const setup = page.getByRole("region", { name: "Make the most of your site" });
+  await expect(setup.getByText("2 of 5 done")).toBeVisible();
+  await expect(setup.getByRole("link", { name: /Add your photos/ })).toHaveAttribute("href", /tab=photos/);
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+
+  // Someone else signed in can neither see this dashboard nor add answers to it.
+  const otherContext = await browser.newContext();
+  const stranger = await otherContext.newPage();
+  await signIn(stranger);
+  expect((await stranger.goto(`/en/dashboard/${projectId}`))?.status()).toBe(404);
+  expect((await stranger.request.post("/api/test/answers", { data: { projectId, count: 1 } })).status()).toBe(404);
+  await otherContext.close();
 });

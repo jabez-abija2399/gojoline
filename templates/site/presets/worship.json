@@ -1,644 +1,705 @@
 {
-  "name": {
-    "en": "Tesfa Church",
-    "am": "ተስፋ ቤተ ክርስቲያን"
-  },
-  "tagline": {
-    "en": "A place of worship, prayer and community in Gerji",
-    "am": "በገርጂ የአምልኮ፣ የጸሎት እና የኅብረት ቦታ"
-  },
+  "name": { "en": "Debre Tesfa St. Mary", "am": "ደብረ ተስፋ ቅድስት ማርያም" },
+  "tagline": { "en": "Debre Tesfa St. Mary Ethiopian Orthodox Tewahedo Church, Gerji, Addis Ababa", "am": "ደብረ ተስፋ ቅድስት ማርያም የኢትዮጵያ ኦርቶዶክስ ተዋሕዶ ቤተ ክርስቲያን፣ ገርጂ፣ አዲስ አበባ" },
   "languages": [
     "en",
     "am"
   ],
-  "theme": {
-    "primary": "#1E4D8C",
-    "accent": "#8A6A1F",
-    "background": "#F8F6F1",
-    "text": "#1C1C24",
-    "font": "classic",
-    "radius": "small"
-  },
+  "theme": { "primary": "#8B1E2D", "accent": "#2A1215", "background": "#FAF5EA", "text": "#231A17", "font": "classic", "radius": "small", "style": "warm" },
   "business": {
     "phone": "+251 911 000 000",
-    "telegram": "yourchurch",
-    "address": {
-      "en": "Gerji, Addis Ababa",
-      "am": "ገርጂ፣ አዲስ አበባ"
-    },
+    "telegram": "yourbusiness",
+    "address": { "en": "Gerji, near the Mebrat Hail roundabout, Addis Ababa", "am": "ገርጂ፣ መብራት ኃይል አደባባይ አጠገብ፣ አዲስ አበባ" },
     "hours": [
       {
-        "days": {
-          "en": "Sunday worship",
-          "am": "የእሑድ አምልኮ"
-        },
-        "time": {
-          "en": "8:00 am to 12:30 pm",
-          "am": "ከጠዋቱ 2 እስከ ቀኑ 6:30"
-        }
+        "days": { "en": "Sunday Liturgy (Kidase)", "am": "የእሑድ ቅዳሴ" },
+        "time": { "en": "6:00 to 9:00 am", "am": "ከጠዋቱ 12 እስከ 3 ሰዓት" }
       },
       {
-        "days": {
-          "en": "Wednesday prayer",
-          "am": "የረቡዕ ጸሎት"
-        },
-        "time": {
-          "en": "6:00 pm to 8:00 pm",
-          "am": "ከምሽቱ 12 እስከ ምሽቱ 2 ሰዓት"
-        }
+        "days": { "en": "Church compound, every day", "am": "ግቢው፣ በየቀኑ" },
+        "time": { "en": "5:00 am to 7:00 pm", "am": "ከንጋቱ 11 እስከ ምሽቱ 1" }
       },
       {
-        "days": {
-          "en": "Friday youth service",
-          "am": "የዓርብ የወጣቶች ፕሮግራም"
-        },
-        "time": {
-          "en": "5:30 pm to 7:30 pm",
-          "am": "ከቀኑ 11:30 እስከ ምሽቱ 1:30"
-        }
-      },
-      {
-        "days": {
-          "en": "Office, Monday to Friday",
-          "am": "ቢሮ፣ ከሰኞ እስከ ዓርብ"
-        },
-        "time": {
-          "en": "9:00 am to 5:00 pm",
-          "am": "ከጠዋቱ 3 እስከ ቀኑ 11 ሰዓት"
-        }
+        "days": { "en": "Parish office, Monday to Saturday", "am": "ቢሮ፣ ከሰኞ እስከ ቅዳሜ" },
+        "time": { "en": "8:30 am to 5:00 pm", "am": "ከጠዋቱ 2:30 እስከ 11 ሰዓት" }
       }
     ]
   },
   "pages": [
     {
       "path": "/",
-      "title": {
-        "en": "Home",
-        "am": "መነሻ"
-      },
-      "nav": {
-        "en": "Home",
-        "am": "መነሻ"
-      },
-      "description": {
-        "en": "Service and prayer times, community programs and how to reach Tesfa Church in Gerji.",
-        "am": "የአምልኮ እና የጸሎት ሰዓቶች፣ የኅብረት ፕሮግራሞች እና ተስፋ ቤተ ክርስቲያንን በገርጂ የሚያገኙበት መንገድ።"
-      },
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Home", "am": "መነሻ" },
+      "description": { "en": "Liturgy and prayer times, feast days, Sunday school and how to reach Debre Tesfa St. Mary Church in Gerji, Addis Ababa.", "am": "የቅዳሴና የጸሎት ሰዓቶች፣ በዓላት፣ ሰንበት ትምህርት ቤት እና በገርጂ የምትገኘውን ደብረ ተስፋ ቅድስት ማርያም ቤተ ክርስቲያንን የሚያገኙበት መንገድ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "immersive",
+          "eyebrow": { "en": "In the name of the Father, the Son and the Holy Spirit, one God", "am": "በስመ አብ ወወልድ ወመንፈስ ቅዱስ አሐዱ አምላክ" },
+          "heading": { "en": "Welcome to the house of the Lord", "am": "ወደ እግዚአብሔር ቤት እንኳን ደህና መጡ" },
+          "subheading": { "en": "An Ethiopian Orthodox Tewahedo parish in Gerji. Liturgy, prayer and teaching every day of the week.", "am": "በገርጂ የምትገኝ የኢትዮጵያ ኦርቶዶክስ ተዋሕዶ ቤተ ክርስቲያን። ቅዳሴ፣ ጸሎትና ትምህርት በየዕለቱ።" },
+          "image": {
+            "src": "/stock/worship-hero-golden-dome-church.webp",
+            "alt": { "en": "Golden domes topped with Ethiopian crosses rising above green trees", "am": "ከአረንጓዴ ዛፎች በላይ የሚታዩ መስቀል ያለባቸው ወርቃማ ጉልላቶች" }
+          },
+          "primaryAction": {
+            "label": { "en": "Service times", "am": "የአገልግሎት ሰዓት" },
+            "href": "/#times"
+          },
+          "secondaryAction": {
+            "label": { "en": "Plan your visit", "am": "ለመጀመሪያ ጊዜ ሲመጡ" },
+            "href": "/visit"
+          },
+          "facts": [
+            {
+              "value": { "en": "Sunday 6:00 am", "am": "እሑድ 12 ሰዓት" },
+              "label": { "en": "Divine Liturgy", "am": "ቅዳሴ" }
+            },
+            {
+              "value": { "en": "Daily 5:00 pm", "am": "በየቀኑ 11 ሰዓት" },
+              "label": { "en": "Evening teaching", "am": "ሰርክ ጉባኤ" }
+            },
+            {
+              "value": { "en": "The 21st", "am": "ወር በገባ በ21" },
+              "label": { "en": "St. Mary's monthly feast", "am": "የእመቤታችን ወርኃዊ በዓል" }
+            }
+          ]
+        },
+        {
+          "type": "schedule",
+          "id": "times",
+          "layout": "list",
+          "eyebrow": { "en": "This week", "am": "በዚህ ሳምንት" },
+          "heading": { "en": "Service times", "am": "የአገልግሎት ሰዓት" },
+          "intro": { "en": "Come as early as you can; the prayers begin before the Liturgy. Everyone is welcome to stand with us.", "am": "በተቻለዎ መጠን ቀደም ብለው ይምጡ፤ ጸሎቱ ከቅዳሴው በፊት ይጀምራል። ሁሉም አብሮን እንዲቆም ተጋብዟል።" },
+          "items": [
+            {
+              "time": { "en": "6:00 am", "am": "ጠዋት 12:00" },
+              "title": { "en": "Sunday Divine Liturgy (Kidase)", "am": "የእሑድ ቅዳሴ" },
+              "note": { "en": "Until 9:00 am, followed by the sermon and announcements.", "am": "እስከ ጠዋቱ 3 ሰዓት፤ ከዚያ ስብከተ ወንጌልና ማስታወቂያ።" }
+            },
+            {
+              "time": { "en": "2:00 pm", "am": "ቀን 8:00" },
+              "title": { "en": "Sunday school", "am": "ሰንበት ትምህርት ቤት" },
+              "note": { "en": "Every Sunday. Classes for children, teenagers and young adults.", "am": "ዘወትር እሑድ። ለሕፃናት፣ ለታዳጊዎችና ለወጣቶች የሚሰጥ ትምህርት።" }
+            },
+            {
+              "time": { "en": "5:30 am", "am": "ንጋት 11:30" },
+              "title": { "en": "Morning prayer (Kidan)", "am": "የጠዋት ኪዳን" },
+              "note": { "en": "Every day. A short dawn service before work.", "am": "በየቀኑ። ከሥራ በፊት በንጋት የሚደረስ አጭር ጸሎት።" }
+            },
+            {
+              "time": { "en": "5:00 pm", "am": "ቀን 11:00" },
+              "title": { "en": "Evening teaching (Serk Gubae)", "am": "ሰርክ ጉባኤ" },
+              "note": { "en": "Every day. Hymns, a Gospel lesson and evening prayer, about one hour.", "am": "በየቀኑ። መዝሙር፣ የወንጌል ትምህርትና የሠርክ ጸሎት፤ አንድ ሰዓት ገደማ።" }
+            },
+            {
+              "time": { "en": "12 noon", "am": "ቀን 6:00" },
+              "title": { "en": "Fasting-day Liturgy", "am": "የጾም ቀን ቅዳሴ" },
+              "note": { "en": "Until 3:00 pm on Wednesdays, Fridays and during the fasts.", "am": "በረቡዕ፣ በዓርብና በአጽዋማት እስከ ቀኑ 9 ሰዓት።" }
+            },
+            {
+              "time": { "en": "The 21st", "am": "ወር በገባ በ21" },
+              "title": { "en": "Monthly feast of St. Mary", "am": "የእመቤታችን ወርኃዊ በዓል" },
+              "note": { "en": "Night vigil (Mahlet) from the evening before, Liturgy at dawn.", "am": "ከዋዜማው ምሽት ጀምሮ ማኅሌት፣ በንጋት ቅዳሴ።" }
+            }
+          ],
+          "footnote": { "en": "On the great feasts the Liturgy is celebrated at night. Changes are announced after the Sunday Liturgy and on our Telegram channel.", "am": "በታላላቅ በዓላት ቅዳሴው በሌሊት ይቀደሳል። ለውጥ ሲኖር ከእሑድ ቅዳሴ በኋላና በቴሌግራም ቻናላችን እናሳውቃለን።" }
+        },
+        {
+          "type": "about",
+          "eyebrow": { "en": "Welcome", "am": "እንኳን ደህና መጡ" },
+          "heading": { "en": "A parish that feels like family", "am": "እንደ ቤተሰብ የምትቀበል ደብር" },
+          "body": { "en": "Debre Tesfa St. Mary has served the families of Gerji for three generations. Here children learn their first hymns, couples are crowned, and the departed are remembered in prayer.\n\nIf this is your first time, or your first time in many years, come as you are. A deacon or a Sunday school member at the gate will gladly show you where to stand.", "am": "ደብረ ተስፋ ቅድስት ማርያም የገርጂን ምእመናን ለሦስት ትውልድ አገልግላለች። ሕፃናት የመጀመሪያ መዝሙራቸውን የሚማሩት፣ ሙሽሮች በተክሊል የሚጋቡት፣ ያረፉትም በጸሎት የሚታሰቡት እዚሁ ነው።\n\nለመጀመሪያ ጊዜ ቢመጡም፣ ከብዙ ዓመታት በኋላ ቢመለሱም እንዳሉ ይምጡ። በበሩ ላይ ያለ ዲያቆን ወይም የሰንበት ትምህርት ቤት አባል የሚቆሙበትን በደስታ ያሳይዎታል።" },
+          "image": {
+            "src": "/stock/worship-about-priests-drum-lalibela.webp",
+            "alt": { "en": "Priests and deacons in white robes with prayer staffs, seated beside a large kebero drum", "am": "ነጭ የለበሱ ካህናትና ዲያቆናት መቋሚያ ይዘው ከትልቅ ከበሮ አጠገብ ተቀምጠው" }
+          },
+          "imageSide": "end",
+          "points": [
+            { "en": "The Liturgy is in Ge'ez and Amharic", "am": "ቅዳሴው በግእዝና በአማርኛ ይቀደሳል" },
+            { "en": "Children are welcome at every service", "am": "ሕፃናት በማንኛውም አገልግሎት መገኘት ይችላሉ" },
+            { "en": "Priests are available for confession and counsel after the Liturgy", "am": "ከቅዳሴ በኋላ ካህናት ለንስሐና ለምክር ይገኛሉ" }
+          ],
+          "action": {
+            "label": { "en": "Your first visit", "am": "ለመጀመሪያ ጊዜ ሲመጡ" },
+            "href": "/visit"
+          }
+        },
+        {
+          "type": "cards",
+          "id": "ministries",
+          "layout": "grid",
+          "eyebrow": { "en": "Parish life", "am": "የደብሩ አገልግሎት" },
+          "heading": { "en": "Find your place in the parish", "am": "በደብሩ ውስጥ ቦታዎን ያግኙ" },
+          "intro": { "en": "Worship does not end on Sunday morning. These are the ways our members learn, serve and care for one another.", "am": "አገልግሎት በእሑድ ጠዋት አያበቃም። ምእመናን የሚማሩባቸው፣ የሚያገለግሉባቸውና የሚረዳዱባቸው መንገዶች እነዚህ ናቸው።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/worship-gallery-timkat-drummer.webp",
+                "alt": { "en": "A smiling boy carrying a kebero drum past a clapping line of white-clad choir members", "am": "ከበሮ የያዘ ፈገግተኛ ልጅ ነጭ ከለበሱ አጨብጫቢ መዘምራን ፊት ሲያልፍ" }
+              },
+              "title": { "en": "Sunday school", "am": "ሰንበት ትምህርት ቤት" },
+              "subtitle": { "en": "Ages 4 and up", "am": "ከ4 ዓመት ጀምሮ" },
+              "description": { "en": "Hymns, the faith of the Church and the lives of the saints, taught by age group every Sunday afternoon.", "am": "መዝሙር፣ የቤተ ክርስቲያን ትምህርተ ሃይማኖትና የቅዱሳን ታሪክ በየዕድሜ ክፍሉ፣ እሑድ ከሰዓት።" },
+              "action": {
+                "label": { "en": "See the classes", "am": "ክፍሎቹን ይመልከቱ" },
+                "href": "/sunday-school"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/worship-about-priest-candle.webp",
+                "alt": { "en": "An elderly man in a white turban and purple shawl holding a lit taper candle", "am": "ነጭ ጥምጣምና ወይን ጠጅ ካባ የለበሱ አረጋዊ የበራ ጧፍ ይዘው" }
+              },
+              "title": { "en": "Baptism, wedding, memorial", "am": "ክርስትና፣ ተክሊል፣ ፍትሐት" },
+              "subtitle": { "en": "The Church beside you", "am": "ቤተ ክርስቲያን ከጎንዎ" },
+              "description": { "en": "From a child's baptism to a memorial prayer, the parish office arranges each service with you.", "am": "ከሕፃን ክርስትና እስከ ተዝካር ጸሎት፣ እያንዳንዱን አገልግሎት የደብሩ ቢሮ ከእርስዎ ጋር ያመቻቻል።" },
+              "action": {
+                "label": { "en": "Ask the parish office", "am": "ቢሮውን ይጠይቁ" },
+                "href": "/services#request"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/worship-card-bible-prayer-hands.webp",
+                "alt": { "en": "Clasped hands resting on an open Bible on a wooden table", "am": "በእንጨት ጠረጴዛ ላይ በተከፈተ መጽሐፍ ቅዱስ ላይ የተጣመሩ እጆች" }
+              },
+              "title": { "en": "Gospel teaching", "am": "ስብከተ ወንጌል" },
+              "subtitle": { "en": "Every evening at 5:00", "am": "በየምሽቱ በ11 ሰዓት" },
+              "description": { "en": "A daily lesson from the Gospel, and a longer Bible study for adults on Saturday afternoons.", "am": "በየዕለቱ የወንጌል ትምህርት፤ ቅዳሜ ከሰዓት ደግሞ ለአዋቂዎች ሰፋ ያለ የመጽሐፍ ቅዱስ ጥናት።" }
+            },
+            {
+              "image": {
+                "src": "/stock/ngo-about-women-group.webp",
+                "alt": { "en": "Four women in white netela shawls and a girl holding a red flower standing together", "am": "ነጭ ነጠላ የለበሱ አራት ሴቶችና ቀይ አበባ የያዘች ልጅ አብረው ቆመው" }
+              },
+              "title": { "en": "Works of mercy", "am": "ምግባረ ሠናይ" },
+              "subtitle": { "en": "Caring for our neighbours", "am": "ለተቸገሩ መድረስ" },
+              "description": { "en": "Meals for the elderly, school materials for children and visits to the sick, organised by parish volunteers.", "am": "ለአረጋውያን ምግብ፣ ለሕፃናት የትምህርት ቁሳቁስ እና ሕሙማንን መጠየቅ፤ በደብሩ በጎ ፈቃደኞች የሚከናወን።" }
+            },
+            {
+              "image": {
+                "src": "/stock/cafe-gallery-bread-baskets.webp",
+                "alt": { "en": "Hands cutting round ceremonial bread in a woven basket", "am": "በመሶብ ውስጥ ድፎ ዳቦ የሚቆርሱ እጆች" }
+              },
+              "title": { "en": "Senbete fellowship", "am": "ሰንበቴ" },
+              "subtitle": { "en": "After the Sunday Liturgy", "am": "ከእሑድ ቅዳሴ በኋላ" },
+              "description": { "en": "Members share blessed bread and a meal in the compound, and newcomers are always invited to sit down.", "am": "አባላት በግቢው ውስጥ ጸበል ጸዲቅ ይቋደሳሉ፤ አዲስ የመጣም ሁሌ እንዲቀመጥ ይጋበዛል።" }
+            },
+            {
+              "image": {
+                "src": "/stock/worship-hero-lalibela-st-george.webp",
+                "alt": { "en": "The rock-hewn Church of St George in Lalibela, with two white-robed men on its steps", "am": "በላሊበላ የሚገኘው ከዓለት የተፈለፈለው ቤተ ጊዮርጊስ፣ ነጭ የለበሱ ሁለት ሰዎች በደረጃው ላይ" }
+              },
+              "title": { "en": "Pilgrimage to Lalibela", "am": "መንፈሳዊ ጉዞ ወደ ላሊበላ" },
+              "subtitle": { "en": "For the feast of the Nativity", "am": "ለልደት በዓል" },
+              "badge": { "en": "Places open", "am": "ምዝገባ ተጀምሯል" },
+              "meta": [
+                { "en": "5 days", "am": "5 ቀን" },
+                { "en": "By bus", "am": "በአውቶቡስ" }
+              ],
+              "description": { "en": "The parish travels together each year. Transport, lodging and fasting meals are arranged for you.", "am": "ደብሩ በየዓመቱ በጋራ ይጓዛል። መጓጓዣ፣ ማረፊያና የጾም ምግብ ይዘጋጃል።" },
+              "price": { "amountMinor": 750000, "currency": "ETB" },
+              "priceNote": { "en": "per person", "am": "ለአንድ ሰው" },
+              "action": {
+                "label": { "en": "Ask the parish office", "am": "ቢሮውን ይጠይቁ" },
+                "href": "/services#request"
+              }
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "quote": { "en": "I was glad when they said to me, \"Let us go to the house of the Lord.\"", "am": "“ወደ እግዚአብሔር ቤት እንሂድ” ባሉኝ ጊዜ ደስ አለኝ።" },
+          "name": { "en": "Psalm 122:1", "am": "መዝሙረ ዳዊት 121(122)፥1" },
+          "image": {
+            "src": "/stock/tours-card-lalibela-monk.webp",
+            "alt": { "en": "A monk in a yellow robe reading beside a cross-shaped window of a rock-hewn church", "am": "ቢጫ የለበሱ መነኩሴ ከዓለት በተፈለፈለ ቤተ ክርስቲያን የመስቀል ቅርጽ መስኮት አጠገብ ሲያነቡ" }
+          }
+        },
+        {
+          "type": "schedule",
+          "id": "feasts",
+          "layout": "tiles",
+          "eyebrow": { "en": "Coming up", "am": "በቅርቡ" },
+          "heading": { "en": "Feasts and fasts ahead", "am": "የሚመጡ በዓላትና አጽዋማት" },
+          "intro": { "en": "The next dates in the Church calendar, and how we keep them here.", "am": "በቤተ ክርስቲያን ቀን መቁጠሪያ የሚቀጥሉት ቀናትና በደብራችን የሚከበሩበት ሁኔታ።" },
+          "items": [
+            {
+              "time": { "en": "Nov 30", "am": "ኅዳር 21" },
+              "title": { "en": "Hidar Tsion", "am": "ኅዳር ጽዮን" },
+              "note": { "en": "Our annual feast. Vigil from 9:00 pm the night before; the Tabot goes out after the Liturgy.", "am": "ዓመታዊ የንግሥ በዓላችን። ከዋዜማው ምሽት 3 ሰዓት ጀምሮ ማኅሌት፤ ከቅዳሴ በኋላ ታቦተ ሕጉ ይወጣል።" }
+            },
+            {
+              "time": { "en": "Jan 7", "am": "ታኅሣሥ 29" },
+              "title": { "en": "Nativity (Genna)", "am": "ልደት (ገና)" },
+              "note": { "en": "Night Liturgy from 10:00 pm on the eve. The fast of the Prophets ends.", "am": "በዋዜማው ከምሽቱ 4 ሰዓት ጀምሮ የሌሊት ቅዳሴ። ጾመ ነቢያት ይፈታል።" }
+            },
+            {
+              "time": { "en": "Jan 19", "am": "ጥር 11" },
+              "title": { "en": "Epiphany (Timkat)", "am": "ጥምቀት" },
+              "note": { "en": "The Tabot leaves for the baptismal pool on the eve (Ketera) at 2:00 pm.", "am": "በከተራ ዕለት ከቀኑ 8 ሰዓት ታቦቱ ወደ ባሕረ ጥምቀት ይወርዳል።" }
+            },
+            {
+              "time": { "en": "Jan 29", "am": "ጥር 21" },
+              "title": { "en": "Asteryo Mariam", "am": "አስተርእዮ ማርያም" },
+              "note": { "en": "The feast of the Dormition of St. Mary. Liturgy at dawn.", "am": "የእመቤታችን የዕረፍት በዓል። ቅዳሴ በንጋት።" }
+            }
+          ],
+          "footnote": { "en": "The fast of the Prophets (Advent) runs from 24 November to the eve of the Nativity.", "am": "ጾመ ነቢያት ከኅዳር 15 ጀምሮ እስከ ልደት ዋዜማ ይጾማል።" }
+        },
+        {
+          "type": "services",
+          "id": "giving",
+          "variant": "numbered",
+          "eyebrow": { "en": "Giving", "am": "አሥራትና መባ" },
+          "heading": { "en": "Give to the work of the Church", "am": "ለቤተ ክርስቲያን አገልግሎት ይስጡ" },
+          "intro": { "en": "\"God loves a cheerful giver.\" Choose where your gift goes. Give at the parish office after any service, or ask us for the bank and Telebirr details. Vows, candles, incense and raisins for the altar are received at the gate office.", "am": "“እግዚአብሔር በደስታ የሚሰጠውን ይወዳል።” ስጦታዎ የት እንደሚውል ይምረጡ። ከማንኛውም አገልግሎት በኋላ በደብሩ ቢሮ መስጠት ወይም የባንክና የቴሌብር ቁጥሩን መጠየቅ ይችላሉ። ስእለት፣ ጧፍ፣ ዕጣንና ዘቢብ በበሩ ላይ ባለው ቢሮ ይቀበላሉ።" },
+          "items": [
+            {
+              "icon": "church",
+              "title": { "en": "Tithes and offerings", "am": "አሥራት፣ በኩራትና መባ" },
+              "description": { "en": "Keeps the daily services going: the clergy, incense, candles and the upkeep of the church.", "am": "ዕለታዊውን አገልግሎት ያስቀጥላል፤ ለካህናት፣ ለዕጣን፣ ለጧፍና ለቤተ ክርስቲያኑ እንክብካቤ።" }
+            },
+            {
+              "icon": "building",
+              "title": { "en": "Building fund", "am": "የሕንፃ ማሠሪያ" },
+              "description": { "en": "For the new Sunday school hall and the repair of the compound wall.", "am": "ለአዲሱ የሰንበት ትምህርት ቤት አዳራሽና ለግቢው አጥር እድሳት።" }
+            },
+            {
+              "icon": "heart",
+              "title": { "en": "Works of mercy", "am": "ምግባረ ሠናይ" },
+              "description": { "en": "Feeds elderly neighbours each week and helps children stay in school.", "am": "አረጋውያን ጎረቤቶቻችንን በየሳምንቱ ይመግባል፤ ሕፃናት ትምህርታቸውን እንዲቀጥሉ ይረዳል።" }
+            }
+          ]
+        },
+        {
+          "type": "contact",
+          "heading": { "en": "Visit or call the parish", "am": "ይምጡ ወይም ይደውሉ" },
+          "intro": { "en": "The parish office answers questions about services, baptism, weddings and memorial prayers.", "am": "የደብሩ ቢሮ ስለ አገልግሎት፣ ስለ ክርስትና፣ ስለ ተክሊልና ስለ ተዝካር ጸሎት ለሚነሱ ጥያቄዎች መልስ ይሰጣል።" }
+        },
+        {
+          "type": "map",
+          "heading": { "en": "Find us in Gerji", "am": "በገርጂ ያገኙናል" },
+          "query": "Gerji, Addis Ababa"
+        },
+        {
+          "type": "cta",
+          "heading": { "en": "Come and pray with us", "am": "ኑ፣ አብረን እንጸልይ" },
+          "body": { "en": "The doors open before dawn every day. Whoever you are, there is a place for you here.", "am": "በሩ በየቀኑ ከንጋት በፊት ይከፈታል። ማንም ቢሆኑ እዚህ ቦታ አለዎት።" },
+          "image": {
+            "src": "/stock/worship-card-processional-cross.webp",
+            "alt": { "en": "An ornate silver Ethiopian processional cross inside a church", "am": "በቤተ ክርስቲያን ውስጥ ያለ ያጌጠ የብር መስቀል" }
+          },
+          "primaryAction": {
+            "label": { "en": "Service times", "am": "የአገልግሎት ሰዓት" },
+            "href": "/#times"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call the office", "am": "ወደ ቢሮ ይደውሉ" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/services",
+      "title": { "en": "Baptism, weddings and memorials", "am": "ክርስትና፣ ተክሊልና ፍትሐት" },
+      "nav": { "en": "Services", "am": "አገልግሎቶች" },
+      "description": { "en": "How to arrange a baptism, a church wedding, a memorial prayer or a visit from a priest at Debre Tesfa St. Mary Church.", "am": "በደብረ ተስፋ ቅድስት ማርያም ቤተ ክርስቲያን ክርስትና፣ ተክሊል፣ የተዝካር ጸሎት ወይም የካህን ጉብኝት እንዴት እንደሚያመቻቹ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "banner",
+          "eyebrow": { "en": "Sacraments and prayers", "am": "ምሥጢራትና ጸሎት" },
+          "heading": { "en": "The Church beside you, in joy and in grief", "am": "በደስታም በሐዘንም ቤተ ክርስቲያን ከጎንዎ ናት" },
+          "subheading": { "en": "Tell the parish office what you need, and a priest will guide you through each step.", "am": "የሚያስፈልግዎትን ለደብሩ ቢሮ ይንገሩ፤ ካህን በእያንዳንዱ ደረጃ ይመራዎታል።" },
+          "image": {
+            "src": "/stock/worship-card-processional-cross.webp",
+            "alt": { "en": "An ornate silver Ethiopian processional cross inside a church", "am": "በቤተ ክርስቲያን ውስጥ ያለ ያጌጠ የብር መስቀል" }
+          },
+          "primaryAction": {
+            "label": { "en": "Ask the parish office", "am": "ቢሮውን ይጠይቁ" },
+            "href": "#request"
+          }
+        },
+        {
+          "type": "services",
+          "variant": "numbered",
+          "eyebrow": { "en": "What we arrange", "am": "የምናመቻቸው" },
+          "heading": { "en": "Services for you and your family", "am": "ለእርስዎና ለቤተሰብዎ" },
+          "items": [
+            {
+              "icon": "baby",
+              "title": { "en": "Baptism", "am": "ክርስትና (ጥምቀት)" },
+              "description": { "en": "Boys are baptised on the 40th day and girls on the 80th, after the Sunday Liturgy. Bring the child's godparent and register at the office in the week before. Adults are baptised after a course of teaching.", "am": "ወንድ ልጅ በ40 ቀኑ፣ ሴት ልጅ በ80 ቀኗ ከእሑድ ቅዳሴ በኋላ ክርስትና ይነሳሉ። የክርስትና አባት ወይም እናት ይዘው፣ ከሳምንት በፊት በቢሮ ይመዝገቡ። አዋቂዎች ከትምህርት በኋላ ይጠመቃሉ።" }
+            },
+            {
+              "icon": "heart",
+              "title": { "en": "Holy matrimony", "am": "ቅዱስ ጋብቻ (ተክሊል)" },
+              "description": { "en": "For Orthodox couples, prepared with their father confessors. Please come to the office at least one month before the date.", "am": "ለኦርቶዶክሳውያን ተጋቢዎች፣ ከንስሐ አባቶቻቸው ጋር ተዘጋጅተው። ቢያንስ ከአንድ ወር በፊት ወደ ቢሮ ይምጡ።" }
+            },
+            {
+              "icon": "book",
+              "title": { "en": "Confession and counsel", "am": "ንስሐና ምክር" },
+              "description": { "en": "Priests are in the compound after every Liturgy. We can also introduce you to a father confessor.", "am": "ከቅዳሴ በኋላ ካህናት በግቢው ይገኛሉ። የንስሐ አባት እንዲኖርዎትም እናገናኝዎታለን።" }
+            },
+            {
+              "icon": "flower",
+              "title": { "en": "Funeral and memorial prayers", "am": "ፍትሐትና ተዝካር" },
+              "description": { "en": "Funeral prayers on the day, and memorials on the third and fortieth days and at one year. Call us at any hour.", "am": "በዕለቱ ጸሎተ ፍትሐት፤ በሣልስት፣ በአርባና በሙት ዓመት የመታሰቢያ ጸሎት። በማንኛውም ሰዓት ይደውሉ።" }
+            },
+            {
+              "icon": "droplet",
+              "title": { "en": "Prayer for the sick", "am": "ለሕሙማን ጸሎት" },
+              "description": { "en": "Holy water in the compound each morning, and a priest to visit and pray at home or in hospital.", "am": "በየጠዋቱ በግቢው ጠበል፤ በቤት ወይም በሆስፒታል መጥቶ የሚጸልይ ካህን።" }
+            },
+            {
+              "icon": "home",
+              "title": { "en": "House blessing", "am": "የቤት ቡራኬ" },
+              "description": { "en": "A priest comes to bless a new home or business with prayer and holy water.", "am": "አዲስ ቤት ወይም የሥራ ቦታ በጸሎትና በጠበል እንዲባረክ ካህን ይመጣል።" }
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "eyebrow": { "en": "Father confessor", "am": "የንስሐ አባት" },
+          "heading": { "en": "Someone to walk with you", "am": "አብሮዎት የሚጓዝ አባት" },
+          "body": { "en": "In the Orthodox tradition every believer has a father confessor: a priest who knows your family, hears your confession and prepares you for Holy Communion.\n\nIf you do not have one yet, or have moved to Gerji from elsewhere, speak to the office. We will introduce you to one of our priests.", "am": "በኦርቶዶክሳዊ ትውፊት እያንዳንዱ ምእመን የንስሐ አባት አለው፤ ቤተሰብዎን የሚያውቅ፣ ንስሐዎን የሚቀበልና ለቅዱስ ቁርባን የሚያዘጋጅዎ ካህን።\n\nእስካሁን የንስሐ አባት ከሌለዎት ወይም ከሌላ ቦታ ወደ ገርጂ ከመጡ ቢሮውን ያነጋግሩ። ከካህናቶቻችን ከአንዱ ጋር እናገናኝዎታለን።" },
+          "image": {
+            "src": "/stock/worship-about-priest-candle.webp",
+            "alt": { "en": "An elderly man in a white turban and purple shawl holding a lit taper candle", "am": "ነጭ ጥምጣምና ወይን ጠጅ ካባ የለበሱ አረጋዊ የበራ ጧፍ ይዘው" }
+          },
+          "imageSide": "start"
+        },
+        {
+          "type": "steps",
+          "eyebrow": { "en": "How it works", "am": "አካሄዱ" },
+          "heading": { "en": "Arranging a service", "am": "አገልግሎት ለማስያዝ" },
+          "items": [
+            {
+              "title": { "en": "Tell us what you need", "am": "የሚፈልጉትን ይንገሩን" },
+              "description": { "en": "Fill in the form below, call, or come to the office after the Liturgy.", "am": "ከታች ያለውን ቅጽ ይሙሉ፣ ይደውሉ ወይም ከቅዳሴ በኋላ ወደ ቢሮ ይምጡ።" }
+            },
+            {
+              "title": { "en": "Meet a priest", "am": "ካህኑን ያግኙ" },
+              "description": { "en": "He explains what the Church asks and what to bring.", "am": "ቤተ ክርስቲያን የምትጠይቀውንና ይዘው የሚመጡትን ያስረዳዎታል።" }
+            },
+            {
+              "title": { "en": "We set the day", "am": "ቀኑ ይወሰናል" },
+              "description": { "en": "The office confirms the date and time by phone.", "am": "ቢሮው ቀኑንና ሰዓቱን በስልክ ያረጋግጥልዎታል።" }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "request",
+          "kind": "booking",
+          "heading": { "en": "Ask the parish office", "am": "ቢሮውን ይጠይቁ" },
+          "intro": { "en": "Leave your number and we will call you back within a day. For a funeral, please phone us directly at any hour.", "am": "ስልክዎን ይተዉልን፤ በአንድ ቀን ውስጥ መልሰን እንደውላለን። ለቀብር ጉዳይ ግን በማንኛውም ሰዓት በቀጥታ ይደውሉ።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "service",
+              "label": { "en": "What is it about?", "am": "ጉዳዩ ምንድን ነው?" },
+              "type": "select",
+              "required": true,
+              "options": [
+                { "en": "Baptism", "am": "ክርስትና" },
+                { "en": "Wedding", "am": "ተክሊል" },
+                { "en": "Memorial prayer", "am": "የተዝካር ጸሎት" },
+                { "en": "Prayer for the sick", "am": "ለሕሙማን ጸሎት" },
+                { "en": "House blessing", "am": "የቤት ቡራኬ" },
+                { "en": "Pilgrimage to Lalibela", "am": "የላሊበላ ጉዞ" },
+                { "en": "Something else", "am": "ሌላ" }
+              ]
+            },
+            {
+              "name": "date",
+              "label": { "en": "Preferred date (if you have one)", "am": "የሚመርጡት ቀን (ካለ)" },
+              "type": "date"
+            },
+            {
+              "name": "message",
+              "label": { "en": "Anything we should know", "am": "ሊነግሩን የሚፈልጉት" },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": { "en": "Send request", "am": "ጥያቄውን ላክ" },
+          "successMessage": { "en": "Thank you. The parish office will call you soon.", "am": "እናመሰግናለን። የደብሩ ቢሮ በቅርቡ ይደውልልዎታል።" }
+        },
+        {
+          "type": "cta",
+          "heading": { "en": "Come and pray with us", "am": "ኑ፣ አብረን እንጸልይ" },
+          "body": { "en": "The doors open before dawn every day. Whoever you are, there is a place for you here.", "am": "በሩ በየቀኑ ከንጋት በፊት ይከፈታል። ማንም ቢሆኑ እዚህ ቦታ አለዎት።" },
+          "primaryAction": {
+            "label": { "en": "Service times", "am": "የአገልግሎት ሰዓት" },
+            "href": "/#times"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call the office", "am": "ወደ ቢሮ ይደውሉ" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/sunday-school",
+      "title": { "en": "Sunday school", "am": "ሰንበት ትምህርት ቤት" },
+      "nav": { "en": "Sunday school", "am": "ሰንበት ት/ቤት" },
+      "description": { "en": "Classes by age, the choir and traditional church learning at the Sunday school of Debre Tesfa St. Mary Church.", "am": "በደብረ ተስፋ ቅድስት ማርያም ሰንበት ትምህርት ቤት በየዕድሜ የሚሰጡ ክፍሎች፣ መዘምራንና የአብነት ትምህርት።" },
       "sections": [
         {
           "type": "hero",
           "variant": "split",
-          "eyebrow": {
-            "en": "Everyone is welcome",
-            "am": "ሁሉም እንኳን ደህና መጡ"
-          },
-          "heading": {
-            "en": "Worship, pray and grow together",
-            "am": "አብረን እናምልክ፣ እንጸልይ፣ እናድግ"
-          },
-          "subheading": {
-            "en": "Join us on Sunday morning, Wednesday evening prayer, or Friday youth service.",
-            "am": "በእሑድ ጠዋት አምልኮ፣ በረቡዕ ምሽት ጸሎት ወይም በዓርብ የወጣቶች ፕሮግራም ከእኛ ጋር ይሁኑ።"
+          "eyebrow": { "en": "Every Sunday at 2:00 pm", "am": "ዘወትር እሑድ በ8 ሰዓት" },
+          "heading": { "en": "Where children grow up in the Church", "am": "ልጆች በቤተ ክርስቲያን የሚያድጉበት" },
+          "subheading": { "en": "Hymns, drums and the faith of our fathers, taught with patience by teachers who grew up in these same classes.", "am": "መዝሙር፣ ከበሮና የአበው ሃይማኖት፤ በእነዚሁ ክፍሎች ባደጉ መምህራን በትዕግሥት የሚሰጥ።" },
+          "image": {
+            "src": "/stock/worship-gallery-timkat-drummer.webp",
+            "alt": { "en": "A smiling boy carrying a kebero drum past a clapping line of white-clad choir members", "am": "ከበሮ የያዘ ፈገግተኛ ልጅ ነጭ ከለበሱ አጨብጫቢ መዘምራን ፊት ሲያልፍ" }
           },
           "primaryAction": {
-            "label": {
-              "en": "Service times",
-              "am": "የአገልግሎት ሰዓቶች"
-            },
-            "href": "#times"
+            "label": { "en": "Register a student", "am": "ተማሪ ያስመዝግቡ" },
+            "href": "#register"
           },
           "secondaryAction": {
-            "label": {
-              "en": "Contact us",
-              "am": "ያግኙን"
-            },
-            "href": "/contact"
+            "label": { "en": "Service times", "am": "የአገልግሎት ሰዓት" },
+            "href": "/#times"
           },
-          "image": {
-            "alt": {
-              "en": "A church with a cross",
-              "am": "መስቀል ያለው ቤተ ክርስቲያን"
+          "facts": [
+            {
+              "value": { "en": "4+", "am": "ከ4 ዓመት" },
+              "label": { "en": "ages welcome", "am": "ጀምሮ ለሁሉም" }
             },
-            "art": "church"
-          }
+            {
+              "value": { "en": "Free", "am": "በነፃ" },
+              "label": { "en": "for every student", "am": "ለሁሉም ተማሪ" }
+            }
+          ]
         },
         {
           "type": "services",
-          "id": "times",
-          "heading": {
-            "en": "Service and prayer times",
-            "am": "የአምልኮ እና የጸሎት ሰዓቶች"
-          },
-          "intro": {
-            "en": "Come a few minutes early. Our ushers will help you find a seat.",
-            "am": "ጥቂት ደቂቃዎች ቀድመው ይምጡ። አስተናጋጆቻችን ቦታ እንዲያገኙ ይረዱዎታል።"
-          },
+          "variant": "numbered",
+          "eyebrow": { "en": "Classes", "am": "ክፍሎች" },
+          "heading": { "en": "A class for every age", "am": "ለየዕድሜው የሚሆን ክፍል" },
           "items": [
             {
-              "title": {
-                "en": "Sunday worship",
-                "am": "የእሑድ አምልኮ"
-              },
-              "description": {
-                "en": "8:00 am to 12:30 pm. Praise, the word and fellowship.",
-                "am": "ከጠዋቱ 2 እስከ ቀኑ 6:30። ዝማሬ፣ ቃል እና ኅብረት።"
-              },
-              "icon": "church"
+              "title": { "en": "Children, ages 4 to 12", "am": "ሕፃናት፣ ከ4 እስከ 12 ዓመት" },
+              "description": { "en": "Daily prayers, first hymns and Bible stories, with songs and drawing.", "am": "የዘወትር ጸሎት፣ የመጀመሪያ መዝሙሮችና የመጽሐፍ ቅዱስ ታሪኮች፤ በመዝሙርና በሥዕል።" }
             },
             {
-              "title": {
-                "en": "Wednesday prayer",
-                "am": "የረቡዕ ጸሎት"
-              },
-              "description": {
-                "en": "6:00 pm to 8:00 pm. An evening of prayer for families and the city.",
-                "am": "ከምሽቱ 12 እስከ 2 ሰዓት። ለቤተሰብ እና ለከተማችን የምንጸልይበት ምሽት።"
-              },
-              "icon": "heart"
+              "title": { "en": "Teenagers, ages 13 to 17", "am": "ታዳጊዎች፣ ከ13 እስከ 17 ዓመት" },
+              "description": { "en": "The teachings of the faith, Church history and honest answers to the questions teenagers ask.", "am": "ትምህርተ ሃይማኖት፣ የቤተ ክርስቲያን ታሪክ እና ታዳጊዎች ለሚያነሷቸው ጥያቄዎች ግልጽ መልስ።" }
             },
             {
-              "title": {
-                "en": "Friday youth service",
-                "am": "የዓርብ የወጣቶች ፕሮግራም"
-              },
-              "description": {
-                "en": "5:30 pm to 7:30 pm. Worship, teaching and youth choir.",
-                "am": "ከቀኑ 11:30 እስከ ምሽቱ 1:30። አምልኮ፣ ትምህርት እና የወጣቶች መዘምራን።"
-              },
-              "icon": "star"
+              "title": { "en": "Young adults, 18 and over", "am": "ወጣቶች፣ ከ18 ዓመት በላይ" },
+              "description": { "en": "Bible study, the lives of the saints and service in the parish: ushering, charity and teaching the little ones.", "am": "የመጽሐፍ ቅዱስ ጥናት፣ ገድለ ቅዱሳን እና በደብሩ ማገልገል፤ ማስተናገድ፣ በጎ አድራጎትና ሕፃናትን ማስተማር።" }
             },
             {
-              "title": {
-                "en": "Morning prayer",
-                "am": "የማለዳ ጸሎት"
-              },
-              "description": {
-                "en": "Monday to Saturday, 6:00 am to 7:00 am.",
-                "am": "ከሰኞ እስከ ቅዳሜ፣ ከጠዋቱ 12 እስከ 1 ሰዓት።"
-              },
-              "icon": "calendar"
+              "title": { "en": "Choir", "am": "መዘምራን" },
+              "description": { "en": "Hymns with kebero and tsenatsil. Rehearsals on Saturday afternoons; the choir sings at every feast.", "am": "መዝሙር ከከበሮና ከጸናጽል ጋር። ልምምድ ቅዳሜ ከሰዓት፤ መዘምራኑ በየበዓሉ ያገለግላሉ።" }
+            },
+            {
+              "title": { "en": "Traditional school (Abinet)", "am": "የአብነት ትምህርት" },
+              "description": { "en": "Ge'ez reading, the Psalms and Wudase Mariam, learned by heart with the parish teacher on weekday afternoons.", "am": "የግእዝ ንባብ፣ መዝሙረ ዳዊትና ውዳሴ ማርያም፤ በሥራ ቀናት ከሰዓት ከደብሩ መምህር ጋር በቃል የሚጠና።" }
+            },
+            {
+              "title": { "en": "Summer course", "am": "የክረምት ትምህርት" },
+              "description": { "en": "Eight weeks of morning lessons in July and August, ending with a hymn day for parents.", "am": "በሐምሌና በነሐሴ ለስምንት ሳምንት የጠዋት ትምህርት፤ ለወላጆች በሚቀርብ የመዝሙር ቀን ይጠናቀቃል።" }
+            }
+          ]
+        },
+        {
+          "type": "schedule",
+          "layout": "list",
+          "eyebrow": { "en": "Timetable", "am": "መርሐ ግብር" },
+          "heading": { "en": "When we meet", "am": "የምንገናኝበት ሰዓት" },
+          "items": [
+            {
+              "time": { "en": "Sunday 2:00 pm", "am": "እሑድ 8:00" },
+              "title": { "en": "All classes", "am": "ሁሉም ክፍሎች" },
+              "note": { "en": "Opening prayer together, then lessons by age until 4:30 pm.", "am": "በጋራ የመክፈቻ ጸሎት፣ ከዚያ በየዕድሜ ክፍሉ እስከ 10:30 ትምህርት።" }
+            },
+            {
+              "time": { "en": "Saturday 3:00 pm", "am": "ቅዳሜ 9:00" },
+              "title": { "en": "Choir rehearsal", "am": "የመዘምራን ልምምድ" },
+              "note": { "en": "New voices are welcome after one term of classes.", "am": "አንድ መንፈቅ ትምህርት የተከታተለ አዲስ አባል መቀላቀል ይችላል።" }
+            },
+            {
+              "time": { "en": "Weekdays 4:00 pm", "am": "ሰኞ–ዓርብ 10:00" },
+              "title": { "en": "Traditional school (Abinet)", "am": "የአብነት ትምህርት" },
+              "note": { "en": "Ge'ez reading, the Psalms and Wudase Mariam with the parish teacher.", "am": "የግእዝ ንባብ፣ መዝሙረ ዳዊትና ውዳሴ ማርያም ከደብሩ መምህር ጋር።" }
+            },
+            {
+              "time": { "en": "July and August", "am": "ሐምሌና ነሐሴ" },
+              "title": { "en": "Summer course", "am": "የክረምት ትምህርት" },
+              "note": { "en": "Weekday mornings during the school holiday, 8:30 to 11:30 am.", "am": "በትምህርት ቤት ዕረፍት ወቅት በሥራ ቀናት ከጠዋቱ 2:30 እስከ 5:30።" }
             }
           ]
         },
         {
           "type": "about",
-          "heading": {
-            "en": "A church family in Gerji",
-            "am": "በገርጂ ያለ የቤተ ክርስቲያን ቤተሰብ"
-          },
-          "body": {
-            "en": "We are a community of families, students and elders who meet to worship God and care for one another.\n\nWhether you are new to Addis or have lived here all your life, you have a place with us.",
-            "am": "እግዚአብሔርን ለማምለክ እና እርስ በርስ ለመተሳሰብ የምንሰበሰብ የቤተሰቦች፣ የተማሪዎች እና የአረጋውያን ኅብረት ነን።\n\nአዲስ አበባ አዲስ ቢሆኑም ሆነ ዕድሜዎን ሙሉ እዚህ ቢኖሩም፣ በመካከላችን ቦታ አለዎት።"
-          },
+          "eyebrow": { "en": "For parents", "am": "ለወላጆች" },
+          "heading": { "en": "Your children are in good hands", "am": "ልጆችዎ በጥሩ እጅ ናቸው" },
+          "body": { "en": "Every class has two teachers, and the gate is watched until the last child is collected. We keep a register and call you if your child is absent two Sundays in a row.\n\nParents are welcome to sit in on a lesson at any time.", "am": "እያንዳንዱ ክፍል ሁለት መምህራን አሉት፤ የመጨረሻው ልጅ እስኪወሰድ ድረስም በሩ ይጠበቃል። የመገኘት መዝገብ እንይዛለን፤ ልጅዎ ሁለት እሑድ በተከታታይ ከቀረ እንደውልልዎታለን።\n\nወላጆች በፈለጉ ጊዜ ገብተው ትምህርቱን መከታተል ይችላሉ።" },
           "image": {
-            "art": "people",
-            "alt": {
-              "en": "People of the congregation together",
-              "am": "የምእመናን አንድነት"
-            }
-          }
-        },
-        {
-          "type": "faq",
-          "id": "questions",
-          "heading": {
-            "en": "Visiting us",
-            "am": "ሲጎበኙን"
+            "src": "/stock/worship-card-bible-prayer-hands.webp",
+            "alt": { "en": "Clasped hands resting on an open Bible on a wooden table", "am": "በእንጨት ጠረጴዛ ላይ በተከፈተ መጽሐፍ ቅዱስ ላይ የተጣመሩ እጆች" }
           },
-          "items": [
-            {
-              "question": {
-                "en": "I am new. Can I just come?",
-                "am": "አዲስ ነኝ። በቀጥታ መምጣት እችላለሁ?"
-              },
-              "answer": {
-                "en": "Yes, you are welcome. Come a little early and someone will greet you.",
-                "am": "አዎ፤ እንኳን ደህና መጡ። ትንሽ ቀደም ብለው ይምጡ፤ የሚቀበልዎ ሰው ይኖራል።"
-              }
-            },
-            {
-              "question": {
-                "en": "Is there something for children?",
-                "am": "ለልጆች የሚሆን ፕሮግራም አለ?"
-              },
-              "answer": {
-                "en": "Yes. See the programs page for days and times.",
-                "am": "አዎ። ቀንና ሰዓቱን በፕሮግራሞች ገጽ ይመልከቱ።"
-              }
-            },
-            {
-              "question": {
-                "en": "How can I talk to someone?",
-                "am": "ከአንድ ሰው ጋር እንዴት ልነጋገር?"
-              },
-              "answer": {
-                "en": "Write to us or call. We are glad to listen and to pray with you.",
-                "am": "ይጻፉልን ወይም ይደውሉ። ለመስማትና አብረን ለመጸለይ ደስተኞች ነን።"
-              }
-            }
+          "imageSide": "end",
+          "points": [
+            { "en": "White clothes and a netela on Sundays", "am": "በእሑድ ነጭ ልብስና ነጠላ" },
+            { "en": "Bring a notebook; hymn books are provided", "am": "ደብተር ይዘው ይምጡ፤ የመዝሙር መጽሐፍ እንሰጣለን" },
+            { "en": "No fee, ever", "am": "ምንም ክፍያ የለም" }
           ]
-        },
-        {
-          "type": "contact",
-          "heading": {
-            "en": "Visit or call us",
-            "am": "ይጎብኙን ወይም ይደውሉልን"
-          }
-        },
-        {
-          "type": "cta",
-          "id": "next-step",
-          "heading": {
-            "en": "You are welcome here",
-            "am": "እንኳን ደህና መጡ"
-          },
-          "body": {
-            "en": "Join us this week, or write to us with any question.",
-            "am": "በዚህ ሳምንት ይቀላቀሉን፤ ወይም ማንኛውንም ጥያቄ ይጻፉልን።"
-          },
-          "primaryAction": {
-            "label": {
-              "en": "Contact us",
-              "am": "ያግኙን"
-            },
-            "href": "/contact"
-          },
-          "secondaryAction": {
-            "label": {
-              "en": "Our programs",
-              "am": "ፕሮግራሞቻችን"
-            },
-            "href": "/programs"
-          }
-        }
-      ]
-    },
-    {
-      "path": "/programs",
-      "title": {
-        "en": "Programs",
-        "am": "ፕሮግራሞች"
-      },
-      "nav": {
-        "en": "Programs",
-        "am": "ፕሮግራሞች"
-      },
-      "description": {
-        "en": "Community programs and the youth choir at Tesfa Church.",
-        "am": "የተስፋ ቤተ ክርስቲያን የኅብረተሰብ ፕሮግራሞች እና የወጣቶች መዘምራን።"
-      },
-      "sections": [
-        {
-          "type": "services",
-          "heading": {
-            "en": "Community programs",
-            "am": "የኅብረተሰብ ፕሮግራሞች"
-          },
-          "intro": {
-            "en": "Ways we serve each other and our neighbours.",
-            "am": "እርስ በርስ እና ጎረቤቶቻችንን የምናገለግልባቸው መንገዶች።"
-          },
-          "items": [
-            {
-              "title": {
-                "en": "Sunday school",
-                "am": "ሰንበት ትምህርት ቤት"
-              },
-              "description": {
-                "en": "Bible lessons and songs for children aged 4 to 12, during Sunday worship.",
-                "am": "ከ4 እስከ 12 ዓመት ላሉ ልጆች የመጽሐፍ ቅዱስ ትምህርት እና መዝሙር፣ በእሑድ አምልኮ ሰዓት።"
-              },
-              "icon": "school"
-            },
-            {
-              "title": {
-                "en": "Help for families in need",
-                "am": "ለችግረኛ ቤተሰቦች ድጋፍ"
-              },
-              "description": {
-                "en": "Monthly food support and school supplies for families in our area.",
-                "am": "በአካባቢያችን ላሉ ቤተሰቦች ወርሃዊ የምግብ ድጋፍ እና የትምህርት ቁሳቁስ።"
-              },
-              "icon": "heart"
-            },
-            {
-              "title": {
-                "en": "Visiting the sick and elderly",
-                "am": "ሕሙማንን እና አረጋውያንን መጠየቅ"
-              },
-              "description": {
-                "en": "Volunteers visit homes and hospitals to pray and offer company.",
-                "am": "በጎ ፈቃደኞች ቤትና ሆስፒታል ሄደው ይጸልያሉ፣ ያጽናናሉ።"
-              },
-              "icon": "stethoscope"
-            },
-            {
-              "title": {
-                "en": "Couples and family fellowship",
-                "am": "የባለትዳሮች እና የቤተሰብ ኅብረት"
-              },
-              "description": {
-                "en": "A gathering every second Saturday of the month.",
-                "am": "በየወሩ ሁለተኛው ቅዳሜ የሚደረግ ስብሰባ።"
-              },
-              "icon": "home"
-            },
-            {
-              "title": {
-                "en": "Home Bible study groups",
-                "am": "የቤት ለቤት የመጽሐፍ ቅዱስ ጥናት"
-              },
-              "description": {
-                "en": "Small groups meeting in homes across Gerji and Bole during the week.",
-                "am": "በሳምንቱ ውስጥ በገርጂ እና በቦሌ ቤቶች የሚገናኙ አነስተኛ ቡድኖች።"
-              },
-              "icon": "map"
-            }
-          ]
-        },
-        {
-          "type": "about",
-          "id": "choir",
-          "heading": {
-            "en": "Youth choir",
-            "am": "የወጣቶች መዘምራን"
-          },
-          "body": {
-            "en": "Our youth choir leads worship on Friday evenings and once a month on Sunday. Rehearsals are on Saturday afternoons.\n\nYoung people aged 15 to 30 are welcome to join. No experience needed, just a willing heart.",
-            "am": "የወጣቶች መዘምራን በዓርብ ምሽት እና በወር አንድ ጊዜ በእሑድ አምልኮን ይመራሉ። ልምምድ ቅዳሜ ከሰዓት በኋላ ነው።\n\nዕድሜያቸው ከ15 እስከ 30 የሆኑ ወጣቶች መቀላቀል ይችላሉ። ልምድ አያስፈልግም፤ ፈቃደኛ ልብ ብቻ በቂ ነው።"
-          }
         },
         {
           "type": "form",
-          "id": "choir-join",
+          "id": "register",
           "kind": "registration",
-          "heading": {
-            "en": "Join the youth choir",
-            "am": "የወጣቶች መዘምራንን ይቀላቀሉ"
-          },
-          "intro": {
-            "en": "Leave your details and the choir leader will contact you.",
-            "am": "መረጃዎን ይተዉልን፤ የመዘምራኑ መሪ ያገኝዎታል።"
-          },
+          "heading": { "en": "Register a student", "am": "ተማሪ ያስመዝግቡ" },
+          "intro": { "en": "Register yourself or your child. We will call to tell you which class to join this Sunday.", "am": "ራስዎን ወይም ልጅዎን ያስመዝግቡ። በዚህ እሑድ የትኛውን ክፍል እንደሚቀላቀሉ ደውለን እናሳውቃለን።" },
           "fields": [
             {
-              "name": "full_name",
-              "label": {
-                "en": "Full name",
-                "am": "ሙሉ ስም"
-              },
+              "name": "student",
+              "label": { "en": "Student's name", "am": "የተማሪው ስም" },
               "type": "text",
-              "required": true
-            },
-            {
-              "name": "phone",
-              "label": {
-                "en": "Phone",
-                "am": "ስልክ"
-              },
-              "type": "tel",
               "required": true
             },
             {
               "name": "age",
-              "label": {
-                "en": "Age",
-                "am": "ዕድሜ"
-              },
+              "label": { "en": "Age", "am": "ዕድሜ" },
               "type": "number",
               "required": true
             },
             {
-              "name": "voice",
-              "label": {
-                "en": "Voice part (if you know)",
-                "am": "የድምፅ ዓይነት (ካወቁ)"
-              },
+              "name": "parent",
+              "label": { "en": "Parent's name (for children)", "am": "የወላጅ ስም (ለሕፃናት)" },
+              "type": "text"
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "class",
+              "label": { "en": "Class", "am": "ክፍል" },
               "type": "select",
               "options": [
-                {
-                  "en": "Soprano",
-                  "am": "ሶፕራኖ"
-                },
-                {
-                  "en": "Alto",
-                  "am": "አልቶ"
-                },
-                {
-                  "en": "Tenor",
-                  "am": "ቴነር"
-                },
-                {
-                  "en": "Bass",
-                  "am": "ባስ"
-                },
-                {
-                  "en": "Not sure",
-                  "am": "እርግጠኛ አይደለሁም"
-                }
+                { "en": "Children", "am": "ሕፃናት" },
+                { "en": "Teenagers", "am": "ታዳጊዎች" },
+                { "en": "Young adults", "am": "ወጣቶች" },
+                { "en": "Choir", "am": "መዘምራን" },
+                { "en": "Traditional school", "am": "የአብነት ትምህርት" }
               ]
             }
           ],
-          "submitLabel": {
-            "en": "Send",
-            "am": "ላክ"
-          },
-          "successMessage": {
-            "en": "Thank you! The choir leader will call you soon.",
-            "am": "እናመሰግናለን! የመዘምራኑ መሪ በቅርቡ ይደውልልዎታል።"
-          }
+          "submitLabel": { "en": "Register", "am": "አስመዝግብ" },
+          "successMessage": { "en": "Thank you. We look forward to seeing you on Sunday.", "am": "እናመሰግናለን። እሑድ እንጠብቅዎታለን።" }
         }
       ]
     },
     {
-      "path": "/giving",
-      "title": {
-        "en": "Giving",
-        "am": "መስጠት"
-      },
-      "nav": {
-        "en": "Giving",
-        "am": "መስጠት"
-      },
-      "description": {
-        "en": "How to give tithes and offerings to Tesfa Church.",
-        "am": "ለተስፋ ቤተ ክርስቲያን አሥራት እና መባ የሚሰጡበት መንገድ።"
-      },
+      "path": "/visit",
+      "title": { "en": "Visit us", "am": "ይጎብኙን" },
+      "nav": { "en": "Visit", "am": "ይጎብኙን" },
+      "description": { "en": "What to expect on your first visit to Debre Tesfa St. Mary Church, with directions, phone and office hours.", "am": "ለመጀመሪያ ጊዜ ወደ ደብረ ተስፋ ቅድስት ማርያም ቤተ ክርስቲያን ሲመጡ ማወቅ ያለብዎ፣ አድራሻ፣ ስልክና የቢሮ ሰዓት።" },
       "sections": [
         {
           "type": "about",
-          "heading": {
-            "en": "Giving with a thankful heart",
-            "am": "በምስጋና ልብ መስጠት"
+          "eyebrow": { "en": "Your first visit", "am": "ለመጀመሪያ ጊዜ ሲመጡ" },
+          "heading": { "en": "Come as you are. We will show you the rest.", "am": "እንዳሉ ይምጡ፤ ቀሪውን እናሳይዎታለን" },
+          "body": { "en": "You do not need to know the prayers to stand with us. Arrive a little before the Liturgy, and anyone in a white netela at the gate will be happy to help.\n\nHoly Communion is received by baptised Orthodox Christians who have prepared with their father confessor. Everyone else is welcome to pray, listen and receive the blessing at the end.", "am": "አብሮን ለመቆም ጸሎቱን ማወቅ አያስፈልግም። ከቅዳሴው ትንሽ ቀደም ብለው ይድረሱ፤ በበሩ ላይ ነጠላ የለበሰ ማንኛውም ሰው በደስታ ይረዳዎታል።\n\nቅዱስ ቁርባን የሚቀበሉት ከንስሐ አባታቸው ጋር የተዘጋጁ የተጠመቁ ኦርቶዶክሳውያን ናቸው። ሌሎች ሁሉ እንዲጸልዩ፣ እንዲያዳምጡና በመጨረሻ ቡራኬ እንዲቀበሉ ተጋብዘዋል።" },
+          "image": {
+            "src": "/stock/ngo-about-women-group.webp",
+            "alt": { "en": "Four women in white netela shawls and a girl holding a red flower standing together on a cobbled street", "am": "ነጭ ነጠላ የለበሱ አራት ሴቶችና ቀይ አበባ የያዘች ልጅ በኮብልስቶን መንገድ ላይ አብረው ቆመው" }
           },
-          "body": {
-            "en": "Your tithes and offerings support worship, our community programs and help for families in need.\n\nThank you for your faithfulness. Every gift, large or small, matters.",
-            "am": "አሥራትዎ እና መባዎ ለአምልኮ፣ ለኅብረተሰብ ፕሮግራሞቻችን እና ለችግረኛ ቤተሰቦች ድጋፍ ይውላል።\n\nስለ ታማኝነትዎ እናመሰግናለን። ትልቅም ይሁን ትንሽ፣ እያንዳንዱ ስጦታ ዋጋ አለው።"
+          "imageSide": "end",
+          "points": [
+            { "en": "Shoes are left at the door of the church", "am": "ጫማ በቤተ ክርስቲያኑ በር ላይ ይወልቃል" },
+            { "en": "Women cover their hair; a netela is ideal, and we can lend one", "am": "ሴቶች ጸጉራቸውን ይሸፍናሉ፤ ነጠላ ከሌለዎት እናውስዎታለን" },
+            { "en": "Men stand on the left, women on the right", "am": "ወንዶች በግራ፣ ሴቶች በቀኝ ይቆማሉ" },
+            { "en": "Benches along the walls for elders and anyone who needs to sit", "am": "ለአረጋውያንና መቀመጥ ለሚያስፈልጋቸው በግድግዳው ዙሪያ መቀመጫ አለ" }
+          ],
+          "action": {
+            "label": { "en": "Service times", "am": "የአገልግሎት ሰዓት" },
+            "href": "/#times"
           }
         },
         {
-          "type": "services",
-          "heading": {
-            "en": "Ways to give",
-            "am": "የመስጫ መንገዶች"
-          },
+          "type": "faq",
+          "heading": { "en": "Questions people ask", "am": "ብዙ ጊዜ የሚጠየቁ" },
           "items": [
             {
-              "title": {
-                "en": "Bank transfer",
-                "am": "በባንክ ማስተላለፍ"
-              },
-              "description": {
-                "en": "Bank: [Bank name]\nAccount name: Tesfa Church\nAccount number: [0000000000000]",
-                "am": "ባንክ፦ [የባንኩ ስም]\nየሂሳብ ስም፦ ተስፋ ቤተ ክርስቲያን\nየሂሳብ ቁጥር፦ [0000000000000]"
-              },
-              "icon": "check"
+              "question": { "en": "I am not Orthodox. May I come?", "am": "ኦርቶዶክስ አይደለሁም፤ መምጣት እችላለሁ?" },
+              "answer": { "en": "Yes. You are welcome at every service and at the evening teaching, which is a good place to start.", "am": "አዎ። በማንኛውም አገልግሎት መገኘት ይችላሉ፤ ለመጀመር ደግሞ የሠርክ ጉባኤው ጥሩ ነው።" }
             },
             {
-              "title": {
-                "en": "During the service",
-                "am": "በአምልኮ ጊዜ"
-              },
-              "description": {
-                "en": "Offering boxes are at the entrance every Sunday and Wednesday.",
-                "am": "የመባ ሳጥኖች በየእሑድ እና ረቡዕ በመግቢያው ላይ ይገኛሉ።"
-              },
-              "icon": "church"
+              "question": { "en": "How long is the Sunday Liturgy?", "am": "የእሑድ ቅዳሴ ምን ያህል ጊዜ ይወስዳል?" },
+              "answer": { "en": "About three hours, from 6:00 to 9:00 am. Many people then stay for the sermon and for senbete.", "am": "ሦስት ሰዓት ገደማ፤ ከጠዋቱ 12 እስከ 3 ሰዓት። ብዙዎች ከዚያ ለስብከቱና ለሰንበቴ ይቆያሉ።" }
             },
             {
-              "title": {
-                "en": "At the church office",
-                "am": "በቤተ ክርስቲያኑ ቢሮ"
-              },
-              "description": {
-                "en": "Monday to Friday, 9 am to 5 pm. Ask for a receipt.",
-                "am": "ከሰኞ እስከ ዓርብ፣ ከጠዋቱ 3 እስከ ቀኑ 11 ሰዓት። ደረሰኝ ይጠይቁ።"
-              },
-              "icon": "home"
+              "question": { "en": "Is there parking?", "am": "የመኪና ማቆሚያ አለ?" },
+              "answer": { "en": "There is space for about thirty cars inside the compound. On feast days it fills early, so a taxi is easier.", "am": "በግቢው ውስጥ ለሠላሳ ያህል መኪና ቦታ አለ። በበዓል ቀን ቶሎ ስለሚሞላ በታክሲ መምጣት ይቀላል።" }
             },
             {
-              "title": {
-                "en": "Questions about giving",
-                "am": "ስለ መስጠት ጥያቄ ካለዎት"
-              },
-              "description": {
-                "en": "Call +251 911 000 000 or send us a message on the contact page.",
-                "am": "በ+251 911 000 000 ይደውሉ ወይም በመገናኛ ገጹ መልእክት ይላኩልን።"
-              },
-              "icon": "phone"
+              "question": { "en": "May I take photos?", "am": "ፎቶ ማንሳት ይቻላል?" },
+              "answer": { "en": "In the compound, yes. Inside the church please ask a deacon first, and never during the Liturgy.", "am": "በግቢው ውስጥ ይቻላል። በቤተ ክርስቲያኑ ውስጥ ግን አስቀድመው ዲያቆን ይጠይቁ፤ በቅዳሴ ጊዜ ፈጽሞ አይቻልም።" }
             }
           ]
-        }
-      ]
-    },
-    {
-      "path": "/contact",
-      "title": {
-        "en": "Contact",
-        "am": "ያግኙን"
-      },
-      "nav": {
-        "en": "Contact",
-        "am": "ያግኙን"
-      },
-      "description": {
-        "en": "Send a message or a prayer request to Tesfa Church.",
-        "am": "ለተስፋ ቤተ ክርስቲያን መልእክት ወይም የጸሎት ርዕስ ይላኩ።"
-      },
-      "sections": [
+        },
+        {
+          "type": "contact",
+          "heading": { "en": "Talk to the parish office", "am": "የደብሩን ቢሮ ያነጋግሩ" },
+          "intro": { "en": "Call, write on Telegram, or stop by the office beside the main gate.", "am": "ይደውሉ፣ በቴሌግራም ይጻፉ ወይም ከዋናው በር አጠገብ ወዳለው ቢሮ ጎራ ይበሉ።" }
+        },
         {
           "type": "form",
-          "id": "contact",
+          "id": "message",
           "kind": "contact",
-          "heading": {
-            "en": "Send us a message",
-            "am": "መልእክት ይላኩልን"
-          },
-          "intro": {
-            "en": "Questions, prayer requests or visits. We read every message.",
-            "am": "ጥያቄ፣ የጸሎት ርዕስ ወይም ጉብኝት። እያንዳንዱን መልእክት እናነባለን።"
-          },
+          "heading": { "en": "Send us a message", "am": "መልእክት ይላኩልን" },
+          "intro": { "en": "A question, a prayer request or a word of thanks: we read every message.", "am": "ጥያቄ፣ የጸሎት ርእስ ወይም ምስጋና ቢሆን፤ እያንዳንዱን መልእክት እናነባለን።" },
           "fields": [
             {
               "name": "name",
-              "label": {
-                "en": "Your name",
-                "am": "ስምዎ"
-              },
+              "label": { "en": "Your name", "am": "ስምዎ" },
               "type": "text",
               "required": true
             },
             {
               "name": "phone",
-              "label": {
-                "en": "Phone",
-                "am": "ስልክ"
-              },
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
               "type": "tel",
               "required": true
             },
             {
-              "name": "topic",
-              "label": {
-                "en": "Topic",
-                "am": "ርዕስ"
-              },
-              "type": "select",
-              "options": [
-                {
-                  "en": "General question",
-                  "am": "አጠቃላይ ጥያቄ"
-                },
-                {
-                  "en": "Prayer request",
-                  "am": "የጸሎት ርዕስ"
-                },
-                {
-                  "en": "Wedding or baptism",
-                  "am": "ሠርግ ወይም ጥምቀት"
-                },
-                {
-                  "en": "Volunteering",
-                  "am": "በጎ ፈቃደኝነት"
-                }
-              ]
-            },
-            {
               "name": "message",
-              "label": {
-                "en": "Message",
-                "am": "መልእክት"
-              },
+              "label": { "en": "Message", "am": "መልእክት" },
               "type": "textarea",
               "required": true
             }
           ],
-          "submitLabel": {
-            "en": "Send message",
-            "am": "መልእክት ላክ"
-          },
-          "successMessage": {
-            "en": "Thank you. We have received your message and will get back to you.",
-            "am": "እናመሰግናለን። መልእክትዎ ደርሶናል፤ በቅርቡ እናገኝዎታለን።"
-          }
-        },
-        {
-          "type": "contact",
-          "heading": {
-            "en": "Church office",
-            "am": "የቤተ ክርስቲያኑ ቢሮ"
-          },
-          "intro": {
-            "en": "Call or visit us during office hours.",
-            "am": "በቢሮ ሰዓት ይደውሉ ወይም ይጎብኙን።"
-          }
+          "submitLabel": { "en": "Send", "am": "ላክ" },
+          "successMessage": { "en": "Thank you. We will answer soon.", "am": "እናመሰግናለን። በቅርቡ እንመልሳለን።" }
         },
         {
           "type": "map",
-          "heading": {
-            "en": "How to find us",
-            "am": "የምንገኝበት"
-          },
+          "heading": { "en": "Where we are", "am": "የምንገኝበት" },
           "query": "Gerji, Addis Ababa"
         }
       ]

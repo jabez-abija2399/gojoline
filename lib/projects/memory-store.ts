@@ -54,6 +54,10 @@ export class MemoryProjectStore implements ProjectStore {
     return saved;
   }
 
+  async versionStats(ownerId: string, projectId: string) {
+    const mine = this.owned(ownerId, projectId) ? this.versions.filter((v) => v.projectId === projectId) : [];
+    return { count: mine.length, lastAt: mine.reduce<Date | null>((d, v) => (!d || v.createdAt > d ? v.createdAt : d), null) };
+  }
   async listVersions(ownerId: string, projectId: string) {
     if (!this.owned(ownerId, projectId)) return [];
     return this.versions

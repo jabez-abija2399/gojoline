@@ -59,7 +59,7 @@ test.describe("landing page", () => {
     await page.getByRole("navigation", { name: "Main" }).filter({ visible: true }).getByRole("link", { name: "Templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
     await expect(page.getByRole("heading", { level: 1, name: "Start from a real site" })).toBeVisible();
-    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(12);
+    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(14);
     await expectNoSeriousA11yIssues(page);
     await expectNoHorizontalScroll(page);
     await openMenu();
@@ -106,11 +106,15 @@ test.describe("landing page", () => {
     await page.getByRole("button", { name: "Hotel", exact: true }).click();
     await expect(box).toHaveValue("My own words");
     await expect(page.getByRole("button", { name: "Hotel", exact: true })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("img", { name: /builder with the site it made for Tana Shore Hotel/ })).toBeVisible();
+    await expect(page.getByRole("img", { name: /builder with the site it made for Tana Shore Lodge/ })).toBeVisible();
 
-    await page.getByRole("link", { name: "See all 12 templates" }).click();
+    await page.getByRole("link", { name: "See all 14 templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
     await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
+    // Every section of the template first, then the choice.
+    await expect(page).toHaveURL(/\/en\/templates\/clinic$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Megenagna Family Clinic" })).toBeVisible();
+    await page.getByRole("link", { name: "Use this template" }).last().click();
     await expect(page).toHaveURL(/\/en\/sign-in\?next=/);
     const contact = `preset-${Date.now()}-${test.info().project.name}@example.com`;
     await page.getByLabel("Phone or email").fill(contact);

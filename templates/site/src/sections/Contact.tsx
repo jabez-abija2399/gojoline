@@ -12,6 +12,7 @@ export function Contact({ section }: { section: ContactSection }) {
     <section id={section.id ?? "contact"} className="section">
       <div className="container-site grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
+          {section.eyebrow && <p className="eyebrow">{text(section.eyebrow)}</p>}
           <SectionTitle>{text(section.heading)}</SectionTitle>
           {section.intro && <p className="max-w-[60ch] text-muted">{text(section.intro)}</p>}
           <div className="flex flex-col gap-3 sm:flex-row">

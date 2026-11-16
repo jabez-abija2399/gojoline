@@ -85,3 +85,19 @@ describe("handleSubmission", () => {
     expect((await call({ ip: "2.2.2.2" })).status).toBe(201);
   });
 });
+
+describe("dashboard counts", () => {
+  it("counts exactly per owner, and per Addis Ababa day in the database", async () => {
+    expect(await cloud.countSubmissions("alice", projectId)).toEqual({ total: 0, unread: 0 });
+    await call();
+    await call({ ip: "2.2.2.2" });
+    const [first] = await cloud.listSubmissions("alice", projectId, 1);
+    await cloud.markRead("alice", projectId, [first!.id]);
+    expect(await cloud.countSubmissions("alice", projectId)).toEqual({ total: 2, unread: 1 });
+    // Another owner sees nothing of alice's.
+    expect(await cloud.countSubmissions("bob", projectId)).toEqual({ total: 0, unread: 0 });
+    expect(await cloud.answersPerDay("bob", projectId, new Date(0))).toEqual([]);
+    const today = new Date(Date.now() + 3 * 3_600_000).toISOString().slice(0, 10);
+    expect(await cloud.answersPerDay("alice", projectId, new Date(Date.now() - 86_400_000))).toEqual([{ day: today, count: 2 }]);
+  });
+});
