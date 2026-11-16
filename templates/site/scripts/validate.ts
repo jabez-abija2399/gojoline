@@ -24,10 +24,19 @@ if (!result.success) {
   problems.push(...themeWarnings(result.data.theme));
   // Sample photos must be ones the library has (TEMPLATE.md lists them).
   const library = JSON.parse(readFileSync(new URL("../stock.json", import.meta.url), "utf8")) as Record<string, unknown>;
-  for (const m of raw.matchAll(/"(\/stock\/[^"]*)"/g)) {
-    const name = /^\/stock\/([a-z0-9-]+)\.webp$/.exec(m[1]!)?.[1];
-    if (!name || !(name in library)) problems.push(`"${m[1]}" is not a photo in the library. Use a name from the "Sample photos" list in TEMPLATE.md, or a drawing (art).`);
-  }
+  const seen = new Set<string>();
+  const walk = (v: unknown) => {
+    if (Array.isArray(v)) return v.forEach(walk);
+    if (!v || typeof v !== "object") return;
+    const src = (v as { src?: unknown }).src;
+    if (typeof src === "string" && src.startsWith("/stock/") && !seen.has(src)) {
+      seen.add(src);
+      const name = /^\/stock\/([a-z0-9-]+)\.webp$/.exec(src)?.[1];
+      if (!name || !(name in library)) problems.push(`"${src}" is not a photo in the library. Use a name from the "Sample photos" list in TEMPLATE.md, or a drawing (art).`);
+    }
+    Object.values(v).forEach(walk);
+  };
+  walk(result.data);
 }
 
 if (problems.length) {

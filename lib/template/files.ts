@@ -49,15 +49,30 @@ const STOCK_REF = /\/stock\/([a-z0-9-]+)\.webp/g;
  * The sample photos a site uses (`/stock/<name>.webp` in its site.json), with the wide version of
  * hero photos. The library is large, so a sandbox gets only these, not the whole folder.
  */
-export function stockFilesFor(siteJson: string, root = TEMPLATE_ROOT): TemplateFile[] {
+export function stockFilesFor(siteJson: string): TemplateFile[] {
   const names = new Set<string>();
   for (const m of siteJson.matchAll(STOCK_REF)) names.add(m[1]!);
   const out: TemplateFile[] = [];
-  for (const name of [...names].sort().slice(0, 80)) {
+  // The cap is above the size of the library, so a valid site never loses a photo to it.
+  for (const name of [...names].sort().slice(0, 400)) {
     for (const file of [`${name}.webp`, `${name}-1600.webp`]) {
-      const full = join(root, "public", "stock", file);
-      if (existsSync(full)) out.push({ path: `public/stock/${file}`, content: readFileSync(full) });
+      const content = libraryPhoto(file);
+      if (content) out.push({ path: `public/stock/${file}`, content });
     }
   }
   return out;
+}
+
+const photos = new Map<string, Buffer | null>();
+
+/** One file of the sample-photo library by file name (read once, then kept), or null. */
+export function libraryPhoto(file: string): Buffer | null {
+  if (!/^[a-z0-9-]+\.webp$/.test(file)) return null;
+  let data = photos.get(file);
+  if (data === undefined) {
+    const full = join(TEMPLATE_ROOT, "public", "stock", file);
+    data = existsSync(full) ? readFileSync(full) : null;
+    photos.set(file, data);
+  }
+  return data;
 }

@@ -71,6 +71,7 @@ export class VercelSandboxProvider implements SandboxProvider {
 }
 
 class VercelSiteSandbox implements SiteSandbox {
+  private stockSent = new Set<string>();
   constructor(private sandbox: Sandbox) {}
 
   get id() {
@@ -124,7 +125,9 @@ class VercelSiteSandbox implements SiteSandbox {
   /** Copies in the sample photos the site uses (the library itself stays out of the sandbox). */
   private async syncStock(siteJson?: string | null) {
     const json = siteJson ?? (await this.readFile("src/site.json"));
-    const files = json ? stockFilesFor(json) : [];
+    // Each photo is sent to a sandbox once; later edits and builds only send what is new.
+    const files = (json ? stockFilesFor(json) : []).filter((f) => !this.stockSent.has(f.path));
+    for (const f of files) this.stockSent.add(f.path);
     if (files.length) await this.sandbox.writeFiles(files.map((f) => ({ path: `${ROOT}/${f.path}`, content: new Uint8Array(f.content as Buffer) })));
   }
 
