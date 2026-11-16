@@ -50,6 +50,7 @@
             "label": { "en": "Support the masjid", "am": "መስጂዱን ይደግፉ" },
             "href": "/#giving"
           },
+          "stamp": { "en": "Kolfe · Addis Ababa", "am": "ኮልፌ · አዲስ አበባ" },
           "facts": [
             {
               "value": { "en": "12:45 pm", "am": "6:45" },
@@ -71,32 +72,42 @@
           "layout": "tiles",
           "eyebrow": { "en": "Today at Al-Noor", "am": "ዛሬ በአል-ኑር" },
           "heading": { "en": "Prayer times", "am": "የሶላት ሰዓት" },
-          "intro": { "en": "The large time is the iqamah, when the congregation stands. The adhan is called at the time below it.", "am": "በትልቁ የተጻፈው ጀማዓው የሚቆምበት የኢቃም ሰዓት ነው፤ ከሥሩ ያለው የአዛን ሰዓት ነው። ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።" },
+          "intro": { "en": "The large time is the iqamah, when the congregation stands; the adhan is called at the time below it. The next prayer is marked, with the time left until it.", "am": "በትልቁ የተጻፈው ጀማዓው የሚቆምበት የኢቃም ሰዓት ነው፤ ከሥሩ ያለው የአዛን ሰዓት ነው። ቀጣዩ ሶላት የቀረው ጊዜ ተጠቅሶ ይታያል። ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።" },
+          "dates": [
+            "gregorian",
+            "ethiopian",
+            "hijri"
+          ],
           "items": [
             {
               "title": { "en": "Fajr", "am": "ሱብሒ" },
               "time": { "en": "5:25 am", "am": "11:25" },
-              "note": { "en": "Adhan 5:05", "am": "አዛን 11:05 · ንጋት" }
+              "note": { "en": "Adhan 5:05", "am": "አዛን 11:05 · ንጋት" },
+              "at": "05:25"
             },
             {
               "title": { "en": "Dhuhr", "am": "ዙህር" },
               "time": { "en": "12:45 pm", "am": "6:45" },
-              "note": { "en": "Adhan 12:20", "am": "አዛን 6:20 · ቀን" }
+              "note": { "en": "Adhan 12:20", "am": "አዛን 6:20 · ቀን" },
+              "at": "12:45"
             },
             {
               "title": { "en": "Asr", "am": "ዐስር" },
               "time": { "en": "3:50 pm", "am": "9:50" },
-              "note": { "en": "Adhan 3:35", "am": "አዛን 9:35 · ቀን" }
+              "note": { "en": "Adhan 3:35", "am": "አዛን 9:35 · ቀን" },
+              "at": "15:50"
             },
             {
               "title": { "en": "Maghrib", "am": "መግሪብ" },
               "time": { "en": "6:10 pm", "am": "12:10" },
-              "note": { "en": "Adhan 6:05", "am": "አዛን 12:05 · ምሽት" }
+              "note": { "en": "Adhan 6:05", "am": "አዛን 12:05 · ምሽት" },
+              "at": "18:10"
             },
             {
               "title": { "en": "Isha", "am": "ዒሻ" },
               "time": { "en": "7:40 pm", "am": "1:40" },
-              "note": { "en": "Adhan 7:20", "am": "አዛን 1:20 · ምሽት" }
+              "note": { "en": "Adhan 7:20", "am": "አዛን 1:20 · ምሽት" },
+              "at": "19:40"
             },
             {
               "title": { "en": "Jumu'ah", "am": "ጁሙዓ" },
@@ -184,6 +195,7 @@
         },
         {
           "type": "about",
+          "id": "about",
           "eyebrow": { "en": "Our masjid", "am": "መስጂዳችን" },
           "heading": { "en": "Built by the neighbourhood, open to all", "am": "ሰፈሩ የገነባው፣ ለሁሉም ክፍት" },
           "body": { "en": "Al-Noor began as one room where a few families of Kolfe prayed together. Today it holds a full congregation at every prayer, a madrasa and a kitchen that feeds the fasting through Ramadan.\n\nIt is still run the same way: by volunteers from the neighbourhood, and by what the congregation gives.", "am": "አል-ኑር የጀመረው ጥቂት የኮልፌ ቤተሰቦች አብረው በሚሰግዱባት አንዲት ክፍል ነው። ዛሬ በየሶላቱ ሙሉ ጀማዓ፣ መድረሳ እና በረመዳን ጿሚዎችን የሚያስፈጥር ማዕድ ቤት አለው።\n\nአሁንም የሚተዳደረው እንደ ቀድሞው ነው፤ በሰፈሩ በጎ ፈቃደኞችና ጀማዓው በሚሰጠው።" },
@@ -192,6 +204,7 @@
             "alt": { "en": "Worshippers praying and sitting on a patterned carpet in a bright white and green prayer hall with chandeliers", "am": "በብሩህ ነጭና አረንጓዴ መስገጃ ውስጥ በምንጣፍ ላይ የሚሰግዱና የተቀመጡ ሰጋጆች" }
           },
           "imageSide": "end",
+          "imageShape": "arch",
           "points": [
             { "en": "Sisters' prayer hall with its own entrance and wudu area", "am": "የተለየ መግቢያና የውዱእ ቦታ ያለው የእህቶች መስገጃ" },
             { "en": "Friday khutbah in Amharic, with Arabic", "am": "የጁሙዓ ኹጥባ በአማርኛ፣ ከዐረብኛ ጋር" },
@@ -204,6 +217,7 @@
         },
         {
           "type": "gallery",
+          "id": "gallery",
           "layout": "mosaic",
           "eyebrow": { "en": "In the masjid", "am": "በመስጂዱ ውስጥ" },
           "heading": { "en": "Moments of the day", "am": "የዕለቱ ገጽታዎች" },
@@ -232,33 +246,108 @@
         },
         {
           "type": "quote",
-          "quote": { "en": "Our doors are open to everyone who comes to pray, to learn or to ask.", "am": "ለመስገድ፣ ለመማር ወይም ለመጠየቅ ለሚመጣ ሁሉ በራችን ክፍት ነው።" },
-          "name": { "en": "Kolfe Al-Noor Mosque", "am": "ኮልፌ አል-ኑር መስጂድ" }
+          "id": "hadith",
+          "quote": { "en": "Charity does not decrease wealth.", "am": "ሰደቃ ገንዘብን አይቀንስም።" },
+          "name": { "en": "The Prophet Muhammad, peace be upon him", "am": "ነቢዩ ሙሐመድ (ሰ.ዐ.ወ)" },
+          "role": { "en": "Sahih Muslim", "am": "ሶሒሕ ሙስሊም" }
         },
         {
-          "type": "services",
+          "type": "give",
           "id": "giving",
-          "variant": "numbered",
-          "eyebrow": { "en": "Giving", "am": "ሰደቃና ዘካ" },
+          "eyebrow": { "en": "Sadaqah and zakat", "am": "ሰደቃና ዘካ" },
           "heading": { "en": "Support the masjid", "am": "መስጂዱን ይደግፉ" },
-          "intro": { "en": "Choose where your gift goes. Give in the boxes by the door, at the office, or ask us for the bank and Telebirr details by phone or Telegram.", "am": "ስጦታዎ የት እንደሚውል ይምረጡ። በበሩ አጠገብ ባሉት ሳጥኖች ወይም በቢሮ መስጠት፣ አለዚያም የባንክና የቴሌብር ቁጥሩን በስልክ ወይም በቴሌግራም መጠየቅ ይችላሉ።" },
-          "items": [
+          "intro": { "en": "Al-Noor runs on what the congregation gives. Choose an amount, once or every month, and see what it does; then tell us if it is sadaqah, zakat or for the building fund.", "am": "አል-ኑር የሚተዳደረው ጀማዓው በሚሰጠው ነው። መጠን ይምረጡ፣ አንድ ጊዜ ወይም በየወሩ፣ የሚሠራውንም ይመልከቱ፤ ከዚያ ሰደቃ፣ ዘካ ወይም ለግንባታ ፈንድ መሆኑን ይንገሩን።" },
+          "amounts": [
             {
-              "icon": "heart",
-              "title": { "en": "Sadaqah", "am": "ሰደቃ" },
-              "description": { "en": "Keeps the masjid running day to day: water, light, cleaning, the imam and the madrasa teachers.", "am": "የመስጂዱን የዕለት ተዕለት ሥራ ያስቀጥላል፤ ውሃ፣ መብራት፣ ጽዳት፣ ኢማሙና የመድረሳ አስተማሪዎች።" }
+              "price": { "amountMinor": 10000, "currency": "ETB" },
+              "impact": { "en": "Water and light for the masjid for a day.", "am": "ለመስጂዱ የአንድ ቀን ውሃና መብራት።" }
             },
             {
-              "icon": "users",
-              "title": { "en": "Zakat", "am": "ዘካ" },
-              "description": { "en": "Collected and given in full to those entitled to it in Kolfe, with a record kept by the committee.", "am": "ተሰብስቦ ሙሉ በሙሉ በኮልፌ ለሚገባቸው ይሰጣል፤ ኮሚቴውም መዝገብ ይይዛል።" }
+              "price": { "amountMinor": 25000, "currency": "ETB" },
+              "impact": { "en": "Notebooks and a Qur'an reader for one madrasa child.", "am": "ለአንድ የመድረሳ ልጅ ደብተርና የቁርኣን መማሪያ መጽሐፍ።" }
             },
             {
-              "icon": "building",
-              "title": { "en": "Building fund", "am": "የግንባታ ፈንድ" },
-              "description": { "en": "For the new madrasa classrooms above the wudu area and a larger sisters' hall.", "am": "ከውዱእ ቦታው በላይ ለሚሠሩ አዳዲስ የመድረሳ ክፍሎችና ለሰፋ የእህቶች መስገጃ።" }
+              "price": { "amountMinor": 50000, "currency": "ETB" },
+              "impact": { "en": "Iftar for ten fasting neighbours in Ramadan.", "am": "በረመዳን ለአሥር ጿሚ ጎረቤቶች ኢፍጣር።" }
+            },
+            {
+              "price": { "amountMinor": 100000, "currency": "ETB" },
+              "impact": { "en": "A food basket for a family in need: flour, oil, lentils and sugar.", "am": "ለአንድ የተቸገረ ቤተሰብ የምግብ ቅርጫት፦ ዱቄት፣ ዘይት፣ ምስርና ስኳር።" }
+            },
+            {
+              "price": { "amountMinor": 250000, "currency": "ETB" },
+              "impact": { "en": "Eight months of madrasa fees for a child whose family cannot pay.", "am": "ቤተሰቡ መክፈል ለማይችል ልጅ የስምንት ወር የመድረሳ ክፍያ።" }
+            },
+            {
+              "price": { "amountMinor": 500000, "currency": "ETB" },
+              "impact": { "en": "Towards the new madrasa classrooms above the wudu area.", "am": "ከውዱእ ቦታው በላይ ለሚሠሩት አዳዲስ የመድረሳ ክፍሎች።" }
             }
-          ]
+          ],
+          "monthly": true,
+          "action": {
+            "label": { "en": "Give", "am": "ይስጡ፦" },
+            "href": "#give"
+          },
+          "goal": {
+            "raised": { "amountMinor": 124000000, "currency": "ETB" },
+            "target": { "amountMinor": 300000000, "currency": "ETB" },
+            "label": { "en": "Building fund: new madrasa classrooms", "am": "የግንባታ ፈንድ፦ አዳዲስ የመድረሳ ክፍሎች" }
+          },
+          "image": {
+            "src": "/stock/mosque-about-courtyard-arches.webp",
+            "alt": { "en": "A stone mosque courtyard with arcades of arches and a green dome under a blue sky", "am": "በሰማያዊ ሰማይ ሥር ቅስት በረንዳዎችና አረንጓዴ ጉልላት ያለው የድንጋይ መስጂድ ግቢ" }
+          }
+        },
+        {
+          "type": "form",
+          "id": "give",
+          "kind": "contact",
+          "eyebrow": { "en": "Your gift", "am": "ስጦታዎ" },
+          "heading": { "en": "Send your pledge", "am": "ቃልዎን ይላኩ" },
+          "intro": { "en": "Leave your number and the office calls you the same day with the Telebirr and bank details, in sha Allah. Zakat is recorded separately and given in full to those entitled to it in Kolfe. You can also give in the boxes by the door.", "am": "ስልክዎን ይተዉልን፤ ኢንሻአላህ ቢሮው በዕለቱ ደውሎ የቴሌብርና የባንክ መረጃውን ይሰጥዎታል። ዘካ ለብቻው ተመዝግቦ ሙሉ በሙሉ በኮልፌ ለሚገባቸው ይሰጣል። በበሩ አጠገብ ባሉት ሳጥኖችም መስጠት ይችላሉ።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "amount",
+              "label": { "en": "Amount", "am": "መጠን" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "frequency",
+              "label": { "en": "How often", "am": "በምን ያህል ጊዜ" },
+              "type": "select",
+              "required": true,
+              "options": [
+                { "en": "Once", "am": "አንድ ጊዜ" },
+                { "en": "Monthly", "am": "በየወሩ" }
+              ]
+            },
+            {
+              "name": "fund",
+              "label": { "en": "Where it goes", "am": "የሚውልበት" },
+              "type": "select",
+              "required": true,
+              "options": [
+                { "en": "Sadaqah: running the masjid", "am": "ሰደቃ፦ ለመስጂዱ የዕለት ሥራ" },
+                { "en": "Zakat", "am": "ዘካ" },
+                { "en": "Building fund", "am": "የግንባታ ፈንድ" }
+              ]
+            }
+          ],
+          "submitLabel": { "en": "Send my pledge", "am": "ቃሌን ላክ" },
+          "successMessage": { "en": "Jazakallahu khayran. The office will call you today to complete your gift.", "am": "ጀዛከላሁ ኸይረን። ስጦታዎን ለማጠናቀቅ ቢሮው ዛሬ ይደውልልዎታል።" }
         },
         {
           "type": "contact",
@@ -735,7 +824,7 @@
             },
             {
               "question": { "en": "How do I pay zakat through the masjid?", "am": "ዘካዬን በመስጂዱ በኩል እንዴት ልክፈል?" },
-              "answer": { "en": "Bring it to the office or ask for the account details. Tell us it is zakat so it is recorded and given separately.", "am": "ወደ ቢሮ ያምጡ ወይም የሒሳብ ቁጥሩን ይጠይቁ። ዘካ መሆኑን ይንገሩን፤ ለብቻው ተመዝግቦ ይሰጣል።" }
+              "answer": { "en": "Choose Zakat in the giving form on the home page, or bring it to the office. Tell us it is zakat so it is recorded and given separately.", "am": "በመነሻ ገጹ ባለው የስጦታ ቅጽ ላይ ዘካን ይምረጡ ወይም ወደ ቢሮ ያምጡ። ዘካ መሆኑን ይንገሩን፤ ለብቻው ተመዝግቦ ይሰጣል።" }
             }
           ]
         },

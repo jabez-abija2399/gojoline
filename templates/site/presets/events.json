@@ -30,7 +30,9 @@
       "sections": [
         {
           "type": "hero",
+          "id": "top",
           "variant": "immersive",
+          "stamp": { "en": "Fikir Events · Since 2016 · Addis Ababa", "am": "ፍቅር ኢቨንትስ · ከ2016 ጀምሮ · አዲስ አበባ" },
           "eyebrow": { "en": "Weddings · Melse · Celebrations", "am": "ሠርግ · መልስ · ድግስ" },
           "heading": { "en": "Your day, quietly perfect", "am": "ቀንዎ ያለ ጭንቀት ያምራል" },
           "subheading": { "en": "We plan, design and run weddings and celebrations in Addis Ababa, so you can be a guest at your own.", "am": "በአዲስ አበባ ሠርግና ድግስ እናቅዳለን፣ እናስውባለን፣ እናስተባብራለን፤ እርስዎ በራስዎ ድግስ እንግዳ እንዲሆኑ።" },
@@ -55,6 +57,19 @@
               "value": { "en": "3 cities", "am": "3 ከተሞች" },
               "label": { "en": "Addis, Bishoftu, Hawassa", "am": "አዲስ አበባ፣ ቢሾፍቱ፣ ሐዋሳ" }
             }
+          ]
+        },
+        {
+          "type": "marquee",
+          "id": "customs",
+          "tone": "primary",
+          "items": [
+            { "en": "Shimgilna", "am": "ሽምግልና" },
+            { "en": "Telosh", "am": "ጥሎሽ" },
+            { "en": "Wedding", "am": "ሠርግ" },
+            { "en": "Melse", "am": "መልስ" },
+            { "en": "Kelekel", "am": "ቅልቅል" },
+            { "en": "Graduation", "am": "ምረቃ" }
           ]
         },
         {
@@ -117,9 +132,10 @@
         {
           "type": "gallery",
           "id": "gallery",
-          "layout": "mosaic",
+          "layout": "wall",
           "eyebrow": { "en": "Recent work", "am": "የቅርብ ጊዜ ሥራዎች" },
           "heading": { "en": "Days we were part of", "am": "አብረን ያሳለፍናቸው ቀናት" },
+          "intro": { "en": "Dances, dresses, tables and the coffee after. Tap any photo to see it large.", "am": "ጭፈራው፣ ልብሱ፣ ማዕዱና ከዚያ በኋላ የሚፈላው ቡና። ማንኛውንም ፎቶ ነክተው በትልቁ ይመልከቱ።" },
           "images": [
             {
               "src": "/stock/events-about-wedding-party-dancing.webp",
@@ -130,8 +146,24 @@
               "alt": { "en": "A smiling bride lifting her lace veil over a bouquet of white roses", "am": "ፈገግተኛ ሙሽሪት የዳንቴል ዓይነ ርግቧን ከነጭ ጽጌረዳ እቅፍ አበባ በላይ ስታነሳ" }
             },
             {
+              "src": "/stock/hotel-gallery-bush-dining-acacia.webp",
+              "alt": { "en": "A long red-clothed dinner table set outdoors beside an acacia tree under a wide sky", "am": "በሰፊ ሰማይ ሥር ከግራር ዛፍ አጠገብ የተዘጋጀ ረጅም ቀይ የእራት ጠረጴዛ" }
+            },
+            {
+              "src": "/stock/shop-card-habesha-kemis.webp",
+              "alt": { "en": "A woman in a white habesha kemis with black and gold tibeb embroidery and silver jewellery", "am": "ጥቁርና ወርቃማ ጥበብ ያለው ነጭ የሀበሻ ቀሚስና የብር ጌጥ ያደረገች ሴት" }
+            },
+            {
+              "src": "/stock/cafe-gallery-bread-baskets.webp",
+              "alt": { "en": "Hands cutting a round difo dabo in a woven basket", "am": "በሰፌድ ውስጥ ያለ ድፎ ዳቦ በእጅ ሲቆረስ" }
+            },
+            {
               "src": "/stock/hotel-gallery-veranda-dusk.webp",
               "alt": { "en": "A colonnaded veranda and garden lawn lit at dusk", "am": "በምሽት በመብራት የደመቀ ባለ አምድ በረንዳና የግቢ ሣር" }
+            },
+            {
+              "src": "/stock/cafe-hero-clay-pot-dish.webp",
+              "alt": { "en": "Black clay pots of food garnished with a green herb sprig", "am": "በአረንጓዴ ቅጠል ያጌጠ ምግብ በጥቁር የሸክላ ድስቶች" }
             }
           ]
         },
@@ -239,6 +271,7 @@
         },
         {
           "type": "quote",
+          "id": "couple",
           "quote": { "en": "On the morning of our wedding I had nothing to do but get dressed. I still don't know what went wrong that day, and that is exactly the point.", "am": "በሠርጋችን ጠዋት ከመልበስ በቀር የምሠራው አልነበረም። በዚያ ቀን ምን ችግር እንደተፈጠረ እስከ ዛሬ አላውቅም፤ የፈለግነውም ይኸው ነበር።" },
           "name": { "en": "Selam and Dawit T.", "am": "ሰላምና ዳዊት ተ." },
           "role": { "en": "Married in January, Bishoftu", "am": "በጥር ወር በቢሾፍቱ የተጋቡ" }
@@ -254,6 +287,7 @@
             "alt": { "en": "A coffee ceremony: a jebena pouring into small cups while incense smokes in a clay burner", "am": "የቡና ሥነ ሥርዓት፤ ከጀበና ወደ ስኒዎች ቡና ሲቀዳ፣ ዕጣን በማጨሻ ሲጨስ" }
           },
           "imageSide": "end",
+          "imageShape": "arch",
           "points": [
             { "en": "One planner and one designer for each event", "am": "ለእያንዳንዱ ዝግጅት አንድ አዘጋጅና አንድ ዲዛይነር" },
             { "en": "Every supplier's price shown to you as it is", "am": "የእያንዳንዱ አቅራቢ ዋጋ እንዳለ ይታይዎታል" },
@@ -347,7 +381,8 @@
         },
         {
           "type": "cards",
-          "layout": "feature",
+          "id": "packages",
+          "layout": "stack",
           "eyebrow": { "en": "Planning", "am": "ዝግጅት" },
           "heading": { "en": "Our three packages", "am": "ሦስቱ ፓኬጆቻችን" },
           "intro": { "en": "Prices are for a wedding of up to 300 guests in Addis Ababa. For other sizes and towns we send a written quote.", "am": "ዋጋዎቹ በአዲስ አበባ እስከ 300 እንግዶች ላለው ሠርግ ናቸው። ለሌላ መጠንና ከተማ የጽሑፍ ዋጋ እንልካለን።" },

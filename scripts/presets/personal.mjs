@@ -3,9 +3,20 @@ import { t, img, link, birr, save } from "./lib.mjs";
 const start = link("Start a project", "ሥራ እንጀምር", "/#project");
 const seeWork = link("See the work", "ሥራዎቹን ይመልከቱ", "/work");
 
+// Kinds of work: on the work page two or more kinds give filter pills by themselves.
+const kind = {
+  brand: t("Brand", "ብራንድ"),
+  web: t("Web", "ድረገጽ"),
+  print: t("Print", "ኅትመት"),
+  campaign: t("Campaign", "ዘመቻ"),
+};
+// On the home page each row of the work list leads to the full write-ups.
+const more = link("Read about this project", "ስለዚህ ሥራ ያንብቡ", "/work");
+
 // Selected work. Each card: project name, type and year in `meta`, one outcome line.
 const work = {
   sefer: {
+    badge: kind.web,
     image: img("personal-card-website-laptop", "A laptop on a desk showing a teal architecture website", "በጠረጴዛ ላይ ያለ ላፕቶፕ፤ አረንጓዴ-ሰማያዊ የአርክቴክቸር ድረገጽ ያሳያል"),
     subtitle: t("Web design", "የድረገጽ ዲዛይን"),
     title: t("Sefer Architects", "ሰፈር አርክቴክትስ"),
@@ -13,6 +24,7 @@ const work = {
     description: t("A calm two-language site that puts the buildings first. Enquiries doubled in three months.", "ሕንጻዎቹን የሚያስቀድም፣ በሁለት ቋንቋ የተሠራ ረጋ ያለ ድረገጽ። በሦስት ወር ውስጥ የደንበኛ ጥያቄ በእጥፍ ጨመረ።"),
   },
   dib: {
+    badge: kind.brand,
     image: img("personal-card-logo-tablet", "A hand with a stylus drawing a white bear-head logo on a black tablet", "በጥቁር ታብሌት ላይ ነጭ የድብ ራስ ሎጎ የሚሥል እጅ"),
     subtitle: t("Brand identity", "የብራንድ መለያ"),
     title: t("Dib Trek Gear", "ድብ የጉዞ ዕቃዎች"),
@@ -20,6 +32,7 @@ const work = {
     description: t("A bear mark that stays clear on a zip pull and on a shop sign. Now on every bag they sell.", "በዚፕ ጫፍም በሱቅ ሰሌዳም ላይ ጥርት ብሎ የሚታይ የድብ ምልክት። ዛሬ በሚሸጡት ቦርሳ ሁሉ ላይ አለ።"),
   },
   grafico: {
+    badge: kind.print,
     image: img("personal-card-brochure-layout", "An open printed brochure with a pink layout and the large heading GRAFICO, on a wooden surface", "በእንጨት ላይ የተከፈተ የታተመ ብሮሸር፤ ሮዝ ገጽና ትልቅ GRAFICO የሚል ርእስ አለው"),
     subtitle: t("Editorial design", "የኅትመት ዲዛይን"),
     title: t("Grafico Magazine", "ግራፊኮ መጽሔት"),
@@ -27,6 +40,7 @@ const work = {
     description: t("Grid, type and cover for a design yearbook. The first print run sold out in two weeks.", "ለዓመታዊ የዲዛይን መጽሔት የገጽ አቀማመጥ፣ የፊደል ምርጫና ሽፋን። የመጀመሪያው ኅትመት በሁለት ሳምንት ተሸጦ አለቀ።"),
   },
   shema: {
+    badge: kind.campaign,
     image: img("shop-card-woven-scarves", "Four folded hand-woven cotton scarves in blue, tan, pink and purple on a white surface", "በነጭ ገጽ ላይ የተጣጠፉ አራት በእጅ የተሸመኑ የጥጥ ሻርፖች፤ ሰማያዊ፣ ቡናማ፣ ሮዝና ወይን ጠጅ"),
     subtitle: t("Art direction", "የሥነ ጥበብ አመራር"),
     title: t("Shema Collective", "ሸማ ኮሌክቲቭ"),
@@ -34,6 +48,7 @@ const work = {
     description: t("One white table, four colours, nothing else. A launch shoot that filled the weavers' order book before opening day.", "አንድ ነጭ ጠረጴዛ፣ አራት ቀለም፣ ሌላ ምንም የለም። ሱቁ ከመከፈቱ በፊት የሸማኔዎቹን የትዕዛዝ ደብተር የሞላ የማስተዋወቂያ ፎቶ ሥራ።"),
   },
   buna: {
+    badge: kind.brand,
     image: img("personal-gallery-lettering-sketches", "Hand-drawn logo and lettering sketches on loose paper and a sketchbook on a wooden desk", "በእንጨት ጠረጴዛ ላይ በወረቀትና በደብተር የተሣሉ የሎጎና የፊደል ንድፎች"),
     subtitle: t("Lettering", "የፊደል ጥበብ"),
     title: t("Buna Bet Lettering", "የቡና ቤት ፊደላት"),
@@ -41,6 +56,7 @@ const work = {
     description: t("Forty sketches to find one word mark that reads as well in Ge'ez as in Latin.", "በግዕዝም በላቲንም እኩል የሚነበብ አንድ የስም ምልክት ለማግኘት የተሣሉ አርባ ንድፎች።"),
   },
   tibeb: {
+    badge: kind.print,
     image: img("personal-gallery-pattern", "A geometric repeat pattern in orange, grey-blue and yellow", "በብርቱካናማ፣ በግራጫ-ሰማያዊና በቢጫ የተደጋገመ ጂኦሜትሪያዊ ጥለት"),
     subtitle: t("Pattern design", "የጥለት ዲዛይን"),
     title: t("Tibeb Tea Packaging", "ጥበብ ሻይ ማሸጊያ"),
@@ -97,7 +113,10 @@ save("personal", {
       sections: [
         {
           type: "hero",
+          id: "top",
           variant: "portrait",
+          // A short identity line on a slowly turning circle beside the portrait.
+          stamp: t("Brand · Web · Print · Addis Ababa", "ብራንድ · ድረገጽ · ኅትመት · አዲስ አበባ"),
           eyebrow: t("Addis Ababa · Available for work", "አዲስ አበባ · ለአዲስ ሥራ ዝግጁ"),
           heading: t("Brand & web designer", "ብራንድና ድረገጽ ዲዛይነር"),
           subheading: t("I'm Hana. I give Ethiopian businesses a name, a face and a website people remember.", "ሀና እባላለሁ። ለኢትዮጵያ ንግዶች ሰው የማይረሳው ስም፣ ገጽታና ድረገጽ እሠራለሁ።"),
@@ -111,12 +130,20 @@ save("personal", {
           ],
         },
         {
+          // Like the name ribbons on the best portfolio sites: what she does, moving slowly past.
+          type: "marquee",
+          id: "disciplines",
+          tone: "dark",
+          items: [t("Brand identity", "የብራንድ መለያ"), t("Websites", "ድረገጾች"), t("Print", "ኅትመት"), t("Lettering", "የፊደል ጥበብ"), t("Amharic + English", "አማርኛ + እንግሊዝኛ")],
+        },
+        {
+          // The centrepiece: a project list in big type; on a computer the picture follows the mouse.
           type: "cards",
           id: "work",
-          layout: "feature",
+          layout: "index",
           eyebrow: t("Selected work", "የተመረጡ ሥራዎች"),
-          heading: t("Four projects, four results", "አራት ሥራዎች፣ አራት ውጤቶች"),
-          items: [work.sefer, work.dib, work.grafico, work.shema],
+          heading: t("Six projects, 2023 to 2026", "ስድስት ሥራዎች፣ ከ2023 እስከ 2026"),
+          items: [work.sefer, work.dib, work.grafico, work.shema, work.buna, work.tibeb].map(({ description, badge, ...x }) => ({ ...x, action: more })),
           action: link("See all work", "ሁሉንም ሥራዎች ይመልከቱ", "/work"),
         },
         {
@@ -127,6 +154,13 @@ save("personal", {
           heading: t("Three things, done well", "ሦስት ነገር፣ በጥራት"),
           intro: t("Prices are where projects start. You get a fixed quote before any work begins.", "ዋጋዎቹ መነሻ ናቸው። ሥራ ከመጀመሩ በፊት የማይለወጥ የዋጋ ዝርዝር ይደርስዎታል።"),
           items: services,
+        },
+        {
+          type: "quote",
+          id: "belief",
+          quote: t("If it can't be painted on a wall in Merkato, it isn't finished.", "መርካቶ ውስጥ በግድግዳ ላይ ሊጻፍ ካልቻለ ገና አላለቀም።"),
+          name: t("Hana Bekele", "ሀና በቀለ"),
+          role: t("on what makes a good logo", "ጥሩ ሎጎ ምን እንደሆነ ስትናገር"),
         },
         {
           type: "about",
@@ -145,11 +179,13 @@ save("personal", {
         {
           type: "timeline",
           id: "experience",
+          eyebrow: t("Since 2016", "ከ2016 ጀምሮ"),
           heading: t("Experience", "የሥራ ልምድ"),
           items: experience,
         },
         {
           type: "testimonials",
+          id: "clients",
           eyebrow: t("Clients", "ደንበኞች"),
           heading: t("In their words", "በራሳቸው አንደበት"),
           items: testimonials,
@@ -251,12 +287,6 @@ save("personal", {
             { icon: "ruler", title: t("Tested in real life", "በተግባር የተፈተነ"), description: t("Logos are printed small, sites are opened on a slow phone.", "ሎጎ በትንሹ ታትሞ፣ ድረገጽ በዘገምተኛ ስልክ ተከፍቶ ይፈተናል።") },
             { icon: "message", title: t("Plain words", "ግልጽ ቋንቋ"), description: t("No design jargon. I explain each choice in a sentence.", "የሙያ ቃል አላበዛም። እያንዳንዱን ምርጫ በአንድ ዓረፍተ ነገር አስረዳለሁ።") },
           ],
-        },
-        {
-          type: "quote",
-          quote: t("If it can't be painted on a wall in Merkato, it isn't finished.", "መርካቶ ውስጥ በግድግዳ ላይ ሊጻፍ ካልቻለ ገና አላለቀም።"),
-          name: t("Hana Bekele", "ሀና በቀለ"),
-          role: t("on what makes a good logo", "ጥሩ ሎጎ ምን እንደሆነ ስትናገር"),
         },
         {
           type: "cta",

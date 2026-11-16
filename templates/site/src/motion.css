@@ -152,6 +152,10 @@
   .split .w {
     display: inline-block;
   }
+  /* Amharic text gets a taller line everywhere; the words of a headline keep the headline's own. */
+  :lang(am) :is(.split, .ink-words) .w {
+    line-height: inherit;
+  }
   /* A thin bar at the top showing how far down the page the visitor is. */
   .scroll-progress {
     display: none;
@@ -444,11 +448,6 @@
     .dim-others > li {
       transition: opacity 250ms;
     }
-  }
-  /* Pictures with a top like a doorway. */
-  .arch,
-  .arch :is(img, .placeholder) {
-    border-radius: 999px 999px var(--site-radius) var(--site-radius) / 50% 50% var(--site-radius) var(--site-radius);
   }
   /* The home page's main action in the header (computers; phones have the call bar). */
   .header-cta {
@@ -761,4 +760,10 @@
   to {
     clip-path: inset(0 0 0 round 0);
   }
+}
+
+/* Pictures with a top like a doorway. Outside the layers so it wins over the rounded-corner utility. */
+.arch,
+.arch :is(img, .placeholder) {
+  border-radius: 999px 999px var(--site-radius) var(--site-radius) / 50% 50% var(--site-radius) var(--site-radius);
 }

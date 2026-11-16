@@ -50,6 +50,7 @@ export function Cards({ section }: { section: CardsSection }) {
                   <span className="flex min-w-0 flex-1 flex-col gap-1 md:flex-row md:items-baseline md:gap-6">
                     <span className="index-title">{text(item.title)}</span>
                     {item.subtitle && <span className="text-muted">{text(item.subtitle)}</span>}
+                    {item.description && <span className="text-muted md:hidden">{text(item.description)}</span>}
                   </span>
                   {item.meta && item.meta.length > 0 && <span className="shrink-0 text-muted max-sm:hidden">{item.meta.map((m) => text(m)).join(" · ")}</span>}
                   {item.image?.src && (

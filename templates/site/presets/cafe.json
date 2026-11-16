@@ -32,12 +32,15 @@
           "type": "hero",
           "variant": "immersive",
           "eyebrow": { "en": "Bole · near Edna Mall", "am": "ቦሌ · ኤድና ሞል አጠገብ" },
+          "id": "top",
           "heading": { "en": "Coffee roasted every morning", "am": "በየማለዳው የሚቆላ ቡና" },
           "subheading": { "en": "Jebena buna poured at your table, a proper macchiato, and food cooked the way it is at home.", "am": "በጠረጴዛዎ ላይ የሚቀዳ የጀበና ቡና፣ ልክ የሆነ ማኪያቶ እና እንደ ቤት የሚሠራ ምግብ።" },
           "image": {
             "src": "/stock/cafe-hero-coffee-ceremony-pour.webp",
             "alt": { "en": "A woman in a white habesha dress pours coffee from a jebena into rows of cini cups", "am": "ነጭ የሀበሻ ቀሚስ የለበሰች ሴት ከጀበና ወደ ተደረደሩ ስኒዎች ቡና ስትቀዳ" }
           },
+          "frame": true,
+          "stamp": { "en": "Since 2015 · Bole Road", "am": "ከ2007 ዓ.ም. ጀምሮ · ቦሌ መንገድ" },
           "primaryAction": {
             "label": { "en": "See the menu", "am": "ምናሌውን ይመልከቱ" },
             "href": "/menu"
@@ -56,10 +59,15 @@
               "label": { "en": "on foot from Edna Mall", "am": "ከኤድና ሞል በእግር" }
             },
             {
-              "value": { "en": "2015", "am": "2007 ዓ.ም." },
-              "label": { "en": "roasting here since", "am": "ጀምሮ እዚሁ እንቆላለን" }
+              "value": { "en": "7", "am": "7" },
+              "label": { "en": "days a week, from 7:00 am", "am": "ቀን በሳምንት፣ ከጠዋቱ 1 ሰዓት ጀምሮ" }
             }
           ]
+        },
+        {
+          "type": "quote",
+          "id": "welcome",
+          "quote": { "en": "Every cup here starts as green coffee in a clay pan at dawn, and ends at your table with popcorn and good talk.", "am": "እዚህ እያንዳንዱ ስኒ የሚጀምረው ጎህ ሲቀድ በሸክላ ምጣድ ላይ ካለ ጥሬ ቡና ነው፤ የሚያልቀውም በጠረጴዛዎ ላይ ከፈንዲሻና ከጥሩ ጨዋታ ጋር ነው።" }
         },
         {
           "type": "cards",
@@ -67,7 +75,7 @@
           "layout": "grid",
           "eyebrow": { "en": "House favourites", "am": "የቤቱ ተወዳጆች" },
           "heading": { "en": "What people come back for", "am": "ደንበኞች የሚመለሱባቸው" },
-          "intro": { "en": "Four things we make every day. The rest is on the menu.", "am": "በየቀኑ የምናዘጋጃቸው አራት ምርጦች። ቀሪው በምናሌው ላይ አለ።" },
+          "intro": { "en": "Six things we make every day. The rest is on the menu.", "am": "በየቀኑ የምናዘጋጃቸው ስድስት ምርጦች። ቀሪው በምናሌው ላይ አለ።" },
           "items": [
             {
               "image": {
@@ -76,7 +84,7 @@
               },
               "subtitle": { "en": "From the jebena", "am": "ከጀበና" },
               "title": { "en": "Jebena buna", "am": "የጀበና ቡና" },
-              "badge": { "en": "Popular", "am": "ተወዳጅ" },
+              "badge": { "en": "Coffee", "am": "ቡና" },
               "description": { "en": "Sidama beans roasted this morning, brewed in clay and served with popcorn.", "am": "ዛሬ ጠዋት የተቆላ የሲዳማ ቡና፣ በጀበና ተፈልቶ ከፈንዲሻ ጋር ይቀርባል።" },
               "price": { "amountMinor": 6000, "currency": "ETB" },
               "priceNote": { "en": "a cup", "am": "በስኒ" }
@@ -88,6 +96,7 @@
               },
               "subtitle": { "en": "From the machine", "am": "ከማሽን" },
               "title": { "en": "Macchiato", "am": "ማኪያቶ" },
+              "badge": { "en": "Coffee", "am": "ቡና" },
               "description": { "en": "The Addis classic: a short, strong coffee with a little steamed milk.", "am": "የአዲስ አበባ ተወዳጅ፦ አጭር፣ ጠንካራ ቡና ከጥቂት የተፈላ ወተት ጋር።" },
               "price": { "amountMinor": 8000, "currency": "ETB" }
             },
@@ -98,6 +107,7 @@
               },
               "subtitle": { "en": "Lunch and dinner", "am": "ምሳና እራት" },
               "title": { "en": "Tibs and kitfo plate", "am": "ጥብስና ክትፎ" },
+              "badge": { "en": "Food", "am": "ምግብ" },
               "description": { "en": "Beef tibs, kitfo and fresh ayib with rolled injera and mitmita. Good for two.", "am": "የበሬ ጥብስ፣ ክትፎና ትኩስ አይብ ከእንጀራና ከሚጥሚጣ ጋር። ለሁለት ሰው ይበቃል።" },
               "price": { "amountMinor": 68000, "currency": "ETB" }
             },
@@ -108,9 +118,32 @@
               },
               "subtitle": { "en": "Fasting plate", "am": "የጾም ምግብ" },
               "title": { "en": "Beyaynetu", "am": "በያይነቱ" },
-              "badge": { "en": "Fasting", "am": "የጾም" },
+              "badge": { "en": "Food", "am": "ምግብ" },
               "description": { "en": "Misir wot, kik alicha and gomen on injera, cooked fresh every day.", "am": "ምስር ወጥ፣ ክክ አልጫና ጎመን በእንጀራ ላይ፤ በየቀኑ ትኩስ የሚሠራ።" },
               "price": { "amountMinor": 34000, "currency": "ETB" }
+            },
+            {
+              "image": {
+                "src": "/stock/cafe-gallery-pastries-coffee.webp",
+                "alt": { "en": "A café table with a latte, a croissant, a fruit danish and doughnuts", "am": "ማኪያቶ፣ ክሮሳንት፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ" }
+              },
+              "subtitle": { "en": "With your macchiato", "am": "ከማኪያቶዎ ጋር" },
+              "title": { "en": "Croissant", "am": "ክሮሳንት" },
+              "badge": { "en": "Bakery", "am": "ዳቦና ኬክ" },
+              "description": { "en": "Baked here every morning, with a fruit danish and doughnuts beside it.", "am": "በየማለዳው እዚሁ የሚጋገር፤ ከፍራፍሬ ኬክና ከዶናት ጋር።" },
+              "price": { "amountMinor": 12000, "currency": "ETB" }
+            },
+            {
+              "image": {
+                "src": "/stock/cafe-gallery-bread-baskets.webp",
+                "alt": { "en": "Hands cutting round difo dabo bread in a woven basket", "am": "በመሶብ ውስጥ ድፎ ዳቦ የሚቆርሱ እጆች" }
+              },
+              "subtitle": { "en": "Home-baked", "am": "በቤት የተጋገረ" },
+              "title": { "en": "Difo dabo", "am": "ድፎ ዳቦ" },
+              "badge": { "en": "Bakery", "am": "ዳቦና ኬክ" },
+              "description": { "en": "Round wheat bread from a family recipe, best with the afternoon ceremony.", "am": "በቤተሰብ አሠራር የሚጋገር ክብ የስንዴ ዳቦ፤ ከከሰዓቱ ሥነ ሥርዓት ጋር ይጣፍጣል።" },
+              "price": { "amountMinor": 6000, "currency": "ETB" },
+              "priceNote": { "en": "a slice", "am": "በቁራሽ" }
             }
           ],
           "action": {
@@ -119,54 +152,76 @@
           }
         },
         {
-          "type": "about",
-          "eyebrow": { "en": "Our coffee", "am": "ቡናችን" },
-          "heading": { "en": "Green beans in, fresh coffee out", "am": "ጥሬው ገብቶ፣ ትኩሱ ይወጣል" },
-          "body": { "en": "We buy green coffee from Sidama and Yirgacheffe and roast it here in a clay pan before the doors open. By the time you walk in, the whole house smells of it.\n\nThe café is run by one family. Come for a quick macchiato at the counter, or sit down for the full ceremony with popcorn and incense.", "am": "ጥሬ ቡናውን ከሲዳማና ከይርጋጨፌ ገዝተን በር ከመክፈታችን በፊት እዚሁ በሸክላ ምጣድ እንቆላለን። እርስዎ ሲገቡ ቤቱ በሙሉ በቡና መዓዛ ታውዷል።\n\nካፌውን የሚያስተዳድረው አንድ ቤተሰብ ነው። ለፈጣን ማኪያቶ ብቅ ይበሉ፤ አሊያም ተቀምጠው ከፈንዲሻና ከዕጣን ጋር ሙሉውን ሥነ ሥርዓት ያጣጥሙ።" },
-          "image": {
-            "src": "/stock/cafe-about-roasted-beans-pan.webp",
-            "alt": { "en": "Hands holding a clay pan of freshly roasted coffee beans", "am": "አዲስ የተቆላ ቡና የያዘ የሸክላ ምጣድ በእጅ" }
-          },
-          "imageSide": "end",
-          "points": [
-            { "en": "Roasted fresh every morning, never the day before", "am": "በየማለዳው የሚቆላ፣ የትናንት ቡና አናቀርብም" },
-            { "en": "Fasting dishes every day of the week", "am": "የጾም ምግብ በሳምንቱ ቀናት ሁሉ" },
-            { "en": "Roasted beans to take home, by the quarter kilo", "am": "የተቆላ ቡና ለቤትዎ፣ በሩብ ኪሎ" }
-          ],
-          "action": {
-            "label": { "en": "Our story", "am": "ታሪካችን" },
-            "href": "/story"
-          }
+          "type": "marquee",
+          "id": "dishes",
+          "tone": "primary",
+          "items": [
+            { "en": "Jebena buna", "am": "የጀበና ቡና" },
+            { "en": "Macchiato", "am": "ማኪያቶ" },
+            { "en": "Chechebsa", "am": "ጨጨብሳ" },
+            { "en": "Beyaynetu", "am": "በያይነቱ" },
+            { "en": "Shiro tegabino", "am": "ሽሮ ተጋቢኖ" },
+            { "en": "Spris", "am": "ስፕሪስ" },
+            { "en": "Difo dabo", "am": "ድፎ ዳቦ" }
+          ]
         },
         {
-          "type": "gallery",
-          "eyebrow": { "en": "Around the house", "am": "በቤታችን" },
-          "heading": { "en": "A morning at Buna House", "am": "አንድ ማለዳ በቡና ቤታችን" },
-          "images": [
+          "type": "tabs",
+          "id": "coffee",
+          "eyebrow": { "en": "Our coffee", "am": "ቡናችን" },
+          "heading": { "en": "Green beans in, fresh coffee out", "am": "ጥሬው ገብቶ፣ ትኩሱ ይወጣል" },
+          "items": [
             {
-              "src": "/stock/cafe-gallery-bread-baskets.webp",
-              "alt": { "en": "Hands cutting round difo dabo bread in a woven basket", "am": "በመሶብ ውስጥ ድፎ ዳቦ የሚቆርሱ እጆች" }
+              "label": { "en": "The roast", "am": "ቡና መቁላት" },
+              "heading": { "en": "Roasted in clay before we open", "am": "በር ከመክፈታችን በፊት በሸክላ የሚቆላ" },
+              "body": { "en": "We buy green coffee from Sidama and Yirgacheffe in small lots and roast it here in a clay pan at dawn. By the time you walk in, the whole house smells of it.", "am": "ጥሬ ቡናውን ከሲዳማና ከይርጋጨፌ በትንሽ በትንሹ ገዝተን ጎህ ሲቀድ እዚሁ በሸክላ ምጣድ እንቆላለን። እርስዎ ሲገቡ ቤቱ በሙሉ በቡና መዓዛ ታውዷል።" },
+              "image": {
+                "src": "/stock/cafe-about-roasted-beans-pan.webp",
+                "alt": { "en": "Hands holding a clay pan of freshly roasted coffee beans", "am": "አዲስ የተቆላ ቡና የያዘ የሸክላ ምጣድ በእጅ" }
+              },
+              "points": [
+                { "en": "Roasted fresh every morning, never the day before", "am": "በየማለዳው የሚቆላ፣ የትናንት ቡና አናቀርብም" },
+                { "en": "Roasted beans to take home, 350 Br a quarter kilo", "am": "የተቆላ ቡና ለቤትዎ፣ ሩብ ኪሎ በ350 ብር" }
+              ]
             },
             {
-              "src": "/stock/tours-gallery-spice-market.webp",
-              "alt": { "en": "A woman in a green headscarf sorting red and green chillies and ginger at an open-air market", "am": "አረንጓዴ ሻሽ ያሰረች ሴት በገበያ ላይ ቃሪያና ዝንጅብል ስትለይ" }
+              "label": { "en": "The ceremony", "am": "ሥነ ሥርዓቱ" },
+              "heading": { "en": "Three rounds, no hurry", "am": "ሦስት ዙር፣ ያለ ጥድፊያ" },
+              "body": { "en": "Abol, tona, bereka: the first cup is the strongest, the third is the blessing. We hold the ceremony at 10:00 and 4:00 by the window, with popcorn and incense. Join a round for the price of a cup.", "am": "አቦል፣ ቶና፣ በረካ፦ የመጀመሪያው ስኒ ጠንካራው ነው፤ ሦስተኛው በረከቱ። ሥነ ሥርዓቱን ከጠዋቱ 4 እና ከቀኑ 10 ሰዓት በመስኮቱ አጠገብ ከፈንዲሻና ከዕጣን ጋር እናካሂዳለን። በአንድ ስኒ ዋጋ ይቀላቀሉ።" },
+              "image": {
+                "src": "/stock/cafe-about-ceremony-incense.webp",
+                "alt": { "en": "A coffee ceremony: a jebena pouring into cini cups, incense smoking beside baskets of green beans", "am": "የቡና ሥነ ሥርዓት፦ ከጀበና ወደ ስኒ የሚቀዳ ቡና፣ የሚጤስ ዕጣንና የጥሬ ቡና ቅርጫቶች" }
+              },
+              "points": [
+                { "en": "60 Br a cup to join a round", "am": "አንድ ዙር ለመቀላቀል በስኒ 60 ብር" },
+                { "en": "600 Br for your own ceremony, up to 6 people", "am": "ለራስዎ ሥነ ሥርዓት 600 ብር፣ እስከ 6 ሰው" }
+              ],
+              "action": {
+                "label": { "en": "Reserve a ceremony", "am": "ሥነ ሥርዓት ያስይዙ" },
+                "href": "/#booking"
+              }
             },
             {
-              "src": "/stock/cafe-gallery-pastries-coffee.webp",
-              "alt": { "en": "A café table with a latte, a croissant, a fruit danish and doughnuts", "am": "ማኪያቶ፣ ክሮሳንት፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ" }
-            },
-            {
-              "src": "/stock/cafe-gallery-cini-cups-tray.webp",
-              "alt": { "en": "Small cini coffee cups on an engraved metal tray, a hand reaching for one", "am": "በተቀረጸ የብረት ትሪ ላይ ያሉ ስኒዎች፣ አንዱን የሚያነሳ እጅ" }
-            },
-            {
-              "src": "/stock/shop-card-jebena-pottery.webp",
-              "alt": { "en": "Black clay jebena coffee pots and a red clay bottle painted with white patterns", "am": "ጥቁር የሸክላ ጀበናዎችና በነጭ ጌጥ የተሣለ ቀይ የሸክላ ጠርሙስ" }
+              "label": { "en": "The family", "am": "ቤተሰባችን" },
+              "heading": { "en": "One family, one jebena", "am": "አንድ ቤተሰብ፣ አንድ ጀበና" },
+              "body": { "en": "The café is run by one family. We started with one jebena, six stools and our mother's recipe for chechebsa. Come for a quick macchiato at the counter, or sit down for the whole afternoon.", "am": "ካፌውን የሚያስተዳድረው አንድ ቤተሰብ ነው። የጀመርነው በአንድ ጀበና፣ በስድስት በርጩማና በእናታችን የጨጨብሳ አሠራር ነው። ለፈጣን ማኪያቶ ብቅ ይበሉ፤ አሊያም ከሰዓቱን ሙሉ ተቀምጠው ያሳልፉ።" },
+              "image": {
+                "src": "/stock/cafe-gallery-cini-cups-tray.webp",
+                "alt": { "en": "Small cini coffee cups on an engraved metal tray, a hand reaching for one", "am": "በተቀረጸ የብረት ትሪ ላይ ያሉ ስኒዎች፣ አንዱን የሚያነሳ እጅ" }
+              },
+              "points": [
+                { "en": "Fasting dishes every day of the week", "am": "የጾም ምግብ በሳምንቱ ቀናት ሁሉ" }
+              ],
+              "action": {
+                "label": { "en": "Our story", "am": "ታሪካችን" },
+                "href": "/story"
+              }
             }
           ]
         },
         {
           "type": "testimonials",
+          "id": "reviews",
           "eyebrow": { "en": "Guests say", "am": "ደንበኞች ምን ይላሉ" },
           "heading": { "en": "Kind words over coffee", "am": "በቡና ላይ የተባሉ መልካም ቃላት" },
           "items": [
@@ -250,11 +305,12 @@
         },
         {
           "type": "cta",
+          "id": "visit",
           "heading": { "en": "Come for the coffee, stay for lunch", "am": "ለቡና ይምጡ፤ ለምሳ ይቆዩ" },
           "body": { "en": "Open every day. No booking needed for a cup or a plate.", "am": "በየቀኑ ክፍት ነን። ለአንድ ስኒ ቡና ወይም ለምሳ ማስያዝ አያስፈልግም።" },
           "image": {
-            "src": "/stock/cafe-about-ceremony-incense.webp",
-            "alt": { "en": "A coffee ceremony: a jebena pouring into cini cups, incense smoking beside baskets of green beans", "am": "የቡና ሥነ ሥርዓት፦ ከጀበና ወደ ስኒ የሚቀዳ ቡና፣ የሚጤስ ዕጣንና የጥሬ ቡና ቅርጫቶች" }
+            "src": "/stock/cafe-hero-clay-pot-dish.webp",
+            "alt": { "en": "A row of black clay pots of food topped with a green herb sprig", "am": "በአረንጓዴ ቅጠል ያጌጡ በረድፍ የተቀመጡ ጥቁር የሸክላ ድስቶች" }
           },
           "primaryAction": {
             "label": { "en": "See the menu", "am": "ምናሌውን ይመልከቱ" },
@@ -508,25 +564,30 @@
           }
         },
         {
-          "type": "steps",
-          "eyebrow": { "en": "From bean to cup", "am": "ከፍሬ እስከ ስኒ" },
-          "heading": { "en": "How your coffee is made", "am": "ቡናዎ እንዴት ይዘጋጃል" },
-          "items": [
+          "type": "gallery",
+          "id": "gallery",
+          "eyebrow": { "en": "Around the house", "am": "በቤታችን" },
+          "heading": { "en": "A morning at Buna House", "am": "አንድ ማለዳ በቡና ቤታችን" },
+          "images": [
             {
-              "title": { "en": "We choose the beans", "am": "ቡናውን እንመርጣለን" },
-              "description": { "en": "Washed green coffee from Sidama and Yirgacheffe, bought in small lots.", "am": "ከሲዳማና ከይርጋጨፌ የመጣ የታጠበ ጥሬ ቡና፣ በትንሽ በትንሹ የምንገዛው።" }
+              "src": "/stock/cafe-about-roasted-beans-pan.webp",
+              "alt": { "en": "Hands holding a clay pan of freshly roasted coffee beans", "am": "አዲስ የተቆላ ቡና የያዘ የሸክላ ምጣድ በእጅ" }
             },
             {
-              "title": { "en": "We roast at dawn", "am": "ጎህ ሲቀድ እንቆላለን" },
-              "description": { "en": "In a clay pan over charcoal, stirred by hand until dark and glossy.", "am": "በከሰል ላይ በሸክላ ምጣድ፣ እስኪጠቁርና እስኪያብረቀርቅ በእጅ እያማሰልን።" }
+              "src": "/stock/cafe-gallery-bread-baskets.webp",
+              "alt": { "en": "Hands cutting round difo dabo bread in a woven basket", "am": "በመሶብ ውስጥ ድፎ ዳቦ የሚቆርሱ እጆች" }
             },
             {
-              "title": { "en": "We grind for each pot", "am": "ለየጀበናው እንፈጫለን" },
-              "description": { "en": "Nothing is ground ahead, so the taste stays in the cup.", "am": "አስቀድሞ የሚፈጭ ነገር የለም፤ ጣዕሙ በስኒው ውስጥ እንዲቆይ።" }
+              "src": "/stock/tours-gallery-spice-market.webp",
+              "alt": { "en": "A woman in a green headscarf sorting red and green chillies and ginger at an open-air market", "am": "አረንጓዴ ሻሽ ያሰረች ሴት በገበያ ላይ ቃሪያና ዝንጅብል ስትለይ" }
             },
             {
-              "title": { "en": "We pour at your table", "am": "በጠረጴዛዎ ላይ እንቀዳለን" },
-              "description": { "en": "From the jebena into small cups, with popcorn on the side.", "am": "ከጀበና ወደ ስኒ፣ ከፈንዲሻ ጋር።" }
+              "src": "/stock/cafe-gallery-pastries-coffee.webp",
+              "alt": { "en": "A café table with a latte, a croissant, a fruit danish and doughnuts", "am": "ማኪያቶ፣ ክሮሳንት፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ" }
+            },
+            {
+              "src": "/stock/shop-card-jebena-pottery.webp",
+              "alt": { "en": "Black clay jebena coffee pots and a red clay bottle painted with white patterns", "am": "ጥቁር የሸክላ ጀበናዎችና በነጭ ጌጥ የተሣለ ቀይ የሸክላ ጠርሙስ" }
             }
           ]
         },
@@ -556,6 +617,7 @@
         },
         {
           "type": "schedule",
+          "id": "day",
           "layout": "tiles",
           "eyebrow": { "en": "Every day", "am": "በየቀኑ" },
           "heading": { "en": "A day at Buna House", "am": "የቡና ቤታችን ውሎ" },
@@ -563,27 +625,32 @@
             {
               "time": { "en": "6:00 am", "am": "ከጠዋቱ 12 ሰዓት" },
               "title": { "en": "Roasting", "am": "ቡና ቆሎ" },
-              "note": { "en": "Before we open", "am": "በር ከመክፈታችን በፊት" }
+              "note": { "en": "Before we open", "am": "በር ከመክፈታችን በፊት" },
+              "at": "06:00"
             },
             {
               "time": { "en": "7:00 am", "am": "ከጠዋቱ 1 ሰዓት" },
               "title": { "en": "Doors open, breakfast", "am": "በር ይከፈታል፣ ቁርስ" },
-              "note": { "en": "Until 11:00", "am": "እስከ 5 ሰዓት" }
+              "note": { "en": "Until 11:00", "am": "እስከ 5 ሰዓት" },
+              "at": "07:00"
             },
             {
               "time": { "en": "10:00 am", "am": "ከጠዋቱ 4 ሰዓት" },
               "title": { "en": "Morning ceremony", "am": "የጠዋት ሥነ ሥርዓት" },
-              "note": { "en": "Join for 60 Br a cup", "am": "በስኒ 60 ብር ይቀላቀሉ" }
+              "note": { "en": "Join for 60 Br a cup", "am": "በስኒ 60 ብር ይቀላቀሉ" },
+              "at": "10:00"
             },
             {
               "time": { "en": "12:00 pm", "am": "ከቀኑ 6 ሰዓት" },
               "title": { "en": "Lunch", "am": "ምሳ" },
-              "note": { "en": "Hot dishes until closing", "am": "ትኩስ ምግብ እስከ መዝጊያ" }
+              "note": { "en": "Hot dishes until closing", "am": "ትኩስ ምግብ እስከ መዝጊያ" },
+              "at": "12:00"
             },
             {
               "time": { "en": "4:00 pm", "am": "ከቀኑ 10 ሰዓት" },
               "title": { "en": "Afternoon ceremony", "am": "የከሰዓት ሥነ ሥርዓት" },
-              "note": { "en": "With fresh difo dabo", "am": "ከትኩስ ድፎ ዳቦ ጋር" }
+              "note": { "en": "With fresh difo dabo", "am": "ከትኩስ ድፎ ዳቦ ጋር" },
+              "at": "16:00"
             }
           ],
           "footnote": { "en": "On Sundays we open at 8:00 am and hold one ceremony, at 4:00 pm.", "am": "እሑድ ከጠዋቱ 2 ሰዓት እንከፍታለን፤ ሥነ ሥርዓቱም አንድ ጊዜ፣ ከቀኑ 10 ሰዓት ነው።" }

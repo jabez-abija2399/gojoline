@@ -20,7 +20,9 @@
       "sections": [
         {
           "type": "hero",
+          "id": "top",
           "variant": "portrait",
+          "stamp": { "en": "Brand · Web · Print · Addis Ababa", "am": "ብራንድ · ድረገጽ · ኅትመት · አዲስ አበባ" },
           "eyebrow": { "en": "Addis Ababa · Available for work", "am": "አዲስ አበባ · ለአዲስ ሥራ ዝግጁ" },
           "heading": { "en": "Brand & web designer", "am": "ብራንድና ድረገጽ ዲዛይነር" },
           "subheading": { "en": "I'm Hana. I give Ethiopian businesses a name, a face and a website people remember.", "am": "ሀና እባላለሁ። ለኢትዮጵያ ንግዶች ሰው የማይረሳው ስም፣ ገጽታና ድረገጽ እሠራለሁ።" },
@@ -52,11 +54,23 @@
           ]
         },
         {
+          "type": "marquee",
+          "id": "disciplines",
+          "tone": "dark",
+          "items": [
+            { "en": "Brand identity", "am": "የብራንድ መለያ" },
+            { "en": "Websites", "am": "ድረገጾች" },
+            { "en": "Print", "am": "ኅትመት" },
+            { "en": "Lettering", "am": "የፊደል ጥበብ" },
+            { "en": "Amharic + English", "am": "አማርኛ + እንግሊዝኛ" }
+          ]
+        },
+        {
           "type": "cards",
           "id": "work",
-          "layout": "feature",
+          "layout": "index",
           "eyebrow": { "en": "Selected work", "am": "የተመረጡ ሥራዎች" },
-          "heading": { "en": "Four projects, four results", "am": "አራት ሥራዎች፣ አራት ውጤቶች" },
+          "heading": { "en": "Six projects, 2023 to 2026", "am": "ስድስት ሥራዎች፣ ከ2023 እስከ 2026" },
           "items": [
             {
               "image": {
@@ -70,7 +84,10 @@
                 { "en": "2026", "am": "2026" },
                 { "en": "English + Amharic", "am": "እንግሊዝኛ + አማርኛ" }
               ],
-              "description": { "en": "A calm two-language site that puts the buildings first. Enquiries doubled in three months.", "am": "ሕንጻዎቹን የሚያስቀድም፣ በሁለት ቋንቋ የተሠራ ረጋ ያለ ድረገጽ። በሦስት ወር ውስጥ የደንበኛ ጥያቄ በእጥፍ ጨመረ።" }
+              "action": {
+                "label": { "en": "Read about this project", "am": "ስለዚህ ሥራ ያንብቡ" },
+                "href": "/work"
+              }
             },
             {
               "image": {
@@ -84,7 +101,10 @@
                 { "en": "2025", "am": "2025" },
                 { "en": "6 weeks", "am": "6 ሳምንት" }
               ],
-              "description": { "en": "A bear mark that stays clear on a zip pull and on a shop sign. Now on every bag they sell.", "am": "በዚፕ ጫፍም በሱቅ ሰሌዳም ላይ ጥርት ብሎ የሚታይ የድብ ምልክት። ዛሬ በሚሸጡት ቦርሳ ሁሉ ላይ አለ።" }
+              "action": {
+                "label": { "en": "Read about this project", "am": "ስለዚህ ሥራ ያንብቡ" },
+                "href": "/work"
+              }
             },
             {
               "image": {
@@ -98,7 +118,10 @@
                 { "en": "2024", "am": "2024" },
                 { "en": "48 pages", "am": "48 ገጽ" }
               ],
-              "description": { "en": "Grid, type and cover for a design yearbook. The first print run sold out in two weeks.", "am": "ለዓመታዊ የዲዛይን መጽሔት የገጽ አቀማመጥ፣ የፊደል ምርጫና ሽፋን። የመጀመሪያው ኅትመት በሁለት ሳምንት ተሸጦ አለቀ።" }
+              "action": {
+                "label": { "en": "Read about this project", "am": "ስለዚህ ሥራ ያንብቡ" },
+                "href": "/work"
+              }
             },
             {
               "image": {
@@ -112,7 +135,44 @@
                 { "en": "2025", "am": "2025" },
                 { "en": "12 images", "am": "12 ምስሎች" }
               ],
-              "description": { "en": "One white table, four colours, nothing else. A launch shoot that filled the weavers' order book before opening day.", "am": "አንድ ነጭ ጠረጴዛ፣ አራት ቀለም፣ ሌላ ምንም የለም። ሱቁ ከመከፈቱ በፊት የሸማኔዎቹን የትዕዛዝ ደብተር የሞላ የማስተዋወቂያ ፎቶ ሥራ።" }
+              "action": {
+                "label": { "en": "Read about this project", "am": "ስለዚህ ሥራ ያንብቡ" },
+                "href": "/work"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-gallery-lettering-sketches.webp",
+                "alt": { "en": "Hand-drawn logo and lettering sketches on loose paper and a sketchbook on a wooden desk", "am": "በእንጨት ጠረጴዛ ላይ በወረቀትና በደብተር የተሣሉ የሎጎና የፊደል ንድፎች" }
+              },
+              "subtitle": { "en": "Lettering", "am": "የፊደል ጥበብ" },
+              "title": { "en": "Buna Bet Lettering", "am": "የቡና ቤት ፊደላት" },
+              "meta": [
+                { "en": "Hand lettering", "am": "የእጅ ጽሑፍ" },
+                { "en": "2023", "am": "2023" },
+                { "en": "Latin + Ge'ez", "am": "ላቲን + ግዕዝ" }
+              ],
+              "action": {
+                "label": { "en": "Read about this project", "am": "ስለዚህ ሥራ ያንብቡ" },
+                "href": "/work"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-gallery-pattern.webp",
+                "alt": { "en": "A geometric repeat pattern in orange, grey-blue and yellow", "am": "በብርቱካናማ፣ በግራጫ-ሰማያዊና በቢጫ የተደጋገመ ጂኦሜትሪያዊ ጥለት" }
+              },
+              "subtitle": { "en": "Pattern design", "am": "የጥለት ዲዛይን" },
+              "title": { "en": "Tibeb Tea Packaging", "am": "ጥበብ ሻይ ማሸጊያ" },
+              "meta": [
+                { "en": "Packaging", "am": "ማሸጊያ" },
+                { "en": "2023", "am": "2023" },
+                { "en": "5 flavours", "am": "5 ጣዕሞች" }
+              ],
+              "action": {
+                "label": { "en": "Read about this project", "am": "ስለዚህ ሥራ ያንብቡ" },
+                "href": "/work"
+              }
             }
           ],
           "action": {
@@ -149,6 +209,13 @@
           ]
         },
         {
+          "type": "quote",
+          "id": "belief",
+          "quote": { "en": "If it can't be painted on a wall in Merkato, it isn't finished.", "am": "መርካቶ ውስጥ በግድግዳ ላይ ሊጻፍ ካልቻለ ገና አላለቀም።" },
+          "name": { "en": "Hana Bekele", "am": "ሀና በቀለ" },
+          "role": { "en": "on what makes a good logo", "am": "ጥሩ ሎጎ ምን እንደሆነ ስትናገር" }
+        },
+        {
           "type": "about",
           "id": "about",
           "eyebrow": { "en": "About", "am": "ስለ እኔ" },
@@ -172,6 +239,7 @@
         {
           "type": "timeline",
           "id": "experience",
+          "eyebrow": { "en": "Since 2016", "am": "ከ2016 ጀምሮ" },
           "heading": { "en": "Experience", "am": "የሥራ ልምድ" },
           "items": [
             {
@@ -196,6 +264,7 @@
         },
         {
           "type": "testimonials",
+          "id": "clients",
           "eyebrow": { "en": "Clients", "am": "ደንበኞች" },
           "heading": { "en": "In their words", "am": "በራሳቸው አንደበት" },
           "items": [
@@ -283,6 +352,7 @@
           "intro": { "en": "Each one began with a conversation and ended with something a business uses every day.", "am": "እያንዳንዱ በውይይት ጀምሮ ንግዱ በየቀኑ በሚጠቀምበት ነገር ተጠናቋል።" },
           "items": [
             {
+              "badge": { "en": "Web", "am": "ድረገጽ" },
               "image": {
                 "src": "/stock/personal-card-website-laptop.webp",
                 "alt": { "en": "A laptop on a desk showing a teal architecture website", "am": "በጠረጴዛ ላይ ያለ ላፕቶፕ፤ አረንጓዴ-ሰማያዊ የአርክቴክቸር ድረገጽ ያሳያል" }
@@ -297,6 +367,7 @@
               "description": { "en": "A calm two-language site that puts the buildings first. Enquiries doubled in three months.", "am": "ሕንጻዎቹን የሚያስቀድም፣ በሁለት ቋንቋ የተሠራ ረጋ ያለ ድረገጽ። በሦስት ወር ውስጥ የደንበኛ ጥያቄ በእጥፍ ጨመረ።" }
             },
             {
+              "badge": { "en": "Brand", "am": "ብራንድ" },
               "image": {
                 "src": "/stock/personal-card-logo-tablet.webp",
                 "alt": { "en": "A hand with a stylus drawing a white bear-head logo on a black tablet", "am": "በጥቁር ታብሌት ላይ ነጭ የድብ ራስ ሎጎ የሚሥል እጅ" }
@@ -311,6 +382,7 @@
               "description": { "en": "A bear mark that stays clear on a zip pull and on a shop sign. Now on every bag they sell.", "am": "በዚፕ ጫፍም በሱቅ ሰሌዳም ላይ ጥርት ብሎ የሚታይ የድብ ምልክት። ዛሬ በሚሸጡት ቦርሳ ሁሉ ላይ አለ።" }
             },
             {
+              "badge": { "en": "Campaign", "am": "ዘመቻ" },
               "image": {
                 "src": "/stock/shop-card-woven-scarves.webp",
                 "alt": { "en": "Four folded hand-woven cotton scarves in blue, tan, pink and purple on a white surface", "am": "በነጭ ገጽ ላይ የተጣጠፉ አራት በእጅ የተሸመኑ የጥጥ ሻርፖች፤ ሰማያዊ፣ ቡናማ፣ ሮዝና ወይን ጠጅ" }
@@ -325,6 +397,7 @@
               "description": { "en": "One white table, four colours, nothing else. A launch shoot that filled the weavers' order book before opening day.", "am": "አንድ ነጭ ጠረጴዛ፣ አራት ቀለም፣ ሌላ ምንም የለም። ሱቁ ከመከፈቱ በፊት የሸማኔዎቹን የትዕዛዝ ደብተር የሞላ የማስተዋወቂያ ፎቶ ሥራ።" }
             },
             {
+              "badge": { "en": "Print", "am": "ኅትመት" },
               "image": {
                 "src": "/stock/personal-card-brochure-layout.webp",
                 "alt": { "en": "An open printed brochure with a pink layout and the large heading GRAFICO, on a wooden surface", "am": "በእንጨት ላይ የተከፈተ የታተመ ብሮሸር፤ ሮዝ ገጽና ትልቅ GRAFICO የሚል ርእስ አለው" }
@@ -339,6 +412,7 @@
               "description": { "en": "Grid, type and cover for a design yearbook. The first print run sold out in two weeks.", "am": "ለዓመታዊ የዲዛይን መጽሔት የገጽ አቀማመጥ፣ የፊደል ምርጫና ሽፋን። የመጀመሪያው ኅትመት በሁለት ሳምንት ተሸጦ አለቀ።" }
             },
             {
+              "badge": { "en": "Brand", "am": "ብራንድ" },
               "image": {
                 "src": "/stock/personal-gallery-lettering-sketches.webp",
                 "alt": { "en": "Hand-drawn logo and lettering sketches on loose paper and a sketchbook on a wooden desk", "am": "በእንጨት ጠረጴዛ ላይ በወረቀትና በደብተር የተሣሉ የሎጎና የፊደል ንድፎች" }
@@ -353,6 +427,7 @@
               "description": { "en": "Forty sketches to find one word mark that reads as well in Ge'ez as in Latin.", "am": "በግዕዝም በላቲንም እኩል የሚነበብ አንድ የስም ምልክት ለማግኘት የተሣሉ አርባ ንድፎች።" }
             },
             {
+              "badge": { "en": "Print", "am": "ኅትመት" },
               "image": {
                 "src": "/stock/personal-gallery-pattern.webp",
                 "alt": { "en": "A geometric repeat pattern in orange, grey-blue and yellow", "am": "በብርቱካናማ፣ በግራጫ-ሰማያዊና በቢጫ የተደጋገመ ጂኦሜትሪያዊ ጥለት" }
@@ -526,12 +601,6 @@
               "description": { "en": "No design jargon. I explain each choice in a sentence.", "am": "የሙያ ቃል አላበዛም። እያንዳንዱን ምርጫ በአንድ ዓረፍተ ነገር አስረዳለሁ።" }
             }
           ]
-        },
-        {
-          "type": "quote",
-          "quote": { "en": "If it can't be painted on a wall in Merkato, it isn't finished.", "am": "መርካቶ ውስጥ በግድግዳ ላይ ሊጻፍ ካልቻለ ገና አላለቀም።" },
-          "name": { "en": "Hana Bekele", "am": "ሀና በቀለ" },
-          "role": { "en": "on what makes a good logo", "am": "ጥሩ ሎጎ ምን እንደሆነ ስትናገር" }
         },
         {
           "type": "cta",

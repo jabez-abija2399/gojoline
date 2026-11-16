@@ -29,8 +29,11 @@
       "sections": [
         {
           "type": "hero",
+          "id": "top",
           "variant": "immersive",
-          "eyebrow": { "en": "Bahir Dar · Lake Tana", "am": "ባሕር ዳር · ጣና ሐይቅ" },
+          "frame": true,
+          "stamp": { "en": "Tana Shore Lodge · Lake Tana", "am": "ጣና ሾር ሎጅ · ጣና ሐይቅ" },
+          "eyebrow": { "en": "Bahir Dar · Ethiopia", "am": "ባሕር ዳር · ኢትዮጵያ" },
           "heading": { "en": "Rest where the lake begins", "am": "ሐይቁ በሚጀምርበት ይረፉ" },
           "subheading": { "en": "Twelve quiet rooms, a garden that runs to the water, and coffee roasted in front of you every afternoon.", "am": "አሥራ ሁለት ጸጥ ያሉ ክፍሎች፣ እስከ ውሃው የሚዘልቅ አትክልት እና በየከሰዓቱ በፊትዎ የሚቆላ ቡና።" },
           "image": {
@@ -62,6 +65,7 @@
         },
         {
           "type": "about",
+          "id": "welcome",
           "eyebrow": { "en": "Welcome", "am": "እንኳን ደህና መጡ" },
           "heading": { "en": "A family lodge, kept the slow way", "am": "በቤተሰብ የሚተዳደር፣ በእርጋታ የሚያዝ ሎጅ" },
           "body": { "en": "We built Tana Shore for travellers who want the lake, not the noise. Rooms are spread through an old garden, and every one is a short walk from the water.\n\nBreakfast is cooked to order, the coffee ceremony starts at four, and our own boat leaves for the island monasteries each morning.", "am": "ጣና ሾርን የሠራነው ጫጫታን ሳይሆን ሐይቁን ለሚሹ መንገደኞች ነው። ክፍሎቹ በአረጀ አትክልት ውስጥ ተበታትነው ይገኛሉ፤ እያንዳንዱም ከውሃው ጥቂት እርምጃ ነው።\n\nቁርስ በትዕዛዝ ይዘጋጃል፣ የቡና ሥነ ሥርዓቱ በአሥር ሰዓት ይጀምራል፣ የራሳችን ጀልባም በየጠዋቱ ወደ ደሴት ገዳማት ትሄዳለች።" },
@@ -70,6 +74,7 @@
             "alt": { "en": "Our host pouring coffee from a clay jebena", "am": "አስተናጋጃችን ከጀበና ቡና ስትቀዳ" }
           },
           "imageSide": "end",
+          "imageShape": "arch",
           "points": [
             { "en": "Breakfast and Wi-Fi included in every room", "am": "ቁርስና ዋይፋይ በሁሉም ክፍል ተካትቷል" },
             { "en": "Free pickup from the airport", "am": "ከአየር ማረፊያ ነፃ መቀበያ" },
@@ -83,7 +88,7 @@
         {
           "type": "cards",
           "id": "rooms",
-          "layout": "feature",
+          "layout": "stack",
           "eyebrow": { "en": "Stay", "am": "ማረፊያ" },
           "heading": { "en": "Rooms and suites", "am": "ክፍሎችና ስዊቶች" },
           "intro": { "en": "Every room has a hot shower, a mosquito net, fast Wi-Fi and breakfast.", "am": "ሁሉም ክፍል ሙቅ ሻወር፣ የወባ ትንኝ መከላከያ አጎበር፣ ፈጣን ዋይፋይ እና ቁርስ አለው።" },
@@ -151,7 +156,11 @@
                 "href": "/#booking"
               }
             }
-          ]
+          ],
+          "action": {
+            "label": { "en": "Compare all rooms", "am": "ክፍሎቹን ያነጻጽሩ" },
+            "href": "/rooms"
+          }
         },
         {
           "type": "services",
@@ -193,9 +202,22 @@
           ]
         },
         {
+          "type": "marquee",
+          "id": "places",
+          "tone": "dark",
+          "items": [
+            { "en": "Lake Tana", "am": "ጣና ሐይቅ" },
+            { "en": "Island monasteries", "am": "የደሴት ገዳማት" },
+            { "en": "Blue Nile Falls", "am": "ጢስ ዓባይ" },
+            { "en": "Zege forest", "am": "ዘጌ ደን" },
+            { "en": "Bahir Dar", "am": "ባሕር ዳር" }
+          ]
+        },
+        {
           "type": "cards",
           "id": "experiences",
           "layout": "scroll",
+          "imageShape": "arch",
           "eyebrow": { "en": "While you are here", "am": "እዚህ ሳሉ" },
           "heading": { "en": "Slow days by the water", "am": "በውሃው ዳር የእርጋታ ቀናት" },
           "items": [
@@ -239,6 +261,7 @@
         },
         {
           "type": "gallery",
+          "id": "gallery",
           "eyebrow": { "en": "Gallery", "am": "ፎቶዎች" },
           "heading": { "en": "A look around", "am": "አካባቢውን ይመልከቱ" },
           "images": [
@@ -258,6 +281,7 @@
         },
         {
           "type": "testimonials",
+          "id": "guests",
           "eyebrow": { "en": "Guests say", "am": "እንግዶች ምን ይላሉ" },
           "heading": { "en": "Kind words from our guests", "am": "ከእንግዶቻችን የተሰጡ አስተያየቶች" },
           "items": [
@@ -320,6 +344,8 @@
         },
         {
           "type": "faq",
+          "id": "faq",
+          "eyebrow": { "en": "Before you come", "am": "ከመምጣትዎ በፊት" },
           "heading": { "en": "Good to know", "am": "ማወቅ ያለብዎ" },
           "items": [
             {
@@ -338,11 +364,14 @@
         },
         {
           "type": "map",
+          "id": "map",
+          "eyebrow": { "en": "Getting here", "am": "አደራረስ" },
           "heading": { "en": "Find us on the lakeside road", "am": "በሐይቅ ዳር መንገድ ያገኙናል" },
           "query": "Lakeside road, Bahir Dar"
         },
         {
           "type": "cta",
+          "id": "end",
           "heading": { "en": "Your room by the lake is waiting", "am": "በሐይቁ ዳር ያለው ክፍልዎ እየጠበቀዎ ነው" },
           "body": { "en": "Best price when you book with us directly.", "am": "በቀጥታ ከእኛ ሲይዙ ምርጥ ዋጋ ያገኛሉ።" },
           "image": {
@@ -481,6 +510,7 @@
         },
         {
           "type": "menu",
+          "eyebrow": { "en": "Served all day", "am": "ቀኑን ሙሉ የሚቀርብ" },
           "heading": { "en": "Menu", "am": "ምናሌ" },
           "categories": [
             {
@@ -517,6 +547,25 @@
                 {
                   "name": { "en": "Lamb tibs", "am": "የበግ ጥብስ" },
                   "price": { "amountMinor": 46000, "currency": "ETB" }
+                }
+              ]
+            },
+            {
+              "name": { "en": "Coffee and drinks", "am": "ቡናና መጠጦች" },
+              "items": [
+                {
+                  "name": { "en": "Coffee ceremony", "am": "የቡና ሥነ ሥርዓት" },
+                  "description": { "en": "Three rounds, with popcorn, every day at 4 pm", "am": "ሦስት ዙር፣ ከፈንዲሻ ጋር፣ በየቀኑ በ10 ሰዓት" },
+                  "price": { "amountMinor": 12000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Fresh juice", "am": "ትኩስ ጭማቂ" },
+                  "description": { "en": "Mango, avocado or mixed spris", "am": "ማንጎ፣ አቮካዶ ወይም ስፕሪስ" },
+                  "price": { "amountMinor": 11000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Spiced tea", "am": "የቅመም ሻይ" },
+                  "price": { "amountMinor": 5000, "currency": "ETB" }
                 }
               ]
             }

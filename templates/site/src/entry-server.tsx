@@ -80,9 +80,19 @@ function jsonLd(lang: Lang, base: string | undefined): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
-/** The site with only this page's sections: other pages keep their path, title and menu label. */
+/**
+ * The site with only this page's sections: other pages keep their path, title and menu label,
+ * and the home page its opening hero (the header shows its main button on every page).
+ */
 export function pageData(path: string): Site {
-  return { ...site, pages: site.pages.map((p) => (p.path === path ? p : { path: p.path, title: p.title, nav: p.nav, sections: [] })) };
+  return {
+    ...site,
+    pages: site.pages.map((p) => {
+      if (p.path === path) return p;
+      const hero = p.path === "/" && p.sections[0]?.type === "hero" ? [p.sections[0]] : [];
+      return { path: p.path, title: p.title, nav: p.nav, sections: hero };
+    }),
+  };
 }
 
 /** Public URL of the published site (set at publish time), if any. */

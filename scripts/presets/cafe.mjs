@@ -20,13 +20,17 @@ const P = {
 
 const fasting = t("Fasting", "የጾም");
 const popular = t("Popular", "ተወዳጅ");
+// Badges on the favourites become filter pills (research: Dishoom's tag chips, a category row).
+const coffee = t("Coffee", "ቡና");
+const food = t("Food", "ምግብ");
+const bakery = t("Bakery", "ዳቦና ኬክ");
 
 const signatures = [
   {
     image: P.jebena,
     subtitle: t("From the jebena", "ከጀበና"),
     title: t("Jebena buna", "የጀበና ቡና"),
-    badge: popular,
+    badge: coffee,
     description: t("Sidama beans roasted this morning, brewed in clay and served with popcorn.", "ዛሬ ጠዋት የተቆላ የሲዳማ ቡና፣ በጀበና ተፈልቶ ከፈንዲሻ ጋር ይቀርባል።"),
     price: birr(60),
     priceNote: t("a cup", "በስኒ"),
@@ -35,6 +39,7 @@ const signatures = [
     image: P.latte,
     subtitle: t("From the machine", "ከማሽን"),
     title: t("Macchiato", "ማኪያቶ"),
+    badge: coffee,
     description: t("The Addis classic: a short, strong coffee with a little steamed milk.", "የአዲስ አበባ ተወዳጅ፦ አጭር፣ ጠንካራ ቡና ከጥቂት የተፈላ ወተት ጋር።"),
     price: birr(80),
   },
@@ -42,6 +47,7 @@ const signatures = [
     image: P.tibs,
     subtitle: t("Lunch and dinner", "ምሳና እራት"),
     title: t("Tibs and kitfo plate", "ጥብስና ክትፎ"),
+    badge: food,
     description: t("Beef tibs, kitfo and fresh ayib with rolled injera and mitmita. Good for two.", "የበሬ ጥብስ፣ ክትፎና ትኩስ አይብ ከእንጀራና ከሚጥሚጣ ጋር። ለሁለት ሰው ይበቃል።"),
     price: birr(680),
   },
@@ -49,9 +55,26 @@ const signatures = [
     image: P.veg,
     subtitle: t("Fasting plate", "የጾም ምግብ"),
     title: t("Beyaynetu", "በያይነቱ"),
-    badge: fasting,
+    badge: food,
     description: t("Misir wot, kik alicha and gomen on injera, cooked fresh every day.", "ምስር ወጥ፣ ክክ አልጫና ጎመን በእንጀራ ላይ፤ በየቀኑ ትኩስ የሚሠራ።"),
     price: birr(340),
+  },
+  {
+    image: P.pastries,
+    subtitle: t("With your macchiato", "ከማኪያቶዎ ጋር"),
+    title: t("Croissant", "ክሮሳንት"),
+    badge: bakery,
+    description: t("Baked here every morning, with a fruit danish and doughnuts beside it.", "በየማለዳው እዚሁ የሚጋገር፤ ከፍራፍሬ ኬክና ከዶናት ጋር።"),
+    price: birr(120),
+  },
+  {
+    image: P.bread,
+    subtitle: t("Home-baked", "በቤት የተጋገረ"),
+    title: t("Difo dabo", "ድፎ ዳቦ"),
+    badge: bakery,
+    description: t("Round wheat bread from a family recipe, best with the afternoon ceremony.", "በቤተሰብ አሠራር የሚጋገር ክብ የስንዴ ዳቦ፤ ከከሰዓቱ ሥነ ሥርዓት ጋር ይጣፍጣል።"),
+    price: birr(60),
+    priceNote: t("a slice", "በቁራሽ"),
   },
 ];
 
@@ -101,16 +124,29 @@ save("cafe", {
           type: "hero",
           variant: "immersive",
           eyebrow: t("Bole · near Edna Mall", "ቦሌ · ኤድና ሞል አጠገብ"),
+          id: "top",
           heading: t("Coffee roasted every morning", "በየማለዳው የሚቆላ ቡና"),
           subheading: t("Jebena buna poured at your table, a proper macchiato, and food cooked the way it is at home.", "በጠረጴዛዎ ላይ የሚቀዳ የጀበና ቡና፣ ልክ የሆነ ማኪያቶ እና እንደ ቤት የሚሠራ ምግብ።"),
           image: P.pour,
+          // Dishoom's "window into the room": the photo opens out from a frame as the page scrolls.
+          frame: true,
+          stamp: t("Since 2015 · Bole Road", "ከ2007 ዓ.ም. ጀምሮ · ቦሌ መንገድ"),
           primaryAction: seeMenu,
           secondaryAction: callUs,
           facts: [
             { value: t("60 Br", "60 ብር"), label: t("a cup of jebena buna", "አንድ ስኒ የጀበና ቡና") },
             { value: t("3 min", "3 ደቂቃ"), label: t("on foot from Edna Mall", "ከኤድና ሞል በእግር") },
-            { value: t("2015", "2007 ዓ.ም."), label: t("roasting here since", "ጀምሮ እዚሁ እንቆላለን") },
+            { value: t("7", "7"), label: t("days a week, from 7:00 am", "ቀን በሳምንት፣ ከጠዋቱ 1 ሰዓት ጀምሮ") },
           ],
+        },
+        {
+          // Dishoom's intro line that darkens word by word as you read.
+          type: "quote",
+          id: "welcome",
+          quote: t(
+            "Every cup here starts as green coffee in a clay pan at dawn, and ends at your table with popcorn and good talk.",
+            "እዚህ እያንዳንዱ ስኒ የሚጀምረው ጎህ ሲቀድ በሸክላ ምጣድ ላይ ካለ ጥሬ ቡና ነው፤ የሚያልቀውም በጠረጴዛዎ ላይ ከፈንዲሻና ከጥሩ ጨዋታ ጋር ነው።",
+          ),
         },
         {
           type: "cards",
@@ -118,41 +154,66 @@ save("cafe", {
           layout: "grid",
           eyebrow: t("House favourites", "የቤቱ ተወዳጆች"),
           heading: t("What people come back for", "ደንበኞች የሚመለሱባቸው"),
-          intro: t("Four things we make every day. The rest is on the menu.", "በየቀኑ የምናዘጋጃቸው አራት ምርጦች። ቀሪው በምናሌው ላይ አለ።"),
+          intro: t("Six things we make every day. The rest is on the menu.", "በየቀኑ የምናዘጋጃቸው ስድስት ምርጦች። ቀሪው በምናሌው ላይ አለ።"),
           items: signatures,
           action: seeMenu,
         },
         {
-          type: "about",
-          eyebrow: t("Our coffee", "ቡናችን"),
-          heading: t("Green beans in, fresh coffee out", "ጥሬው ገብቶ፣ ትኩሱ ይወጣል"),
-          body: t(
-            "We buy green coffee from Sidama and Yirgacheffe and roast it here in a clay pan before the doors open. By the time you walk in, the whole house smells of it.\n\nThe café is run by one family. Come for a quick macchiato at the counter, or sit down for the full ceremony with popcorn and incense.",
-            "ጥሬ ቡናውን ከሲዳማና ከይርጋጨፌ ገዝተን በር ከመክፈታችን በፊት እዚሁ በሸክላ ምጣድ እንቆላለን። እርስዎ ሲገቡ ቤቱ በሙሉ በቡና መዓዛ ታውዷል።\n\nካፌውን የሚያስተዳድረው አንድ ቤተሰብ ነው። ለፈጣን ማኪያቶ ብቅ ይበሉ፤ አሊያም ተቀምጠው ከፈንዲሻና ከዕጣን ጋር ሙሉውን ሥነ ሥርዓት ያጣጥሙ።",
-          ),
-          image: P.roast,
-          imageSide: "end",
-          points: [
-            t("Roasted fresh every morning, never the day before", "በየማለዳው የሚቆላ፣ የትናንት ቡና አናቀርብም"),
-            t("Fasting dishes every day of the week", "የጾም ምግብ በሳምንቱ ቀናት ሁሉ"),
-            t("Roasted beans to take home, by the quarter kilo", "የተቆላ ቡና ለቤትዎ፣ በሩብ ኪሎ"),
-          ],
-          action: link("Our story", "ታሪካችን", "/story"),
+          type: "marquee",
+          id: "dishes",
+          tone: "primary",
+          items: [t("Jebena buna", "የጀበና ቡና"), t("Macchiato", "ማኪያቶ"), t("Chechebsa", "ጨጨብሳ"), t("Beyaynetu", "በያይነቱ"), t("Shiro tegabino", "ሽሮ ተጋቢኖ"), t("Spris", "ስፕሪስ"), t("Difo dabo", "ድፎ ዳቦ")],
         },
         {
-          type: "gallery",
-          eyebrow: t("Around the house", "በቤታችን"),
-          heading: t("A morning at Buna House", "አንድ ማለዳ በቡና ቤታችን"),
-          images: [
-            P.bread,
-            img("tours-gallery-spice-market", "A woman in a green headscarf sorting red and green chillies and ginger at an open-air market", "አረንጓዴ ሻሽ ያሰረች ሴት በገበያ ላይ ቃሪያና ዝንጅብል ስትለይ"),
-            P.pastries,
-            P.cups,
-            img("shop-card-jebena-pottery", "Black clay jebena coffee pots and a red clay bottle painted with white patterns", "ጥቁር የሸክላ ጀበናዎችና በነጭ ጌጥ የተሣለ ቀይ የሸክላ ጠርሙስ"),
+          // Centrepiece: Delta's coffee cycle, told as the house's own bean-to-cup story.
+          type: "tabs",
+          id: "coffee",
+          eyebrow: t("Our coffee", "ቡናችን"),
+          heading: t("Green beans in, fresh coffee out", "ጥሬው ገብቶ፣ ትኩሱ ይወጣል"),
+          items: [
+            {
+              label: t("The roast", "ቡና መቁላት"),
+              heading: t("Roasted in clay before we open", "በር ከመክፈታችን በፊት በሸክላ የሚቆላ"),
+              body: t(
+                "We buy green coffee from Sidama and Yirgacheffe in small lots and roast it here in a clay pan at dawn. By the time you walk in, the whole house smells of it.",
+                "ጥሬ ቡናውን ከሲዳማና ከይርጋጨፌ በትንሽ በትንሹ ገዝተን ጎህ ሲቀድ እዚሁ በሸክላ ምጣድ እንቆላለን። እርስዎ ሲገቡ ቤቱ በሙሉ በቡና መዓዛ ታውዷል።",
+              ),
+              image: P.roast,
+              points: [
+                t("Roasted fresh every morning, never the day before", "በየማለዳው የሚቆላ፣ የትናንት ቡና አናቀርብም"),
+                t("Roasted beans to take home, 350 Br a quarter kilo", "የተቆላ ቡና ለቤትዎ፣ ሩብ ኪሎ በ350 ብር"),
+              ],
+            },
+            {
+              label: t("The ceremony", "ሥነ ሥርዓቱ"),
+              heading: t("Three rounds, no hurry", "ሦስት ዙር፣ ያለ ጥድፊያ"),
+              body: t(
+                "Abol, tona, bereka: the first cup is the strongest, the third is the blessing. We hold the ceremony at 10:00 and 4:00 by the window, with popcorn and incense. Join a round for the price of a cup.",
+                "አቦል፣ ቶና፣ በረካ፦ የመጀመሪያው ስኒ ጠንካራው ነው፤ ሦስተኛው በረከቱ። ሥነ ሥርዓቱን ከጠዋቱ 4 እና ከቀኑ 10 ሰዓት በመስኮቱ አጠገብ ከፈንዲሻና ከዕጣን ጋር እናካሂዳለን። በአንድ ስኒ ዋጋ ይቀላቀሉ።",
+              ),
+              image: P.incense,
+              points: [
+                t("60 Br a cup to join a round", "አንድ ዙር ለመቀላቀል በስኒ 60 ብር"),
+                t("600 Br for your own ceremony, up to 6 people", "ለራስዎ ሥነ ሥርዓት 600 ብር፣ እስከ 6 ሰው"),
+              ],
+              action: reserve,
+            },
+            {
+              label: t("The family", "ቤተሰባችን"),
+              heading: t("One family, one jebena", "አንድ ቤተሰብ፣ አንድ ጀበና"),
+              body: t(
+                "The café is run by one family. We started with one jebena, six stools and our mother's recipe for chechebsa. Come for a quick macchiato at the counter, or sit down for the whole afternoon.",
+                "ካፌውን የሚያስተዳድረው አንድ ቤተሰብ ነው። የጀመርነው በአንድ ጀበና፣ በስድስት በርጩማና በእናታችን የጨጨብሳ አሠራር ነው። ለፈጣን ማኪያቶ ብቅ ይበሉ፤ አሊያም ከሰዓቱን ሙሉ ተቀምጠው ያሳልፉ።",
+              ),
+              image: P.cups,
+              points: [t("Fasting dishes every day of the week", "የጾም ምግብ በሳምንቱ ቀናት ሁሉ")],
+              action: link("Our story", "ታሪካችን", "/story"),
+            },
           ],
         },
         {
           type: "testimonials",
+          id: "reviews",
           eyebrow: t("Guests say", "ደንበኞች ምን ይላሉ"),
           heading: t("Kind words over coffee", "በቡና ላይ የተባሉ መልካም ቃላት"),
           items: [
@@ -166,9 +227,10 @@ save("cafe", {
         { type: "map", heading: t("Three minutes from Edna Mall", "ከኤድና ሞል ሦስት ደቂቃ"), query: "Edna Mall, Bole, Addis Ababa" },
         {
           type: "cta",
+          id: "visit",
           heading: t("Come for the coffee, stay for lunch", "ለቡና ይምጡ፤ ለምሳ ይቆዩ"),
           body: t("Open every day. No booking needed for a cup or a plate.", "በየቀኑ ክፍት ነን። ለአንድ ስኒ ቡና ወይም ለምሳ ማስያዝ አያስፈልግም።"),
-          image: P.incense,
+          image: P.pots,
           primaryAction: seeMenu,
           secondaryAction: callUs,
         },
@@ -276,14 +338,16 @@ save("cafe", {
           primaryAction: seeMenu,
         },
         {
-          type: "steps",
-          eyebrow: t("From bean to cup", "ከፍሬ እስከ ስኒ"),
-          heading: t("How your coffee is made", "ቡናዎ እንዴት ይዘጋጃል"),
-          items: [
-            { title: t("We choose the beans", "ቡናውን እንመርጣለን"), description: t("Washed green coffee from Sidama and Yirgacheffe, bought in small lots.", "ከሲዳማና ከይርጋጨፌ የመጣ የታጠበ ጥሬ ቡና፣ በትንሽ በትንሹ የምንገዛው።") },
-            { title: t("We roast at dawn", "ጎህ ሲቀድ እንቆላለን"), description: t("In a clay pan over charcoal, stirred by hand until dark and glossy.", "በከሰል ላይ በሸክላ ምጣድ፣ እስኪጠቁርና እስኪያብረቀርቅ በእጅ እያማሰልን።") },
-            { title: t("We grind for each pot", "ለየጀበናው እንፈጫለን"), description: t("Nothing is ground ahead, so the taste stays in the cup.", "አስቀድሞ የሚፈጭ ነገር የለም፤ ጣዕሙ በስኒው ውስጥ እንዲቆይ።") },
-            { title: t("We pour at your table", "በጠረጴዛዎ ላይ እንቀዳለን"), description: t("From the jebena into small cups, with popcorn on the side.", "ከጀበና ወደ ስኒ፣ ከፈንዲሻ ጋር።") },
+          type: "gallery",
+          id: "gallery",
+          eyebrow: t("Around the house", "በቤታችን"),
+          heading: t("A morning at Buna House", "አንድ ማለዳ በቡና ቤታችን"),
+          images: [
+            P.roast,
+            P.bread,
+            img("tours-gallery-spice-market", "A woman in a green headscarf sorting red and green chillies and ginger at an open-air market", "አረንጓዴ ሻሽ ያሰረች ሴት በገበያ ላይ ቃሪያና ዝንጅብል ስትለይ"),
+            P.pastries,
+            img("shop-card-jebena-pottery", "Black clay jebena coffee pots and a red clay bottle painted with white patterns", "ጥቁር የሸክላ ጀበናዎችና በነጭ ጌጥ የተሣለ ቀይ የሸክላ ጠርሙስ"),
           ],
         },
         {
@@ -303,15 +367,16 @@ save("cafe", {
         },
         {
           type: "schedule",
+          id: "day",
           layout: "tiles",
           eyebrow: t("Every day", "በየቀኑ"),
           heading: t("A day at Buna House", "የቡና ቤታችን ውሎ"),
           items: [
-            { time: t("6:00 am", "ከጠዋቱ 12 ሰዓት"), title: t("Roasting", "ቡና ቆሎ"), note: t("Before we open", "በር ከመክፈታችን በፊት") },
-            { time: t("7:00 am", "ከጠዋቱ 1 ሰዓት"), title: t("Doors open, breakfast", "በር ይከፈታል፣ ቁርስ"), note: t("Until 11:00", "እስከ 5 ሰዓት") },
-            { time: t("10:00 am", "ከጠዋቱ 4 ሰዓት"), title: t("Morning ceremony", "የጠዋት ሥነ ሥርዓት"), note: t("Join for 60 Br a cup", "በስኒ 60 ብር ይቀላቀሉ") },
-            { time: t("12:00 pm", "ከቀኑ 6 ሰዓት"), title: t("Lunch", "ምሳ"), note: t("Hot dishes until closing", "ትኩስ ምግብ እስከ መዝጊያ") },
-            { time: t("4:00 pm", "ከቀኑ 10 ሰዓት"), title: t("Afternoon ceremony", "የከሰዓት ሥነ ሥርዓት"), note: t("With fresh difo dabo", "ከትኩስ ድፎ ዳቦ ጋር") },
+            { time: t("6:00 am", "ከጠዋቱ 12 ሰዓት"), title: t("Roasting", "ቡና ቆሎ"), note: t("Before we open", "በር ከመክፈታችን በፊት"), at: "06:00" },
+            { time: t("7:00 am", "ከጠዋቱ 1 ሰዓት"), title: t("Doors open, breakfast", "በር ይከፈታል፣ ቁርስ"), note: t("Until 11:00", "እስከ 5 ሰዓት"), at: "07:00" },
+            { time: t("10:00 am", "ከጠዋቱ 4 ሰዓት"), title: t("Morning ceremony", "የጠዋት ሥነ ሥርዓት"), note: t("Join for 60 Br a cup", "በስኒ 60 ብር ይቀላቀሉ"), at: "10:00" },
+            { time: t("12:00 pm", "ከቀኑ 6 ሰዓት"), title: t("Lunch", "ምሳ"), note: t("Hot dishes until closing", "ትኩስ ምግብ እስከ መዝጊያ"), at: "12:00" },
+            { time: t("4:00 pm", "ከቀኑ 10 ሰዓት"), title: t("Afternoon ceremony", "የከሰዓት ሥነ ሥርዓት"), note: t("With fresh difo dabo", "ከትኩስ ድፎ ዳቦ ጋር"), at: "16:00" },
           ],
           footnote: t("On Sundays we open at 8:00 am and hold one ceremony, at 4:00 pm.", "እሑድ ከጠዋቱ 2 ሰዓት እንከፍታለን፤ ሥነ ሥርዓቱም አንድ ጊዜ፣ ከቀኑ 10 ሰዓት ነው።"),
         },
