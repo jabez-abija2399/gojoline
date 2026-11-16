@@ -17,7 +17,7 @@ const GROUPS = [
 function Save({ t }: { t: Messages["admin"] }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-12 w-fit rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
+    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-11 lg:min-h-9 w-fit rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
       {pending ? t.working : t.settingsSave}
     </button>
   );
@@ -43,17 +43,17 @@ export function SettingsForm({ t, tb, lang, values, topupCredits }: { t: Message
   const field = (name: string, label: string, value: string, extra: React.InputHTMLAttributes<HTMLInputElement> = {}, hint?: string) => (
     <label key={name} className="flex flex-col gap-1">
       <span className="font-medium">{label}</span>
-      <input name={name} defaultValue={value} aria-invalid={bad(name) || undefined} aria-describedby={hint ? `${name}-hint` : undefined} className="min-h-11 rounded-lg border border-input bg-white px-3 text-base aria-invalid:border-destructive" {...extra} />
-      {hint !== undefined && <span id={`${name}-hint`} className="min-h-5 text-sm font-medium text-ink">{hint}</span>}
+      <input name={name} defaultValue={value} aria-invalid={bad(name) || undefined} aria-describedby={hint ? `${name}-hint` : undefined} className="min-h-11 lg:min-h-9 rounded-lg border border-input bg-white px-3 text-base lg:text-sm aria-invalid:border-destructive" {...extra} />
+      {hint !== undefined && <span id={`${name}-hint`} className="min-h-5 text-xs font-medium text-ink">{hint}</span>}
     </label>
   );
   return (
-    <form action={action} className="flex flex-col gap-5">
+    <form action={action} className="flex flex-col gap-4">
       <input type="hidden" name="lang" value={lang} />
-      <fieldset className="flex flex-col gap-4">
-        <legend className="mb-2 text-lg font-semibold">{t.settingsPrices}</legend>
+      <fieldset className="flex flex-col gap-3">
+        <legend className="mb-2 text-base font-semibold">{t.settingsPrices}</legend>
         {GROUPS.map((g) => (
-          <fieldset key={g.plan ?? "extras"} className="grid gap-3 rounded-xl border border-line p-4 sm:grid-cols-2 sm:items-start">
+          <fieldset key={g.plan ?? "extras"} className="grid gap-3 rounded-xl border border-line p-3 sm:grid-cols-2 sm:items-start">
             <legend className="px-1 font-semibold">{g.plan ? tb.plans[g.plan] : tb.topup}</legend>
             {g.fields.map((p) =>
               field(
@@ -68,7 +68,7 @@ export function SettingsForm({ t, tb, lang, values, topupCredits }: { t: Message
         ))}
       </fieldset>
       <fieldset className="grid gap-3">
-        <legend className="mb-2 text-lg font-semibold">{t.settingsAccounts}</legend>
+        <legend className="mb-2 text-base font-semibold">{t.settingsAccounts}</legend>
         {field("telebirrNumber", tb.methods.telebirr, values.telebirrNumber, { inputMode: "tel", maxLength: 40 })}
         {field("cbeAccount", tb.methods.cbe, values.cbeAccount, { inputMode: "numeric", maxLength: 60 })}
         {field("accountName", t.settingsAccountName, values.accountName, { maxLength: 120 })}

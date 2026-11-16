@@ -13,13 +13,13 @@ type ProductNames = Record<(typeof PRODUCTS)[number], string>;
 function Submit({ label, working }: { label: string; working: string }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-12 w-fit rounded-lg bg-ink px-5 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
+    <button type="submit" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()} className="min-h-11 lg:min-h-9 w-fit rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50">
       {pending ? working : label}
     </button>
   );
 }
 
-const input = "min-h-11 rounded-lg border border-input bg-white px-3 text-base aria-invalid:border-destructive";
+const input = "min-h-11 lg:min-h-9 rounded-lg border border-input bg-white px-3 text-base lg:text-sm aria-invalid:border-destructive";
 
 /** The error under a field: text, not only a red border (read out with the field). */
 function FieldError({ id, text }: { id: string; text: string }) {
@@ -120,9 +120,9 @@ export function CodeForm({ t, names, lang }: { t: Messages["admin"]; names: Prod
   const bad = (f: string) => (state.status === "invalid" || state.status === "exists") && state.field === f;
   const labels: Record<string, string> = { code: t.codeCode, percent: t.codePercent, amount: t.codeAmount, products: t.codeProducts, maxUses: t.codeMaxUses, expires: t.codeExpires };
   return (
-    <form ref={formRef} action={action} aria-labelledby="code-new-title" className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:p-5">
+    <form ref={formRef} action={action} aria-labelledby="code-new-title" className="flex flex-col gap-3 rounded-xl border border-line bg-white p-3 sm:p-4">
       <input type="hidden" name="lang" value={lang} />
-      <h3 id="code-new-title" className="text-lg font-bold">{t.codeNew}</h3>
+      <h3 id="code-new-title" className="text-base font-semibold">{t.codeNew}</h3>
       <Field name="code" label={t.codeCode} invalid={bad("code")} error={state.status === "exists" ? t.codeExists : t.fieldInvalid} autoComplete="off" autoCapitalize="characters" spellCheck={false} maxLength={20} className="font-mono uppercase" />
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 font-medium">{t.codeKind}</legend>
@@ -145,11 +145,11 @@ export function CodeForm({ t, names, lang }: { t: Messages["admin"]; names: Prod
         <Field name="maxUses" label={t.codeMaxUses} invalid={bad("maxUses")} error={t.fieldInvalid} inputMode="numeric" maxLength={6} />
         <Field name="expires" label={t.codeExpires} invalid={bad("expires")} error={t.fieldInvalid} type="date" />
       </div>
-      <label className="flex min-h-11 items-center gap-3">
+      <label className="flex min-h-11 lg:min-h-9 items-center gap-3">
         <input type="checkbox" name="perCustomerOnce" defaultChecked className="size-5 shrink-0 accent-ink" />
         {t.codePerCustomer}
       </label>
-      <label className="flex min-h-11 items-center gap-3">
+      <label className="flex min-h-11 lg:min-h-9 items-center gap-3">
         <input type="checkbox" name="firstPaymentOnly" className="size-5 shrink-0 accent-ink" />
         {t.codeFirstOnly}
       </label>

@@ -16,10 +16,10 @@ export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel
   const total = data.reduce((n, d) => n + d.value, 0);
   const shortDay = formatDay ?? ((d: string) => d.slice(5).replace("-", "/"));
   return (
-    <figure className="flex flex-col gap-2 rounded-2xl border border-line bg-white p-5">
+    <figure className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
       <figcaption className="flex items-baseline justify-between gap-3">
         {heading ? <h2 className="text-base font-semibold">{title}</h2> : <span className="font-semibold">{title}</span>}
-        <span className="font-display text-xl font-bold tabular-nums">{format(total)}</span>
+        <span className="font-display text-lg font-bold tabular-nums">{format(total)}</span>
       </figcaption>
       <div className="relative">
       {total === 0 && <p className="absolute inset-0 flex items-center justify-center text-ink-muted">{emptyLabel}</p>}
@@ -48,12 +48,12 @@ export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel
         })}
       </svg>
       </div>
-      <div className="flex justify-between text-sm text-ink-muted tabular-nums" aria-hidden="true">
+      <div className="flex justify-between text-xs text-ink-muted tabular-nums" aria-hidden="true">
         <span>{shortDay(data[0]!.day)}</span>
         <span>{shortDay(data.at(-1)!.day)}</span>
       </div>
-      <details className="text-sm">
-        <summary className="inline-flex min-h-11 cursor-pointer items-center text-ink-muted">{tableLabel}</summary>
+      <details className="text-xs">
+        <summary className="inline-flex min-h-11 lg:min-h-9 cursor-pointer items-center text-ink-muted">{tableLabel}</summary>
         <table className="w-full">
           <thead>
             <tr className="text-ink-muted">

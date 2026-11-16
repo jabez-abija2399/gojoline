@@ -24,7 +24,7 @@ function Buttons({ t, ops }: { t: Messages["admin"]; ops: Op[] }) {
             onClick={(e) => {
               if (pending || (op === "take_down" && !window.confirm(t.takeDownConfirm))) e.preventDefault();
             }}
-            className={`min-h-11 rounded-lg px-4 font-medium aria-disabled:opacity-50 ${op === "take_down" ? "border border-destructive text-destructive hover:bg-coral-soft" : "border border-line hover:border-faint"}`}
+            className={`min-h-11 lg:min-h-9 rounded-lg px-4 font-medium aria-disabled:opacity-50 ${op === "take_down" ? "border border-destructive text-destructive hover:bg-coral-soft" : "border border-line hover:border-faint"}`}
           >
             {pending && sent === value ? t.working : label[op]}
           </button>
@@ -60,7 +60,7 @@ export function ModerateForm({ t, siteId, lang, tab, ops, reason }: { t: Message
             maxLength={300}
             aria-invalid={state.status === "reason_required" || undefined}
             aria-describedby={state.status === "reason_required" ? errorId : undefined}
-            className="min-h-11 rounded-lg border border-input px-3 text-base aria-invalid:border-destructive"
+            className="min-h-11 lg:min-h-9 rounded-lg border border-input px-3 text-base lg:text-sm aria-invalid:border-destructive"
           />
         </label>
       ) : (
