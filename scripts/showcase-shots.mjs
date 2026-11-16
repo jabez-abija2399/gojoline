@@ -75,7 +75,8 @@ async function shoot(port, languages, lang) {
   }
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForLoadState("networkidle");
-  await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))));
+  // Wait for the photos that did load to be drawn; ones far below the cut never load, so don't wait long.
+  await page.evaluate(() => Promise.race([Promise.all([...document.images].filter((i) => i.complete).map((i) => i.decode().catch(() => {}))), new Promise((r) => setTimeout(r, 3000))]));
   await page.evaluate(() => document.fonts.ready);
   const full = await page.evaluate(() => document.documentElement.scrollHeight);
   const height = Math.min(full, MAX_HEIGHT);
