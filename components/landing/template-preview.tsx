@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { ExternalLink, Monitor, Smartphone } from "lucide-react";
 import type { PreviewPage } from "@/lib/landing/template-preview";
 
@@ -16,11 +16,6 @@ export interface PreviewLabels {
 }
 
 const WIDE = "(min-width: 1024px)";
-const subscribe = (cb: () => void) => {
-  const mq = matchMedia(WIDE);
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
-};
 
 /**
  * The template's real site, running: scroll it, tap it, change pages and language inside it.
@@ -29,7 +24,14 @@ const subscribe = (cb: () => void) => {
 export function TemplatePreviewer({ name, pages, t }: { name: string; pages: PreviewPage[]; t: PreviewLabels }) {
   const [page, setPage] = useState(0);
   const [view, setView] = useState<"auto" | "d" | "m">("auto");
-  const wide = useSyncExternalStore(subscribe, () => matchMedia(WIDE).matches, () => true);
+  const [wide, setWide] = useState(true);
+  useEffect(() => {
+    const mq = matchMedia(WIDE);
+    const update = () => setWide(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
   const shown = view === "auto" ? (wide ? "d" : "m") : view;
   const src = pages[page]?.src ?? pages[0]!.src;
   const button = "inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium transition";
@@ -70,9 +72,9 @@ export function TemplatePreviewer({ name, pages, t }: { name: string; pages: Pre
       </div>
       <p className="text-sm text-ink-muted">{t.hint}</p>
 
-      {shown === "d" ? (
-        // A computer window: a bar with the address, then the site at full width.
-        <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-xl">
+      {/* One frame for both views, so switching never reloads the site: a computer window, or a phone. */}
+      <div className={shown === "d" ? "overflow-hidden rounded-2xl border border-line bg-white shadow-xl" : "mx-auto w-full max-w-[400px] rounded-[2.5rem] border-[10px] border-ink bg-ink shadow-2xl"}>
+        {shown === "d" && (
           <div className="flex items-center gap-3 border-b border-line bg-sunken px-4 py-2.5">
             <span aria-hidden="true" className="flex gap-1.5">
               <span className="size-3 rounded-full bg-line" />
@@ -81,14 +83,9 @@ export function TemplatePreviewer({ name, pages, t }: { name: string; pages: Pre
             </span>
             <span className="min-w-0 flex-1 truncate rounded-md bg-white px-3 py-1 text-center text-sm text-ink-muted">{name}</span>
           </div>
-          <div className="h-[78vh] min-h-[540px]">{frame}</div>
-        </div>
-      ) : (
-        // A phone: the site at phone width in a rounded frame.
-        <div className="mx-auto w-full max-w-[400px] rounded-[2.5rem] border-[10px] border-ink bg-ink shadow-2xl">
-          <div className="h-[min(780px,78vh)] min-h-[520px] overflow-hidden rounded-[1.9rem] bg-white">{frame}</div>
-        </div>
-      )}
+        )}
+        <div className={shown === "d" ? "h-[78vh] min-h-[540px]" : "h-[min(780px,78vh)] min-h-[520px] overflow-hidden rounded-[1.9rem] bg-white"}>{frame}</div>
+      </div>
     </div>
   );
 }
