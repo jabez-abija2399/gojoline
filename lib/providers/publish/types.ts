@@ -12,6 +12,15 @@ export interface PublishFile {
   data: Buffer;
 }
 
+export interface PublishInput {
+  slug: string;
+  files: PublishFile[];
+  headers: { key: string; value: string }[];
+  providerProjectId?: string | null;
+  /** Hosts that support it answer every path with a permanent redirect to the same path here. */
+  redirectTo?: string;
+}
+
 export interface PublishResult {
   url: string;
   deploymentId: string;
@@ -30,7 +39,7 @@ export interface PublishProvider {
    * Deploys the files. `providerProjectId` is the hosting project saved from an earlier publish;
    * without it a new project is created (and an existing one with the same name is never reused).
    */
-  publish(input: { slug: string; files: PublishFile[]; headers: { key: string; value: string }[]; providerProjectId?: string | null }): Promise<PublishResult>;
+  publish(input: PublishInput): Promise<PublishResult>;
   /** Attaches the owner's domain to the site and says which DNS records it needs. */
   addDomain(providerProjectId: string, domain: string): Promise<DomainStatus>;
   checkDomain(providerProjectId: string, domain: string): Promise<DomainStatus>;

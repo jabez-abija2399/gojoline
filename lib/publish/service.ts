@@ -1,4 +1,5 @@
 import "server-only";
+import { movedPage, noticeTargets } from "./hosts";
 import { reportError } from "@/lib/observability/report";
 import { extractForms } from "@/lib/cloud/forms";
 import type { CloudStore } from "@/lib/cloud/types";
@@ -26,6 +27,11 @@ export interface PublishDeps {
   sites: SiteStore;
   sandboxes: SandboxProvider;
   publisher: PublishProvider;
+  /**
+   * The host sites were published with before `publisher` (the Vercel fallback once Cloudflare
+   * is set up). A site still there moves on its next publish; its old address then forwards.
+   */
+  legacy?: PublishProvider | null;
   lock: Lock;
   appUrl: string;
   /** Origin of the public Data API the site's forms post to (defaults to the app's origin). */
@@ -170,16 +176,32 @@ async function deployLocked(
       headers: publishedSiteHeaders({ dataApiOrigin: apiOrigin }),
       providerProjectId: existing?.providerProjectId ?? null,
     });
+    // A site moving hosts keeps its old project on record until the old address forwards.
+    const moving = Boolean(existing?.providerProjectId) && existing!.provider !== deps.publisher.name;
+    const legacyProjectId = moving ? existing!.providerProjectId : (existing?.legacyProjectId ?? null);
     const site = await deps.sites.savePublished(user.id, {
       projectId,
       slug,
       provider: deps.publisher.name,
       providerProjectId: result.providerProjectId,
+      legacyProjectId,
       url: result.url,
       publishedVersion: latest.number,
       lastDeploymentId: result.deploymentId,
       publishedAt: new Date(),
     });
+    if (legacyProjectId && deps.legacy) {
+      // The old address forwards to the new one (same path) and stops showing old content.
+      // A failure is retried on the next publish; until then takedowns also reach the old host.
+      const page = Buffer.from(movedPage(result.url));
+      try {
+        await deps.legacy.publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: legacyProjectId, redirectTo: result.url });
+        await deps.legacy.restrictOldDeployments?.(legacyProjectId);
+        await deps.sites.clearLegacy(user.id, projectId);
+      } catch (e) {
+        reportError("old host forward failed", e, { projectId });
+      }
+    }
     // Forms on the live site accept answers only in the shape published here.
     await deps.cloud?.saveForms(site.id, extractForms(latest.files["src/site.json"] ?? ""));
     return { ok: true, site };
@@ -188,13 +210,18 @@ async function deployLocked(
     if (msg === "Site is taken down") {
       // Taken down during the deploy: put the notice back over what was just deployed.
       const site = await deps.sites.getByProject(user.id, projectId);
-      if (site?.providerProjectId) {
-        const page = Buffer.from(takenDownPage());
-        try {
-          await deps.publisher.publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: site.providerProjectId });
-          await deps.publisher.restrictOldDeployments?.(site.providerProjectId);
-        } catch (e) {
-          reportError("takedown redeploy failed", e, { projectId });
+      if (site) {
+        // The files just went to deps.publisher (whatever the record says), and the site may
+        // still live on the old host too: the notice goes everywhere it could be seen.
+        const files = [{ path: "index.html", data: Buffer.from(takenDownPage()) }, { path: "404.html", data: Buffer.from(takenDownPage()) }];
+        const targets = noticeTargets(site, deps.publisher, deps.legacy, { includeCurrent: true });
+        for (const t of targets) {
+          try {
+            const r = await t.host.publish({ slug, files, headers: publishedSiteHeaders(), providerProjectId: t.projectId });
+            await t.host.restrictOldDeployments?.(r.providerProjectId);
+          } catch (e) {
+            reportError("takedown redeploy failed", e, { projectId, host: t.host.name });
+          }
         }
       }
       return { ok: false, error: "taken_down" };

@@ -7,12 +7,12 @@ export const EXAMPLE_SLUG = "your-business";
 const RESERVED = new Set([
   "www", "api", "app", "admin", "mail", "gojoline", "gojo", "support", "help", "login", "signin", "account",
   "billing", "pay", "payment", "secure", "bank", "telebirr", "cbe", "ethiotelecom", "safaricom", "status", "docs",
-  "dashboard", "static", "assets", "cdn", "test", "root", "official", "verify", "update",
+  "dashboard", "static", "assets", "cdn", "test", "root", "official", "verify", "update", "domains", "sites", "send", "email",
 ]);
 
 /** Banks, telecoms and payment brands people could be tricked by, matched inside words too. */
 const BRANDS = new Set([
-  "gojoline", "telebirr", "ethiotelecom", "safaricom", "mpesa", "cbebirr", "commercialbank", "dashen", "awash",
+  "gojoline", "afridea", "telebirr", "ethiotelecom", "safaricom", "mpesa", "cbebirr", "commercialbank", "dashen", "awash",
   "abyssinia", "bunna", "zemen", "nibbank", "wegagen", "hibret", "chapa", "paypal", "visa", "mastercard",
 ]);
 

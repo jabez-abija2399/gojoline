@@ -5,6 +5,8 @@ export interface Site {
   slug: string;
   provider: string;
   providerProjectId: string | null;
+  /** The previous host's project after a move, until its old address forwards (see PublishDeps.legacy). */
+  legacyProjectId?: string | null;
   url: string | null;
   /** pending: address reserved, first publish not finished yet. */
   status: "pending" | "published" | "taken_down";
@@ -53,4 +55,6 @@ export interface SiteStore {
   /** Drops a stale claim (only if it is still unverified and older than the cutoff). */
   releaseDomainClaim(siteId: string, domain: string, claimedBefore: Date): Promise<boolean>;
   savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain" | "siteKey">): Promise<Site>;
+  /** The old host now forwards: nothing left there to take down. */
+  clearLegacy(ownerId: string, projectId: string): Promise<void>;
 }

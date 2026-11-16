@@ -42,6 +42,73 @@ describe("publishSite", () => {
     expect(again.ok && again.site.slug).toBe("selam-coffee");
   });
 
+  it("moves a site to a new host on its next publish; the old address forwards", async () => {
+    const p = await projectWithVersion();
+    await publishSite(deps, alice, p.id, "selam-coffee");
+    const old = publisher;
+    const next = Object.assign(new MemoryPublishProvider(), { name: "cloudflare", urlFor: (s: string) => `https://${s}.afridea.et` });
+    deps.publisher = next;
+    deps.legacy = old;
+    const r = await publishSite(deps, alice, p.id, "selam-coffee");
+    expect(r).toMatchObject({ ok: true, site: { provider: "cloudflare", url: "https://selam-coffee.afridea.et" } });
+    expect(next.published.has("selam-coffee")).toBe(true);
+    const forward = old.published.get("selam-coffee")!.map((f) => f.data.toString());
+    expect(old.redirects.get("selam-coffee")).toBe("https://selam-coffee.afridea.et");
+    expect(forward[0]).toContain('http-equiv="refresh" content="0;url=https://selam-coffee.afridea.et"');
+    expect(forward[0]).toContain('<html lang="en">');
+    expect(forward[0]).toContain('<section lang="am"><h2>ይህ ድረ-ገጽ ተዛውሯል</h2>');
+    expect(forward[0]).not.toMatch(/<script/i);
+    // Once moved, publishing no longer touches the old host.
+    old.published.clear();
+    expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
+    expect(old.published.size).toBe(0);
+  });
+
+  it("a takedown during the move puts the notice on both hosts", async () => {
+    const p = await projectWithVersion();
+    await publishSite(deps, alice, p.id, "selam-coffee");
+    const old = publisher;
+    const next = Object.assign(new MemoryPublishProvider(), { name: "cloudflare" });
+    const realPublish = next.publish.bind(next);
+    let first = true;
+    next.publish = async (input) => {
+      const r = await realPublish(input);
+      if (first) {
+        first = false;
+        // An admin acts while the new host is being written.
+        const site = await deps.sites.getByProject("alice", p.id);
+        await (deps.sites as MemorySiteStore).takeDown(site!.id, "scam");
+      }
+      return r;
+    };
+    deps.publisher = next;
+    deps.legacy = old;
+    expect(await publishSite(deps, alice, p.id, "selam-coffee")).toEqual({ ok: false, error: "taken_down" });
+    expect(next.published.get("selam-coffee")![0]!.data.toString()).toContain("This site is not available");
+    expect(old.published.get("selam-coffee")![0]!.data.toString()).toContain("This site is not available");
+  });
+
+  it("keeps the old host on record until its forward works; takedowns reach it meanwhile", async () => {
+    const p = await projectWithVersion();
+    await publishSite(deps, alice, p.id, "selam-coffee");
+    const old = publisher;
+    const oldId = (await deps.sites.getByProject("alice", p.id))!.providerProjectId;
+    const next = Object.assign(new MemoryPublishProvider(), { name: "cloudflare" });
+    const realOld = old.publish.bind(old);
+    old.publish = async () => {
+      throw new Error("vercel down");
+    };
+    deps.publisher = next;
+    deps.legacy = old;
+    expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
+    expect((await deps.sites.getByProject("alice", p.id))!.legacyProjectId).toBe(oldId);
+    // The next publish retries the forward, then forgets the old host.
+    old.publish = realOld;
+    expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
+    expect(old.redirects.get("selam-coffee")).toBe("https://selam-coffee.sites.example");
+    expect((await deps.sites.getByProject("alice", p.id))!.legacyProjectId).toBeNull();
+  });
+
   it("requires a verified account", async () => {
     const p = await projectWithVersion();
     expect(await publishSite(deps, { id: "alice", verified: false }, p.id, "selam-coffee")).toEqual({ ok: false, error: "unverified" });
