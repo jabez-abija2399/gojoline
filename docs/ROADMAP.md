@@ -81,12 +81,14 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Site template: four styles, two more heading fonts, full-screen and portrait heroes, picture cards, stats, steps, schedule and quote sections
 - [x] All templates rebuilt on the research with real photos, in English and Amharic, plus two new ones (company, salon): 14 in total
 - [x] Template preview pages: every page and section of a template, computer and phone, before it is picked
-- [ ] Template pages v2: categories with link chips, breadcrumb, "Designed for", key highlights backed by the template's sections, browser and phone frames with the would-be address, details column on large screens, "Used by N businesses" from real projects (shown from 10) (built and tested; design, performance and security reviews still to run)
+- [x] Template pages v2: categories with link chips, breadcrumb, "Designed for", "What's included" backed by the template's sections, browser and phone frames, details column on large screens, "Used by N businesses" (verified owners with a live site, shown from 10); design, performance and security reviews run and fixed (2026-11-16)
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Performance: phone LCP on `/templates` and template pages is ~3.5 s (budget 2.5 s), same as before template pages v2. Causes are site-wide: ~170 KB shared JS, the Ethiopic font preloaded on English pages, three Latin fonts, lazy pictures inside Chrome's load distance. Needs its own slice (2026-11-16).
+- Set `PUBLISH_BASE_DOMAIN` in production once the customer-site domain exists; until then the template browser frame shows an empty address bar (never a guessed address).
 - e2e: `billing.spec.ts` "a pricing Choose button keeps the yearly choice through sign-in" failed once on the phone project in a full run (2026-11-16) and passed 6 of 6 alone; probably the same first-render timing as the menu helper fixed that day.
 - e2e: `builder.spec.ts` "dark mode: chosen in the account menu…" on the phone project times out opening the account menu about one run in five, on `main` too (2026-11-16); passes on retry. Not yet traced.
 - e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
