@@ -37,7 +37,7 @@ export default async function TemplatesPage({ params }: PageProps<"/[lang]/templ
       <main id="main" tabIndex={-1} className={`${serif.variable} flex-1 focus:outline-none`}>
         <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-12 sm:px-6 md:py-20">
           <header className="flex flex-col items-center gap-4 text-center">
-            <h1 className="max-w-[18ch] text-[2.25rem] display min-[400px]:text-5xl sm:text-6xl">{g.title}</h1>
+            <h1 className="max-w-[7em] text-[2.25rem] display min-[400px]:text-5xl sm:text-6xl">{g.title}</h1>
             <p className="max-w-[60ch] text-lg text-ink-muted">{g.intro}</p>
           </header>
           <TemplatesBrowser
@@ -48,7 +48,26 @@ export default async function TemplatesPage({ params }: PageProps<"/[lang]/templ
             categories={[...TEMPLATE_CATEGORIES]}
             styles={[...TEMPLATE_STYLES]}
             features={[...TEMPLATE_FEATURES]}
-            t={g}
+            t={{
+              searchLabel: g.searchLabel,
+              searchPlaceholder: g.searchPlaceholder,
+              results: g.results,
+              oneResult: g.oneResult,
+              category: g.category,
+              all: g.all,
+              allTemplates: g.allTemplates,
+              style: g.style,
+              includes: g.includes,
+              filters: g.filters,
+              clear: g.clear,
+              none: g.none,
+              seeAll: g.seeAll,
+              seeAllOne: g.seeAllOne,
+              listLabel: g.listLabel,
+              categories: g.categories,
+              styles: g.styles,
+              features: g.features,
+            }}
           />
         </div>
         <FinalCta t={t.landing.final} locale={lang} />
