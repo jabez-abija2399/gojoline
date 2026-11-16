@@ -2,9 +2,38 @@ import { getMessages } from "@/lib/i18n";
 import type { PublishProvider } from "@/lib/providers/publish/types";
 import { NOTICE_STYLE, escapeHtml } from "./notice";
 
-/** The host a site currently lives on (the legacy one until it has moved). */
+/** The host a site currently lives on (the legacy one until it has moved). Throws if that host isn't configured. */
 export function publisherFor(site: { provider: string }, publisher: PublishProvider, legacy?: PublishProvider | null): PublishProvider {
-  return site.provider !== publisher.name && legacy?.name === site.provider ? legacy : publisher;
+  if (site.provider === publisher.name) return publisher;
+  if (legacy?.name === site.provider) return legacy;
+  throw new Error(`no_host:${site.provider}`);
+}
+
+/**
+ * Every place a site's content could be public, for a takedown notice: its current host, the
+ * old host while the move isn't confirmed, and (`includeCurrent`, a takedown during a publish)
+ * the new host the publish was writing to.
+ */
+export function noticeTargets(
+  site: { slug: string; provider: string; providerProjectId: string | null; legacyProjectId?: string | null },
+  publisher: PublishProvider,
+  legacy: PublishProvider | null | undefined,
+  opts: { includeCurrent?: boolean } = {},
+): { host: PublishProvider; projectId: string | null }[] {
+  const out: { host: PublishProvider; projectId: string | null }[] = [];
+  if (site.providerProjectId) out.push({ host: publisherFor(site, publisher, legacy), projectId: site.providerProjectId });
+  if (site.legacyProjectId) {
+    if (!legacy) throw new Error("no_host:legacy");
+    out.push({ host: legacy, projectId: site.legacyProjectId });
+  }
+  // The publish may have written to the new host before the record changed; a non-matching
+  // saved ID lets that host adopt the slug's files (see CloudflarePublishProvider.publish).
+  if (opts.includeCurrent && !out.some((t) => t.host === publisher)) {
+    // A first publish has no saved ID yet; Cloudflare's is derived from the slug.
+    const id = site.providerProjectId ?? (publisher.name === "cloudflare" ? `cf:${site.slug}` : null);
+    if (id) out.push({ host: publisher, projectId: id });
+  }
+  return out;
 }
 
 /** What a site's old address shows (a fallback where the host can't redirect): both languages, no scripts. */

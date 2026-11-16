@@ -58,6 +58,20 @@ describe("takedown", () => {
     expect(publisher.published.size).toBe(0);
   });
 
+  it("reaches the old host while a move isn't confirmed, and refuses to report success without it", async () => {
+    const sites = new MemorySiteStore();
+    await sites.reserve("owner", "p1", "moved-site", "cloudflare");
+    const site = await sites.savePublished("owner", { projectId: "p1", slug: "moved-site", provider: "cloudflare", providerProjectId: "cf:moved-site", legacyProjectId: "prj_old", url: "https://moved-site.afridea.et", publishedVersion: 2, lastDeploymentId: "d", publishedAt: new Date() });
+    const reports = new MemoryReportStore(async () => null);
+    const publisher = Object.assign(new MemoryPublishProvider(), { name: "cloudflare" });
+    const legacy = new MemoryPublishProvider();
+    expect(await takeDownSite({ sites, reports, publisher, legacy: null, audit: async () => undefined }, "admin", site.id, "scam")).toBe("deploy_failed");
+    await sites.restore(site.id);
+    expect(await takeDownSite({ sites, reports, publisher, legacy, audit: async () => undefined }, "admin", site.id, "scam")).toBe("ok");
+    expect(publisher.published.get("moved-site")![0]!.data.toString()).toContain("This site is not available");
+    expect(legacy.published.get("moved-site")![0]!.data.toString()).toContain("This site is not available");
+  });
+
   it("the notice page has no scripts and both languages", () => {
     const html = takenDownPage();
     expect(html).not.toMatch(/<script/i);

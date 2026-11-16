@@ -121,7 +121,15 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
 function pickCloudflarePublish(env: Env): CloudflarePublishProvider | null {
   if (!env.R2_ACCOUNT_ID || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY || !env.PUBLISH_BASE_DOMAIN) return null;
   const storage = new R2StorageProvider({ accountId: env.R2_ACCOUNT_ID, accessKeyId: env.R2_ACCESS_KEY_ID, secretAccessKey: env.R2_SECRET_ACCESS_KEY, bucket: env.R2_BUCKET || "gojoline" });
-  return new CloudflarePublishProvider({ storage, baseDomain: env.PUBLISH_BASE_DOMAIN, apiToken: env.CLOUDFLARE_API_TOKEN || undefined, zoneId: env.CLOUDFLARE_ZONE_ID || undefined });
+  // The app's own token may only manage custom hostnames (never DNS, Workers or routes: those
+  // are set up from the founder's machine with CLOUDFLARE_API_TOKEN, see the setup script).
+  return new CloudflarePublishProvider({
+    storage,
+    baseDomain: env.PUBLISH_BASE_DOMAIN,
+    apiToken: env.CLOUDFLARE_SAAS_TOKEN || undefined,
+    zoneId: env.CLOUDFLARE_ZONE_ID || undefined,
+    ownershipSecret: env.BETTER_AUTH_SECRET || undefined,
+  });
 }
 
 function pickTelegram(env: Env): Services["telegram"] {

@@ -1,0 +1,1 @@
+ALTER TABLE "sites" ADD COLUMN "legacy_project_id" text;

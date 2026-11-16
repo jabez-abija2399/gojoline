@@ -175,6 +175,8 @@ export const sites = pgTable(
     slug: text("slug").notNull().unique(),
     provider: text("provider").notNull(),
     providerProjectId: text("provider_project_id"),
+    /** The previous host's project after a move, until its forward is confirmed (takedowns reach it too). */
+    legacyProjectId: text("legacy_project_id"),
     url: text("url"),
     status: text("status", { enum: ["pending", "published", "taken_down"] }).notNull(),
     publishedVersion: integer("published_version"),

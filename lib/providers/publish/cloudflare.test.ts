@@ -5,7 +5,7 @@ import { CloudflarePublishProvider, apexOf } from "./cloudflare";
 const file = (path: string, s = path) => ({ path, data: Buffer.from(s) });
 const headers = [{ key: "X-Frame-Options", value: "DENY" }];
 
-function setup(api: (method: string, path: string, body: unknown) => { status?: number; body: unknown } = () => ({ body: { success: true, result: null } })) {
+function setup(api: (method: string, path: string, body: unknown) => { status?: number; body: unknown } = () => ({ body: { success: true, result: null } }), txt: Record<string, string[][]> = {}) {
   const storage = new MemoryStorageProvider();
   const calls: { method: string; path: string; body: unknown }[] = [];
   const fetchImpl = (async (url: string, init: RequestInit) => {
@@ -15,7 +15,7 @@ function setup(api: (method: string, path: string, body: unknown) => { status?: 
     const r = api(init.method ?? "GET", path, body);
     return new Response(JSON.stringify(r.body), { status: r.status ?? 200 });
   }) as unknown as typeof fetch;
-  const cf = new CloudflarePublishProvider({ storage, baseDomain: "afridea.et", apiToken: "t", zoneId: "z1", fetchImpl });
+  const cf = new CloudflarePublishProvider({ storage, baseDomain: "afridea.et", apiToken: "t", zoneId: "z1", ownershipSecret: "s3cret", fetchImpl, resolveTxt: async (n) => txt[n] ?? [] });
   return { storage, cf, calls };
 }
 
@@ -63,21 +63,34 @@ describe("CloudflarePublishProvider", () => {
     expect(r.providerProjectId).toBe("cf:abeni");
   });
 
-  it("connects a domain as a custom hostname and maps it to the site", async () => {
-    const { storage, cf, calls } = setup((method) =>
-      method === "POST"
-        ? { body: { success: true, result: { id: "h1", hostname: "www.abeni.com.et", status: "pending", ssl: { status: "pending_validation" }, ownership_verification: { type: "txt", name: "_cf-custom-hostname.www.abeni.com.et", value: "abc" } } } }
-        : { body: { success: true, result: [] } },
-    );
-    const s = await cf.addDomain("cf:abeni", "www.abeni.com.et");
-    expect(calls[0]).toMatchObject({ method: "POST", path: "/zones/z1/custom_hostnames", body: { hostname: "www.abeni.com.et", ssl: { method: "http", type: "dv" } } });
-    expect(s).toEqual({
-      status: "pending",
-      records: [
-        { type: "CNAME", name: "www", value: "domains.afridea.et" },
-        { type: "TXT", name: "_cf-custom-hostname.www", value: "abc" },
-      ],
-    });
+  it("asks for proof of ownership first; only then creates the custom hostname and maps the domain", async () => {
+    const created = { id: "h1", hostname: "www.abeni.com.et", status: "pending", ssl: { status: "pending_validation" } };
+    let exists = false;
+    const txt: Record<string, string[][]> = {};
+    const { storage, cf, calls } = setup((method) => {
+      if (method === "POST") {
+        exists = true;
+        return { body: { success: true, result: created } };
+      }
+      return { body: { success: true, result: exists ? [created] : [] } };
+    }, txt);
+    const first = await cf.addDomain("cf:abeni", "www.abeni.com.et");
+    expect(first.status).toBe("pending");
+    expect(first.records[0]).toEqual({ type: "CNAME", name: "www", value: "domains.afridea.et" });
+    const proof = first.records[1]!;
+    expect(proof).toMatchObject({ type: "TXT", name: "_gojoline.www" });
+    expect(calls.some((c) => c.method === "POST")).toBe(false);
+    expect(storage.objects.has("hosts/www.abeni.com.et.json")).toBe(false);
+
+    // Another site can't use the same proof (it's signed for abeni).
+    txt["_gojoline.www.abeni.com.et"] = [[proof.value]];
+    const other = await cf.checkDomain("cf:kebede", "www.abeni.com.et");
+    expect(other.status).toBe("pending");
+    expect(calls.some((c) => c.method === "POST")).toBe(false);
+
+    const second = await cf.checkDomain("cf:abeni", "www.abeni.com.et");
+    expect(calls.find((c) => c.method === "POST")).toMatchObject({ path: "/zones/z1/custom_hostnames", body: { hostname: "www.abeni.com.et", ssl: { method: "http", type: "dv" } } });
+    expect(second.status).toBe("pending");
     expect(json(storage, "hosts/www.abeni.com.et.json")).toEqual({ site: "abeni" });
   });
 
@@ -86,6 +99,7 @@ describe("CloudflarePublishProvider", () => {
     await expect(cf.addDomain("cf:abeni", "gojoline.afridea.et")).rejects.toThrow("domain_in_use");
     await storage.put("hosts/taken.com.json", JSON.stringify({ site: "other" }));
     await expect(cf.addDomain("cf:abeni", "taken.com")).rejects.toThrow("domain_in_use");
+    await expect(cf.checkDomain("cf:abeni", "taken.com")).rejects.toThrow("domain_missing");
   });
 
   it("reports active once Cloudflare has the hostname and certificate, and removes it", async () => {
@@ -94,7 +108,6 @@ describe("CloudflarePublishProvider", () => {
     await storage.put("hosts/abeni.com.json", JSON.stringify({ site: "abeni" }));
     expect((await cf.checkDomain("cf:abeni", "abeni.com")).status).toBe("active");
     expect((await cf.checkDomain("cf:abeni", "abeni.com")).records[0]).toEqual({ type: "CNAME", name: "@", value: "domains.afridea.et" });
-    await expect(cf.checkDomain("cf:other", "abeni.com")).rejects.toThrow("domain_missing");
     await cf.removeDomain("cf:abeni", "abeni.com");
     expect(calls.at(-1)).toMatchObject({ method: "DELETE", path: "/zones/z1/custom_hostnames/h9" });
     expect(storage.objects.has("hosts/abeni.com.json")).toBe(false);

@@ -1,5 +1,6 @@
 import "server-only";
-import { randomBytes } from "node:crypto";
+import { createHmac, randomBytes } from "node:crypto";
+import { resolveTxt } from "node:dns/promises";
 import type { DnsRecord } from "@/lib/sites/domain";
 import type { StorageProvider } from "@/lib/providers/storage/types";
 import type { DomainStatus, PublishInput, PublishProvider, PublishResult } from "./types";
@@ -17,7 +18,10 @@ export interface CloudflarePublishConfig {
   apiToken?: string;
   /** Zone ID of baseDomain; looked up by name when missing. */
   zoneId?: string;
+  /** Signs the TXT record that proves a customer controls their domain (server secret). */
+  ownershipSecret?: string;
   fetchImpl?: typeof fetch;
+  resolveTxt?: (name: string) => Promise<string[][]>;
 }
 
 interface CustomHostname {
@@ -169,43 +173,72 @@ export class CloudflarePublishProvider implements PublishProvider {
     return r.result?.find((h) => h.hostname === domain) ?? null;
   }
 
-  private status(domain: string, h: CustomHostname): DomainStatus {
+  /** The TXT record that proves this site's owner controls the domain (tied to site and domain). */
+  private proof(slug: string, domain: string): DnsRecord {
+    const secret = this.config.ownershipSecret;
+    if (!secret) throw new Error("domains_unavailable");
     const apex = apexOf(domain);
-    const records: DnsRecord[] = [{ type: "CNAME", name: domain === apex ? "@" : domain.slice(0, -(apex.length + 1)), value: this.domainTarget }];
-    const own = h.ownership_verification;
+    const name = `_gojoline.${domain}`;
+    const value = `gojoline-verify=${createHmac("sha256", secret).update(`${slug}|${domain}`).digest("base64url").slice(0, 32)}`;
+    return { type: "TXT", name: name.slice(0, -(apex.length + 1)), value };
+  }
+
+  private async proven(slug: string, domain: string): Promise<boolean> {
+    const want = this.proof(slug, domain).value;
+    const lookup = this.config.resolveTxt ?? resolveTxt;
+    const found = await lookup(`_gojoline.${domain}`).catch(() => [] as string[][]);
+    return found.some((parts) => parts.join("") === want);
+  }
+
+  private records(slug: string, domain: string, h: CustomHostname | null): DnsRecord[] {
+    const apex = apexOf(domain);
+    const records: DnsRecord[] = [{ type: "CNAME", name: domain === apex ? "@" : domain.slice(0, -(apex.length + 1)), value: this.domainTarget }, this.proof(slug, domain)];
+    const own = h?.ownership_verification;
     if (own?.type === "txt" && own.name && own.value) records.push({ type: "TXT", name: own.name.endsWith(`.${apex}`) ? own.name.slice(0, -(apex.length + 1)) : own.name, value: own.value });
-    return { status: h.status === "active" && h.ssl?.status === "active" ? "active" : "pending", records };
+    return records;
   }
 
   private ours(domain: string) {
     return domain === this.base || domain.endsWith(`.${this.base}`);
   }
 
+  /**
+   * Starts connecting a customer's domain. Nothing is served on it until the owner adds our TXT
+   * record (`_gojoline.<domain>`, signed for this site): only then is the Cloudflare custom
+   * hostname created and the domain mapped. A CNAME left behind by a previous owner is not
+   * enough, so nobody else can take over a domain that still points at us.
+   */
   async addDomain(providerProjectId: string, domain: string): Promise<DomainStatus> {
     const slug = slugOf(providerProjectId);
     if (this.ours(domain)) throw new Error("domain_in_use");
     const owner = await this.hostSite(domain);
     if (owner && owner !== slug) throw new Error("domain_in_use");
-    const z = await this.zoneId();
-    const created = await this.api<CustomHostname>("POST", `/zones/${z}/custom_hostnames`, { hostname: domain, ssl: { method: "http", type: "dv", settings: { min_tls_version: "1.2" } } });
-    let h: CustomHostname | null = created.ok ? created.result : null;
-    if (!h) {
-      // 1406: already registered in our zone, by an earlier attempt. The database claim (taken
-      // atomically before this call) says the domain is this site's; another site's mapping was
-      // refused above.
-      if (!created.codes.includes(1406)) throw new Error(`domain_failed:${created.codes[0] ?? created.status}`);
-      h = await this.findHostname(domain);
-      if (!h) throw new Error("domain_failed:missing");
-    }
-    await this.storage.put(this.hostKey(domain), JSON.stringify({ site: slug }), { contentType: "application/json" });
-    return this.status(domain, h);
+    return this.connect(slug, domain);
   }
 
   async checkDomain(providerProjectId: string, domain: string): Promise<DomainStatus> {
     const slug = slugOf(providerProjectId);
-    const h = await this.findHostname(domain);
-    if (!h || (await this.hostSite(domain)) !== slug) throw new Error("domain_missing");
-    return this.status(domain, h);
+    const owner = await this.hostSite(domain);
+    if (owner && owner !== slug) throw new Error("domain_missing");
+    return this.connect(slug, domain);
+  }
+
+  private async connect(slug: string, domain: string): Promise<DomainStatus> {
+    let h = await this.findHostname(domain);
+    const mapped = (await this.hostSite(domain)) === slug;
+    if (!h || !mapped) {
+      if (!(await this.proven(slug, domain))) return { status: "pending", records: this.records(slug, domain, h) };
+      if (!h) {
+        const z = await this.zoneId();
+        const created = await this.api<CustomHostname>("POST", `/zones/${z}/custom_hostnames`, { hostname: domain, ssl: { method: "http", type: "dv", settings: { min_tls_version: "1.2" } } });
+        // 1406: already registered in our zone by an earlier attempt for this site.
+        if (!created.ok && !created.codes.includes(1406)) throw new Error(`domain_failed:${created.codes[0] ?? created.status}`);
+        h = created.ok ? created.result : await this.findHostname(domain);
+        if (!h) throw new Error("domain_failed:missing");
+      }
+      await this.storage.put(this.hostKey(domain), JSON.stringify({ site: slug }), { contentType: "application/json" });
+    }
+    return { status: h.status === "active" && h.ssl?.status === "active" ? "active" : "pending", records: this.records(slug, domain, h) };
   }
 
   async removeDomain(providerProjectId: string, domain: string): Promise<void> {

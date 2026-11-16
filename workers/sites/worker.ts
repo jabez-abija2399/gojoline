@@ -100,6 +100,9 @@ export function etagMatches(header: string | null, etag: string): boolean {
   return header.split(",").some((t) => t.trim() === "*" || bare(t) === bare(etag));
 }
 
+/** The security headers publishing sets (lib/publish/scan.ts publishedSiteHeaders); nothing else, never cookies. */
+const SITE_HEADERS = new Set(["content-security-policy", "x-content-type-options", "referrer-policy", "x-frame-options", "permissions-policy", "strict-transport-security"]);
+
 const CACHE_MS = 10_000;
 const MEMO_MAX = 5000;
 const memo = new Map<string, { at: number; value: unknown }>();
@@ -210,7 +213,7 @@ const worker = {
 
     const headers = new Headers();
     for (const h of pointer.headers ?? []) {
-      if (/^[A-Za-z0-9-]{1,64}$/.test(h.key) && !/[\r\n]/.test(h.value)) headers.set(h.key, h.value);
+      if (typeof h?.key === "string" && typeof h.value === "string" && SITE_HEADERS.has(h.key.toLowerCase()) && !/[\r\n]/.test(h.value)) headers.set(h.key, h.value);
     }
 
     // Edge cache, keyed by deployment: a new publish or a takedown changes the key, so nothing

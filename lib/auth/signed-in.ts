@@ -11,5 +11,7 @@ import { AUTH_COOKIE_PREFIX, authCookiePrefix } from "./config";
 export async function looksSignedIn(): Promise<boolean> {
   // Same prefix as the auth setup (lib/auth/config.ts: advanced.cookiePrefix).
   const h = await headers();
-  return !!(getSessionCookie(h, { cookiePrefix: authCookiePrefix(true) }) ?? getSessionCookie(h, { cookiePrefix: AUTH_COOKIE_PREFIX }));
+  // On https only the __Host- cookie counts (a sibling site could plant the plain one).
+  const secure = process.env.NODE_ENV === "production" && process.env.E2E !== "1";
+  return !!getSessionCookie(h, { cookiePrefix: secure ? authCookiePrefix(true) : AUTH_COOKIE_PREFIX });
 }

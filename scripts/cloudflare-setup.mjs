@@ -17,13 +17,15 @@
 //  4. Routes: `*.<zone>/*` and `*/*` (customers' own domains) go to the Worker; every other
 //     name in the zone gets an exclusion route, so nothing else is ever served by it.
 //  5. Fallback origin for custom hostnames (Cloudflare for SaaS), when it's enabled.
-// It never deletes DNS records, buckets or Workers.
+// It never deletes DNS records, buckets or Workers. Run it from your own machine: its token can
+// change DNS. The app gets a separate token that can only manage custom hostnames.
 
 import { readFileSync } from "node:fs";
 import { stripTypeScriptTypes } from "node:module";
 
 // CLOUDFLARE_API_BASE: tests only (a fake API).
 const API = process.env.CLOUDFLARE_API_BASE || "https://api.cloudflare.com/client/v4";
+const VERCEL_API = process.env.VERCEL_API_BASE || "https://api.vercel.com";
 const apply = process.argv.includes("--apply");
 const token = process.env.CLOUDFLARE_API_TOKEN;
 const account = process.env.R2_ACCOUNT_ID;
@@ -73,6 +75,40 @@ const zone = zones.result?.[0];
 if (!zones.ok || !zone) fail(`zone ${base} not found on this token`, zones);
 log(`Zone ${base} (${zone.id}), plan ${zone.plan?.name ?? "?"}. ${apply ? "APPLYING" : "Dry run (add --apply to make changes)"}.`);
 
+// Names Vercel serves under the zone (read first: an error here stops before any change).
+log("\nVercel names to keep");
+const keep = new Set([new URL(appUrl).hostname]);
+if (process.env.VERCEL_TOKEN && process.env.VERCEL_TEAM_ID) {
+  // Every page of every list; any error stops the script (a missed name would go to the Worker).
+  const v = async (p) => {
+    const res = await fetch(`${VERCEL_API}${p}${p.includes("?") ? "&" : "?"}teamId=${process.env.VERCEL_TEAM_ID}`, { headers: { Authorization: `Bearer ${process.env.VERCEL_TOKEN}` } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      console.error(`✗ Vercel ${p} (${res.status}): ${data.error?.message ?? ""}. Fix VERCEL_TOKEN/VERCEL_TEAM_ID or unset both.`);
+      process.exit(1);
+    }
+    return data;
+  };
+  const pages = async (path, key) => {
+    const out = [];
+    let next = null;
+    do {
+      const data = await v(`${path}${path.includes("?") ? "&" : "?"}limit=100${next ? `&until=${next}` : ""}`);
+      out.push(...(data[key] ?? []));
+      next = data.pagination?.next ?? null;
+    } while (next);
+    return out;
+  };
+  const projects = await pages("/v9/projects", "projects");
+  for (const p of projects) {
+    for (const d of await pages(`/v9/projects/${p.id}/domains`, "domains")) {
+      if (d.name.startsWith("*.")) continue;
+      if (d.name.endsWith(`.${base}`) || d.name === base) keep.add(d.name);
+    }
+  }
+  log(`  Checked ${projects.length} Vercel projects; names under ${base} served by Vercel: ${[...keep].join(", ")}`);
+} else log("  (VERCEL_TOKEN/VERCEL_TEAM_ID not set: only the app's own name is checked for Vercel)");
+
 // 1. Bucket.
 log("\n1. R2 bucket");
 const b = await cf("GET", `/accounts/${account}/r2/buckets/${bucket}`);
@@ -115,12 +151,6 @@ log("\n3. DNS");
 const records = await all(`/zones/${zone.id}/dns_records`);
 const routable = records.filter((r) => ["A", "AAAA", "CNAME"].includes(r.type));
 const explicit = new Set(routable.filter((r) => !r.name.startsWith("*.")).map((r) => r.name));
-const keep = new Set([new URL(appUrl).hostname]);
-if (process.env.VERCEL_TOKEN && process.env.VERCEL_TEAM_ID) {
-  const v = (p) => fetch(`https://api.vercel.com${p}${p.includes("?") ? "&" : "?"}teamId=${process.env.VERCEL_TEAM_ID}`, { headers: { Authorization: `Bearer ${process.env.VERCEL_TOKEN}` } }).then((r) => r.json());
-  const projects = (await v("/v9/projects?limit=100")).projects ?? [];
-  for (const p of projects) for (const d of (await v(`/v9/projects/${p.id}/domains`)).domains ?? []) if (d.name.endsWith(`.${base}`) || d.name === base) keep.add(d.name);
-} else log("  (VERCEL_TOKEN/VERCEL_TEAM_ID not set: only the app's own name is checked for Vercel)");
 for (const name of keep) {
   if (explicit.has(name) || name === base) {
     log(`  ✓ ${name} has its own record (stays as it is)`);
@@ -193,4 +223,6 @@ else {
   }
 }
 
+log(`\nThe Worker answers ${base} subdomains without their own DNS record, plus customers' own domains. Names that stay as they are: ${[...new Set([base, ...explicit])].filter((n) => n !== target).sort().join(", ")}.`);
+log(`Run this again after adding DNS records to ${base}, so new names get their exclusion route.`);
 log(`\nDone${apply ? "" : " (dry run)"}. Sites publish to https://<name>.${base} once the app has R2_* and PUBLISH_BASE_DOMAIN=${base}.`);

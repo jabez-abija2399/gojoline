@@ -14,7 +14,7 @@ function bucket(files: Record<string, string>, reads: string[] = []): Env["SITES
 }
 
 const D = "d2abc123";
-const pointer = (extra: object = {}) => JSON.stringify({ deployment: D, headers: [{ key: "X-Frame-Options", value: "DENY" }, { key: "Bad\nKey", value: "x" }], ...extra });
+const pointer = (extra: object = {}) => JSON.stringify({ deployment: D, headers: [{ key: "X-Frame-Options", value: "DENY" }, { key: "Bad\nKey", value: "x" }, { key: "Set-Cookie", value: "a=1; Domain=afridea.et" }], ...extra });
 const FILES = ["index.html", "about/index.html", "assets/app-1.js", "404.html"];
 function env(opts: { extra?: Record<string, string>; reads?: string[]; withList?: boolean; base?: boolean } = {}): Env {
   return {
@@ -113,9 +113,18 @@ describe("sites worker", () => {
     expect((await get("https://abeni.afridea.et/", env(), { method: "POST" })).status).toBe(405);
   });
 
-  it("drops header names that could split the response", async () => {
+  it("passes on only the publishing security headers (never cookies or odd names)", async () => {
     const r = await get("https://abeni.afridea.et/");
     expect([...r.headers.keys()].some((k) => k.includes("bad"))).toBe(false);
+    expect(r.headers.get("set-cookie")).toBeNull();
+  });
+
+  it("allows every header publishing actually sets", async () => {
+    const { publishedSiteHeaders } = await import("@/lib/publish/scan");
+    const all = publishedSiteHeaders({ dataApiOrigin: "https://api.example" });
+    const e = env({ extra: { "sites/abeni/current.json": JSON.stringify({ deployment: D, headers: all, files: FILES }) } });
+    const r = await get("https://abeni.afridea.et/", e);
+    for (const h of all) expect(r.headers.get(h.key), h.key).toBe(h.value);
   });
 
   it("keeps its page text equal to the app's messages", () => {

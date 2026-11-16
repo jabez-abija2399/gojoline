@@ -12,7 +12,7 @@ const RESERVED = new Set([
 
 /** Banks, telecoms and payment brands people could be tricked by, matched inside words too. */
 const BRANDS = new Set([
-  "gojoline", "telebirr", "ethiotelecom", "safaricom", "mpesa", "cbebirr", "commercialbank", "dashen", "awash",
+  "gojoline", "afridea", "telebirr", "ethiotelecom", "safaricom", "mpesa", "cbebirr", "commercialbank", "dashen", "awash",
   "abyssinia", "bunna", "zemen", "nibbank", "wegagen", "hibret", "chapa", "paypal", "visa", "mastercard",
 ]);
 

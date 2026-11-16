@@ -2,7 +2,7 @@ import { reportError } from "@/lib/observability/report";
 import { getMessages } from "@/lib/i18n";
 import type { PublishProvider } from "@/lib/providers/publish/types";
 import { publishedSiteHeaders } from "@/lib/publish/scan";
-import { publisherFor } from "@/lib/publish/hosts";
+import { noticeTargets } from "@/lib/publish/hosts";
 import { NOTICE_STYLE, escapeHtml } from "@/lib/publish/notice";
 import type { SiteAdminStore } from "@/lib/sites/types";
 import type { ReportStore } from "./reports";
@@ -47,20 +47,22 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
     await deps.reports.closeForSite(siteId, "actioned", adminId);
     return "ok" as const;
   };
-  if (!deps.publisher || !site.providerProjectId) return done();
-  const host = publisherFor(site, deps.publisher, deps.legacy);
+  if (!deps.publisher || (!site.providerProjectId && !site.legacyProjectId)) return done();
   try {
+    // Every host the content could be on (the old one too while a move isn't confirmed).
     const page = Buffer.from(takenDownPage());
-    await host.publish({
-      slug: site.slug,
-      files: [
-        { path: "index.html", data: page },
-        { path: "404.html", data: page },
-      ],
-      headers: publishedSiteHeaders(),
-      providerProjectId: site.providerProjectId,
-    });
-    await host.restrictOldDeployments?.(site.providerProjectId).catch((e: unknown) => reportError("takedown protect failed", e, { siteId }));
+    for (const t of noticeTargets(site, deps.publisher, deps.legacy)) {
+      const r = await t.host.publish({
+        slug: site.slug,
+        files: [
+          { path: "index.html", data: page },
+          { path: "404.html", data: page },
+        ],
+        headers: publishedSiteHeaders(),
+        providerProjectId: t.projectId,
+      });
+      await t.host.restrictOldDeployments?.(r.providerProjectId).catch((e: unknown) => reportError("takedown protect failed", e, { siteId }));
+    }
     return done();
   } catch (error) {
     reportError("takedown deploy failed", error, { siteId });
