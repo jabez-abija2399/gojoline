@@ -111,6 +111,10 @@ test.describe("landing page", () => {
     await page.getByRole("link", { name: "See all 14 templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
     await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
+    // Every section of the template first, then the choice.
+    await expect(page).toHaveURL(/\/en\/templates\/clinic$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Megenagna Family Clinic" })).toBeVisible();
+    await page.getByRole("link", { name: "Use this template" }).last().click();
     await expect(page).toHaveURL(/\/en\/sign-in\?next=/);
     const contact = `preset-${Date.now()}-${test.info().project.name}@example.com`;
     await page.getByLabel("Phone or email").fill(contact);
