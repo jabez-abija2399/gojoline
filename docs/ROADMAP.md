@@ -93,6 +93,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Plan page: next monthly date, rollover, bought changes, changes per size, history of every change; builder shows what each answer used, low and zero notes
 - [x] Discount codes and launch offer (Admin → Discounts), price shown before sending, use counted on approval
 
+## Site dashboard v2 (2026-11-16)
+- [x] Site dashboard v2: Home (QR poster, share, next step, private visitor numbers), Messages (New/Replied/Done, call and WhatsApp links), Business info (live on the site without AI), Content (lists and photos together), Settings (Telegram, address, offline switch, Google and share preview, earlier versions); privacy-friendly visit counting with a daily rollup
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
@@ -105,7 +108,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - e2e: `builder.spec.ts` "dark mode: chosen in the account menu…" on the phone project times out opening the account menu about one run in five, on `main` too (2026-11-16); passes on retry. Not yet traced.
 - e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
 - e2e: `credits.spec.ts` "discount code: an admin makes one…" failed once on desktop in a full run (2026-11-16) and then passed 32 of 32 (alone, repeated, and in a second full run); probably another admin test saving settings at the same moment. Watch for it.
-- Site dashboard: a visitors count needs privacy-friendly visit counting on published sites (not built; no number is shown until it exists). A QR code of the site's address to print for the shop would suit owners well.
+- Site dashboard v2 follow-ups (2026-11-16): a weekly Telegram summary (visitors, messages, waiting); holiday hours (dates closed ahead of time); per-message notes; the visits route reads the site row once per view (cache `publicSite` for a minute per instance if traffic grows); the Amharic of the new dashboard strings (`lib/i18n/messages/dashboard-am.ts`) and the day names sent to sites need the native-speaker review. Sites published before 2026-11-16 count visitors and show business info only after one more publish (the dashboard says so).
 - The Answers tab still reads 200 full answers and each form one after another; a `formHeadings` query would make it and the overview lighter (performance review).
 - Every signed-in page shows its main content after about 3 s on a slow phone (budget 2.5 s): the largest shared script takes about 400 ms to start; not caused by one page (performance review).
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
@@ -138,6 +141,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
+- **Site dashboard v2 in production:** set `CRON_SECRET` in Vercel (the daily visit rollup refuses without it; the dashboard's on-read top-up still keeps the last 3 days). Apply migration 0016 before the merge deploys. Redeploy the sites Worker (`scripts/cloudflare-setup.mjs`) so a resting site's pages show the resting page at the host too (until then the live site shows it itself, after loading).
 - **Agent evals after the template guide changes (2026-11-15 and 2026-11-16):** `TEMPLATE.md` now teaches the agent `image.art`, `faq`, `cta`, and since 2026-11-16 sample photos, site styles, picture cards, stats, steps, schedules and the section order per kind of business. The guide is about three times longer, so cost per site will have changed. The eval run costs real money and was not run in this session (not permitted). Run `EVAL_ONLY=en-cafe,am-clinic npm run evals` (about $0.30) or the full set, and record the result in `evals/RESULTS.md`.
 - **SMS sign-in:** needs a gateway for Ethiopian numbers (e.g. AfroMessage); until then phone users are asked to use email or Google.
 - Vercel Sandbox snapshot storage: sandboxes start again (checked 2026-11-15); the code no longer leaves snapshots behind. The 47 old automatic snapshots can still be deleted in the Vercel project to free space (keep the 2 manual ones).

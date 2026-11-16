@@ -22,7 +22,7 @@ Ethiopian small businesses (cafés, restaurants, shops, salons, clinics, hotels,
 | AI builder | Chat in Amharic + English, live preview, chat edits, version history and restore |
 | Websites | Mobile-first multi-page sites, Ge'ez + Latin fonts, language switch, SEO basics (prerendered pages, meta, sitemap) |
 | Simple full-stack (Gojoline Cloud) | Contact, booking, order and registration forms saved to the database; owner login; editable lists (menu, products, rooms, events); image upload |
-| Owner dashboard | Mobile-friendly submissions and list editing |
+| Owner dashboard | Five sections with plain names, built for phones: **Home** (live card with Open, Share and a printable QR poster; one next step; people who visited, messages and messages waiting in the last 7 days against the week before; 14-day visitor bars; where visitors came from and phone vs computer; drafts lead with publishing), **Messages** (New → Replied → Done, one-tap Call/SMS/WhatsApp/Telegram, filters, delete, spreadsheet), **Business info** (phone, WhatsApp, Telegram, address, hours per weekday, closed today/for now, a banner; live on the site within a minute, no AI), **Content** (lists by their own name, Birr prices, photos), **Settings** (Telegram alerts, address and own domain, take the site offline, Google and share preview, earlier versions). Visitors are counted privately (no cookies, no IPs kept). |
 | Telegram | Form notifications to the owner; basic bot edits (text, prices, photos) |
 | Payments in sites | Chapa payment button (sandbox until licensed) |
 | Publishing | Free subdomain; custom domains on paid plans |

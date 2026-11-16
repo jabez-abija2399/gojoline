@@ -244,3 +244,20 @@
 
 - Decision: `vercel.json` turns off Git deployments for every branch except `main` (`git.deploymentEnabled`).
 - Why: every push to a feature branch made a preview deploy, and the account hit Vercel's daily deployment limit, which blocked the production deploy of `main` for 24 hours. Feature branches are already checked locally (typecheck, lint, unit, full e2e) before they merge, so their previews were not needed.
+
+## 2026-11-16: Site dashboard v2
+
+| Date | Decision | Why |
+| --- | --- | --- |
+| 2026-11-16 | Five sections: Home, Messages, Business info, Content, Settings (old `?tab=` names redirect to the new ones) | Plain names an owner on a phone understands; old links keep working |
+| 2026-11-16 | Message status New → Replied → Done replaces read/unread; migration maps unread → New and read → Done; `read_at` kept | An owner tracks whether they answered, not whether they looked; "read" never meant "replied", so read rows count as handled; no data dropped |
+| 2026-11-16 | Business info lives in `site_settings` (JSON per project, Zod with limits) and reaches live sites at runtime through `GET /api/public/sites/:id/info`, cached 60 s; the key may come in `?key=` | No AI and no rebuild for a phone number or closed-today note; a simple GET avoids a CORS preflight on slow phones; the key is public in the site anyway |
+| 2026-11-16 | Hours are shown 24-hour ("07:30–19:00") in both languages; consecutive weekdays with the same hours are grouped | Ethiopian and international clocks differ; 24-hour is unambiguous until a native-speaker review decides on local time |
+| 2026-11-16 | Visit counting built in: daily random salt in Redis only, sha256(salt+site+IP+UA), HyperLogLog per site per Addis day, sources and devices counted on a person's first view, Redis keys 3 days | Privacy-friendly (no cookies, no IPs, ids unlinkable across days), cheap, and good enough for "about N people" |
+| 2026-11-16 | Rollup: a daily Vercel cron (`/api/cron/visits`, `CRON_SECRET`) for yesterday and the day before, plus an on-read top-up of the last 3 days from Redis, writing the larger counts | Works on the Hobby plan (one daily cron); a missed run loses nothing while Redis still has the day; repeated writes never lower a day |
+| 2026-11-16 | The beacon sends `text/plain` with the site key in the body; the owner is skipped with `#me` on the dashboard's Open link (a localStorage flag on the site) | `sendBeacon` can't set headers; text/plain needs no preflight; the flag is the one stored item, and only for the owner |
+| 2026-11-16 | Offline: `sites.offline_at` (owner) separate from `status = taken_down` (admin). Forms stop, `/info` returns `offline`, the template shows a bilingual resting page; providers get optional `setResting` (Cloudflare pointer flag + Worker 503 page; memory in tests; Vercel not yet) | Coming back online is instant and free (no rebuild); an owner can never undo an admin takedown |
+| 2026-11-16 | Google and share preview applied at the next publish (`VITE_SEO`), not at runtime; the UI says so and offers "Publish now" | Google and Telegram read the HTML without running scripts |
+| 2026-11-16 | QR codes made in the browser with `uqr` (small, no dependencies), loaded only when the QR dialog opens; the poster is an A4 PNG drawn on a canvas with both languages' "Scan to visit"; the code opens the address with `?src=qr`, which the site strips after counting | No server work, works offline once loaded, and QR scans show up as their own source |
+| 2026-11-16 | `sites.runtime_version` (1) is saved at publish; null means the live files predate the reader and the dashboard asks for one more publish | Cheap and exact: no need to inspect published files |
+| 2026-11-16 | Restore in Settings reuses the builder's restore route (no AI, no credits) and offers "Publish now" after | One restore path; owners see the result live only when they choose |
