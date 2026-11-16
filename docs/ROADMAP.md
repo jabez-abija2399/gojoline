@@ -81,6 +81,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Site template: four styles, two more heading fonts, full-screen and portrait heroes, picture cards, stats, steps, schedule and quote sections
 - [x] All templates rebuilt on the research with real photos, in English and Amharic, plus two new ones (company, salon): 14 in total
 - [x] Template preview pages: every page and section of a template, computer and phone, before it is picked
+- [x] Motion and interaction kit in the site template, from motion research on the best sites of each niche; all 14 templates use it
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
