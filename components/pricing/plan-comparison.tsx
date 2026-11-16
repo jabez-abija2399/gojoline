@@ -49,7 +49,7 @@ export function PlanComparison({ t, planNames, current, headingLevel = 2, id = "
     <section aria-labelledby={`${id}-title`} className="flex flex-col gap-3">
       <H id={`${id}-title`} className={headingLevel === 2 ? "text-2xl font-semibold tracking-tight sm:text-3xl" : "text-lg font-semibold"}>{t.title}</H>
       <p className="text-sm text-ink-muted md:hidden">{t.scrollHint}</p>
-      <div role="region" aria-labelledby={`${id}-title`} tabIndex={0} className="max-w-full overflow-x-auto rounded-2xl border border-line bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
+      <div role="region" aria-labelledby={`${id}-title`} tabIndex={0} className="relative max-w-full overflow-x-auto rounded-2xl border border-line bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
         <table className="w-full min-w-[34rem] border-collapse text-start text-sm sm:text-base">
           <caption className="sr-only">{t.caption}</caption>
           <thead>

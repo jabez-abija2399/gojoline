@@ -12,9 +12,13 @@ import { format, getMessages } from "@/lib/i18n";
 import { adminStats, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
 import { BarChart } from "@/components/admin/bar-chart";
 import { setAdminTheme } from "./actions";
+import { OwnerActions } from "@/components/admin/owner-actions";
+import { PlanComparison } from "@/components/pricing/plan-comparison";
+import { monthlyRevenueMinor, type PlanFilter } from "@/lib/admin/stats";
+import { monthsFree, PLAN_IDS, yearlySaving } from "@/lib/billing/plans";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): Promise<Metadata> {
   const { lang } = await params;
@@ -30,6 +34,7 @@ const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
 const TABS = ["overview", "payments", "reports", "sites", "users", "costs", "settings"] as const;
 type Tab = (typeof TABS)[number];
+type AdminUserPlan = (typeof PLAN_IDS)[number];
 
 export default async function AdminPage({ params, searchParams }: PageProps<"/[lang]/admin">) {
   const { lang } = await params;
@@ -142,11 +147,14 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const o = counts;
     const birr = (minor: number) => format(t.billing.price, { price: amount(minor) });
     const delta = o.usersNew7 - o.usersPrev7;
+    const { prices } = await svc.billing.settings();
+    const mrr = monthlyRevenueMinor(o.activeSubs, prices);
     const kpis = [
       { label: t.admin.kOwners, value: String(o.users), sub: format(t.admin.kNewWeek, { n: o.usersNew7 }), trend: delta },
       { label: t.admin.kLiveSites, value: String(o.sitesLive), sub: format(t.admin.kProjects, { n: o.projects }) },
       { label: t.admin.kPaying, value: String(o.paidUsers), sub: o.users ? format(t.admin.kConversion, { p: Math.round((o.paidUsers / o.users) * 100) }) : "—" },
       { label: t.admin.kRevenue, value: birr(o.revenueMonthMinor), sub: t.admin.kThisMonth },
+      { label: t.admin.kMrr, value: birr(mrr), sub: t.admin.kMrrSub },
       { label: t.admin.kAiCost, value: usd(o.aiCost30Nano), sub: t.admin.k30Days },
     ];
     const attention = [
@@ -156,9 +164,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const actionName = (a: string) => (t.admin.actions as Record<string, string>)[a.replace(".", "_")] ?? a;
     return (
       <div className="flex flex-col gap-6">
-        <ul className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-5">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
           {kpis.map((k) => (
-            <li key={k.label} className="flex flex-col gap-1 rounded-2xl border border-line bg-white p-4 last:col-span-2 sm:p-5 xl:last:col-span-1">
+            <li key={k.label} className="flex min-w-0 flex-col gap-1 rounded-2xl border border-line bg-white p-4 sm:p-5">
               <span className="text-sm font-medium text-ink-muted">{k.label}</span>
               <span className="font-display text-2xl font-bold tabular-nums sm:text-3xl">{k.value}</span>
               <span className="flex items-center gap-1 text-sm text-ink-muted">
@@ -173,6 +181,28 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             </li>
           ))}
         </ul>
+        <section aria-labelledby="plans-title" className="rounded-2xl border border-line bg-white p-5">
+          <h2 id="plans-title" className="text-lg font-bold">{t.admin.kPlans}</h2>
+          <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+            {PLAN_IDS.map((p) => {
+              const share = o.users ? Math.round((o.plans[p] / o.users) * 100) : 0;
+              return (
+                <li key={p}>
+                  <Link href={`/${lang}/admin?tab=users&plan=${p}`} className="flex min-h-11 flex-col gap-2 rounded-xl border border-line p-3 hover:border-faint">
+                    <span className="flex items-baseline justify-between gap-2">
+                      <span className="font-medium">{t.billing.plans[p]}</span>
+                      <span className="font-display text-2xl font-bold tabular-nums">{o.plans[p]}</span>
+                    </span>
+                    <span aria-hidden="true" className="block h-1.5 overflow-hidden rounded-full bg-sunken">
+                      <span className="block h-full rounded-full bg-ink" style={{ width: `${share}%` }} />
+                    </span>
+                    <span className="text-sm text-ink-muted tabular-nums">{share}%</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
         <section aria-labelledby="att-title" className="rounded-2xl border border-line bg-white p-5">
           <h2 id="att-title" className="text-lg font-bold">{t.admin.attention}</h2>
           {attention.length === 0 ? (
@@ -216,44 +246,142 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
 
   async function UsersTab() {
     const q = typeof sp.q === "string" ? sp.q : "";
-    const list = await adminStats().users(q, 100);
+    const plan: PlanFilter = PLAN_IDS.find((p) => p === sp.plan) ?? "all";
+    const selected = typeof sp.user === "string" ? sp.user.slice(0, 200) : null;
+    const stats = adminStats();
+    const [list, detail] = await Promise.all([stats.users(q, 100, plan), selected ? stats.user(selected) : null]);
     const joinedFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
+    const link = (next: { plan?: PlanFilter; user?: string | null }) => {
+      const params = new URLSearchParams({ tab: "users" });
+      if (q) params.set("q", q);
+      const p = next.plan ?? plan;
+      if (p !== "all") params.set("plan", p);
+      if (next.user) params.set("user", next.user);
+      return `/${lang}/admin?${params.toString()}`;
+    };
+    const chips: { v: PlanFilter; label: string; n: number }[] = [{ v: "all", label: t.admin.planAll, n: counts.users }, ...PLAN_IDS.map((p) => ({ v: p, label: t.billing.plans[p], n: counts.plans[p] }))];
+    const planBadge = (p: AdminUserPlan) => <span className={`inline-block rounded-full px-2.5 py-1 text-sm font-semibold ${p === "free" ? "bg-paper text-ink-muted" : "bg-sunken text-ink"}`}>{t.billing.plans[p]}</span>;
     return (
       <section aria-labelledby="users-title" className="flex flex-col gap-4">
         <h2 id="users-title" className="sr-only">{t.admin.tabs.users}</h2>
+        <nav aria-label={t.admin.planFilter}>
+          <ul className="flex flex-wrap gap-2">
+            {chips.map((c) => (
+              <li key={c.v}>
+                <Link href={link({ plan: c.v, user: null })} aria-current={c.v === plan ? "true" : undefined} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink-muted hover:text-ink aria-[current=true]:border-ink aria-[current=true]:bg-ink aria-[current=true]:text-white lg:min-h-9">
+                  {c.label}
+                  <span className="tabular-nums">{c.n}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <form role="search" className="flex gap-2">
           <input type="hidden" name="tab" value="users" />
+          {plan !== "all" && <input type="hidden" name="plan" value={plan} />}
           <label className="flex-1">
             <span className="sr-only">{t.admin.searchLabel}</span>
             <input name="q" defaultValue={q} placeholder={t.admin.searchLabel} maxLength={100} className="min-h-11 w-full rounded-lg border border-input bg-white px-3 text-base" />
           </label>
           <button className="min-h-11 rounded-lg bg-ink px-4 font-medium text-white">{t.admin.search}</button>
         </form>
+        {selected && !detail && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 font-medium text-destructive">{t.admin.ownerNotFound}</p>}
+        {detail && (
+          <FocusOnMount>
+            <section aria-labelledby="owner-kicker owner-title" className="flex flex-col gap-4 rounded-2xl border border-ink bg-white p-4 sm:p-5">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p id="owner-kicker" className="text-sm font-medium text-ink-muted">{t.admin.detailTitle}</p>
+                  <h3 id="owner-title" className="break-words text-xl font-bold">{detail.name || detail.contact || "—"}</h3>
+                  <p className="break-all text-ink-muted">{detail.contact}</p>
+                </div>
+                <Link href={link({ user: null })} className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-line px-3 text-sm font-medium hover:border-faint lg:min-h-9">
+                  <X aria-hidden="true" className="size-4" /> {t.admin.closeDetails}
+                </Link>
+              </div>
+              <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {[
+                  [t.admin.dPlan, planBadge(detail.plan)],
+                  [t.admin.dUntil, detail.until ? joinedFmt.format(detail.until) : "—"],
+                  [t.admin.dCredits, detail.credits],
+                  [t.admin.dLiveSites, detail.sites],
+                  [t.admin.dAiCost, usd(detail.aiCost30Nano)],
+                  [t.admin.dJoined, joinedFmt.format(detail.joined)],
+                ].map(([k, v], i) => (
+                  <div key={i} className="flex flex-col gap-1 rounded-xl bg-paper p-3">
+                    <dt className="text-sm text-ink-muted">{k}</dt>
+                    <dd className="font-semibold tabular-nums">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="flex flex-col gap-2">
+                  <h4 className="font-semibold">{t.admin.dProjects}</h4>
+                  {detail.projects.length === 0 ? (
+                    <p className="text-ink-muted">{t.admin.dNoProjects}</p>
+                  ) : (
+                    <ul className="flex flex-col gap-1">
+                      {detail.projects.map((pr) => (
+                        <li key={pr.id} className="flex flex-wrap items-center justify-between gap-2 border-t border-line py-2 first:border-0">
+                          <span className="min-w-0 break-words">{pr.name || t.admin.dUnnamed}{pr.site && <span className="block font-mono text-sm text-ink-muted">{pr.site.slug}</span>}</span>
+                          <span className="text-sm text-ink-muted">{pr.site ? t.admin.siteStatus[pr.site.status] : t.admin.dNotPublished}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h4 className="font-semibold">{t.admin.dPayments}</h4>
+                  {detail.payments.length === 0 ? (
+                    <p className="text-ink-muted">{t.admin.dNoPayments}</p>
+                  ) : (
+                    <ul className="flex flex-col gap-1">
+                      {detail.payments.map((pay) => (
+                        <li key={pay.id} className="flex flex-wrap items-center justify-between gap-2 border-t border-line py-2 first:border-0">
+                          <span>{t.billing.productNames[pay.product]} · {format(t.billing.price, { price: amount(pay.amountMinor) })}</span>
+                          <span className="text-sm text-ink-muted">{t.billing.status[pay.status]} · {joinedFmt.format(pay.createdAt)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <OwnerActions key={detail.id} t={t.admin} userId={detail.id} lang={lang} />
+            </section>
+          </FocusOnMount>
+        )}
         {list.length === 0 ? (
           <p className="text-ink-muted">{t.admin.usersEmpty}</p>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-line bg-white">
-            <table className="w-full min-w-[640px] text-start">
+          <div className="relative overflow-x-auto rounded-2xl border border-line bg-white">
+            <table className="w-full min-w-[760px] text-start">
               <thead className="sticky top-0 bg-white">
                 <tr className="border-b border-line text-sm text-ink-muted">
                   <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colOwner}</th>
                   <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colJoined}</th>
                   <th scope="col" className="px-4 py-3 text-start font-medium">{t.admin.colPlan}</th>
-                  <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colSites}</th>
                   <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colCredits}</th>
+                  <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colSites}</th>
+                  <th scope="col" className="px-4 py-3 text-end font-medium">{t.admin.colAiCost}</th>
                 </tr>
               </thead>
               <tbody>
                 {list.map((u) => (
-                  <tr key={u.id} className="border-b border-line last:border-0 hover:bg-paper">
+                  <tr key={u.id} aria-current={u.id === detail?.id ? "true" : undefined} className="border-b border-line last:border-0 hover:bg-paper aria-[current=true]:bg-sunken">
                     <th scope="row" className="px-4 py-3 text-start font-normal">
-                      <span className="block font-medium">{u.name || "—"}</span>
-                      <span className="block break-all text-sm text-ink-muted">{u.contact}</span>
+                      <Link href={link({ user: u.id })} aria-label={format(t.admin.openDetails, { name: u.name || u.contact || u.id.slice(0, 8) })} className="block min-h-11 rounded-md underline-offset-4 hover:underline">
+                        <span className="block font-medium">{u.name || "—"}</span>
+                        <span className="block break-all text-sm text-ink-muted">{u.contact}</span>
+                      </Link>
                     </th>
                     <td className="px-4 py-3 text-sm tabular-nums">{joinedFmt.format(u.joined)}</td>
-                    <td className="px-4 py-3"><span className={`rounded-full px-2.5 py-1 text-sm font-semibold ${u.plan === "free" ? "bg-paper text-ink-muted" : "bg-sunken text-ink"}`}>{t.billing.plans[u.plan]}</span></td>
-                    <td className="px-4 py-3 text-end tabular-nums">{u.sites}</td>
+                    <td className="px-4 py-3">
+                      {planBadge(u.plan)}
+                      {u.until && <span className="mt-1 block text-sm text-ink-muted tabular-nums">{format(t.admin.untilShort, { date: joinedFmt.format(u.until) })}</span>}
+                    </td>
                     <td className="px-4 py-3 text-end tabular-nums">{u.credits}</td>
+                    <td className="px-4 py-3 text-end tabular-nums">{u.sites}</td>
+                    <td className="px-4 py-3 text-end tabular-nums">{usd(u.aiCost30Nano)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -375,11 +503,20 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const s = await svc.billing.settings();
     const birr = (minor: number) => (minor % 100 === 0 ? String(minor / 100) : `${Math.floor(minor / 100)}.${String(minor % 100).padStart(2, "0")}`);
     const values = { ...s, prices: Object.fromEntries(Object.entries(s.prices).map(([k, v]) => [k, birr(v)])) };
+    const saving = (p: "starter" | "business") => {
+      const [m, y] = [s.prices[`${p}_month`], s.prices[`${p}_year`]];
+      return monthsFree(m, y) > 0 ? format(t.admin.settingsYearSaving, { amount: amount(yearlySaving(m, y)), months: monthsFree(m, y) }) : t.admin.settingsYearNoSaving;
+    };
+    const savings = { starter: saving("starter"), business: saving("business") };
     return (
       <section aria-labelledby="settings-title" className="flex flex-col gap-4">
         <h2 id="settings-title" className="text-2xl font-bold">{t.admin.settingsTitle}</h2>
         <p className="text-ink-muted">{t.admin.settingsHint}</p>
-        <SettingsForm t={t.admin} tb={t.billing} lang={lang} values={values} />
+        <SettingsForm t={t.admin} tb={t.billing} lang={lang} values={values} savings={savings} />
+        <div className="mt-4 flex flex-col gap-2 border-t border-line pt-6">
+          <p className="text-ink-muted">{t.admin.settingsIncludesHint}</p>
+          <PlanComparison t={{ ...t.plans.compare, title: t.admin.settingsIncludes }} planNames={t.billing.plans} id="admin-compare" />
+        </div>
       </section>
     );
   }

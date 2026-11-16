@@ -1,7 +1,8 @@
 import type { Entitlements, EntitlementsResolver } from "./entitlements";
 import { entitlementsOf, PLAN_FEATURES, PRODUCTS, TOPUP_CREDITS, type Product } from "./plans";
 import { loadBillingSettings, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
-import { canonicalReference, type BillingStore, type PaymentMethod } from "./store";
+import { randomUUID } from "node:crypto";
+import { canonicalReference, type BillingStore, type PaymentMethod, type Subscription } from "./store";
 
 const REFUNDS_PER_DAY = 5;
 /** Free first builds (a project's very first AI run) per owner per day, so new sites can't become unlimited free AI. */
@@ -91,6 +92,36 @@ export class Billing {
     today.setUTCHours(0, 0, 0, 0);
     if ((await this.db.countSince(userId, "first_build", today)) >= FREE_FIRST_BUILDS_PER_DAY) return false;
     return this.db.addCredits(userId, 0, "first_build", ref);
+  }
+
+  /** Admin gift of extra changes (comps, apologies). Each call is its own ledger row; audited. */
+  async adminGrantCredits(adminId: string, userId: string, n: number, reason: string): Promise<void> {
+    const ref = `admin:${randomUUID()}`;
+    await this.db.addCredits(userId, n, "admin", ref);
+    await this.db.audit({ actorId: adminId, action: "credits.granted", targetType: "user", targetId: userId, data: { n, reason, ref } });
+  }
+
+  /**
+   * Admin plan change for comps and corrections: a paid plan starts or extends by one period
+   * (with its monthly changes); "free" ends the current plan now (nothing is deleted). Audited.
+   */
+  async adminSetPlan(adminId: string, userId: string, plan: Subscription["plan"] | "free", period: Subscription["period"], reason: string): Promise<void> {
+    const before = await this.plan(userId);
+    if (plan === "free") {
+      const s = await this.db.subscription(userId);
+      if (s && s.currentPeriodEnd > this.now()) await this.db.setSubscription({ ...s, currentPeriodEnd: this.now() });
+    } else {
+      await this.db.extendSubscription(userId, plan, period, this.now());
+      await this.ensureMonthlyGrant(userId);
+    }
+    const after = await this.plan(userId);
+    await this.db.audit({
+      actorId: adminId,
+      action: "plan.set",
+      targetType: "user",
+      targetId: userId,
+      data: { reason, period: plan === "free" ? null : period, before: { plan: before.plan, until: before.until?.toISOString() ?? null }, after: { plan: after.plan, until: after.until?.toISOString() ?? null } },
+    });
   }
 
   async submitPayment(userId: string, input: { product: Product; method: PaymentMethod; reference: string; receipt: Buffer | null }) {

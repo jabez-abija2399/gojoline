@@ -5,7 +5,12 @@ import { useFormStatus } from "react-dom";
 import type { Messages } from "@/lib/i18n";
 import { saveBillingSettings, type SettingsState } from "@/app/[lang]/admin/actions";
 
-const PRODUCTS = ["starter_month", "starter_year", "business_month", "business_year", "topup"] as const;
+/** Price fields grouped the way customers see them: each plan's month and year, then extras. */
+const GROUPS = [
+  { plan: "starter", fields: ["starter_month", "starter_year"] },
+  { plan: "business", fields: ["business_month", "business_year"] },
+  { plan: null, fields: ["topup"] },
+] as const;
 
 function Save({ t }: { t: Messages["admin"] }) {
   const { pending } = useFormStatus();
@@ -17,25 +22,31 @@ function Save({ t }: { t: Messages["admin"] }) {
 }
 
 /** Prices (Birr) and the accounts customers pay into. */
-export function SettingsForm({ t, tb, lang, values }: { t: Messages["admin"]; tb: Messages["billing"]; lang: string; values: { prices: Record<string, string>; telebirrNumber: string; cbeAccount: string; accountName: string } }) {
+export function SettingsForm({ t, tb, lang, values, savings }: { t: Messages["admin"]; tb: Messages["billing"]; lang: string; values: { prices: Record<string, string>; telebirrNumber: string; cbeAccount: string; accountName: string }; savings: Record<"starter" | "business", string> }) {
   const [state, action] = useActionState<SettingsState, FormData>(saveBillingSettings, { status: "idle" });
   const msgRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
     if (state.status !== "idle") msgRef.current?.focus();
   }, [state]);
   const bad = (name: string) => state.status === "invalid" && state.field === name;
-  const field = (name: string, label: string, value: string, extra: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
+  const field = (name: string, label: string, value: string, extra: React.InputHTMLAttributes<HTMLInputElement> = {}, hint?: string) => (
     <label key={name} className="flex flex-col gap-1">
       <span className="font-medium">{label}</span>
-      <input name={name} defaultValue={value} aria-invalid={bad(name) || undefined} className="min-h-11 rounded-lg border border-input px-3 text-base aria-invalid:border-destructive" {...extra} />
+      <input name={name} defaultValue={value} aria-invalid={bad(name) || undefined} aria-describedby={hint ? `${name}-hint` : undefined} className="min-h-11 rounded-lg border border-input bg-white px-3 text-base aria-invalid:border-destructive" {...extra} />
+      {hint && <span id={`${name}-hint`} className="text-sm text-lagoon">{hint}</span>}
     </label>
   );
   return (
     <form action={action} className="flex flex-col gap-5">
       <input type="hidden" name="lang" value={lang} />
-      <fieldset className="grid gap-3 sm:grid-cols-2">
+      <fieldset className="flex flex-col gap-4">
         <legend className="mb-2 text-lg font-semibold">{t.settingsPrices}</legend>
-        {PRODUCTS.map((p) => field(`price_${p}`, `${tb.productNames[p]} (${t.settingsBirr})`, values.prices[p] ?? "", { inputMode: "decimal", maxLength: 12 }))}
+        {GROUPS.map((g) => (
+          <fieldset key={g.plan ?? "extras"} className="grid gap-3 rounded-xl border border-line p-4 sm:grid-cols-2 sm:items-start">
+            <legend className="px-1 font-semibold">{g.plan ? tb.plans[g.plan] : tb.topup}</legend>
+            {g.fields.map((p) => field(`price_${p}`, `${tb.productNames[p]} (${t.settingsBirr})`, values.prices[p] ?? "", { inputMode: "decimal", maxLength: 12 }, g.plan && p.endsWith("_year") ? savings[g.plan] : undefined))}
+          </fieldset>
+        ))}
       </fieldset>
       <fieldset className="grid gap-3">
         <legend className="mb-2 text-lg font-semibold">{t.settingsAccounts}</legend>

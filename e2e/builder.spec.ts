@@ -190,20 +190,21 @@ test("undo the newest change for free; the changes left are shown and the menu o
   await chat(page).fill("Abol Cafe");
   await chat(page).press("Enter");
   await expect(page.getByText("Saved as version 2").first()).toBeVisible();
-  await expect(page.getByRole("link", { name: "13 changes left" })).toBeVisible();
+  // The first build was free; the second message used one of the 10 Free changes.
+  await expect(page.getByRole("link", { name: "9 changes left" })).toBeVisible();
   await page.getByRole("button", { name: "Undo this change" }).click();
   await expect(page.getByRole("log", { name: "Chat" }).getByText("Brought back version 1")).toBeVisible();
   // Undoing an undo would bring the change back: no second button, and focus is in the message box.
   await expect(page.getByRole("button", { name: "Undo this change" })).toHaveCount(0);
   await expect(chat(page)).toBeFocused();
   // Undo is a restore, not an AI change: the count stays.
-  await expect(page.getByRole("link", { name: "13 changes left" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "9 changes left" })).toBeVisible();
 
   await page.goto("/en/build");
   await openAppMenu(page);
   const nav = page.getByRole(info.project.name === "mobile" ? "dialog" : "complementary", { name: "Gojoline menu" });
   await expect(nav.getByRole("link", { name: /Selam Coffee/ })).toBeVisible();
-  await expect(nav.getByRole("link", { name: /13 changes left/ })).toBeVisible();
+  await expect(nav.getByRole("link", { name: /9 changes left/ })).toBeVisible();
   // Sign out waits behind the account menu.
   await expect(nav.getByRole("button", { name: "Sign out" })).toBeHidden();
   await nav.getByRole("button", { name: /Account menu/ }).click();

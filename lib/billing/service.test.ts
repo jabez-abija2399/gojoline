@@ -111,6 +111,41 @@ describe("payments", () => {
   }, 30_000);
 });
 
+describe("admin actions", () => {
+  it("gives extra changes with a unique ref each time, audited", async () => {
+    const store = new MemoryBillingStore();
+    const b = new Billing(store, () => new Date("2026-11-14T10:00:00Z"));
+    expect(await b.creditsLeft("u")).toBe(10);
+    await b.adminGrantCredits("admin", "u", 25, "Sorry for the outage");
+    await b.adminGrantCredits("admin", "u", 25, "Sorry for the outage");
+    expect(await b.creditsLeft("u")).toBe(60);
+    const log = await store.auditFor("user", "u");
+    expect(log.map((l) => l.action)).toEqual(["credits.granted", "credits.granted"]);
+    expect(log[0]?.data).toMatchObject({ n: 25, reason: "Sorry for the outage" });
+    expect(log[0]?.data?.ref).not.toBe(log[1]?.data?.ref);
+  });
+
+  it("sets, extends and ends a plan without deleting anything, audited (Postgres)", async () => {
+    const db = await testDb();
+    await makeUser(db, "u");
+    const store = new DbBillingStore(db);
+    let now = new Date("2026-11-14T10:00:00Z");
+    const b = new Billing(store, () => now);
+    await b.adminSetPlan("admin", "u", "business", "month", "Launch partner");
+    expect(await b.plan("u")).toEqual({ plan: "business", until: new Date("2026-12-14T10:00:00Z") });
+    expect(await b.creditsLeft("u")).toBe(150);
+    await b.adminSetPlan("admin", "u", "business", "year", "Paid in cash");
+    expect((await b.plan("u")).until?.toISOString()).toBe("2027-12-14T10:00:00.000Z");
+    now = new Date("2026-11-20T10:00:00Z");
+    await b.adminSetPlan("admin", "u", "free", "month", "Refunded");
+    expect((await b.plan("u")).plan).toBe("free");
+    expect(await store.subscription("u")).not.toBeNull();
+    const log = await store.auditFor("user", "u");
+    expect(log.map((l) => l.action)).toEqual(["plan.set", "plan.set", "plan.set"]);
+    expect(log[2]?.data).toMatchObject({ reason: "Refunded", before: { plan: "business" }, after: { plan: "free", until: null } });
+  }, 30_000);
+});
+
 describe("isAdmin", () => {
   const env = { ADMIN_EMAILS: "founder@gojoline.com", ADMIN_PHONES: "+251911000000" } as unknown as NodeJS.ProcessEnv;
   it("needs a verified listed email or phone", () => {
