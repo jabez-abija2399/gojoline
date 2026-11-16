@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNull, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { formSubmissions, siteForms, sites } from "@/lib/db/schema";
 import { formDef, type FormDef } from "./forms";
@@ -40,6 +40,24 @@ export class DbCloudStore implements CloudStore {
       .select()
       .from(formSubmissions)
       .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId)))
+      .orderBy(desc(formSubmissions.createdAt))
+      .limit(limit);
+    return rows as Submission[];
+  }
+
+  async countSubmissions(ownerId: string, projectId: string) {
+    const [row] = await this.db
+      .select({ total: sql<number>`count(*)::int`, unread: sql<number>`count(*) filter (where ${formSubmissions.readAt} is null)::int` })
+      .from(formSubmissions)
+      .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId)));
+    return { total: Number(row?.total ?? 0), unread: Number(row?.unread ?? 0) };
+  }
+
+  async submissionsSince(ownerId: string, projectId: string, since: Date, limit = 2000) {
+    const rows = await this.db
+      .select()
+      .from(formSubmissions)
+      .where(and(eq(formSubmissions.ownerId, ownerId), eq(formSubmissions.projectId, projectId), gte(formSubmissions.createdAt, since)))
       .orderBy(desc(formSubmissions.createdAt))
       .limit(limit);
     return rows as Submission[];

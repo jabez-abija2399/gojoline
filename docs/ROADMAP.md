@@ -72,12 +72,15 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Landing page rebuilt after Zite and the builders it compares: floating menu, serif headline, a showcase of the real builder switched by business chips, prompt section, steps on ink with colour panels
 - [x] Templates and Prices on their own pages with menu links; landing showcase in brand colours only
 - [x] Signed-in area redesign after Lovable and other AI builders: sidebar / phone drawer with changes-left meter, greeting + one prompt box, site cards with live state, real template pictures, free Undo under each AI change, changes left in the builder (research in `docs/research/builder-ux-2026-11.md`)
+- [x] Dark mode for the signed-in area; one compact type scale on every screen
+- [x] Site dashboard Overview: live status and sharing, real numbers, 14-day answers chart, latest answers, setup checklist
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
 - e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
+- Site dashboard: a visitors count needs privacy-friendly visit counting on published sites (not built; no number is shown until it exists). A QR code of the site's address to print for the shop would suit owners well.
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
 - Landing page, from the reviews: real photos in the starter templates would make the gallery stronger (they show placeholder shapes now); the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
 - Re-run `node scripts/showcase-shots.mjs` after changing the site template or a preset, so the landing page's pictures stay true.

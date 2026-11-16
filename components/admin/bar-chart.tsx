@@ -4,7 +4,7 @@ import type { DayPoint } from "@/lib/admin/stats";
  * One measure over the last 30 days: thin bars with rounded tops, a 2 px gap, a quiet grid,
  * a hover label on every bar (and a hit area taller than the bar), and a table for screen readers.
  */
-export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel, emptyLabel }: { title: string; data: DayPoint[]; format: (v: number) => string; tableLabel: string; dayLabel: string; valueLabel: string; emptyLabel: string }) {
+export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel, emptyLabel, formatDay, heading = false }: { title: string; data: DayPoint[]; format: (v: number) => string; tableLabel: string; dayLabel: string; valueLabel: string; emptyLabel: string; /** Words for a YYYY-MM-DD day (default MM/DD). */ formatDay?: (day: string) => string; /** Make the title a heading (h2) where the page's other cards have headings. */ heading?: boolean }) {
   const W = 600;
   const H = 140;
   const top = 8;
@@ -14,11 +14,11 @@ export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel
   const bw = Math.max(2, step - 2);
   const y = (v: number) => H - bottom - ((H - top - bottom) * v) / max;
   const total = data.reduce((n, d) => n + d.value, 0);
-  const shortDay = (d: string) => d.slice(5).replace("-", "/");
+  const shortDay = formatDay ?? ((d: string) => d.slice(5).replace("-", "/"));
   return (
     <figure className="flex flex-col gap-2 rounded-2xl border border-line bg-white p-5">
       <figcaption className="flex items-baseline justify-between gap-3">
-        <span className="font-semibold">{title}</span>
+        {heading ? <h2 className="text-base font-semibold">{title}</h2> : <span className="font-semibold">{title}</span>}
         <span className="font-display text-xl font-bold tabular-nums">{format(total)}</span>
       </figcaption>
       <div className="relative">
@@ -64,7 +64,7 @@ export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel
           <tbody>
             {data.filter((d) => d.value > 0).map((d) => (
               <tr key={d.day} className="border-t border-line">
-                <td className="py-1">{d.day}</td>
+                <td className="py-1">{formatDay ? formatDay(d.day) : d.day}</td>
                 <td className="py-1 text-end tabular-nums">{format(d.value)}</td>
               </tr>
             ))}
