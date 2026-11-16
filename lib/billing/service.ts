@@ -54,8 +54,11 @@ export class Billing {
     const key = `${userId}:${ref}`;
     if (this.granted.has(key)) return;
     const { monthlyEdits: allowance, rolloverMonths } = PLAN_FEATURES[plan];
-    const balance = await this.db.balance(userId);
-    const grant = Math.max(0, Math.min(allowance, allowance * rolloverMonths - balance));
+    const yearAgo = new Date(this.now().getTime() - 365 * 86_400_000);
+    const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, ["topup", "admin"], yearAgo)]);
+    // Bought or gifted changes never eat into the rollover cap: only unused monthly changes are capped.
+    const kept = allowance * rolloverMonths + Math.min(balance, bought);
+    const grant = Math.max(0, Math.min(allowance, kept - balance));
     await this.db.addCredits(userId, grant, "monthly_grant", ref);
     if (this.granted.size > 50_000) this.granted.clear();
     this.granted.add(key);

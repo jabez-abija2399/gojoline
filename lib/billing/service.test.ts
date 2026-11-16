@@ -44,6 +44,21 @@ describe("credits", () => {
     expect(await b.creditsLeft("u")).toBe(100);
   });
 
+  it("bought changes don't eat into the monthly allowance or the rollover cap", async () => {
+    let now = new Date("2026-11-01T00:00:00Z");
+    const store = new MemoryBillingStore();
+    const b = new Billing(store, () => now);
+    expect(await b.creditsLeft("u")).toBe(10);
+    await store.addCredits("u", 30, "topup", "p1");
+    expect(await b.creditsLeft("u")).toBe(40);
+    now = new Date("2026-12-02T00:00:00Z");
+    // Free: the 10 unused monthly changes reset to 10, the 30 bought ones stay.
+    expect(await b.creditsLeft("u")).toBe(40);
+    for (let i = 0; i < 35; i++) await b.consumeEdit("u", `s${i}`);
+    now = new Date("2027-01-02T00:00:00Z");
+    expect(await b.creditsLeft("u")).toBe(15);
+  });
+
   it("caps free first builds per day", async () => {
     const b = new Billing(new MemoryBillingStore(), () => new Date("2026-11-14T10:00:00Z"));
     const got = [];
