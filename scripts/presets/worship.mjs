@@ -41,7 +41,6 @@ save("worship", {
           id: "top",
           variant: "immersive",
           frame: true,
-          stamp: t("St. Mary · Gerji · Addis Ababa", "ቅድስት ማርያም · ገርጂ · አዲስ አበባ"),
           eyebrow: t("In the name of the Father, the Son and the Holy Spirit, one God", "በስመ አብ ወወልድ ወመንፈስ ቅዱስ አሐዱ አምላክ"),
           heading: t("Welcome to the house of the Lord", "ወደ እግዚአብሔር ቤት እንኳን ደህና መጡ"),
           subheading: t("An Ethiopian Orthodox Tewahedo parish in Gerji. Liturgy, prayer and teaching every day of the week.", "በገርጂ የምትገኝ የኢትዮጵያ ኦርቶዶክስ ተዋሕዶ ቤተ ክርስቲያን። ቅዳሴ፣ ጸሎትና ትምህርት በየዕለቱ።"),

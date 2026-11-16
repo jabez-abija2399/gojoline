@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Lightbox } from "../components/Lightbox";
+import { PauseButton } from "../components/PauseButton";
 import { Picture } from "../components/Picture";
 import { Rail } from "../components/Rail";
 import { SectionHead } from "../components/SectionHead";
@@ -10,6 +11,7 @@ import type { GallerySection, Image } from "../lib/types";
 export function Gallery({ section }: { section: GallerySection }) {
   const { text, lang } = useSite();
   const [open, setOpen] = useState<number | null>(null);
+  const [wallPaused, setWallPaused] = useState(false);
   const count = section.images.length;
   // Each photo opens large. Drawings (no photo yet) don't.
   const photo = (image: Image, i: number, picture: React.ReactNode) =>
@@ -42,22 +44,32 @@ export function Gallery({ section }: { section: GallerySection }) {
   }
   if (section.layout === "wall" && count >= 3) {
     // Columns of photos drifting up and down in turn (motion.css); still for visitors who ask for less motion.
-    const cols = [0, 1, 2].map((c) => section.images.map((image, i) => ({ image, i })).filter(({ i }) => i % 3 === c));
+    const column = (n: number, c: number) => section.images.map((image, i) => ({ image, i })).filter(({ i }) => i % n === c);
+    const wall = (n: number, className: string) => (
+      <div className={`photo-wall ${className}`} style={{ "--cols": n } as React.CSSProperties}>
+        {Array.from({ length: n }, (_, c) => {
+          const col = column(n, c);
+          return (
+            <ul key={c} className={`photo-wall-col ${c % 2 === 1 ? "is-down" : ""}`}>
+              {[...col, ...col].map(({ image, i }, k) => (
+                <li key={k} aria-hidden={k >= col.length || undefined} className="zoom rounded-site">
+                  {k < col.length ? photo(image, section.images.slice(0, i).filter((im) => im.src).length, <Picture image={image} sizes="(min-width: 768px) 33vw, 160px" className="aspect-[4/5] w-full rounded-site" />) : <Picture image={image} sizes="(min-width: 768px) 33vw, 160px" className="aspect-[4/5] w-full rounded-site" />}
+                </li>
+              ))}
+            </ul>
+          );
+        })}
+      </div>
+    );
     return (
-      <section id={section.id ?? "gallery"} className="section overflow-hidden">
+      <section id={section.id ?? "gallery"} data-paused={wallPaused || undefined} className="section overflow-hidden">
         <div className="container-site flex flex-col gap-8 md:gap-10">
-          <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
-          <div className="photo-wall">
-            {cols.map((col, c) => (
-              <ul key={c} className={`photo-wall-col ${c === 1 ? "is-down" : ""} ${c === 2 ? "max-md:hidden" : ""}`}>
-                {[...col, ...col].map(({ image, i }, k) => (
-                  <li key={k} aria-hidden={k >= col.length || undefined} className="zoom rounded-site">
-                    {k < col.length ? photo(image, section.images.slice(0, i).filter((im) => im.src).length, <Picture image={image} sizes="(min-width: 768px) 33vw, 160px" className="aspect-[4/5] w-full rounded-site" />) : <Picture image={image} sizes="(min-width: 768px) 33vw, 160px" className="aspect-[4/5] w-full rounded-site" />}
-                  </li>
-                ))}
-              </ul>
-            ))}
-          </div>
+          <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro}>
+            <PauseButton photos paused={wallPaused} onToggle={() => setWallPaused((p) => !p)} className="pause-btn-inline" />
+          </SectionHead>
+          {/* Every photo shows on phones too: two columns there, three on computers. */}
+          {wall(2, "md:hidden")}
+          {wall(3, "max-md:hidden")}
         </div>
         {viewer}
       </section>

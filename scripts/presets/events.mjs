@@ -91,7 +91,6 @@ save("events", {
           type: "hero",
           id: "top",
           variant: "immersive",
-          stamp: t("Fikir Events · Since 2016 · Addis Ababa", "ፍቅር ኢቨንትስ · ከ2016 ጀምሮ · አዲስ አበባ"),
           eyebrow: t("Weddings · Melse · Celebrations", "ሠርግ · መልስ · ድግስ"),
           heading: t("Your day, quietly perfect", "ቀንዎ ያለ ጭንቀት ያምራል"),
           subheading: t("We plan, design and run weddings and celebrations in Addis Ababa, so you can be a guest at your own.", "በአዲስ አበባ ሠርግና ድግስ እናቅዳለን፣ እናስውባለን፣ እናስተባብራለን፤ እርስዎ በራስዎ ድግስ እንግዳ እንዲሆኑ።"),

@@ -46,9 +46,13 @@ export function CountUp({ value }: { value: string }) {
       cancelAnimationFrame(frame);
     };
   }, [value]);
+  // The real value is always there for screen readers and find-in-page; the moving one is decoration.
   return (
-    <span ref={ref} className="tabular-nums">
-      {shown}
-    </span>
+    <>
+      <span className="sr-only">{value}</span>
+      <span ref={ref} aria-hidden="true" className="tabular-nums">
+        {shown}
+      </span>
+    </>
   );
 }

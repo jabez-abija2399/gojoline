@@ -2,7 +2,7 @@ import { languageNames, localePath, uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
 
 /** `overlay`: the page opens with a full-screen photo, so the header sits on it in white. */
-export function Header({ overlay = false }: { overlay?: boolean }) {
+export function Header({ overlay = false, framed = false }: { overlay?: boolean; /** The home hero opens from a frame: the header sits inside it. */ framed?: boolean }) {
   const { site, page, lang, text, href } = useSite();
   const navPages = site.pages.filter((p) => p.nav);
   const otherLangs = site.languages.filter((l) => l !== lang);
@@ -35,7 +35,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
   ));
 
   return (
-    <header className={overlay ? "site-header header-overlay absolute inset-x-0 top-0 z-20 text-white" : "site-header header-scroll sticky top-0 z-20 border-b border-line bg-background/95 backdrop-blur"}>
+    <header className={overlay ? `site-header header-overlay absolute inset-x-0 top-0 z-20 text-white ${framed ? "md:top-5" : ""}` : "site-header header-scroll sticky top-0 z-20 border-b border-line bg-background/95 backdrop-blur"}>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-30 focus:rounded-site focus:bg-surface focus:px-4 focus:py-3 focus:text-text">
         {uiText("skip", lang)}
       </a>
@@ -50,7 +50,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
           {links}
           {switcher}
           {main && (
-            <a href={href(mainHref)} className="btn btn-primary header-cta ms-2">
+            <a href={href(mainHref)} className={`btn btn-primary header-cta ms-2 whitespace-nowrap max-lg:hidden ${page.path === "/" ? "header-cta-late" : ""}`}>
               {text(main.label)}
             </a>
           )}

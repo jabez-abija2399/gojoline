@@ -33,7 +33,8 @@ export function Rail({ label, children }: { label: string; children: ReactNode }
     el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: reduce ? "auto" : "smooth" });
   };
   const arrow = (dir: 1 | -1) => (
-    <button type="button" onClick={() => go(dir)} disabled={dir === -1 ? state.start : state.end} aria-label={uiText(dir === -1 ? "previous" : "next", lang)} className="rail-arrow">
+    // aria-disabled, not disabled: a focused arrow at the end keeps keyboard focus.
+    <button type="button" onClick={() => go(dir)} aria-disabled={dir === -1 ? state.start : state.end} aria-label={uiText(dir === -1 ? "previous" : "next", lang)} className="rail-arrow">
       <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d={dir === -1 ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"} />
       </svg>
@@ -41,7 +42,7 @@ export function Rail({ label, children }: { label: string; children: ReactNode }
   );
   return (
     <div className="flex flex-col gap-4">
-      <ul ref={ref} role="group" tabIndex={0} aria-label={label} className="rail">
+      <ul ref={ref} tabIndex={0} aria-label={label} className="rail">
         {children}
       </ul>
       {state.overflow && (

@@ -84,7 +84,7 @@ export function Cards({ section }: { section: CardsSection }) {
                   <Badge item={item} />
                 </div>
                 <div className="flex flex-col justify-center gap-3 p-6 md:p-10">
-                  <Body item={item} large />
+                  <Body item={item} large quiet />
                 </div>
               </li>
             ))}
@@ -154,7 +154,7 @@ export function Cards({ section }: { section: CardsSection }) {
               <li key={section.items.indexOf(item)} style={{ "--i": i % 3 } as React.CSSProperties} className="card pcard reveal lift flex flex-col overflow-hidden">
                 <div className="zoom relative">
                   {item.photos && item.photos.length > 0 && item.image ? (
-                    <CardPhotos photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
+                    <CardPhotos title={text(item.title)} photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
                   ) : (
                     <Picture image={item.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" className="aspect-[4/3] w-full" />
                   )}
@@ -194,7 +194,7 @@ function PriceLine({ item }: { item: CardItem }) {
   );
 }
 
-function Body({ item, large = false }: { item: CardItem; large?: boolean }) {
+function Body({ item, large = false, quiet = false }: { item: CardItem; large?: boolean; /** A link, not a filled button: for cards that repeat the page's main action. */ quiet?: boolean }) {
   const { text, href } = useSite();
   return (
     <>
@@ -214,7 +214,7 @@ function Body({ item, large = false }: { item: CardItem; large?: boolean }) {
         <div className={`flex flex-wrap items-center justify-between gap-3 ${large ? "mt-3" : "mt-auto border-t border-line pt-3"}`}>
           <PriceLine item={item} />
           {item.action && (
-            <a href={href(item.action.href)} className={large ? "btn btn-primary" : "arrow-link"}>
+            <a href={href(item.action.href)} className={large && !quiet ? "btn btn-primary" : "arrow-link"}>
               {text(item.action.label)}
             </a>
           )}

@@ -54,18 +54,6 @@
           ]
         },
         {
-          "type": "marquee",
-          "id": "disciplines",
-          "tone": "dark",
-          "items": [
-            { "en": "Brand identity", "am": "የብራንድ መለያ" },
-            { "en": "Websites", "am": "ድረገጾች" },
-            { "en": "Print", "am": "ኅትመት" },
-            { "en": "Lettering", "am": "የፊደል ጥበብ" },
-            { "en": "Amharic + English", "am": "አማርኛ + እንግሊዝኛ" }
-          ]
-        },
-        {
           "type": "cards",
           "id": "work",
           "layout": "index",

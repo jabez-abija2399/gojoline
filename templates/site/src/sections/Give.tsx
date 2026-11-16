@@ -65,7 +65,7 @@ export function Give({ section }: { section: GiveSection }) {
         </div>
         <div className="card flex flex-col gap-5 p-5 sm:p-7">
           {section.monthly && (
-            <div role="group" className="grid grid-cols-2 gap-1 rounded-site bg-primary-soft p-1">
+            <div role="group" aria-label={uiText("howOften", lang)} className="grid grid-cols-2 gap-1 rounded-site bg-primary-soft p-1">
               {[false, true].map((m) => (
                 <button key={String(m)} type="button" aria-pressed={monthly === m} onClick={() => setMonthly(m)} className={`min-h-11 rounded-site font-semibold transition ${monthly === m ? "bg-surface shadow-sm" : "text-muted"}`}>
                   {uiText(m ? "monthly" : "once", lang)}

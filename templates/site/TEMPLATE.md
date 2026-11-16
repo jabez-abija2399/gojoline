@@ -122,12 +122,12 @@ Choose the hero `variant` to fit: `immersive` for a full-screen photo with the w
 
 ## Motion and interaction
 
-Every site moves the way the best sites do, by itself: hero words rise in, the hero photo settles and drifts, photos wipe in, rows arrive one after another, numbers count up, a thin bar shows reading progress, the home page's main button sits in the header on computers, and the footer closes with the name in large type. All of it respects visitors who ask for less motion and costs almost nothing to load. What you choose:
+Every site moves the way the best sites do, by itself: hero words rise in, the hero photo settles and drifts, photos wipe in, rows arrive one after another, numbers count up, a thin bar shows reading progress, the home page's main button sits in the header on computers, and elegant or bold sites close the footer with the name in large type. All of it respects visitors who ask for less motion and costs almost nothing to load. What you choose:
 
 - One impressive centrepiece per home page: `cards` `stack`, `gallery` `wall`, `cards` `index`, a `tabs` section, or `give` for causes. Don't stack them all on one page.
 - A `marquee` between two sections when the business has short, strong words (places, dishes, values); at most one per page.
 - `quote` for one big sentence; its words darken as the visitor reads.
-- `stamp` on a hero for a short identity line ("Since 2014 · Addis Ababa"); not with long text.
+- `stamp` on a hero for a short identity line ("Woven by hand · Merkato"): at most one site in three needs it (shops, personal sites, cafés); never on a page that also has a `marquee`. Sites should not all look alike: use few of these extras, chosen for the business.
 - `imageShape: "arch"` for elegant sites (hotels, weddings, worship, salons).
 - A card's `photos[]` (grid cards) are swiped inside the card with a 1/4 counter: several views of a home or room.
 - `announcement` (site level): two or three short lines in a thin moving strip above the menu ("Order on Telegram", "Delivery in Addis").

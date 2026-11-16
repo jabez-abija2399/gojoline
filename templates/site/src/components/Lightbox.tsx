@@ -27,7 +27,9 @@ export function Lightbox({ images, index, onChange, onClose }: { images: Image[]
         if (e.key === "ArrowLeft") go(-1);
       }}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        // Outside the photo (the dark area, the frame around it) closes the viewer.
+        const el = e.target as HTMLElement;
+        if (el === e.currentTarget || el.tagName === "FIGURE") onClose();
       }}
       onPointerDown={(e: PointerEvent) => (startX.current = e.clientX)}
       onPointerUp={(e: PointerEvent) => {
@@ -36,7 +38,7 @@ export function Lightbox({ images, index, onChange, onClose }: { images: Image[]
         startX.current = null;
         if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
       }}
-      aria-label={image ? text(image.alt) : undefined}
+      aria-label={uiText("openPhoto", lang)}
       className="lightbox"
     >
       {image && (
@@ -44,7 +46,7 @@ export function Lightbox({ images, index, onChange, onClose }: { images: Image[]
           {src && <img src={src} alt={text(image.alt)} className="max-h-[78dvh] w-auto max-w-full rounded-site object-contain" />}
           <figcaption className="text-center">
             <span className="block">{text(image.alt)}</span>
-            <span className="text-sm opacity-80">{uiText("photoOf", lang).replace("{i}", String(index! + 1)).replace("{n}", String(n))}</span>
+            <span aria-live="polite" className="text-sm opacity-80">{uiText("photoOf", lang).replace("{i}", String(index! + 1)).replace("{n}", String(n))}</span>
           </figcaption>
         </figure>
       )}

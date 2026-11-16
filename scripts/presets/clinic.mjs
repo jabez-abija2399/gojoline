@@ -90,7 +90,6 @@ save("clinic", {
           type: "hero",
           variant: "split",
           eyebrow: t("Megenagna · Addis Ababa", "መገናኛ · አዲስ አበባ"),
-          stamp: t("Open every day · Megenagna", "በየቀኑ ክፍት · መገናኛ"),
           heading: t("Care for the whole family, close to home", "ለመላው ቤተሰብ ሕክምና፣ በቅርብዎ"),
           subheading: t("Doctors for adults and children, a laboratory, ultrasound and a pharmacy under one roof. Walk in, or book and be seen on time.", "የአዋቂዎችና የሕፃናት ሐኪሞች፣ ላብራቶሪ፣ አልትራሳውንድ እና መድኃኒት ቤት በአንድ ጣሪያ ሥር። በቀጥታ ይምጡ፤ ወይም ቀጠሮ ይዘው በሰዓትዎ ይታዩ።"),
           image: img("clinic-hero-two-nurses", "Two smiling nurses in green scrubs with stethoscopes in a bright clinic room", "አረንጓዴ የሥራ ልብስ የለበሱ ሁለት ፈገግተኛ ነርሶች በብሩህ የክሊኒክ ክፍል ውስጥ"),

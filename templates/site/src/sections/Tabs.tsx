@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "../components/Icon";
 import { Picture } from "../components/Picture";
 import { SectionHead } from "../components/SectionHead";
@@ -10,10 +10,14 @@ import type { TabsSection } from "../lib/types";
 export function Tabs({ section }: { section: TabsSection }) {
   const { text, href } = useSite();
   const [active, setActive] = useState(0);
+  // Written into the page with every topic shown one after another (search engines, no JavaScript);
+  // once the page runs, the topics become tabs.
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const base = section.id ?? "tabs";
   const item = section.items[active] ?? section.items[0]!;
-  const move = (dir: 1 | -1) => {
-    const next = (active + dir + section.items.length) % section.items.length;
+  const move = (to: number) => {
+    const next = (to + section.items.length) % section.items.length;
     setActive(next);
     document.getElementById(`${base}-tab-${next}`)?.focus();
   };
@@ -21,14 +25,21 @@ export function Tabs({ section }: { section: TabsSection }) {
     <section id={section.id ?? "tabs"} className="section">
       <div className="container-site flex flex-col gap-8 md:gap-10">
         <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
-        <div role="tablist" aria-label={text(section.heading)} className="menu-tabs" onKeyDown={(e) => (e.key === "ArrowRight" ? move(1) : e.key === "ArrowLeft" ? move(-1) : undefined)}>
+        {ready ? (
+          <>
+        <div role="tablist" aria-label={text(section.heading)} className="menu-tabs" onKeyDown={(e) => {
+            const to = e.key === "ArrowRight" ? active + 1 : e.key === "ArrowLeft" ? active - 1 : e.key === "Home" ? 0 : e.key === "End" ? section.items.length - 1 : null;
+            if (to === null) return;
+            e.preventDefault();
+            move(to);
+          }}>
           {section.items.map((it, i) => (
             <button key={i} id={`${base}-tab-${i}`} type="button" role="tab" aria-selected={i === active} aria-controls={`${base}-panel`} tabIndex={i === active ? 0 : -1} onClick={() => setActive(i)} className="menu-tab">
               {text(it.label)}
             </button>
           ))}
         </div>
-        <div key={active} id={`${base}-panel`} role="tabpanel" aria-labelledby={`${base}-tab-${active}`} className="tab-panel grid items-center gap-8 md:grid-cols-2 md:gap-14">
+        <div key={active} id={`${base}-panel`} role="tabpanel" tabIndex={0} aria-labelledby={`${base}-tab-${active}`} className="tab-panel grid items-center gap-8 md:grid-cols-2 md:gap-14">
           <div className="zoom rounded-site">
             <Picture image={item.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
           </div>
@@ -54,6 +65,22 @@ export function Tabs({ section }: { section: TabsSection }) {
             )}
           </div>
         </div>
+          </>
+        ) : (
+          <>
+        {section.items.map((it, i) => (
+          <div key={i} className="grid items-center gap-8 md:grid-cols-2 md:gap-14">
+            <div className="zoom rounded-site">
+              <Picture image={it.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
+            </div>
+            <div className="flex flex-col gap-4">
+              <ItemTitle className="font-heading text-3xl leading-tight md:text-4xl">{text(it.heading ?? it.label)}</ItemTitle>
+              <p className="max-w-[60ch] whitespace-pre-line text-lg text-muted">{text(it.body)}</p>
+            </div>
+          </div>
+        ))}
+          </>
+        )}
       </div>
     </section>
   );

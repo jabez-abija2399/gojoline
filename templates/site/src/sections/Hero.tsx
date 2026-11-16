@@ -122,7 +122,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
             <div className="zoom rounded-site">
               <Picture image={section.image} priority={first} sizes="(min-width: 768px) 40vw, 225px" className="aspect-[4/5] w-full rounded-site" />
             </div>
-            {section.stamp && <Stamp text={text(section.stamp)} className="absolute -start-8 -bottom-8 size-28 md:size-32" />}
+            {section.stamp && <Stamp text={text(section.stamp)} className="absolute start-2 -bottom-8 size-28 md:-start-8 md:size-32" />}
           </div>
         </div>
       </section>

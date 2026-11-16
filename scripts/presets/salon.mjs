@@ -218,7 +218,6 @@ save("salon", {
           heading: t("Hair, done with care", "ለፀጉርዎ የሚገባ እንክብካቤ"),
           subheading: t("Braids, natural hair, colour and nails under one roof, with a barber corner for the men in your life.", "ሹሩባ፣ የተፈጥሮ ፀጉር፣ ቀለምና ጥፍር በአንድ ጣሪያ ሥር፤ ለወንዶችም የራሱ ፀጉር ቤት አለው።"),
           image: P.braiding,
-          stamp: t("Braids · Colour · Nails · Barber", "ሹሩባ · ቀለም · ጥፍር · ለወንዶች"),
           primaryAction: book,
           secondaryAction: seePrices,
           facts: [

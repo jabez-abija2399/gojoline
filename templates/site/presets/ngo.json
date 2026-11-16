@@ -46,8 +46,7 @@
           "secondaryAction": {
             "label": { "en": "Our work", "am": "ሥራችን" },
             "href": "/work"
-          },
-          "stamp": { "en": "Since 2016 · Hawassa", "am": "ከ2008 ዓ.ም. ጀምሮ · ሀዋሳ" }
+          }
         },
         {
           "type": "give",

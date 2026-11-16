@@ -130,13 +130,6 @@ save("personal", {
           ],
         },
         {
-          // Like the name ribbons on the best portfolio sites: what she does, moving slowly past.
-          type: "marquee",
-          id: "disciplines",
-          tone: "dark",
-          items: [t("Brand identity", "የብራንድ መለያ"), t("Websites", "ድረገጾች"), t("Print", "ኅትመት"), t("Lettering", "የፊደል ጥበብ"), t("Amharic + English", "አማርኛ + እንግሊዝኛ")],
-        },
-        {
           // The centrepiece: a project list in big type; on a computer the picture follows the mouse.
           type: "cards",
           id: "work",

@@ -113,7 +113,6 @@ save("business", {
           image: img("business-gallery-three-colleagues", "Three men in smart-casual clothes discussing around a white table with laptops", "ሦስት ወንዶች ላፕቶፖች ባሉበት ነጭ ጠረጴዛ ዙሪያ ሲወያዩ"),
           primaryAction: quote,
           secondaryAction: link("Our projects", "ሥራዎቻችን", "/projects"),
-          stamp: t("Kokeb Advisory · Since 2012", "ኮከብ አማካሪ · ከ2004 ዓ.ም. ጀምሮ"),
           hours: false,
         },
         {

@@ -65,7 +65,6 @@ save("mosque", {
           image: img("mosque-hero-minaret-dusk-skyline", "The silhouette of a minaret and dome against a purple and orange dusk sky", "በወይን ጠጅና ብርቱካናማ የምሽት ሰማይ ላይ የሚታይ የሚናራና የጉልላት ጥላ"),
           primaryAction: prayer,
           secondaryAction: support,
-          stamp: t("Kolfe · Addis Ababa", "ኮልፌ · አዲስ አበባ"),
           facts: [
             { value: t("12:45 pm", "6:45"), label: t("Jumu'ah khutbah", "የጁሙዓ ኹጥባ") },
             { value: t("Amharic", "በአማርኛ"), label: t("khutbah, with Arabic", "ኹጥባ፣ ከዐረብኛ ጋር") },

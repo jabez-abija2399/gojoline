@@ -130,7 +130,6 @@ save("cafe", {
           image: P.pour,
           // Dishoom's "window into the room": the photo opens out from a frame as the page scrolls.
           frame: true,
-          stamp: t("Since 2015 · Bole Road", "ከ2007 ዓ.ም. ጀምሮ · ቦሌ መንገድ"),
           primaryAction: seeMenu,
           secondaryAction: callUs,
           facts: [

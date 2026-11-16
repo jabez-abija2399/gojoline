@@ -114,7 +114,6 @@ save("ngo", {
           image: img("ngo-about-girl-clapping-community", "A smiling girl in a red embroidered top clapping among women and children at a community gathering", "በማኅበረሰብ ስብሰባ ላይ በሴቶችና በልጆች መካከል ፈገግ ብላ የምታጨበጭብ ቀይ ጥልፍ ልብስ የለበሰች ልጅ"),
           primaryAction: donate,
           secondaryAction: ourWork,
-          stamp: t("Since 2016 · Hawassa", "ከ2008 ዓ.ም. ጀምሮ · ሀዋሳ"),
         },
         giveBox,
         {

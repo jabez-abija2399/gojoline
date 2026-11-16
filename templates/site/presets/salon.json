@@ -39,7 +39,6 @@
             "src": "/stock/salon-hero-braiding-salon.webp",
             "alt": { "en": "Black-and-white photo of two stylists braiding a seated woman's hair into cornrows", "am": "ሁለት የፀጉር ባለሙያዎች የተቀመጠች ሴትን ሹሩባ ሲሠሩ የሚያሳይ ጥቁርና ነጭ ፎቶ" }
           },
-          "stamp": { "en": "Braids · Colour · Nails · Barber", "am": "ሹሩባ · ቀለም · ጥፍር · ለወንዶች" },
           "primaryAction": {
             "label": { "en": "Book now", "am": "ቀጠሮ ይያዙ" },
             "href": "/#booking"

@@ -86,7 +86,7 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
         {/* How far down the page the visitor is (motion.css; only where the browser can do it without scripts). */}
         <div aria-hidden="true" className="scroll-progress" />
         <Announcement />
-        <Header overlay={overlay && !site.announcement?.length} />
+        <Header overlay={overlay && !site.announcement?.length} framed={top?.type === "hero" && top.variant === "immersive" && Boolean(top.frame)} />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {page.sections.map((section, i) =>
             i === 0 && !firstIsHero ? (

@@ -77,7 +77,6 @@ save("hotel", {
           id: "top",
           variant: "immersive",
           frame: true,
-          stamp: t("Tana Shore Lodge · Lake Tana", "ጣና ሾር ሎጅ · ጣና ሐይቅ"),
           eyebrow: t("Bahir Dar · Ethiopia", "ባሕር ዳር · ኢትዮጵያ"),
           heading: t("Rest where the lake begins", "ሐይቁ በሚጀምርበት ይረፉ"),
           subheading: t("Twelve quiet rooms, a garden that runs to the water, and coffee roasted in front of you every afternoon.", "አሥራ ሁለት ጸጥ ያሉ ክፍሎች፣ እስከ ውሃው የሚዘልቅ አትክልት እና በየከሰዓቱ በፊትዎ የሚቆላ ቡና።"),
