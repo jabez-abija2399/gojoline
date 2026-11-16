@@ -13,6 +13,10 @@ import { checkSlug, suggestSlug } from "@/lib/sites/slug";
 import { libraryPhoto } from "@/lib/template/files";
 import { PRESET_IDS, presetSiteJson } from "@/lib/template/presets";
 import type { Site, SiteStore } from "@/lib/sites/types";
+import type { SiteSettingsStore } from "@/lib/site-info/store";
+import { seoEnv } from "@/lib/site-info/seo";
+import { publicPatch } from "@/lib/site-info/business";
+import { infoLabels } from "@/lib/site-info/labels";
 import { takenDownPage } from "@/lib/safety/takedown";
 import { publishedSiteHeaders, scanBuiltSite, type ScanIssue } from "./scan";
 
@@ -44,7 +48,15 @@ export interface PublishDeps {
   audit?: (entry: { actorId: string; action: string; targetType: string; targetId: string; data?: Record<string, unknown> }) => Promise<void>;
   /** Plan limits (site count, badge). Without it: Free limits. */
   entitlements?: EntitlementsResolver;
+  /** The owner's Google and share preview (applied at publish). */
+  settings?: SiteSettingsStore;
 }
+
+/**
+ * Live-site features published files have; saved with each publish so the dashboard can say
+ * when a site needs one more publish to get them. 1: reads business info, counts visits, rests.
+ */
+export const SITE_RUNTIME = 1;
 
 export type PublishError =
   | "not_found"
@@ -136,7 +148,13 @@ async function deployLocked(
     const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
     const url = deps.publisher.urlFor(slug);
     const sandbox = await deps.sandboxes.open(projectId, latest.files);
-    if (deps.assets) await sandbox.writeAssets(await deps.assets.files(user.id, projectId));
+    const photos = deps.assets ? await deps.assets.files(user.id, projectId) : [];
+    if (deps.assets) await sandbox.writeAssets(photos);
+    const settings = deps.settings ? await deps.settings.get(user.id, projectId) : null;
+    const seo = settings ? seoEnv(settings.seo, photos.map((p) => p.path.replace(/^public\/images\//, ""))) : undefined;
+    // The owner's quick details go into the prerendered pages (no shift when the live copy loads).
+    // "Closed today" is left out: it only ever applies to one day, so it always comes at runtime.
+    const baked = publicPatch(settings?.business ?? null, infoLabels(), 0);
     const build = await sandbox.buildForPublish({
       VITE_SITE_URL: url,
       VITE_SITE_ID: projectId,
@@ -144,6 +162,9 @@ async function deployLocked(
       VITE_DATA_API_URL: apiOrigin,
       VITE_BADGE: plan && !plan.badge ? "0" : "1",
       ...(reserved?.siteKey ? { VITE_SITE_KEY: reserved.siteKey } : {}),
+      ...(seo ? { VITE_SEO: seo } : {}),
+      ...(Object.keys(baked).length ? { VITE_LIVE: JSON.stringify(baked) } : {}),
+      ...(deps.publisher.setResting ? { VITE_REST_AT_HOST: "1" } : {}),
     });
     if (!build.ok) {
       console.warn("publish build failed", projectId, build.output.slice(-1500));
@@ -189,7 +210,10 @@ async function deployLocked(
       publishedVersion: latest.number,
       lastDeploymentId: result.deploymentId,
       publishedAt: new Date(),
+      runtimeVersion: SITE_RUNTIME,
     });
+    // Resting sites stay resting: the new deployment replaced the host's flag.
+    if (site.offlineAt) await deps.publisher.setResting?.(result.providerProjectId, true, result.deploymentId).catch((e: unknown) => reportError("resting switch failed", e, { projectId }));
     if (legacyProjectId && deps.legacy) {
       // The old address forwards to the new one (same path) and stops showing old content.
       // A failure is retried on the next publish; until then takedowns also reach the old host.

@@ -13,7 +13,9 @@ const urls = routes();
 for (const url of urls) {
   const page = render(url);
   if (!page) throw new Error(`No page for ${url}`);
-  const html = template
+  // The owner's own tab icon (dashboard → Settings) replaces the default one.
+  const base = page.head.includes('rel="icon"') ? template.replace(/<link rel="icon" href="\/favicon\.svg"[^>]*>\s*/, "") : template;
+  const html = base
     .replace(`lang="<!--app-lang-->"`, `lang="${page.htmlAttrs.lang}" style="${escapeAttr(page.htmlAttrs.style)}"`)
     .replace("<!--app-head-->", page.head)
     .replace("<!--app-html-->", page.html);

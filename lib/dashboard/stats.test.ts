@@ -1,20 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { addisDay, answerPreview, answerStats, setupSteps, weekTrend } from "./stats";
+import { addisDay, answerStats, messagePreview, nextStep, setupSteps, weekTrend } from "./stats";
 
 const now = Date.UTC(2026, 10, 16, 12);
 
 describe("answerStats", () => {
   it("builds 14 Addis days, the last 7 against the 7 before, with exact totals", () => {
-    const s = answerStats([{ day: "2026-11-16", count: 2 }, { day: "2026-11-13", count: 1 }, { day: "2026-11-08", count: 1 }, { day: "2026-11-03", count: 1 }, { day: "2026-10-01", count: 9 }], { total: 812, unread: 2 }, now);
+    const s = answerStats([{ day: "2026-11-16", count: 2 }, { day: "2026-11-13", count: 1 }, { day: "2026-11-08", count: 1 }, { day: "2026-11-03", count: 1 }, { day: "2026-10-01", count: 9 }], { total: 812, waiting: 2 }, now);
     // Totals are the exact database counts, not the rows that were read.
-    expect(s).toMatchObject({ total: 812, unread: 2, thisWeek: 3, lastWeek: 2 });
+    expect(s).toMatchObject({ total: 812, waiting: 2, thisWeek: 3, lastWeek: 2 });
     expect(s.perDay).toHaveLength(14);
     expect(s.perDay[0]?.day).toBe("2026-11-03");
     expect(s.perDay.at(-1)).toEqual({ day: "2026-11-16", value: 2 });
   });
   it("is empty without answers", () => {
-    const s = answerStats([], { total: 0, unread: 0 }, now);
-    expect(s).toMatchObject({ total: 0, unread: 0, thisWeek: 0, lastWeek: 0 });
+    const s = answerStats([], { total: 0, waiting: 0 }, now);
+    expect(s).toMatchObject({ total: 0, waiting: 0, thisWeek: 0, lastWeek: 0 });
     expect(s.perDay.every((d) => d.value === 0)).toBe(true);
   });
 });
@@ -42,16 +42,19 @@ describe("weekTrend", () => {
 
 describe("setupSteps", () => {
   it("lists the steps in order with what is done", () => {
-    const steps = setupSteps({ hasVersion: true, live: false, photos: 2, telegram: false, ownDomain: false });
-    expect(steps.map((s) => s.id)).toEqual(["build", "publish", "photos", "telegram", "domain"]);
+    const steps = setupSteps({ hasVersion: true, live: false, info: false, photos: 2, telegram: false, ownDomain: false });
+    expect(steps.map((s) => s.id)).toEqual(["build", "publish", "info", "photos", "telegram", "domain"]);
     expect(steps.filter((s) => s.done).map((s) => s.id)).toEqual(["build", "photos"]);
+    expect(nextStep(steps)?.id).toBe("publish");
+    expect(nextStep(setupSteps({ hasVersion: true, live: true, info: true, photos: 1, telegram: true, ownDomain: true }))).toBeNull();
   });
 });
 
-describe("answerPreview", () => {
-  it("joins the first values and shortens long ones", () => {
-    expect(answerPreview({ name: "Abebe", phone: " 0911 000 000 ", people: "2", note: "x" })).toBe("Abebe · 0911 000 000 · 2");
-    expect(answerPreview({ msg: "a".repeat(60) })).toBe(`${"a".repeat(39)}…`);
-    expect(answerPreview({ a: "", b: "  " })).toBe("");
+
+describe("messagePreview", () => {
+  it("shows the name and the phone only (no unlabelled numbers)", () => {
+    expect(messagePreview({ name: "Abebe Kebede", phone: "0911000000", people: "2" })).toBe("Abebe Kebede · 0911000000");
+    expect(messagePreview({ guests: "4", note: "Window seat please" })).toBe("Window seat please");
+    expect(messagePreview({ phone: "0911000000" })).toBe("0911000000");
   });
 });

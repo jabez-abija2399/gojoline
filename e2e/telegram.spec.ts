@@ -9,7 +9,7 @@ test("connect Telegram from the dashboard (webhook simulated)", async ({ page, c
   await page.waitForURL(/\/build\/[0-9a-f-]{36}$/);
   const id = page.url().split("/").pop()!;
   await page.goto(`/en/dashboard/${id}?tab=telegram`);
-  await expect(page.getByRole("heading", { name: "Get answers on Telegram" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Get messages on Telegram" })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 
   const popup = context.waitForEvent("page").catch(() => null);

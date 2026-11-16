@@ -73,6 +73,15 @@ export class DbSiteStore implements SiteStore, SiteAdminStore {
     return row!;
   }
 
+  async setOffline(ownerId: string, projectId: string, offline: boolean): Promise<Site | null> {
+    const [row] = await this.db
+      .update(sites)
+      .set({ offlineAt: offline ? sql`coalesce(${sites.offlineAt}, now())` : null, updatedAt: new Date() })
+      .where(and(eq(sites.projectId, projectId), eq(sites.ownerId, ownerId), eq(sites.status, "published")))
+      .returning();
+    return row ?? null;
+  }
+
   async clearLegacy(ownerId: string, projectId: string): Promise<void> {
     await this.db.update(sites).set({ legacyProjectId: null }).where(and(eq(sites.projectId, projectId), eq(sites.ownerId, ownerId)));
   }

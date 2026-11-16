@@ -1,3 +1,4 @@
+import type { MessageStatus } from "@/lib/dashboard/message-status";
 import type { FormDef } from "./forms";
 
 export interface PublicSite {
@@ -8,6 +9,8 @@ export interface PublicSite {
   status: string;
   url: string | null;
   customDomain: string | null;
+  /** The owner took the site offline (resting): forms stop and the site shows a resting page. */
+  offline: boolean;
 }
 
 export interface Submission {
@@ -19,7 +22,9 @@ export interface Submission {
   kind: string;
   data: Record<string, string>;
   lang: string | null;
+  /** Kept from before statuses (2026-11-16); `status` is what the dashboard shows. */
   readAt: Date | null;
+  status: MessageStatus;
   createdAt: Date;
 }
 
@@ -28,12 +33,17 @@ export interface CloudStore {
   publicSite(projectId: string): Promise<PublicSite | null>;
   saveForms(siteId: string, forms: FormDef[]): Promise<void>;
   getForm(siteId: string, formKey: string): Promise<FormDef | null>;
-  addSubmission(input: Omit<Submission, "id" | "readAt" | "createdAt">): Promise<Submission>;
+  /** Several forms of one site in one read (unknown keys are left out). */
+  getForms(siteId: string, formKeys: string[]): Promise<FormDef[]>;
+  addSubmission(input: Omit<Submission, "id" | "readAt" | "status" | "createdAt">): Promise<Submission>;
   /** Owner-scoped. */
   listSubmissions(ownerId: string, projectId: string, limit?: number): Promise<Submission[]>;
-  markRead(ownerId: string, projectId: string, ids: string[]): Promise<void>;
-  /** Owner-scoped exact counts (no row limit). */
-  countSubmissions(ownerId: string, projectId: string): Promise<{ total: number; unread: number }>;
+  /** Owner-scoped; only moves `canMove` allows. Returns how many changed. */
+  setStatus(ownerId: string, projectId: string, ids: string[], status: MessageStatus): Promise<number>;
+  /** Owner-scoped; true when it existed. */
+  deleteSubmission(ownerId: string, projectId: string, id: string): Promise<boolean>;
+  /** Owner-scoped exact counts (no row limit); `waiting` is the messages still New. */
+  countSubmissions(ownerId: string, projectId: string): Promise<{ total: number; waiting: number }>;
   /** Owner-scoped number of answers per Addis Ababa day since a moment ("YYYY-MM-DD"), counted by the database. */
   answersPerDay(ownerId: string, projectId: string, since: Date): Promise<{ day: string; count: number }[]>;
 }

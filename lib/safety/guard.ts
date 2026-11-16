@@ -153,3 +153,17 @@ export class ContentGuard implements PublishGuard {
     return photos.length ? this.classifier.classifyImages(photos, ctx) : verdict;
   }
 }
+
+/**
+ * The same checks for words an owner types in the dashboard that go live without a publish
+ * (business details, banner, share preview): rules first, then the AI check when configured.
+ */
+export async function checkOwnerText(texts: string[], classifier: ContentClassifier | null, ctx: { userId: string; projectId: string }): Promise<{ ok: true } | { ok: false; reasons: SafetyReason[] }> {
+  const text = normalizeText(texts.filter(Boolean).join("\n"));
+  if (!text) return { ok: true };
+  const reasons = keywordCheck(text);
+  if (reasons.length) return { ok: false, reasons: [...new Set(reasons)] };
+  if (!classifier) return { ok: true };
+  const verdict = await classifier.classify(text, ctx);
+  return verdict.ok ? { ok: true } : { ok: false, reasons: verdict.reasons };
+}

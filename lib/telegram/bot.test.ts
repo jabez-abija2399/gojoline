@@ -198,7 +198,7 @@ describe("TelegramNotifier", () => {
     const p = await projects.createProject("alice", { name: "Selam", locale: "am" });
     const form = extractForms(starter)[0]!;
     await new TelegramNotifier(store, client, projects).notify(
-      { id: "s", siteId: "x", projectId: p.id, ownerId: "alice", formKey: "booking", kind: "booking", data: { name: "<script>x</script>", phone: "0911" }, lang: "am", readAt: null, createdAt: new Date() },
+      { id: "s", siteId: "x", projectId: p.id, ownerId: "alice", formKey: "booking", kind: "booking", data: { name: "<script>x</script>", phone: "0911" }, lang: "am", readAt: null, status: "new", createdAt: new Date() },
       form,
     );
     expect(last()).toContain("አዲስ ቀጠሮ ከSelam");

@@ -5,6 +5,7 @@ import { publishedSiteHeaders } from "@/lib/publish/scan";
 import { noticeTargets } from "@/lib/publish/hosts";
 import { NOTICE_STYLE, escapeHtml } from "@/lib/publish/notice";
 import type { SiteAdminStore } from "@/lib/sites/types";
+import type { Lock } from "@/lib/lock";
 import type { ReportStore } from "./reports";
 
 export interface ModerationDeps {
@@ -14,6 +15,10 @@ export interface ModerationDeps {
   /** The previous host (sites not moved yet still live there). */
   legacy?: PublishProvider | null;
   audit: (entry: { actorId: string; action: string; targetType: string; targetId: string; data?: Record<string, unknown> }) => Promise<void>;
+  /** The project lock publishing and the owner's offline switch hold, so they can't interleave with a takedown. */
+  lock?: Lock;
+  /** Drops cached copies of the site (the public Data API's one-minute cache). */
+  invalidate?: (projectId: string) => void;
 }
 
 const APP_URL = (process.env.NEXT_PUBLIC_APP_URL ?? "https://gojoline.afridea.et").replace(/\/$/, "");
@@ -40,7 +45,28 @@ export type ModerationResult = "ok" | "not_found" | "deploy_failed";
 export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId: string, reason: string): Promise<ModerationResult> {
   const site = await deps.sites.byId(siteId);
   if (!site || !(await deps.sites.takeDown(siteId, reason))) return "not_found";
+  deps.invalidate?.(site.projectId);
   await deps.audit({ actorId: adminId, action: "site.taken_down", targetType: "site", targetId: siteId, data: { slug: site.slug, reason } });
+  // The flag is set (forms stop now); the host change waits briefly for an owner's offline switch
+  // in progress. A publish holding the lock for long notices the flag and puts the notice up itself.
+  const token = deps.lock ? await acquireSoon(deps.lock, `project:${site.projectId}`) : null;
+  try {
+    return await deployNotice(deps, adminId, siteId, site);
+  } finally {
+    if (token && deps.lock) await deps.lock.release(`project:${site.projectId}`, token);
+  }
+}
+
+async function acquireSoon(lock: Lock, key: string, tries = 20): Promise<string | null> {
+  for (let i = 0; i < tries; i++) {
+    const t = await lock.acquire(key, 60_000);
+    if (t) return t;
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  return null;
+}
+
+async function deployNotice(deps: ModerationDeps, adminId: string, siteId: string, site: NonNullable<Awaited<ReturnType<ModerationDeps["sites"]["byId"]>>>): Promise<ModerationResult> {
   // Reports close only once the live page is replaced, so a failed attempt stays in the queue to retry.
   const done = async () => {
     await deps.sites.markTakedownDeployed(siteId);
@@ -72,6 +98,7 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
         ],
         headers: publishedSiteHeaders(),
         providerProjectId: t.projectId,
+        takedown: true,
       });
       await t.host.restrictOldDeployments?.(r.providerProjectId).catch((e: unknown) => reportError("takedown protect failed", e, { siteId }));
     } catch (error) {
@@ -84,6 +111,8 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
 
 export async function restoreSite(deps: ModerationDeps, adminId: string, siteId: string): Promise<ModerationResult> {
   if (!(await deps.sites.restore(siteId))) return "not_found";
+  const s = await deps.sites.byId(siteId);
+  if (s) deps.invalidate?.(s.projectId);
   await deps.audit({ actorId: adminId, action: "site.restored", targetType: "site", targetId: siteId });
   return "ok";
 }

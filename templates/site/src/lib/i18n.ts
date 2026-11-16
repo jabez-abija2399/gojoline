@@ -77,6 +77,8 @@ const ui = {
     perMonth: "a month",
     raised: "{raised} raised of {target}",
     today: "Today",
+    restingTitle: "This site is resting",
+    restingBody: "It is closed for now. Please come back soon.",
   },
   am: {
     call: "ይደውሉልን",
@@ -126,6 +128,8 @@ const ui = {
     perMonth: "በወር",
     raised: "ከ{target} ውስጥ {raised} ተሰብስቧል",
     today: "ዛሬ",
+    restingTitle: "ይህ ድረ-ገጽ ለጊዜው አርፏል",
+    restingBody: "ለጊዜው ዝግ ነው። እባክዎ በቅርቡ ይመለሱ።",
   },
 } as const;
 
