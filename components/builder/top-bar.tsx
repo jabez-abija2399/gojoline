@@ -64,13 +64,6 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
         <LayoutDashboard aria-hidden="true" className="size-5 lg:hidden" />
         <span className="sr-only lg:not-sr-only">{text.dashboard}</span>
       </Link>
-      <div className="hidden items-center gap-1 lg:flex">
-        <Link href={`/${locale}/billing`} className={`${quiet} text-ink sm:px-3`}>
-          {text.plan}
-        </Link>
-        {signOutForm(`${quiet} px-3 text-ink-muted`, false)}
-        {language}
-      </div>
       {publish}
       <MoreMenu label={text.more}>
         <Link href={`/${locale}/dashboard/${projectId}`} className={`${quiet} justify-start px-3 text-ink sm:hidden`}>
@@ -88,7 +81,7 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
   );
 }
 
-/** Phone and tablet: the less-used links live behind one button. */
+/** The less-used links live behind one button, so Publish is the only loud thing in the bar. */
 function MoreMenu({ label, children }: { label: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -115,7 +108,7 @@ function MoreMenu({ label, children }: { label: string; children: React.ReactNod
   return (
     <div
       ref={wrapRef}
-      className="relative shrink-0 lg:hidden"
+      className="relative shrink-0"
       onBlur={(e) => {
         // Tabbing out closes the menu, so it never covers what has focus.
         if (!wrapRef.current?.contains(e.relatedTarget as Node | null)) setOpen(false);

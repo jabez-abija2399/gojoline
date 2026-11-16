@@ -71,6 +71,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] New brand palette "Paper and Coral" (light and dark tokens) across the app; landing page restyled with a centred prompt-first hero
 - [x] Landing page rebuilt after Zite and the builders it compares: floating menu, serif headline, a showcase of the real builder switched by business chips, prompt section, steps on ink with colour panels
 - [x] Templates and Prices on their own pages with menu links; landing showcase in brand colours only
+- [x] Signed-in area redesign after Lovable and other AI builders: sidebar / phone drawer with changes-left meter, greeting + one prompt box, site cards with live state, real template pictures, free Undo under each AI change, changes left in the builder (research in `docs/research/builder-ux-2026-11.md`)
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates

@@ -20,7 +20,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
   const project = await builder.store.getProject(owner, id);
   if (!project) notFound();
   const t = getMessages(lang);
-  const [messages, versions] = await Promise.all([builder.store.listMessages(owner, id), builder.store.listVersions(owner, id)]);
+  const [messages, versions, credits] = await Promise.all([builder.store.listMessages(owner, id), builder.store.listVersions(owner, id), services().billing.creditsLeft(owner)]);
 
   const who = user.name || user.phone || user.email || "";
 
@@ -54,6 +54,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
             photoErrors: t.dashboard.photoErrors,
             loading: t.dashboard.loading,
           }}
+          initialCredits={credits}
           noCredits={{ text: t.billing.noCredits, action: t.billing.getMore }}
           initialMessages={messages.map((m) => ({
             id: m.id,

@@ -18,9 +18,13 @@ export function PresetStart({ autoStart }: { autoStart: boolean }) {
     const form = document.querySelector<HTMLFormElement>(`form[data-preset="${id}"]`);
     if (!form) return;
     if (autoStart) return form.requestSubmit();
+    // The templates sit behind their tab: open it, then point at the picked one.
+    location.hash = "#templates";
     const button = form.querySelector("button");
-    button?.scrollIntoView({ block: "center" });
-    button?.focus();
+    setTimeout(() => {
+      button?.scrollIntoView({ block: "center" });
+      button?.focus();
+    }, 50);
   }, [autoStart]);
   return null;
 }

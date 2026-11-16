@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
-import { ArrowRight, BedDouble, Church, Coffee, GraduationCap, HeartHandshake, House, MoonStar, Mountain, PartyPopper, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
-import { BuilderHeader } from "@/components/builder/builder-header";
+import { ArrowRight } from "lucide-react";
+import { AppShell } from "@/components/app/app-shell";
+import { HomeTabs } from "@/components/app/home-tabs";
+import { SitesGrid, type SiteCard } from "@/components/app/sites-grid";
 import { PresetStart } from "@/components/builder/preset-start";
 import { StartBox } from "@/components/builder/start-box";
 import { PendingButton } from "@/components/builder/pending-button";
+import { ago, greetingName, liveAddress, ownerSites } from "@/lib/app/shell-data";
 import { currentUser } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
+import { showcaseSites } from "@/lib/landing/showcase";
 import { services } from "@/lib/server/services";
 import { createProject } from "./actions";
-import { PRESET_IDS } from "@/lib/template/presets";
-import { InstallApp } from "@/components/pwa/install-app";
-
-const TEMPLATE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound } as const;
-const installClass = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint";
 
 export async function generateMetadata({
   params,
@@ -36,125 +35,85 @@ export default async function ProjectsPage({
   const user = await currentUser();
   if (!user) redirect(`/${lang}/sign-in?next=/${lang}/build`);
   const t = getMessages(lang);
-  const builder = services().builder;
-  const projects = builder ? await builder.store.listProjects(user.id) : [];
-  const tooMany = (await searchParams).error === "too_many";
-  const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-
-  const tints = ["bg-sunken text-ink", "bg-line text-ink", "bg-ink text-white", "bg-paper text-ink"];
-
-  const templates = builder ? (
-    <section aria-labelledby="templates-title" className="flex flex-col gap-3">
-      <h2 id="templates-title" className="text-2xl font-bold">
-        {t.builder.templatesTitle}
-      </h2>
-      <p className="max-w-[65ch] text-ink-muted">{t.builder.templatesHint}</p>
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {PRESET_IDS.map((id) => {
-          const Icon = TEMPLATE_ICONS[id];
-          return (
-            <li key={id}>
-              <form action={createProject} data-preset={id} className="h-full">
-                <input type="hidden" name="lang" value={lang} />
-                <input type="hidden" name="preset" value={id} />
-                <PendingButton className="group flex h-full min-h-24 w-full flex-col items-start gap-3 rounded-2xl border border-line bg-white p-4 text-start font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md">
-                  <span aria-hidden="true" className="flex size-10 items-center justify-center rounded-xl bg-sunken text-ink transition-colors group-hover:bg-ink group-hover:text-white">
-                    <Icon className="size-5" />
-                  </span>
-                  {t.builder.templates[id]}
-                </PendingButton>
-              </form>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  ) : null;
-
+  const a = t.app;
   const b = t.builder;
-  const startText = { startTitle: b.startTitle, startAgainTitle: b.startAgainTitle, startBody: b.startBody, startPlaceholder: b.startPlaceholder, ideasLabel: b.ideasLabel, ideas: b.ideas, startLang: b.startLang, langEn: b.langEn, langAm: b.langAm, langBothShort: b.langBothShort, newSite: b.newSite };
-  const startBox = builder ? <StartBox t={startText} locale={lang} action={createProject} heading={projects.length === 0 ? "h1" : "h2"} autoStart={projects.length === 0} /> : null;
+  const builder = services().builder;
+  const owned = await ownerSites(user.id);
+  const tooMany = (await searchParams).error === "too_many";
+  const name = greetingName(user.name);
+
+  const cards: SiteCard[] = owned.map(({ project, site }) => ({
+    id: project.id,
+    name: project.name || b.untitled,
+    status: site?.status === "taken_down" ? "taken_down" : liveAddress(site) ? "live" : "draft",
+    address: liveAddress(site),
+    changed: format(a.edited, { when: ago(project.updatedAt, lang) }),
+  }));
+
+  const sitesPanel =
+    cards.length === 0 ? (
+      <p className="rounded-2xl border border-dashed border-line p-6 text-center text-ink-muted">{a.sitesEmpty}</p>
+    ) : (
+      <SitesGrid locale={lang} sites={cards} t={{ searchSites: a.searchSites, noMatch: a.noMatch, live: a.live, draft: a.draft, takenDown: a.takenDown, visit: a.visit, answers: a.answers }} />
+    );
+
+  // Each template is shown by a picture of the real site it gives.
+  const templatesPanel = (
+    <div className="flex flex-col gap-4">
+      <p className="max-w-[65ch] text-ink-muted">{b.templatesHint}</p>
+      <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+        {showcaseSites(lang).map((site, i) => (
+          <li key={site.id}>
+            <form action={createProject} data-preset={site.id} className="h-full">
+              <input type="hidden" name="lang" value={lang} />
+              <input type="hidden" name="preset" value={site.id} />
+              <PendingButton className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-line bg-white text-start transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md">
+                <span className="block aspect-[4/3] w-full overflow-hidden bg-sunken">
+                  <Image src={site.top.src} alt="" width={site.top.width} height={site.top.height} sizes="(min-width: 1280px) 220px, (min-width: 768px) 30vw, 46vw" loading={i < 4 ? "eager" : "lazy"} className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]" />
+                </span>
+                <span className="flex flex-1 items-center justify-between gap-2 p-3 font-medium">
+                  {b.templates[site.id]}
+                  <ArrowRight aria-hidden="true" className="size-4 shrink-0 text-ink-muted transition group-hover:translate-x-0.5 group-hover:text-ink max-sm:hidden" />
+                </span>
+              </PendingButton>
+            </form>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 
   return (
-    <>
-      <BuilderHeader
-        locale={lang}
-        t={t}
-        user={user}
-        navLinks={[
-          { href: `/${lang}/billing`, label: t.billing.link, icon: "plan" },
-        ]}
-      />
-      <main
-        id="main"
-        className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10"
-      >
-        {builder && <PresetStart autoStart={projects.length === 0} />}
-        {tooMany && (
-          <p
-            role="alert"
-            className="rounded-lg bg-coral-soft px-4 py-3 text-destructive"
-          >
-            {t.builder.tooMany}
-          </p>
-        )}
-        {!builder ? (
-          <>
-            <h1 className="text-3xl font-bold">{t.builder.title}</h1>
-            <p className="rounded-xl border border-line bg-white p-6 text-ink-muted">
-              {t.builder.unavailable}
+    <AppShell locale={lang} t={t} user={user}>
+      <main id="main" className="relative flex w-full flex-1 flex-col overflow-x-clip">
+        {/* A warm glow behind the start box: the one place on the page that asks for something. */}
+        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(60%_70%_at_50%_0%,var(--gojo-coral-soft),transparent)]" />
+        <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-14">
+          {builder && <PresetStart autoStart={cards.length === 0} />}
+          {tooMany && (
+            <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">
+              {b.tooMany}
             </p>
-          </>
-        ) : projects.length === 0 ? (
-          <>
-            {startBox}
-            <InstallApp t={t.pwa} className={installClass} />
-            {templates}
-          </>
-        ) : (
-          <>
-            <section aria-labelledby="sites-title" className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h1 id="sites-title" className="text-3xl font-bold">
-                  {t.builder.title}
-                </h1>
-                <InstallApp t={t.pwa} className={installClass} />
-              </div>
-              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {projects.map((p, i) => {
-                  const name = p.name || t.builder.untitled;
-                  return (
-                    <li key={p.id} className="min-w-0">
-                      <Link
-                        href={`/${lang}/build/${p.id}`}
-                        className="group flex h-full min-h-20 items-center gap-4 rounded-2xl border border-line bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md"
-                      >
-                        <span aria-hidden="true" className={`flex size-12 shrink-0 items-center justify-center rounded-xl font-display text-xl font-bold ${tints[i % tints.length]}`}>
-                          {[...name.trim()][0]?.toUpperCase() ?? "+"}
-                        </span>
-                        <span className="flex min-w-0 flex-1 flex-col">
-                          <span className="truncate font-semibold">{name}</span>
-                          <span className="text-sm text-ink-muted">
-                            {format(t.builder.updated, {
-                              date: dateFmt.format(p.updatedAt),
-                            })}
-                          </span>
-                        </span>
-                        <ArrowRight aria-hidden="true" className="size-5 shrink-0 text-ink-muted transition group-hover:translate-x-0.5 group-hover:text-ink" />
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-            {startBox}
-            {templates}
-          </>
-        )}
+          )}
+          {!builder ? (
+            <>
+              <h1 className="text-3xl font-bold">{b.title}</h1>
+              <p className="rounded-xl border border-line bg-white p-6 text-ink-muted">{b.unavailable}</p>
+            </>
+          ) : (
+            <>
+              <StartBox
+                t={{ startBody: b.startBody, startPlaceholder: b.startPlaceholder, ideasLabel: b.ideasLabel, ideas: b.ideas, startLang: b.startLang, langEn: b.langEn, langAm: b.langAm, langBothShort: b.langBothShort, newSite: b.newSite }}
+                locale={lang}
+                action={createProject}
+                title={name ? format(a.greeting, { name }) : a.greetingNoName}
+                autoStart={cards.length === 0}
+              />
+              <HomeTabs label={a.homeTabs} labels={{ sites: `${a.sites}${cards.length ? ` (${cards.length})` : ""}`, templates: a.templates }} initial={cards.length === 0 ? "templates" : "sites"} sites={sitesPanel} templates={templatesPanel} />
+            </>
+          )}
+        </div>
       </main>
-    </>
+    </AppShell>
   );
 }

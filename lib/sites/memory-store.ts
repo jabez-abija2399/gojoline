@@ -7,6 +7,9 @@ export class MemorySiteStore implements SiteStore, SiteAdminStore {
     const s = this.sites.get(projectId);
     return s && s.ownerId === ownerId ? s : null;
   }
+  async listByOwner(ownerId: string) {
+    return [...this.sites.values()].filter((s) => s.ownerId === ownerId);
+  }
   async slugTaken(slug: string, exceptProjectId: string) {
     return [...this.sites.values()].some((s) => s.slug === slug && s.projectId !== exceptProjectId);
   }

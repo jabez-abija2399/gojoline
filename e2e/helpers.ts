@@ -41,3 +41,9 @@ export async function signIn(page: Page, opts: { lang?: "en" | "am"; contact?: s
   await expect(page).toHaveURL(new RegExp(`/${lang}/build$`));
   return contact;
 }
+
+/** Phones keep the signed-in navigation behind "Menu"; large screens show it beside the page. */
+export async function openAppMenu(page: Page, lang: "en" | "am" = "en") {
+  const menu = page.getByRole("button", { name: lang === "en" ? "Menu" : "ማውጫ", exact: true });
+  if (await menu.isVisible()) await menu.click();
+}

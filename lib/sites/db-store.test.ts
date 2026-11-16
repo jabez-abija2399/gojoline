@@ -26,6 +26,9 @@ describe("DbSiteStore", () => {
       publishedVersion: 1, lastDeploymentId: "dpl_1", publishedAt: new Date(),
     });
     expect(saved.status).toBe("published");
+    // The list of sites is the owner's own.
+    expect((await sites.listByOwner("alice")).map((s) => s.slug)).toEqual(["selam"]);
+    expect(await sites.listByOwner("bob")).toEqual([]);
     await expect(sites.savePublished("bob", { ...saved, projectId: a.id })).rejects.toThrow();
 
     // A project with a live site can't simply disappear.

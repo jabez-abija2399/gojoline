@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn } from "./helpers";
 
 // Runs against the deterministic demo AI and in-memory sandbox (E2E=1): no cost, no network.
 async function newSite(page: import("@playwright/test").Page, lang: "en" | "am" = "en", signedIn = false) {
@@ -39,7 +39,10 @@ test("create a site, edit it by chat, see versions and restore", async ({ page }
 
   // The project is named after the site.
   await page.goto("/en/build");
-  await expect(page.getByRole("link", { name: /Selam Coffee/ })).toBeVisible();
+  const card = page.getByRole("main").getByRole("listitem").filter({ hasText: "Selam Coffee" });
+  await expect(card.getByRole("link", { name: "Selam Coffee", exact: true })).toBeVisible();
+  await expect(card.getByText("Not published")).toBeVisible();
+  await expect(card.getByText(/^Changed /)).toBeVisible();
 });
 
 test("a change that breaks the site is undone", async ({ page }) => {
@@ -105,7 +108,7 @@ test("describe the business on Your sites: the new site opens and builds itself"
   await signIn(page);
   // An idea fills the box with an example to edit.
   await page.getByRole("button", { name: "Café", exact: true }).click();
-  const box = page.getByRole("textbox", { name: "What would you like to build?" });
+  const box = page.getByRole("textbox", { name: "What will you build today?" });
   await expect(box).toHaveValue(/Selam Coffee/);
   await box.fill("Kaldi Books");
   await page.getByRole("group", { name: "Site language" }).getByText("Both").click();
@@ -175,4 +178,29 @@ test("photos: add one in the builder and hand it to the chat", async ({ page }) 
   await page.getByRole("tab", { name: "Photos" }).filter({ visible: true }).click();
   await page.getByRole("button", { name: "Remove photo 2" }).click();
   await expect(page.getByRole("img", { name: "Photo 2" })).toHaveCount(0);
+});
+
+test("undo the newest change for free; the changes left are shown and the menu opens on phones", async ({ page }) => {
+  await newSite(page);
+  await chat(page).fill("Selam Coffee");
+  await chat(page).press("Enter");
+  await expect(page.getByText("Saved as version 1").first()).toBeVisible();
+  // Nothing earlier to go back to yet.
+  await expect(page.getByRole("button", { name: "Undo this change" })).toHaveCount(0);
+  await chat(page).fill("Abol Cafe");
+  await chat(page).press("Enter");
+  await expect(page.getByText("Saved as version 2").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "13 changes left" })).toBeVisible();
+  await page.getByRole("button", { name: "Undo this change" }).click();
+  await expect(page.getByRole("log", { name: "Chat" }).getByText("Brought back version 1")).toBeVisible();
+  // Undo is a restore, not an AI change: the count stays.
+  await expect(page.getByRole("link", { name: "13 changes left" })).toBeVisible();
+
+  await page.goto("/en/build");
+  await openAppMenu(page);
+  const nav = page.getByRole("complementary", { name: "Your account" });
+  await expect(nav.getByRole("link", { name: /Selam Coffee/ })).toBeVisible();
+  await expect(nav.getByRole("heading", { name: "13 changes left" })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
 });

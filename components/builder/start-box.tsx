@@ -8,15 +8,15 @@ import type { Locale } from "@/lib/i18n/config";
 import { LanguageChoice, type SiteLanguages } from "./language-choice";
 import { clearStartPrompt, saveStartPrompt, takeLandingPrompt } from "./start-prompt";
 
-export type StartText = Pick<Messages["builder"], "startTitle" | "startAgainTitle" | "startBody" | "startPlaceholder" | "ideasLabel" | "ideas" | "startLang" | "langEn" | "langAm" | "langBothShort" | "newSite">;
+export type StartText = Pick<Messages["builder"], "startBody" | "startPlaceholder" | "ideasLabel" | "ideas" | "startLang" | "langEn" | "langAm" | "langBothShort" | "newSite">;
 
 interface Props {
   /** Only the words this box shows, so the page doesn't send the whole builder vocabulary. */
   t: StartText;
   locale: Locale;
   action: (form: FormData) => void | Promise<void>;
-  /** "h1" on an empty account, where this box is the page; "h2" under the list of sites. */
-  heading: "h1" | "h2";
+  /** The page's greeting: it names the box. */
+  title: string;
   /**
    * A description typed on the landing page starts the first site by itself only on an
    * account with no sites yet. An existing account gets it filled in and presses Start,
@@ -28,7 +28,7 @@ interface Props {
 const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 
 /** Describe the business right on "Your sites": the new site opens and starts building. */
-export function StartBox({ t, locale, action, heading: Heading, autoStart }: Props) {
+export function StartBox({ t, locale, action, title, autoStart }: Props) {
   const [text, setText] = useState("");
   const [languages, setLanguages] = useState<SiteLanguages>([locale]);
   const boxRef = useRef<HTMLTextAreaElement>(null);
@@ -66,17 +66,16 @@ export function StartBox({ t, locale, action, heading: Heading, autoStart }: Pro
       onSubmit={() => {
         if (text.trim()) saveStartPrompt({ text, languages });
       }}
-      className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-white p-4 shadow-sm sm:p-6"
+      className="mx-auto flex w-full max-w-3xl flex-col items-center gap-5"
     >
-      <span aria-hidden="true" className="pointer-events-none absolute -end-16 -top-16 size-48 rounded-full bg-coral-soft opacity-60 blur-2xl" />
       <input type="hidden" name="lang" value={locale} />
-      <div className="relative flex flex-col gap-1">
-        <Heading className={Heading === "h1" ? "text-3xl font-bold sm:text-4xl" : "text-2xl font-bold"}>
-          <label htmlFor="start-text">{Heading === "h1" ? t.startTitle : t.startAgainTitle}</label>
-        </Heading>
-        <p className="max-w-[60ch] text-ink-muted">{t.startBody}</p>
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
+          <label htmlFor="start-text">{title}</label>
+        </h1>
+        <p className="max-w-[52ch] text-ink-muted sm:text-lg">{t.startBody}</p>
       </div>
-      <div className="relative rounded-xl border border-input bg-white has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link">
+      <div className="w-full rounded-3xl border border-line bg-white p-2 shadow-xl shadow-ink/5 transition-shadow has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link">
         <textarea
           ref={boxRef}
           id="start-text"
@@ -88,15 +87,19 @@ export function StartBox({ t, locale, action, heading: Heading, autoStart }: Pro
           rows={3}
           maxLength={4000}
           placeholder={t.startPlaceholder}
-          className="block max-h-56 min-h-24 w-full resize-none rounded-xl bg-transparent px-4 py-3 text-base [field-sizing:content] placeholder:text-ink-muted focus-visible:outline-none"
+          className="block max-h-56 min-h-24 w-full resize-none rounded-2xl bg-transparent px-3 py-2.5 text-base [field-sizing:content] placeholder:text-ink-muted focus-visible:outline-none sm:px-4 sm:py-3 sm:text-lg"
         />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <LanguageChoice compact title={t.startLang} labels={{ en: t.langEn, am: t.langAm, both: t.langBothShort }} value={languages} onChange={setLanguages} name="start-languages" />
+          <StartButton label={t.newSite} />
+        </div>
       </div>
-      <div className="relative flex flex-col gap-2">
+      <div className="flex w-full flex-col items-center gap-2">
         <p id="ideas-label" className="flex items-center gap-2 text-sm font-medium text-ink-muted">
           <Sparkles aria-hidden="true" className="size-4 text-faint" />
           {t.ideasLabel}
         </p>
-        <ul aria-labelledby="ideas-label" className="chips-scroll -mx-4 flex gap-2 overflow-x-auto px-4 py-1.5 sm:mx-0 sm:flex-wrap sm:px-0">
+        <ul aria-labelledby="ideas-label" className="chips-scroll -mx-4 flex max-w-[100vw] gap-2 overflow-x-auto px-4 py-1.5 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0">
           {IDEAS.map((id) => (
             <li key={id} className="shrink-0">
               <button
@@ -113,10 +116,6 @@ export function StartBox({ t, locale, action, heading: Heading, autoStart }: Pro
           ))}
         </ul>
       </div>
-      <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <LanguageChoice title={t.startLang} labels={{ en: t.langEn, am: t.langAm, both: t.langBothShort }} value={languages} onChange={setLanguages} name="start-languages" />
-        <StartButton label={t.newSite} />
-      </div>
     </form>
   );
 }
@@ -128,7 +127,7 @@ function StartButton({ label }: { label: string }) {
       type="submit"
       aria-disabled={pending}
       onClick={(e) => pending && e.preventDefault()}
-      className="group inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-coral px-6 font-medium text-on-coral transition-colors hover:bg-coral-hover aria-disabled:opacity-60"
+      className="group inline-flex min-h-11 shrink-0 grow items-center justify-center gap-2 rounded-full bg-coral px-5 sm:grow-0 font-medium text-on-coral transition-colors hover:bg-coral-hover aria-disabled:opacity-60"
     >
       {label}
       {pending ? <Loader2 aria-hidden="true" className="size-5 animate-spin" /> : <ArrowRight aria-hidden="true" className="size-5 transition-transform group-hover:translate-x-0.5" />}

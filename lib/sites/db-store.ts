@@ -12,6 +12,10 @@ export class DbSiteStore implements SiteStore, SiteAdminStore {
     return row ?? null;
   }
 
+  async listByOwner(ownerId: string): Promise<Site[]> {
+    return this.db.select().from(sites).where(eq(sites.ownerId, ownerId)).limit(100);
+  }
+
   async slugTaken(slug: string, exceptProjectId: string): Promise<boolean> {
     const rows = await this.db.select({ id: sites.id }).from(sites).where(and(eq(sites.slug, slug), ne(sites.projectId, exceptProjectId))).limit(1);
     return rows.length > 0;

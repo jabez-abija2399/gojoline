@@ -36,6 +36,8 @@ export interface SiteAdminStore {
 
 export interface SiteStore {
   getByProject(ownerId: string, projectId: string): Promise<Site | null>;
+  /** Every site this owner has (one query), for the list of sites. */
+  listByOwner(ownerId: string): Promise<Site[]>;
   /** True when another project already uses this slug. */
   slugTaken(slug: string, exceptProjectId: string): Promise<boolean>;
   /** Live sites this owner has, not counting the given project. */

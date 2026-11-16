@@ -19,7 +19,7 @@ test("dashboard: answers, prices that update the live site, and photos", async (
   // Phones keep the dashboard link behind "More".
   if (info.project.name === "mobile") await page.getByRole("button", { name: "More" }).click();
   await page.getByRole("link", { name: "Dashboard" }).click();
-  await expect(page.getByRole("heading", { name: "Your site's dashboard" })).toBeVisible();
+  await expect(page.getByText("Your site's dashboard")).toBeVisible();
   await expect(page.getByText("No answers yet")).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 

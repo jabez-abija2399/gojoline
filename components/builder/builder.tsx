@@ -33,12 +33,15 @@ interface Props {
   siteName: string;
   initialMessages: UiMessage[];
   initialVersions: UiVersion[];
+  /** AI changes the owner has left when the page opens. */
+  initialCredits: number;
 }
 
 let localId = 0;
 const nextId = () => `local-${++localId}`;
 
-export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, noCredits }: Props) {
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits }: Props) {
+  const [credits, setCredits] = useState<number | null>(initialCredits);
   // A site that only has its template version: show it first and say what to change.
   const templateId = initialVersions.length === 1 ? /^template:([a-z-]+)$/.exec(initialVersions[0]!.summary)?.[1] : undefined;
   const templateName = templateId ? (t.templates as Record<string, string>)[templateId] : undefined;
@@ -175,6 +178,11 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         setWorking(false);
         setTimeline(null);
         setStreamText("");
+        // Ask rather than count: a failed change gives its credit back on the server.
+        fetch("/api/billing/credits")
+          .then((r) => (r.ok ? r.json() : null))
+          .then((d: { credits?: number } | null) => typeof d?.credits === "number" && setCredits(d.credits))
+          .catch(() => undefined);
       }
     },
     [projectId, t, addAssistant, noCredits, locale],
@@ -234,6 +242,13 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   );
 
 
+  // The version shown before the newest one: what "Undo this change" goes back to.
+  const previous = versions.length > 1 && versions[0]?.number === current ? versions[1]!.number : null;
+  const undo = useCallback(async () => {
+    if (previous === null) return;
+    if (!(await restore(previous).catch(() => false))) addAssistant(t.versionRestoreFailed, { tone: "error" });
+  }, [previous, restore, addAssistant, t.versionRestoreFailed]);
+
   const chat = (
     <ChatPanel
       t={t}
@@ -246,6 +261,8 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       focusKey={focusChat}
       onAttach={photos.upload}
       photoErrors={photoText.photoErrors}
+      onUndo={previous !== null ? undo : undefined}
+      credits={{ left: credits, href: `/${locale}/billing` }}
       messages={messages}
       working={working}
       timeline={timeline}

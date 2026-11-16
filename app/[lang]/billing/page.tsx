@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { BuilderHeader } from "@/components/builder/builder-header";
+import { AppShell } from "@/components/app/app-shell";
 import { PaymentForm } from "@/components/billing/payment-form";
 import { currentUser } from "@/lib/auth/session";
-import { PRODUCTS } from "@/lib/billing/plans";
+import { PLAN_FEATURES, PRODUCTS } from "@/lib/billing/plans";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
@@ -30,14 +30,19 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
   const prices = Object.fromEntries(Object.entries(settings.prices).map(([k, v]) => [k, birr(v)])) as Record<keyof typeof PRODUCTS, string>;
 
   return (
-    <>
-      <BuilderHeader locale={lang} t={t} user={user} backHref={`/${lang}/build`} backLabel={t.builder.back} />
-      <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-8">
-        <section aria-labelledby="plan-title" className="flex flex-col gap-2 rounded-xl border border-line bg-white p-5">
+    <AppShell locale={lang} t={t} user={user}>
+      <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-6 sm:py-10">
+        <section aria-labelledby="plan-title" className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-5">
           <h1 id="plan-title" className="text-3xl font-bold">{b.title}</h1>
           <p className="text-lg font-semibold">{format(b.currentPlan, { plan: b.plans[plan] })}</p>
           {until && <p className="text-ink-muted">{format(b.until, { date: dateFmt.format(until) })}</p>}
-          <p className="text-ink-muted">{format(b.creditsLeft, { n: credits })}</p>
+          <div className="flex flex-col gap-2 rounded-xl bg-paper p-4">
+            <p className={`font-semibold ${credits <= 3 ? "text-warning" : "text-ink"}`}>{format(b.creditsLeft, { n: credits })}</p>
+            <span aria-hidden="true" className="block h-2 overflow-hidden rounded-full bg-line">
+              <span className={`block h-full rounded-full ${credits <= 3 ? "bg-warning" : "bg-ink"}`} style={{ width: `${Math.round(Math.max(0, Math.min(1, credits / PLAN_FEATURES[plan].monthlyEdits)) * 100)}%` }} />
+            </span>
+            <p className="text-sm text-ink-muted">{format(t.app.creditsHint, { total: PLAN_FEATURES[plan].monthlyEdits })}</p>
+          </div>
         </section>
 
         <ul className="grid gap-4 md:grid-cols-3">
@@ -102,6 +107,6 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
           )}
         </section>
       </main>
-    </>
+    </AppShell>
   );
 }

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, CheckCircle2, Eye, ImagePlus, Loader2, PartyPopper, Sparkles } from "lucide-react";
+import { ArrowUp, CheckCircle2, Eye, ImagePlus, Loader2, PartyPopper, Sparkles, Undo2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { BuildTimeline, type Timeline } from "./build-timeline";
 import { LanguageChoice, type SiteLanguages } from "./language-choice";
@@ -44,6 +44,10 @@ interface Props {
   /** Add a photo straight from the chat box. */
   onAttach: (file: File) => Promise<UploadResult>;
   photoErrors: Record<string, string>;
+  /** Takes back the newest change (free); absent when there is nothing earlier to go back to. */
+  onUndo?: () => Promise<void>;
+  /** AI changes left, and where to get more. Null while unknown. */
+  credits: { left: number | null; href: string };
 }
 
 const amharic = /[ሀ-፿]/;
@@ -51,7 +55,8 @@ const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 const NEXT = ["contact", "colours", "prices", "language"] as const;
 const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line bg-white px-4 font-medium text-ink transition-colors hover:border-faint hover:bg-sunken";
 
-export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors }: Props) {
+export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits }: Props) {
+  const [undoing, setUndoing] = useState(false);
   const [attach, setAttach] = useState<{ busy: boolean; note?: string; error?: string }>({ busy: false });
   const listRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLTextAreaElement>(null);
@@ -128,6 +133,19 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             action={m.action}
             note={m.versionNumber ? t.versionSaved.replace("{n}", String(m.versionNumber)) : undefined}
             seeSite={m.versionNumber && m.id === lastId && !working ? { label: t.seeSite, onClick: onSeeSite } : undefined}
+            undo={
+              onUndo && m.versionNumber && m.id === lastId && !working
+                ? {
+                    label: undoing ? t.undoing : t.undo,
+                    busy: undoing,
+                    onClick: async () => {
+                      if (undoing) return;
+                      setUndoing(true);
+                      await onUndo().finally(() => setUndoing(false));
+                    },
+                  }
+                : undefined
+            }
           />
         ))}
         {celebrate && !working && (
@@ -245,11 +263,17 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             {attach.error}
           </p>
         )}
-        {!attach.note && !attach.error && (
-          <p aria-hidden="true" className="hidden px-2 text-sm text-ink-muted lg:block">
-            {t.composerHint}
-          </p>
-        )}
+        <div className="flex items-center justify-between gap-3 px-2 text-sm text-ink-muted">
+          <span aria-hidden="true" className="hidden lg:block">
+            {!attach.note && !attach.error && t.composerHint}
+          </span>
+          {credits.left !== null && (
+            <Link href={credits.href} className={`ms-auto inline-flex min-h-6 items-center gap-1.5 rounded font-medium underline-offset-4 hover:underline ${credits.left <= 3 ? "text-warning" : "text-ink-muted"}`}>
+              <Sparkles aria-hidden="true" className="size-3.5" />
+              {credits.left > 0 ? t.creditsLeft.replace("{n}", String(credits.left)) : t.creditsNone}
+            </Link>
+          )}
+        </div>
       </form>
     </div>
   );
@@ -263,11 +287,12 @@ interface BubbleProps {
   tone?: "error";
   action?: { href: string; label: string };
   seeSite?: { label: string; onClick: () => void };
+  undo?: { label: string; busy: boolean; onClick: () => void };
   /** Only messages added in this visit ease in; saved history is simply there. */
   animate?: boolean;
 }
 
-function Bubble({ role, label, text, note, tone, action, seeSite, animate }: BubbleProps) {
+function Bubble({ role, label, text, note, tone, action, seeSite, undo, animate }: BubbleProps) {
   const own = role === "owner";
   return (
     <div className={`${animate ? "msg-in " : ""}flex max-w-[90%] flex-col gap-1 ${own ? "items-end self-end" : "self-start"}`}>
@@ -294,11 +319,21 @@ function Bubble({ role, label, text, note, tone, action, seeSite, animate }: Bub
           {note}
         </span>
       )}
-      {seeSite && (
-        <button type="button" onClick={seeSite.onClick} className="mt-1 inline-flex min-h-11 items-center gap-2 rounded-lg border border-ink bg-white px-4 font-medium text-ink hover:bg-sunken lg:hidden">
-          <Eye aria-hidden="true" className="size-4" />
-          {seeSite.label}
-        </button>
+      {(seeSite || undo) && (
+        <div className="mt-1 flex flex-wrap gap-2">
+          {seeSite && (
+            <button type="button" onClick={seeSite.onClick} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-ink bg-white px-4 font-medium text-ink hover:bg-sunken lg:hidden">
+              <Eye aria-hidden="true" className="size-4" />
+              {seeSite.label}
+            </button>
+          )}
+          {undo && (
+            <button type="button" aria-disabled={undo.busy} onClick={undo.onClick} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint hover:bg-sunken aria-disabled:opacity-60">
+              {undo.busy ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <Undo2 aria-hidden="true" className="size-4" />}
+              {undo.label}
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

@@ -1,9 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn } from "./helpers";
 
 test("an owner sends a payment and an admin approves it", async ({ page, browser }) => {
   await signIn(page);
-  await page.getByRole("link", { name: "Plan" }).click();
+  // The changes left are in sight from the first screen.
+  await openAppMenu(page);
+  await expect(page.getByRole("heading", { name: "15 changes left" })).toBeVisible();
+  await page.getByRole("link", { name: "Plan and payments" }).click();
   await expect(page.getByRole("heading", { name: "Plan and payments", level: 1 })).toBeVisible();
   await expect(page.getByText("Your plan: Free")).toBeVisible();
   await expect(page.locator('li[aria-current="true"]')).toContainText("Your plan");

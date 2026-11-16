@@ -3,7 +3,8 @@ import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./h
 
 test("start from an industry template in Amharic: a ready site, no AI needed", async ({ page }) => {
   await signIn(page, { lang: "am" });
-  await expect(page.getByRole("heading", { name: "ወይም ከአብነት ይጀምሩ" })).toBeVisible();
+  // With no sites yet, the templates are what the page shows under the start box.
+  await expect(page.getByRole("tab", { name: "አብነቶች" })).toHaveAttribute("aria-selected", "true");
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("button", { name: "ሆቴል ወይም የእንግዳ ማረፊያ" }).click();
@@ -19,5 +20,5 @@ test("start from an industry template in Amharic: a ready site, no AI needed", a
   await page.keyboard.press("Escape");
   await page.goto("/am/build");
   // Named after the kind of business, not the example's made-up name.
-  await expect(page.getByRole("link", { name: /ሆቴል ወይም የእንግዳ ማረፊያ/ })).toBeVisible();
+  await expect(page.getByRole("main").getByRole("link", { name: "ሆቴል ወይም የእንግዳ ማረፊያ", exact: true })).toBeVisible();
 });
