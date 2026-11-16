@@ -15,6 +15,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { serif } from "@/lib/fonts-landing";
 import { HERO_IDS, showcaseSites } from "@/lib/landing/showcase";
+import { firstSections } from "@/lib/landing/hero-sections";
 import { services } from "@/lib/server/services";
 import { EXAMPLE_SLUG } from "@/lib/sites/slug";
 
@@ -22,13 +23,14 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   // Opening the installed app: signed-in owners go straight to their sites.
-  if ((await searchParams).source === "app" && (await currentUser())) redirect(`/${lang}/build`);
+  const sp = await searchParams;
+  if (sp.source === "app" && (await currentUser())) redirect(`/${lang}/build`);
   const t = getMessages(lang);
   const sites = showcaseSites(lang);
   const byId = new Map(sites.map((x) => [x.id, x]));
   const stageSites = HERO_IDS.flatMap((id) => {
     const x = byId.get(id);
-    return x ? [{ id, label: t.landing.demo.labels[id], name: x.name, prompt: t.landing.demo.prompts[id], shot: x.brand ?? x.top }] : [];
+    return x ? [{ id, label: t.landing.demo.labels[id], name: x.name, prompt: t.landing.demo.prompts[id], shot: x.brand ?? x.top, sections: firstSections(id, lang) }] : [];
   });
   // The same café, in both languages, for the language card.
   const cafe = { en: showcaseSites("en").find((s) => s.id === "cafe"), am: showcaseSites("am").find((s) => s.id === "cafe") };
@@ -42,9 +44,14 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   return (
     <>
       <div aria-hidden="true" className="read-progress" />
+      <div aria-hidden="true" className="pointer-events-none fixed inset-y-0 start-10 z-0 border-s border-line max-xl:hidden" />
+      <div aria-hidden="true" className="pointer-events-none fixed inset-y-0 end-10 z-0 border-e border-line max-xl:hidden" />
       <SiteHeader locale={lang} t={t} nav />
       <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero
+          live={t.landing.live}
+          you={b.you}
+          assistant={b.assistant}
           signedIn={await looksSignedIn()}
           t={t.landing.hero}
           locale={lang}
