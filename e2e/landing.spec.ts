@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
 test.describe("landing page", () => {
   test("redirects / to a language and remembers the choice", async ({ page }) => {
@@ -167,4 +167,34 @@ test("waitlist moves focus to the first problem, then to the success message", a
   await form.getByLabel("Phone or email").fill("abebe@example.com");
   await form.getByRole("button", { name: "Join the waitlist" }).click();
   await expect(form.getByRole("status")).toBeFocused();
+});
+
+test("signed in: every way in leads to Your sites, never to the sign-in page", async ({ page }, info) => {
+  await signIn(page);
+  await page.goto("/en");
+  const header = page.getByRole("banner");
+  if (info.project.name === "mobile") await header.locator("summary").click();
+  await expect(header.getByRole("link", { name: "Open Gojoline" }).filter({ visible: true })).toHaveAttribute("href", "/en/build");
+  await expect(header.getByRole("link", { name: "Sign in" }).filter({ visible: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Open your sites" })).toHaveAttribute("href", "/en/build");
+  await expect(page.locator('a[href*="/sign-in"]')).toHaveCount(0);
+
+  // The description typed on the landing page goes straight to "Your sites": a new account
+  // (no sites yet) starts building it at once, with no sign-in page in between.
+  await page.locator("#hero-prompt").fill("Kaldi Books in Piassa");
+  await page.locator("#hero-prompt").press("Control+Enter");
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole("log", { name: "Chat" }).getByText("Kaldi Books in Piassa")).toBeVisible();
+
+  await page.goto("/en/pricing");
+  await expect(page.locator('a[href*="/sign-in"]')).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Choose this plan" }).first()).toHaveAttribute("href", "/en/billing");
+  await page.goto("/en/templates");
+  await expect(page.locator('a[href*="/sign-in"]')).toHaveCount(0);
+  await expectNoSeriousA11yIssues(page);
+});
+
+test("signed out: the landing page offers sign-in and a free start", async ({ page }) => {
+  await page.goto("/en/pricing");
+  await expect(page.getByRole("link", { name: "Start free" }).first()).toHaveAttribute("href", /\/en\/sign-in/);
 });

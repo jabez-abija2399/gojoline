@@ -27,7 +27,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
     <>
       <SiteHeader locale={lang} t={t} nav current="pricing" />
       <main id="main" tabIndex={-1} className={`${serif.variable} flex-1 focus:outline-none`}>
-        <Pricing t={t.landing.pricing} planNames={t.billing.plans} prices={{ starter: prices.starter_month, business: prices.business_month }} locale={lang} />
+        <Pricing navSites={t.landing.nav.mySites} t={t.landing.pricing} planNames={t.billing.plans} prices={{ starter: prices.starter_month, business: prices.business_month }} locale={lang} />
         <Faq t={t.landing.faq} />
         <FinalCta t={t.landing.final} locale={lang} />
       </main>

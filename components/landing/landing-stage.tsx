@@ -54,6 +54,8 @@ interface Props {
   promptHeading: React.ReactNode;
   /** What follows the prompt box (the note, the install button). */
   promptFooter: React.ReactNode;
+  /** Has a session cookie: the description goes straight to "Your sites" (no sign-in page). */
+  signedIn?: boolean;
 }
 
 /**
@@ -61,7 +63,7 @@ interface Props {
  * real builder with a real site for it, and the prompt box below is filled in ready to build.
  * The description waits while the visitor signs in, then their first site starts building.
  */
-export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter }: Props) {
+export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, signedIn = false }: Props) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -170,11 +172,11 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
       <section aria-labelledby="start-title" className="relative mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 md:py-24">
         {promptHeading}
         <form
-          action={`/${locale}/sign-in`}
+          action={signedIn ? next : `/${locale}/sign-in`}
           onSubmit={(e) => {
             e.preventDefault();
             if (text.trim()) saveLandingPrompt({ text, languages });
-            router.push(`/${locale}/sign-in?next=${next}`);
+            router.push(signedIn ? next : `/${locale}/sign-in?next=${next}`);
           }}
           className="flex w-full min-w-0 flex-col rounded-[28px] border border-ink/10 bg-white p-2 text-start shadow-[0_24px_70px_-24px_rgb(18_18_18/0.35)] has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link"
         >

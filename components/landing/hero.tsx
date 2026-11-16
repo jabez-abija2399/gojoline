@@ -10,7 +10,7 @@ import { Mosaic } from "./mosaic";
  * Headline, then the real product: pick a business and the builder below shows a real site
  * for it. Then one box to describe your own.
  */
-export function Hero({ t, locale, sites, text, install, promptTitle, templates }: { t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string; templates: { href: string; label: string } }) {
+export function Hero({ t, locale, sites, text, install, promptTitle, templates, signedIn }: { t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string; templates: { href: string; label: string }; signedIn: boolean }) {
   return (
     <div className="relative">
       <section aria-labelledby="hero-title" className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 pt-10 text-center sm:px-6 md:gap-7 md:pt-16">
@@ -28,6 +28,7 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates }
       </section>
       <div className="mx-auto mt-8 max-w-6xl sm:px-6 md:mt-10">
         <LandingStage
+          signedIn={signedIn}
           locale={locale}
           sites={sites}
           t={text}

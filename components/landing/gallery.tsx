@@ -4,11 +4,13 @@ import type { Locale } from "@/lib/i18n/config";
 import type { ShowcaseSite } from "@/lib/landing/showcase";
 import { PanShot } from "./pan-shot";
 import { StartFromLink } from "./start-from-link";
+import { looksSignedIn } from "@/lib/auth/signed-in";
 
 /** The real Gojoline starter sites as a grid of cards. On a mouse, resting on one scrolls through its page. */
-export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
+export async function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
   // This section is its own page (/templates), so its title is the page's h1.
-  const href = `/${locale}/sign-in?next=/${locale}/build`;
+  // The picked template opens on "Your sites" (straight away there, or after signing in).
+  const href = (await looksSignedIn()) ? `/${locale}/build` : `/${locale}/sign-in?next=/${locale}/build`;
   return (
     <section aria-labelledby="examples-title" className="py-12 md:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">

@@ -4,6 +4,9 @@ import { normalizeEthiopianPhone } from "@/lib/contact";
 import type { OtpSender } from "@/lib/providers/notify/otp";
 
 /** Placeholder email for phone-only accounts (never sent to; .invalid is a reserved TLD). */
+/** Session cookies are named gojo.session_token (__Secure-gojo.… on https). */
+export const AUTH_COOKIE_PREFIX = "gojo";
+
 export const phoneEmail = (phone: string) => `${phone.replace(/\D/g, "")}@phone.gojoline.invalid`;
 
 export const OTP_HTTP_PATHS = [
@@ -43,7 +46,7 @@ export function createAuth(c: AuthConfig) {
     baseURL: c.baseURL,
     secret: c.secret,
     database: c.database,
-    advanced: { cookiePrefix: "gojo", useSecureCookies: c.secureCookies },
+    advanced: { cookiePrefix: AUTH_COOKIE_PREFIX, useSecureCookies: c.secureCookies },
     session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
     // Google confirms the email, so a Google sign-in joins the account that already uses it.
     socialProviders: c.google ? { google: { clientId: c.google.clientId, clientSecret: c.google.clientSecret, prompt: "select_account" } } : undefined,

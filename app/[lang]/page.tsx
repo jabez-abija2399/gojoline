@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth/session";
+import { looksSignedIn } from "@/lib/auth/signed-in";
 import { Faq } from "@/components/landing/faq";
 import { Features } from "@/components/landing/features";
 import { FinalCta } from "@/components/landing/final-cta";
@@ -41,6 +42,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
       <SiteHeader locale={lang} t={t} nav />
       <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero
+          signedIn={await looksSignedIn()}
           t={t.landing.hero}
           locale={lang}
           sites={stageSites}

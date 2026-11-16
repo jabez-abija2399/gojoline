@@ -2,9 +2,12 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
+import { looksSignedIn } from "@/lib/auth/signed-in";
 
 /** Plan cards; monthly prices come from Admin → Settings. */
-export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing"]["pricing"]; planNames: Messages["billing"]["plans"]; prices: { starter: number; business: number }; locale: Locale }) {
+export async function Pricing({ t, planNames, prices, locale, navSites }: { t: Messages["landing"]["pricing"]; planNames: Messages["billing"]["plans"]; prices: { starter: number; business: number }; locale: Locale; /** "Your sites", for a signed-in owner on the free card. */ navSites: string }) {
+  // Signed in: a paid plan is chosen on Plan and payments, the free one is what they have.
+  const signedIn = await looksSignedIn();
   const birr = (minor: number) => `${new Intl.NumberFormat("en-US").format(minor / 100)} ${t.birr}`;
   const plans = [
     // "0 Birr", so the card doesn't say "Free" twice (the plan is already named Free).
@@ -34,8 +37,8 @@ export function Pricing({ t, planNames, prices, locale }: { t: Messages["landing
                   </li>
                 ))}
               </ul>
-              <Link href={`/${locale}/sign-in?next=/${locale}/build`} className={`inline-flex min-h-12 items-center justify-center rounded-full px-5 font-semibold ${p.popular ? "bg-ink text-white hover:bg-ink-hover" : "border border-line hover:border-faint"}`}>
-                {t.cta}
+              <Link href={!signedIn ? `/${locale}/sign-in?next=/${locale}/build` : p.id === "free" ? `/${locale}/build` : `/${locale}/billing`} className={`inline-flex min-h-12 items-center justify-center rounded-full px-5 font-semibold ${p.popular ? "bg-ink text-white hover:bg-ink-hover" : "border border-line hover:border-faint"}`}>
+                {!signedIn ? t.cta : p.id === "free" ? navSites : t.ctaSignedIn}
               </Link>
             </li>
           ))}

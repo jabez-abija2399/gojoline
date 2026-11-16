@@ -33,7 +33,7 @@ export const am: Messages = {
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",
       build: "ድረ-ገጼን ሥራልኝ",
     },
-    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", menu: "ማውጫ", seeTemplates: "14ቱንም አብነቶች ይመልከቱ" },
+    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", openApp: "ጎጆላይንን ይክፈቱ", menu: "ማውጫ", seeTemplates: "14ቱንም አብነቶች ይመልከቱ" },
     demo: {
       pick: "የንግድ ዓይነት ይምረጡ",
       prompts: {
@@ -88,6 +88,7 @@ export const am: Messages = {
       perMonth: "/ በወር",
       popular: "በብዛት የሚመረጥ",
       cta: "በነጻ ይጀምሩ",
+      ctaSignedIn: "ይህን ዕቅድ ይምረጡ",
       plans: {
         free: ["1 ድረ-ገጽ በነጻ ሊንክ", "በወር 15 ለውጦች", "ቅጾች እና መልሶች በዳሽቦርድዎ"],
         starter: ["የራስዎ የድረ-ገጽ አድራሻ", "በወር 50 ለውጦች", "መልሶች በቴሌግራም", "የጎጆላይን ምልክት የለም"],
@@ -109,6 +110,7 @@ export const am: Messages = {
       title: "ምን ይገነባሉ?",
       body: "በነጻ ይጀምሩ። የመጀመሪያ ድረ-ገጽዎን በአንድ ደቂቃ ገደማ ይመልከቱ።",
       cta: "በነጻ ይጀምሩ",
+      ctaSignedIn: "ድረ-ገጾችዎን ይክፈቱ",
     },
   },
   waitlist: {
