@@ -445,6 +445,89 @@
       transition: opacity 250ms;
     }
   }
+  /* Pictures with a top like a doorway. */
+  .arch,
+  .arch :is(img, .placeholder) {
+    border-radius: 999px 999px var(--site-radius) var(--site-radius) / 50% 50% var(--site-radius) var(--site-radius);
+  }
+  /* The home page's main action in the header (computers; phones have the call bar). */
+  .header-cta {
+    min-height: 2.5rem;
+    padding-block: 0.375rem;
+  }
+  .header-overlay .header-cta {
+    box-shadow: 0 6px 20px -8px rgb(0 0 0 / 0.5);
+  }
+  /* A small "scroll" cue at the foot of a full-screen photo. */
+  .scroll-cue {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    width: 1.5rem;
+    height: 2.4rem;
+    margin-left: -0.75rem;
+    border: 2px solid rgb(255 255 255 / 0.7);
+    border-radius: 999px;
+  }
+  .scroll-cue::after {
+    content: "";
+    position: absolute;
+    top: 0.45rem;
+    left: 50%;
+    width: 4px;
+    height: 0.5rem;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: #fff;
+  }
+  @media (max-width: 767px) {
+    .scroll-cue {
+      display: none;
+    }
+  }
+  /* The site's name, very large, closing the page. */
+  .footer-wordmark {
+    overflow: hidden;
+    padding-bottom: 0.5rem;
+    font-family: var(--site-font-heading);
+    font-size: clamp(3rem, 1rem + 11vw, 11rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    opacity: 0.14;
+  }
+  :lang(am) .footer-wordmark {
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+  /* A wall of photos in columns. */
+  .photo-wall {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    height: 34rem;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent);
+  }
+  @media (min-width: 768px) {
+    .photo-wall {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      height: 44rem;
+    }
+  }
+  .photo-wall-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  @media (min-width: 768px) {
+    .photo-wall-col {
+      gap: 1rem;
+    }
+  }
   /* Cards that pile up: each pins a little lower than the one before. */
   .stack-card {
     position: sticky;
@@ -454,7 +537,7 @@
 }
 
 @media screen and (prefers-reduced-motion: no-preference) {
-  .split .w {
+  .headline.split .w {
     animation: site-word 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
     animation-delay: calc(80ms + var(--w, 0) * 70ms);
   }
@@ -467,6 +550,19 @@
   }
   .stamp {
     animation: site-spin 22s linear infinite;
+  }
+  .photo-wall-col {
+    animation: site-drift-up 50s linear infinite;
+  }
+  .photo-wall-col.is-down {
+    animation-name: site-drift-down;
+  }
+  .photo-wall:hover .photo-wall-col,
+  .photo-wall:focus-within .photo-wall-col {
+    animation-play-state: paused;
+  }
+  .scroll-cue::after {
+    animation: site-cue 1.6s ease-in-out infinite;
   }
   .tab-panel {
     animation: site-enter 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -497,6 +593,20 @@
     }
     .stack-card:last-child {
       animation: none;
+    }
+    /* A big statement: words darken one after another as they scroll into view. */
+    .ink-words .w {
+      animation: site-ink linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 45%;
+    }
+    /* A framed hero photo opens to the full width as the page starts to scroll. */
+    @media (min-width: 768px) {
+      .hero-frame {
+        animation: site-unframe linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 60vh;
+      }
     }
     /* The goal bar fills when it comes into view; section bars draw in. */
     .goal-fill {
@@ -607,5 +717,48 @@
   }
   to {
     transform: scaleX(1);
+  }
+}
+@keyframes site-drift-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-50% - 0.5rem));
+  }
+}
+@keyframes site-drift-down {
+  from {
+    transform: translateY(calc(-50% - 0.5rem));
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes site-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(0.7rem);
+    opacity: 0;
+  }
+}
+@keyframes site-ink {
+  from {
+    opacity: 0.18;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes site-unframe {
+  from {
+    clip-path: inset(1.25rem 1.25rem 0 round 1.75rem);
+  }
+  to {
+    clip-path: inset(0 0 0 round 0);
   }
 }

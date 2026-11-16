@@ -132,6 +132,8 @@ export interface HeroSection {
   secondaryAction?: Link;
   /** A few words set round a slowly turning circle on the picture: "Since 2014 · Addis Ababa". */
   stamp?: Text;
+  /** immersive only: the photo starts inside a rounded frame and opens to the full width as the page scrolls. */
+  frame?: boolean;
   /** Up to 4 short facts shown as a strip under the hero. */
   facts?: Fact[];
 }
@@ -145,6 +147,8 @@ export interface AboutSection {
   image?: Image;
   /** Which side the picture sits on, on wide screens. Default "start". */
   imageSide?: "start" | "end";
+  /** arch: the picture's top is rounded like a doorway (hotels, weddings, worship). */
+  imageShape?: "arch";
   highlights?: Fact[];
   /** Short points shown as a ticked list under the text. */
   points?: Text[];
@@ -187,8 +191,8 @@ export interface GallerySection {
   eyebrow?: Text;
   heading: Text;
   intro?: Text;
-  /** mosaic: a grid, the first photo large. scroll: one row to swipe through. */
-  layout?: "mosaic" | "scroll";
+  /** mosaic: a grid, the first photo large. scroll: one row to swipe through. wall: columns of photos drifting slowly up and down (weddings, events; 6 or more photos). */
+  layout?: "mosaic" | "scroll" | "wall";
   images: Image[];
 }
 
@@ -224,6 +228,10 @@ export interface CardsSection {
    * index: a list of big titles in rows; on a computer the picture follows the mouse (portfolios, projects, collections).
    */
   layout?: "grid" | "feature" | "scroll" | "people" | "stack" | "index";
+  /** arch: pictures rounded at the top like a doorway (feature, scroll and people layouts). */
+  imageShape?: "arch";
+  /** With 4 or more cards carrying 2 or more different badges, pills above let visitors show one kind ("For sale", "For rent"). Default true. */
+  filters?: boolean;
   items: CardItem[];
   /** A link under the cards: "See all rooms". */
   action?: Link;

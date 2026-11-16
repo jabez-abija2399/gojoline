@@ -6,6 +6,10 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
   const { site, page, lang, text, href } = useSite();
   const navPages = site.pages.filter((p) => p.nav);
   const otherLangs = site.languages.filter((l) => l !== lang);
+  // The home page's main action (book, order, give) stays one click away on computers.
+  const home = site.pages.find((p) => p.path === "/")?.sections[0];
+  const main = home?.type === "hero" ? home.primaryAction : undefined;
+  const mainHref = main ? (main.href.startsWith("#") ? `/${main.href}` : main.href) : "";
 
   const links = navPages.map((p) => (
     <a
@@ -45,6 +49,11 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
         <nav aria-label={uiText("pages", lang)} className="nav-desktop hidden items-center gap-1 md:flex">
           {links}
           {switcher}
+          {main && (
+            <a href={href(mainHref)} className="btn btn-primary header-cta ms-2">
+              {text(main.label)}
+            </a>
+          )}
         </nav>
         {(navPages.length > 0 || otherLangs.length > 0) && (
           <details

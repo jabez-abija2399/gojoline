@@ -40,6 +40,29 @@ export function Gallery({ section }: { section: GallerySection }) {
       </section>
     );
   }
+  if (section.layout === "wall" && count >= 3) {
+    // Columns of photos drifting up and down in turn (motion.css); still for visitors who ask for less motion.
+    const cols = [0, 1, 2].map((c) => section.images.map((image, i) => ({ image, i })).filter(({ i }) => i % 3 === c));
+    return (
+      <section id={section.id ?? "gallery"} className="section overflow-hidden">
+        <div className="container-site flex flex-col gap-8 md:gap-10">
+          <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
+          <div className="photo-wall">
+            {cols.map((col, c) => (
+              <ul key={c} className={`photo-wall-col ${c === 1 ? "is-down" : ""} ${c === 2 ? "max-md:hidden" : ""}`}>
+                {[...col, ...col].map(({ image, i }, k) => (
+                  <li key={k} aria-hidden={k >= col.length || undefined} className="zoom rounded-site">
+                    {k < col.length ? photo(image, section.images.slice(0, i).filter((im) => im.src).length, <Picture image={image} sizes="(min-width: 768px) 33vw, 160px" className="aspect-[4/5] w-full rounded-site" />) : <Picture image={image} sizes="(min-width: 768px) 33vw, 160px" className="aspect-[4/5] w-full rounded-site" />}
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+        {viewer}
+      </section>
+    );
+  }
   const big = count >= 5;
   // Few photos: as many columns as photos on wide screens, and on phones an odd first photo
   // runs full width, so no row ends with a gap.

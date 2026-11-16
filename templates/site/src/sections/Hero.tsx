@@ -37,7 +37,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
 
   if (variant === "immersive") {
     return (
-      <section id={section.id} className="hero-immersive relative isolate overflow-hidden bg-black text-white">
+      <section id={section.id} className={`hero-immersive relative isolate overflow-hidden bg-black text-white ${section.frame ? "hero-frame" : ""}`}>
         {/* The photo settles in slowly and drifts as the page scrolls (motion.css). */}
         <div className="hero-parallax absolute inset-0 -z-10">
           <Picture image={section.image} priority={first} wide sizes={FULL} className="hero-photo size-full" />
@@ -53,6 +53,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           {facts && <Facts facts={facts} className="mt-4 border-t border-white/30 pt-5" />}
         </div>
         {section.stamp && <Stamp text={text(section.stamp)} className="stamp-on-photo absolute end-4 top-24 md:end-10 md:top-28" />}
+        {first && <span aria-hidden="true" className="scroll-cue" />}
       </section>
     );
   }

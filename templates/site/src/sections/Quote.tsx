@@ -1,4 +1,5 @@
 import { Picture } from "../components/Picture";
+import { SplitWords } from "../components/SplitWords";
 import { useSite } from "../lib/context";
 import type { QuoteSection } from "../lib/types";
 
@@ -18,7 +19,9 @@ export function Quote({ section }: { section: QuoteSection }) {
           <span aria-hidden="true" className="quote-mark">
             “
           </span>
-          <blockquote className="pull-quote">{text(section.quote)}</blockquote>
+          <blockquote className="pull-quote ink-words">
+            <SplitWords text={text(section.quote)} />
+          </blockquote>
           {name && (
             <figcaption>
               <span className="font-semibold">{name}</span>

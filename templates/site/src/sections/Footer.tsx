@@ -87,6 +87,10 @@ export function Footer() {
           </div>
         </div>
       </div>
+      {/* The name, very large, to close the page. */}
+      <p aria-hidden="true" className="footer-wordmark container-site">
+        {text(site.name)}
+      </p>
     </footer>
   );
 }
