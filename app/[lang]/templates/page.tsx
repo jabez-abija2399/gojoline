@@ -7,13 +7,22 @@ import { SiteHeader } from "@/components/site/site-header";
 import { serif } from "@/lib/fonts-landing";
 import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
-import { TEMPLATE_FEATURES, TEMPLATE_GROUPS, TEMPLATE_STYLES, templateCatalog, type TemplateGroup } from "@/lib/landing/catalog";
+import { TEMPLATE_FEATURES, TEMPLATE_STYLES, templateCatalog } from "@/lib/landing/catalog";
+import { z } from "zod";
+import { TEMPLATE_CATEGORIES, type TemplateCategory } from "@/lib/landing/template-categories";
 
-export async function generateMetadata({ params }: PageProps<"/[lang]/templates">): Promise<Metadata> {
+/** The category in the address (?category=food); anything else means all templates. */
+async function pickedCategory(searchParams: PageProps<"/[lang]/templates">["searchParams"]): Promise<TemplateCategory | null> {
+  const parsed = z.enum(TEMPLATE_CATEGORIES).safeParse((await searchParams).category);
+  return parsed.success ? parsed.data : null;
+}
+
+export async function generateMetadata({ params, searchParams }: PageProps<"/[lang]/templates">): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const t = getMessages(lang).landing.gallery;
-  return { title: t.title, description: t.intro };
+  const category = await pickedCategory(searchParams);
+  return { title: category ? `${t.categories[category]} · ${t.title}` : t.title, description: t.intro };
 }
 
 /** Every starter site: search, filter, open one to see all its sections, then use it. */
@@ -36,7 +45,7 @@ export default async function TemplatesPage({ params }: PageProps<"/[lang]/templ
             labels={t.builder.templates}
             about={g.about}
             locale={lang}
-            groups={Object.keys(TEMPLATE_GROUPS) as TemplateGroup[]}
+            categories={[...TEMPLATE_CATEGORIES]}
             styles={[...TEMPLATE_STYLES]}
             features={[...TEMPLATE_FEATURES]}
             t={g}
