@@ -34,30 +34,42 @@ describe("AI edit credits", () => {
       usage: new MemoryUsageLogger(),
       model: "claude-opus-5-5",
       lock: new MemoryLock(),
-      credits: { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r) },
+      credits: { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r), freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r) },
     };
-    const p = await deps.store.createProject("u", { name: "", locale: "en" });
-    const send = async (text: string) => {
+    const newProject = async () => (await deps.store.createProject("u", { name: "", locale: "en" })).id;
+    const p = await newProject();
+    const send = async (text: string, projectId = p) => {
       const events: BuilderEvent[] = [];
-      await sendOwnerMessage(deps, { ownerId: "u", projectId: p.id, text, onEvent: (e) => events.push(e) });
+      await sendOwnerMessage(deps, { ownerId: "u", projectId, text, onEvent: (e) => events.push(e) });
       return events.at(-1)!;
     };
-    return { billing, send };
+    return { billing, send, newProject };
   }
 
-  it("charges one credit per change and refunds failed changes", async () => {
+  it("builds the first version free, then charges one credit per change and refunds failed changes", async () => {
     const { billing, send } = await setup();
-    expect(await billing.creditsLeft("u")).toBe(15);
+    expect(await billing.creditsLeft("u")).toBe(10);
     expect((await send("Selam Cafe")).type).toBe("done");
-    expect(await billing.creditsLeft("u")).toBe(14);
+    expect(await billing.creditsLeft("u")).toBe(10);
+    expect((await send("Make the title bigger")).type).toBe("done");
+    expect(await billing.creditsLeft("u")).toBe(9);
     const failed = await send("break it");
     expect(failed.type === "done" && failed.message.status).toBe("failed");
-    expect(await billing.creditsLeft("u")).toBe(14);
+    expect(await billing.creditsLeft("u")).toBe(9);
   });
 
-  it("stops when credits run out", async () => {
+  it("lets an owner with no changes left build a new site, but not change it", async () => {
     const { billing, send } = await setup();
-    for (let i = 0; i < 15; i++) await billing.consumeEdit("u", `pre-${i}`);
-    expect(await send("Selam Cafe")).toEqual({ type: "error", code: "no_credits", credits: 0 });
+    for (let i = 0; i < 10; i++) await billing.consumeEdit("u", `pre-${i}`);
+    expect((await send("Selam Cafe")).type).toBe("done");
+    expect(await send("Make the title bigger")).toEqual({ type: "error", code: "no_credits", credits: 0 });
+  });
+
+  it("gives one free first build per site the plan allows, each month", async () => {
+    const { billing, send, newProject } = await setup();
+    expect((await send("Selam Cafe", await newProject())).type).toBe("done");
+    expect(await billing.creditsLeft("u")).toBe(10);
+    expect((await send("Selam Cafe", await newProject())).type).toBe("done");
+    expect(await billing.creditsLeft("u")).toBe(9);
   });
 });

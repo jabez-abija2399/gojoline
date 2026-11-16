@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { AppShell } from "@/components/app/app-shell";
@@ -63,18 +64,20 @@ export default async function ProjectsPage({
       <p className="max-w-[65ch] text-sm text-ink-muted">{b.templatesHint}</p>
       <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {showcaseSites(lang).map((site, i) => (
-          <li key={site.id}>
-            <form action={createProject} data-preset={site.id} className="h-full">
+          <li key={site.id} className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md">
+            {/* The picture and name open the full preview; "Use" starts a site from it at once. */}
+            <Link href={`/${lang}/templates/${site.id}`} className="flex flex-1 flex-col">
+              <span className="block aspect-[4/3] w-full overflow-hidden bg-sunken">
+                <Image src={site.top.src} alt="" width={site.top.width} height={site.top.height} sizes="(min-width: 1280px) 220px, (min-width: 768px) 30vw, 46vw" loading={cards.length === 0 && i < 4 ? "eager" : "lazy"} className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]" />
+              </span>
+              <span className="flex flex-1 items-center gap-2 px-3 pt-3 text-sm font-medium">{b.templates[site.id]}</span>
+            </Link>
+            <form action={createProject} data-preset={site.id} className="p-2 pt-1 sm:p-3 sm:pt-1">
               <input type="hidden" name="lang" value={lang} />
               <input type="hidden" name="preset" value={site.id} />
-              <PendingButton className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-line bg-white text-start transition hover:-translate-y-0.5 hover:border-faint hover:shadow-md">
-                <span className="block aspect-[4/3] w-full overflow-hidden bg-sunken">
-                  <Image src={site.top.src} alt="" width={site.top.width} height={site.top.height} sizes="(min-width: 1280px) 220px, (min-width: 768px) 30vw, 46vw" loading={cards.length === 0 && i < 4 ? "eager" : "lazy"} className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]" />
-                </span>
-                <span className="flex flex-1 items-center justify-between gap-2 p-3 text-sm font-medium">
-                  {b.templates[site.id]}
-                  <ArrowRight aria-hidden="true" className="size-4 shrink-0 text-ink-muted transition group-hover:translate-x-0.5 group-hover:text-ink max-sm:hidden" />
-                </span>
+              <PendingButton aria-label={`${b.useTemplate}: ${b.templates[site.id]}`} className="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-full border border-line px-3 text-sm font-medium whitespace-nowrap hover:border-faint">
+                {b.useTemplate}
+                <ArrowRight aria-hidden="true" className="size-4" />
               </PendingButton>
             </form>
           </li>

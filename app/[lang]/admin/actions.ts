@@ -8,10 +8,11 @@ import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { billingSettingsSchema } from "@/lib/billing/settings";
+import { birrToMinor } from "@/lib/billing/plans";
 import { dismissReports, restoreSite, takeDownSite } from "@/lib/safety/takedown";
 import { after } from "next/server";
 import { noticeDecision } from "@/lib/billing/notify";
-import { paymentNotices, services } from "@/lib/server/services";
+import { adminStats, paymentNotices, services } from "@/lib/server/services";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
 
@@ -76,13 +77,6 @@ export async function moderateSite(_prev: ModerateState, form: FormData): Promis
 
 export type SettingsState = { status: "idle" | "ok" | "invalid" | "forbidden" | "failed"; field?: string };
 
-/** "399" or "399.50" Birr → santim, without floating point. */
-function birrToMinor(raw: string): number | null {
-  const m = /^(\d{1,7})(?:\.(\d{1,2}))?$/.exec(raw.trim().replace(/,/g, ""));
-  if (!m) return null;
-  return Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0") || "0");
-}
-
 export async function saveBillingSettings(_prev: SettingsState, form: FormData): Promise<SettingsState> {
   const user = await currentUser();
   if (!user || !isAdmin(user)) return { status: "forbidden" };
@@ -111,6 +105,54 @@ export async function saveBillingSettings(_prev: SettingsState, form: FormData):
   revalidatePath(`/${lang}/admin`);
   revalidatePath(`/${lang}/billing`);
   return { status: "ok" };
+}
+
+export type UserActionState = { status: "idle" | "ok" | "invalid" | "reason_required" | "forbidden" | "not_found" | "failed" };
+
+const userId = z.string().trim().min(1).max(200);
+const reason = z.string().trim().max(200);
+const grantInput = z.object({ userId, n: z.coerce.number().int().min(1).max(500), reason, key: z.uuid(), lang: z.enum(["en", "am"]) });
+const planInput = z.object({ userId, plan: z.enum(["starter_month", "starter_year", "business_month", "business_year", "free"]), reason, lang: z.enum(["en", "am"]) });
+
+/** Shared by the two owner actions: admin check, input, the owner exists, reason given. */
+async function ownerAction<T extends { userId: string; reason: string; lang: "en" | "am" }>(
+  schema: z.ZodType<T>,
+  form: FormData,
+  run: (adminId: string, input: T) => Promise<void>,
+  what: string,
+): Promise<UserActionState> {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) return { status: "forbidden" };
+  const parsed = schema.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { status: "invalid" };
+  if (parsed.data.reason.length < 3) return { status: "reason_required" };
+  try {
+    if (!(await adminStats().user(parsed.data.userId))) return { status: "not_found" };
+    await run(me.id, parsed.data);
+  } catch (error) {
+    reportError(what, error);
+    return { status: "failed" };
+  }
+  revalidatePath(`/${parsed.data.lang}/admin`);
+  return { status: "ok" };
+}
+
+/** Extra AI changes for an owner (1–500), with a reason in the audit log. */
+export async function grantCredits(_prev: UserActionState, form: FormData): Promise<UserActionState> {
+  return ownerAction(grantInput, form, (adminId, d) => services().billing.adminGrantCredits(adminId, d.userId, d.n, d.reason, d.key), "admin credit grant failed");
+}
+
+/** Comps and corrections: start or extend Starter/Business by a month or a year, or end the plan now. */
+export async function setOwnerPlan(_prev: UserActionState, form: FormData): Promise<UserActionState> {
+  return ownerAction(
+    planInput,
+    form,
+    (adminId, d) => {
+      const [plan, period] = d.plan === "free" ? (["free", "month"] as const) : (d.plan.split("_") as ["starter" | "business", "month" | "year"]);
+      return services().billing.adminSetPlan(adminId, d.userId, plan, period, d.reason);
+    },
+    "admin plan change failed",
+  );
 }
 
 /** Light, dark or follow the device, remembered for a year (admin pages only). */

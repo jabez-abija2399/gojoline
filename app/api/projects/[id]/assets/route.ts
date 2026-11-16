@@ -1,6 +1,6 @@
 import { json } from "@/lib/api/guard";
 import { ownerRoute } from "@/lib/api/owner";
-import { MAX_ASSET_BYTES_PER_USER, MAX_ASSETS_PER_PROJECT } from "@/lib/cloud/assets";
+import { photoQuota } from "@/lib/cloud/assets";
 import { assetName, MAX_UPLOAD_BYTES, processImage } from "@/lib/cloud/images";
 import { services } from "@/lib/server/services";
 
@@ -24,11 +24,24 @@ export async function POST(request: Request, ctx: RouteContext<"/api/projects/[i
   const file = form?.get("file");
   if (!(file instanceof File)) return json(400, { error: "not_image" });
   if (file.size > MAX_UPLOAD_BYTES) return json(413, { error: "too_large" });
-  const existing = await assets.list(r.user.id, id);
-  if (existing.length >= MAX_ASSETS_PER_PROJECT || (await assets.totalBytes(r.user.id)) > MAX_ASSET_BYTES_PER_USER) return json(409, { error: "too_many_photos" });
+  // One upload per owner at a time: parallel uploads can't all pass the quota check against the same total.
+  const lock = services().builder?.lock;
+  const lockKey = `assets:${r.user.id}`;
+  const token = lock ? await lock.acquire(lockKey, 60_000) : "none";
+  if (!token) return json(429, { error: "busy" });
+  try {
+  const [existing, usedBytes, { storageBytes }] = await Promise.all([assets.list(r.user.id, id), assets.totalBytes(r.user.id), services().entitlements(r.user.id)]);
+  // Checked before the (slow) re-encode, then again with the final size.
+  const early = photoQuota({ count: existing.length, usedBytes, newBytes: 1, limitBytes: storageBytes });
+  if (early !== "ok") return json(409, { error: early });
   const img = await processImage(Buffer.from(await file.arrayBuffer()));
   if (!img.ok) return json(img.error === "too_large" ? 413 : 415, { error: img.error });
+  const fits = photoQuota({ count: existing.length, usedBytes, newBytes: img.data.length, limitBytes: storageBytes });
+  if (fits !== "ok") return json(409, { error: fits });
   const names = new Set(existing.map((a) => a.name));
   const asset = await assets.add(r.user.id, id, { name: assetName(file.name, (n) => names.has(n)), mime: img.mime, width: img.width, height: img.height, data: img.data });
   return json(201, { asset });
+  } finally {
+    if (lock && token !== "none") await lock.release(lockKey, token);
+  }
 }

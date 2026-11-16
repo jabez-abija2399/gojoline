@@ -1,9 +1,15 @@
 import type { Entitlements, EntitlementsResolver } from "./entitlements";
-import { PLAN_FEATURES, PRODUCTS, ROLLOVER_CAP_MONTHS, TOPUP_CREDITS, type Product } from "./plans";
+import { entitlementsOf, PLAN_FEATURES, PRODUCTS, TOPUP_CREDITS, type Product } from "./plans";
 import { loadBillingSettings, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
-import { canonicalReference, type BillingStore, type PaymentMethod } from "./store";
+import { randomUUID } from "node:crypto";
+import { canonicalReference, type BillingStore, type PaymentMethod, type Subscription } from "./store";
 
 const REFUNDS_PER_DAY = 5;
+/**
+ * Free first builds (a project's very first AI run) per owner per calendar month: one per site
+ * the plan allows (Free 1, Starter 1, Business 3), so new sites can't become a supply of free AI.
+ */
+export const freeFirstBuildsPerMonth = (plan: Entitlements["plan"]) => PLAN_FEATURES[plan].maxSites;
 
 const monthRef = (d: Date) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 
@@ -36,25 +42,26 @@ export class Billing {
     return { plan: s.plan, until: s.currentPeriodEnd };
   }
 
-  entitlements: EntitlementsResolver = async (userId) => {
-    const { plan } = await this.plan(userId);
-    const { monthlyEdits: _edits, ...entitlements } = PLAN_FEATURES[plan];
-    void _edits;
-    return entitlements;
-  };
+  entitlements: EntitlementsResolver = async (userId) => entitlementsOf((await this.plan(userId)).plan);
 
   /** Grants already applied in this process: skips two queries on almost every edit. */
   private granted = new Set<string>();
 
-  /** Adds this month's edits once (idempotent), rolling unused ones over up to a cap. */
+  /**
+   * Adds this month's edits once (idempotent). Paid plans keep unused changes up to two
+   * months' allowance; Free is topped up to one month's allowance (no rollover).
+   */
   async ensureMonthlyGrant(userId: string): Promise<void> {
     const { plan } = await this.plan(userId);
     const ref = `${plan}:${monthRef(this.now())}`;
     const key = `${userId}:${ref}`;
     if (this.granted.has(key)) return;
-    const allowance = PLAN_FEATURES[plan].monthlyEdits;
-    const balance = await this.db.balance(userId);
-    const grant = Math.max(0, Math.min(allowance, allowance * ROLLOVER_CAP_MONTHS - balance));
+    const { monthlyEdits: allowance, rolloverMonths } = PLAN_FEATURES[plan];
+    const yearAgo = new Date(this.now().getTime() - 365 * 86_400_000);
+    const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, ["topup", "admin"], yearAgo)]);
+    // Bought or gifted changes never eat into the rollover cap: only unused monthly changes are capped.
+    const kept = allowance * rolloverMonths + Math.min(balance, bought);
+    const grant = Math.max(0, Math.min(allowance, kept - balance));
     await this.db.addCredits(userId, grant, "monthly_grant", ref);
     if (this.granted.size > 50_000) this.granted.clear();
     this.granted.add(key);
@@ -80,6 +87,50 @@ export class Billing {
     today.setUTCHours(0, 0, 0, 0);
     if ((await this.db.countSince(userId, "refund", today)) >= REFUNDS_PER_DAY) return false;
     return this.db.addCredits(userId, 1, "refund", ref);
+  }
+
+  /**
+   * A project's first build costs no change, up to one per site the plan allows each calendar
+   * month (every attempt counts, so failing or abandoned first builds can't loop for free).
+   * Callers serialize this per owner (see the builder's lock), so parallel requests can't race past the cap.
+   */
+  async freeFirstBuild(userId: string, ref: string): Promise<boolean> {
+    const n = this.now();
+    const monthStart = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), 1));
+    const { plan } = await this.plan(userId);
+    if ((await this.db.countSince(userId, "first_build", monthStart)) >= freeFirstBuildsPerMonth(plan)) return false;
+    return this.db.addCredits(userId, 0, "first_build", ref);
+  }
+
+  /** Admin gift of extra changes (comps, apologies). Each call is its own ledger row; audited. */
+  async adminGrantCredits(adminId: string, userId: string, n: number, reason: string, key: string = randomUUID()): Promise<void> {
+    // The form's one-time key: a double submit or retried request grants once.
+    const ref = `admin:${key}`;
+    if (!(await this.db.addCredits(userId, n, "admin", ref))) return;
+    await this.db.audit({ actorId: adminId, action: "credits.granted", targetType: "user", targetId: userId, data: { n, reason, ref } });
+  }
+
+  /**
+   * Admin plan change for comps and corrections: a paid plan starts or extends by one period
+   * (with its monthly changes); "free" ends the current plan now (nothing is deleted). Audited.
+   */
+  async adminSetPlan(adminId: string, userId: string, plan: Subscription["plan"] | "free", period: Subscription["period"], reason: string): Promise<void> {
+    const before = await this.plan(userId);
+    if (plan === "free") {
+      const s = await this.db.subscription(userId);
+      if (s && s.currentPeriodEnd > this.now()) await this.db.setSubscription({ ...s, currentPeriodEnd: this.now() });
+    } else {
+      await this.db.extendSubscription(userId, plan, period, this.now());
+      await this.ensureMonthlyGrant(userId);
+    }
+    const after = await this.plan(userId);
+    await this.db.audit({
+      actorId: adminId,
+      action: "plan.set",
+      targetType: "user",
+      targetId: userId,
+      data: { reason, period: plan === "free" ? null : period, before: { plan: before.plan, until: before.until?.toISOString() ?? null }, after: { plan: after.plan, until: after.until?.toISOString() ?? null } },
+    });
   }
 
   async submitPayment(userId: string, input: { product: Product; method: PaymentMethod; reference: string; receipt: Buffer | null }) {

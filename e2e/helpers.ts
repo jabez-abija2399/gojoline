@@ -5,8 +5,14 @@ import { expect, type Page } from "@playwright/test";
 export async function expectNoSeriousA11yIssues(page: Page) {
   // Check the settled page, not a frame mid-animation (half-faded text reads as low contrast).
   await page.emulateMedia({ reducedMotion: "reduce" });
-  // A paused animation (the visitor paused the demo or the moving list) never finishes: wait at most 3 s.
-  await page.evaluate(() => Promise.race([Promise.all(document.getAnimations().map((a) => a.finished.catch(() => undefined))), new Promise((r) => setTimeout(r, 3000))]));
+  // Scroll-driven animations (the landing "reveal") and transitions inside offscreen
+  // `content-visibility: auto` sections never finish until scrolled to, so wait at most 3 s.
+  await page.evaluate(() =>
+    Promise.race([
+      Promise.all(document.getAnimations().filter((a) => a.timeline instanceof DocumentTimeline).map((a) => a.finished.catch(() => undefined))),
+      new Promise((resolve) => setTimeout(resolve, 3000)),
+    ]),
+  );
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
@@ -46,6 +52,9 @@ export async function signIn(page: Page, opts: { lang?: "en" | "am"; contact?: s
 /** Phones keep the signed-in navigation behind "Menu"; large screens show it beside the page. */
 export async function openAppMenu(page: Page, lang: "en" | "am" = "en") {
   const menu = page.getByRole("button", { name: lang === "en" ? "Menu" : "ማውጫ", exact: true });
+  const account = page.getByRole("button", { name: lang === "en" ? /Account menu/ : /የመለያ ማውጫ/ });
+  // Wait until the page shows one of them: checking at once raced the first render on slow runs.
+  await expect(menu.or(account).first()).toBeVisible();
   if (await menu.isVisible()) await menu.click();
 }
 

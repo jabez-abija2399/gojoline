@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { safeNext } from "@/lib/auth/next";
 import { BuilderHeader } from "@/components/builder/builder-header";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { currentUser } from "@/lib/auth/session";
@@ -19,7 +20,8 @@ export default async function SignInPage({ params, searchParams }: PageProps<"/[
   const rawNext = sp.next;
   const rawError = typeof sp.error === "string" ? sp.error : undefined;
   const next = typeof rawNext === "string" ? rawNext : `/${lang}/build`;
-  if (await currentUser()) redirect(`/${lang}/build`);
+  // Already signed in (e.g. a pricing "Choose" button): go straight to where they were headed.
+  if (await currentUser()) redirect(safeNext(lang, next));
   const t = getMessages(lang);
   return (
     <>

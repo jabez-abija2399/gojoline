@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ImagePlus } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
+import { productName } from "@/lib/billing/plans";
 
 const PRODUCTS = ["starter_month", "starter_year", "business_month", "business_year", "topup"] as const;
 const METHODS = ["telebirr", "cbe", "other"] as const;
@@ -13,7 +14,7 @@ const RECEIPT_ERRORS = new Set(["receipt", "receipt_missing"]);
 
 type State = { kind: "idle" | "sending" | "done" } | { kind: "error"; code: string };
 
-export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Record<(typeof PRODUCTS)[number], string> }) {
+export function PaymentForm({ t, prices, initialProduct = "starter_month" }: { t: Messages["billing"]; prices: Record<(typeof PRODUCTS)[number], string>; initialProduct?: (typeof PRODUCTS)[number] }) {
   const [state, setState] = useState<State>({ kind: "idle" });
   const [fileName, setFileName] = useState<string | null>(null);
   const refRef = useRef<HTMLInputElement>(null);
@@ -56,9 +57,9 @@ export function PaymentForm({ t, prices }: { t: Messages["billing"]; prices: Rec
     <form onSubmit={submit} noValidate className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <label htmlFor="pay-product" className="font-medium">{t.product}</label>
-        <select id="pay-product" name="product" defaultValue="starter_month" className="min-h-11 rounded-lg border border-input bg-white px-3 text-base">
+        <select id="pay-product" name="product" defaultValue={initialProduct} className="min-h-11 rounded-lg border border-input bg-white px-3 text-base">
           {PRODUCTS.map((p) => (
-            <option key={p} value={p}>{`${t.productNames[p]} · ${prices[p]}`}</option>
+            <option key={p} value={p}>{`${productName(t.productNames, p)} · ${prices[p]}`}</option>
           ))}
         </select>
       </div>
