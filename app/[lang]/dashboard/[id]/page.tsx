@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
-import { ArrowLeft, House, Inbox, LayoutList, Settings, Sparkles, Store } from "lucide-react";
+import { ArrowLeft, House, Inbox, Settings, Sparkles, Store } from "lucide-react";
 import dynamic from "next/dynamic";
 import { HomePanel } from "@/components/dashboard/home-panel";
 import { ActiveTabInView } from "@/components/dashboard/active-tab";
@@ -11,8 +11,6 @@ import { AppShell } from "@/components/app/app-shell";
 // Each section's client code loads only with its own tab.
 const MessagesPanel = dynamic(() => import("@/components/dashboard/messages-panel").then((m) => m.MessagesPanel));
 const BusinessPanel = dynamic(() => import("@/components/dashboard/business-panel").then((m) => m.BusinessPanel));
-const ListsPanel = dynamic(() => import("@/components/dashboard/lists-panel").then((m) => m.ListsPanel));
-const PhotosPanel = dynamic(() => import("@/components/dashboard/photos-panel").then((m) => m.PhotosPanel));
 const SettingsPanel = dynamic(() => import("@/components/dashboard/settings-panel").then((m) => m.SettingsPanel));
 import { currentUser } from "@/lib/auth/session";
 import { readLists } from "@/lib/cloud/lists";
@@ -25,11 +23,14 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/dashboard/
   return { title: isLocale(lang) ? getMessages(lang).dashboard.metaTitle : undefined, robots: { index: false } };
 }
 
-const TABS = ["home", "messages", "info", "content", "settings"] as const;
+const TABS = ["home", "messages", "info", "settings"] as const;
 type Tab = (typeof TABS)[number];
-const TAB_ICONS = { home: House, messages: Inbox, info: Store, content: LayoutList, settings: Settings };
-/** Links saved before the five sections (2026-11-16) still land in the right place. */
-const OLD_TABS: Record<string, Tab> = { overview: "home", answers: "messages", lists: "content", photos: "content", telegram: "settings" };
+const TAB_ICONS = { home: House, messages: Inbox, info: Store, settings: Settings };
+/**
+ * Links saved earlier still land somewhere sensible. Content (lists and photos) was removed on
+ * 2026-11-16: content changes go through the AI, so they use credits; those links open Home.
+ */
+const OLD_TABS: Record<string, Tab> = { overview: "home", answers: "messages", lists: "home", photos: "home", content: "home", telegram: "settings" };
 
 export default async function DashboardPage({ params, searchParams }: PageProps<"/[lang]/dashboard/[id]">) {
   const { lang, id } = await params;
@@ -53,7 +54,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
   ]);
   const t = getMessages(lang);
   const d = t.dashboard;
-  const labels: Record<Tab, string> = { home: d.tabHome, messages: d.tabMessages, info: d.tabInfo, content: d.tabContent, settings: d.tabSettings };
+  const labels: Record<Tab, string> = { home: d.tabHome, messages: d.tabMessages, info: d.tabInfo, settings: d.tabSettings };
   const name = project.name || t.builder.untitled;
   const status = { live: d.statusLive, resting: d.statusResting, draft: d.statusDraft, taken_down: d.statusTakenDown }[header.status];
   const bot = services().telegram?.username ?? "gojoline_bot";
@@ -116,13 +117,6 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
           </div>
         )}
         {tab === "info" && <BusinessPanel t={d} locale={lang} projectId={id} state={{ live: published, outdated: header.outdated }} />}
-        {tab === "content" && (
-          <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
-            <p className="text-ink-muted">{d.contentIntro}</p>
-            <ListsPanel t={d} locale={lang} projectId={id} />
-            <PhotosPanel t={d} projectId={id} />
-          </div>
-        )}
         {tab === "settings" && (
           <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
             <SettingsPanel

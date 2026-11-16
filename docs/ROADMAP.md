@@ -95,6 +95,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Site dashboard v2 (2026-11-16)
 - [x] Site dashboard v2: Home (QR poster, share, next step, private visitor numbers), Messages (New/Replied/Done, call and WhatsApp links), Business info (live on the site without AI), Content (lists and photos together), Settings (Telegram, address, offline switch, Google and share preview, earlier versions); privacy-friendly visit counting with a daily rollup
+- [x] Content section removed from the site dashboard (2026-11-16): menus, products, lists and photos change through the AI, which uses changes; old Content links open Home
+- [x] Launch offer made flexible (optional last day, one-click switch, own name in both languages) and admin made denser (2026-11-16)
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates

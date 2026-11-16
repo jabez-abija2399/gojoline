@@ -238,7 +238,7 @@ test("every section in Amharic: no sideways scroll and no serious accessibility 
   test.setTimeout(120_000);
   const projectId = await publishedSite(page, info, "am");
   expect((await page.request.post("/api/test/answers", { data: { projectId, count: 2 } })).status()).toBe(200);
-  for (const tab of ["home", "messages", "info", "content", "settings"]) {
+  for (const tab of ["home", "messages", "info", "settings"]) {
     await page.goto(`/am/dashboard/${projectId}?tab=${tab}`);
     await expect(page.getByRole("link", { name: "ድረ-ገጽዎን በAI ይቀይሩ" })).toBeVisible();
     await expect(page.locator("[aria-current=page]")).toBeVisible();

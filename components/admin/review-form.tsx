@@ -9,7 +9,7 @@ function Buttons({ t }: { t: Messages["admin"] }) {
   const { pending } = useFormStatus();
   return (
     <div className="flex gap-2">
-      <button name="decision" value="approve" aria-disabled={pending} className="min-h-11 flex-1 rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50 sm:flex-none">
+      <button name="decision" value="approve" aria-disabled={pending} className="min-h-11 pointer-fine:min-h-9 flex-1 rounded-lg bg-ink px-4 font-medium text-white hover:bg-ink-hover aria-disabled:opacity-50 sm:flex-none">
         {pending ? t.working : t.approve}
       </button>
       <button
@@ -19,7 +19,7 @@ function Buttons({ t }: { t: Messages["admin"] }) {
         onClick={(e) => {
           if (pending || !window.confirm(t.rejectConfirm)) e.preventDefault();
         }}
-        className="min-h-11 flex-1 rounded-lg border border-line px-4 font-medium text-destructive hover:bg-coral-soft aria-disabled:opacity-50 sm:flex-none"
+        className="min-h-11 pointer-fine:min-h-9 flex-1 rounded-lg border border-line px-4 font-medium text-destructive hover:bg-coral-soft aria-disabled:opacity-50 sm:flex-none"
       >
         {t.reject}
       </button>
@@ -48,7 +48,7 @@ export function ReviewForm({ t, id, lang }: { t: Messages["admin"]; id: string; 
       <input type="hidden" name="lang" value={lang} />
       <label className="flex flex-1 flex-col gap-1">
         <span className="font-medium">{t.note}</span>
-        <input name="note" maxLength={300} className="min-h-11 rounded-lg border border-input px-3 text-base" />
+        <input name="note" maxLength={300} className="min-h-11 pointer-fine:min-h-9 rounded-lg border border-input px-3 text-base pointer-fine:text-sm" />
       </label>
       <Buttons t={t} />
       {message && (

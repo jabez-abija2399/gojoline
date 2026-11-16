@@ -43,7 +43,7 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
   const dayNum = new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { day: "numeric", timeZone: "UTC" });
   const done = o.steps.filter((s) => s.done).length;
   const next = nextStep(o.steps);
-  const stepHref = (id: string) => (id === "info" ? tab("info") : id === "photos" ? tab("content", "#photos") : id === "telegram" ? tab("settings", "#telegram") : id === "domain" ? (o.canOwnDomain ? tab("settings", "#address") : `/${locale}/billing`) : builder);
+  const stepHref = (id: string) => (id === "info" ? tab("info") : id === "telegram" ? tab("settings", "#telegram") : id === "domain" ? (o.canOwnDomain ? tab("settings", "#address") : `/${locale}/billing`) : builder);
   const visitsTotal = o.visits.perDay.reduce((n, d) => n + d.value, 0);
   const people = { visitors: weekTrend({ thisWeek: o.visits.thisWeek, lastWeek: o.visits.lastWeek, total: visitsTotal }), messages: weekTrend(o.messages) };
   const live = o.address && o.status !== "taken_down";
@@ -139,7 +139,7 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
                 <p className="text-ink-muted">{next.id === "domain" && o.canOwnDomain ? t.domainHintPaid : t.steps[next.id].hint}</p>
               </div>
               <Link href={stepHref(next.id)} className={`${secondary} w-fit shrink-0`}>
-                {t.stepGo}
+                {next.id === "photos" || next.id === "build" ? t.stepGoAi : t.stepGo}
                 <ArrowRight aria-hidden="true" className="size-4" />
               </Link>
             </div>

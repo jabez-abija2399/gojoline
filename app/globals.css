@@ -526,3 +526,9 @@
 .proof-fan {
   transform: translateX(var(--x)) rotate(var(--r));
 }
+
+/* Admin: Amharic small text a little larger and looser than Latin text-xs (12 px reads cramped in Ge'ez). */
+.admin-root:lang(am) .text-xs {
+  font-size: 13px;
+  line-height: 1.4;
+}
