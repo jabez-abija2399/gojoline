@@ -26,7 +26,7 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates, 
         </h1>
         <p className="max-w-[56ch] text-ink-muted sm:text-lg">{t.subtitle}</p>
       </section>
-      <div className="mx-auto mt-5 max-w-6xl sm:px-6 md:mt-6">
+      <div className="mx-auto mt-5 max-w-7xl sm:px-6 md:mt-6">
         <LandingStage
           signedIn={signedIn}
           locale={locale}

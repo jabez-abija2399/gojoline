@@ -146,7 +146,7 @@ function Steps({ live, stepsDone, working, ms, compact }: { live: Live; stepsDon
             </span>
             <span className={`min-w-0 truncate ${s === "now" ? "font-medium text-ink" : "text-ink-muted"}`}>{label}</span>
             {!compact && s !== "todo" && FILES[i] && (
-              <span className="ms-auto hidden shrink-0 items-center gap-1 rounded bg-sunken px-1 py-px font-mono text-[10px] text-ink-muted @[19rem]:inline-flex">
+              <span className="ms-auto hidden shrink-0 items-center gap-1 rounded bg-sunken px-1 py-px font-mono text-[11px] text-ink-muted @[19rem]:inline-flex">
                 <FileCode2 className="size-2.5" />
                 {FILES[i]}
               </span>
@@ -176,9 +176,9 @@ function Toast({ booking, show }: { booking: Props["booking"]; show: boolean }) 
 function MonitorView({ site, live, you, assistant, publish, booking, run, slug, priority, ms, done, stepsDone, working, built, phoneView }: State) {
   const reply = live.reply.replace("{name}", site.name);
   return (
-    <div aria-hidden="true" className="mx-auto flex w-[min(100%,72rem,calc((100svh-27rem)*1.6))] min-w-[34rem] flex-col items-center max-md:hidden">
-      <div className="w-full rounded-[1.4rem] bg-ink p-2.5 pb-3 shadow-[0_40px_90px_-40px_rgb(18_18_18/0.6)]">
-        <div className="flex aspect-[16/10] w-full flex-col overflow-hidden rounded-[0.8rem] bg-white text-start text-xs">
+    <div aria-hidden="true" className="mx-auto flex w-[min(100%,80rem,calc((100svh-13rem)*1.6))] min-w-[44rem] flex-col items-center max-md:hidden">
+      <div className="w-full rounded-[1.6rem] bg-ink p-3 pb-4 shadow-[0_40px_90px_-40px_rgb(18_18_18/0.6)]">
+        <div className="flex aspect-[16/10] w-full flex-col overflow-hidden rounded-[0.8rem] bg-white text-start text-[13px] leading-snug xl:text-sm">
           <div className="flex items-center gap-2 border-b border-line px-3 py-2">
             <span className="flex gap-1">
               <span className="size-2 rounded-full bg-line" />
@@ -195,15 +195,15 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
           <div className="grid min-h-0 flex-1 grid-cols-[34%_1fr]">
             <div className="@container flex min-h-0 flex-col gap-2 overflow-hidden border-e border-line p-3">
               <div className="flex flex-col items-end gap-0.5">
-                <span className="text-[10px] font-semibold text-ink-muted">{you}</span>
+                <span className="text-xs font-semibold text-ink-muted">{you}</span>
                 <p className="max-w-[95%] rounded-xl rounded-br-sm bg-ink px-2.5 py-2 text-white">
                   <Reveal text={site.prompt} from={0} to={TYPED} ms={ms} run={run} />
                 </p>
               </div>
               {ms >= TYPED && (
                 <div className="flex flex-col gap-0.5">
-                  <span className="flex items-center gap-1 text-[10px] font-semibold text-ink-muted">
-                    <Sparkles className="size-3 text-coral" />
+                  <span className="flex items-center gap-1 text-xs font-semibold text-ink-muted">
+                    <Sparkles className="size-3.5 text-coral" />
                     {assistant}
                   </span>
                   {ms < THOUGHT ? (
@@ -233,11 +233,11 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
             {/* The preview, with the builder's own phone / computer switch. */}
             <div className="flex min-h-0 flex-col bg-paper">
               <div className="flex items-center justify-center gap-1 border-b border-line py-1.5">
-                <span className={`flex size-6 items-center justify-center rounded-md transition-colors ${phoneView ? "bg-ink text-white" : "text-ink-muted"}`}>
-                  <Smartphone className="size-3.5" />
+                <span className={`flex size-7 items-center justify-center rounded-md transition-colors ${phoneView ? "bg-ink text-white" : "text-ink-muted"}`}>
+                  <Smartphone className="size-4" />
                 </span>
-                <span className={`flex size-6 items-center justify-center rounded-md transition-colors ${phoneView ? "text-ink-muted" : "bg-ink text-white"}`}>
-                  <Monitor className="size-3.5" />
+                <span className={`flex size-7 items-center justify-center rounded-md transition-colors ${phoneView ? "text-ink-muted" : "bg-ink text-white"}`}>
+                  <Monitor className="size-4" />
                 </span>
               </div>
               <div className="relative min-h-0 flex-1 overflow-hidden bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:16px_16px] p-3">
@@ -257,8 +257,8 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
         </div>
       </div>
       {/* The stand. */}
-      <div className="h-8 w-24 bg-[linear-gradient(to_bottom,var(--gojo-ink),#3a3632)] [clip-path:polygon(18%_0,82%_0,100%_100%,0_100%)]" />
-      <div className="h-2 w-56 rounded-full bg-ink/90 shadow-[0_8px_20px_-6px_rgb(18_18_18/0.5)]" />
+      <div className="h-10 w-32 bg-[linear-gradient(to_bottom,var(--gojo-ink),#3a3632)] [clip-path:polygon(18%_0,82%_0,100%_100%,0_100%)]" />
+      <div className="h-2.5 w-72 rounded-full bg-ink/90 shadow-[0_8px_20px_-6px_rgb(18_18_18/0.5)]" />
     </div>
   );
 }
