@@ -122,3 +122,20 @@ for (const id of presets) {
 await browser.close();
 const sorted = Object.fromEntries(Object.entries(manifest).sort(([a], [b]) => a.localeCompare(b)));
 writeFileSync(manifestFile, `${JSON.stringify(sorted)}\n`);
+
+// The card picture for the templates page: the top of the home page at computer width, 16:10.
+await makeCards(only.length ? only : Object.keys(sorted));
+
+async function makeCards(ids) {
+  for (const id of ids) {
+    for (const [lang, pages] of Object.entries(sorted[id] ?? {})) {
+      // The top of the home page. A hero shorter than 16:10 fills the card by losing a little at both sides.
+      const hero = join(root, "public", pages[0].parts[0].d.src);
+      const { width, height } = await sharp(hero).metadata();
+      const h = Math.min(height, Math.round(width / 1.6));
+      const w = Math.round(h * 1.6);
+      await sharp(hero).extract({ left: Math.round((width - w) / 2), top: 0, width: w, height: h }).resize(640, 400).webp({ quality: 62, effort: 6 }).toFile(join(outRoot, id, `${lang}-card.webp`));
+    }
+  }
+  console.log(`Card pictures for ${ids.length} template(s).`);
+}

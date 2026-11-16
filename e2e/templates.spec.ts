@@ -45,3 +45,26 @@ test("a template's preview shows every page and section before it is picked", as
   await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
   await expect(page.getByText("Your Hotel or guest house site is ready").first()).toBeAttached();
 });
+
+test("the templates page: search and filters narrow the list, and a card opens the full preview", async ({ page }) => {
+  await page.goto("/en/templates");
+  const list = page.getByRole("list", { name: "Example sites" });
+  await expect(list.getByRole("listitem")).toHaveCount(14);
+  await expectNoHorizontalScroll(page);
+  await expectNoSeriousA11yIssues(page);
+  await page.getByRole("searchbox", { name: "Search templates" }).fill("prayer");
+  await expect(list.getByRole("listitem")).toHaveCount(1);
+  await expect(page.getByText("1 result")).toBeVisible();
+  await page.getByRole("searchbox", { name: "Search templates" }).fill("");
+  // Filters sit behind a button on phones.
+  const filters = page.getByRole("button", { name: "Filters" });
+  if (await filters.isVisible()) await filters.click();
+  await page.getByRole("button", { name: "Health and beauty" }).click();
+  await expect(list.getByRole("listitem")).toHaveCount(2);
+  await page.getByRole("checkbox", { name: "Team or staff" }).check();
+  await expect(page.getByRole("heading", { name: /Health and beauty/ })).toBeVisible();
+  await page.getByRole("button", { name: "Clear filters" }).first().click();
+  await expect(list.getByRole("listitem")).toHaveCount(14);
+  await list.getByRole("link", { name: /Salon or barber/ }).click();
+  await expect(page).toHaveURL(/\/en\/templates\/salon$/);
+});
