@@ -3,6 +3,9 @@ import { makeUser, testDb } from "@/test/db";
 import { Billing, isAdmin } from "./service";
 import { DbBillingStore, MemoryBillingStore } from "./store";
 
+
+const paid = <T,>(r: { ok: true; payment: T } | { ok: false }) => (r.ok ? r.payment : null);
+
 describe("credits", () => {
   it("grants the monthly allowance once and meters edits", async () => {
     let now = new Date("2026-11-14T10:00:00Z");
@@ -100,8 +103,12 @@ describe("atomic credits (Postgres)", () => {
     expect(await b.creditsLeft("u")).toBe(0);
     const refunds = [];
     for (let i = 0; i < 7; i++) refunds.push(await b.refundEdit("u", `m${i}`));
-    expect(refunds.filter(Boolean)).toHaveLength(5);
-    expect(await b.creditsLeft("u")).toBe(5);
+    expect(refunds.filter(Boolean)).toHaveLength(7);
+    // The daily cap counts changes, not requests: 12 a day, the last refund only what is left of it.
+    expect(await b.refundEdit("u", "m7", 4)).toBe(true);
+    expect(await b.refundEdit("u", "m8", 4)).toBe(true);
+    expect(await b.refundEdit("u", "m9", 1)).toBe(false);
+    expect(await b.creditsLeft("u")).toBe(12);
   }, 30_000);
 });
 
@@ -112,10 +119,10 @@ describe("payments", () => {
     const store = new DbBillingStore(db);
     const now = new Date("2026-11-14T10:00:00Z");
     const b = new Billing(store, () => now);
-    const p = await b.submitPayment("owner", { product: "starter_month", method: "telebirr", reference: "TB123", receipt: Buffer.from("img") });
+    const p = paid(await b.submitPayment("owner", { product: "starter_month", method: "telebirr", reference: "TB123", receipt: Buffer.from("img") }));
     expect(p).toMatchObject({ amountMinor: 49_900, currency: "ETB", status: "pending", hasReceipt: true });
     // The same transaction can't be sent again, even written differently or under another method.
-    expect(await b.submitPayment("owner", { product: "starter_month", method: "other", reference: "tb-12 3", receipt: null })).toBeNull();
+    expect(paid(await b.submitPayment("owner", { product: "starter_month", method: "other", reference: "tb-12 3", receipt: null }))).toBeNull();
 
     expect(await b.review("admin", p!.id, "approve", null)).toBe("ok");
     expect(await b.review("admin", p!.id, "approve", null)).toBe("already_reviewed");
@@ -127,12 +134,12 @@ describe("payments", () => {
     expect((await store.paymentsFor("owner"))[0]?.reviewedBy).toBeNull();
     expect((await store.pendingForAdmin()).length).toBe(0);
 
-    const top = await b.submitPayment("owner", { product: "topup", method: "cbe", reference: "FT999", receipt: null });
+    const top = paid(await b.submitPayment("owner", { product: "topup", method: "cbe", reference: "FT999", receipt: null }));
     const before = await b.creditsLeft("owner");
     await b.review("admin", top!.id, "approve", "ok");
     expect(await b.creditsLeft("owner")).toBe(before + 30);
 
-    const bad = await b.submitPayment("owner", { product: "business_year", method: "cbe", reference: "FAKE", receipt: null });
+    const bad = paid(await b.submitPayment("owner", { product: "business_year", method: "cbe", reference: "FAKE", receipt: null }));
     await b.review("admin", bad!.id, "reject", "No such transfer");
     expect((await b.plan("owner")).plan).toBe("starter");
     expect((await store.auditFor("payment", bad!.id)).map((a) => a.action)).toEqual(["payment.submitted", "payment.rejected"]);

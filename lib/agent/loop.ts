@@ -5,6 +5,10 @@ import type { Workspace } from "./workspace";
 
 export const MAX_FIX_ATTEMPTS = 3;
 const MAX_TURNS = 16;
+/** Past this share of the budget the model is asked to finish what it is doing and stop. */
+const BUDGET_WARN_SHARE = 0.7;
+const BUDGET_NOTE =
+  "Budget note from Gojoline: this request has nearly used its budget. Finish the step you are on, run the build if you changed files, and reply briefly. If parts of the request are not done, say which, so the owner can ask for them separately.";
 
 export type AgentEvent =
   | { type: "text"; delta: string }
@@ -27,6 +31,14 @@ export interface AgentRunInput {
   signal?: AbortSignal;
   /** Lower for small edits to an existing site (cheaper, faster); medium for first builds. */
   effort?: Effort;
+  /** Fewer turns for small requests (default 16). */
+  maxTurns?: number;
+  /**
+   * AI cost allowed for this request, in nano-USD. Near it the model is asked to wrap up; past
+   * it no further model call is made, the site is built, and if it doesn't build every change
+   * is undone (a site is never left half-written).
+   */
+  budgetNanoUsd?: number;
 }
 
 export interface AgentRunResult {
@@ -39,6 +51,8 @@ export interface AgentRunResult {
   fixAttempts: number;
   costNanoUsd: number;
   turns: number;
+  /** The run stopped because it reached its cost budget. */
+  stoppedForBudget: boolean;
 }
 
 /**
@@ -56,11 +70,26 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
   let cost = 0;
   let replyParts: string[] = [];
   let turns = 0;
+  let stoppedForBudget = false;
+  let warned = false;
+  const budget = input.budgetNanoUsd ?? Infinity;
+  const maxTurns = Math.min(MAX_TURNS, input.maxTurns ?? MAX_TURNS);
 
   const emit = (e: AgentEvent) => input.onEvent?.(e);
+  /** Adds the wrap-up note to the next user turn, once, when the budget is nearly used. */
+  const noteBudget = () => {
+    if (warned || cost < budget * BUDGET_WARN_SHARE) return;
+    warned = true;
+    const last = messages.at(-1);
+    if (last?.role === "user" && Array.isArray(last.content)) last.content.push({ type: "text", text: BUDGET_NOTE });
+  };
 
-  while (turns < MAX_TURNS) {
+  while (turns < maxTurns) {
     if (input.signal?.aborted) break;
+    if (cost >= budget) {
+      stoppedForBudget = true;
+      break;
+    }
     turns += 1;
     const response = await input.llm.complete({
       model: input.model,
@@ -108,6 +137,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
           failedBuilds += 1;
           if (failedBuilds > MAX_FIX_ATTEMPTS) break;
           messages.push({ role: "user", content: [{ type: "text", text: `The site does not build yet. Fix these problems:\n${build.output.slice(0, 8000)}` }] });
+          noteBudget();
           continue;
         }
       }
@@ -138,7 +168,17 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       results.push({ type: "tool_result" as const, tool_use_id: block.id, content: outcome.content, is_error: outcome.isError });
     }
     messages.push({ role: "user", content: results });
+    noteBudget();
     if (failedBuilds > MAX_FIX_ATTEMPTS) break;
+  }
+
+  // Stopped early (budget or turns) with edits not yet built: build once now, so finished
+  // work is kept when it builds and everything is undone when it doesn't.
+  if (changed.size > 0 && editedSinceBuild && !input.signal?.aborted && failedBuilds <= MAX_FIX_ATTEMPTS) {
+    const build = await input.workspace.runBuild();
+    emit({ type: "build", ok: build.ok });
+    lastBuildOk = build.ok;
+    editedSinceBuild = false;
   }
 
   const buildBroken = changed.size > 0 && (lastBuildOk !== true || editedSinceBuild);
@@ -156,6 +196,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       fixAttempts: Math.max(0, failedBuilds - 1),
       costNanoUsd: cost,
       turns,
+      stoppedForBudget,
     };
   }
 
@@ -167,5 +208,6 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
     fixAttempts: Math.max(0, failedBuilds),
     costNanoUsd: cost,
     turns,
+    stoppedForBudget,
   };
 }

@@ -9,6 +9,16 @@ export interface TelegramLink {
   username: string | null;
   locale: "en" | "am";
   activeProjectId: string | null;
+  /** A bigger edit waiting for the owner's "yes" (null when nothing waits). */
+  pendingEdit?: PendingEdit | null;
+}
+
+export interface PendingEdit {
+  projectId: string;
+  text: string;
+  size: "medium" | "large";
+  /** ISO time it was asked; a "yes" after PENDING_TTL_MS is ignored. */
+  at: string;
 }
 
 export interface TelegramStore {
@@ -20,6 +30,7 @@ export interface TelegramStore {
   byUser(userId: string): Promise<TelegramLink | null>;
   byChat(chatId: string): Promise<TelegramLink | null>;
   setActiveProject(userId: string, projectId: string | null): Promise<void>;
+  setPendingEdit(userId: string, pending: PendingEdit | null): Promise<void>;
   /** True the first time an update id is seen. */
   firstSeen(updateId: number): Promise<boolean>;
 }
@@ -45,7 +56,7 @@ export class MemoryTelegramStore implements TelegramStore {
   }
   async link(input: Omit<TelegramLink, "activeProjectId">) {
     for (const [u, l] of this.links) if (l.chatId === input.chatId) this.links.delete(u);
-    this.links.set(input.userId, { ...input, activeProjectId: null });
+    this.links.set(input.userId, { ...input, activeProjectId: null, pendingEdit: null });
   }
   async unlink(userId: string) {
     this.links.delete(userId);
@@ -58,7 +69,11 @@ export class MemoryTelegramStore implements TelegramStore {
   }
   async setActiveProject(userId: string, projectId: string | null) {
     const l = this.links.get(userId);
-    if (l) l.activeProjectId = projectId;
+    if (l) Object.assign(l, { activeProjectId: projectId, pendingEdit: null });
+  }
+  async setPendingEdit(userId: string, pending: PendingEdit | null) {
+    const l = this.links.get(userId);
+    if (l) l.pendingEdit = pending;
   }
   async firstSeen(updateId: number) {
     if (this.updates.has(updateId)) return false;
@@ -89,7 +104,7 @@ export class DbTelegramStore implements TelegramStore {
     await this.db
       .insert(telegramLinks)
       .values({ ...input, activeProjectId: null })
-      .onConflictDoUpdate({ target: telegramLinks.userId, set: { chatId: input.chatId, username: input.username, locale: input.locale, activeProjectId: null } });
+      .onConflictDoUpdate({ target: telegramLinks.userId, set: { chatId: input.chatId, username: input.username, locale: input.locale, activeProjectId: null, pendingEdit: null } });
   }
   async unlink(userId: string) {
     await this.db.delete(telegramLinks).where(eq(telegramLinks.userId, userId));
@@ -103,7 +118,10 @@ export class DbTelegramStore implements TelegramStore {
     return row ?? null;
   }
   async setActiveProject(userId: string, projectId: string | null) {
-    await this.db.update(telegramLinks).set({ activeProjectId: projectId }).where(eq(telegramLinks.userId, userId));
+    await this.db.update(telegramLinks).set({ activeProjectId: projectId, pendingEdit: null }).where(eq(telegramLinks.userId, userId));
+  }
+  async setPendingEdit(userId: string, pending: PendingEdit | null) {
+    await this.db.update(telegramLinks).set({ pendingEdit: pending }).where(eq(telegramLinks.userId, userId));
   }
   async firstSeen(updateId: number) {
     const rows = await this.db.insert(telegramUpdates).values({ updateId }).onConflictDoNothing().returning({ id: telegramUpdates.updateId });

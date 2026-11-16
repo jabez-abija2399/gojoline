@@ -1,7 +1,9 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq, gt, gte, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, gt, gte, inArray, ne, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
-import { auditLog, creditBalances, creditLedger, payments, subscriptions, user } from "@/lib/db/schema";
+import { auditLog, creditBalances, creditLedger, discountCodes, payments, subscriptions, user } from "@/lib/db/schema";
+import type { RequestSize } from "./credits";
+import type { DiscountCode, DiscountInput } from "./discounts";
 import type { Product } from "./plans";
 
 export interface Subscription {
@@ -15,7 +17,31 @@ export interface Subscription {
 export type LedgerReason = "monthly_grant" | "topup" | "ai_edit" | "refund" | "admin" | "first_build";
 export type PaymentMethod = "telebirr" | "cbe" | "other";
 
-export interface Payment {
+/** Shown in the owner's history: how big an AI change was and what it was about. */
+export interface LedgerMeta {
+  size?: RequestSize | null;
+  note?: string | null;
+}
+
+export interface LedgerEntry {
+  delta: number;
+  reason: LedgerReason;
+  size: RequestSize | null;
+  note: string | null;
+  createdAt: Date;
+}
+
+/** What a payment's discount was (all null when none applied). */
+export interface PaymentDiscount {
+  originalAmountMinor: number | null;
+  discountMinor: number | null;
+  discountSource: "code" | "offer" | null;
+  discountCode: string | null;
+}
+
+export type NewPayment = { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null } & Partial<PaymentDiscount>;
+
+export interface Payment extends PaymentDiscount {
   id: string;
   userId: string;
   product: Product;
@@ -36,9 +62,14 @@ export interface BillingStore {
   setSubscription(s: Subscription): Promise<void>;
   balance(userId: string): Promise<number>;
   /** Idempotent: false when (user, reason, ref) already exists. */
-  addCredits(userId: string, delta: number, reason: LedgerReason, ref: string): Promise<boolean>;
-  /** Takes one credit atomically (parallel requests can't overspend); false when none are left. */
-  debit(userId: string, ref: string): Promise<boolean>;
+  addCredits(userId: string, delta: number, reason: LedgerReason, ref: string, meta?: LedgerMeta): Promise<boolean>;
+  /**
+   * Takes `n` credits atomically (parallel requests can't overspend); false when fewer than n
+   * are left or this ref was already charged.
+   */
+  debit(userId: string, ref: string, n?: number, meta?: LedgerMeta): Promise<boolean>;
+  /** The owner's credit movements, newest first. */
+  ledger(userId: string, limit: number, offset: number): Promise<LedgerEntry[]>;
   /** Ledger entries of this kind since the given time (e.g. refunds today). */
   countSince(userId: string, reason: LedgerReason, since: Date): Promise<number>;
   /** Sum of credits added for these reasons since the given time (e.g. bought changes this year). */
@@ -51,7 +82,21 @@ export interface BillingStore {
   pendingForAdmin(): Promise<(Payment & { contact: string | null })[]>;
   /** The customer's real email (not a phone placeholder) and phone, for payment notices. */
   contactFor(userId: string): Promise<{ email: string | null; phone: string | null } | null>;
-  createPayment(p: { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null }): Promise<Payment | null>;
+  createPayment(p: NewPayment): Promise<Payment | null>;
+  /** True when the user has an approved payment (other than `exceptId`). */
+  hasApprovedPayment(userId: string, exceptId?: string): Promise<boolean>;
+  discountByCode(code: string): Promise<DiscountCode | null>;
+  /** Null when the code already exists. */
+  createDiscount(input: Omit<DiscountInput, "kind">, by: string): Promise<DiscountCode | null>;
+  discounts(): Promise<DiscountCode[]>;
+  setDiscountActive(id: string, active: boolean): Promise<DiscountCode | null>;
+  /**
+   * Counts one use of a code for an approved payment, atomically: false when its uses are
+   * already at the maximum, or it is for first payments and the user already has another approved one.
+   */
+  useDiscount(code: string, userId: string, paymentId: string): Promise<boolean>;
+  /** Gives a use back (approving the payment failed after the use was counted). */
+  releaseDiscountUse(code: string): Promise<void>;
   paymentsFor(userId: string): Promise<Payment[]>;
   pendingPayments(): Promise<Payment[]>;
   payment(id: string): Promise<Payment | null>;
@@ -64,7 +109,8 @@ export interface BillingStore {
 
 export class MemoryBillingStore implements BillingStore {
   private subs = new Map<string, Subscription>();
-  private ledger: { userId: string; delta: number; reason: LedgerReason; ref: string; at: Date }[] = [];
+  private rows: { userId: string; delta: number; reason: LedgerReason; ref: string; at: Date; size: RequestSize | null; note: string | null }[] = [];
+  private codes: DiscountCode[] = [];
   private pays: (Payment & { receipt: Buffer | null })[] = [];
   private log: { actorId: string; action: string; targetType: string; targetId: string; data: Record<string, unknown> | null; createdAt: Date }[] = [];
 
@@ -75,25 +121,33 @@ export class MemoryBillingStore implements BillingStore {
     this.subs.set(s.userId, s);
   }
   async balance(userId: string) {
-    return this.ledger.filter((l) => l.userId === userId).reduce((n, l) => n + l.delta, 0);
+    return this.rows.filter((l) => l.userId === userId).reduce((n, l) => n + l.delta, 0);
   }
-  async addCredits(userId: string, delta: number, reason: LedgerReason, ref: string) {
-    if (this.ledger.some((l) => l.userId === userId && l.reason === reason && l.ref === ref)) return false;
-    this.ledger.push({ userId, delta, reason, ref, at: new Date() });
+  async addCredits(userId: string, delta: number, reason: LedgerReason, ref: string, meta: LedgerMeta = {}) {
+    if (this.rows.some((l) => l.userId === userId && l.reason === reason && l.ref === ref)) return false;
+    this.rows.push({ userId, delta, reason, ref, at: new Date(), size: meta.size ?? null, note: meta.note ?? null });
     return true;
   }
-  async debit(userId: string, ref: string) {
+  async debit(userId: string, ref: string, n = 1, meta: LedgerMeta = {}) {
+    if (!Number.isInteger(n) || n < 1) return false;
     // Single-threaded: check and insert happen without an await in between.
-    const bal = this.ledger.filter((l) => l.userId === userId).reduce((n, l) => n + l.delta, 0);
-    if (bal < 1 || this.ledger.some((l) => l.userId === userId && l.reason === "ai_edit" && l.ref === ref)) return false;
-    this.ledger.push({ userId, delta: -1, reason: "ai_edit", ref, at: new Date() });
+    const bal = this.rows.filter((l) => l.userId === userId).reduce((sum, l) => sum + l.delta, 0);
+    if (bal < n || this.rows.some((l) => l.userId === userId && l.reason === "ai_edit" && l.ref === ref)) return false;
+    this.rows.push({ userId, delta: -n, reason: "ai_edit", ref, at: new Date(), size: meta.size ?? null, note: meta.note ?? null });
     return true;
+  }
+  async ledger(userId: string, limit: number, offset: number) {
+    return this.rows
+      .filter((l) => l.userId === userId)
+      .reverse()
+      .slice(offset, offset + limit)
+      .map((l) => ({ delta: l.delta, reason: l.reason, size: l.size, note: l.note, createdAt: l.at }));
   }
   async countSince(userId: string, reason: LedgerReason, since: Date) {
-    return this.ledger.filter((l) => l.userId === userId && l.reason === reason && l.at >= since).length;
+    return this.rows.filter((l) => l.userId === userId && l.reason === reason && l.at >= since).length;
   }
   async sumSince(userId: string, reasons: LedgerReason[], since: Date) {
-    return this.ledger.filter((l) => l.userId === userId && reasons.includes(l.reason) && l.at >= since && l.delta > 0).reduce((n, l) => n + l.delta, 0);
+    return this.rows.filter((l) => l.userId === userId && reasons.includes(l.reason) && l.at >= since && l.delta > 0).reduce((n, l) => n + l.delta, 0);
   }
   async extendSubscription(userId: string, plan: Subscription["plan"], period: Subscription["period"], now: Date) {
     const cur = this.subs.get(userId);
@@ -112,11 +166,45 @@ export class MemoryBillingStore implements BillingStore {
   async contactFor() {
     return null;
   }
-  async createPayment(p: { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null }) {
+  async createPayment(p: NewPayment) {
     if (this.pays.some((x) => x.reference === p.reference)) return null;
-    const pay = { ...p, id: randomUUID(), currency: "ETB" as const, hasReceipt: !!p.receipt, status: "pending" as const, reviewedBy: null, reviewedAt: null, note: null, createdAt: new Date() };
+    const pay = { originalAmountMinor: null, discountMinor: null, discountSource: null, discountCode: null, ...p, id: randomUUID(), currency: "ETB" as const, hasReceipt: !!p.receipt, status: "pending" as const, reviewedBy: null, reviewedAt: null, note: null, createdAt: new Date() };
     this.pays.push(pay);
     return strip(pay);
+  }
+  async hasApprovedPayment(userId: string, exceptId?: string) {
+    return this.pays.some((p) => p.userId === userId && p.status === "approved" && p.id !== exceptId);
+  }
+  async discountByCode(code: string) {
+    const c = this.codes.find((x) => x.code === code);
+    return c ? { ...c } : null;
+  }
+  async createDiscount(input: Omit<DiscountInput, "kind">, _by: string) {
+    if (this.codes.some((x) => x.code === input.code)) return null;
+    const c: DiscountCode = { ...input, id: randomUUID(), uses: 0, active: true, createdAt: new Date() };
+    this.codes.push(c);
+    return { ...c };
+  }
+  async discounts() {
+    return [...this.codes].reverse().map((c) => ({ ...c }));
+  }
+  async setDiscountActive(id: string, active: boolean) {
+    const c = this.codes.find((x) => x.id === id);
+    if (!c) return null;
+    c.active = active;
+    return { ...c };
+  }
+  async useDiscount(code: string, userId: string, paymentId: string) {
+    // Single-threaded: the checks and the count happen without an await in between.
+    const c = this.codes.find((x) => x.code === code);
+    if (!c || (c.maxUses !== null && c.uses >= c.maxUses)) return false;
+    if (c.firstPaymentOnly && this.pays.some((p) => p.userId === userId && p.status === "approved" && p.id !== paymentId)) return false;
+    c.uses += 1;
+    return true;
+  }
+  async releaseDiscountUse(code: string) {
+    const c = this.codes.find((x) => x.code === code);
+    if (c && c.uses > 0) c.uses -= 1;
   }
   async paymentsFor(userId: string) {
     return this.pays.filter((p) => p.userId === userId).reverse().map(strip).map(forOwner);
@@ -167,6 +255,10 @@ const paymentCols = {
   reviewedAt: payments.reviewedAt,
   note: payments.note,
   createdAt: payments.createdAt,
+  originalAmountMinor: payments.originalAmountMinor,
+  discountMinor: payments.discountMinor,
+  discountSource: payments.discountSource,
+  discountCode: payments.discountCode,
 };
 
 export class DbBillingStore implements BillingStore {
@@ -186,10 +278,10 @@ export class DbBillingStore implements BillingStore {
     return Number(row?.n ?? 0);
   }
   /** One statement: the ledger row and the balance change happen together or not at all. */
-  async addCredits(userId: string, delta: number, reason: LedgerReason, ref: string) {
+  async addCredits(userId: string, delta: number, reason: LedgerReason, ref: string, meta: LedgerMeta = {}) {
     const rows = await this.db.execute(sql`
       with ins as (
-        insert into credit_ledger (user_id, delta, reason, ref) values (${userId}, ${delta}, ${reason}, ${ref})
+        insert into credit_ledger (user_id, delta, reason, ref, size, note) values (${userId}, ${delta}, ${reason}, ${ref}, ${meta.size ?? null}, ${meta.note ?? null})
         on conflict do nothing returning delta
       )
       insert into credit_balances (user_id, balance) select ${userId}, delta from ins
@@ -197,15 +289,36 @@ export class DbBillingStore implements BillingStore {
       returning 1 as ok`);
     return rowsOf(rows).length === 1;
   }
-  async debit(userId: string, ref: string) {
-    // The row lock makes concurrent debits wait and re-check balance >= 1.
-    const rows = await this.db.execute(sql`
-      with dec as (
-        update credit_balances set balance = balance - 1 where user_id = ${userId} and balance >= 1 returning user_id
-      )
-      insert into credit_ledger (user_id, delta, reason, ref) select user_id, -1, 'ai_edit', ${ref} from dec
-      returning 1 as ok`);
-    return rowsOf(rows).length === 1;
+  async debit(userId: string, ref: string, n = 1, meta: LedgerMeta = {}) {
+    if (!Number.isInteger(n) || n < 1) return false;
+    // The row lock makes concurrent debits wait and re-check balance >= n. A ref already
+    // charged takes nothing; if two race with the same ref, the unique index fails the
+    // second statement as a whole (its balance change is rolled back with it).
+    try {
+      const rows = await this.db.execute(sql`
+        with dec as (
+          update credit_balances set balance = balance - ${n}
+          where user_id = ${userId} and balance >= ${n}
+            and not exists (select 1 from credit_ledger where user_id = ${userId} and reason = 'ai_edit' and ref = ${ref})
+          returning user_id
+        )
+        insert into credit_ledger (user_id, delta, reason, ref, size, note) select user_id, ${-n}::int, 'ai_edit', ${ref}, ${meta.size ?? null}, ${meta.note ?? null} from dec
+        returning 1 as ok`);
+      return rowsOf(rows).length === 1;
+    } catch (error) {
+      if (isUniqueViolation(error)) return false;
+      throw error;
+    }
+  }
+  async ledger(userId: string, limit: number, offset: number) {
+    const rows = await this.db
+      .select({ delta: creditLedger.delta, reason: creditLedger.reason, size: creditLedger.size, note: creditLedger.note, createdAt: creditLedger.createdAt })
+      .from(creditLedger)
+      .where(eq(creditLedger.userId, userId))
+      .orderBy(desc(creditLedger.createdAt), desc(creditLedger.id))
+      .limit(limit)
+      .offset(offset);
+    return rows;
   }
   async countSince(userId: string, reason: LedgerReason, since: Date) {
     const [row] = await this.db
@@ -254,13 +367,53 @@ export class DbBillingStore implements BillingStore {
       .limit(200);
     return rows.map(({ email, phone, ...p }) => ({ ...(p as Payment), contact: phone ?? (email.endsWith("@phone.gojoline.invalid") ? null : email) }));
   }
-  async createPayment(p: { userId: string; product: Product; amountMinor: number; method: PaymentMethod; reference: string; receipt: Buffer | null }) {
+  async createPayment(p: NewPayment) {
     const rows = await this.db
       .insert(payments)
       .values({ ...p, currency: "ETB", status: "pending" })
       .onConflictDoNothing()
       .returning(paymentCols);
     return (rows[0] as Payment | undefined) ?? null;
+  }
+  async hasApprovedPayment(userId: string, exceptId?: string) {
+    const conds = [eq(payments.userId, userId), eq(payments.status, "approved")];
+    if (exceptId) conds.push(ne(payments.id, exceptId));
+    const [row] = await this.db.select({ id: payments.id }).from(payments).where(and(...conds)).limit(1);
+    return !!row;
+  }
+  async discountByCode(code: string) {
+    const [row] = await this.db.select().from(discountCodes).where(eq(discountCodes.code, code)).limit(1);
+    return row ? toDiscount(row) : null;
+  }
+  async createDiscount(input: Omit<DiscountInput, "kind">, by: string) {
+    const rows = await this.db
+      .insert(discountCodes)
+      .values({ ...input, products: input.products, createdBy: by })
+      .onConflictDoNothing()
+      .returning();
+    return rows[0] ? toDiscount(rows[0]) : null;
+  }
+  async discounts() {
+    return (await this.db.select().from(discountCodes).orderBy(desc(discountCodes.createdAt)).limit(200)).map(toDiscount);
+  }
+  async setDiscountActive(id: string, active: boolean) {
+    const [row] = await this.db.update(discountCodes).set({ active }).where(eq(discountCodes.id, id)).returning();
+    return row ? toDiscount(row) : null;
+  }
+  async useDiscount(code: string, userId: string, paymentId: string) {
+    // One statement: the row lock serializes concurrent approvals, each re-checking uses < max_uses.
+    const rows = await this.db.execute(sql`
+      update discount_codes set uses = uses + 1
+      where code = ${code}
+        and (max_uses is null or uses < max_uses)
+        and (not first_payment_only or not exists (
+          select 1 from payments where user_id = ${userId} and status = 'approved' and id <> ${paymentId}::uuid
+        ))
+      returning 1 as ok`);
+    return rowsOf(rows).length === 1;
+  }
+  async releaseDiscountUse(code: string) {
+    await this.db.execute(sql`update discount_codes set uses = uses - 1 where code = ${code} and uses > 0`);
   }
   async paymentsFor(userId: string) {
     return ((await this.db.select(paymentCols).from(payments).where(eq(payments.userId, userId)).orderBy(desc(payments.createdAt)).limit(50)) as Payment[]).map(forOwner);
@@ -294,6 +447,16 @@ export class DbBillingStore implements BillingStore {
       .where(and(eq(auditLog.targetType, targetType), eq(auditLog.targetId, targetId)))
       .orderBy(auditLog.createdAt);
   }
+}
+
+function toDiscount(row: typeof discountCodes.$inferSelect): DiscountCode {
+  return { ...row, products: row.products as Product[] };
+}
+
+/** Postgres unique_violation (also when wrapped by the driver as `cause`). */
+function isUniqueViolation(error: unknown): boolean {
+  const code = (e: unknown) => (e && typeof e === "object" ? (e as { code?: unknown }).code : undefined);
+  return code(error) === "23505" || code((error as { cause?: unknown })?.cause) === "23505";
 }
 
 /** neon-http returns { rows }, PGlite returns { rows } too; some drivers return the array itself. */
