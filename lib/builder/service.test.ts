@@ -23,6 +23,8 @@ import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
 import { MemorySandboxProvider } from "@/lib/providers/sandbox/memory";
 import { sendOwnerMessage, type BuilderDeps, type BuilderEvent } from "./service";
 import { HeuristicSizer } from "@/lib/agent/size";
+import { toolUseBlock } from "@/lib/providers/llm/fake";
+import { costNanoUsd } from "@/lib/providers/llm/pricing";
 
 describe("AI edit credits", () => {
   const starter = readFileSync("templates/site/src/site.json", "utf8");
@@ -96,15 +98,40 @@ describe("changes by request size", () => {
       sizer: new HeuristicSizer(),
     };
     const p = (await deps.store.createProject("u", { name: "", locale: "en" })).id;
-    const send = async (text: string, confirmSize?: "medium" | "large") => {
+    // By default the owner agrees to the cost shown for that size (2 or 4).
+    const send = async (text: string, confirmSize?: "medium" | "large", confirmCost = confirmSize ? { medium: 2, large: 4 }[confirmSize] : undefined) => {
       const events: BuilderEvent[] = [];
-      await sendOwnerMessage(deps, { ownerId: "u", projectId: p, text, confirmSize, onEvent: (e) => events.push(e) });
+      await sendOwnerMessage(deps, { ownerId: "u", projectId: p, text, confirmSize, confirmCost, onEvent: (e) => events.push(e) });
       return events.at(-1)!;
     };
     // The first build is free whatever its size, and never asks.
     expect((await send("Redesign the whole website")).type).toBe("done");
     return { billing, deps, send, p };
   }
+
+  it("asks again when the cost went up after the owner agreed", async () => {
+    const { billing, send } = await setup();
+    // The owner agreed to 2; an admin has since made medium requests cost 3.
+    await billing.saveCreditSettings("admin", { ...(await billing.credits()), sizeCredits: { small: 1, medium: 3, large: 4 } });
+    expect(await send("Add a new page for our catering", "medium", 2)).toMatchObject({ type: "needs_confirm", cost: 3 });
+    expect(await send("Add a new page for our catering", "medium")).toMatchObject({ type: "needs_confirm", cost: 3 });
+    expect(await send("Add a new page for our catering", "medium", 3)).toMatchObject({ type: "done", charged: 3 });
+  });
+
+  it("doesn't give back a request stopped at its cost cap; the owner is told to split it", async () => {
+    const { billing, deps, send } = await setup();
+    // A model that writes a broken file at great cost: the cap stops it, the build fails, the site is restored.
+    deps.llm = {
+      complete: async (req) => {
+        const usage = { inputTokens: 20_000, outputTokens: 1000, cacheReadTokens: 0, cacheWriteTokens: 0 };
+        return { content: [toolUseBlock("write_file", { path: "src/site.json", content: "BROKEN" })], stopReason: "tool_use", model: req.model, usage, costNanoUsd: costNanoUsd(req.model, usage), durationMs: 1, firstTokenMs: 1 };
+      },
+    };
+    const done = await send("Change the opening hours");
+    expect(done).toMatchObject({ type: "done", tooBig: true, charged: 1, credits: 9 });
+    expect(done.type === "done" && done.message.status).toBe("failed");
+    expect(await billing.creditsLeft("u")).toBe(9);
+  });
 
   it("asks before a bigger change, charges nothing until confirmed, then charges its size", async () => {
     const { billing, deps, send, p } = await setup();

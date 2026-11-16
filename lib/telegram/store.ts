@@ -17,6 +17,8 @@ export interface PendingEdit {
   projectId: string;
   text: string;
   size: "medium" | "large";
+  /** The changes the owner was told it uses. */
+  cost: number;
   /** ISO time it was asked; a "yes" after PENDING_TTL_MS is ignored. */
   at: string;
 }

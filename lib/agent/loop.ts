@@ -1,10 +1,16 @@
 import type { Effort, LLMProvider, MessageParam, SystemBlock } from "@/lib/providers/llm/types";
 import { usageRecord, type UsageLogger } from "@/lib/providers/llm/usage-log";
+import { priceOf } from "@/lib/providers/llm/pricing";
 import { agentTools, runTool } from "./tools";
 import type { Workspace } from "./workspace";
 
 export const MAX_FIX_ATTEMPTS = 3;
 const MAX_TURNS = 16;
+const MAX_OUTPUT_TOKENS = 32_000;
+/** Fewer output tokens than this aren't worth a turn (a tool call with a small edit). */
+const MIN_USEFUL_TOKENS = 1024;
+/** Rough characters per token, used only to estimate what the next turn's input will cost. */
+const CHARS_PER_TOKEN = 3;
 /** Past this share of the budget the model is asked to finish what it is doing and stop. */
 const BUDGET_WARN_SHARE = 0.7;
 const BUDGET_NOTE =
@@ -76,6 +82,19 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
   const maxTurns = Math.min(MAX_TURNS, input.maxTurns ?? MAX_TURNS);
 
   const emit = (e: AgentEvent) => input.onEvent?.(e);
+  const price = priceOf(input.model);
+  const fixedChars = JSON.stringify(input.system).length + JSON.stringify(agentTools).length;
+  let lastInputCost = 0;
+  let lastChars = 0;
+  /**
+   * What the next turn's input will cost: the last turn's input (mostly cache reads) plus the
+   * new messages at the full input price. The first turn is priced as if nothing were cached.
+   */
+  const estimateInputCost = () => {
+    const chars = JSON.stringify(messages).length;
+    const fresh = lastInputCost === 0 ? chars + fixedChars : Math.max(0, chars - lastChars);
+    return Math.ceil(lastInputCost * 1.1 + (fresh / CHARS_PER_TOKEN) * price.input);
+  };
   /** Adds the wrap-up note to the next user turn, once, when the budget is nearly used. */
   const noteBudget = () => {
     if (warned || cost < budget * BUDGET_WARN_SHARE) return;
@@ -86,9 +105,16 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
 
   while (turns < maxTurns) {
     if (input.signal?.aborted) break;
-    if (cost >= budget) {
-      stoppedForBudget = true;
-      break;
+    // Each turn may only write what the remaining budget pays for, so one long answer can't
+    // blow far past the cap (at most MIN_USEFUL_TOKENS over). Not enough left for its input: wrap up.
+    let maxTokens = MAX_OUTPUT_TOKENS;
+    if (Number.isFinite(budget)) {
+      const left = budget - cost - estimateInputCost();
+      if (left < 0) {
+        stoppedForBudget = true;
+        break;
+      }
+      maxTokens = Math.max(MIN_USEFUL_TOKENS, Math.min(MAX_OUTPUT_TOKENS, Math.floor(left / price.output)));
     }
     turns += 1;
     const response = await input.llm.complete({
@@ -96,13 +122,15 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       system: input.system,
       tools: agentTools,
       messages,
-      maxTokens: 32_000,
+      maxTokens,
       effort: input.effort ?? "medium",
       onText: (delta) => emit({ type: "text", delta }),
       signal: input.signal,
       purpose: "agent",
     });
     cost += response.costNanoUsd;
+    lastInputCost = response.usage.inputTokens * price.input + response.usage.cacheReadTokens * price.cacheRead + response.usage.cacheWriteTokens * price.cacheWrite;
+    lastChars = JSON.stringify(messages).length;
     await input.usage.log(usageRecord(response, { ...input.context, purpose: "agent" }));
     messages.push({ role: "assistant", content: response.content });
 

@@ -261,7 +261,7 @@ export const telegramLinks = pgTable("telegram_links", {
   /** Which site bot edits apply to (the owner picks with /sites). */
   activeProjectId: uuid("active_project_id"),
   /** A bigger bot edit waiting for the owner's "yes" (request, size, when asked). */
-  pendingEdit: jsonb("pending_edit").$type<{ projectId: string; text: string; size: "medium" | "large"; at: string }>(),
+  pendingEdit: jsonb("pending_edit").$type<{ projectId: string; text: string; size: "medium" | "large"; cost: number; at: string }>(),
   linkedAt: createdAt(),
 });
 

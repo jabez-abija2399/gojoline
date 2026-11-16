@@ -126,6 +126,8 @@ export async function sendOwnerMessage(
     signal?: AbortSignal;
     /** The size the owner agreed to pay for; the server sizes the request again and never charges less than it finds. */
     confirmSize?: RequestSize;
+    /** The changes the owner agreed to pay; if the request now costs more (settings changed), it asks again. */
+    confirmCost?: number;
   },
 ): Promise<void> {
   const { store } = deps;
@@ -172,7 +174,8 @@ export async function sendOwnerMessage(
       const left = (await deps.credits?.left?.(input.ownerId).catch(() => undefined)) ?? 0;
       // Never more than the owner has, and never more than one change without asking first.
       if (left < cost) return input.onEvent({ type: "error", code: "no_credits", credits: left, cost });
-      if (!input.confirmSize || sizeRank(input.confirmSize) < sizeRank(size)) return input.onEvent({ type: "needs_confirm", size, cost, credits: left });
+      const agreed = input.confirmSize && sizeRank(input.confirmSize) >= sizeRank(size) && input.confirmCost !== undefined && input.confirmCost >= cost;
+      if (!agreed) return input.onEvent({ type: "needs_confirm", size, cost, credits: left });
     }
     const meta: LedgerMeta = { size, note: historyNote(input.text) };
     const paid = free || (deps.credits ? await deps.credits.consume(input.ownerId, ref, cost, meta) : true);
@@ -232,9 +235,10 @@ export async function sendOwnerMessage(
         }
       }
     }
-    // Refund failures on our side, not runs the owner walked away from.
+    // Refund failures on our side, not runs the owner walked away from, and not requests too big
+    // for their budget (the AI work was done and paid for; the owner is told to split it).
     let charged = chargedRef ? cost : 0;
-    if (result.status === "failed" && chargedRef && !input.signal?.aborted) {
+    if (result.status === "failed" && chargedRef && !input.signal?.aborted && !result.stoppedForBudget) {
       await refund();
       chargedRef = null;
       charged = 0;

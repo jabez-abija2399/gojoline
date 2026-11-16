@@ -154,6 +154,36 @@ describe("telegram bot", () => {
     expect(await billing.creditsLeft("alice")).toBe(5);
   });
 
+  it("runs a waiting change only on an explicit yes, and a photo drops it", async () => {
+    const billing = new Billing(new MemoryBillingStore());
+    deps.builder = {
+      ...builder,
+      sizer: new HeuristicSizer(),
+      credits: {
+        consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
+        refund: (u, r, n) => billing.refundEdit(u, r, n),
+        left: (u) => billing.creditsLeft(u),
+        pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15 }),
+      },
+    };
+    await linked();
+    const p = await builder.store.createProject("alice", { name: "Bole Buna", locale: "en" });
+    await builder.store.addVersion("alice", { projectId: p.id, summary: "v1", files: { "src/site.json": starter } });
+    await handleUpdate(deps, msg("Redesign the whole website"));
+    expect((await store.byUser("alice"))?.pendingEdit).toMatchObject({ size: "large", cost: 4 });
+    // "ok" is an ordinary message: it replaces the waiting change instead of running it.
+    await handleUpdate(deps, msg("ok"));
+    expect((await store.byUser("alice"))?.pendingEdit).toBeNull();
+    expect(await billing.creditsLeft("alice")).toBe(9);
+    await handleUpdate(deps, msg("Redesign the whole website"));
+    client.files.set("f2", await sharp({ create: { width: 40, height: 40, channels: 3, background: "#000" } }).jpeg().toBuffer());
+    await handleUpdate(deps, msg("", { text: undefined, photo: [{ file_id: "f2", width: 40, height: 40 }] }));
+    expect((await store.byUser("alice"))?.pendingEdit).toBeNull();
+    await handleUpdate(deps, msg("Redesign the whole website"));
+    await handleUpdate(deps, msg("  አዎ "));
+    expect(await billing.creditsLeft("alice")).toBe(5);
+  });
+
   it("disconnects with /stop", async () => {
     await linked();
     await handleUpdate(deps, msg("/stop"));

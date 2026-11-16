@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { ScriptedLLMProvider, textBlock, toolUseBlock } from "@/lib/providers/llm/fake";
 import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
+import { costNanoUsd } from "@/lib/providers/llm/pricing";
+import type { LLMProvider } from "@/lib/providers/llm/types";
 import { MAX_FIX_ATTEMPTS, runAgent } from "./loop";
 import { MemoryWorkspace } from "./workspace";
 
@@ -109,8 +111,34 @@ describe("runAgent cost budget", () => {
       { content: [toolUseBlock("read_file", { path: "src/site.json" })] },
       { content: [textBlock("Done.")] },
     ]);
-    await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: turn + 1 });
-    expect(JSON.stringify(llm.requests[1]!.messages.at(-1)!.content)).toContain("Budget note");
+    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: turn + 1 });
+    expect(JSON.stringify(result.messages.at(-1)!.content)).toContain("Budget note");
+  });
+
+  it("limits each turn's output to what the budget pays for, so one turn can't blow past the cap", async () => {
+    // A model that always writes as much as it is allowed to.
+    const requests: number[] = [];
+    let n = 0;
+    const greedy: LLMProvider = {
+      complete: async (req) => {
+        requests.push(req.maxTokens);
+        n += 1;
+        const usage = { inputTokens: 3000, outputTokens: req.maxTokens, cacheReadTokens: 0, cacheWriteTokens: 0 };
+        const content = n < 10 ? [toolUseBlock("read_file", { path: "src/site.json" })] : [textBlock("Done.")];
+        return { content, stopReason: n < 10 ? "tool_use" : "end_turn", model: req.model, usage, costNanoUsd: costNanoUsd(req.model, usage), durationMs: 1, firstTokenMs: 1 };
+      },
+    };
+    const budget = 150_000_000; // US$0.15, one small change
+    const result = await runAgent({ ...base, llm: greedy, workspace: new MemoryWorkspace({ "src/site.json": "a" }), usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: budget });
+    expect(requests[0]).toBeLessThan(32_000);
+    expect(result.stoppedForBudget).toBe(true);
+    // Over by at most the smallest useful answer (1,024 Opus output tokens, about 2 US cents) plus input estimate error.
+    expect(result.costNanoUsd).toBeLessThanOrEqual(budget + 1024 * 20_000 + 3000 * 4000);
+    // Without a budget a turn may use the full 32k.
+    requests.length = 0;
+    n = 0;
+    await runAgent({ ...base, llm: greedy, workspace: new MemoryWorkspace({ "src/site.json": "a" }), usage: new MemoryUsageLogger(), userContent: "x" });
+    expect(requests[0]).toBe(32_000);
   });
 
   it("undoes everything when the budget runs out and the site doesn't build", async () => {

@@ -16,11 +16,14 @@ export const MODEL_PRICES: Record<string, { input: number; output: number; cache
 
 export const DEFAULT_MODEL = "claude-opus-5-5";
 
+/** A model's prices per token; unknown models are priced as the most expensive known one. */
+export function priceOf(model: string): (typeof MODEL_PRICES)[string] {
+  return MODEL_PRICES[model] ?? Object.values(MODEL_PRICES).reduce((max, p) => (p.output > max.output ? p : max));
+}
+
 /** Cost of one request in integer nano-USD. Unknown models are priced as the most expensive known one. */
 export function costNanoUsd(model: string, usage: TokenUsage): number {
-  const price =
-    MODEL_PRICES[model] ??
-    Object.values(MODEL_PRICES).reduce((max, p) => (p.output > max.output ? p : max));
+  const price = priceOf(model);
   return (
     usage.inputTokens * price.input +
     usage.outputTokens * price.output +
