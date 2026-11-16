@@ -14,12 +14,13 @@ const P = {
   braids: img("salon-card-braids", "A smiling woman in a red top having long braids plaited by a stylist's hands", "ቀይ ልብስ የለበሰች ፈገግተኛ ሴት ረጅም ሹሩባ በባለሙያ እጆች ሲሠራላት"),
   manicure: img("salon-card-manicure", "Close-up of a nail technician working on a client's manicure", "የጥፍር ባለሙያ የደንበኛዋን ጥፍር ስትሠራ በቅርበት"),
   serum: img("salon-gallery-serum-bottle", "An amber glass dropper bottle on a wooden pedestal with palm-leaf shadows", "በእንጨት መቆሚያ ላይ ያለ ቡናማ የብርጭቆ ጠርሙስ፣ የዘንባባ ጥላ ያረፈበት"),
-  kemis: img("shop-card-habesha-kemis", "A woman with braided hair and silver jewellery in a white habesha kemis", "ሹሩባ የተሠራችና የብር ጌጥ ያደረገች ሴት፣ ነጭ የሀበሻ ቀሚስ ለብሳ"),
+  kemis: img("shop-card-habesha-kemis", "A woman with full curly hair, a braided crown and silver jewellery in a white habesha kemis", "ሙሉ ጥቅልል ፀጉር፣ በግንባሯ ዙሪያ ሹሩባና የብር ጌጥ ያላት ሴት፣ ነጭ የሀበሻ ቀሚስ ለብሳ"),
   bride: img("events-gallery-bride-veil-bouquet", "A smiling bride lifting her lace veil over a bouquet of white roses", "ፈገግተኛ ሙሽሪት የዳንቴል ዓይነ ርግቧን በነጭ ጽጌረዳ እቅፍ አበባ ላይ ስታነሳ"),
   beard: img("personal-hero-man-turtleneck", "Studio portrait of a man with a short, neat beard in a black turtleneck", "አጭርና የተስተካከለ ፂም ያለው ወንድ፣ ጥቁር ሹራብ ለብሶ"),
 };
 
-const dur = (en, am) => t(en, am);
+// Non-breaking spaces keep a duration chip on one line.
+const dur = (en, am) => t(en.replace(" ", "\u00a0"), am.replace(" ", "\u00a0"));
 const m30 = dur("30 min", "30 ደቂቃ");
 const m45 = dur("45 min", "45 ደቂቃ");
 const h1 = dur("1 hr", "1 ሰዓት");
@@ -263,7 +264,7 @@ save("salon", {
           eyebrow: t("Price list", "የዋጋ ዝርዝር"),
           heading: t("Every price, in plain sight", "ሁሉም ዋጋ በግልጽ"),
           subheading: t("What it costs and how long it takes, so you can plan your day.", "ምን ያህል እንደሚያስከፍልና ምን ያህል ጊዜ እንደሚወስድ፤ ቀንዎን ለማቀድ እንዲመችዎ።"),
-          image: P.manicure,
+          image: P.interior,
           primaryAction: book,
         },
         {
