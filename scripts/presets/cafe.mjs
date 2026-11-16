@@ -9,11 +9,11 @@ const P = {
   latte: img("cafe-card-latte-glass", "A milky coffee with latte art in a glass on a wooden table", "በእንጨት ጠረጴዛ ላይ በብርጭቆ የቀረበ የወተት ቡና"),
   tibs: img("cafe-card-tibs-injera", "A clay plate of beef tibs, kitfo and ayib beside rolled injera", "በሸክላ ሳህን የቀረበ ጥብስ፣ ክትፎና አይብ ከተጠቀለለ እንጀራ ጋር"),
   veg: img("cafe-card-injera-veg-plate", "A plate of rolled injera with red lentils, yellow lentils and collard greens", "የተጠቀለለ እንጀራ ከምስር ወጥ፣ ከክክ አልጫና ከጎመን ጋር"),
-  pastries: img("cafe-gallery-pastries-coffee", "A café table with a latte, a croissant, a fruit danish and doughnuts", "ማኪያቶ፣ ክሯሷን፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ"),
+  pastries: img("cafe-gallery-pastries-coffee", "A café table with a latte, a croissant, a fruit danish and doughnuts", "ማኪያቶ፣ ክሮሳንት፣ የፍራፍሬ ኬክና ዶናት ያለበት የካፌ ጠረጴዛ"),
   bread: img("cafe-gallery-bread-baskets", "Hands cutting round difo dabo bread in a woven basket", "በመሶብ ውስጥ ድፎ ዳቦ የሚቆርሱ እጆች"),
   cups: img("cafe-gallery-cini-cups-tray", "Small cini coffee cups on an engraved metal tray, a hand reaching for one", "በተቀረጸ የብረት ትሪ ላይ ያሉ ስኒዎች፣ አንዱን የሚያነሳ እጅ"),
   incense: img("cafe-about-ceremony-incense", "A coffee ceremony: a jebena pouring into cini cups, incense smoking beside baskets of green beans", "የቡና ሥነ ሥርዓት፦ ከጀበና ወደ ስኒ የሚቀዳ ቡና፣ የሚጤስ ዕጣንና የጥሬ ቡና ቅርጫቶች"),
-  roast: img("cafe-about-roasted-beans-pan", "Hands holding a clay pan of freshly roasted coffee beans", "አዲስ የተቆላ ቡና የያዘ የሸክላ ብረት ምጣድ በእጅ"),
+  roast: img("cafe-about-roasted-beans-pan", "Hands holding a clay pan of freshly roasted coffee beans", "አዲስ የተቆላ ቡና የያዘ የሸክላ ምጣድ በእጅ"),
   pots: img("cafe-hero-clay-pot-dish", "A row of black clay pots of food topped with a green herb sprig", "በአረንጓዴ ቅጠል ያጌጡ በረድፍ የተቀመጡ ጥቁር የሸክላ ድስቶች"),
   pour: img("cafe-hero-coffee-ceremony-pour", "A woman in a white habesha dress pours coffee from a jebena into rows of cini cups", "ነጭ የሀበሻ ቀሚስ የለበሰች ሴት ከጀበና ወደ ተደረደሩ ስኒዎች ቡና ስትቀዳ"),
 };
@@ -128,7 +128,7 @@ save("cafe", {
           heading: t("Green beans in, fresh coffee out", "ጥሬው ገብቶ፣ ትኩሱ ይወጣል"),
           body: t(
             "We buy green coffee from Sidama and Yirgacheffe and roast it here in a clay pan before the doors open. By the time you walk in, the whole house smells of it.\n\nThe café is run by one family. Come for a quick macchiato at the counter, or sit down for the full ceremony with popcorn and incense.",
-            "ጥሬ ቡናውን ከሲዳማና ከይርጋጨፌ ገዝተን በር ከመክፈታችን በፊት እዚሁ በብረት ምጣድ እንቆላለን። እርስዎ ሲገቡ ቤቱ በሙሉ በቡና መዓዛ ታውዷል።\n\nካፌውን የሚያስተዳድረው አንድ ቤተሰብ ነው። ለፈጣን ማኪያቶ ብቅ ይበሉ፤ አሊያም ተቀምጠው ከፈንዲሻና ከዕጣን ጋር ሙሉውን ሥነ ሥርዓት ያጣጥሙ።",
+            "ጥሬ ቡናውን ከሲዳማና ከይርጋጨፌ ገዝተን በር ከመክፈታችን በፊት እዚሁ በሸክላ ምጣድ እንቆላለን። እርስዎ ሲገቡ ቤቱ በሙሉ በቡና መዓዛ ታውዷል።\n\nካፌውን የሚያስተዳድረው አንድ ቤተሰብ ነው። ለፈጣን ማኪያቶ ብቅ ይበሉ፤ አሊያም ተቀምጠው ከፈንዲሻና ከዕጣን ጋር ሙሉውን ሥነ ሥርዓት ያጣጥሙ።",
           ),
           image: P.roast,
           imageSide: "end",
@@ -229,7 +229,7 @@ save("cafe", {
             {
               name: t("Bakery and juice", "ዳቦ፣ ኬክና ጭማቂ"),
               items: [
-                { name: t("Croissant", "ክሯሷን"), price: birr(120), image: P.pastries },
+                { name: t("Croissant", "ክሮሳንት"), price: birr(120), image: P.pastries },
                 { name: t("Fruit danish", "የፍራፍሬ ኬክ"), price: birr(140) },
                 { name: t("Sugared doughnut", "ዶናት"), price: birr(70) },
                 { name: t("Difo dabo, a slice", "ድፎ ዳቦ፣ በቁራሽ"), description: t("Home-baked wheat bread", "በቤት የተጋገረ የስንዴ ዳቦ"), price: birr(60), tag: fasting },
@@ -281,7 +281,7 @@ save("cafe", {
           heading: t("How your coffee is made", "ቡናዎ እንዴት ይዘጋጃል"),
           items: [
             { title: t("We choose the beans", "ቡናውን እንመርጣለን"), description: t("Washed green coffee from Sidama and Yirgacheffe, bought in small lots.", "ከሲዳማና ከይርጋጨፌ የመጣ የታጠበ ጥሬ ቡና፣ በትንሽ በትንሹ የምንገዛው።") },
-            { title: t("We roast at dawn", "ጎህ ሲቀድ እንቆላለን"), description: t("In a clay pan over charcoal, stirred by hand until dark and glossy.", "በከሰል ላይ በብረት ምጣድ፣ እስኪጠቁርና እስኪያብረቀርቅ በእጅ እያማሰልን።") },
+            { title: t("We roast at dawn", "ጎህ ሲቀድ እንቆላለን"), description: t("In a clay pan over charcoal, stirred by hand until dark and glossy.", "በከሰል ላይ በሸክላ ምጣድ፣ እስኪጠቁርና እስኪያብረቀርቅ በእጅ እያማሰልን።") },
             { title: t("We grind for each pot", "ለየጀበናው እንፈጫለን"), description: t("Nothing is ground ahead, so the taste stays in the cup.", "አስቀድሞ የሚፈጭ ነገር የለም፤ ጣዕሙ በስኒው ውስጥ እንዲቆይ።") },
             { title: t("We pour at your table", "በጠረጴዛዎ ላይ እንቀዳለን"), description: t("From the jebena into small cups, with popcorn on the side.", "ከጀበና ወደ ስኒ፣ ከፈንዲሻ ጋር።") },
           ],

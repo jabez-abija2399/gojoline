@@ -143,7 +143,6 @@ save("events", {
           quote: t("On the morning of our wedding I had nothing to do but get dressed. I still don't know what went wrong that day, and that is exactly the point.", "በሠርጋችን ጠዋት ከመልበስ በቀር የምሠራው አልነበረም። በዚያ ቀን ምን ችግር እንደተፈጠረ እስከ ዛሬ አላውቅም፤ የፈለግነውም ይኸው ነበር።"),
           name: t("Selam and Dawit T.", "ሰላምና ዳዊት ተ."),
           role: t("Married in January, Bishoftu", "በጥር ወር በቢሾፍቱ የተጋቡ"),
-          image: P.flowers,
         },
         {
           type: "about",
@@ -244,7 +243,6 @@ save("events", {
           type: "cta",
           heading: t("Is your date still free?", "ቀንዎ አሁንም ነፃ ነው?"),
           body: t("We take only a few events each month. Ask early.", "በወር ጥቂት ዝግጅት ብቻ እንቀበላለን። ቀደም ብለው ይጠይቁ።"),
-          image: P.hall,
           primaryAction: ask,
           secondaryAction: link("Call us", "ይደውሉልን", "tel:+251911000000"),
         },

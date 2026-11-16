@@ -1,0 +1,1982 @@
+{
+  "name": {
+    "en": "Saba Beauty Salon",
+    "am": "ሳባ የውበት ሳሎን"
+  },
+  "tagline": {
+    "en": "Braids, colour, nails and a barber corner in Haya Hulet, Addis Ababa",
+    "am": "ሹሩባ፣ ቀለም፣ ጥፍር እና የወንዶች ፀጉር ቤት በሃያ ሁለት፣ አዲስ አበባ"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": {
+    "primary": "#B4533C",
+    "accent": "#2A1A14",
+    "background": "#FBF4EE",
+    "text": "#2B211C",
+    "font": "elegant",
+    "radius": "none",
+    "style": "editorial"
+  },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": {
+      "en": "Haya Hulet main road, 1st floor, Addis Ababa",
+      "am": "ሃያ ሁለት ዋና መንገድ፣ 1ኛ ፎቅ፣ አዲስ አበባ"
+    },
+    "hours": [
+      {
+        "days": {
+          "en": "Monday to Saturday",
+          "am": "ከሰኞ እስከ ቅዳሜ"
+        },
+        "time": {
+          "en": "8:00 am to 8:00 pm",
+          "am": "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት"
+        }
+      },
+      {
+        "days": {
+          "en": "Sunday",
+          "am": "እሑድ"
+        },
+        "time": {
+          "en": "9:00 am to 6:00 pm",
+          "am": "ከጠዋቱ 3 እስከ ምሽቱ 12 ሰዓት"
+        }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "nav": {
+        "en": "Home",
+        "am": "መነሻ"
+      },
+      "description": {
+        "en": "Braids, natural hair, colour, nails and a barber corner in Haya Hulet, Addis Ababa. Prices in Birr, booking by phone or Telegram.",
+        "am": "ሹሩባ፣ የተፈጥሮ ፀጉር፣ ቀለም፣ ጥፍር እና የወንዶች ፀጉር ቤት በሃያ ሁለት፣ አዲስ አበባ። ዋጋ በብር፣ ቀጠሮ በስልክ ወይም በቴሌግራም።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "immersive",
+          "eyebrow": {
+            "en": "Haya Hulet · Addis Ababa",
+            "am": "ሃያ ሁለት · አዲስ አበባ"
+          },
+          "heading": {
+            "en": "Hair, done with care",
+            "am": "ለፀጉርዎ የሚገባ እንክብካቤ"
+          },
+          "subheading": {
+            "en": "Braids, natural hair, colour and nails under one roof, with a barber corner for the men in your life.",
+            "am": "ሹሩባ፣ የተፈጥሮ ፀጉር፣ ቀለምና ጥፍር በአንድ ጣሪያ ሥር፤ ለወንዶችም የራሱ ፀጉር ቤት አለው።"
+          },
+          "image": {
+            "src": "/stock/salon-hero-braiding-salon.webp",
+            "alt": {
+              "en": "Black-and-white photo of two stylists braiding a seated woman's hair into cornrows",
+              "am": "ሁለት የፀጉር ባለሙያዎች የተቀመጠች ሴትን ሹሩባ ሲሠሩ የሚያሳይ ጥቁርና ነጭ ፎቶ"
+            }
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book now",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/#booking"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See prices",
+              "am": "ዋጋ ይመልከቱ"
+            },
+            "href": "/prices"
+          },
+          "facts": [
+            {
+              "value": {
+                "en": "6",
+                "am": "6"
+              },
+              "label": {
+                "en": "stylists and barbers",
+                "am": "የፀጉር ባለሙያዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "300 Br",
+                "am": "300 ብር"
+              },
+              "label": {
+                "en": "haircuts from",
+                "am": "የፀጉር ቁርጥ መነሻ"
+              }
+            },
+            {
+              "value": {
+                "en": "7 days",
+                "am": "7 ቀን"
+              },
+              "label": {
+                "en": "open every week",
+                "am": "በሳምንት ክፍት"
+              }
+            }
+          ]
+        },
+        {
+          "type": "menu",
+          "id": "prices",
+          "eyebrow": {
+            "en": "Price list",
+            "am": "የዋጋ ዝርዝር"
+          },
+          "heading": {
+            "en": "Most booked",
+            "am": "በብዛት የሚጠየቁ"
+          },
+          "intro": {
+            "en": "Prices are starting prices in Birr. Long or very thick hair can cost more: we tell you the price before we start.",
+            "am": "ዋጋዎቹ መነሻ ዋጋ ናቸው፤ በብር። ለረጅም ወይም በጣም ወፍራም ፀጉር ሊጨምር ይችላል፤ ከመጀመራችን በፊት ዋጋውን እንነግርዎታለን።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "Hair",
+                "am": "ፀጉር"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Wash and blow-dry",
+                    "am": "እጥበትና ማድረቅ"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 50000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Shampoo, conditioner and a smooth finish",
+                    "am": "ሻምፖ፣ ኮንዲሽነርና ለስላሳ አጨራረስ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Silk press",
+                    "am": "ካውያ"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 90000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Natural hair straightened without chemicals",
+                    "am": "የተፈጥሮ ፀጉር ያለ ኬሚካል ይለሰልሳል"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Natural curl styling",
+                    "am": "የተፈጥሮ ፀጉር አሠራር"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 80000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Wash, define and dry your curls",
+                    "am": "እጥበት፣ ጥቅልሉን ማውጣትና ማድረቅ"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Braids",
+                "am": "ሹሩባ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Cornrows",
+                    "am": "ቀጭን ሹሩባ"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 60000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Straight back or your own pattern",
+                    "am": "ወደ ኋላ ወይም በመረጡት ቅርጽ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Albaso",
+                    "am": "አልባሶ"
+                  },
+                  "tag": {
+                    "en": "2 hrs",
+                    "am": "2 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 120000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "The classic holiday style",
+                    "am": "የበዓል ባህላዊ አሠራር"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Box braids",
+                    "am": "ቦክስ ብሬድ"
+                  },
+                  "tag": {
+                    "en": "4 hrs",
+                    "am": "4 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 250000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Medium size, shoulder length",
+                    "am": "መካከለኛ ውፍረት፣ እስከ ትከሻ"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Barber corner",
+                "am": "የወንዶች ፀጉር ቤት"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Haircut",
+                    "am": "ፀጉር ቁርጥ"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 30000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Clippers or scissors, with a wash",
+                    "am": "በማሽን ወይም በመቀስ፣ ከእጥበት ጋር"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Haircut and beard",
+                    "am": "ፀጉርና ፂም"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 45000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Cut, beard shape and hot towel",
+                    "am": "ቁርጥ፣ ፂም ማስተካከልና ሙቅ ፎጣ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Kids' cut",
+                    "am": "የልጆች ቁርጥ"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 20000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Under 12",
+                    "am": "ከ12 ዓመት በታች"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Nails and beauty",
+                "am": "ጥፍርና ውበት"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Manicure",
+                    "am": "ማኒኪዩር"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 50000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Gel polish",
+                    "am": "ጄል ቀለም"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 90000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Lasts about three weeks",
+                    "am": "ሦስት ሳምንት ያህል ይቆያል"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Makeup",
+                    "am": "ሜካፕ"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 200000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Day or evening",
+                    "am": "የቀን ወይም የምሽት"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "eyebrow": {
+            "en": "Looks",
+            "am": "አሠራሮች"
+          },
+          "heading": {
+            "en": "Styles we love doing",
+            "am": "ወደን የምንሠራቸው"
+          },
+          "intro": {
+            "en": "From wash-and-go curls to holiday albaso and wedding mornings.",
+            "am": "ከተፈጥሮ ጥቅልል እስከ የበዓል አልባሶ፣ እስከ ሠርግ ማለዳ።"
+          },
+          "images": [
+            {
+              "src": "/stock/salon-hero-natural-curls.webp",
+              "alt": {
+                "en": "A young woman with full natural curls against a soft pink background",
+                "am": "ሙሉ የተፈጥሮ ጥቅልል ፀጉር ያላት ወጣት ሴት፣ በለስላሳ ሮዝ ዳራ ፊት"
+              }
+            },
+            {
+              "src": "/stock/salon-card-afro.webp",
+              "alt": {
+                "en": "A woman with a full round afro in a black jacket against a grey wall",
+                "am": "ሙሉ ክብ ጎፈሬ ያላት ሴት፣ ጥቁር ጃኬት ለብሳ በግራጫ ግድግዳ ፊት"
+              }
+            },
+            {
+              "src": "/stock/shop-card-habesha-kemis.webp",
+              "alt": {
+                "en": "A woman with braided hair and silver jewellery in a white habesha kemis",
+                "am": "ሹሩባ የተሠራችና የብር ጌጥ ያደረገች ሴት፣ ነጭ የሀበሻ ቀሚስ ለብሳ"
+              }
+            },
+            {
+              "src": "/stock/events-gallery-bride-veil-bouquet.webp",
+              "alt": {
+                "en": "A smiling bride lifting her lace veil over a bouquet of white roses",
+                "am": "ፈገግተኛ ሙሽሪት የዳንቴል ዓይነ ርግቧን በነጭ ጽጌረዳ እቅፍ አበባ ላይ ስታነሳ"
+              }
+            },
+            {
+              "src": "/stock/personal-hero-man-turtleneck.webp",
+              "alt": {
+                "en": "Studio portrait of a man with a short, neat beard in a black turtleneck",
+                "am": "አጭርና የተስተካከለ ፂም ያለው ወንድ፣ ጥቁር ሹራብ ለብሶ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "team",
+          "layout": "people",
+          "eyebrow": {
+            "en": "Your stylists",
+            "am": "ባለሙያዎቻችን"
+          },
+          "heading": {
+            "en": "Ask for them by name",
+            "am": "በስማቸው ይጠይቁ"
+          },
+          "intro": {
+            "en": "Each of us does a few things, and does them well.",
+            "am": "እያንዳንዳችን ጥቂት ነገር እንሠራለን፤ እሱንም አሳምረን።"
+          },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/salon-card-braids.webp",
+                "alt": {
+                  "en": "A smiling woman in a red top having long braids plaited by a stylist's hands",
+                  "am": "ቀይ ልብስ የለበሰች ፈገግተኛ ሴት ረጅም ሹሩባ በባለሙያ እጆች ሲሠራላት"
+                }
+              },
+              "title": {
+                "en": "Tigist",
+                "am": "ትግስት"
+              },
+              "subtitle": {
+                "en": "Braids and natural hair",
+                "am": "ሹሩባና የተፈጥሮ ፀጉር"
+              },
+              "description": {
+                "en": "Neat parts, light hands, no pulling. Monday to Saturday.",
+                "am": "ቀጥ ያለ መስመር፣ ቀላል እጅ፣ ያለ ሕመም። ከሰኞ እስከ ቅዳሜ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/salon-card-barber.webp",
+                "alt": {
+                  "en": "A barber in gloves and an apron trimming a client's curly top with a fade",
+                  "am": "ጓንትና ሽርጥ ያደረገ ፀጉር አስተካካይ የደንበኛውን ፀጉር ሲያስተካክል"
+                }
+              },
+              "title": {
+                "en": "Yonas",
+                "am": "ዮናስ"
+              },
+              "subtitle": {
+                "en": "Barber",
+                "am": "ፀጉር አስተካካይ"
+              },
+              "description": {
+                "en": "Fades, beards and kids' cuts in the barber corner. Every day.",
+                "am": "ፌድ፣ ፂምና የልጆች ቁርጥ በወንዶች ፀጉር ቤታችን። በየቀኑ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/salon-card-manicure.webp",
+                "alt": {
+                  "en": "Close-up of a nail technician working on a client's manicure",
+                  "am": "የጥፍር ባለሙያ የደንበኛዋን ጥፍር ስትሠራ በቅርበት"
+                }
+              },
+              "title": {
+                "en": "Bethlehem",
+                "am": "ቤተልሔም"
+              },
+              "subtitle": {
+                "en": "Nails and henna",
+                "am": "ጥፍርና ሂና"
+              },
+              "description": {
+                "en": "Gel, manicure, pedicure and bridal henna. Tuesday to Sunday.",
+                "am": "ጄል፣ ማኒኪዩር፣ ፔዲኪዩርና የሙሽራ ሂና። ከማክሰኞ እስከ እሑድ።"
+              }
+            }
+          ],
+          "action": {
+            "label": {
+              "en": "Book now",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/#booking"
+          }
+        },
+        {
+          "type": "testimonials",
+          "eyebrow": {
+            "en": "Clients say",
+            "am": "ደንበኞች ምን ይላሉ"
+          },
+          "heading": {
+            "en": "Why they come back",
+            "am": "ለምን ይመለሳሉ"
+          },
+          "items": [
+            {
+              "quote": {
+                "en": "My box braids took four hours, not eight, and my scalp did not hurt once.",
+                "am": "ቦክስ ብሬዴ ስምንት ሳይሆን አራት ሰዓት ብቻ ፈጀ፤ ራሴንም አንዴም አላመመኝም።"
+              },
+              "name": "Selam K.",
+              "role": {
+                "en": "Box braids",
+                "am": "ቦክስ ብሬድ"
+              }
+            },
+            {
+              "quote": {
+                "en": "They told me the price before they started and it was the price I paid. That is rare.",
+                "am": "ከመጀመራቸው በፊት ዋጋውን ነገሩኝ፤ የከፈልኩትም ያንኑ ነው። ይህ ብዙ ቦታ አይገኝም።"
+              },
+              "name": "Rahel D.",
+              "role": {
+                "en": "Colour and treatment",
+                "am": "ቀለምና እንክብካቤ"
+              }
+            },
+            {
+              "quote": {
+                "en": "I bring my son on Saturdays. He gets a fade while I get my nails done.",
+                "am": "ቅዳሜ ቅዳሜ ልጄን ይዤ እመጣለሁ። እኔ ጥፍሬን ስሠራ እሱ ፀጉሩን ይስተካከላል።"
+              },
+              "name": "Mekdes A.",
+              "role": {
+                "en": "Nails and barber corner",
+                "am": "ጥፍርና የወንዶች ፀጉር ቤት"
+              }
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "eyebrow": {
+            "en": "The salon",
+            "am": "ስለ ሳሎኑ"
+          },
+          "heading": {
+            "en": "A calm room above a busy street",
+            "am": "ከሚጨናነቅ መንገድ በላይ፣ ጸጥ ያለ ቤት"
+          },
+          "body": {
+            "en": "Saba opened with two chairs and one rule: nobody leaves with a sore scalp or a surprise bill. Today there are eight chairs, a nail table and a barber corner with its own door.\n\nWe use clean tools for every client, gentle products for natural hair, and we always show you the mirror before you pay.",
+            "am": "ሳባ የተከፈተው በሁለት ወንበርና በአንድ መርሕ ነው፦ ማንም ደንበኛ ራሱ ታምሞ ወይም ያልጠበቀው ሒሳብ ገጥሞት አይወጣም። ዛሬ ስምንት ወንበር፣ የጥፍር ጠረጴዛና የራሱ በር ያለው የወንዶች ፀጉር ቤት አለን።\n\nለእያንዳንዱ ደንበኛ ንጹሕ መሣሪያ፣ ለተፈጥሮ ፀጉር ለስላሳ ምርቶች እንጠቀማለን፤ ከመክፈልዎ በፊትም ሁልጊዜ በመስታወት እናሳይዎታለን።"
+          },
+          "image": {
+            "src": "/stock/salon-about-salon-interior.webp",
+            "alt": {
+              "en": "Black-and-white view of an empty salon with arched lit mirrors and styling chairs",
+              "am": "ቅስት መስታወቶችና የፀጉር ወንበሮች ያሉት ባዶ ሳሎን፣ ጥቁርና ነጭ ፎቶ"
+            }
+          },
+          "imageSide": "end",
+          "points": [
+            {
+              "en": "Tools cleaned and combs changed for every client",
+              "am": "ለእያንዳንዱ ደንበኛ የጸዳ መሣሪያና አዲስ ማበጠሪያ"
+            },
+            {
+              "en": "The price agreed before we start",
+              "am": "ከመጀመራችን በፊት የተስማማ ዋጋ"
+            },
+            {
+              "en": "Bring your own extensions, or buy them here",
+              "am": "ተጨማሪ ፀጉር ይዘው ይምጡ፤ አሊያም ከእኛ ይግዙ"
+            }
+          ],
+          "action": {
+            "label": {
+              "en": "See prices",
+              "am": "ዋጋ ይመልከቱ"
+            },
+            "href": "/prices"
+          }
+        },
+        {
+          "type": "form",
+          "id": "booking",
+          "kind": "booking",
+          "heading": {
+            "en": "Book your chair",
+            "am": "ወንበርዎን ይያዙ"
+          },
+          "intro": {
+            "en": "Choose a day and a time. We confirm by phone or Telegram within the hour, and you pay at the salon.",
+            "am": "ቀንና ሰዓት ይምረጡ። በአንድ ሰዓት ውስጥ በስልክ ወይም በቴሌግራም እናረጋግጣለን፤ ክፍያ በሳሎኑ ነው።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone number",
+                "am": "ስልክ ቁጥር"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "service",
+              "label": {
+                "en": "Service",
+                "am": "አገልግሎት"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Hair: wash, style or cut",
+                  "am": "ፀጉር፦ እጥበት፣ አሠራር ወይም ቁርጥ"
+                },
+                {
+                  "en": "Braids",
+                  "am": "ሹሩባ"
+                },
+                {
+                  "en": "Colour or treatment",
+                  "am": "ቀለም ወይም እንክብካቤ"
+                },
+                {
+                  "en": "Barber corner",
+                  "am": "የወንዶች ፀጉር ቤት"
+                },
+                {
+                  "en": "Nails, henna or makeup",
+                  "am": "ጥፍር፣ ሂና ወይም ሜካፕ"
+                },
+                {
+                  "en": "Bridal",
+                  "am": "ለሙሽራ"
+                }
+              ]
+            },
+            {
+              "name": "date",
+              "label": {
+                "en": "Day",
+                "am": "ቀን"
+              },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "time",
+              "label": {
+                "en": "Time",
+                "am": "ሰዓት"
+              },
+              "type": "time"
+            }
+          ],
+          "submitLabel": {
+            "en": "Book now",
+            "am": "ቀጠሮ ይያዙ"
+          },
+          "successMessage": {
+            "en": "Thank you. We will confirm your time shortly.",
+            "am": "እናመሰግናለን። ቀጠሮዎን በቅርቡ እናረጋግጣለን።"
+          }
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": {
+            "en": "Call, write or walk in",
+            "am": "ይደውሉ፣ ይጻፉ ወይም ይምጡ"
+          },
+          "intro": {
+            "en": "Walk-ins are welcome when a chair is free. For braids and colour, book a day ahead.",
+            "am": "ወንበር ካለ ያለ ቀጠሮም ይስተናገዳሉ። ለሹሩባና ለቀለም ግን ከአንድ ቀን በፊት ቀጠሮ ይያዙ።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Find us in Haya Hulet",
+            "am": "በሃያ ሁለት ያገኙናል"
+          },
+          "query": "Haya Hulet, Addis Ababa"
+        },
+        {
+          "type": "cta",
+          "heading": {
+            "en": "Your chair is waiting",
+            "am": "ወንበርዎ እየጠበቀዎ ነው"
+          },
+          "body": {
+            "en": "Book today, pay at the salon.",
+            "am": "ዛሬ ቀጠሮ ይያዙ፤ ክፍያ በሳሎኑ።"
+          },
+          "image": {
+            "src": "/stock/salon-about-salon-chair-mirror.webp",
+            "alt": {
+              "en": "A salon station with a black styling chair, a round lit mirror and a wooden vanity",
+              "am": "ጥቁር የፀጉር ወንበር፣ ክብ ባለመብራት መስታወትና የእንጨት መደርደሪያ ያለው የሳሎን መቀመጫ"
+            }
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book now",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/#booking"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Call us",
+              "am": "ይደውሉልን"
+            },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/prices",
+      "title": {
+        "en": "Prices",
+        "am": "ዋጋ"
+      },
+      "nav": {
+        "en": "Prices",
+        "am": "ዋጋ"
+      },
+      "description": {
+        "en": "The full price list of Saba Beauty Salon: hair, braids, colour, nails, makeup and bridal styling, with how long each takes.",
+        "am": "የሳባ የውበት ሳሎን ሙሉ የዋጋ ዝርዝር፦ ፀጉር፣ ሹሩባ፣ ቀለም፣ ጥፍር፣ ሜካፕና የሙሽራ አሠራር፤ እያንዳንዱ ከሚወስደው ጊዜ ጋር።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "banner",
+          "eyebrow": {
+            "en": "Price list",
+            "am": "የዋጋ ዝርዝር"
+          },
+          "heading": {
+            "en": "Every price, in plain sight",
+            "am": "ሁሉም ዋጋ በግልጽ"
+          },
+          "subheading": {
+            "en": "What it costs and how long it takes, so you can plan your day.",
+            "am": "ምን ያህል እንደሚያስከፍልና ምን ያህል ጊዜ እንደሚወስድ፤ ቀንዎን ለማቀድ እንዲመችዎ።"
+          },
+          "image": {
+            "src": "/stock/salon-card-manicure.webp",
+            "alt": {
+              "en": "Close-up of a nail technician working on a client's manicure",
+              "am": "የጥፍር ባለሙያ የደንበኛዋን ጥፍር ስትሠራ በቅርበት"
+            }
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book now",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/#booking"
+          }
+        },
+        {
+          "type": "menu",
+          "id": "list",
+          "eyebrow": {
+            "en": "Salon",
+            "am": "ሳሎን"
+          },
+          "heading": {
+            "en": "Services and prices",
+            "am": "አገልግሎትና ዋጋ"
+          },
+          "intro": {
+            "en": "Prices are starting prices in Birr. Long or very thick hair can cost more: we tell you the price before we start.",
+            "am": "ዋጋዎቹ መነሻ ዋጋ ናቸው፤ በብር። ለረጅም ወይም በጣም ወፍራም ፀጉር ሊጨምር ይችላል፤ ከመጀመራችን በፊት ዋጋውን እንነግርዎታለን።"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "Hair",
+                "am": "ፀጉር"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Wash and blow-dry",
+                    "am": "እጥበትና ማድረቅ"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 50000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Shampoo, conditioner and a smooth finish",
+                    "am": "ሻምፖ፣ ኮንዲሽነርና ለስላሳ አጨራረስ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Wash and set",
+                    "am": "እጥበትና ቢጉዲ"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 60000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Silk press",
+                    "am": "ካውያ"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 90000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Natural hair straightened without chemicals",
+                    "am": "የተፈጥሮ ፀጉር ያለ ኬሚካል ይለሰልሳል"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Trim and shape",
+                    "am": "ጫፍ ማስተካከል"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 35000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Natural curl styling",
+                    "am": "የተፈጥሮ ፀጉር አሠራር"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 80000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Wash, define and dry your curls",
+                    "am": "እጥበት፣ ጥቅልሉን ማውጣትና ማድረቅ"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Braids",
+                "am": "ሹሩባ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Cornrows",
+                    "am": "ቀጭን ሹሩባ"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 60000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Straight back or your own pattern",
+                    "am": "ወደ ኋላ ወይም በመረጡት ቅርጽ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Albaso",
+                    "am": "አልባሶ"
+                  },
+                  "tag": {
+                    "en": "2 hrs",
+                    "am": "2 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 120000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "The classic holiday style",
+                    "am": "የበዓል ባህላዊ አሠራር"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Box braids",
+                    "am": "ቦክስ ብሬድ"
+                  },
+                  "tag": {
+                    "en": "4 hrs",
+                    "am": "4 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 250000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Medium size, shoulder length",
+                    "am": "መካከለኛ ውፍረት፣ እስከ ትከሻ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Knotless braids",
+                    "am": "ኖትለስ ብሬድ"
+                  },
+                  "tag": {
+                    "en": "5 hrs",
+                    "am": "5 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 350000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Twists",
+                    "am": "ቱዊስት"
+                  },
+                  "tag": {
+                    "en": "3 hrs",
+                    "am": "3 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 200000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Braid take-down and wash",
+                    "am": "ሹሩባ መፍታትና እጥበት"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 50000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Colour and care",
+                "am": "ቀለምና እንክብካቤ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Full colour",
+                    "am": "ሙሉ ቀለም"
+                  },
+                  "tag": {
+                    "en": "2 hrs",
+                    "am": "2 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 250000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "One shade, roots to ends",
+                    "am": "አንድ ቀለም፣ ከሥር እስከ ጫፍ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Root touch-up",
+                    "am": "የሥር ቀለም"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 140000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Highlights",
+                    "am": "ሃይላይት"
+                  },
+                  "tag": {
+                    "en": "3 hrs",
+                    "am": "3 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 320000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Relaxer",
+                    "am": "ሪላክሰር"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 120000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "With a neutralising wash",
+                    "am": "ከማስተካከያ እጥበት ጋር"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Deep conditioning",
+                    "am": "ጥልቅ እንክብካቤ"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 80000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Steam treatment for dry or breaking hair",
+                    "am": "ለደረቀና ለሚሰባበር ፀጉር የእንፋሎት እንክብካቤ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Scalp treatment",
+                    "am": "የራስ ቆዳ እንክብካቤ"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 60000,
+                    "currency": "ETB"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Nails and beauty",
+                "am": "ጥፍርና ውበት"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Manicure",
+                    "am": "ማኒኪዩር"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 50000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Gel polish",
+                    "am": "ጄል ቀለም"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 90000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Lasts about three weeks",
+                    "am": "ሦስት ሳምንት ያህል ይቆያል"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Pedicure",
+                    "am": "ፔዲኪዩር"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 70000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Henna, hands",
+                    "am": "ሂና፣ ለእጅ"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 60000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Eyebrow shaping",
+                    "am": "ቅንድብ ማስተካከል"
+                  },
+                  "tag": {
+                    "en": "15 min",
+                    "am": "15 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 15000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Makeup",
+                    "am": "ሜካፕ"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 200000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Day or evening",
+                    "am": "የቀን ወይም የምሽት"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Brides",
+                "am": "ለሙሽሮች"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Bridal hair",
+                    "am": "የሙሽራ ፀጉር"
+                  },
+                  "tag": {
+                    "en": "3 hrs",
+                    "am": "3 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 600000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "With a trial a week before",
+                    "am": "ከአንድ ሳምንት በፊት ከሙከራ ጋር"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Bridal hair and makeup",
+                    "am": "የሙሽራ ፀጉርና ሜካፕ"
+                  },
+                  "tag": {
+                    "en": "4 hrs",
+                    "am": "4 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 1200000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Hair, makeup, nails and henna on the day",
+                    "am": "በዕለቱ ፀጉር፣ ሜካፕ፣ ጥፍርና ሂና"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Bridesmaid styling",
+                    "am": "የሚዜ አሠራር"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 150000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Per person, hair only",
+                    "am": "ለአንድ ሰው፣ ፀጉር ብቻ"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Barber corner",
+                "am": "የወንዶች ፀጉር ቤት"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Haircut",
+                    "am": "ፀጉር ቁርጥ"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 30000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Clippers or scissors, with a wash",
+                    "am": "በማሽን ወይም በመቀስ፣ ከእጥበት ጋር"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Fade",
+                    "am": "ፌድ"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 40000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Haircut and beard",
+                    "am": "ፀጉርና ፂም"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 45000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Cut, beard shape and hot towel",
+                    "am": "ቁርጥ፣ ፂም ማስተካከልና ሙቅ ፎጣ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Beard trim",
+                    "am": "ፂም ማስተካከል"
+                  },
+                  "tag": {
+                    "en": "15 min",
+                    "am": "15 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 15000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Head shave",
+                    "am": "ሙሉ ላጭ"
+                  },
+                  "tag": {
+                    "en": "20 min",
+                    "am": "20 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 25000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Kids' cut",
+                    "am": "የልጆች ቁርጥ"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 20000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Under 12",
+                    "am": "ከ12 ዓመት በታች"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "variant": "list",
+          "eyebrow": {
+            "en": "Good to know",
+            "am": "ማወቅ ያለብዎ"
+          },
+          "heading": {
+            "en": "Before your visit",
+            "am": "ከመምጣትዎ በፊት"
+          },
+          "items": [
+            {
+              "icon": "clock",
+              "title": {
+                "en": "Come on time",
+                "am": "በሰዓቱ ይድረሱ"
+              },
+              "description": {
+                "en": "We hold your chair for 15 minutes.",
+                "am": "ወንበርዎን ለ15 ደቂቃ እንጠብቃለን።"
+              }
+            },
+            {
+              "icon": "droplet",
+              "title": {
+                "en": "Come with washed hair for braids",
+                "am": "ለሹሩባ ታጥበው ይምጡ"
+              },
+              "description": {
+                "en": "Or add a wash here for 200 Br.",
+                "am": "አሊያም በ200 ብር እዚሁ እናጥብልዎታለን።"
+              }
+            },
+            {
+              "icon": "baby",
+              "title": {
+                "en": "Children are welcome",
+                "am": "ልጆች እንኳን ደህና መጡ"
+              },
+              "description": {
+                "en": "Kids' braids and cuts cost less. Ask us.",
+                "am": "የልጆች ሹሩባና ቁርጥ ዋጋው ያነሰ ነው። ይጠይቁን።"
+              }
+            },
+            {
+              "icon": "check",
+              "title": {
+                "en": "Pay how you like",
+                "am": "በመረጡት ይክፈሉ"
+              },
+              "description": {
+                "en": "Cash, Telebirr or bank transfer, after the mirror.",
+                "am": "በጥሬ ገንዘብ፣ በቴሌብር ወይም በባንክ፤ መስታወት ካዩ በኋላ።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "eyebrow": {
+            "en": "Booking",
+            "am": "ቀጠሮ"
+          },
+          "heading": {
+            "en": "How to book",
+            "am": "ቀጠሮ እንዴት ይያዛል"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Tell us what and when",
+                "am": "ምን እና መቼ ይንገሩን"
+              },
+              "description": {
+                "en": "Fill in the form, call, or write on Telegram.",
+                "am": "ቅጹን ይሙሉ፣ ይደውሉ ወይም በቴሌግራም ይጻፉ።"
+              }
+            },
+            {
+              "title": {
+                "en": "We confirm your time",
+                "am": "ሰዓትዎን እናረጋግጣለን"
+              },
+              "description": {
+                "en": "Within the hour, with the stylist's name.",
+                "am": "በአንድ ሰዓት ውስጥ፣ ከባለሙያው ስም ጋር።"
+              }
+            },
+            {
+              "title": {
+                "en": "Sit down and relax",
+                "am": "ተቀምጠው ይዝናኑ"
+              },
+              "description": {
+                "en": "Tea or coffee is on us. You pay at the end.",
+                "am": "ሻይ ወይም ቡና በእኛ ነው። ክፍያ በመጨረሻ።"
+              }
+            }
+          ],
+          "action": {
+            "label": {
+              "en": "Book now",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/#booking"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/barber",
+      "title": {
+        "en": "Barber corner",
+        "am": "የወንዶች ፀጉር ቤት"
+      },
+      "nav": {
+        "en": "Barber",
+        "am": "ለወንዶች"
+      },
+      "description": {
+        "en": "The barber corner at Saba: haircuts, fades, beards and kids' cuts in Haya Hulet. No booking needed.",
+        "am": "የሳባ የወንዶች ፀጉር ቤት፦ ቁርጥ፣ ፌድ፣ ፂምና የልጆች ቁርጥ በሃያ ሁለት። ቀጠሮ አያስፈልግም።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "eyebrow": {
+            "en": "Barber corner",
+            "am": "የወንዶች ፀጉር ቤት"
+          },
+          "heading": {
+            "en": "A sharp cut, no waiting around",
+            "am": "ጥርት ያለ ቁርጥ፣ ያለ ረጅም ወረፋ"
+          },
+          "subheading": {
+            "en": "Two chairs with their own door, beside the salon. Walk in any day, or book a time and skip the queue.",
+            "am": "ከሳሎኑ ጎን፣ የራሱ በር ያለው ሁለት ወንበር። በማንኛውም ቀን ይምጡ፤ ወይም ቀጠሮ ይዘው ወረፋ ይለፉ።"
+          },
+          "image": {
+            "src": "/stock/salon-card-barber.webp",
+            "alt": {
+              "en": "A barber in gloves and an apron trimming a client's curly top with a fade",
+              "am": "ጓንትና ሽርጥ ያደረገ ፀጉር አስተካካይ የደንበኛውን ፀጉር ሲያስተካክል"
+            }
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book now",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/#booking"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Call us",
+              "am": "ይደውሉልን"
+            },
+            "href": "tel:+251911000000"
+          }
+        },
+        {
+          "type": "menu",
+          "id": "barber-prices",
+          "eyebrow": {
+            "en": "Price list",
+            "am": "የዋጋ ዝርዝር"
+          },
+          "heading": {
+            "en": "Cuts and beards",
+            "am": "ቁርጥና ፂም"
+          },
+          "categories": [
+            {
+              "name": {
+                "en": "Barber corner",
+                "am": "የወንዶች ፀጉር ቤት"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Haircut",
+                    "am": "ፀጉር ቁርጥ"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 30000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Clippers or scissors, with a wash",
+                    "am": "በማሽን ወይም በመቀስ፣ ከእጥበት ጋር"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Fade",
+                    "am": "ፌድ"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 40000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Haircut and beard",
+                    "am": "ፀጉርና ፂም"
+                  },
+                  "tag": {
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 45000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Cut, beard shape and hot towel",
+                    "am": "ቁርጥ፣ ፂም ማስተካከልና ሙቅ ፎጣ"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Beard trim",
+                    "am": "ፂም ማስተካከል"
+                  },
+                  "tag": {
+                    "en": "15 min",
+                    "am": "15 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 15000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Head shave",
+                    "am": "ሙሉ ላጭ"
+                  },
+                  "tag": {
+                    "en": "20 min",
+                    "am": "20 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 25000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Kids' cut",
+                    "am": "የልጆች ቁርጥ"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 20000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "Under 12",
+                    "am": "ከ12 ዓመት በታች"
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "en": "Extras",
+                "am": "ተጨማሪ"
+              },
+              "items": [
+                {
+                  "name": {
+                    "en": "Hot towel shave",
+                    "am": "በሙቅ ፎጣ መላጨት"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 30000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Hair wash",
+                    "am": "ፀጉር እጥበት"
+                  },
+                  "tag": {
+                    "en": "10 min",
+                    "am": "10 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 10000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Black dye, hair or beard",
+                    "am": "ጥቁር ቀለም፣ ለፀጉር ወይም ለፂም"
+                  },
+                  "tag": {
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
+                  },
+                  "price": {
+                    "amountMinor": 40000,
+                    "currency": "ETB"
+                  }
+                },
+                {
+                  "name": {
+                    "en": "Groom's cut and beard",
+                    "am": "የሙሽራ ቁርጥና ፂም"
+                  },
+                  "tag": {
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
+                  },
+                  "price": {
+                    "amountMinor": 100000,
+                    "currency": "ETB"
+                  },
+                  "description": {
+                    "en": "On the wedding morning, by appointment",
+                    "am": "በሠርጉ ማለዳ፣ በቀጠሮ"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "variant": "numbered",
+          "eyebrow": {
+            "en": "How we work",
+            "am": "አሠራራችን"
+          },
+          "heading": {
+            "en": "Three things we never skip",
+            "am": "ፈጽሞ የማንዘላቸው ሦስት ነገሮች"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Clean blades",
+                "am": "ንጹሕ ምላጭ"
+              },
+              "description": {
+                "en": "Clippers disinfected and a new blade for every shave.",
+                "am": "ማሽኑ ይጸዳል፤ ለእያንዳንዱ ደንበኛ አዲስ ምላጭ።"
+              }
+            },
+            {
+              "title": {
+                "en": "We ask first",
+                "am": "አስቀድመን እንጠይቃለን"
+              },
+              "description": {
+                "en": "Show us a photo or tell us the number. No guessing.",
+                "am": "ፎቶ ያሳዩን ወይም ቁጥሩን ይንገሩን። በግምት አንሠራም።"
+              }
+            },
+            {
+              "title": {
+                "en": "The mirror at the end",
+                "am": "በመጨረሻ መስታወት"
+              },
+              "description": {
+                "en": "You see the back before you stand up.",
+                "am": "ከመነሳትዎ በፊት የኋላውን ያያሉ።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "quote": {
+            "en": "Same barber, same cut, every two weeks. That is all I want.",
+            "am": "ያው አስተካካይ፣ ያው ቁርጥ፣ በየሁለት ሳምንቱ። የምፈልገው ይኸው ብቻ ነው።"
+          },
+          "name": {
+            "en": "Henok B.",
+            "am": "ሄኖክ በ."
+          },
+          "role": {
+            "en": "Client of the barber corner",
+            "am": "የወንዶች ፀጉር ቤት ደንበኛ"
+          },
+          "image": {
+            "src": "/stock/personal-hero-man-turtleneck.webp",
+            "alt": {
+              "en": "Studio portrait of a man with a short, neat beard in a black turtleneck",
+              "am": "አጭርና የተስተካከለ ፂም ያለው ወንድ፣ ጥቁር ሹራብ ለብሶ"
+            }
+          }
+        },
+        {
+          "type": "cta",
+          "heading": {
+            "en": "Next chair is yours",
+            "am": "ቀጣዩ ወንበር የእርስዎ ነው"
+          },
+          "body": {
+            "en": "Open every day. Haircuts from 300 Birr.",
+            "am": "በየቀኑ ክፍት። ፀጉር ቁርጥ ከ300 ብር ጀምሮ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Book now",
+              "am": "ቀጠሮ ይያዙ"
+            },
+            "href": "/#booking"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Call us",
+              "am": "ይደውሉልን"
+            },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact",
+        "am": "አድራሻ"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "አድራሻ"
+      },
+      "description": {
+        "en": "Opening hours, address, phone and Telegram for Saba Beauty Salon in Haya Hulet, Addis Ababa.",
+        "am": "የሳባ የውበት ሳሎን የሥራ ሰዓት፣ አድራሻ፣ ስልክና ቴሌግራም፤ ሃያ ሁለት፣ አዲስ አበባ።"
+      },
+      "sections": [
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Talk to us",
+            "am": "ያነጋግሩን"
+          },
+          "intro": {
+            "en": "We answer the phone and Telegram during opening hours. Send a photo of the style you want and we will tell you the price.",
+            "am": "በሥራ ሰዓታችን ስልክና ቴሌግራም እንመልሳለን። የሚፈልጉትን አሠራር ፎቶ ይላኩልን፤ ዋጋውን እንነግርዎታለን።"
+          }
+        },
+        {
+          "type": "map",
+          "heading": {
+            "en": "Where we are",
+            "am": "የምንገኝበት"
+          },
+          "query": "Haya Hulet, Addis Ababa"
+        },
+        {
+          "type": "faq",
+          "heading": {
+            "en": "Questions we hear every day",
+            "am": "በየቀኑ የምንጠየቃቸው"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "Do I need an appointment?",
+                "am": "ቀጠሮ ያስፈልጋል?"
+              },
+              "answer": {
+                "en": "Not for a wash, a cut or nails if a chair is free. For braids, colour and bridal work, please book at least a day ahead.",
+                "am": "ለእጥበት፣ ለቁርጥ ወይም ለጥፍር ወንበር ካለ አያስፈልግም። ለሹሩባ፣ ለቀለምና ለሙሽራ ሥራ ግን ቢያንስ ከአንድ ቀን በፊት ቀጠሮ ይያዙ።"
+              }
+            },
+            {
+              "question": {
+                "en": "Should I bring my own extensions?",
+                "am": "ተጨማሪ ፀጉር ይዤ ልምጣ?"
+              },
+              "answer": {
+                "en": "You can. We also sell braiding hair at the salon; the price is separate from the braiding.",
+                "am": "ይችላሉ። በሳሎናችንም የሹሩባ ፀጉር እንሸጣለን፤ ዋጋው ከሥራው ዋጋ የተለየ ነው።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can you come to my home for a wedding?",
+                "am": "ለሠርግ ቤት ድረስ ትመጣላችሁ?"
+              },
+              "answer": {
+                "en": "Yes, inside Addis Ababa, for bridal bookings. Tell us the date and the number of people.",
+                "am": "አዎ፣ በአዲስ አበባ ውስጥ ለሙሽራ ቀጠሮ እንመጣለን። ቀኑንና የሰዉን ብዛት ይንገሩን።"
+              }
+            },
+            {
+              "question": {
+                "en": "How do I pay?",
+                "am": "ክፍያ እንዴት ነው?"
+              },
+              "answer": {
+                "en": "At the salon, in cash, by Telebirr or by bank transfer.",
+                "am": "በሳሎኑ በጥሬ ገንዘብ፣ በቴሌብር ወይም በባንክ ዝውውር።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "message",
+          "kind": "contact",
+          "heading": {
+            "en": "Send a message",
+            "am": "መልእክት ይላኩ"
+          },
+          "intro": {
+            "en": "Ask about a style, a bridal date or a group booking.",
+            "am": "ስለ አሠራር፣ ስለ ሠርግ ቀን ወይም ስለ ቡድን ቀጠሮ ይጠይቁን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone number",
+                "am": "ስልክ ቁጥር"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Message",
+                "am": "መልእክት"
+              },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": {
+            "en": "Send",
+            "am": "ላክ"
+          },
+          "successMessage": {
+            "en": "Thank you. We will answer soon.",
+            "am": "እናመሰግናለን። በቅርቡ እንመልሳለን።"
+          }
+        }
+      ]
+    }
+  ]
+}

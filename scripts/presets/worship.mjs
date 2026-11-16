@@ -25,8 +25,8 @@ save("worship", {
     address: t("Gerji, near the Mebrat Hail roundabout, Addis Ababa", "ገርጂ፣ መብራት ኃይል አደባባይ አጠገብ፣ አዲስ አበባ"),
     hours: [
       { days: t("Sunday Liturgy (Kidase)", "የእሑድ ቅዳሴ"), time: t("6:00 to 9:00 am", "ከጠዋቱ 12 እስከ 3 ሰዓት") },
-      { days: t("Church compound, every day", "የቤተ ክርስቲያኑ ግቢ፣ በየቀኑ"), time: t("5:00 am to 7:00 pm", "ከንጋቱ 11 እስከ ምሽቱ 1 ሰዓት") },
-      { days: t("Parish office, Monday to Saturday", "የሰበካ ጉባኤ ቢሮ፣ ከሰኞ እስከ ቅዳሜ"), time: t("8:30 am to 5:00 pm", "ከጠዋቱ 2:30 እስከ ቀኑ 11 ሰዓት") },
+      { days: t("Church compound, every day", "ግቢው፣ በየቀኑ"), time: t("5:00 am to 7:00 pm", "ከንጋቱ 11 እስከ ምሽቱ 1") },
+      { days: t("Parish office, Monday to Saturday", "ቢሮ፣ ከሰኞ እስከ ቅዳሜ"), time: t("8:30 am to 5:00 pm", "ከጠዋቱ 2:30 እስከ 11 ሰዓት") },
     ],
   },
   pages: [

@@ -539,13 +539,6 @@
           "role": {
             "en": "Married in January, Bishoftu",
             "am": "በጥር ወር በቢሾፍቱ የተጋቡ"
-          },
-          "image": {
-            "src": "/stock/events-card-decor-floral-centrepiece.webp",
-            "alt": {
-              "en": "A tall peach and pink rose centrepiece on a gold stand in a white marquee with gold chairs",
-              "am": "በነጭ ድንኳን ውስጥ በወርቃማ መቆሚያ ላይ ያለ ረጅም የጽጌረዳ አበባ ማስጌጫ፣ ከወርቃማ ወንበሮች ጋር"
-            }
           }
         },
         {
@@ -1177,13 +1170,6 @@
           "body": {
             "en": "We take only a few events each month. Ask early.",
             "am": "በወር ጥቂት ዝግጅት ብቻ እንቀበላለን። ቀደም ብለው ይጠይቁ።"
-          },
-          "image": {
-            "src": "/stock/events-hero-chandelier-banquet-hall.webp",
-            "alt": {
-              "en": "A golden banquet hall with large chandeliers, set dinner tables and tall flower arrangements",
-              "am": "ትላልቅ ሻንድሊየሮች፣ የተዘጋጁ የእራት ጠረጴዛዎችና ረጃጅም የአበባ ማስጌጫዎች ያሉት ወርቃማ አዳራሽ"
-            }
           },
           "primaryAction": {
             "label": {

@@ -140,7 +140,6 @@ save("school", {
             img("school-card-art-class", "Three young girls in aprons painting a rainbow at a paint-covered table", "ሽርጥ ያደረጉ ሦስት ሴት ልጆች በቀለም በተሸፈነ ጠረጴዛ ላይ ቀስተ ደመና ሲሥሉ"),
             img("school-card-kindergarten-swing", "A happy little girl in a cream and orange uniform on a playground swing", "ክሬምና ብርቱካናማ የደንብ ልብስ የለበሰች ደስተኛ ሕፃን በመጫወቻ ዥዋዥዌ ላይ"),
             img("school-gallery-twin-boys", "Two smiling young boys in green checked school shirts, one with a backpack", "አረንጓዴ ባለ ካሬ የደንብ ሸሚዝ የለበሱ ሁለት ፈገግተኛ ልጆች፣ አንደኛው ቦርሳ አዝሎ"),
-            img("ngo-card-teacher-classroom", "A classroom seen over a pupil's shoulder, the teacher holding up a sheet of paper at the whiteboard", "ከተማሪ ትከሻ በላይ የታየ ክፍል፤ መምህሩ በነጭ ሰሌዳ ፊት ወረቀት ከፍ አድርጎ ሲያሳይ"),
           ],
         },
         {

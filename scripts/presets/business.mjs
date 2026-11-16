@@ -1,7 +1,6 @@
 import { t, img, link, birr, save } from "./lib.mjs";
 
 const quote = link("Request a quote", "ዋጋ ይጠይቁ", "/#quote");
-const from = t("from", "ጀምሮ");
 
 const services = [
   { icon: "chart", title: t("Feasibility studies", "የአዋጭነት ጥናት"), description: t("Market, technical and financial study of a new project, in the format banks and the investment commission ask for.", "ለአዲስ ፕሮጀክት የገበያ፣ የቴክኒክና የፋይናንስ ጥናት፤ ባንኮችና የኢንቨስትመንት ኮሚሽን በሚጠይቁት ቅርጸት።"), price: birr(180000) },
@@ -67,7 +66,7 @@ save("business", {
     phone: "+251 911 000 000",
     email: "hello@example.com",
     telegram: "yourbusiness",
-    address: t("4th floor, Kazanchis, near the Hilton, Addis Ababa", "ካዛንቺስ፣ ሒልተን አካባቢ፣ 4ኛ ፎቅ፣ አዲስ አበባ"),
+    address: t("4th floor, Guinea Conakry Street, Kazanchis, Addis Ababa", "ካዛንቺስ፣ ጊኒ ኮናክሪ ጎዳና፣ 4ኛ ፎቅ፣ አዲስ አበባ"),
     hours: [
       { days: t("Monday to Friday", "ከሰኞ እስከ ዓርብ"), time: t("8:30 am to 5:30 pm", "ከጠዋቱ 2:30 እስከ ቀኑ 11:30") },
       { days: t("Saturday", "ቅዳሜ"), time: t("9:00 am to 1:00 pm", "ከጠዋቱ 3 እስከ ቀኑ 7 ሰዓት") },
@@ -97,7 +96,7 @@ save("business", {
             { value: t("14", "14"), label: t("years of practice", "ዓመታት በሥራ ላይ") },
             { value: t("320+", "320+"), label: t("studies and plans delivered", "የተረከቡ ጥናቶችና ዕቅዶች") },
             { value: t("2.1 bn Br", "2.1 ቢ ብር"), label: t("in loans our clients secured", "ደንበኞቻችን ያገኙት ብድር") },
-            { value: t("9 of 10", "ከ10 ዘጠኙ"), label: t("clients come back", "ደንበኞች ተመልሰው ይመጣሉ") },
+            { value: t("9 of 10", "90%"), label: t("clients come back", "ደንበኞች ተመልሰው ይመጣሉ") },
           ],
         },
         {

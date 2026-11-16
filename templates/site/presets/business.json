@@ -25,8 +25,8 @@
     "email": "hello@example.com",
     "telegram": "yourbusiness",
     "address": {
-      "en": "4th floor, Kazanchis, near the Hilton, Addis Ababa",
-      "am": "ካዛንቺስ፣ ሒልተን አካባቢ፣ 4ኛ ፎቅ፣ አዲስ አበባ"
+      "en": "4th floor, Guinea Conakry Street, Kazanchis, Addis Ababa",
+      "am": "ካዛንቺስ፣ ጊኒ ኮናክሪ ጎዳና፣ 4ኛ ፎቅ፣ አዲስ አበባ"
     },
     "hours": [
       {
@@ -141,7 +141,7 @@
             {
               "value": {
                 "en": "9 of 10",
-                "am": "ከ10 ዘጠኙ"
+                "am": "90%"
               },
               "label": {
                 "en": "clients come back",
