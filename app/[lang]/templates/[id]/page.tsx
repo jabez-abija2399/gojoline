@@ -71,17 +71,18 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
               </p>
               <p className="text-ink-muted">{p.samples}</p>
             </div>
-            <div className="shrink-0 max-md:hidden">{use}</div>
           </header>
 
-          <TemplatePreviewer pages={preview.pages} t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, kinds: p.kinds }} />
+          <TemplatePreviewer pages={preview.pages} t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, pageHeading: p.pageHeading, fullSize: p.fullSize, kinds: p.kinds }} />
 
           <nav aria-label={p.more} className="flex flex-col gap-3 border-t border-line pt-6 sm:flex-row sm:justify-between">
             <Link href={`/${lang}/templates/${preview.prev}`} className="inline-flex min-h-11 items-center gap-2 font-medium text-link">
               <ArrowLeft aria-hidden="true" className="size-4" />
+              <span className="sr-only">{p.previous}: </span>
               {t.builder.templates[preview.prev]}
             </Link>
             <Link href={`/${lang}/templates/${preview.next}`} className="inline-flex min-h-11 items-center gap-2 font-medium text-link sm:justify-end">
+              <span className="sr-only">{p.next}: </span>
               {t.builder.templates[preview.next]}
               <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
@@ -91,7 +92,9 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
         {/* The one thing to do here, always in reach. */}
         <div className="sticky bottom-0 z-10 border-t border-line bg-paper/95 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-            <p className="min-w-0 truncate font-medium max-sm:hidden">{label}</p>
+            <p className="min-w-0 truncate font-medium max-sm:hidden">
+              {preview.name} <span className="font-normal text-ink-muted">· {pageWord}</span>
+            </p>
             <div className="max-sm:w-full max-sm:[&_a]:w-full max-sm:[&_button]:w-full">{use}</div>
           </div>
         </div>

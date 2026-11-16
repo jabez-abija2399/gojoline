@@ -92,6 +92,10 @@ export const en = {
       view: "Show as",
       desktop: "Computer",
       phone: "Phone",
+      pageHeading: "{page} · {n} sections",
+      fullSize: "Full size",
+      previous: "Previous template",
+      next: "Next template",
       more: "More templates",
       kinds: {
         hero: "Top of the page",
@@ -218,7 +222,6 @@ export const en = {
     templatesTitle: "Or start from a template",
     welcomeTemplate: "Your {industry} site is ready: have a look at the preview. Then tell me your real business name, phone, address and prices, and what you'd like to change. Everything in it now is an example.",
     versionFromTemplate: "Started from the {industry} template",
-    previewTemplate: "Preview",
     useTemplate: "Use",
     templatesHint: "A ready site for your kind of business, in English and Amharic. Then tell Gojoline what to change.",
     templates: {

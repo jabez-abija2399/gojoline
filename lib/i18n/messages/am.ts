@@ -90,9 +90,13 @@ export const am: Messages = {
       languages: "በእንግሊዝኛና በአማርኛ",
       samples: "ስሞቹ፣ ዋጋዎቹና ፎቶዎቹ ምሳሌዎች ናቸው። የእርስዎ ሲሆን እውነተኛ መረጃዎን ለጎጆላይን ይንገሩ፤ እሱ ይቀይራቸዋል።",
       pages: "የዚህ አብነት ገጾች",
-      view: "አሳይ በ",
+      view: "ዕይታ",
       desktop: "ኮምፒውተር",
       phone: "ስልክ",
+      pageHeading: "{page} · {n} ክፍሎች",
+      fullSize: "ሙሉ መጠን",
+      previous: "ቀዳሚ አብነት",
+      next: "ቀጣይ አብነት",
       more: "ሌሎች አብነቶች",
       kinds: {
         hero: "የገጹ መጀመሪያ",
@@ -218,7 +222,6 @@ export const am: Messages = {
     templatesTitle: "ወይም ከአብነት ይጀምሩ",
     welcomeTemplate: "የ{industry} ድረ-ገጽዎ ዝግጁ ነው፤ ቅድመ-እይታውን ይመልከቱ። ከዚያ እውነተኛ የንግድ ስምዎን፣ ስልክዎን፣ አድራሻዎን እና ዋጋዎችዎን እንዲሁም ምን እንዲቀየር እንደሚፈልጉ ይንገሩኝ። አሁን ያለው ሁሉ ምሳሌ ነው።",
     versionFromTemplate: "ከ{industry} አብነት የተጀመረ",
-    previewTemplate: "ቅድመ እይታ",
     useTemplate: "ይጠቀሙ",
     templatesHint: "ለንግድዎ ዓይነት የተዘጋጀ ድረ-ገጽ በእንግሊዝኛ እና በአማርኛ። ከዚያ ምን እንዲቀየር ለጎጆላይን ይንገሩ።",
     templates: {

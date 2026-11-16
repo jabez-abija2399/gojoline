@@ -9,6 +9,10 @@ interface RawSection {
   type: string;
   heading?: Text;
   quote?: Text;
+  items?: { title?: Text; name?: Text | string; question?: Text; time?: Text; value?: Text; label?: Text }[];
+  categories?: { name?: Text; items?: unknown[] }[];
+  images?: unknown[];
+  fields?: { label?: Text }[];
 }
 
 /** One section of a template page: what it is, its title, and its picture at both widths. */
@@ -17,6 +21,8 @@ export interface PreviewPart {
   kind: string;
   /** The section's own title in the visitor's language, if it has one. */
   heading: string;
+  /** What the section lists, in words, for people who can't see the picture. */
+  summary: string;
   d: Size;
   m: Size;
 }
@@ -49,7 +55,7 @@ export function templatePreview(id: string, locale: "en" | "am"): TemplatePrevie
     const parts = shot.parts.map((sizes, i) => {
       const s = p.sections[i];
       const title = s ? pick(s.heading) || pick(s.quote) : "";
-      return { kind: s?.type ?? "footer", heading: title.length > 90 ? `${title.slice(0, 88).trimEnd()}…` : title, ...sizes };
+      return { kind: s?.type ?? "footer", heading: title.length > 90 ? `${title.slice(0, 88).trimEnd()}…` : title, summary: s ? summarize(s, pick) : "", ...sizes };
     });
     return [{ title: pick(p.nav ?? p.title), parts }];
   });
@@ -63,4 +69,16 @@ export function templatePreview(id: string, locale: "en" | "am"): TemplatePrevie
     prev: PRESET_IDS[(at - 1 + PRESET_IDS.length) % PRESET_IDS.length]!,
     next: PRESET_IDS[(at + 1) % PRESET_IDS.length]!,
   };
+}
+
+/** The names a section lists (cards, services, questions, times, menu categories, form fields), comma separated. */
+function summarize(s: RawSection, pick: (t: Text | undefined) => string): string {
+  const names = (s.items ?? []).map((i) => {
+    const label = typeof i.name === "string" ? i.name : pick(i.title ?? i.question ?? (i.name as Text | undefined));
+    if (i.time) return `${pick(i.title)} ${pick(i.time)}`;
+    if (i.value) return `${pick(i.value)} ${pick(i.label)}`;
+    return label;
+  });
+  const list = [...names, ...(s.categories ?? []).map((c) => pick(c.name)), ...(s.fields ?? []).map((f) => pick(f.label))].filter(Boolean);
+  return list.slice(0, 12).join(", ");
 }

@@ -72,13 +72,10 @@ export default async function ProjectsPage({
               </span>
               <span className="flex flex-1 items-center gap-2 px-3 pt-3 text-sm font-medium">{b.templates[site.id]}</span>
             </Link>
-            <form action={createProject} data-preset={site.id} className="flex items-center justify-between gap-2 p-3 pt-1">
+            <form action={createProject} data-preset={site.id} className="p-2 pt-1 sm:p-3 sm:pt-1">
               <input type="hidden" name="lang" value={lang} />
               <input type="hidden" name="preset" value={site.id} />
-              <Link href={`/${lang}/templates/${site.id}`} className="inline-flex min-h-11 items-center text-sm text-link underline-offset-4 hover:underline">
-                {b.previewTemplate}
-              </Link>
-              <PendingButton aria-label={`${b.useTemplate}: ${b.templates[site.id]}`} className="inline-flex min-h-11 items-center gap-1 rounded-full border border-line px-3 text-sm font-medium hover:border-faint">
+              <PendingButton aria-label={`${b.useTemplate}: ${b.templates[site.id]}`} className="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-full border border-line px-3 text-sm font-medium whitespace-nowrap hover:border-faint">
                 {b.useTemplate}
                 <ArrowRight aria-hidden="true" className="size-4" />
               </PendingButton>
