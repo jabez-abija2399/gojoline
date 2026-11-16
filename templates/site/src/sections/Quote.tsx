@@ -10,7 +10,7 @@ export function Quote({ section }: { section: QuoteSection }) {
     <section id={section.id} className="section bg-primary-soft">
       <figure className={`container-site reveal grid items-center gap-8 ${section.image ? "md:grid-cols-[1fr_2fr] md:gap-14" : ""}`}>
         {section.image && (
-          <div className="zoom mx-auto w-full max-w-xs rounded-site md:max-w-none">
+          <div className="zoom wipe mx-auto w-full max-w-xs rounded-site md:max-w-none">
             <Picture image={section.image} sizes="(min-width: 768px) 33vw, 160px" className="aspect-[4/5] w-full rounded-site" />
           </div>
         )}

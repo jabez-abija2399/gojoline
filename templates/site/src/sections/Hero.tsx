@@ -1,4 +1,6 @@
+import { CountUp } from "../components/CountUp";
 import { Picture } from "../components/Picture";
+import { SplitWords } from "../components/SplitWords";
 import { useSite } from "../lib/context";
 import type { Fact, HeroSection } from "../lib/types";
 
@@ -35,11 +37,16 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
   if (variant === "immersive") {
     return (
       <section id={section.id} className="hero-immersive relative isolate overflow-hidden bg-black text-white">
-        <Picture image={section.image} priority={first} wide sizes={FULL} className="absolute inset-0 -z-10 size-full" />
+        {/* The photo settles in slowly and drifts as the page scrolls (motion.css). */}
+        <div className="hero-parallax absolute inset-0 -z-10">
+          <Picture image={section.image} priority={first} wide sizes={FULL} className="hero-photo size-full" />
+        </div>
         <div aria-hidden="true" className="hero-shade absolute inset-0 -z-10" />
         <div className="container-site flex min-h-[min(46rem,88svh)] flex-col justify-end gap-5 pt-32 pb-10 md:pb-16">
           {section.eyebrow && <p className="eyebrow enter text-white!">{text(section.eyebrow)}</p>}
-          <Heading className="headline max-w-4xl">{text(section.heading)}</Heading>
+          <Heading className="headline split max-w-4xl">
+            <SplitWords text={text(section.heading)} />
+          </Heading>
           {section.subheading && <p className="enter max-w-[56ch] text-lg" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
           {actions("btn-glass")}
           {facts && <Facts facts={facts} className="mt-4 border-t border-white/30 pt-5" />}
@@ -52,11 +59,15 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
     const photo = Boolean(section.image?.src);
     return (
       <section id={section.id} className="relative isolate overflow-hidden bg-accent text-on-accent">
-        <Picture image={section.image} priority={first} wide sizes={FULL} className={`absolute inset-0 -z-10 size-full ${photo ? "opacity-70" : "opacity-30"}`} />
+        <div className="hero-parallax absolute inset-0 -z-10">
+          <Picture image={section.image} priority={first} wide sizes={FULL} className={`hero-photo size-full ${photo ? "opacity-70" : "opacity-30"}`} />
+        </div>
         <div aria-hidden="true" className={`absolute inset-0 -z-10 bg-gradient-to-t ${photo ? "from-accent/95 via-accent/60 to-accent/35" : "from-accent via-accent/70 to-accent/20"}`} />
         <div className="container-site flex flex-col gap-5 py-24 md:py-36">
           {section.eyebrow && <p className="eyebrow enter text-on-accent!">{text(section.eyebrow)}</p>}
-          <Heading className="headline max-w-4xl">{text(section.heading)}</Heading>
+          <Heading className="headline split max-w-4xl">
+            <SplitWords text={text(section.heading)} />
+          </Heading>
           {section.subheading && <p className="enter max-w-[60ch] text-lg" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
           {actions()}
           {facts && <Facts facts={facts} className="mt-4 border-t border-current/30 pt-5" />}
@@ -70,7 +81,9 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
       <section id={section.id} className="section hero-glow md:py-24">
         <div className="container-site flex flex-col items-center gap-6 text-center">
           {section.eyebrow && <p className="hero-eyebrow enter">{text(section.eyebrow)}</p>}
-          <Heading className="headline max-w-4xl">{text(section.heading)}</Heading>
+          <Heading className="headline split max-w-4xl">
+            <SplitWords text={text(section.heading)} />
+          </Heading>
           {section.subheading && <p className="enter max-w-[60ch] text-lg text-muted" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
           {actions()}
           {section.image && (
@@ -95,7 +108,9 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
                 {text(section.eyebrow)}
               </p>
             )}
-            <Heading className="headline headline-xl">{text(section.heading)}</Heading>
+            <Heading className="headline headline-xl split">
+              <SplitWords text={text(section.heading)} />
+            </Heading>
             {section.subheading && <p className="enter max-w-[52ch] text-lg text-muted" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
             {actions()}
             {facts && <Facts facts={facts} className="mt-2 border-t border-line pt-6" />}
@@ -113,7 +128,9 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
       <div className="container-site grid items-center gap-12 md:grid-cols-[1.1fr_1fr]">
         <div className="flex flex-col gap-6">
           {section.eyebrow && <p className="hero-eyebrow enter">{text(section.eyebrow)}</p>}
-          <Heading className="headline">{text(section.heading)}</Heading>
+          <Heading className="headline split">
+            <SplitWords text={text(section.heading)} />
+          </Heading>
           {section.subheading && <p className="enter max-w-[56ch] text-lg text-muted" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
           {actions()}
           {facts && <Facts facts={facts} className="mt-2 border-t border-line pt-6" />}
@@ -148,7 +165,9 @@ function Facts({ facts, className = "" }: { facts: Fact[]; className?: string })
       {facts.map((f, i) => (
         <div key={i} className="flex flex-col-reverse">
           <dt className="small-label">{text(f.label)}</dt>
-          <dd className="fact-value">{text(f.value)}</dd>
+          <dd className="fact-value">
+            <CountUp value={text(f.value)} />
+          </dd>
         </div>
       ))}
     </dl>

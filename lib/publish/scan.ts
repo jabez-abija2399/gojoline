@@ -43,6 +43,8 @@ function scanHtml(file: string, html: string, opts: ScanOptions, issues: ScanIss
     const src = /\bsrc\s*=\s*["']([^"']*)["']/i.exec(attrs)?.[1];
     // Structured data blocks are not executed (and CSP blocks inline scripts anyway).
     if (!src && /\btype\s*=\s*["']application\/ld\+json["']/i.test(attrs)) continue;
+    // The page's own content for hydration: a data block, never executed.
+    if (!src && /\btype\s*=\s*["']application\/json["']/i.test(attrs) && /\bid\s*=\s*["']site-data["']/i.test(attrs)) continue;
     if (!src) add("inline-script", m.index!);
     else if (!/^\/assets\/[\w.-]+\.js$/.test(src)) add("external-script", m.index!);
   }

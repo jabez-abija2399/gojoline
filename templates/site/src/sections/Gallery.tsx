@@ -1,25 +1,42 @@
+import { useState } from "react";
+import { Lightbox } from "../components/Lightbox";
 import { Picture } from "../components/Picture";
+import { Rail } from "../components/Rail";
 import { SectionHead } from "../components/SectionHead";
+import { uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
-import type { GallerySection } from "../lib/types";
+import type { GallerySection, Image } from "../lib/types";
 
 export function Gallery({ section }: { section: GallerySection }) {
-  const { text } = useSite();
+  const { text, lang } = useSite();
+  const [open, setOpen] = useState<number | null>(null);
   const count = section.images.length;
+  // Each photo opens large. Drawings (no photo yet) don't.
+  const photo = (image: Image, i: number, picture: React.ReactNode) =>
+    image.src ? (
+      <button type="button" onClick={() => setOpen(i)} aria-label={`${uiText("openPhoto", lang)}: ${text(image.alt)}`} className="block size-full cursor-zoom-in">
+        {picture}
+      </button>
+    ) : (
+      picture
+    );
+  const photos = section.images.filter((im) => im.src).length;
+  const viewer = photos > 0 && <Lightbox images={section.images.filter((im) => im.src)} index={open} onChange={setOpen} onClose={() => setOpen(null)} />;
   if (section.layout === "scroll") {
     return (
       <section id={section.id ?? "gallery"} className="section overflow-hidden">
         <div className="container-site flex flex-col gap-8 md:gap-10">
           <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
           {/* A row to swipe: tall and wide photos alternate, like a contact sheet. */}
-          <ul role="group" tabIndex={0} aria-label={text(section.heading)} className="rail">
+          <Rail label={text(section.heading)}>
             {section.images.map((image, i) => (
               <li key={i} className={`zoom flex-none snap-start rounded-site ${i % 3 === 1 ? "w-[78vw] sm:w-[30rem]" : "w-[58vw] sm:w-[22rem]"}`}>
-                <Picture image={image} sizes="(min-width: 640px) 30rem, 160px" className="h-72 w-full rounded-site sm:h-96" />
+                {photo(image, i, <Picture image={image} sizes="(min-width: 640px) 30rem, 160px" className="h-72 w-full rounded-site sm:h-96" />)}
               </li>
             ))}
-          </ul>
+          </Rail>
         </div>
+        {viewer}
       </section>
     );
   }
@@ -35,12 +52,17 @@ export function Gallery({ section }: { section: GallerySection }) {
         {/* Editorial grid: with 5+ photos the first is large and the rest fill around it. */}
         <ul className={`grid grid-cols-2 gap-3 md:gap-4 ${cols}`}>
           {section.images.map((image, i) => (
-            <li key={i} className={`zoom reveal rounded-site ${big && i === 0 ? "col-span-2 row-span-2" : wideFirst && i === 0 ? "max-md:col-span-2" : ""}`}>
-              <Picture image={image} sizes={big && i === 0 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 25vw, 120px"} className={`size-full rounded-site ${wideFirst && i === 0 ? "aspect-[2/1] md:aspect-square" : "aspect-square"}`} />
+            <li key={i} style={{ "--i": i % 4 } as React.CSSProperties} className={`zoom reveal wipe rounded-site ${big && i === 0 ? "col-span-2 row-span-2" : wideFirst && i === 0 ? "max-md:col-span-2" : ""}`}>
+              {photo(
+                image,
+                section.images.slice(0, i).filter((im) => im.src).length,
+                <Picture image={image} sizes={big && i === 0 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 25vw, 120px"} className={`size-full rounded-site ${wideFirst && i === 0 ? "aspect-[2/1] md:aspect-square" : "aspect-square"}`} />,
+              )}
             </li>
           ))}
         </ul>
       </div>
+      {viewer}
     </section>
   );
 }

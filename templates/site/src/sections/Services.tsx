@@ -16,7 +16,7 @@ export function Services({ section }: { section: ServicesSection }) {
           // Compact rows: what a place has (amenities, departments), read at a glance.
           <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
             {section.items.map((item, i) => (
-              <li key={i} className="reveal flex gap-4 border-t border-line py-5">
+              <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className="reveal flex gap-4 border-t border-line py-5">
                 <span className="flex size-11 flex-none items-center justify-center rounded-site bg-primary-soft text-primary">
                   <Icon name={item.icon ?? "check"} className="size-5" />
                 </span>
@@ -31,7 +31,7 @@ export function Services({ section }: { section: ServicesSection }) {
         ) : variant === "numbered" ? (
           <ol className={`grid gap-x-10 gap-y-2 sm:grid-cols-2 ${section.items.length % 4 === 0 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
             {section.items.map((item, i) => (
-              <li key={i} className="reveal flex flex-col gap-2 border-t-2 border-text py-6">
+              <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className="reveal flex flex-col gap-2 border-t-2 border-text py-6">
                 <span aria-hidden="true" className="numeral">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -45,7 +45,7 @@ export function Services({ section }: { section: ServicesSection }) {
           // Bento: with 4+ items the first one is a feature tile, sized so the grid has no holes.
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {section.items.map((item, i) => (
-              <li key={i} className={`card tilt reveal relative flex flex-col gap-3 overflow-hidden p-6 ${i === 0 ? featureClass(section.items.length) : ""}`}>
+              <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className={`card tilt reveal relative flex flex-col gap-3 overflow-hidden p-6 ${i === 0 ? featureClass(section.items.length) : ""}`}>
                 {/* The large tile carries its icon again, big and faint, so it never looks empty. */}
                 {i === 0 && section.items.length >= 4 && (
                   <span aria-hidden="true" className="pointer-events-none absolute -end-6 -top-6 hidden text-primary opacity-10 lg:block">

@@ -141,3 +141,295 @@
     opacity: 1;
   }
 }
+
+/*
+ * Motion kit (2026-11-16), from the best sites of each kind. CSS only, except the count-up
+ * numbers, swipe-row arrows, photo viewer, menu tabs and next-time highlight (small React parts).
+ * Nothing here hides content: without these features the page simply stands still.
+ */
+@layer components {
+  /* Hero words: each word stays in its line box; they rise one after another. */
+  .split .w {
+    display: inline-block;
+  }
+  /* A thin bar at the top showing how far down the page the visitor is. */
+  .scroll-progress {
+    display: none;
+  }
+  /* Ribbon of words. */
+  .marquee-row {
+    display: flex;
+    width: max-content;
+  }
+  .marquee-track {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0;
+    font-family: var(--site-font-heading);
+    font-size: clamp(1.5rem, 1.1rem + 2vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .marquee-track li {
+    display: flex;
+    align-items: center;
+  }
+  .marquee-track li::after {
+    content: "\2726";
+    margin-inline: 1.25rem;
+    font-size: 0.55em;
+    opacity: 0.6;
+  }
+  @media (min-width: 768px) {
+    .marquee-track li::after {
+      margin-inline: 2rem;
+    }
+  }
+  /* Arrows under a swipe row. */
+  .rail-arrow {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--site-line);
+    border-radius: 999px;
+    background: var(--site-surface);
+    color: var(--site-text);
+    transition: background-color 150ms, border-color 150ms;
+  }
+  .rail-arrow:hover:not(:disabled) {
+    border-color: var(--site-text);
+  }
+  .rail-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .on-dark .rail-arrow,
+  .bg-accent .rail-arrow {
+    border-color: currentColor;
+    background: transparent;
+    color: inherit;
+  }
+  /* Photo viewer. */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    background: rgb(0 0 0 / 0.92);
+    color: #fff;
+    padding: 0;
+  }
+  .lightbox::backdrop {
+    background: rgb(0 0 0 / 0.6);
+  }
+  .lightbox :focus-visible {
+    outline-color: #fff;
+  }
+  .lightbox-btn {
+    position: absolute;
+    display: inline-flex;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.14);
+    color: #fff;
+  }
+  .lightbox-btn:hover {
+    background: rgb(255 255 255 / 0.26);
+  }
+  /* Menu tabs. */
+  .menu-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    padding-bottom: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  @media (min-width: 640px) {
+    .menu-tabs {
+      flex-wrap: wrap;
+      margin-inline: 0;
+      padding-inline: 0;
+    }
+  }
+  .menu-tab {
+    min-height: 2.75rem;
+    flex: none;
+    border: 1.5px solid var(--site-line);
+    border-radius: 999px;
+    background: var(--site-surface);
+    padding-inline: 1.125rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .menu-tab[aria-pressed="true"] {
+    border-color: var(--site-text);
+    background: var(--site-text);
+    color: var(--site-background);
+  }
+  /* The next prayer, service or class. */
+  .schedule-tile[aria-current] {
+    border-color: var(--site-primary);
+    box-shadow: 0 0 0 2px var(--site-primary);
+  }
+  .next-badge {
+    display: inline-block;
+    width: fit-content;
+    margin-inline: auto;
+    margin-top: 0.25rem;
+    border-radius: 999px;
+    background: var(--site-primary);
+    color: var(--site-on-primary);
+    padding: 0.125rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  li:not(.schedule-tile) > span > .next-badge,
+  li:not(.schedule-tile) .next-badge {
+    margin-inline: 0;
+  }
+  /* Cards that pile up: each pins a little lower than the one before. */
+  .stack-card {
+    position: sticky;
+    top: calc(4.75rem + var(--i, 0) * 1.25rem);
+    transform-origin: 50% 0;
+  }
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  .split .w {
+    animation: site-word 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(80ms + var(--w, 0) * 70ms);
+  }
+  /* The hero photo settles in, then drifts slower than the page. Never starts hidden (LCP). */
+  .hero-photo {
+    animation: site-settle 2400ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .marquee-row {
+    animation: site-marquee 38s linear infinite;
+  }
+  .marquee:hover .marquee-row,
+  .marquee:focus-within .marquee-row {
+    animation-play-state: paused;
+  }
+  @supports (animation-timeline: view()) {
+    /* Items in a row arrive one after another. */
+    .reveal {
+      animation-range: entry calc(var(--i, 0) * 7%) entry calc(32% + var(--i, 0) * 7%);
+    }
+    /* Photos wipe in from the bottom as they come into view. */
+    .wipe {
+      animation: site-wipe linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+    .reveal.wipe {
+      animation-name: site-wipe;
+    }
+    /* A card being covered by the next one steps back. */
+    .stack-card {
+      animation: site-stack linear both;
+      animation-timeline: view();
+      animation-range: exit -20% exit 60%;
+    }
+    .stack-card:last-child {
+      animation: none;
+    }
+  }
+  @supports (animation-timeline: scroll()) {
+    .hero-parallax {
+      animation: site-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+    .scroll-progress {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 40;
+      display: block;
+      height: 3px;
+      background: var(--site-primary);
+      transform-origin: 0 50%;
+      animation: site-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+/* Less motion: the ribbon stands still and wraps, centred. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-row {
+    width: auto;
+    justify-content: center;
+  }
+  .marquee-row > [aria-hidden] {
+    display: none;
+  }
+  .marquee-track {
+    flex-wrap: wrap;
+    justify-content: center;
+    white-space: normal;
+  }
+}
+
+@keyframes site-word {
+  from {
+    opacity: 0.15;
+    transform: translateY(0.45em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes site-settle {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes site-parallax {
+  to {
+    transform: translateY(14%);
+  }
+}
+@keyframes site-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes site-wipe {
+  from {
+    clip-path: inset(0 0 100% 0 round var(--site-radius));
+  }
+  to {
+    clip-path: inset(0 0 0 0 round var(--site-radius));
+  }
+}
+@keyframes site-stack {
+  to {
+    transform: scale(0.93);
+    filter: brightness(0.82);
+  }
+}
+@keyframes site-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

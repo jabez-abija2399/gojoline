@@ -2,7 +2,7 @@ import { renderToString } from "react-dom/server";
 import { App, findPage } from "./App";
 import { localePath, parsePath, t } from "./lib/i18n";
 import { headingFontFile, styleString, themeVariables } from "./lib/theme";
-import type { Lang } from "./lib/types";
+import type { Lang, Site } from "./lib/types";
 import { publishMeta } from "./lib/meta";
 import { site } from "./site";
 
@@ -44,6 +44,9 @@ export function render(url: string): RenderedPage | null {
     alternates,
     `<meta name="theme-color" content="${escapeHtml(site.theme.primary)}">`,
     page.path === "/" ? `<script type="application/ld+json">${jsonLd(lang, base)}</script>` : "",
+    // The page's own content for the browser to pick up (hydration): the script bundle no
+    // longer carries the whole site. Not executed; "<" is escaped so it can't close the tag.
+    `<script type="application/json" id="site-data">${JSON.stringify(pageData(page.path)).replace(/</g, "\\u003c")}</script>`,
     // One font preload per page: Ge'ez for Amharic, the heading font otherwise.
     lang === "am"
       ? `<link rel="preload" href="/fonts/noto-sans-ethiopic-core.woff2" as="font" type="font/woff2" crossorigin>`
@@ -75,6 +78,11 @@ function jsonLd(lang: Lang, base: string | undefined): string {
   };
   // Escape "<" so the JSON can never close the script element.
   return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+/** The site with only this page's sections: other pages keep their path, title and menu label. */
+export function pageData(path: string): Site {
+  return { ...site, pages: site.pages.map((p) => (p.path === path ? p : { path: p.path, title: p.title, nav: p.nav, sections: [] })) };
 }
 
 /** Public URL of the published site (set at publish time), if any. */

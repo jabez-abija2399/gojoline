@@ -218,8 +218,9 @@ export interface CardsSection {
    * grid: picture on top, three across. feature: large alternating rows (rooms, projects).
    * scroll: tall picture cards in a row to swipe (destinations, collections).
    * people: portraits with a name and role (doctors, team, stylists).
+   * stack: large cards that pile up on each other as the visitor scrolls (rooms, projects, programmes).
    */
-  layout?: "grid" | "feature" | "scroll" | "people";
+  layout?: "grid" | "feature" | "scroll" | "people" | "stack";
   items: CardItem[];
   /** A link under the cards: "See all rooms". */
   action?: Link;
@@ -255,8 +256,18 @@ export interface ScheduleSection {
   intro?: Text;
   /** list: rows. tiles: a tile per time (prayer times, a few sessions). */
   layout?: "list" | "tiles";
-  items: { time: Text; title: Text; note?: Text }[];
+  /** `at`: the time as "HH:MM" (24 hours, Addis Ababa time). With it, the next one is highlighted with a countdown. */
+  items: { time: Text; title: Text; note?: Text; at?: string }[];
   footnote?: Text;
+}
+
+/** A ribbon of short words that moves slowly across the page: what you offer, places, promises. */
+export interface MarqueeSection {
+  type: "marquee";
+  id?: string;
+  items: Text[];
+  /** dark: on the accent colour. primary: on the brand colour. light: on a soft tint. Default "dark". */
+  tone?: "dark" | "primary" | "light";
 }
 
 /** One strong sentence in large type: a mission, a verse, a founder's words. */
@@ -368,7 +379,8 @@ export type Section =
   | StatsSection
   | StepsSection
   | ScheduleSection
-  | QuoteSection;
+  | QuoteSection
+  | MarqueeSection;
 
 export interface Page {
   /** "/" for the home page, otherwise "/menu", "/about" (lowercase, no trailing slash) */

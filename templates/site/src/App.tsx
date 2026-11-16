@@ -15,6 +15,7 @@ import { Quote } from "./sections/Quote";
 import { Schedule } from "./sections/Schedule";
 import { Stats } from "./sections/Stats";
 import { Steps } from "./sections/Steps";
+import { Marquee } from "./sections/Marquee";
 import { MapEmbed } from "./sections/MapEmbed";
 import { Menu } from "./sections/Menu";
 import { Services } from "./sections/Services";
@@ -58,6 +59,8 @@ function renderSection(section: Section, index: number) {
       return <Schedule key={index} section={section} />;
     case "quote":
       return <Quote key={index} section={section} />;
+    case "marquee":
+      return <Marquee key={index} section={section} />;
   }
 }
 
@@ -73,6 +76,8 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
       <div data-style={site.theme.style ?? "warm"} className="contents">
       {/* Room at the bottom on phones so the call bar never hides the footer's last line. */}
       <div className={`site-root relative flex min-h-screen flex-col ${hasStickyActions(site) ? "max-md:pb-[4.5rem]" : ""}`}>
+        {/* How far down the page the visitor is (motion.css; only where the browser can do it without scripts). */}
+        <div aria-hidden="true" className="scroll-progress" />
         <Header overlay={overlay} />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {page.sections.map((section, i) =>
