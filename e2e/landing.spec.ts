@@ -5,11 +5,11 @@ import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./h
 /** Desktop shows the business chips; phones show one "Choose your business" picker instead. */
 async function pickBusiness(page: import("@playwright/test").Page, label: string) {
   if (test.info().project.name === "mobile") await page.getByLabel("Choose your business").selectOption({ label });
-  else await page.getByRole("button", { name: label, exact: true }).click();
+  else await page.getByRole("group", { name: "Gojoline for" }).getByRole("button", { name: label, exact: true }).click();
 }
 async function expectPicked(page: import("@playwright/test").Page, label: string, timeout?: number) {
   if (test.info().project.name === "mobile") await expect(page.getByLabel("Choose your business").locator("option:checked")).toHaveText(label, { timeout });
-  else await expect(page.getByRole("button", { name: label, exact: true })).toHaveAttribute("aria-pressed", "true", { timeout });
+  else await expect(page.getByRole("group", { name: "Gojoline for" }).getByRole("button", { name: label, exact: true })).toHaveAttribute("aria-pressed", "true", { timeout });
 }
 
 test.describe("landing page", () => {
@@ -116,7 +116,7 @@ test.describe("landing page", () => {
     await pickBusiness(page, "Hotel");
     await expect(box).toHaveValue("My own words");
     await expectPicked(page, "Hotel");
-    await expect(page.getByRole("img", { name: /builder with the site it made for Tana Shore Lodge/ })).toBeVisible();
+    await expect(page.getByRole("figure", { name: /builder with the site it made for Tana Shore Lodge/ })).toBeVisible();
 
     await page.getByRole("link", { name: "See all 14 templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
@@ -253,6 +253,25 @@ test("landing motion: the demo plays itself and can be paused; reduced motion ke
   await calm.waitForTimeout(7000);
   // Still on the first business (the picker on phones, the chips on larger screens).
   if (test.info().project.name === "mobile") await expect(calm.getByLabel("Choose your business").locator("option:checked")).toHaveText("Café");
-  else await expect(calm.getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "true");
+  else await expect(calm.getByRole("group", { name: "Gojoline for" }).getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "true");
   await still.close();
+});
+
+test("the screen's phone and computer buttons switch the preview", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "the computer screen shows on large screens");
+  await page.goto("/en");
+  const sizes = page.getByRole("group", { name: "Preview of your site" });
+  const phone = sizes.getByRole("button", { name: "Phone" });
+  const computer = sizes.getByRole("button", { name: "Computer" });
+  await expect(computer).toHaveAttribute("aria-pressed", "true");
+  await phone.click();
+  await expect(phone).toHaveAttribute("aria-pressed", "true");
+  await expect(computer).toHaveAttribute("aria-pressed", "false");
+  await computer.click();
+  await expect(computer).toHaveAttribute("aria-pressed", "true");
+  // The example in the empty box underlines its key words; a chip fills the box.
+  await page.locator("#start-title").scrollIntoViewIfNeeded();
+  await page.getByRole("list", { name: "Ideas to start from" }).getByRole("button", { name: "Shop" }).click();
+  await expect(page.locator("#hero-prompt")).toHaveValue(/habesha kemis/);
+  await expectNoSeriousA11yIssues(page);
 });

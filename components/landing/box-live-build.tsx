@@ -43,6 +43,10 @@ interface Props {
   run: number;
   slug: string;
   priority: boolean;
+  /** The preview's phone / computer switch, which visitors can press. */
+  sizes: { group: string; phone: string; desktop: string };
+  /** A visitor pressed something in the screen: stop the demo moving on, so they can look. */
+  onInteract: () => void;
 }
 
 /**
@@ -68,8 +72,15 @@ export function BoxLiveBuild(props: Props) {
   // A section appears as each of "home page", "prices" and "booking form" is done.
   const built = done ? 99 : Math.max(0, stepsDone - 1);
   // A finished first view shows computer width; a live build ends on the phone check.
-  const phoneView = run > 0 && (working >= PHONE_STEP || done);
-  const state = { ...props, ms, done, stepsDone, working, built, phoneView };
+  // A visitor's own choice wins until the next build starts.
+  const [choice, setChoice] = useState<{ run: number; view: "m" | "d" } | null>(null);
+  const autoPhone = run > 0 && (working >= PHONE_STEP || done);
+  const phoneView = choice && choice.run === run ? choice.view === "m" : autoPhone;
+  const choose = (view: "m" | "d") => {
+    setChoice({ run, view });
+    props.onInteract();
+  };
+  const state = { ...props, ms, done, stepsDone, working, built, phoneView, choose };
 
   return (
     <>
@@ -79,7 +90,7 @@ export function BoxLiveBuild(props: Props) {
   );
 }
 
-type State = Props & { ms: number; done: boolean; stepsDone: number; working: number; built: number; phoneView: boolean };
+type State = Props & { ms: number; done: boolean; stepsDone: number; working: number; built: number; phoneView: boolean; choose: (view: "m" | "d") => void };
 
 /** The real site, section by section: built ones show, the rest are their outline. The column
  *  scrolls (a transform) to follow the newest section while it's being built. */
@@ -173,13 +184,13 @@ function Toast({ booking, show }: { booking: Props["booking"]; show: boolean }) 
 }
 
 /** Large screens: a computer screen on its stand, with the Gojoline builder on it. */
-function MonitorView({ site, live, you, assistant, publish, booking, run, slug, priority, ms, done, stepsDone, working, built, phoneView }: State) {
+function MonitorView({ site, live, you, assistant, publish, booking, run, slug, priority, ms, done, stepsDone, working, built, phoneView, choose, sizes }: State) {
   const reply = live.reply.replace("{name}", site.name);
   return (
-    <div aria-hidden="true" className="mx-auto flex w-[min(100%,80rem,calc((100svh-13rem)*1.6))] min-w-[44rem] flex-col items-center max-md:hidden">
+    <div className="mx-auto flex w-[min(100%,88rem,calc((100svh-10rem)*1.65))] min-w-[44rem] flex-col items-center max-md:hidden">
       <div className="w-full rounded-[1.6rem] bg-ink p-3 pb-4 shadow-[0_40px_90px_-40px_rgb(18_18_18/0.6)]">
         <div className="flex aspect-[16/10] w-full flex-col overflow-hidden rounded-[0.8rem] bg-white text-start text-[13px] leading-snug xl:text-sm">
-          <div className="flex items-center gap-2 border-b border-line px-3 py-2">
+          <div aria-hidden="true" className="flex items-center gap-2 border-b border-line px-3 py-2">
             <span className="flex gap-1">
               <span className="size-2 rounded-full bg-line" />
               <span className="size-2 rounded-full bg-line" />
@@ -193,7 +204,7 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
             <span className={`rounded-full px-2.5 py-0.5 font-medium ${done ? "bg-ink text-white" : "bg-sunken text-ink-muted"}`}>{publish}</span>
           </div>
           <div className="grid min-h-0 flex-1 grid-cols-[34%_1fr]">
-            <div className="@container flex min-h-0 flex-col gap-2 overflow-hidden border-e border-line p-3">
+            <div aria-hidden="true" className="@container flex min-h-0 flex-col gap-2 overflow-hidden border-e border-line p-3">
               <div className="flex flex-col items-end gap-0.5">
                 <span className="text-xs font-semibold text-ink-muted">{you}</span>
                 <p className="max-w-[95%] rounded-xl rounded-br-sm bg-ink px-2.5 py-2 text-white">
@@ -232,15 +243,20 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
             </div>
             {/* The preview, with the builder's own phone / computer switch. */}
             <div className="flex min-h-0 flex-col bg-paper">
-              <div className="flex items-center justify-center gap-1 border-b border-line py-1.5">
-                <span className={`flex size-7 items-center justify-center rounded-md transition-colors ${phoneView ? "bg-ink text-white" : "text-ink-muted"}`}>
-                  <Smartphone className="size-4" />
-                </span>
-                <span className={`flex size-7 items-center justify-center rounded-md transition-colors ${phoneView ? "text-ink-muted" : "bg-ink text-white"}`}>
-                  <Monitor className="size-4" />
-                </span>
+              <div role="group" aria-label={sizes.group} className="flex items-center justify-center gap-1 border-b border-line py-1">
+                {(["m", "d"] as const).map((v) => {
+                  const on = (v === "m") === phoneView;
+                  const Icon = v === "m" ? Smartphone : Monitor;
+                  const label = v === "m" ? sizes.phone : sizes.desktop;
+                  return (
+                    <button key={v} type="button" aria-pressed={on} title={label} onClick={() => choose(v)} className={`flex size-9 items-center justify-center rounded-lg transition-colors ${on ? "bg-ink text-white" : "text-ink-muted hover:bg-sunken hover:text-ink"}`}>
+                      <Icon aria-hidden="true" className="size-4" />
+                      <span className="sr-only">{label}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <div className="relative min-h-0 flex-1 overflow-hidden bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:16px_16px] p-3">
+              <div aria-hidden="true" className="relative min-h-0 flex-1 overflow-hidden bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:16px_16px] p-3">
                 {phoneView ? (
                   <div key="m" className="mx-auto h-full w-[38%] min-w-[9rem] animate-[pop-in_0.4s_ease-out] overflow-hidden rounded-[1.1rem] border-[5px] border-ink bg-white">
                     <SiteSections site={site} width="m" built={built} follow={false} first="lazy" animate={run > 0} />
@@ -257,8 +273,8 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
         </div>
       </div>
       {/* The stand. */}
-      <div className="h-10 w-32 bg-[linear-gradient(to_bottom,var(--gojo-ink),#3a3632)] [clip-path:polygon(18%_0,82%_0,100%_100%,0_100%)]" />
-      <div className="h-2.5 w-72 rounded-full bg-ink/90 shadow-[0_8px_20px_-6px_rgb(18_18_18/0.5)]" />
+      <div aria-hidden="true" className="h-10 w-32 bg-[linear-gradient(to_bottom,var(--gojo-ink),#3a3632)] [clip-path:polygon(18%_0,82%_0,100%_100%,0_100%)]" />
+      <div aria-hidden="true" className="h-2.5 w-72 rounded-full bg-ink/90 shadow-[0_8px_20px_-6px_rgb(18_18_18/0.5)]" />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUp, BedDouble, ChevronDown, ChevronRight, Coffee, Pause, Play, ShoppingBag, Sparkles, Stethoscope, UserRound } from "lucide-react";
+import { Mosaic } from "./mosaic";
 import { BoxLiveBuild, BUILD_CYCLE_MS, type BuildSite } from "./box-live-build";
 import type { Messages } from "@/lib/i18n";
 import { LanguageChoice, type SiteLanguages } from "@/components/builder/language-choice";
@@ -21,6 +22,8 @@ export interface StageSite {
   shot: { src: string; width: number; height: number };
   /** The real template's first sections at computer and phone width (the live build). */
   sections: BuildSite["sections"];
+  /** The prompt with its key words in [brackets]: the empty box's example, key words underlined. */
+  marked: string;
 }
 
 export interface StageText {
@@ -40,6 +43,12 @@ export interface StageText {
   showcaseLabel: string;
   /** Read to screen readers when a chip is picked. */
   picked: string;
+  /** The examples under the prompt box. */
+  ideasLabel: string;
+  /** The preview size switch in the screen: its group name and the two sizes. */
+  previewSizes: string;
+  previewPhone: string;
+  previewDesktop: string;
   /** The autoplay toggle (a pressed button means paused). */
   pauseDemo: string;
   /** Small cards beside the phone on wide screens. */
@@ -230,52 +239,98 @@ export function LandingStage({ locale, sites, t, more, promptHeading, promptFoot
         <p role="status" className="sr-only">
           {picked === null ? "" : t.picked.replace("{name}", site.name)}
         </p>
-        <figure ref={figureRef} role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full">
-          <BoxLiveBuild site={site} live={live} you={you} assistant={assistant} publish={t.publish} booking={{ title: t.noteTitle, body: t.noteBody }} run={shown} slug={EXAMPLE_SLUGS[site.id] ?? "my-site"} priority={index === 0} />
+        <figure ref={figureRef} aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full">
+          <BoxLiveBuild site={site} live={live} you={you} assistant={assistant} publish={t.publish} booking={{ title: t.noteTitle, body: t.noteBody }} run={shown} slug={EXAMPLE_SLUGS[site.id] ?? "my-site"} priority={index === 0} sizes={{ group: t.previewSizes, phone: t.previewPhone, desktop: t.previewDesktop }} onInteract={() => setAuto(false)} />
         </figure>
         </div>
         {more}
       </div>
 
-      <section aria-labelledby="start-title" className="relative mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 md:py-24">
-        {promptHeading}
-        <form
-          action={signedIn ? next : `/${locale}/sign-in`}
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (text.trim()) saveLandingPrompt({ text, languages });
-            router.push(signedIn ? next : `/${locale}/sign-in?next=${next}`);
-          }}
-          className="flex w-full min-w-0 flex-col rounded-[28px] border border-ink/10 bg-white p-2 text-start shadow-[0_24px_70px_-24px_rgb(18_18_18/0.35)] has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link"
-        >
-          <input type="hidden" name="next" value={next} />
-          <label htmlFor="hero-prompt" className="sr-only">
-            {t.promptLabel}
-          </label>
-          <textarea
-            ref={boxRef}
-            id="hero-prompt"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit();
-            }}
-            rows={3}
-            maxLength={4000}
-            placeholder={t.placeholder}
-            className="block max-h-56 min-h-28 w-full resize-none rounded-3xl bg-transparent px-4 pt-4 pb-2 text-lg [field-sizing:content] placeholder:text-ink-muted focus-visible:outline-none"
-          />
-          <div className="flex flex-wrap items-center justify-between gap-2 p-1">
-            <LanguageChoice compact title={t.langTitle} labels={{ en: t.langEn, am: t.langAm, both: t.langBoth }} value={languages} onChange={setLanguages} name="hero-languages" />
-            <button type="submit" className="group ms-auto inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-coral ps-5 pe-2 text-lg font-semibold text-on-coral transition hover:bg-coral-hover max-sm:w-full">
-              {t.build}
-              <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-full bg-ink text-white transition-transform group-hover:-translate-y-0.5">
-                <ArrowUp className="size-4" strokeWidth={3} />
-              </span>
-            </button>
+      {/* "What does your business need?": one large box over a soft mosaic, as the reference does. */}
+      <section aria-labelledby="start-title" className="below-fold relative isolate overflow-hidden border-t border-line px-4 py-20 sm:px-6 md:py-28">
+        <Mosaic className="fill-coral opacity-[0.18]" />
+        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-0 h-2/3 bg-[linear-gradient(to_bottom,transparent,var(--gojo-paper))]" />
+        <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center gap-8 text-center">
+          {promptHeading}
+          <div className="w-full rounded-[30px] border border-line bg-paper p-1.5 shadow-[0_24px_70px_-28px_rgb(18_18_18/0.35)]">
+            <form
+              action={signedIn ? next : `/${locale}/sign-in`}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (text.trim()) saveLandingPrompt({ text, languages });
+                router.push(signedIn ? next : `/${locale}/sign-in?next=${next}`);
+              }}
+              className="flex w-full min-w-0 flex-col rounded-3xl border border-line bg-white p-2 text-start has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-3 has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:outline-link"
+            >
+              <input type="hidden" name="next" value={next} />
+              <label htmlFor="hero-prompt" className="sr-only">
+                {t.promptLabel}
+              </label>
+              <div className="relative">
+                {/* The empty box shows an example in an owner's words, its key words underlined. */}
+                {!text && (
+                  <p aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 px-4 pt-4 text-lg text-ink-muted">
+                    {site.marked.split(/(\[[^\]]+\])/).map((part, i) =>
+                      part.startsWith("[") ? (
+                        <span key={i} className="text-ink underline decoration-coral decoration-2 underline-offset-4">
+                          {part.slice(1, -1)}
+                        </span>
+                      ) : (
+                        part
+                      ),
+                    )}
+                  </p>
+                )}
+                <textarea
+                  ref={boxRef}
+                  id="hero-prompt"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit();
+                  }}
+                  rows={3}
+                  maxLength={4000}
+                  placeholder={t.placeholder}
+                  className="relative block max-h-56 min-h-32 w-full resize-none rounded-2xl bg-transparent px-4 pt-4 pb-2 text-lg [field-sizing:content] placeholder:text-transparent focus-visible:outline-none"
+                />
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-2 p-1">
+                <LanguageChoice compact title={t.langTitle} labels={{ en: t.langEn, am: t.langAm, both: t.langBoth }} value={languages} onChange={setLanguages} name="hero-languages" />
+                <button type="submit" className="group ms-auto inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-coral ps-5 pe-2 text-lg font-semibold text-on-coral transition hover:bg-coral-hover max-sm:w-full">
+                  {t.build}
+                  <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-full bg-ink text-white transition-transform group-hover:-translate-y-0.5">
+                    <ArrowUp className="size-4" strokeWidth={3} />
+                  </span>
+                </button>
+              </div>
+            </form>
+            {/* Examples to start from, in the tray under the box. */}
+            <ul aria-label={t.ideasLabel} className="chips-scroll flex gap-2 overflow-x-auto px-2 pt-2 pb-1 sm:flex-wrap sm:justify-center">
+              {sites.map((s) => {
+                const Icon = SITE_ICONS[s.id as keyof typeof SITE_ICONS] ?? Sparkles;
+                return (
+                  <li key={s.id} className="shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setText(s.prompt);
+                        boxRef.current?.focus();
+                      }}
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-3.5 text-sm font-medium text-ink transition-colors hover:border-faint hover:bg-sunken lg:min-h-9"
+                    >
+                      <Icon aria-hidden="true" className="size-4 text-ink-muted" />
+                      {s.label}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </form>
-        {promptFooter}
+          <div className="flex flex-col items-center gap-4">
+            {promptFooter}
+          </div>
+        </div>
       </section>
     </>
   );

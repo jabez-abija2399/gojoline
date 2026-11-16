@@ -46,6 +46,13 @@ export const en = {
         shop: "We sell habesha kemis in Merkato and take custom orders.",
         personal: "I'm a designer and photographer. I want a portfolio clients can contact me from.",
       },
+      marked: {
+        cafe: "We're a [café in Bole]: [buna, macchiato] and [breakfast], open 7 am to 9 pm.",
+        hotel: "A [small hotel] by Lake Tana with [20 rooms] and [airport pickup].",
+        clinic: "A [family clinic] in Megenagna. People should be able to [book a visit].",
+        shop: "We sell [habesha kemis] in Merkato and take [custom orders].",
+        personal: "I'm a [designer and photographer]. I want a [portfolio] clients can [contact me] from.",
+      },
       labels: { cafe: "Café", hotel: "Hotel", clinic: "Clinic", shop: "Shop", personal: "Personal" },
     },
     proof: [
@@ -53,6 +60,12 @@ export const en = {
       { value: "30 of 30", label: "test sites built right the first time" },
       { value: "14", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
+    ],
+    pillarsLabel: "What you get",
+    pillars: [
+      { title: "Build by chatting", body: "Describe your business in Amharic or English. Gojoline writes the site and keeps it up to date." },
+      { title: "Bookings on Telegram", body: "Every booking, order and question reaches your phone the moment it is sent." },
+      { title: "Paid in Birr", body: "Start free. Pay by Telebirr or bank transfer when your business grows." },
     ],
     live: {
       reply: "Here's your site for {name}: a warm home page, your prices, a booking form, in English and Amharic.",
