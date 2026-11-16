@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowRight, BedDouble, Church, Coffee, GraduationCap, HeartHandshake, House, MoonStar, Mountain, PartyPopper, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
+import { ArrowRight, BedDouble, BriefcaseBusiness, Church, Coffee, GraduationCap, HeartHandshake, House, MoonStar, Mountain, PartyPopper, Scissors, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
 import { BuilderHeader } from "@/components/builder/builder-header";
 import { PresetStart } from "@/components/builder/preset-start";
 import { StartBox } from "@/components/builder/start-box";
@@ -14,7 +14,7 @@ import { createProject } from "./actions";
 import { PRESET_IDS } from "@/lib/template/presets";
 import { InstallApp } from "@/components/pwa/install-app";
 
-const TEMPLATE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound } as const;
+const TEMPLATE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound, business: BriefcaseBusiness, salon: Scissors } as const;
 const installClass = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint";
 
 export async function generateMetadata({

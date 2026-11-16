@@ -33,7 +33,7 @@ export const am: Messages = {
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",
       build: "ድረ-ገጼን ሥራልኝ",
     },
-    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", menu: "ማውጫ", seeTemplates: "12ቱንም አብነቶች ይመልከቱ" },
+    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", menu: "ማውጫ", seeTemplates: "14ቱንም አብነቶች ይመልከቱ" },
     demo: {
       pick: "የንግድ ዓይነት ይምረጡ",
       prompts: {
@@ -48,7 +48,7 @@ export const am: Messages = {
     proof: [
       { value: "~40 ሰከንድ", label: "እስከ መጀመሪያው ድረ-ገጽ" },
       { value: "30 ከ30", label: "የሙከራ ድረ-ገጾች በመጀመሪያ ሙከራ በትክክል ተሠርተዋል" },
-      { value: "12", label: "ዝግጁ አብነቶች" },
+      { value: "14", label: "ዝግጁ አብነቶች" },
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
     proofTitle: "ጎጆላይን በቁጥር",
@@ -197,6 +197,8 @@ export const am: Messages = {
       "real-estate": "ሪል እስቴት",
       tours: "አስጎብኚ ድርጅት",
       personal: "የግል ድረ-ገጽ ወይም ፖርትፎሊዮ",
+      business: "ድርጅት ወይም አማካሪ",
+      salon: "የውበት ሳሎን ወይም ጸጉር ቤት",
     },
     empty: "እስካሁን ድረ-ገጽ የለዎትም። አንድ ይጀምሩ፤ ጥቂት ደቂቃዎች ብቻ ይወስዳል።",
     untitled: "አዲስ ድረ-ገጽ",

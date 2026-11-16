@@ -32,7 +32,7 @@ export const en = {
       picked: "Showing {name}. An example description was added to the box below.",
       build: "Build my site",
     },
-    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", menu: "Menu", seeTemplates: "See all 12 templates" },
+    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", menu: "Menu", seeTemplates: "See all 14 templates" },
     demo: {
       pick: "Choose a kind of business",
       prompts: {
@@ -47,7 +47,7 @@ export const en = {
     proof: [
       { value: "~40 s", label: "to a first site" },
       { value: "30 of 30", label: "test sites built right the first time" },
-      { value: "12", label: "ready templates" },
+      { value: "14", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
     proofTitle: "Gojoline in numbers",
@@ -197,6 +197,8 @@ export const en = {
       "real-estate": "Real estate",
       tours: "Tour operator",
       personal: "Personal website or portfolio",
+      business: "Company or consulting",
+      salon: "Salon or barber",
     },
     empty: "You have no sites yet. Start one: it takes a few minutes.",
     untitled: "New site",
