@@ -539,13 +539,6 @@
           },
           "images": [
             {
-              "src": "/stock/hotel-hero-infinity-pool-hills.webp",
-              "alt": {
-                "en": "The pool terrace looking over the hills",
-                "am": "ተራሮችን የሚመለከተው የመዋኛ በረንዳ"
-              }
-            },
-            {
               "src": "/stock/hotel-about-thatched-lounge.webp",
               "alt": {
                 "en": "The open lounge under a high thatched roof",
@@ -560,17 +553,10 @@
               }
             },
             {
-              "src": "/stock/hotel-card-standard-room.webp",
+              "src": "/stock/tours-card-blue-nile-falls.webp",
               "alt": {
-                "en": "A garden room",
-                "am": "የአትክልት ክፍል"
-              }
-            },
-            {
-              "src": "/stock/hotel-card-wooden-cabin-room.webp",
-              "alt": {
-                "en": "A lake view room",
-                "am": "የሐይቅ እይታ ክፍል"
+                "en": "The Blue Nile Falls in full flow, a short drive from the lodge",
+                "am": "ከሎጁ በአጭር ጉዞ የሚደረስበት የዓባይ ፏፏቴ በሙላት ሲፈስ"
               }
             }
           ]

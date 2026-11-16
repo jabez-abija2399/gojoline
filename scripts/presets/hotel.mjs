@@ -142,11 +142,9 @@ save("hotel", {
           eyebrow: t("Gallery", "ፎቶዎች"),
           heading: t("A look around", "አካባቢውን ይመልከቱ"),
           images: [
-            img("hotel-hero-infinity-pool-hills", "The pool terrace looking over the hills", "ተራሮችን የሚመለከተው የመዋኛ በረንዳ"),
             img("hotel-about-thatched-lounge", "The open lounge under a high thatched roof", "በከፍተኛ የሳር ክዳን ሥር ያለው ክፍት ሳሎን"),
             img("hotel-gallery-veranda-dusk", "The veranda and garden at dusk", "በረንዳውና አትክልቱ በምሽት"),
-            img("hotel-card-standard-room", "A garden room", "የአትክልት ክፍል"),
-            img("hotel-card-wooden-cabin-room", "A lake view room", "የሐይቅ እይታ ክፍል"),
+            img("tours-card-blue-nile-falls", "The Blue Nile Falls in full flow, a short drive from the lodge", "ከሎጁ በአጭር ጉዞ የሚደረስበት የዓባይ ፏፏቴ በሙላት ሲፈስ"),
           ],
         },
         {
