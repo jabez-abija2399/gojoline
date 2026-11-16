@@ -4,8 +4,9 @@
 //
 // <folder>/<niche>/manifest.json lists the originals beside it:
 //   [{ file, role: "hero"|"about"|"card"|"gallery", description, photographer, licence, source_page_url }]
-// Each becomes templates/site/public/stock/<niche>-<role>-<slug>.webp, 800 px wide; hero photos
-// also get a 1600 px file (<name>-1600.webp) for full-width use. The catalogue (what each photo
+// Each becomes templates/site/public/stock/<niche>-<role>-<slug>.webp, 800 px wide, with a 480 px
+// file (<name>-480.webp) for phones and small slots; hero photos also get a 1600 px file
+// (<name>-1600.webp) for full-width use. The catalogue (what each photo
 // shows and where it came from) is written to templates/site/stock.json.
 // Only photos under licences that allow commercial use without credit (Unsplash, Pexels).
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -34,6 +35,7 @@ for (const niche of readdirSync(src).sort()) {
     const tall = meta.height / meta.width > 1.25;
     const base = (width) => sharp(input).rotate().resize(tall ? { width, height: Math.round(width * 1.25), fit: "cover", position: "attention" } : { width, withoutEnlargement: true });
     const info = await base(800).webp({ quality: 70, effort: 6 }).toFile(join(out, `${name}.webp`));
+    await base(480).webp({ quality: 68, effort: 6 }).toFile(join(out, `${name}-480.webp`));
     if (p.role === "hero") await base(1600).webp({ quality: 62, effort: 6 }).toFile(join(out, `${name}-1600.webp`));
     catalogue[name] = { src: `/stock/${name}.webp`, width: info.width, height: info.height, shows: p.description, by: p.photographer, licence: p.licence, source: p.source_page_url };
   }

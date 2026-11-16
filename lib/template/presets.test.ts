@@ -40,9 +40,9 @@ describe("industry presets", () => {
     }
   });
 
-  it("a sandbox gets only the photos its site uses, with the wide version of hero photos", () => {
+  it("a sandbox gets only the photos its site uses, in their sizes", () => {
     const files = stockFilesFor('{"a":"/stock/hotel-hero-lodge-pool-dusk.webp","b":"/stock/hotel-card-standard-room.webp","c":"/stock/../../etc/passwd.webp","d":"/stock/nope.webp"}');
-    expect(files.map((f) => f.path)).toEqual(["public/stock/hotel-card-standard-room.webp", "public/stock/hotel-hero-lodge-pool-dusk.webp", "public/stock/hotel-hero-lodge-pool-dusk-1600.webp"]);
+    expect(files.map((f) => f.path)).toEqual(["public/stock/hotel-card-standard-room.webp", "public/stock/hotel-card-standard-room-480.webp", "public/stock/hotel-hero-lodge-pool-dusk.webp", "public/stock/hotel-hero-lodge-pool-dusk-480.webp", "public/stock/hotel-hero-lodge-pool-dusk-1600.webp"]);
     expect(templateFiles().some((f) => f.path.startsWith("public/stock/"))).toBe(false);
   });
 

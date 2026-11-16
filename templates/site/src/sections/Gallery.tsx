@@ -15,7 +15,7 @@ export function Gallery({ section }: { section: GallerySection }) {
           <ul role="group" tabIndex={0} aria-label={text(section.heading)} className="rail">
             {section.images.map((image, i) => (
               <li key={i} className={`zoom flex-none snap-start rounded-site ${i % 3 === 1 ? "w-[78vw] sm:w-[30rem]" : "w-[58vw] sm:w-[22rem]"}`}>
-                <Picture image={image} sizes="(min-width: 640px) 30rem, 78vw" className="h-72 w-full rounded-site sm:h-96" />
+                <Picture image={image} sizes="(min-width: 640px) 30rem, 160px" className="h-72 w-full rounded-site sm:h-96" />
               </li>
             ))}
           </ul>
@@ -36,7 +36,7 @@ export function Gallery({ section }: { section: GallerySection }) {
         <ul className={`grid grid-cols-2 gap-3 md:gap-4 ${cols}`}>
           {section.images.map((image, i) => (
             <li key={i} className={`zoom reveal rounded-site ${big && i === 0 ? "col-span-2 row-span-2" : wideFirst && i === 0 ? "max-md:col-span-2" : ""}`}>
-              <Picture image={image} sizes={big && i === 0 ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 25vw, 50vw"} className={`size-full rounded-site ${wideFirst && i === 0 ? "aspect-[2/1] md:aspect-square" : "aspect-square"}`} />
+              <Picture image={image} sizes={big && i === 0 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 25vw, 120px"} className={`size-full rounded-site ${wideFirst && i === 0 ? "aspect-[2/1] md:aspect-square" : "aspect-square"}`} />
             </li>
           ))}
         </ul>

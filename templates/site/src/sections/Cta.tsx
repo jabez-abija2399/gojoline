@@ -14,7 +14,7 @@ export function Cta({ section }: { section: CtaSection }) {
           {/* Two faint circles in the band's own text colour: depth, and text over them stays readable in any theme. */}
           {photo && (
             <>
-              <Picture image={section.image} sizes="(min-width: 768px) 100vw, 70vw" className="absolute inset-0 -z-10 size-full" />
+              <Picture image={section.image} wide sizes="(min-width: 768px) 100vw, 160px" className="absolute inset-0 -z-10 size-full" />
               <span aria-hidden="true" className="absolute inset-0 -z-10 bg-black/60" />
             </>
           )}

@@ -89,6 +89,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - The new builder and landing strings in Amharic (start box, ideas, suggestions, photos, gallery, numbers) need the same native-speaker review.
 - Amharic in the 14 templates (`templates/site/presets/`, sources in `scripts/presets/`) was rewritten on 2026-11-16 and needs a native-speaker review; the church and mosque wording should be read by members of those communities.
 - Sample photos: a few niches have little that is truly Ethiopian (hotel rooms, mosque interiors, real-estate interiors, a habesha wedding). Commissioned or licensed Ethiopian photos would lift them. Add photos with `node scripts/stock-photos.mjs <folder>`.
+- Generated-site speed after the photo templates (performance review, 2026-11-16): before the smaller photo sizes, Lighthouse LCP on slow 4G was 2.2 to 3.4 s on photo-heavy home pages against the 2.0 s target. The 480 px sizes cut first-load photo bytes by more than half, but Lighthouse was not run again: re-measure hotel, tours, cafe and shop. If still over, load card and gallery photos only when scrolled near, and stop bundling the whole `site.json` into the script (JS is at 93 to 98 KB of the 100 KB budget).
+- The photo library (12 MB) is traced into every route's function through the `"/**"` key in `next.config.ts`; scope it to the routes that build and publish.
+- The builder landing page measured LCP 3.4 to 3.75 s in one run on a loaded machine during the review (budget 2.5 s); not compared with `main`. Check the Lighthouse CI result after this merge.
 - Template ideas from the writers, not built: a "from" note on service prices, an action on services and menu sections, a focal point for cropped photos, an included/not-included list for tours.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 

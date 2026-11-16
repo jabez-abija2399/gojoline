@@ -46,8 +46,8 @@ export function lockedTemplateFiles(root = TEMPLATE_ROOT): TemplateFile[] {
 const STOCK_REF = /\/stock\/([a-z0-9-]+)\.webp/g;
 
 /**
- * The sample photos a site uses (`/stock/<name>.webp` in its site.json), with the wide version of
- * hero photos. The library is large, so a sandbox gets only these, not the whole folder.
+ * The sample photos a site uses (`/stock/<name>.webp` in its site.json), with their small
+ * version and the wide version of hero photos. The library is large, so a sandbox gets only these, not the whole folder.
  */
 export function stockFilesFor(siteJson: string): TemplateFile[] {
   const names = new Set<string>();
@@ -55,7 +55,7 @@ export function stockFilesFor(siteJson: string): TemplateFile[] {
   const out: TemplateFile[] = [];
   // The cap is above the size of the library, so a valid site never loses a photo to it.
   for (const name of [...names].sort().slice(0, 400)) {
-    for (const file of [`${name}.webp`, `${name}-1600.webp`]) {
+    for (const file of [`${name}.webp`, `${name}-480.webp`, `${name}-1600.webp`]) {
       const content = libraryPhoto(file);
       if (content) out.push({ path: `public/stock/${file}`, content });
     }

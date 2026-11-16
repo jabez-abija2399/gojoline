@@ -2,8 +2,8 @@ import { Picture } from "../components/Picture";
 import { useSite } from "../lib/context";
 import type { Fact, HeroSection } from "../lib/types";
 
-/** Phones are asked for a little less than their full width, so a 3x screen still takes the 800 px photo. */
-const FULL = "(min-width: 768px) 100vw, 70vw";
+/** A hero photo on a phone: sized so that even a 3x screen takes the 800 px file. */
+const FULL = "(min-width: 768px) 100vw, 225px";
 
 export function Hero({ section, first }: { section: HeroSection; first: boolean }) {
   const { site, page, text, href } = useSite();
@@ -35,7 +35,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
   if (variant === "immersive") {
     return (
       <section id={section.id} className="hero-immersive relative isolate overflow-hidden bg-black text-white">
-        <Picture image={section.image} priority={first} sizes={FULL} className="absolute inset-0 -z-10 size-full" />
+        <Picture image={section.image} priority={first} wide sizes={FULL} className="absolute inset-0 -z-10 size-full" />
         <div aria-hidden="true" className="hero-shade absolute inset-0 -z-10" />
         <div className="container-site flex min-h-[min(46rem,88svh)] flex-col justify-end gap-5 pt-32 pb-10 md:pb-16">
           {section.eyebrow && <p className="eyebrow enter text-white!">{text(section.eyebrow)}</p>}
@@ -52,7 +52,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
     const photo = Boolean(section.image?.src);
     return (
       <section id={section.id} className="relative isolate overflow-hidden bg-accent text-on-accent">
-        <Picture image={section.image} priority={first} sizes={FULL} className={`absolute inset-0 -z-10 size-full ${photo ? "opacity-70" : "opacity-30"}`} />
+        <Picture image={section.image} priority={first} wide sizes={FULL} className={`absolute inset-0 -z-10 size-full ${photo ? "opacity-70" : "opacity-30"}`} />
         <div aria-hidden="true" className={`absolute inset-0 -z-10 bg-gradient-to-t ${photo ? "from-accent/95 via-accent/60 to-accent/35" : "from-accent via-accent/70 to-accent/20"}`} />
         <div className="container-site flex flex-col gap-5 py-24 md:py-36">
           {section.eyebrow && <p className="eyebrow enter text-on-accent!">{text(section.eyebrow)}</p>}
@@ -75,7 +75,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           {actions()}
           {section.image && (
             <div className="zoom mt-8 w-full rounded-site shadow-2xl shadow-primary/10">
-              <Picture image={section.image} priority={first} sizes={FULL} className="aspect-[4/3] w-full rounded-site sm:aspect-[16/9]" />
+              <Picture image={section.image} priority={first} wide sizes="(min-width: 1152px) 1104px, (min-width: 768px) 100vw, 225px" className="aspect-[4/3] w-full rounded-site sm:aspect-[16/9]" />
             </div>
           )}
           {facts && <Facts facts={facts} className="mt-2 w-full justify-center border-t border-line pt-6" />}
@@ -101,7 +101,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
             {facts && <Facts facts={facts} className="mt-2 border-t border-line pt-6" />}
           </div>
           <div className="zoom mx-auto w-full max-w-sm rounded-site md:max-w-none">
-            <Picture image={section.image} priority={first} sizes="(min-width: 768px) 40vw, 70vw" className="aspect-[4/5] w-full rounded-site" />
+            <Picture image={section.image} priority={first} sizes="(min-width: 768px) 40vw, 225px" className="aspect-[4/5] w-full rounded-site" />
           </div>
         </div>
       </section>
@@ -121,7 +121,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
         <div className="relative me-3.5 mb-3.5">
           <div className="depth-frame">
             <div className="zoom rounded-site">
-              <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 70vw" className="aspect-[4/3] w-full rounded-site" />
+              <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 225px" className="aspect-[4/3] w-full rounded-site" />
             </div>
           </div>
           {chip && (

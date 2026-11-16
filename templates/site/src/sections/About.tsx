@@ -11,7 +11,7 @@ export function About({ section }: { section: AboutSection }) {
       <div className="container-site grid items-center gap-10 md:grid-cols-2 md:gap-14">
         <div className={`reveal depth-frame me-3.5 mb-3.5 ${section.imageSide === "end" ? "md:order-last" : ""}`}>
           <div className="zoom rounded-site">
-            <Picture image={section.image} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[4/3] w-full rounded-site" />
+            <Picture image={section.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
           </div>
         </div>
         <div className="reveal flex flex-col gap-4">

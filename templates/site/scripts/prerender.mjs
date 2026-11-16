@@ -35,7 +35,7 @@ if (base) {
 const stockDir = join(dist, "stock");
 if (existsSync(stockDir)) {
   const siteJson = readFileSync(join(root, "src", "site.json"), "utf8");
-  const used = new Set([...siteJson.matchAll(/\/stock\/([a-z0-9-]+)\.webp/g)].flatMap((m) => [`${m[1]}.webp`, `${m[1]}-1600.webp`]));
+  const used = new Set([...siteJson.matchAll(/\/stock\/([a-z0-9-]+)\.webp/g)].flatMap((m) => [`${m[1]}.webp`, `${m[1]}-480.webp`, `${m[1]}-1600.webp`]));
   for (const file of readdirSync(stockDir)) if (!used.has(file)) rmSync(join(stockDir, file));
 }
 

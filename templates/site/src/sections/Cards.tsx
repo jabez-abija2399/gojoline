@@ -19,7 +19,7 @@ export function Cards({ section }: { section: CardsSection }) {
             {section.items.map((item, i) => (
               <li key={i} className="reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
                 <div className={`zoom relative rounded-site ${i % 2 === 1 ? "md:order-last" : ""}`}>
-                  <Picture image={item.image} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[4/3] w-full rounded-site" />
+                  <Picture image={item.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
                   <Badge item={item} />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -33,7 +33,7 @@ export function Cards({ section }: { section: CardsSection }) {
             {section.items.map((item, i) => {
               const inner = (
                 <>
-                  <Picture image={item.image} sizes="(min-width: 640px) 20rem, 72vw" className="absolute inset-0 size-full" />
+                  <Picture image={item.image} sizes="(min-width: 640px) 20rem, 160px" className="absolute inset-0 size-full" />
                   {item.image?.src && <span aria-hidden="true" className="card-shade absolute inset-0" />}
                   <Badge item={item} />
                   <span className={`absolute inset-x-0 bottom-0 flex flex-col gap-1 p-5 ${item.image?.src ? "text-white" : ""}`}>
@@ -63,7 +63,7 @@ export function Cards({ section }: { section: CardsSection }) {
             {section.items.map((item, i) => (
               <li key={i} className="reveal flex flex-col gap-3">
                 <div className="zoom rounded-site">
-                  <Picture image={item.image?.src ? item.image : { art: "portrait", alt: item.title }} sizes="(min-width: 768px) 25vw, 50vw" className="aspect-[4/5] w-full rounded-site" />
+                  <Picture image={item.image?.src ? item.image : { art: "portrait", alt: item.title }} sizes="(min-width: 768px) 25vw, 120px" className="aspect-[4/5] w-full rounded-site" />
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <ItemTitle className="text-lg leading-snug">{text(item.title)}</ItemTitle>
@@ -78,7 +78,7 @@ export function Cards({ section }: { section: CardsSection }) {
             {section.items.map((item, i) => (
               <li key={i} className="card pcard reveal lift flex flex-col overflow-hidden">
                 <div className="zoom relative">
-                  <Picture image={item.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="aspect-[4/3] w-full" />
+                  <Picture image={item.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" className="aspect-[4/3] w-full" />
                   <Badge item={item} />
                 </div>
                 <div className="flex flex-1 flex-col gap-2.5 p-5">

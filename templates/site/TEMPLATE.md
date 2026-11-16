@@ -119,7 +119,7 @@ Choose the hero `variant` to fit: `immersive` for a full-screen photo with the w
 
 ## Sample photos
 
-Reference as `"src": "/stock/<name>.webp"`. Names with `-hero-` are wide photos that suit `immersive` and `banner` heroes and photo `cta` bands. Choose by what the photo shows, from any group. Don't use one photo twice on a page.
+Reference as `"src": "/stock/<name>.webp"`. Each photo is served in the size the screen needs. Names with `-hero-` are wide photos that suit `immersive` and `banner` heroes and photo `cta` bands. Choose by what the photo shows, from any group. Don't use one photo twice on a page.
 
 <!-- stock:start -->
 - `business-about-handshake-team`: Three formally dressed African men laughing and shaking hands outdoors with palm trees behind.
