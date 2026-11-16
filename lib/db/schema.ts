@@ -90,7 +90,7 @@ export const projects = pgTable(
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index("projects_owner_idx").on(t.ownerId, t.updatedAt), index("projects_template_idx").on(t.templateId)],
+  (t) => [index("projects_owner_idx").on(t.ownerId, t.updatedAt), index("projects_template_idx").on(t.templateId, t.ownerId).where(sql`${t.templateId} is not null`)],
 );
 
 export const messages = pgTable(

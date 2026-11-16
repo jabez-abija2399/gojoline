@@ -1,5 +1,5 @@
 {
-  "id": "e6b76a12-b497-4fbc-8753-42bfe4e8e2ed",
+  "id": "c3c1f393-b426-45c3-a31b-94aa9a263951",
   "prevId": "f46fc141-fa5d-4d41-a0d4-844898ae5c46",
   "version": "7",
   "dialect": "postgresql",
@@ -1348,9 +1348,16 @@
               "isExpression": false,
               "asc": true,
               "nulls": "last"
+            },
+            {
+              "expression": "owner_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
             }
           ],
           "isUnique": false,
+          "where": "\"projects\".\"template_id\" is not null",
           "concurrently": false,
           "method": "btree",
           "with": {}

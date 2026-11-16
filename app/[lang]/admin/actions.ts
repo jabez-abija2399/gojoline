@@ -10,6 +10,7 @@ import { isAdmin } from "@/lib/billing/service";
 import { billingSettingsSchema } from "@/lib/billing/settings";
 import { birrToMinor } from "@/lib/billing/plans";
 import { dismissReports, restoreSite, takeDownSite } from "@/lib/safety/takedown";
+import { refreshTemplateUsage } from "@/lib/landing/template-usage";
 import { after } from "next/server";
 import { noticeDecision } from "@/lib/billing/notify";
 import { adminStats, paymentNotices, services } from "@/lib/server/services";
@@ -66,6 +67,7 @@ export async function moderateSite(_prev: ModerateState, form: FormData): Promis
         : op === "restore"
           ? await restoreSite(deps, user.id, siteId)
           : ((await dismissReports(deps, user.id, siteId)), "ok" as const);
+    if (op !== "dismiss") refreshTemplateUsage();
   } catch (error) {
     reportError("moderation failed", error);
     status = "failed";
