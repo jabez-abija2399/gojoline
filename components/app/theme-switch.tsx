@@ -8,7 +8,7 @@ import { THEME_COOKIE, THEMES, type Theme } from "@/lib/app/theme-shared";
 const ICONS = { light: Sun, dark: Moon, system: Monitor };
 
 /** Applies the look to the page now and remembers it for a year (the server reads it next time). */
-function applyTheme(next: Theme) {
+export function applyTheme(next: Theme) {
   document.querySelectorAll<HTMLElement>("[data-gojo-theme]").forEach((el) => {
     if (!el.closest(".admin-root")) el.dataset.gojoTheme = next;
   });

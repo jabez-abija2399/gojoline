@@ -61,7 +61,8 @@
 
 /* Re-declared under the theme container too, so these resolve against the dark tokens there. */
 :root,
-[data-gojo-theme] {
+[data-gojo-theme],
+.gojo-tone-light {
   --background: var(--gojo-paper);
   --foreground: var(--gojo-ink);
   --card: var(--gojo-panel);
@@ -167,6 +168,10 @@
   :root:has([data-gojo-theme="system"]) {
     --color-white: var(--gojo-panel);
   }
+}
+[data-gojo-theme="light"],
+.gojo-tone-light {
+  --color-white: #fff;
 }
 
 /* Builder: small, quick motion that says "something happened". All of it stops under

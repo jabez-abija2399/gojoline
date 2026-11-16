@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { fontVariables } from "@/lib/fonts";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
+import { readTheme } from "@/lib/app/theme";
 import { RegisterServiceWorker } from "@/components/pwa/register-sw";
 import "../globals.css";
 
@@ -53,9 +54,11 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   // Reading headers makes every page render per request so the CSP nonce is applied.
   await headers();
   const t = getMessages(lang);
+  // Light, dark or the device's choice, the same everywhere (public pages and the app).
+  const theme = await readTheme();
   return (
     <html lang={lang} className={`${fontVariables} h-full`}>
-      <body className="flex min-h-full flex-col">
+      <body data-gojo-theme={theme} className="flex min-h-full flex-col">
         <a
           href="#main"
           className="sr-only z-50 rounded-md bg-ink px-4 py-3 text-white focus:not-sr-only focus:fixed focus:min-h-11 focus:px-4 focus:py-3 focus:top-2 focus:left-2"

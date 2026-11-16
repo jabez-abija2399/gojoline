@@ -39,6 +39,28 @@
   --gojo-radius-lg: 20px;
 }
 
+/* Light values again, for a part that keeps the light roles inside a dark page: a container
+   set to "light" (the admin area's own choice), or `.gojo-tone-light` (the landing page's ink
+   bands, which are dark by design in both modes). */
+[data-gojo-theme="light"],
+.gojo-tone-light {
+  color-scheme: light;
+  --gojo-scrim: rgb(18 18 18 / 0.5);
+  --gojo-paper: #FBF9F6;
+  --gojo-sunken: #F6F2EC;
+  --gojo-panel: #FFFFFF;
+  --gojo-line: #E9E4DC;
+  --gojo-ink: #121212;
+  --gojo-ink-hover: #2B2926;
+  --gojo-ink-muted: #5F5A53;
+  --gojo-faint: #8A847B;
+  --gojo-link: #C2370F;
+  --gojo-coral-soft: #FFE9E2;
+  --gojo-lagoon: #0E7C66;
+  --gojo-warning: #A3530A;
+  --gojo-danger: #C81E3A;
+}
+
 /* Dark values of the same roles. Apply by setting data-gojo-theme="dark" on a container
    (the admin area does); "system" follows the device. */
 [data-gojo-theme="dark"],

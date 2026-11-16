@@ -27,7 +27,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
   const panel = "relative isolate flex min-h-80 items-center lg:min-h-[26rem] justify-center overflow-hidden rounded-[1.75rem] p-5 sm:p-10";
   const card = "relative w-full max-w-md rounded-2xl bg-white text-ink shadow-[0_24px_60px_-24px_rgb(18_18_18/0.5)]";
   return (
-    <section id="how" aria-labelledby="how-title" className="how-scope relative z-10 bg-ink text-white">
+    <section id="how" aria-labelledby="how-title" className="how-scope gojo-tone-light relative z-10 bg-ink text-white">
       <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-16">
         <div className="flex flex-col gap-8 lg:sticky lg:top-24 lg:self-start">
           <Eyebrow dark>{t.eyebrows.how}</Eyebrow>

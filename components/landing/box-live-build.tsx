@@ -208,7 +208,7 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
   const reply = live.reply.replace("{name}", site.name);
   return (
     <div className="mx-auto flex w-[min(100%,88rem,calc((100svh-10rem)*1.65))] min-w-[44rem] flex-col items-center max-md:hidden">
-      <div className="w-full rounded-[1.6rem] bg-ink p-3 pb-4 shadow-[0_40px_90px_-40px_rgb(18_18_18/0.6)]">
+      <div className="w-full rounded-[1.6rem] bg-device p-3 pb-4 shadow-[0_40px_90px_-40px_rgb(18_18_18/0.6)]">
         <div className="flex aspect-[16/10] w-full flex-col overflow-hidden rounded-[0.8rem] bg-white text-start text-[13px] leading-snug xl:text-sm">
           <div aria-hidden="true" className="flex items-center gap-2 border-b border-line px-3 py-2">
             <span className="flex gap-1">
@@ -278,7 +278,7 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
               </div>
               <div aria-hidden="true" className="relative min-h-0 flex-1 overflow-hidden bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:16px_16px] p-3">
                 {phoneView ? (
-                  <div key="m" className="mx-auto h-full w-[38%] min-w-[9rem] animate-[pop-in_0.4s_ease-out] overflow-hidden rounded-[1.1rem] border-[5px] border-ink bg-white">
+                  <div key="m" className="mx-auto h-full w-[38%] min-w-[9rem] animate-[pop-in_0.4s_ease-out] overflow-hidden rounded-[1.1rem] border-[5px] border-device bg-white">
                     <SiteSections site={site} width="m" built={built} follow={false} first="lazy" animate={run > 0} />
                   </div>
                 ) : (
@@ -294,7 +294,7 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
       </div>
       {/* The stand. */}
       <div aria-hidden="true" className="h-10 w-32 bg-[linear-gradient(to_bottom,var(--gojo-ink),#3a3632)] [clip-path:polygon(18%_0,82%_0,100%_100%,0_100%)]" />
-      <div aria-hidden="true" className="h-2.5 w-72 rounded-full bg-ink/90 shadow-[0_8px_20px_-6px_rgb(18_18_18/0.5)]" />
+      <div aria-hidden="true" className="h-2.5 w-72 rounded-full bg-device/90 shadow-[0_8px_20px_-6px_rgb(18_18_18/0.5)]" />
     </div>
   );
 }
@@ -303,7 +303,7 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
 function PhoneView({ site, live, publish, booking, run, slug, priority, ms, done, stepsDone, working, built }: State) {
   return (
     <div aria-hidden="true" className="mx-auto w-[min(17.5rem,78vw)] md:hidden">
-      <div className="rounded-[2.2rem] bg-ink p-2 shadow-[0_30px_70px_-30px_rgb(18_18_18/0.6)]">
+      <div className="rounded-[2.2rem] bg-device p-2 shadow-[0_30px_70px_-30px_rgb(18_18_18/0.6)]">
         <div className="relative flex h-[min(30rem,calc(100svh-19rem))] min-h-[20rem] flex-col overflow-hidden rounded-[1.7rem] bg-white text-start text-xs">
           <div className="flex items-center gap-1.5 border-b border-line px-3 pt-3 pb-2">
             <span className="min-w-0 flex-1 truncate font-semibold">{done ? `${slug}.gojoline.site` : site.name}</span>
