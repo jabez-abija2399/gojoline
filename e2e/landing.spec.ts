@@ -106,7 +106,7 @@ test.describe("landing page", () => {
     await page.getByRole("button", { name: "Hotel", exact: true }).click();
     await expect(box).toHaveValue("My own words");
     await expect(page.getByRole("button", { name: "Hotel", exact: true })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("img", { name: /builder with the site it made for Tana Shore Hotel/ })).toBeVisible();
+    await expect(page.getByRole("img", { name: /builder with the site it made for Tana Shore Lodge/ })).toBeVisible();
 
     await page.getByRole("link", { name: "See all 14 templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
