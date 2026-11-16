@@ -34,7 +34,9 @@
       "sections": [
         {
           "type": "hero",
+          "id": "top",
           "variant": "immersive",
+          "frame": true,
           "eyebrow": { "en": "In the name of the Father, the Son and the Holy Spirit, one God", "am": "በስመ አብ ወወልድ ወመንፈስ ቅዱስ አሐዱ አምላክ" },
           "heading": { "en": "Welcome to the house of the Lord", "am": "ወደ እግዚአብሔር ቤት እንኳን ደህና መጡ" },
           "subheading": { "en": "An Ethiopian Orthodox Tewahedo parish in Gerji. Liturgy, prayer and teaching every day of the week.", "am": "በገርጂ የምትገኝ የኢትዮጵያ ኦርቶዶክስ ተዋሕዶ ቤተ ክርስቲያን። ቅዳሴ፣ ጸሎትና ትምህርት በየዕለቱ።" },
@@ -69,9 +71,13 @@
           "type": "schedule",
           "id": "times",
           "layout": "list",
-          "eyebrow": { "en": "This week", "am": "በዚህ ሳምንት" },
+          "dates": [
+            "ethiopian",
+            "gregorian"
+          ],
+          "eyebrow": { "en": "Every week", "am": "በየሳምንቱ" },
           "heading": { "en": "Service times", "am": "የአገልግሎት ሰዓት" },
-          "intro": { "en": "Come as early as you can; the prayers begin before the Liturgy. Everyone is welcome to stand with us.", "am": "በተቻለዎ መጠን ቀደም ብለው ይምጡ፤ ጸሎቱ ከቅዳሴው በፊት ይጀምራል። ሁሉም አብሮን እንዲቆም ተጋብዟል።" },
+          "intro": { "en": "Come as early as you can; the prayers begin before the Liturgy. Everyone is welcome to stand with us. The daily prayers show how long until they begin.", "am": "በተቻለዎ መጠን ቀደም ብለው ይምጡ፤ ጸሎቱ ከቅዳሴው በፊት ይጀምራል። ሁሉም አብሮን እንዲቆም ተጋብዟል። የዕለት ጸሎቶቹ ለመጀመር የቀረውን ጊዜ ያሳያሉ።" },
           "items": [
             {
               "time": { "en": "6:00 am", "am": "ጠዋት 12:00" },
@@ -86,12 +92,14 @@
             {
               "time": { "en": "5:30 am", "am": "ንጋት 11:30" },
               "title": { "en": "Morning prayer (Kidan)", "am": "የጠዋት ኪዳን" },
-              "note": { "en": "Every day. A short dawn service before work.", "am": "በየቀኑ። ከሥራ በፊት በንጋት የሚደረስ አጭር ጸሎት።" }
+              "note": { "en": "Every day. A short dawn service before work.", "am": "በየቀኑ። ከሥራ በፊት በንጋት የሚደረስ አጭር ጸሎት።" },
+              "at": "05:30"
             },
             {
               "time": { "en": "5:00 pm", "am": "ቀን 11:00" },
               "title": { "en": "Evening teaching (Serk Gubae)", "am": "ሰርክ ጉባኤ" },
-              "note": { "en": "Every day. Hymns, a Gospel lesson and evening prayer, about one hour.", "am": "በየቀኑ። መዝሙር፣ የወንጌል ትምህርትና የሠርክ ጸሎት፤ አንድ ሰዓት ገደማ።" }
+              "note": { "en": "Every day. Hymns, a Gospel lesson and evening prayer, about one hour.", "am": "በየቀኑ። መዝሙር፣ የወንጌል ትምህርትና የሠርክ ጸሎት፤ አንድ ሰዓት ገደማ።" },
+              "at": "17:00"
             },
             {
               "time": { "en": "12 noon", "am": "ቀን 6:00" },
@@ -107,7 +115,18 @@
           "footnote": { "en": "On the great feasts the Liturgy is celebrated at night. Changes are announced after the Sunday Liturgy and on our Telegram channel.", "am": "በታላላቅ በዓላት ቅዳሴው በሌሊት ይቀደሳል። ለውጥ ሲኖር ከእሑድ ቅዳሴ በኋላና በቴሌግራም ቻናላችን እናሳውቃለን።" }
         },
         {
+          "type": "marquee",
+          "tone": "primary",
+          "items": [
+            { "en": "Welcome", "am": "እንኳን ደህና መጡ" },
+            { "en": "Come as you are", "am": "እንዳሉ ይምጡ" },
+            { "en": "Pray with us", "am": "አብረን እንጸልይ" },
+            { "en": "Peace be with you all", "am": "ሰላም ለኵልክሙ" }
+          ]
+        },
+        {
           "type": "about",
+          "id": "welcome",
           "eyebrow": { "en": "Welcome", "am": "እንኳን ደህና መጡ" },
           "heading": { "en": "A parish that feels like family", "am": "እንደ ቤተሰብ የምትቀበል ደብር" },
           "body": { "en": "Debre Tesfa St. Mary has served the families of Gerji for three generations. Here children learn their first hymns, couples are crowned, and the departed are remembered in prayer.\n\nIf this is your first time, or your first time in many years, come as you are. A deacon or a Sunday school member at the gate will gladly show you where to stand.", "am": "ደብረ ተስፋ ቅድስት ማርያም የገርጂን ምእመናን ለሦስት ትውልድ አገልግላለች። ሕፃናት የመጀመሪያ መዝሙራቸውን የሚማሩት፣ ሙሽሮች በተክሊል የሚጋቡት፣ ያረፉትም በጸሎት የሚታሰቡት እዚሁ ነው።\n\nለመጀመሪያ ጊዜ ቢመጡም፣ ከብዙ ዓመታት በኋላ ቢመለሱም እንዳሉ ይምጡ። በበሩ ላይ ያለ ዲያቆን ወይም የሰንበት ትምህርት ቤት አባል የሚቆሙበትን በደስታ ያሳይዎታል።" },
@@ -116,6 +135,7 @@
             "alt": { "en": "Priests and deacons in white robes with prayer staffs, seated beside a large kebero drum", "am": "ነጭ የለበሱ ካህናትና ዲያቆናት መቋሚያ ይዘው ከትልቅ ከበሮ አጠገብ ተቀምጠው" }
           },
           "imageSide": "end",
+          "imageShape": "arch",
           "points": [
             { "en": "The Liturgy is in Ge'ez and Amharic", "am": "ቅዳሴው በግእዝና በአማርኛ ይቀደሳል" },
             { "en": "Children are welcome at every service", "am": "ሕፃናት በማንኛውም አገልግሎት መገኘት ይችላሉ" },
@@ -129,7 +149,8 @@
         {
           "type": "cards",
           "id": "ministries",
-          "layout": "grid",
+          "layout": "scroll",
+          "imageShape": "arch",
           "eyebrow": { "en": "Parish life", "am": "የደብሩ አገልግሎት" },
           "heading": { "en": "Find your place in the parish", "am": "በደብሩ ውስጥ ቦታዎን ያግኙ" },
           "intro": { "en": "Worship does not end on Sunday morning. These are the ways our members learn, serve and care for one another.", "am": "አገልግሎት በእሑድ ጠዋት አያበቃም። ምእመናን የሚማሩባቸው፣ የሚያገለግሉባቸውና የሚረዳዱባቸው መንገዶች እነዚህ ናቸው።" },
@@ -140,8 +161,7 @@
                 "alt": { "en": "A smiling boy carrying a kebero drum past a clapping line of white-clad choir members", "am": "ከበሮ የያዘ ፈገግተኛ ልጅ ነጭ ከለበሱ አጨብጫቢ መዘምራን ፊት ሲያልፍ" }
               },
               "title": { "en": "Sunday school", "am": "ሰንበት ትምህርት ቤት" },
-              "subtitle": { "en": "Ages 4 and up", "am": "ከ4 ዓመት ጀምሮ" },
-              "description": { "en": "Hymns, the faith of the Church and the lives of the saints, taught by age group every Sunday afternoon.", "am": "መዝሙር፣ የቤተ ክርስቲያን ትምህርተ ሃይማኖትና የቅዱሳን ታሪክ በየዕድሜ ክፍሉ፣ እሑድ ከሰዓት።" },
+              "subtitle": { "en": "Sundays at 2:00 pm, ages 4 and up", "am": "እሑድ በ8 ሰዓት፣ ከ4 ዓመት ጀምሮ" },
               "action": {
                 "label": { "en": "See the classes", "am": "ክፍሎቹን ይመልከቱ" },
                 "href": "/sunday-school"
@@ -153,8 +173,7 @@
                 "alt": { "en": "An elderly man in a white turban and purple shawl holding a lit taper candle", "am": "ነጭ ጥምጣምና ወይን ጠጅ ካባ የለበሱ አረጋዊ የበራ ጧፍ ይዘው" }
               },
               "title": { "en": "Baptism, wedding, memorial", "am": "ክርስትና፣ ተክሊል፣ ፍትሐት" },
-              "subtitle": { "en": "The Church beside you", "am": "ቤተ ክርስቲያን ከጎንዎ" },
-              "description": { "en": "From a child's baptism to a memorial prayer, the parish office arranges each service with you.", "am": "ከሕፃን ክርስትና እስከ ተዝካር ጸሎት፣ እያንዳንዱን አገልግሎት የደብሩ ቢሮ ከእርስዎ ጋር ያመቻቻል።" },
+              "subtitle": { "en": "Arranged with the parish office", "am": "ከደብሩ ቢሮ ጋር የሚመቻች" },
               "action": {
                 "label": { "en": "Ask the parish office", "am": "ቢሮውን ይጠይቁ" },
                 "href": "/services#request"
@@ -166,8 +185,7 @@
                 "alt": { "en": "Clasped hands resting on an open Bible on a wooden table", "am": "በእንጨት ጠረጴዛ ላይ በተከፈተ መጽሐፍ ቅዱስ ላይ የተጣመሩ እጆች" }
               },
               "title": { "en": "Gospel teaching", "am": "ስብከተ ወንጌል" },
-              "subtitle": { "en": "Every evening at 5:00", "am": "በየምሽቱ በ11 ሰዓት" },
-              "description": { "en": "A daily lesson from the Gospel, and a longer Bible study for adults on Saturday afternoons.", "am": "በየዕለቱ የወንጌል ትምህርት፤ ቅዳሜ ከሰዓት ደግሞ ለአዋቂዎች ሰፋ ያለ የመጽሐፍ ቅዱስ ጥናት።" }
+              "subtitle": { "en": "Every evening at 5:00", "am": "በየምሽቱ በ11 ሰዓት" }
             },
             {
               "image": {
@@ -175,8 +193,7 @@
                 "alt": { "en": "Four women in white netela shawls and a girl holding a red flower standing together", "am": "ነጭ ነጠላ የለበሱ አራት ሴቶችና ቀይ አበባ የያዘች ልጅ አብረው ቆመው" }
               },
               "title": { "en": "Works of mercy", "am": "ምግባረ ሠናይ" },
-              "subtitle": { "en": "Caring for our neighbours", "am": "ለተቸገሩ መድረስ" },
-              "description": { "en": "Meals for the elderly, school materials for children and visits to the sick, organised by parish volunteers.", "am": "ለአረጋውያን ምግብ፣ ለሕፃናት የትምህርት ቁሳቁስ እና ሕሙማንን መጠየቅ፤ በደብሩ በጎ ፈቃደኞች የሚከናወን።" }
+              "subtitle": { "en": "Meals, school books and visits to the sick", "am": "ምግብ፣ ደብተርና ሕሙማንን መጠየቅ" }
             },
             {
               "image": {
@@ -184,8 +201,7 @@
                 "alt": { "en": "Hands cutting round ceremonial bread in a woven basket", "am": "በመሶብ ውስጥ ድፎ ዳቦ የሚቆርሱ እጆች" }
               },
               "title": { "en": "Senbete fellowship", "am": "ሰንበቴ" },
-              "subtitle": { "en": "After the Sunday Liturgy", "am": "ከእሑድ ቅዳሴ በኋላ" },
-              "description": { "en": "Members share blessed bread and a meal in the compound, and newcomers are always invited to sit down.", "am": "አባላት በግቢው ውስጥ ጸበል ጸዲቅ ይቋደሳሉ፤ አዲስ የመጣም ሁሌ እንዲቀመጥ ይጋበዛል።" }
+              "subtitle": { "en": "A shared meal after the Sunday Liturgy", "am": "ከእሑድ ቅዳሴ በኋላ የጋራ ማዕድ" }
             },
             {
               "image": {
@@ -193,13 +209,8 @@
                 "alt": { "en": "The rock-hewn Church of St George in Lalibela, with two white-robed men on its steps", "am": "በላሊበላ የሚገኘው ከዓለት የተፈለፈለው ቤተ ጊዮርጊስ፣ ነጭ የለበሱ ሁለት ሰዎች በደረጃው ላይ" }
               },
               "title": { "en": "Pilgrimage to Lalibela", "am": "መንፈሳዊ ጉዞ ወደ ላሊበላ" },
-              "subtitle": { "en": "For the feast of the Nativity", "am": "ለልደት በዓል" },
+              "subtitle": { "en": "5 days by bus, for the Nativity", "am": "ለልደት በዓል፣ 5 ቀን በአውቶቡስ" },
               "badge": { "en": "Places open", "am": "ምዝገባ ተጀምሯል" },
-              "meta": [
-                { "en": "5 days", "am": "5 ቀን" },
-                { "en": "By bus", "am": "በአውቶቡስ" }
-              ],
-              "description": { "en": "The parish travels together each year. Transport, lodging and fasting meals are arranged for you.", "am": "ደብሩ በየዓመቱ በጋራ ይጓዛል። መጓጓዣ፣ ማረፊያና የጾም ምግብ ይዘጋጃል።" },
               "price": { "amountMinor": 750000, "currency": "ETB" },
               "priceNote": { "en": "per person", "am": "ለአንድ ሰው" },
               "action": {
@@ -211,6 +222,7 @@
         },
         {
           "type": "quote",
+          "id": "verse",
           "quote": { "en": "I was glad when they said to me, \"Let us go to the house of the Lord.\"", "am": "“ወደ እግዚአብሔር ቤት እንሂድ” ባሉኝ ጊዜ ደስ አለኝ።" },
           "name": { "en": "Psalm 122:1", "am": "መዝሙረ ዳዊት 121(122)፥1" },
           "image": {
@@ -276,6 +288,7 @@
         },
         {
           "type": "contact",
+          "id": "contact",
           "heading": { "en": "Visit or call the parish", "am": "ይምጡ ወይም ይደውሉ" },
           "intro": { "en": "The parish office answers questions about services, baptism, weddings and memorial prayers.", "am": "የደብሩ ቢሮ ስለ አገልግሎት፣ ስለ ክርስትና፣ ስለ ተክሊልና ስለ ተዝካር ጸሎት ለሚነሱ ጥያቄዎች መልስ ይሰጣል።" }
         },

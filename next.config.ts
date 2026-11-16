@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { securityHeaders } from "./lib/security/headers";
+import { demoHeaders, securityHeaders } from "./lib/security/headers";
 
 const nextConfig: NextConfig = {
   // Cache Components / PPR are off: a nonce-based CSP needs every page rendered per request.
@@ -26,7 +26,26 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Template pictures (public/templates/) change only when the templates are re-shot: cache them a day,
+      // and serve a stale copy for a week while refreshing. Pictures only, never a page or a redirect.
+      {
+        source: "/templates/:path(.+\\.(?:webp|png|jpe?g|avif))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
+      // Live template demos (public/demo/<id>/, built by scripts/template-demos.mjs): shown in a
+      // frame on Gojoline's own preview pages only, with the same strict policy as published sites,
+      // and kept out of search engines. Later entries override the same header above.
+      { source: "/demo/:path*", headers: demoHeaders },
+    ];
+  },
+  async rewrites() {
+    // A demo page is a folder with an index.html; files (scripts, photos, fonts) are served as they are.
+    return [
+      { source: "/demo/:id", destination: "/demo/:id/index.html" },
+      { source: "/demo/:id/:page*", destination: "/demo/:id/:page*/index.html" },
+    ];
   },
 };
 

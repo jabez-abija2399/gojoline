@@ -1,4 +1,5 @@
 import { createContext, useContext, type ReactNode } from "react";
+import { withBase } from "./base";
 import { localePath, t } from "./i18n";
 import type { Lang, Page, Site, Text } from "./types";
 
@@ -23,7 +24,7 @@ export function SiteProvider({ site, page, lang, children }: { site: Site; page:
     href: (path) => {
       if (!path.startsWith("/") || path.startsWith("//")) return path;
       const [p = "/", hash] = path.split("#");
-      const base = localePath(p, lang, site);
+      const base = withBase(localePath(p, lang, site));
       return hash ? `${base}#${hash}` : base;
     },
   };

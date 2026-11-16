@@ -116,9 +116,10 @@
   }
 }
 
+/* Starts faint, never invisible: hero text counts as shown at once (largest paint), most of all in Amharic. */
 @keyframes site-enter {
   from {
-    opacity: 0;
+    opacity: 0.15;
     transform: translateY(18px);
   }
   to {
@@ -139,5 +140,844 @@
 @keyframes site-header {
   to {
     opacity: 1;
+  }
+}
+
+/*
+ * Motion kit (2026-11-16), from the best sites of each kind. CSS only, except the count-up
+ * numbers, swipe-row arrows, photo viewer, menu tabs and next-time highlight (small React parts).
+ * Nothing here hides content: without these features the page simply stands still.
+ */
+@layer components {
+  /* Hero words: each word stays in its line box; they rise one after another. */
+  .split .w {
+    display: inline-block;
+  }
+  /* Amharic text gets a taller line everywhere; the words of a headline keep the headline's own. */
+  :lang(am) :is(.split, .ink-words) .w {
+    line-height: inherit;
+  }
+  /* A thin bar at the top showing how far down the page the visitor is. */
+  .scroll-progress {
+    display: none;
+  }
+  /* Ribbon of words. */
+  .marquee-row {
+    display: flex;
+    width: max-content;
+  }
+  .marquee-track {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0;
+    font-family: var(--site-font-heading);
+    font-size: clamp(1.5rem, 1.1rem + 2vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .marquee-track li {
+    display: flex;
+    align-items: center;
+  }
+  .marquee-track li::after {
+    content: "\2726";
+    margin-inline: 1.25rem;
+    font-size: 0.55em;
+    opacity: 0.6;
+  }
+  @media (min-width: 768px) {
+    .marquee-track li::after {
+      margin-inline: 2rem;
+    }
+  }
+  /* Arrows under a swipe row. */
+  .rail-arrow {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--site-line);
+    border-radius: 999px;
+    background: var(--site-surface);
+    color: var(--site-text);
+    transition: background-color 150ms, border-color 150ms;
+  }
+  .rail-arrow:hover:not([aria-disabled="true"]) {
+    border-color: var(--site-text);
+  }
+  .rail-arrow[aria-disabled="true"] {
+    opacity: 0.35;
+    cursor: default;
+  }
+  /* Pause buttons for moving content. */
+  .pause-btn {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: color-mix(in oklab, currentColor 14%, transparent);
+    color: inherit;
+  }
+  .announce .pause-btn {
+    background: transparent;
+  }
+  .pause-btn-inline {
+    border: 1.5px solid var(--site-line);
+    background: var(--site-surface);
+    color: var(--site-text);
+  }
+  .on-dark .rail-arrow,
+  .bg-accent .rail-arrow {
+    border-color: currentColor;
+    background: transparent;
+    color: inherit;
+  }
+  /* Photo viewer. */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    background: rgb(0 0 0 / 0.92);
+    color: #fff;
+    padding: 0;
+  }
+  .lightbox::backdrop {
+    background: rgb(0 0 0 / 0.6);
+  }
+  .lightbox :focus-visible {
+    outline-color: #fff;
+  }
+  .lightbox-btn {
+    position: absolute;
+    display: inline-flex;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.14);
+    color: #fff;
+  }
+  .lightbox-btn:hover {
+    background: rgb(255 255 255 / 0.26);
+  }
+  /* Menu tabs. */
+  .menu-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    padding-bottom: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  @media (min-width: 640px) {
+    .menu-tabs {
+      flex-wrap: wrap;
+      margin-inline: 0;
+      padding-inline: 0;
+    }
+  }
+  .menu-tab {
+    min-height: 2.75rem;
+    flex: none;
+    border: 1.5px solid var(--site-line);
+    border-radius: 999px;
+    background: var(--site-surface);
+    padding-inline: 1.125rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .menu-tab[aria-pressed="true"] {
+    border-color: var(--site-text);
+    background: var(--site-text);
+    color: var(--site-background);
+  }
+  /* The next prayer, service or class. */
+  .schedule-tile[aria-current] {
+    border-color: var(--site-primary);
+    background: var(--site-primary-soft);
+    box-shadow: 0 0 0 2px var(--site-primary);
+  }
+  .schedule-tile {
+    position: relative;
+  }
+  /* The badge sits on the tile's top edge, so marking the next time never changes the tile's size. */
+  .schedule-tile .next-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin: 0;
+    transform: translate(-50%, -55%);
+  }
+  .next-badge {
+    display: inline-block;
+    width: fit-content;
+    margin-inline: auto;
+    margin-top: 0.25rem;
+    border-radius: 999px;
+    background: var(--site-primary);
+    color: var(--site-on-primary);
+    padding: 0.125rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    max-width: 100%;
+    text-align: center;
+  }
+  li:not(.schedule-tile) > span > .next-badge,
+  li:not(.schedule-tile) .next-badge {
+    margin-inline: 0;
+  }
+  /* Tabs: the new panel fades in. */
+  .menu-tab[aria-selected="true"] {
+    border-color: var(--site-text);
+    background: var(--site-text);
+    color: var(--site-background);
+  }
+  /* Today's date in several calendars. */
+  .date-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    width: fit-content;
+    border-radius: var(--site-radius);
+    background: var(--site-primary-soft);
+    padding: 0.5rem 0.875rem;
+  }
+  .date-line > span + span::before {
+    content: "\00b7";
+    margin-inline-end: 0.75rem;
+    opacity: 0.6;
+  }
+  /* Giving goal. */
+  .goal-bar {
+    height: 0.875rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--site-primary-soft);
+  }
+  .goal-fill {
+    display: block;
+    width: var(--p, 0%);
+    height: 100%;
+    border-radius: 999px;
+    background: var(--site-primary);
+    transform-origin: 0 50%;
+  }
+  /* The turning stamp. */
+  .stamp {
+    width: 7rem;
+    height: 7rem;
+    pointer-events: none;
+  }
+  @media (min-width: 768px) {
+    .stamp {
+      width: 8.5rem;
+      height: 8.5rem;
+    }
+  }
+  .stamp-disc {
+    fill: var(--site-primary);
+  }
+  .stamp-text {
+    fill: var(--site-on-primary);
+    font-family: var(--site-font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  :lang(am) .stamp-text {
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 12.5px;
+  }
+  .stamp-star {
+    fill: var(--site-on-primary);
+  }
+  .stamp-on-photo .stamp-disc {
+    fill: rgb(255 255 255 / 0.14);
+    stroke: rgb(255 255 255 / 0.6);
+  }
+  .stamp-on-photo :is(.stamp-text, .stamp-star) {
+    fill: #fff;
+  }
+  @media (max-width: 767px) {
+    .stamp-on-photo {
+      display: none;
+    }
+  }
+  /* A list of big titles; the picture follows the mouse on computers. */
+  .index-list {
+    position: relative;
+    border-top: 1px solid var(--site-line);
+  }
+  .index-row {
+    border-bottom: 1px solid var(--site-line);
+  }
+  .index-inner {
+    display: flex;
+    min-height: 5.5rem;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 1rem;
+  }
+  .index-title {
+    font-family: var(--site-font-heading);
+    font-size: clamp(1.5rem, 1.1rem + 2vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .index-thumb {
+    display: block;
+    width: 4.5rem;
+    height: 4.5rem;
+    flex: none;
+  }
+  .index-preview {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .index-thumb {
+      display: none;
+    }
+    .index-inner {
+      transition: padding 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .index-row:hover .index-inner {
+      padding-inline-start: 1.25rem;
+    }
+    .index-preview {
+      position: absolute;
+      top: var(--y, 50%);
+      left: var(--x, 50%);
+      z-index: 5;
+      display: block;
+      width: 20rem;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.85) rotate(-3deg);
+      transition:
+        opacity 250ms,
+        transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.5);
+    }
+    .index-row:hover .index-preview {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(0);
+    }
+    /* Resting on one card or row softens the others. */
+    .dim-others:hover > li:not(:hover) {
+      opacity: 0.55;
+    }
+    .dim-others > li {
+      transition: opacity 250ms;
+    }
+  }
+  /* The home page's main action in the header (computers; phones have the call bar). */
+  .header-cta {
+    min-height: 2.5rem;
+    padding-block: 0.375rem;
+  }
+  .header-overlay .header-cta {
+    box-shadow:
+      0 0 0 1.5px rgb(255 255 255 / 0.6),
+      0 6px 20px -8px rgb(0 0 0 / 0.5);
+  }
+  /* A small "scroll" cue at the foot of a full-screen photo. */
+  .scroll-cue {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    width: 1.5rem;
+    height: 2.4rem;
+    margin-left: -0.75rem;
+    border: 2px solid rgb(255 255 255 / 0.7);
+    border-radius: 999px;
+  }
+  .scroll-cue::after {
+    content: "";
+    position: absolute;
+    top: 0.45rem;
+    left: 50%;
+    width: 4px;
+    height: 0.5rem;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: #fff;
+  }
+  @media (max-width: 767px) {
+    .scroll-cue {
+      display: none;
+    }
+  }
+  /* The site's name, very large, closing the page. */
+  /* Sized to fit the name on one line at any width: Latin letters are about 0.6em wide, Ge'ez about 1em. */
+  .footer-wordmark::before {
+    content: attr(data-name);
+    display: block;
+    padding-bottom: 0.15em;
+    font-family: var(--site-font-heading);
+    font-size: min(11rem, calc((100vw - 2.5rem) / (var(--chars, 10) * 0.62)));
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    opacity: 0.14;
+  }
+  :lang(am) .footer-wordmark::before {
+    font-size: min(9rem, calc((100vw - 2.5rem) / (var(--chars, 8) * 1.05)));
+    letter-spacing: 0;
+    line-height: 1.3;
+  }
+  /* A wall of photos in columns. */
+  .photo-wall {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+    gap: 0.75rem;
+    height: 34rem;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent);
+  }
+  @media (min-width: 768px) {
+    .photo-wall {
+      gap: 1rem;
+      height: 44rem;
+    }
+  }
+  .photo-wall-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  @media (min-width: 768px) {
+    .photo-wall-col {
+      gap: 1rem;
+    }
+  }
+  /* Cards that pile up: each pins a little lower than the one before. */
+  /* Cards pin only where a whole card fits on the screen; on phones they are a plain list. */
+  @media (min-width: 768px) and (min-height: 760px) {
+    .stack-card {
+      position: sticky;
+      top: calc(4.75rem + var(--i, 0) * 1.25rem);
+      max-height: calc(100svh - 6rem - var(--i, 0) * 1.25rem);
+      transform-origin: 50% 0;
+    }
+  }
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  .headline.split .w {
+    animation: site-word 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(80ms + var(--w, 0) * 70ms);
+  }
+  /* The hero photo settles in, then drifts slower than the page. Never starts hidden (LCP). */
+  .hero-photo {
+    animation: site-settle 2400ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .marquee-row {
+    animation: site-marquee 38s linear infinite;
+  }
+  /* The stamp turns as one layer (the HTML wrapper), so its curved words aren't redrawn every frame. */
+  @supports (animation-timeline: scroll()) {
+    .stamp-turn {
+      animation: site-spin linear both;
+      animation-timeline: scroll(root);
+      will-change: transform;
+    }
+  }
+  .photo-wall-col {
+    animation: site-drift-up 50s linear infinite;
+  }
+  .photo-wall-col.is-down {
+    animation-name: site-drift-down;
+  }
+  .photo-wall:hover .photo-wall-col,
+  .photo-wall:focus-within .photo-wall-col {
+    animation-play-state: paused;
+  }
+  .scroll-cue::after {
+    animation: site-cue 1.6s ease-in-out infinite;
+  }
+  .tab-panel {
+    animation: site-enter 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .marquee:hover .marquee-row,
+  .marquee:focus-within .marquee-row,
+  [data-paused] .marquee-row,
+  [data-paused] .photo-wall-col {
+    animation-play-state: paused;
+  }
+  @supports (animation-timeline: view()) {
+    /* Items in a row arrive one after another. */
+    .reveal {
+      animation-range: entry calc(var(--i, 0) * 7%) entry calc(32% + var(--i, 0) * 7%);
+    }
+    /* Photos wipe in from the bottom as they come into view. */
+    .wipe {
+      animation: site-wipe linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+    .reveal.wipe {
+      animation-name: site-wipe;
+    }
+    /* A card being covered by the next one steps back. */
+    @media (min-width: 768px) and (min-height: 760px) {
+      .stack-card {
+        animation: site-stack linear both;
+        animation-timeline: view();
+        animation-range: exit -20% exit 60%;
+      }
+      .stack-card:last-child {
+        animation: none;
+      }
+    }
+    /* A big statement: words darken one after another as they scroll into view. */
+    .ink-words .w {
+      animation: site-ink linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 45%;
+    }
+    /* A framed hero photo opens to the full width as the page starts to scroll. */
+    @media (min-width: 768px) {
+      .hero-frame {
+        animation: site-unframe linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 60vh;
+      }
+    }
+    /* The goal bar fills when it comes into view; section bars draw in. */
+    .goal-fill {
+      animation: site-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+    .section-title::before {
+      transform-origin: 0 50%;
+      animation: site-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+  }
+  @supports (animation-timeline: scroll()) {
+    .hero-parallax {
+      animation: site-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+    .scroll-progress {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 40;
+      display: block;
+      height: 3px;
+      background: var(--site-primary);
+      transform-origin: 0 50%;
+      animation: site-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+/* Less motion: the ribbon stands still and wraps, centred. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-row {
+    width: auto;
+    justify-content: center;
+  }
+  .marquee-row > [aria-hidden] {
+    display: none;
+  }
+  .marquee-track,
+  .announce-track {
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    white-space: normal;
+  }
+  .announce-row,
+  .marquee-row {
+    width: 100%;
+    padding-inline: 1rem 3rem;
+  }
+  .pause-btn {
+    display: none;
+  }
+  .photo-wall {
+    height: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .photo-wall-col > [aria-hidden] {
+    display: none;
+  }
+}
+
+@keyframes site-word {
+  from {
+    opacity: 0.15;
+    transform: translateY(0.45em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes site-settle {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes site-parallax {
+  to {
+    transform: translateY(14%);
+  }
+}
+@keyframes site-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes site-wipe {
+  from {
+    clip-path: inset(0 0 100% 0 round var(--site-radius));
+  }
+  to {
+    clip-path: inset(0 0 0 0 round var(--site-radius));
+  }
+}
+@keyframes site-stack {
+  to {
+    transform: scale(0.93);
+    filter: brightness(0.82);
+  }
+}
+@keyframes site-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes site-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes site-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes site-drift-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-50% - 0.5rem));
+  }
+}
+@keyframes site-drift-down {
+  from {
+    transform: translateY(calc(-50% - 0.5rem));
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes site-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(0.7rem);
+    opacity: 0;
+  }
+}
+@keyframes site-ink {
+  from {
+    opacity: 0.18;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes site-unframe {
+  from {
+    clip-path: inset(1.25rem 1.25rem 0 round 1.75rem);
+  }
+  to {
+    clip-path: inset(0 0 0 round 0);
+  }
+}
+
+/* Pictures with a top like a doorway. Outside the layers so it wins over the rounded-corner utility;
+   their wipe-in keeps the arch (no rounded clip). */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .arch.wipe {
+      animation-name: site-wipe-plain;
+    }
+  }
+}
+@keyframes site-wipe-plain {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+.arch,
+.arch :is(img, .placeholder) {
+  border-radius: 50% 50% var(--site-radius) var(--site-radius) / min(40%, 12rem) min(40%, 12rem) var(--site-radius) var(--site-radius);
+}
+
+/* A services list beside a pinned photo is one column, so the photo stays pinned while it scrolls. */
+.pinned-list > :is(ul, ol) {
+  grid-template-columns: minmax(0, 1fr);
+}
+@layer components {
+  /* Several photos in one card. */
+  .card-photos-strip {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .card-photos-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .card-photos-count {
+    position: absolute;
+    inset-inline-end: 0.75rem;
+    bottom: 0.75rem;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.6);
+    color: #fff;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-photos-arrow {
+    position: absolute;
+    top: 50%;
+    display: inline-flex;
+    opacity: 0;
+    pointer-events: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.9);
+    color: #111;
+    font-size: 1.5rem;
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .card-photos:hover .card-photos-arrow {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+  .card-photos:focus-within .card-photos-arrow {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .card-photos-arrow[aria-disabled="true"] {
+    opacity: 0.35 !important;
+  }
+  /* The announcement strip. */
+  .announce {
+    position: relative;
+    z-index: 25;
+    overflow: hidden;
+    padding-block: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .announce-track {
+    display: flex;
+    flex: none;
+    white-space: nowrap;
+  }
+  .announce-track li::after {
+    content: "\2726";
+    margin-inline: 1.5rem;
+    opacity: 0.6;
+  }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  .announce-row {
+    animation-duration: 28s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .announce-track li[aria-hidden] {
+    display: none;
+  }
+}
+
+/* On an arched picture the label sits in the middle of the curve. */
+.arch .badge {
+  inset-inline-start: 50%;
+  top: 1.25rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* No part of the page, turning or moving, ever widens it. */
+.site-root {
+  overflow-x: clip;
+}
+/* Focus on photo buttons and photo strips is drawn inside them (their frames clip the outside). */
+.zoom > button:focus-visible,
+.card-photos-strip:focus-visible {
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 6px rgb(255 255 255 / 0.9);
+}
+/* On the home page the header's main button appears once the hero's own button has scrolled away. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .header-cta-late {
+      animation: site-cta-in linear both;
+      animation-timeline: scroll(root);
+      animation-range: 55vh 75vh;
+    }
+  }
+}
+@keyframes site-cta-in {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
   }
 }

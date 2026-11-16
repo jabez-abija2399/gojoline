@@ -39,7 +39,7 @@ e2e/                 Playwright tests
 
 ## Data model (initial)
 
-`users`, `sessions`, `projects`, `project_versions`, `messages`, `ai_usage` (tokens, cost), `sites` (subdomain, domain, status), `form_submissions`, `list_items`, `uploads`, `telegram_links`, `plans`, `subscriptions`, `credit_ledger`, `payments` (method, amount_minor, currency, receipt_url, status, reviewed_by), `abuse_reports`, `audit_log`.
+`users`, `sessions`, `projects` (with the `template_id` it started from, if any), `project_versions`, `messages`, `ai_usage` (tokens, cost), `sites` (subdomain, domain, status), `form_submissions`, `list_items`, `uploads`, `telegram_links`, `plans`, `subscriptions`, `credit_ledger`, `payments` (method, amount_minor, currency, receipt_url, status, reviewed_by), `abuse_reports`, `audit_log`.
 
 ## Environment variables
 

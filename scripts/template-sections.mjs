@@ -1,5 +1,5 @@
-// Pictures of every section of every page of every starter template, for the template preview
-// pages (/[lang]/templates/<id>): visitors see the whole site, section by section, before they pick it.
+// The card picture of every starter template for the templates page (the top of its home page at
+// computer width), cut from pictures of every section of every page (deleted afterwards).
 //
 // Builds each preset (templates/site/presets) exactly as a customer site is built, opens every page
 // in English and Amharic at desktop (1280 px) and phone (390 px) width, and cuts the full-page picture
@@ -126,6 +126,12 @@ writeFileSync(manifestFile, `${JSON.stringify(sorted)}\n`);
 // The card picture for the templates page: the top of the home page at computer width, 16:10.
 await makeCards(only.length ? only : Object.keys(sorted));
 
+// The preview pages show the live demo (scripts/template-demos.mjs); only the cards are kept.
+for (const id of only.length ? only : Object.keys(sorted)) {
+  for (const f of readdirSync(join(outRoot, id))) if (!f.endsWith("-card.webp")) rmSync(join(outRoot, id, f));
+}
+writeFileSync(manifestFile, `${JSON.stringify(Object.fromEntries(Object.entries(sorted).map(([id, langs]) => [id, Object.fromEntries(Object.keys(langs).map((l) => [l, true]))])))}\n`);
+
 async function makeCards(ids) {
   for (const id of ids) {
     for (const [lang, pages] of Object.entries(sorted[id] ?? {})) {
@@ -134,7 +140,11 @@ async function makeCards(ids) {
       const { width, height } = await sharp(hero).metadata();
       const h = Math.min(height, Math.round(width / 1.6));
       const w = Math.round(h * 1.6);
-      await sharp(hero).extract({ left: Math.round((width - w) / 2), top: 0, width: w, height: h }).resize(640, 400).webp({ quality: 62, effort: 6 }).toFile(join(outRoot, id, `${lang}-card.webp`));
+      // A full-screen photo hero has its words low down: take its lower part. Others: the top.
+      const preset = JSON.parse(readFileSync(join(root, "templates", "site", "presets", `${id}.json`), "utf8"));
+      const first = preset.pages[0].sections[0];
+      const low = first?.type === "hero" && (first.variant === "immersive" || first.variant === "banner");
+      await sharp(hero).extract({ left: Math.round((width - w) / 2), top: low ? height - h : 0, width: w, height: h }).resize(640, 400).webp({ quality: 62, effort: 6 }).toFile(join(outRoot, id, `${lang}-card.webp`));
     }
   }
   console.log(`Card pictures for ${ids.length} template(s).`);

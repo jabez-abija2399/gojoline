@@ -17,6 +17,8 @@ const P = {
   outdoor: img("hotel-gallery-bush-dining-acacia", "A long red-clothed dinner table set outdoors beside an acacia tree under a wide sky", "በሰፊ ሰማይ ሥር ከግራር ዛፍ አጠገብ የተዘጋጀ ረጅም ቀይ የእራት ጠረጴዛ"),
   veranda: img("hotel-gallery-veranda-dusk", "A colonnaded veranda and garden lawn lit at dusk", "በምሽት በመብራት የደመቀ ባለ አምድ በረንዳና የግቢ ሣር"),
   dish: img("cafe-hero-clay-pot-dish", "Black clay pots of food garnished with a green herb sprig", "በአረንጓዴ ቅጠል ያጌጠ ምግብ በጥቁር የሸክላ ድስቶች"),
+  kemis: img("shop-card-habesha-kemis", "A woman in a white habesha kemis with black and gold tibeb embroidery and silver jewellery", "ጥቁርና ወርቃማ ጥበብ ያለው ነጭ የሀበሻ ቀሚስና የብር ጌጥ ያደረገች ሴት"),
+  bread: img("cafe-gallery-bread-baskets", "Hands cutting a round difo dabo in a woven basket", "በሰፌድ ውስጥ ያለ ድፎ ዳቦ በእጅ ሲቆረስ"),
   coffee: img("cafe-about-ceremony-incense", "A coffee ceremony: a jebena pouring into small cups while incense smokes in a clay burner", "የቡና ሥነ ሥርዓት፤ ከጀበና ወደ ስኒዎች ቡና ሲቀዳ፣ ዕጣን በማጨሻ ሲጨስ"),
 };
 
@@ -87,6 +89,7 @@ save("events", {
       sections: [
         {
           type: "hero",
+          id: "top",
           variant: "immersive",
           eyebrow: t("Weddings · Melse · Celebrations", "ሠርግ · መልስ · ድግስ"),
           heading: t("Your day, quietly perfect", "ቀንዎ ያለ ጭንቀት ያምራል"),
@@ -98,6 +101,12 @@ save("events", {
             { value: t("2016", "2016"), label: t("planning since", "ጀምሮ በሥራ ላይ") },
             { value: t("3 cities", "3 ከተሞች"), label: t("Addis, Bishoftu, Hawassa", "አዲስ አበባ፣ ቢሾፍቱ፣ ሐዋሳ") },
           ],
+        },
+        {
+          type: "marquee",
+          id: "customs",
+          tone: "primary",
+          items: [t("Shimgilna", "ሽምግልና"), t("Telosh", "ጥሎሽ"), t("Wedding", "ሠርግ"), t("Melse", "መልስ"), t("Kelekel", "ቅልቅል"), t("Graduation", "ምረቃ")],
         },
         {
           type: "cards",
@@ -115,10 +124,11 @@ save("events", {
         {
           type: "gallery",
           id: "gallery",
-          layout: "mosaic",
+          layout: "wall",
           eyebrow: t("Recent work", "የቅርብ ጊዜ ሥራዎች"),
           heading: t("Days we were part of", "አብረን ያሳለፍናቸው ቀናት"),
-          images: [P.dancing, P.bride, P.veranda],
+          intro: t("Dances, dresses, tables and the coffee after. Tap any photo to see it large.", "ጭፈራው፣ ልብሱ፣ ማዕዱና ከዚያ በኋላ የሚፈላው ቡና። ማንኛውንም ፎቶ ነክተው በትልቁ ይመልከቱ።"),
+          images: [P.dancing, P.bride, P.outdoor, P.kemis, P.bread, P.veranda, P.dish],
         },
         {
           type: "cards",
@@ -140,6 +150,7 @@ save("events", {
         },
         {
           type: "quote",
+          id: "couple",
           quote: t("On the morning of our wedding I had nothing to do but get dressed. I still don't know what went wrong that day, and that is exactly the point.", "በሠርጋችን ጠዋት ከመልበስ በቀር የምሠራው አልነበረም። በዚያ ቀን ምን ችግር እንደተፈጠረ እስከ ዛሬ አላውቅም፤ የፈለግነውም ይኸው ነበር።"),
           name: t("Selam and Dawit T.", "ሰላምና ዳዊት ተ."),
           role: t("Married in January, Bishoftu", "በጥር ወር በቢሾፍቱ የተጋቡ"),
@@ -155,6 +166,7 @@ save("events", {
           ),
           image: P.coffee,
           imageSide: "end",
+          imageShape: "arch",
           points: [t("One planner and one designer for each event", "ለእያንዳንዱ ዝግጅት አንድ አዘጋጅና አንድ ዲዛይነር"), t("Every supplier's price shown to you as it is", "የእያንዳንዱ አቅራቢ ዋጋ እንዳለ ይታይዎታል"), t("Amharic, Afaan Oromo and English", "በአማርኛ፣ በአፋን ኦሮሞና በእንግሊዝኛ")],
           action: link("See our work", "ሥራዎቻችንን ይመልከቱ", "/work"),
         },
@@ -194,7 +206,8 @@ save("events", {
         },
         {
           type: "cards",
-          layout: "feature",
+          id: "packages",
+          layout: "stack",
           eyebrow: t("Planning", "ዝግጅት"),
           heading: t("Our three packages", "ሦስቱ ፓኬጆቻችን"),
           intro: t("Prices are for a wedding of up to 300 guests in Addis Ababa. For other sizes and towns we send a written quote.", "ዋጋዎቹ በአዲስ አበባ እስከ 300 እንግዶች ላለው ሠርግ ናቸው። ለሌላ መጠንና ከተማ የጽሑፍ ዋጋ እንልካለን።"),

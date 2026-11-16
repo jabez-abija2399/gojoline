@@ -74,8 +74,10 @@ save("hotel", {
       sections: [
         {
           type: "hero",
+          id: "top",
           variant: "immersive",
-          eyebrow: t("Bahir Dar · Lake Tana", "ባሕር ዳር · ጣና ሐይቅ"),
+          frame: true,
+          eyebrow: t("Bahir Dar · Ethiopia", "ባሕር ዳር · ኢትዮጵያ"),
           heading: t("Rest where the lake begins", "ሐይቁ በሚጀምርበት ይረፉ"),
           subheading: t("Twelve quiet rooms, a garden that runs to the water, and coffee roasted in front of you every afternoon.", "አሥራ ሁለት ጸጥ ያሉ ክፍሎች፣ እስከ ውሃው የሚዘልቅ አትክልት እና በየከሰዓቱ በፊትዎ የሚቆላ ቡና።"),
           image: img("hotel-hero-lodge-pool-dusk", "The lodge lit by lanterns at dusk, reflected in the water", "ሎጁ በምሽት በፋኖስ ደምቆ፣ በውሃው ላይ ሲንጸባረቅ"),
@@ -89,6 +91,7 @@ save("hotel", {
         },
         {
           type: "about",
+          id: "welcome",
           eyebrow: t("Welcome", "እንኳን ደህና መጡ"),
           heading: t("A family lodge, kept the slow way", "በቤተሰብ የሚተዳደር፣ በእርጋታ የሚያዝ ሎጅ"),
           body: t(
@@ -97,17 +100,19 @@ save("hotel", {
           ),
           image: img("hotel-about-coffee-ceremony-host", "Our host pouring coffee from a clay jebena", "አስተናጋጃችን ከጀበና ቡና ስትቀዳ"),
           imageSide: "end",
+          imageShape: "arch",
           points: [t("Breakfast and Wi-Fi included in every room", "ቁርስና ዋይፋይ በሁሉም ክፍል ተካትቷል"), t("Free pickup from the airport", "ከአየር ማረፊያ ነፃ መቀበያ"), t("Boat trips to the monasteries, arranged at reception", "ወደ ገዳማት የጀልባ ጉዞ፣ በእንግዳ መቀበያ ይዘጋጃል")],
           action: link("Our story", "ታሪካችን", "/contact"),
         },
         {
           type: "cards",
           id: "rooms",
-          layout: "feature",
+          layout: "stack",
           eyebrow: t("Stay", "ማረፊያ"),
           heading: t("Rooms and suites", "ክፍሎችና ስዊቶች"),
           intro: t("Every room has a hot shower, a mosquito net, fast Wi-Fi and breakfast.", "ሁሉም ክፍል ሙቅ ሻወር፣ የወባ ትንኝ መከላከያ አጎበር፣ ፈጣን ዋይፋይ እና ቁርስ አለው።"),
           items: rooms,
+          action: link("Compare all rooms", "ክፍሎቹን ያነጻጽሩ", "/rooms"),
         },
         {
           type: "services",
@@ -125,9 +130,16 @@ save("hotel", {
           ],
         },
         {
+          type: "marquee",
+          id: "places",
+          tone: "dark",
+          items: [t("Lake Tana", "ጣና ሐይቅ"), t("Island monasteries", "የደሴት ገዳማት"), t("Blue Nile Falls", "ጢስ ዓባይ"), t("Zege forest", "ዘጌ ደን"), t("Bahir Dar", "ባሕር ዳር")],
+        },
+        {
           type: "cards",
           id: "experiences",
           layout: "scroll",
+          imageShape: "arch",
           eyebrow: t("While you are here", "እዚህ ሳሉ"),
           heading: t("Slow days by the water", "በውሃው ዳር የእርጋታ ቀናት"),
           items: [
@@ -139,6 +151,7 @@ save("hotel", {
         },
         {
           type: "gallery",
+          id: "gallery",
           eyebrow: t("Gallery", "ፎቶዎች"),
           heading: t("A look around", "አካባቢውን ይመልከቱ"),
           images: [
@@ -149,6 +162,7 @@ save("hotel", {
         },
         {
           type: "testimonials",
+          id: "guests",
           eyebrow: t("Guests say", "እንግዶች ምን ይላሉ"),
           heading: t("Kind words from our guests", "ከእንግዶቻችን የተሰጡ አስተያየቶች"),
           items: [
@@ -159,6 +173,8 @@ save("hotel", {
         bookingForm,
         {
           type: "faq",
+          id: "faq",
+          eyebrow: t("Before you come", "ከመምጣትዎ በፊት"),
           heading: t("Good to know", "ማወቅ ያለብዎ"),
           items: [
             { question: t("When can I check in and out?", "መግቢያና መውጫ ሰዓት መቼ ነው?"), answer: t("Check-in is from 1 pm and check-out is until 11 am. Reception is open all night.", "መግቢያ ከቀኑ 7 ሰዓት ጀምሮ፣ መውጫ እስከ ጠዋቱ 5 ሰዓት ነው። እንግዳ መቀበያው ሌሊቱን ሙሉ ክፍት ነው።") },
@@ -166,9 +182,10 @@ save("hotel", {
             { question: t("Is breakfast included?", "ቁርስ ተካትቷል?"), answer: t("Yes, for every guest, every morning.", "አዎ፣ ለሁሉም እንግዳ በየጠዋቱ።") },
           ],
         },
-        { type: "map", heading: t("Find us on the lakeside road", "በሐይቅ ዳር መንገድ ያገኙናል"), query: "Lakeside road, Bahir Dar" },
+        { type: "map", id: "map", eyebrow: t("Getting here", "አደራረስ"), heading: t("Find us on the lakeside road", "በሐይቅ ዳር መንገድ ያገኙናል"), query: "Lakeside road, Bahir Dar" },
         {
           type: "cta",
+          id: "end",
           heading: t("Your room by the lake is waiting", "በሐይቁ ዳር ያለው ክፍልዎ እየጠበቀዎ ነው"),
           body: t("Best price when you book with us directly.", "በቀጥታ ከእኛ ሲይዙ ምርጥ ዋጋ ያገኛሉ።"),
           image: img("hotel-hero-infinity-pool-hills", "The pool terrace looking over the hills", "ተራሮችን የሚመለከተው የመዋኛ በረንዳ"),
@@ -212,6 +229,7 @@ save("hotel", {
         },
         {
           type: "menu",
+          eyebrow: t("Served all day", "ቀኑን ሙሉ የሚቀርብ"),
           heading: t("Menu", "ምናሌ"),
           categories: [
             {
@@ -227,6 +245,14 @@ save("hotel", {
                 { name: t("Shiro", "ሽሮ"), description: t("Served hot in a clay pot", "በሸክላ ድስት ትኩስ የሚቀርብ"), price: birr(180), tag: t("Fasting", "የጾም") },
                 { name: t("Beyaynetu", "በያይነቱ"), description: t("A plate of fasting dishes on injera", "በእንጀራ ላይ የጾም ወጦች"), price: birr(240), tag: t("Fasting", "የጾም") },
                 { name: t("Lamb tibs", "የበግ ጥብስ"), price: birr(460) },
+              ],
+            },
+            {
+              name: t("Coffee and drinks", "ቡናና መጠጦች"),
+              items: [
+                { name: t("Coffee ceremony", "የቡና ሥነ ሥርዓት"), description: t("Three rounds, with popcorn, every day at 4 pm", "ሦስት ዙር፣ ከፈንዲሻ ጋር፣ በየቀኑ በ10 ሰዓት"), price: birr(120) },
+                { name: t("Fresh juice", "ትኩስ ጭማቂ"), description: t("Mango, avocado or mixed spris", "ማንጎ፣ አቮካዶ ወይም ስፕሪስ"), price: birr(110) },
+                { name: t("Spiced tea", "የቅመም ሻይ"), price: birr(50) },
               ],
             },
           ],

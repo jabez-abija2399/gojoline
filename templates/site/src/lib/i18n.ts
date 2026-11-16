@@ -1,3 +1,4 @@
+import { BASE } from "./base";
 import type { Lang, Price, Site, Text } from "./types";
 
 type Langs = Pick<Site, "languages">;
@@ -15,7 +16,8 @@ export function localePath(path: string, lang: Lang, site: Langs): string {
 
 /** Splits "/am/menu" into { lang: "am", path: "/menu" } for this site. */
 export function parsePath(pathname: string, site: Langs): { lang: Lang; path: string } {
-  const clean = pathname.replace(/\/index\.html$/, "").replace(/\/+$/, "") || "/";
+  const local = BASE && pathname.startsWith(BASE) ? pathname.slice(BASE.length) || "/" : pathname;
+  const clean = local.replace(/\/index\.html$/, "").replace(/\/+$/, "") || "/";
   const parts = clean.split("/").filter(Boolean);
   const first = parts[0];
   const others: string[] = site.languages.slice(1);
@@ -54,6 +56,27 @@ const ui = {
     fieldEmail: "Please enter an email like name@example.com.",
     fieldPhone: "Please enter a phone number like 0911 234 567.",
     fieldNumber: "Please enter a number.",
+    openPhoto: "Open photo",
+    close: "Close",
+    previous: "Previous",
+    next: "Next",
+    photoOf: "{i} of {n}",
+    all: "All",
+    nextUp: "Next",
+    inTime: "in {t}",
+    hourShort: "h",
+    minuteShort: "min",
+    pause: "Pause the moving text",
+    play: "Play the moving text",
+    pausePhotos: "Pause the moving photos",
+    playPhotos: "Play the moving photos",
+    photosOf: "Photos of {title}: {i} of {n}",
+    howOften: "How often",
+    once: "Once",
+    monthly: "Monthly",
+    perMonth: "a month",
+    raised: "{raised} raised of {target}",
+    today: "Today",
   },
   am: {
     call: "ይደውሉልን",
@@ -82,6 +105,27 @@ const ui = {
     fieldEmail: "እባክዎ እንደ name@example.com ያለ ኢሜይል ያስገቡ።",
     fieldPhone: "እባክዎ እንደ 0911 234 567 ያለ ስልክ ቁጥር ያስገቡ።",
     fieldNumber: "እባክዎ ቁጥር ያስገቡ።",
+    openPhoto: "ፎቶውን ይክፈቱ",
+    close: "ይዝጉ",
+    previous: "ቀዳሚ",
+    next: "ቀጣይ",
+    photoOf: "{i} ከ{n}",
+    all: "ሁሉም",
+    nextUp: "ቀጣይ",
+    inTime: "በ{t} ውስጥ",
+    hourShort: "ሰዓት",
+    minuteShort: "ደቂቃ",
+    pause: "የሚንቀሳቀሰውን ጽሑፍ ያቁሙ",
+    play: "የሚንቀሳቀሰውን ጽሑፍ ያስጀምሩ",
+    pausePhotos: "የሚንቀሳቀሱትን ፎቶዎች ያቁሙ",
+    playPhotos: "የሚንቀሳቀሱትን ፎቶዎች ያስጀምሩ",
+    photosOf: "የ{title} ፎቶዎች፦ {i} ከ{n}",
+    howOften: "በምን ያህል ጊዜ",
+    once: "አንድ ጊዜ",
+    monthly: "በየወሩ",
+    perMonth: "በወር",
+    raised: "ከ{target} ውስጥ {raised} ተሰብስቧል",
+    today: "ዛሬ",
   },
 } as const;
 

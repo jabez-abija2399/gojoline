@@ -2,7 +2,7 @@ import { t, img, link, birr, save } from "./lib.mjs";
 
 const order = link("Order on Telegram", "በቴሌግራም ይዘዙ", "https://t.me/yourbusiness");
 const orderThis = link("Order this", "ይህን ይዘዙ", "/#order");
-const seeProducts = link("See products", "ምርቶቹን ይመልከቱ", "/products");
+const seeProducts = link("See products", "ምርቶቹን ይመልከቱ", "#new");
 
 const products = [
   {
@@ -44,6 +44,49 @@ const products = [
     priceNote: t("from", "ጀምሮ"),
     action: orderThis,
   },
+  {
+    image: img("shop-gallery-handwoven-textile", "A hand holding the fringed edge of white hand-woven cotton with blue patterned bands", "ሰማያዊ ጥለት ያለው ነጭ የሸማ ጨርቅ ዘርፍ የያዘ እጅ"),
+    subtitle: t("Netela", "ነጠላ"),
+    title: t("Netela with a blue tibeb", "ሰማያዊ ጥበብ ያለው ነጠላ"),
+    badge: t("New", "አዲስ"),
+    meta: [t("Two-layer cotton", "ባለ ሁለት ድርብ ጥጥ"), t("Hand-knotted fringe", "በእጅ የተቋጠረ ዘርፍ")],
+    description: t("Fine, light cotton straight from the loom, with a woven blue border at both ends.", "በቀጥታ ከሸማው የወጣ ስስና ቀላል ጥጥ፤ በሁለቱም ጫፍ የተሸመነ ሰማያዊ ጥበብ ያለው።"),
+    price: birr(1500),
+    action: orderThis,
+  },
+  {
+    image: img("shop-hero-woven-baskets-wall", "A wall of round woven basket trays, some brightly coloured and some natural straw", "በግድግዳ ላይ የተሰቀሉ ክብ ስፌቶች፤ ከፊሉ ባለ ደማቅ ቀለም፣ ከፊሉ የተፈጥሮ ሣር"),
+    subtitle: t("Baskets", "ስፌት"),
+    title: t("Woven basket trays", "የሣር ስፌቶች"),
+    badge: t("Best seller", "በብዛት የሚሸጥ"),
+    meta: [t("Coiled grass", "ከሣር የተሰፋ"), t("40 cm across", "40 ሳ.ሜ ስፋት"), t("Bright or natural", "ደማቅ ወይም የተፈጥሮ")],
+    description: t("For the wall, the table or bread. Every colour pattern is a little different.", "ለግድግዳ፣ ለገበታ ወይም ለዳቦ። እያንዳንዱ የቀለም ጥለት ትንሽ ይለያያል።"),
+    price: birr(1800),
+    action: orderThis,
+  },
+];
+
+// Home: a swipe row of pieces (the basket tray is left out there: the hero shows the same photo).
+const [kemis, scarf, tote, jebena, netela, basket] = products;
+const newRow = [kemis, netela, tote, scarf, jebena];
+
+// Products page: a grid with pills by kind; the kemis card shows how it is worn.
+const clothes = t("Clothes", "ልብስ");
+const handmade = t("Handmade", "የእጅ ሥራ");
+const productGrid = [
+  {
+    ...kemis,
+    badge: clothes,
+    photos: [
+      img("shop-hero-habesha-dress-field", "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል"),
+      img("shop-about-spinning-yarn", "A woman in an embroidered grey traditional dress and silver jewellery working thread in her hands", "ጥልፍ ያለው ግራጫ ባህላዊ ልብስና የብር ጌጥ ያደረገች ሴት ክር በእጇ ስትፈትል"),
+    ],
+  },
+  { ...netela, badge: clothes },
+  { ...scarf, badge: clothes },
+  { ...tote, badge: handmade },
+  { ...jebena, badge: handmade },
+  { ...basket, badge: handmade },
 ];
 
 const orderSteps = [
@@ -58,6 +101,12 @@ const phoneField = { name: "phone", label: t("Phone number", "ስልክ ቁጥ�
 save("shop", {
   name: t("Tibeb Merkato", "ጥበብ መርካቶ"),
   tagline: t("Handwoven habesha clothes and handmade goods from Merkato, Addis Ababa", "በእጅ የተሸመኑ የሀበሻ ልብሶችና የእጅ ሥራዎች፣ ከመርካቶ አዲስ አበባ"),
+  announcement: [
+    t("Order on Telegram", "በቴሌግራም ይዘዙ"),
+    t("Pay on delivery", "ሲደርስዎ ይክፈሉ"),
+    t("Delivery in Addis in 1 to 2 days", "በአዲስ አበባ በ1–2 ቀን እናደርሳለን"),
+    t("Free delivery above 10,000 Birr", "ከ10,000 ብር በላይ ማድረሻ ነፃ"),
+  ],
   languages: ["en", "am"],
   theme: { primary: "#1F3A5F", accent: "#14202E", background: "#FAF7F0", text: "#2A2A28", font: "classic", radius: "small", style: "editorial" },
   business: {
@@ -78,8 +127,10 @@ save("shop", {
       sections: [
         {
           type: "hero",
-          variant: "centered",
+          id: "top",
+          variant: "split",
           eyebrow: t("Merkato · Addis Ababa", "መርካቶ · አዲስ አበባ"),
+          stamp: t("Woven by hand · Merkato", "በእጅ የተሸመነ · መርካቶ"),
           heading: t("Woven by hand, worn with pride", "በእጅ የተሸመነ፣ በኩራት የሚለበስ"),
           subheading: t("Habesha kemis, netela and handmade goods from weavers we know by name. Order by message and pay when it reaches you.", "በስም ከምናውቃቸው ሸማኔዎች የተገኙ የሀበሻ ቀሚስ፣ ነጠላና የእጅ ሥራዎች። በመልእክት ይዘዙ፤ ሲደርስዎ ይክፈሉ።"),
           image: img("shop-hero-woven-baskets-wall", "A wall of round woven basket trays, some brightly coloured and some natural straw", "በግድግዳ ላይ የተሰቀሉ ክብ ስፌቶች፤ ከፊሉ ባለ ደማቅ ቀለም፣ ከፊሉ የተፈጥሮ ሣር"),
@@ -92,28 +143,29 @@ save("shop", {
           ],
         },
         {
+          // Centrepiece: a product row to swipe on phones and step through with arrows on computers.
           type: "cards",
-          id: "collections",
+          id: "new",
           layout: "scroll",
-          eyebrow: t("Collections", "ስብስቦች"),
-          heading: t("What we make and gather", "የምንሠራውና የምንሰበስበው"),
-          intro: t("Clothes from our own looms, and handmade pieces from makers across the country.", "ከራሳችን ሸማ የወጡ ልብሶች እና ከመላ አገሪቱ የእጅ ባለሙያዎች የተገኙ ሥራዎች።"),
-          items: [
-            { image: img("shop-gallery-boutique-rack", "Cream and blue dresses hanging from a wooden rail in a bright shop", "በብሩህ ሱቅ ውስጥ በእንጨት ዘንግ ላይ የተሰቀሉ ነጣ ያሉና ሰማያዊ ቀሚሶች"), title: t("Dresses", "ቀሚሶች"), subtitle: t("Everyday, holiday and wedding", "የዘወትር፣ የበዓልና የሠርግ"), action: seeProducts },
-            { image: img("shop-gallery-handwoven-textile", "A hand holding the fringed edge of white hand-woven cotton with blue patterned bands", "ሰማያዊ ጥለት ያለው ነጭ የሸማ ጨርቅ ዘርፍ የያዘ እጅ"), title: t("Netela and gabi", "ነጠላና ጋቢ"), subtitle: t("Straight from the loom", "በቀጥታ ከሸማው"), action: seeProducts },
-            { image: img("shop-hero-habesha-dress-field", "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል"), title: t("Holiday wear", "የበዓል ልብስ"), subtitle: t("Tibeb in every colour", "ጥበብ በየቀለሙ"), action: seeProducts },
-            { image: img("ngo-gallery-smiling-girl", "A smiling girl in an embroidered traditional dress", "ጥልፍ ያለው ባህላዊ ቀሚስ የለበሰች ፈገግተኛ ልጅ"), title: t("For children", "ለልጆች"), subtitle: t("Ages 3 to 12", "ከ3 እስከ 12 ዓመት"), action: seeProducts },
-          ],
+          filters: false,
+          eyebrow: t("In the shop now", "አሁን በሱቁ ያሉ"),
+          heading: t("Pieces people ask for", "ተፈላጊ ሥራዎች"),
+          intro: t("Prices are in Birr. Tap a piece to order it; delivery in Addis is 200 Birr, free above 10,000 Birr.", "ዋጋዎቹ በብር ናቸው። ለማዘዝ የሚፈልጉትን ይንኩ፤ በአዲስ አበባ ማድረሻ 200 ብር ሲሆን ከ10,000 ብር በላይ ነፃ ነው።"),
+          items: newRow,
+          action: link("See all products and prices", "ሁሉንም ምርቶችና ዋጋዎች ይመልከቱ", "/products"),
         },
         {
           type: "cards",
-          id: "products",
+          id: "collections",
           layout: "grid",
-          eyebrow: t("In the shop now", "አሁን በሱቁ ያሉ"),
-          heading: t("Pieces people ask for", "ተፈላጊ ሥራዎች"),
-          intro: t("Prices are in Birr. Delivery inside Addis Ababa is 200 Birr, and free for orders above 10,000 Birr.", "ዋጋዎቹ በብር ናቸው። በአዲስ አበባ ውስጥ ማድረሻ 200 ብር ሲሆን ከ10,000 ብር በላይ ለሆነ ትዕዛዝ ነፃ ነው።"),
-          items: products,
-          action: link("See all products and prices", "ሁሉንም ምርቶችና ዋጋዎች ይመልከቱ", "/products"),
+          eyebrow: t("Shop by kind", "በዓይነት ይምረጡ"),
+          heading: t("What we make and gather", "የምንሠራውና የምንሰበስበው"),
+          intro: t("Clothes from our own looms, and handmade pieces from makers across the country.", "ከራሳችን ሸማ የወጡ ልብሶች እና ከመላ አገሪቱ የእጅ ባለሙያዎች የተገኙ ሥራዎች።"),
+          items: [
+            { image: img("shop-hero-habesha-dress-field", "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል"), title: t("Habesha kemis", "የሀበሻ ቀሚስ"), subtitle: t("Holiday and wedding", "የበዓልና የሠርግ"), action: link("See the dresses", "ቀሚሶቹን ይመልከቱ", "/products") },
+            { image: img("shop-about-spinning-yarn", "A woman in an embroidered grey traditional dress and silver jewellery working thread in her hands", "ጥልፍ ያለው ግራጫ ባህላዊ ልብስና የብር ጌጥ ያደረገች ሴት ክር በእጇ ስትፈትል"), title: t("Netela and gabi", "ነጠላና ጋቢ"), subtitle: t("Straight from the loom", "በቀጥታ ከሸማው"), action: link("See netela and gabi", "ነጠላና ጋቢ ይመልከቱ", "/products") },
+            { image: img("cafe-gallery-bread-baskets", "Hands cutting round bread in a woven basket, with more woven baskets around", "በስፌት ውስጥ ያለ ክብ ድፎ ዳቦ የሚቆርሱ እጆች፣ በዙሪያው ሌሎች ስፌቶች"), title: t("Home and kitchen", "ለቤትና ለማዕድ ቤት"), subtitle: t("Mesob, baskets, jebena", "መሶብ፣ ስፌት፣ ጀበና"), action: link("See handmade goods", "የእጅ ሥራዎቹን ይመልከቱ", "/products") },
+          ],
         },
         {
           type: "steps",
@@ -143,6 +195,7 @@ save("shop", {
         },
         {
           type: "testimonials",
+          id: "reviews",
           eyebrow: t("Customers say", "ደንበኞች ምን ይላሉ"),
           heading: t("Worn at weddings, holidays and graduations", "በሠርግ፣ በበዓልና በምረቃ የተለበሱ"),
           items: [
@@ -175,9 +228,10 @@ save("shop", {
           successMessage: t("Thank you. We will call you shortly to confirm your order.", "እናመሰግናለን። ትዕዛዝዎን ለማረጋገጥ በቅርቡ እንደውልልዎታለን።"),
         },
         { type: "contact", id: "contact", heading: t("Come and try it on", "መጥተው ይለኩ"), intro: t("The shop is open every day. Bring a friend; there is always coffee.", "ሱቁ በየቀኑ ክፍት ነው። ጓደኛ ይዘው ይምጡ፤ ቡና አይጠፋም።") },
-        { type: "map", heading: t("Find us in Merkato", "በመርካቶ ያገኙናል"), query: "Anwar Mosque, Merkato, Addis Ababa" },
+        { type: "map", id: "map", heading: t("Find us in Merkato", "በመርካቶ ያገኙናል"), query: "Anwar Mosque, Merkato, Addis Ababa" },
         {
           type: "cta",
+          id: "end",
           heading: t("Seen something you like?", "የወደዱት ነገር አለ?"),
           body: t("Send us its name or a screenshot. We will tell you the price, the sizes we have and when it can reach you.", "ስሙን ወይም ፎቶውን ይላኩልን። ዋጋውን፣ ያሉንን ልኮችና መቼ እንደሚደርስዎ እንነግርዎታለን።"),
           primaryAction: order,
@@ -197,15 +251,17 @@ save("shop", {
           eyebrow: t("Products and prices", "ምርቶችና ዋጋዎች"),
           heading: t("Everything in the shop", "በሱቁ ያለው ሁሉ"),
           subheading: t("Every price is written here. Order by message, pay when it arrives.", "ዋጋው ሁሉ እዚሁ ተጽፏል። በመልእክት ይዘዙ፤ ሲደርስዎ ይክፈሉ።"),
-          image: img("shop-hero-habesha-dress-field", "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል"),
+          image: img("shop-gallery-boutique-rack", "Cream and blue dresses hanging from a wooden rail in a bright shop", "በብሩህ ሱቅ ውስጥ በእንጨት ዘንግ ላይ የተሰቀሉ ነጣ ያሉና ሰማያዊ ቀሚሶች"),
           primaryAction: order,
         },
         {
           type: "cards",
-          layout: "feature",
+          id: "all",
+          layout: "grid",
           eyebrow: t("Favourites", "ተወዳጆች"),
-          heading: t("Four pieces to start with", "ለመጀመር አራት ሥራዎች"),
-          items: products,
+          heading: t("Six pieces to start with", "ለመጀመር ስድስት ሥራዎች"),
+          intro: t("Choose clothes or handmade goods. Swipe the dress photos to see how it is worn.", "ልብስ ወይም የእጅ ሥራ ይምረጡ። ቀሚሱ እንዴት እንደሚለበስ ለማየት ፎቶዎቹን ያንሸራትቱ።"),
+          items: productGrid,
         },
         {
           type: "menu",

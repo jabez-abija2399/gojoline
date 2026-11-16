@@ -3,6 +3,8 @@ export interface Project {
   ownerId: string;
   name: string;
   locale: "en" | "am";
+  /** The template (preset id) the site started from, if any. */
+  templateId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,7 +40,7 @@ export type VersionSummary = Omit<Version, "files">;
  * (tenant isolation). Memory implementation below; Postgres in lib/db (Slice 2).
  */
 export interface ProjectStore {
-  createProject(ownerId: string, input: { name: string; locale: "en" | "am" }): Promise<Project>;
+  createProject(ownerId: string, input: { name: string; locale: "en" | "am"; templateId?: string | null }): Promise<Project>;
   getProject(ownerId: string, projectId: string): Promise<Project | null>;
   listProjects(ownerId: string): Promise<Project[]>;
   renameProject(ownerId: string, projectId: string, name: string): Promise<void>;

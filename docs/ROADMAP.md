@@ -82,11 +82,16 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Site template: four styles, two more heading fonts, full-screen and portrait heroes, picture cards, stats, steps, schedule and quote sections
 - [x] All templates rebuilt on the research with real photos, in English and Amharic, plus two new ones (company, salon): 14 in total
 - [x] Template preview pages: every page and section of a template, computer and phone, before it is picked
+- [x] Template pages v2: categories with link chips, breadcrumb, "Designed for", "What's included" backed by the template's sections, browser and phone frames, details column on large screens, "Used by N businesses" (verified owners with a live site, shown from 10); design, performance and security reviews run and fixed (2026-11-16)
+- [x] Motion and interaction kit in the site template, from motion research on the best sites of each niche; all 14 templates use it
+- [x] Template previews run the real site (live demos inside Gojoline), on computer and phone
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Performance: phone LCP on `/templates` and template pages is ~3.5 s (budget 2.5 s), same as before template pages v2. Causes are site-wide: ~170 KB shared JS, the Ethiopic font preloaded on English pages, three Latin fonts, lazy pictures inside Chrome's load distance. Needs its own slice (2026-11-16).
+- Set `PUBLISH_BASE_DOMAIN` in production once the customer-site domain exists; until then the template browser frame shows an empty address bar (never a guessed address).
 - e2e: `billing.spec.ts` "a pricing Choose button keeps the yearly choice through sign-in" failed once on the phone project in a full run (2026-11-16) and passed 6 of 6 alone; probably the same first-render timing as the menu helper fixed that day.
 - e2e: `builder.spec.ts` "dark mode: chosen in the account menu…" on the phone project times out opening the account menu about one run in five, on `main` too (2026-11-16); passes on retry. Not yet traced.
 - e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
@@ -96,12 +101,16 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
 - Landing page, from the reviews: the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
 - Re-run `node scripts/showcase-shots.mjs` and `node scripts/template-sections.mjs` after changing the site template or a preset, so the landing page's pictures and the template previews stay true.
+- Template pages v2 Amharic (2026-11-16) needs a native-speaker review: category names, "Designed for" lists and highlight wording in `lib/landing/template-info.ts`, and the new strings under `landing.gallery.categories` and `landing.templatePreview` in `lib/i18n/messages/am.ts`.
+- Re-run `node scripts/template-demos.mjs`, `node scripts/template-sections.mjs` (cards) and `node scripts/showcase-shots.mjs` after changing the site template or a preset, so the live demos, cards and landing pictures stay true.
 - The new builder and landing strings in Amharic (start box, ideas, suggestions, photos, gallery, numbers) need the same native-speaker review.
 - Amharic in the 14 templates (`templates/site/presets/`, sources in `scripts/presets/`) was rewritten on 2026-11-16 and needs a native-speaker review; the church and mosque wording should be read by members of those communities.
 - Sample photos: a few niches have little that is truly Ethiopian (hotel rooms, mosque interiors, real-estate interiors, a habesha wedding). Commissioned or licensed Ethiopian photos would lift them. Add photos with `node scripts/stock-photos.mjs <folder>`.
 - Generated-site speed after the photo templates (performance review, 2026-11-16): before the smaller photo sizes, Lighthouse LCP on slow 4G was 2.2 to 3.4 s on photo-heavy home pages against the 2.0 s target. The 480 px sizes cut first-load photo bytes by more than half, but Lighthouse was not run again: re-measure hotel, tours, cafe and shop. If still over, load card and gallery photos only when scrolled near, and stop bundling the whole `site.json` into the script (JS is at 93 to 98 KB of the 100 KB budget).
 - The photo library (12 MB) is traced into every route's function through the `"/**"` key in `next.config.ts`; scope it to the routes that build and publish.
 - The builder landing page measured LCP 3.4 to 3.75 s in one run on a loaded machine during the review (budget 2.5 s); not compared with `main`. Check the Lighthouse CI result after this merge.
+- Generated sites' script is 95.9 KB gzip of the 100 KB budget; Lighthouse's simulated LCP still adds the script's download (2.0 to 2.6 s on photo-heavy home pages, against 1.7 to 2.0 s measured on a throttled phone). Next step: hydrate only the interactive parts (display-only sections such as drawings, icons and cards are about 28 KB gzip), or a decision to move the template to Preact (react-dom is about 63 KB gzip).
+- Amharic in the motion-kit additions (tabs, giving boxes, ribbons, announcements, prayer and service times, stamps) needs the native-speaker review with the rest of the templates.
 - Template ideas from the writers, not built: a "from" note on service prices, an action on services and menu sections, a focal point for cropped photos, an included/not-included list for tours.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 

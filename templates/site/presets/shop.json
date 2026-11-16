@@ -1,6 +1,12 @@
 {
   "name": { "en": "Tibeb Merkato", "am": "ጥበብ መርካቶ" },
   "tagline": { "en": "Handwoven habesha clothes and handmade goods from Merkato, Addis Ababa", "am": "በእጅ የተሸመኑ የሀበሻ ልብሶችና የእጅ ሥራዎች፣ ከመርካቶ አዲስ አበባ" },
+  "announcement": [
+    { "en": "Order on Telegram", "am": "በቴሌግራም ይዘዙ" },
+    { "en": "Pay on delivery", "am": "ሲደርስዎ ይክፈሉ" },
+    { "en": "Delivery in Addis in 1 to 2 days", "am": "በአዲስ አበባ በ1–2 ቀን እናደርሳለን" },
+    { "en": "Free delivery above 10,000 Birr", "am": "ከ10,000 ብር በላይ ማድረሻ ነፃ" }
+  ],
   "languages": [
     "en",
     "am"
@@ -30,8 +36,10 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "centered",
+          "id": "top",
+          "variant": "split",
           "eyebrow": { "en": "Merkato · Addis Ababa", "am": "መርካቶ · አዲስ አበባ" },
+          "stamp": { "en": "Woven by hand · Merkato", "am": "በእጅ የተሸመነ · መርካቶ" },
           "heading": { "en": "Woven by hand, worn with pride", "am": "በእጅ የተሸመነ፣ በኩራት የሚለበስ" },
           "subheading": { "en": "Habesha kemis, netela and handmade goods from weavers we know by name. Order by message and pay when it reaches you.", "am": "በስም ከምናውቃቸው ሸማኔዎች የተገኙ የሀበሻ ቀሚስ፣ ነጠላና የእጅ ሥራዎች። በመልእክት ይዘዙ፤ ሲደርስዎ ይክፈሉ።" },
           "image": {
@@ -40,7 +48,7 @@
           },
           "primaryAction": {
             "label": { "en": "See products", "am": "ምርቶቹን ይመልከቱ" },
-            "href": "/products"
+            "href": "#new"
           },
           "secondaryAction": {
             "label": { "en": "Order on Telegram", "am": "በቴሌግራም ይዘዙ" },
@@ -63,69 +71,12 @@
         },
         {
           "type": "cards",
-          "id": "collections",
+          "id": "new",
           "layout": "scroll",
-          "eyebrow": { "en": "Collections", "am": "ስብስቦች" },
-          "heading": { "en": "What we make and gather", "am": "የምንሠራውና የምንሰበስበው" },
-          "intro": { "en": "Clothes from our own looms, and handmade pieces from makers across the country.", "am": "ከራሳችን ሸማ የወጡ ልብሶች እና ከመላ አገሪቱ የእጅ ባለሙያዎች የተገኙ ሥራዎች።" },
-          "items": [
-            {
-              "image": {
-                "src": "/stock/shop-gallery-boutique-rack.webp",
-                "alt": { "en": "Cream and blue dresses hanging from a wooden rail in a bright shop", "am": "በብሩህ ሱቅ ውስጥ በእንጨት ዘንግ ላይ የተሰቀሉ ነጣ ያሉና ሰማያዊ ቀሚሶች" }
-              },
-              "title": { "en": "Dresses", "am": "ቀሚሶች" },
-              "subtitle": { "en": "Everyday, holiday and wedding", "am": "የዘወትር፣ የበዓልና የሠርግ" },
-              "action": {
-                "label": { "en": "See products", "am": "ምርቶቹን ይመልከቱ" },
-                "href": "/products"
-              }
-            },
-            {
-              "image": {
-                "src": "/stock/shop-gallery-handwoven-textile.webp",
-                "alt": { "en": "A hand holding the fringed edge of white hand-woven cotton with blue patterned bands", "am": "ሰማያዊ ጥለት ያለው ነጭ የሸማ ጨርቅ ዘርፍ የያዘ እጅ" }
-              },
-              "title": { "en": "Netela and gabi", "am": "ነጠላና ጋቢ" },
-              "subtitle": { "en": "Straight from the loom", "am": "በቀጥታ ከሸማው" },
-              "action": {
-                "label": { "en": "See products", "am": "ምርቶቹን ይመልከቱ" },
-                "href": "/products"
-              }
-            },
-            {
-              "image": {
-                "src": "/stock/shop-hero-habesha-dress-field.webp",
-                "alt": { "en": "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "am": "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል" }
-              },
-              "title": { "en": "Holiday wear", "am": "የበዓል ልብስ" },
-              "subtitle": { "en": "Tibeb in every colour", "am": "ጥበብ በየቀለሙ" },
-              "action": {
-                "label": { "en": "See products", "am": "ምርቶቹን ይመልከቱ" },
-                "href": "/products"
-              }
-            },
-            {
-              "image": {
-                "src": "/stock/ngo-gallery-smiling-girl.webp",
-                "alt": { "en": "A smiling girl in an embroidered traditional dress", "am": "ጥልፍ ያለው ባህላዊ ቀሚስ የለበሰች ፈገግተኛ ልጅ" }
-              },
-              "title": { "en": "For children", "am": "ለልጆች" },
-              "subtitle": { "en": "Ages 3 to 12", "am": "ከ3 እስከ 12 ዓመት" },
-              "action": {
-                "label": { "en": "See products", "am": "ምርቶቹን ይመልከቱ" },
-                "href": "/products"
-              }
-            }
-          ]
-        },
-        {
-          "type": "cards",
-          "id": "products",
-          "layout": "grid",
+          "filters": false,
           "eyebrow": { "en": "In the shop now", "am": "አሁን በሱቁ ያሉ" },
           "heading": { "en": "Pieces people ask for", "am": "ተፈላጊ ሥራዎች" },
-          "intro": { "en": "Prices are in Birr. Delivery inside Addis Ababa is 200 Birr, and free for orders above 10,000 Birr.", "am": "ዋጋዎቹ በብር ናቸው። በአዲስ አበባ ውስጥ ማድረሻ 200 ብር ሲሆን ከ10,000 ብር በላይ ለሆነ ትዕዛዝ ነፃ ነው።" },
+          "intro": { "en": "Prices are in Birr. Tap a piece to order it; delivery in Addis is 200 Birr, free above 10,000 Birr.", "am": "ዋጋዎቹ በብር ናቸው። ለማዘዝ የሚፈልጉትን ይንኩ፤ በአዲስ አበባ ማድረሻ 200 ብር ሲሆን ከ10,000 ብር በላይ ነፃ ነው።" },
           "items": [
             {
               "image": {
@@ -149,18 +100,18 @@
             },
             {
               "image": {
-                "src": "/stock/shop-card-woven-scarves.webp",
-                "alt": { "en": "Four folded hand-woven cotton scarves in blue, tan, pink and purple with fringed ends", "am": "በሰማያዊ፣ በቡናማ፣ በሮዝና በወይን ጠጅ ቀለም የተሸመኑ አራት የታጠፉ የጥጥ ስካርፎች" }
+                "src": "/stock/shop-gallery-handwoven-textile.webp",
+                "alt": { "en": "A hand holding the fringed edge of white hand-woven cotton with blue patterned bands", "am": "ሰማያዊ ጥለት ያለው ነጭ የሸማ ጨርቅ ዘርፍ የያዘ እጅ" }
               },
-              "subtitle": { "en": "Scarves", "am": "ስካርፍ" },
-              "title": { "en": "Handwoven cotton scarf", "am": "በእጅ የተሸመነ የጥጥ ስካርፍ" },
+              "subtitle": { "en": "Netela", "am": "ነጠላ" },
+              "title": { "en": "Netela with a blue tibeb", "am": "ሰማያዊ ጥበብ ያለው ነጠላ" },
+              "badge": { "en": "New", "am": "አዲስ" },
               "meta": [
-                { "en": "100% cotton", "am": "100% ጥጥ" },
-                { "en": "180 × 60 cm", "am": "180 × 60 ሳ.ሜ" },
-                { "en": "4 colours", "am": "4 ቀለሞች" }
+                { "en": "Two-layer cotton", "am": "ባለ ሁለት ድርብ ጥጥ" },
+                { "en": "Hand-knotted fringe", "am": "በእጅ የተቋጠረ ዘርፍ" }
               ],
-              "description": { "en": "Light enough for every day, warm enough for Addis mornings. Each one is finished with a hand-knotted fringe.", "am": "ለዘወትር የሚቀል፣ ለአዲስ አበባ ጠዋት የሚሞቅ። ጫፉ በእጅ የተቋጠረ ዘርፍ አለው።" },
-              "price": { "amountMinor": 120000, "currency": "ETB" },
+              "description": { "en": "Fine, light cotton straight from the loom, with a woven blue border at both ends.", "am": "በቀጥታ ከሸማው የወጣ ስስና ቀላል ጥጥ፤ በሁለቱም ጫፍ የተሸመነ ሰማያዊ ጥበብ ያለው።" },
+              "price": { "amountMinor": 150000, "currency": "ETB" },
               "action": {
                 "label": { "en": "Order this", "am": "ይህን ይዘዙ" },
                 "href": "/#order"
@@ -181,6 +132,25 @@
               ],
               "description": { "en": "Thick highland leather that softens and darkens with use. Stitched by hand, with one inside pocket.", "am": "እየተጠቀሙበት የሚለሰልስና የሚጠቁር ወፍራም የደጋ ቆዳ። በእጅ የተሰፋ፣ አንድ የውስጥ ኪስ ያለው።" },
               "price": { "amountMinor": 480000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this", "am": "ይህን ይዘዙ" },
+                "href": "/#order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/shop-card-woven-scarves.webp",
+                "alt": { "en": "Four folded hand-woven cotton scarves in blue, tan, pink and purple with fringed ends", "am": "በሰማያዊ፣ በቡናማ፣ በሮዝና በወይን ጠጅ ቀለም የተሸመኑ አራት የታጠፉ የጥጥ ስካርፎች" }
+              },
+              "subtitle": { "en": "Scarves", "am": "ስካርፍ" },
+              "title": { "en": "Handwoven cotton scarf", "am": "በእጅ የተሸመነ የጥጥ ስካርፍ" },
+              "meta": [
+                { "en": "100% cotton", "am": "100% ጥጥ" },
+                { "en": "180 × 60 cm", "am": "180 × 60 ሳ.ሜ" },
+                { "en": "4 colours", "am": "4 ቀለሞች" }
+              ],
+              "description": { "en": "Light enough for every day, warm enough for Addis mornings. Each one is finished with a hand-knotted fringe.", "am": "ለዘወትር የሚቀል፣ ለአዲስ አበባ ጠዋት የሚሞቅ። ጫፉ በእጅ የተቋጠረ ዘርፍ አለው።" },
+              "price": { "amountMinor": 120000, "currency": "ETB" },
               "action": {
                 "label": { "en": "Order this", "am": "ይህን ይዘዙ" },
                 "href": "/#order"
@@ -211,6 +181,52 @@
             "label": { "en": "See all products and prices", "am": "ሁሉንም ምርቶችና ዋጋዎች ይመልከቱ" },
             "href": "/products"
           }
+        },
+        {
+          "type": "cards",
+          "id": "collections",
+          "layout": "grid",
+          "eyebrow": { "en": "Shop by kind", "am": "በዓይነት ይምረጡ" },
+          "heading": { "en": "What we make and gather", "am": "የምንሠራውና የምንሰበስበው" },
+          "intro": { "en": "Clothes from our own looms, and handmade pieces from makers across the country.", "am": "ከራሳችን ሸማ የወጡ ልብሶች እና ከመላ አገሪቱ የእጅ ባለሙያዎች የተገኙ ሥራዎች።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/shop-hero-habesha-dress-field.webp",
+                "alt": { "en": "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "am": "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል" }
+              },
+              "title": { "en": "Habesha kemis", "am": "የሀበሻ ቀሚስ" },
+              "subtitle": { "en": "Holiday and wedding", "am": "የበዓልና የሠርግ" },
+              "action": {
+                "label": { "en": "See the dresses", "am": "ቀሚሶቹን ይመልከቱ" },
+                "href": "/products"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/shop-about-spinning-yarn.webp",
+                "alt": { "en": "A woman in an embroidered grey traditional dress and silver jewellery working thread in her hands", "am": "ጥልፍ ያለው ግራጫ ባህላዊ ልብስና የብር ጌጥ ያደረገች ሴት ክር በእጇ ስትፈትል" }
+              },
+              "title": { "en": "Netela and gabi", "am": "ነጠላና ጋቢ" },
+              "subtitle": { "en": "Straight from the loom", "am": "በቀጥታ ከሸማው" },
+              "action": {
+                "label": { "en": "See netela and gabi", "am": "ነጠላና ጋቢ ይመልከቱ" },
+                "href": "/products"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/cafe-gallery-bread-baskets.webp",
+                "alt": { "en": "Hands cutting round bread in a woven basket, with more woven baskets around", "am": "በስፌት ውስጥ ያለ ክብ ድፎ ዳቦ የሚቆርሱ እጆች፣ በዙሪያው ሌሎች ስፌቶች" }
+              },
+              "title": { "en": "Home and kitchen", "am": "ለቤትና ለማዕድ ቤት" },
+              "subtitle": { "en": "Mesob, baskets, jebena", "am": "መሶብ፣ ስፌት፣ ጀበና" },
+              "action": {
+                "label": { "en": "See handmade goods", "am": "የእጅ ሥራዎቹን ይመልከቱ" },
+                "href": "/products"
+              }
+            }
+          ]
         },
         {
           "type": "steps",
@@ -265,6 +281,7 @@
         },
         {
           "type": "testimonials",
+          "id": "reviews",
           "eyebrow": { "en": "Customers say", "am": "ደንበኞች ምን ይላሉ" },
           "heading": { "en": "Worn at weddings, holidays and graduations", "am": "በሠርግ፣ በበዓልና በምረቃ የተለበሱ" },
           "items": [
@@ -348,11 +365,13 @@
         },
         {
           "type": "map",
+          "id": "map",
           "heading": { "en": "Find us in Merkato", "am": "በመርካቶ ያገኙናል" },
           "query": "Anwar Mosque, Merkato, Addis Ababa"
         },
         {
           "type": "cta",
+          "id": "end",
           "heading": { "en": "Seen something you like?", "am": "የወደዱት ነገር አለ?" },
           "body": { "en": "Send us its name or a screenshot. We will tell you the price, the sizes we have and when it can reach you.", "am": "ስሙን ወይም ፎቶውን ይላኩልን። ዋጋውን፣ ያሉንን ልኮችና መቼ እንደሚደርስዎ እንነግርዎታለን።" },
           "primaryAction": {
@@ -379,8 +398,8 @@
           "heading": { "en": "Everything in the shop", "am": "በሱቁ ያለው ሁሉ" },
           "subheading": { "en": "Every price is written here. Order by message, pay when it arrives.", "am": "ዋጋው ሁሉ እዚሁ ተጽፏል። በመልእክት ይዘዙ፤ ሲደርስዎ ይክፈሉ።" },
           "image": {
-            "src": "/stock/shop-hero-habesha-dress-field.webp",
-            "alt": { "en": "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "am": "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል" }
+            "src": "/stock/shop-gallery-boutique-rack.webp",
+            "alt": { "en": "Cream and blue dresses hanging from a wooden rail in a bright shop", "am": "በብሩህ ሱቅ ውስጥ በእንጨት ዘንግ ላይ የተሰቀሉ ነጣ ያሉና ሰማያዊ ቀሚሶች" }
           },
           "primaryAction": {
             "label": { "en": "Order on Telegram", "am": "በቴሌግራም ይዘዙ" },
@@ -389,9 +408,11 @@
         },
         {
           "type": "cards",
-          "layout": "feature",
+          "id": "all",
+          "layout": "grid",
           "eyebrow": { "en": "Favourites", "am": "ተወዳጆች" },
-          "heading": { "en": "Four pieces to start with", "am": "ለመጀመር አራት ሥራዎች" },
+          "heading": { "en": "Six pieces to start with", "am": "ለመጀመር ስድስት ሥራዎች" },
+          "intro": { "en": "Choose clothes or handmade goods. Swipe the dress photos to see how it is worn.", "am": "ልብስ ወይም የእጅ ሥራ ይምረጡ። ቀሚሱ እንዴት እንደሚለበስ ለማየት ፎቶዎቹን ያንሸራትቱ።" },
           "items": [
             {
               "image": {
@@ -400,7 +421,7 @@
               },
               "subtitle": { "en": "Habesha kemis", "am": "የሀበሻ ቀሚስ" },
               "title": { "en": "Holiday kemis with tibeb", "am": "የበዓል ቀሚስ ከጥበብ ጋር" },
-              "badge": { "en": "Best seller", "am": "በብዛት የሚሸጥ" },
+              "badge": { "en": "Clothes", "am": "ልብስ" },
               "meta": [
                 { "en": "Handwoven cotton", "am": "በእጅ የተሸመነ ጥጥ" },
                 { "en": "Netela included", "am": "ከነጠላ ጋር" },
@@ -408,6 +429,35 @@
               ],
               "description": { "en": "Soft menen cotton with a wide hand-picked tibeb on the chest, hem and sleeves. Small adjustments are free.", "am": "ለስላሳ የመነን ጥጥ፤ በደረት፣ በጫፍና በእጅጌ ላይ ሰፊ የእጅ ጥበብ። ትንሽ ማስተካከያ በነፃ ነው።" },
               "price": { "amountMinor": 1500000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this", "am": "ይህን ይዘዙ" },
+                "href": "/#order"
+              },
+              "photos": [
+                {
+                  "src": "/stock/shop-hero-habesha-dress-field.webp",
+                  "alt": { "en": "A smiling woman in an embroidered traditional dress and silver jewellery standing in a golden field", "am": "ጥልፍ ያለው ባህላዊ ልብስና የብር ጌጥ ያደረገች ፈገግተኛ ሴት በወርቃማ ማሳ መካከል" }
+                },
+                {
+                  "src": "/stock/shop-about-spinning-yarn.webp",
+                  "alt": { "en": "A woman in an embroidered grey traditional dress and silver jewellery working thread in her hands", "am": "ጥልፍ ያለው ግራጫ ባህላዊ ልብስና የብር ጌጥ ያደረገች ሴት ክር በእጇ ስትፈትል" }
+                }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/shop-gallery-handwoven-textile.webp",
+                "alt": { "en": "A hand holding the fringed edge of white hand-woven cotton with blue patterned bands", "am": "ሰማያዊ ጥለት ያለው ነጭ የሸማ ጨርቅ ዘርፍ የያዘ እጅ" }
+              },
+              "subtitle": { "en": "Netela", "am": "ነጠላ" },
+              "title": { "en": "Netela with a blue tibeb", "am": "ሰማያዊ ጥበብ ያለው ነጠላ" },
+              "badge": { "en": "Clothes", "am": "ልብስ" },
+              "meta": [
+                { "en": "Two-layer cotton", "am": "ባለ ሁለት ድርብ ጥጥ" },
+                { "en": "Hand-knotted fringe", "am": "በእጅ የተቋጠረ ዘርፍ" }
+              ],
+              "description": { "en": "Fine, light cotton straight from the loom, with a woven blue border at both ends.", "am": "በቀጥታ ከሸማው የወጣ ስስና ቀላል ጥጥ፤ በሁለቱም ጫፍ የተሸመነ ሰማያዊ ጥበብ ያለው።" },
+              "price": { "amountMinor": 150000, "currency": "ETB" },
               "action": {
                 "label": { "en": "Order this", "am": "ይህን ይዘዙ" },
                 "href": "/#order"
@@ -430,7 +480,8 @@
               "action": {
                 "label": { "en": "Order this", "am": "ይህን ይዘዙ" },
                 "href": "/#order"
-              }
+              },
+              "badge": { "en": "Clothes", "am": "ልብስ" }
             },
             {
               "image": {
@@ -439,7 +490,7 @@
               },
               "subtitle": { "en": "Leather", "am": "የቆዳ ሥራ" },
               "title": { "en": "Hand-stitched leather tote", "am": "በእጅ የተሰፋ የቆዳ ቦርሳ" },
-              "badge": { "en": "New", "am": "አዲስ" },
+              "badge": { "en": "Handmade", "am": "የእጅ ሥራ" },
               "meta": [
                 { "en": "Ethiopian leather", "am": "የኢትዮጵያ ቆዳ" },
                 { "en": "38 × 34 cm", "am": "38 × 34 ሳ.ሜ" },
@@ -467,6 +518,27 @@
               "description": { "en": "Jebenas that pour well and painted bottles for the shelf, made by potters we have bought from for years.", "am": "በደንብ የሚቀዱ ጀበናዎች እና ለመደርደሪያ የሚሆኑ ያጌጡ ጠርሙሶች፤ ለዓመታት ከምንገዛቸው ሸክላ ሠሪዎች።" },
               "price": { "amountMinor": 65000, "currency": "ETB" },
               "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Order this", "am": "ይህን ይዘዙ" },
+                "href": "/#order"
+              },
+              "badge": { "en": "Handmade", "am": "የእጅ ሥራ" }
+            },
+            {
+              "image": {
+                "src": "/stock/shop-hero-woven-baskets-wall.webp",
+                "alt": { "en": "A wall of round woven basket trays, some brightly coloured and some natural straw", "am": "በግድግዳ ላይ የተሰቀሉ ክብ ስፌቶች፤ ከፊሉ ባለ ደማቅ ቀለም፣ ከፊሉ የተፈጥሮ ሣር" }
+              },
+              "subtitle": { "en": "Baskets", "am": "ስፌት" },
+              "title": { "en": "Woven basket trays", "am": "የሣር ስፌቶች" },
+              "badge": { "en": "Handmade", "am": "የእጅ ሥራ" },
+              "meta": [
+                { "en": "Coiled grass", "am": "ከሣር የተሰፋ" },
+                { "en": "40 cm across", "am": "40 ሳ.ሜ ስፋት" },
+                { "en": "Bright or natural", "am": "ደማቅ ወይም የተፈጥሮ" }
+              ],
+              "description": { "en": "For the wall, the table or bread. Every colour pattern is a little different.", "am": "ለግድግዳ፣ ለገበታ ወይም ለዳቦ። እያንዳንዱ የቀለም ጥለት ትንሽ ይለያያል።" },
+              "price": { "amountMinor": 180000, "currency": "ETB" },
               "action": {
                 "label": { "en": "Order this", "am": "ይህን ይዘዙ" },
                 "href": "/#order"
