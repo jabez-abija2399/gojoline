@@ -1,5 +1,6 @@
 import { json } from "@/lib/api/guard";
 import { ownerRoute } from "@/lib/api/owner";
+import { readLists } from "@/lib/cloud/lists";
 import { businessInfo } from "@/lib/site-info/business";
 import { services } from "@/lib/server/services";
 
@@ -8,7 +9,10 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/projects/[i
   const { id } = await ctx.params;
   const r = await ownerRoute(id, { mutating: false });
   if (!r.ok) return r.response;
-  return json(200, { business: (await services().siteSettings.get(r.user.id, id)).business ?? {} });
+  const [settings, latest] = await Promise.all([services().siteSettings.get(r.user.id, id), r.builder.store.latestVersion(r.user.id, id)]);
+  // The site's languages decide which address and banner boxes to show.
+  const languages = (latest?.files["src/site.json"] ? readLists(latest.files["src/site.json"])?.languages : null) ?? ["en"];
+  return json(200, { business: settings.business ?? {}, languages });
 }
 
 export async function PUT(request: Request, ctx: RouteContext<"/api/projects/[id]/business">) {

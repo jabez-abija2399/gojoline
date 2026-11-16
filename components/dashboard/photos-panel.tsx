@@ -61,7 +61,8 @@ export function PhotosPanel({ t, projectId }: { t: Messages["dashboard"]; projec
     );
 
   return (
-    <div className="flex flex-col gap-4">
+    <section id="photos" aria-labelledby="photos-title" className="flex scroll-mt-4 flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:p-6">
+      <h2 id="photos-title" className="text-lg font-semibold">{t.photosTitle}</h2>
       <p className="text-ink-muted">{t.photosHint}</p>
       <div className="flex flex-col gap-2">
         <label className={`inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 rounded-lg bg-ink px-4 text-sm font-medium text-white hover:bg-ink-hover has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-link lg:min-h-9 ${busy ? "opacity-60" : ""}`}>
@@ -106,6 +107,6 @@ export function PhotosPanel({ t, projectId }: { t: Messages["dashboard"]; projec
           })}
         </ul>
       )}
-    </div>
+    </section>
   );
 }
