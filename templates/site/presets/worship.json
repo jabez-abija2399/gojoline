@@ -164,12 +164,12 @@
           "items": [
             {
               "time": {
-                "en": "Sun 6:00 am",
-                "am": "እሑድ 12:00"
+                "en": "6:00 am",
+                "am": "ጠዋት 12:00"
               },
               "title": {
-                "en": "Divine Liturgy (Kidase)",
-                "am": "ቅዳሴ"
+                "en": "Sunday Divine Liturgy (Kidase)",
+                "am": "የእሑድ ቅዳሴ"
               },
               "note": {
                 "en": "Until 9:00 am, followed by the sermon and announcements.",
@@ -178,50 +178,50 @@
             },
             {
               "time": {
-                "en": "Sun 2:00 pm",
-                "am": "እሑድ 8:00"
+                "en": "2:00 pm",
+                "am": "ቀን 8:00"
               },
               "title": {
                 "en": "Sunday school",
                 "am": "ሰንበት ትምህርት ቤት"
               },
               "note": {
-                "en": "Classes for children, teenagers and young adults.",
-                "am": "ለሕፃናት፣ ለታዳጊዎችና ለወጣቶች የሚሰጥ ትምህርት።"
+                "en": "Every Sunday. Classes for children, teenagers and young adults.",
+                "am": "ዘወትር እሑድ። ለሕፃናት፣ ለታዳጊዎችና ለወጣቶች የሚሰጥ ትምህርት።"
               }
             },
             {
               "time": {
-                "en": "Daily 5:30 am",
-                "am": "በየቀኑ 11:30"
+                "en": "5:30 am",
+                "am": "ንጋት 11:30"
               },
               "title": {
                 "en": "Morning prayer (Kidan)",
                 "am": "የጠዋት ኪዳን"
               },
               "note": {
-                "en": "A short dawn service before the working day.",
-                "am": "ከሥራ በፊት በንጋት የሚደረስ አጭር ጸሎት።"
+                "en": "Every day. A short dawn service before work.",
+                "am": "በየቀኑ። ከሥራ በፊት በንጋት የሚደረስ አጭር ጸሎት።"
               }
             },
             {
               "time": {
-                "en": "Daily 5:00 pm",
-                "am": "በየቀኑ 11:00"
+                "en": "5:00 pm",
+                "am": "ቀን 11:00"
               },
               "title": {
                 "en": "Evening teaching (Serk Gubae)",
                 "am": "ሰርክ ጉባኤ"
               },
               "note": {
-                "en": "Hymns, a Gospel lesson and evening prayer, about one hour.",
-                "am": "መዝሙር፣ የወንጌል ትምህርትና የሠርክ ጸሎት፤ አንድ ሰዓት ገደማ።"
+                "en": "Every day. Hymns, a Gospel lesson and evening prayer, about one hour.",
+                "am": "በየቀኑ። መዝሙር፣ የወንጌል ትምህርትና የሠርክ ጸሎት፤ አንድ ሰዓት ገደማ።"
               }
             },
             {
               "time": {
-                "en": "Wed, Fri 12 noon",
-                "am": "ረቡዕ፣ ዓርብ 6:00"
+                "en": "12 noon",
+                "am": "ቀን 6:00"
               },
               "title": {
                 "en": "Fasting-day Liturgy",
@@ -343,10 +343,10 @@
             },
             {
               "image": {
-                "src": "/stock/worship-card-processional-cross.webp",
+                "src": "/stock/worship-about-priest-candle.webp",
                 "alt": {
-                  "en": "An ornate silver Ethiopian processional cross inside a church",
-                  "am": "በቤተ ክርስቲያን ውስጥ ያለ ያጌጠ የብር መስቀል"
+                  "en": "An elderly man in a white turban and purple shawl holding a lit taper candle",
+                  "am": "ነጭ ጥምጣምና ወይን ጠጅ ካባ የለበሱ አረጋዊ የበራ ጧፍ ይዘው"
                 }
               },
               "title": {
@@ -594,8 +594,8 @@
             "am": "ለቤተ ክርስቲያን አገልግሎት ይስጡ"
           },
           "intro": {
-            "en": "\"God loves a cheerful giver.\" Choose where your gift goes. You can give at the parish office after any service, or ask us for the bank and Telebirr details by phone or Telegram.",
-            "am": "“እግዚአብሔር በደስታ የሚሰጠውን ይወዳል።” ስጦታዎ የት እንደሚውል ይምረጡ። ከማንኛውም አገልግሎት በኋላ በደብሩ ቢሮ መስጠት፣ ወይም የባንክና የቴሌብር ቁጥሩን በስልክ ወይም በቴሌግራም መጠየቅ ይችላሉ።"
+            "en": "\"God loves a cheerful giver.\" Choose where your gift goes. Give at the parish office after any service, or ask us for the bank and Telebirr details. Vows, candles, incense and raisins for the altar are received at the gate office.",
+            "am": "“እግዚአብሔር በደስታ የሚሰጠውን ይወዳል።” ስጦታዎ የት እንደሚውል ይምረጡ። ከማንኛውም አገልግሎት በኋላ በደብሩ ቢሮ መስጠት ወይም የባንክና የቴሌብር ቁጥሩን መጠየቅ ይችላሉ። ስእለት፣ ጧፍ፣ ዕጣንና ዘቢብ በበሩ ላይ ባለው ቢሮ ይቀበላሉ።"
           },
           "items": [
             {
@@ -630,17 +630,6 @@
                 "en": "Feeds elderly neighbours each week and helps children stay in school.",
                 "am": "አረጋውያን ጎረቤቶቻችንን በየሳምንቱ ይመግባል፤ ሕፃናት ትምህርታቸውን እንዲቀጥሉ ይረዳል።"
               }
-            },
-            {
-              "icon": "gift",
-              "title": {
-                "en": "Vows and gifts in kind",
-                "am": "ስእለትና የዓይነት ስጦታ"
-              },
-              "description": {
-                "en": "Bring your vow, or candles, incense and raisins for the altar, to the gate office.",
-                "am": "ስእለትዎን፣ ወይም ለመቅደሱ የሚሆን ጧፍ፣ ዕጣንና ዘቢብ በበሩ ላይ ላለው ቢሮ ያስረክቡ።"
-              }
             }
           ]
         },
@@ -674,10 +663,10 @@
             "am": "በሩ በየቀኑ ከንጋት በፊት ይከፈታል። ማንም ቢሆኑ እዚህ ቦታ አለዎት።"
           },
           "image": {
-            "src": "/stock/worship-about-priest-candle.webp",
+            "src": "/stock/worship-card-processional-cross.webp",
             "alt": {
-              "en": "An elderly man in a white turban holding a lit taper candle",
-              "am": "ነጭ ጥምጣም ያደረጉ አረጋዊ የበራ ጧፍ ይዘው"
+              "en": "An ornate silver Ethiopian processional cross inside a church",
+              "am": "በቤተ ክርስቲያን ውስጥ ያለ ያጌጠ የብር መስቀል"
             }
           },
           "primaryAction": {
@@ -744,7 +733,7 @@
         },
         {
           "type": "services",
-          "variant": "bento",
+          "variant": "numbered",
           "eyebrow": {
             "en": "What we arrange",
             "am": "የምናመቻቸው"
@@ -1136,6 +1125,26 @@
                 "en": "Hymns with kebero and tsenatsil. Rehearsals on Saturday afternoons; the choir sings at every feast.",
                 "am": "መዝሙር ከከበሮና ከጸናጽል ጋር። ልምምድ ቅዳሜ ከሰዓት፤ መዘምራኑ በየበዓሉ ያገለግላሉ።"
               }
+            },
+            {
+              "title": {
+                "en": "Traditional school (Abinet)",
+                "am": "የአብነት ትምህርት"
+              },
+              "description": {
+                "en": "Ge'ez reading, the Psalms and Wudase Mariam, learned by heart with the parish teacher on weekday afternoons.",
+                "am": "የግእዝ ንባብ፣ መዝሙረ ዳዊትና ውዳሴ ማርያም፤ በሥራ ቀናት ከሰዓት ከደብሩ መምህር ጋር በቃል የሚጠና።"
+              }
+            },
+            {
+              "title": {
+                "en": "Summer course",
+                "am": "የክረምት ትምህርት"
+              },
+              "description": {
+                "en": "Eight weeks of morning lessons in July and August, ending with a hymn day for parents.",
+                "am": "በሐምሌና በነሐሴ ለስምንት ሳምንት የጠዋት ትምህርት፤ ለወላጆች በሚቀርብ የመዝሙር ቀን ይጠናቀቃል።"
+              }
             }
           ]
         },
@@ -1153,7 +1162,7 @@
           "items": [
             {
               "time": {
-                "en": "Sun 2:00 pm",
+                "en": "Sunday 2:00 pm",
                 "am": "እሑድ 8:00"
               },
               "title": {
@@ -1167,7 +1176,7 @@
             },
             {
               "time": {
-                "en": "Sat 3:00 pm",
+                "en": "Saturday 3:00 pm",
                 "am": "ቅዳሜ 9:00"
               },
               "title": {
@@ -1181,8 +1190,8 @@
             },
             {
               "time": {
-                "en": "Mon to Fri 4:00 pm",
-                "am": "ከሰኞ–ዓርብ 10:00"
+                "en": "Weekdays 4:00 pm",
+                "am": "ሰኞ–ዓርብ 10:00"
               },
               "title": {
                 "en": "Traditional school (Abinet)",

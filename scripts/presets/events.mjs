@@ -1,0 +1,334 @@
+import { t, img, link, birr, save } from "./lib.mjs";
+
+const ask = link("Check your date", "ቀንዎን ይጠይቁ", "/#enquiry");
+const from = t("from", "ጀምሮ");
+
+const P = {
+  arch: img("events-hero-floral-arch-reception-hall", "A cream and gold draped reception hall seen down a white aisle through a floral arch", "በአበባ ቅስት ውስጥ የሚታይ፣ በክሬምና በወርቃማ መጋረጃ ያጌጠ የግብዣ አዳራሽ"),
+  hall: img("events-hero-chandelier-banquet-hall", "A golden banquet hall with large chandeliers, set dinner tables and tall flower arrangements", "ትላልቅ ሻንድሊየሮች፣ የተዘጋጁ የእራት ጠረጴዛዎችና ረጃጅም የአበባ ማስጌጫዎች ያሉት ወርቃማ አዳራሽ"),
+  dancing: img("events-about-wedding-party-dancing", "A bride in a white satin gown dancing outdoors at night with groomsmen and bridesmaids", "ነጭ ቬሎ የለበሰች ሙሽሪት በምሽት ከሚዜዎቿ ጋር ስትጨፍር"),
+  garden: img("events-about-bridal-party-garden", "Groomsmen in beige suits and bridesmaids in rust dresses dancing in procession across a sunny garden", "ቢዥ ሱፍ የለበሱ ወንድ ሚዜዎችና ቡናማ ቀሚስ የለበሱ ሴት ሚዜዎች በፀሐያማ ግቢ ውስጥ እየጨፈሩ ሲሄዱ"),
+  couple: img("events-card-wedding-couple-petals", "A smiling bride and groom walking out hand in hand while guests throw flower petals", "ፈገግ ያሉ ሙሽሮች እጅ ለእጅ ተያይዘው ሲወጡ፣ እንግዶች የአበባ ቅጠል ሲበትኑ"),
+  conference: img("events-card-corporate-conference-hall", "A modern conference hall with round white tables, white chairs and three projection screens", "ክብ ነጭ ጠረጴዛዎች፣ ነጭ ወንበሮችና ሦስት የፕሮጀክተር ስክሪኖች ያሉት ዘመናዊ የስብሰባ አዳራሽ"),
+  graduation: img("events-card-graduation-friends", "Three laughing graduates in black gowns with yellow hoods celebrating outdoors", "ጥቁር ጋዋን የለበሱ ሦስት ተመራቂዎች ከቤት ውጭ እየሳቁ ሲደሰቱ"),
+  flowers: img("events-card-decor-floral-centrepiece", "A tall peach and pink rose centrepiece on a gold stand in a white marquee with gold chairs", "በነጭ ድንኳን ውስጥ በወርቃማ መቆሚያ ላይ ያለ ረጅም የጽጌረዳ አበባ ማስጌጫ፣ ከወርቃማ ወንበሮች ጋር"),
+  bride: img("events-gallery-bride-veil-bouquet", "A smiling bride lifting her lace veil over a bouquet of white roses", "ፈገግተኛ ሙሽሪት የዳንቴል ዓይነ ርግቧን ከነጭ ጽጌረዳ እቅፍ አበባ በላይ ስታነሳ"),
+  habesha: img("events-gallery-habesha-dress-celebration", "Young women in white embroidered habesha dresses clapping and singing at a street celebration", "ነጭ ጥልፍ የሀበሻ ቀሚስ የለበሱ ወጣት ሴቶች በአደባባይ በዓል ላይ እያጨበጨቡ ሲዘፍኑ"),
+  outdoor: img("hotel-gallery-bush-dining-acacia", "A long red-clothed dinner table set outdoors beside an acacia tree under a wide sky", "በሰፊ ሰማይ ሥር ከግራር ዛፍ አጠገብ የተዘጋጀ ረጅም ቀይ የእራት ጠረጴዛ"),
+  veranda: img("hotel-gallery-veranda-dusk", "A colonnaded veranda and garden lawn lit at dusk", "በምሽት በመብራት የደመቀ ባለ አምድ በረንዳና የግቢ ሣር"),
+  dish: img("cafe-hero-clay-pot-dish", "Black clay pots of food garnished with a green herb sprig", "በአረንጓዴ ቅጠል ያጌጠ ምግብ በጥቁር የሸክላ ድስቶች"),
+  coffee: img("cafe-about-ceremony-incense", "A coffee ceremony: a jebena pouring into small cups while incense smokes in a clay burner", "የቡና ሥነ ሥርዓት፤ ከጀበና ወደ ስኒዎች ቡና ሲቀዳ፣ ዕጣን በማጨሻ ሲጨስ"),
+};
+
+const packages = [
+  {
+    image: P.garden,
+    subtitle: t("You planned it, we run it", "እርስዎ አቅደዋል፤ እኛ እናስፈጽማለን"),
+    title: t("Day coordination", "የዕለቱ ማስተባበር"),
+    meta: [t("Up to 300 guests", "እስከ 300 እንግዶች"), t("2 coordinators", "2 አስተባባሪዎች"), t("Starts 4 weeks before", "ከ4 ሳምንት በፊት ይጀምራል")],
+    description: t("We take over your plans a month ahead: one meeting with every supplier, a minute-by-minute programme, and two of us on the day from the first car to the last song.", "ከአንድ ወር በፊት ዕቅድዎን እንረከባለን፤ ከእያንዳንዱ አቅራቢ ጋር አንድ ስብሰባ፣ በደቂቃ የተከፋፈለ ፕሮግራም፣ በዕለቱም ከመጀመሪያው መኪና እስከ መጨረሻው ዘፈን ሁለታችን አብረንዎ።"),
+    price: birr(45000),
+    priceNote: from,
+    action: ask,
+  },
+  {
+    image: P.flowers,
+    subtitle: t("The look of the day", "የዕለቱ ውበት"),
+    title: t("Decor and styling", "ዲኮርና ማስዋብ"),
+    badge: t("Most chosen", "በብዛት የሚመረጥ"),
+    meta: [t("Up to 300 guests", "እስከ 300 እንግዶች"), t("Stage and aisle", "መድረክና መተላለፊያ"), t("Fresh flowers", "ትኩስ አበባ"), t("Lighting", "መብራት")],
+    description: t("Stage, aisle, table flowers, linen and lighting, designed around your colours and set up the night before. Day coordination is included.", "መድረክ፣ መተላለፊያ፣ የጠረጴዛ አበባ፣ ጨርቅና መብራት፤ በመረጡት ቀለም ተነድፎ ከዋዜማው ይዘጋጃል። የዕለቱ ማስተባበርም ተካትቷል።"),
+    price: birr(180000),
+    priceNote: from,
+    action: ask,
+  },
+  {
+    image: P.hall,
+    subtitle: t("From shimgilna to melse", "ከሽምግልና እስከ መልስ"),
+    title: t("Full planning", "ሙሉ ዝግጅት"),
+    meta: [t("Any size", "ማንኛውም ብዛት"), t("Venue search", "የአዳራሽ ፍለጋ"), t("All suppliers", "ሁሉም አቅራቢዎች"), t("Budget tracking", "የበጀት ክትትል")],
+    description: t("One planner beside you from the first idea: venue, catering, decor, music, photo, cars and invitations, with a budget you see every week.", "ከመጀመሪያው ሐሳብ ጀምሮ አንድ አዘጋጅ ከጎንዎ፤ አዳራሽ፣ ምግብ፣ ዲኮር፣ ሙዚቃ፣ ፎቶ፣ መኪናና የጥሪ ካርድ፤ በየሳምንቱ ከሚያዩት በጀት ጋር።"),
+    price: birr(350000),
+    priceNote: from,
+    action: ask,
+  },
+];
+
+const steps = [
+  { title: t("Tell us the date", "ቀኑን ይንገሩን"), description: t("Send the form or call. We tell you within a day whether we are free.", "ቅጹን ይላኩ ወይም ይደውሉ። ቀኑ ነፃ መሆኑን በአንድ ቀን ውስጥ እናሳውቅዎታለን።") },
+  { title: t("Meet over coffee", "በቡና እንገናኝ"), description: t("An hour at our Bole office. We listen, then show you ideas and an honest budget.", "በቦሌ ቢሯችን አንድ ሰዓት። እናዳምጥዎታለን፤ ከዚያም ሐሳቦችንና ትክክለኛ በጀት እናሳይዎታለን።") },
+  { title: t("We design and book", "እንነድፋለን፣ እናስይዛለን"), description: t("You approve the design and the suppliers. We handle every call and payment date.", "ንድፉንና አቅራቢዎቹን እርስዎ ያጸድቃሉ። ስልኩንና የክፍያ ቀኑን ሁሉ እኛ እንከታተላለን።") },
+  { title: t("Enjoy your day", "በቀንዎ ይደሰቱ"), description: t("We arrive first and leave last. You only look after your guests.", "ቀድመን ደርሰን መጨረሻ እንወጣለን። እርስዎ እንግዶችዎን ብቻ ያስተናግዳሉ።") },
+];
+
+const nameField = { name: "name", label: t("Your name", "ስምዎ"), type: "text", required: true };
+const phoneField = { name: "phone", label: t("Phone number", "ስልክ ቁጥር"), type: "tel", required: true };
+
+save("events", {
+  name: t("Fikir Events", "ፍቅር ኢቨንትስ"),
+  tagline: t("Weddings and celebrations planned with care in Addis Ababa", "በአዲስ አበባ በጥንቃቄ የሚዘጋጁ ሠርጎችና ድግሶች"),
+  languages: ["en", "am"],
+  theme: { primary: "#8A6424", accent: "#3A2A1E", background: "#FBF6EE", text: "#2B2420", font: "elegant", radius: "none", style: "editorial" },
+  business: {
+    phone: "+251 911 000 000",
+    telegram: "yourbusiness",
+    address: t("Atlas area, Bole, Addis Ababa", "አትላስ አካባቢ፣ ቦሌ፣ አዲስ አበባ"),
+    hours: [
+      { days: t("Monday to Saturday", "ከሰኞ እስከ ቅዳሜ"), time: t("8:30 am to 6:00 pm", "ከጠዋቱ 2:30 እስከ ምሽቱ 12 ሰዓት") },
+      { days: t("Sunday", "እሑድ"), time: t("By appointment", "በቀጠሮ ብቻ") },
+    ],
+  },
+  pages: [
+    {
+      path: "/",
+      title: t("Home", "መነሻ"),
+      nav: t("Home", "መነሻ"),
+      description: t("Wedding and event planning, decor and day coordination in Addis Ababa, Bishoftu and Hawassa. Packages with prices in Birr.", "የሠርግና የዝግጅት ዕቅድ፣ ዲኮርና የዕለቱ ማስተባበር በአዲስ አበባ፣ በቢሾፍቱና በሐዋሳ። ፓኬጆች ከነዋጋቸው በብር።"),
+      sections: [
+        {
+          type: "hero",
+          variant: "immersive",
+          eyebrow: t("Weddings · Melse · Celebrations", "ሠርግ · መልስ · ድግስ"),
+          heading: t("Your day, quietly perfect", "ቀንዎ ያለ ጭንቀት ያምራል"),
+          subheading: t("We plan, design and run weddings and celebrations in Addis Ababa, so you can be a guest at your own.", "በአዲስ አበባ ሠርግና ድግስ እናቅዳለን፣ እናስውባለን፣ እናስተባብራለን፤ እርስዎ በራስዎ ድግስ እንግዳ እንዲሆኑ።"),
+          image: P.arch,
+          primaryAction: ask,
+          facts: [
+            { value: t("120+", "120+"), label: t("weddings and events", "ሠርጎችና ዝግጅቶች") },
+            { value: t("2016", "2016"), label: t("planning since", "ጀምሮ በሥራ ላይ") },
+            { value: t("3 cities", "3 ከተሞች"), label: t("Addis, Bishoftu, Hawassa", "አዲስ አበባ፣ ቢሾፍቱ፣ ሐዋሳ") },
+          ],
+        },
+        {
+          type: "cards",
+          id: "events",
+          layout: "scroll",
+          eyebrow: t("What we plan", "የምናዘጋጀው"),
+          heading: t("Every kind of celebration", "ለሁሉም ዓይነት ደስታ"),
+          items: [
+            { image: P.couple, title: t("Weddings", "ሠርግ"), subtitle: t("Church, hall or garden", "በቤተ ክርስቲያን፣ በአዳራሽ ወይም በግቢ"), action: link("See packages", "ፓኬጆቹን ይመልከቱ", "/packages") },
+            { image: P.habesha, title: t("Melse and traditions", "መልስና ባህላዊ ሥርዓት"), subtitle: t("Shimgilna, telosh, melse, kelekel", "ሽምግልና፣ ጥሎሽ፣ መልስ፣ ቅልቅል"), action: link("See packages", "ፓኬጆቹን ይመልከቱ", "/packages") },
+            { image: P.conference, title: t("Company events", "የድርጅት ዝግጅቶች"), subtitle: t("Launches, conferences, staff days", "ምርቃት፣ ጉባኤ፣ የሠራተኞች ቀን"), action: link("See packages", "ፓኬጆቹን ይመልከቱ", "/packages") },
+            { image: P.graduation, title: t("Graduations and birthdays", "ምረቃና ልደት"), subtitle: t("At home, in a garden or a hall", "በቤት፣ በግቢ ወይም በአዳራሽ"), action: link("See packages", "ፓኬጆቹን ይመልከቱ", "/packages") },
+          ],
+        },
+        {
+          type: "gallery",
+          id: "gallery",
+          layout: "mosaic",
+          eyebrow: t("Recent work", "የቅርብ ጊዜ ሥራዎች"),
+          heading: t("Days we were part of", "አብረን ያሳለፍናቸው ቀናት"),
+          images: [P.dancing, P.bride, P.outdoor, P.veranda, P.dish],
+        },
+        {
+          type: "cards",
+          id: "packages",
+          layout: "grid",
+          eyebrow: t("Packages", "ፓኬጆች"),
+          heading: t("Three ways to work with us", "ከእኛ ጋር የሚሠሩባቸው ሦስት መንገዶች"),
+          intro: t("Starting prices in Birr for our own work. Venue and catering are quoted separately, at the supplier's price.", "የራሳችን ሥራ መነሻ ዋጋ በብር። የአዳራሽና የምግብ ዋጋ ለብቻው፣ በአቅራቢው ዋጋ ይቀርባል።"),
+          items: packages.map(({ description, ...p }) => p),
+          action: link("Compare the packages", "ፓኬጆቹን ያነጻጽሩ", "/packages"),
+        },
+        {
+          type: "steps",
+          id: "how",
+          eyebrow: t("How it works", "አሠራራችን"),
+          heading: t("Four steps to the day", "እስከ ዕለቱ አራት እርምጃ"),
+          items: steps,
+          action: ask,
+        },
+        {
+          type: "quote",
+          quote: t("On the morning of our wedding I had nothing to do but get dressed. I still don't know what went wrong that day, and that is exactly the point.", "በሠርጋችን ጠዋት ከመልበስ በቀር የምሠራው አልነበረም። በዚያ ቀን ምን ችግር እንደተፈጠረ እስከ ዛሬ አላውቅም፤ የፈለግነውም ይኸው ነበር።"),
+          name: t("Selam and Dawit T.", "ሰላምና ዳዊት ተ."),
+          role: t("Married in January, Bishoftu", "በጥር ወር በቢሾፍቱ የተጋቡ"),
+          image: P.flowers,
+        },
+        {
+          type: "about",
+          id: "about",
+          eyebrow: t("About us", "ስለ እኛ"),
+          heading: t("A small team that knows the customs", "ወግ ማዕረጉን የሚያውቅ አነስተኛ ቡድን"),
+          body: t(
+            "Fikir Events is five planners and designers who take a few events each month, so every family gets the same two faces from first meeting to last dance.\n\nWe know how a shimgilna is opened, when the coffee should be poured and how many cars a melse needs. You will not have to explain it twice.",
+            "ፍቅር ኢቨንትስ አምስት አዘጋጆችና ዲዛይነሮች ያሉት ቡድን ነው። በወር ጥቂት ዝግጅት ብቻ ስለምንቀበል እያንዳንዱ ቤተሰብ ከመጀመሪያው ቀጠሮ እስከ መጨረሻው ጭፈራ ሁለት የሚያውቃቸውን ሰዎች ያገኛል።\n\nሽምግልና እንዴት እንደሚከፈት፣ ቡናው መቼ እንደሚቀዳ፣ ለመልስ ስንት መኪና እንደሚያስፈልግ እናውቃለን። ደጋግመው ማስረዳት አይጠበቅብዎትም።",
+          ),
+          image: P.coffee,
+          imageSide: "end",
+          points: [t("One planner and one designer for each event", "ለእያንዳንዱ ዝግጅት አንድ አዘጋጅና አንድ ዲዛይነር"), t("Every supplier's price shown to you as it is", "የእያንዳንዱ አቅራቢ ዋጋ እንዳለ ይታይዎታል"), t("Amharic, Afaan Oromo and English", "በአማርኛ፣ በአፋን ኦሮሞና በእንግሊዝኛ")],
+          action: link("See our work", "ሥራዎቻችንን ይመልከቱ", "/work"),
+        },
+        {
+          type: "form",
+          id: "enquiry",
+          kind: "booking",
+          heading: t("Check your date", "ቀንዎን ይጠይቁ"),
+          intro: t("Tell us the day and the size of the event. We answer within one working day, and the first meeting is free.", "ቀኑንና የዝግጅቱን መጠን ይንገሩን። በአንድ የሥራ ቀን ውስጥ እንመልሳለን፤ የመጀመሪያው ቀጠሮ በነፃ ነው።"),
+          fields: [
+            nameField,
+            phoneField,
+            { name: "event_type", label: t("Kind of event", "የዝግጅቱ ዓይነት"), type: "select", required: true, options: [t("Wedding", "ሠርግ"), t("Melse or engagement", "መልስ ወይም ቀለበት"), t("Company event", "የድርጅት ዝግጅት"), t("Graduation", "ምረቃ"), t("Birthday or family celebration", "ልደት ወይም የቤተሰብ ድግስ"), t("Something else", "ሌላ")] },
+            { name: "event_date", label: t("Date, even if not final", "ቀኑ፣ ባይቆረጥም"), type: "date" },
+            { name: "guests", label: t("Guests", "የእንግዶች ብዛት"), type: "select", options: [t("Under 100", "ከ100 በታች"), t("100 to 300", "ከ100 እስከ 300"), t("300 to 600", "ከ300 እስከ 600"), t("More than 600", "ከ600 በላይ")] },
+            { name: "message", label: t("Venue, if booked, and anything else", "አዳራሽ ከያዙ ስሙ፣ እና ሌላ ማስታወሻ"), type: "textarea" },
+          ],
+          submitLabel: t("Send enquiry", "ጥያቄውን ላክ"),
+          successMessage: t("Thank you. We will call you within one working day.", "እናመሰግናለን። በአንድ የሥራ ቀን ውስጥ እንደውልልዎታለን።"),
+        },
+      ],
+    },
+    {
+      path: "/packages",
+      title: t("Packages and prices", "ፓኬጆችና ዋጋዎች"),
+      nav: t("Packages", "ፓኬጆች"),
+      description: t("Day coordination, decor and full wedding planning packages with starting prices in Birr, plus catering per guest.", "የዕለቱ ማስተባበር፣ ዲኮርና ሙሉ የሠርግ ዝግጅት ፓኬጆች ከመነሻ ዋጋቸው በብር፤ እንዲሁም የምግብ ዋጋ በአንድ እንግዳ።"),
+      sections: [
+        {
+          type: "hero",
+          variant: "banner",
+          eyebrow: t("Packages and prices", "ፓኬጆችና ዋጋዎች"),
+          heading: t("Clear prices, no surprises", "ግልጽ ዋጋ፣ ያልተጠበቀ ወጪ የለም"),
+          subheading: t("Choose how much you want us to carry. You can add to a package at any time.", "ምን ያህሉን እንድንሸከምልዎ እንደሚፈልጉ ይምረጡ። በማንኛውም ጊዜ መጨመር ይችላሉ።"),
+          image: P.arch,
+          primaryAction: ask,
+        },
+        {
+          type: "cards",
+          layout: "feature",
+          eyebrow: t("Planning", "ዝግጅት"),
+          heading: t("Our three packages", "ሦስቱ ፓኬጆቻችን"),
+          intro: t("Prices are for a wedding of up to 300 guests in Addis Ababa. For other sizes and towns we send a written quote.", "ዋጋዎቹ በአዲስ አበባ እስከ 300 እንግዶች ላለው ሠርግ ናቸው። ለሌላ መጠንና ከተማ የጽሑፍ ዋጋ እንልካለን።"),
+          items: packages,
+        },
+        {
+          type: "menu",
+          id: "catering",
+          eyebrow: t("Catering and extras", "ምግብና ተጨማሪዎች"),
+          heading: t("Add what you need", "የሚያስፈልግዎትን ይጨምሩ"),
+          intro: t("Catering is cooked by our partner kitchen and priced per guest, with a minimum of 50 guests. Service staff are included.", "ምግቡ በአጋር ማዕድ ቤታችን ይዘጋጃል፤ ዋጋው በአንድ እንግዳ ሲሆን ቢያንስ ለ50 እንግዶች ነው። አስተናጋጆች ተካትተዋል።"),
+          categories: [
+            {
+              name: t("Buffet, per guest", "ቡፌ፣ በአንድ እንግዳ"),
+              items: [
+                { name: t("Traditional buffet", "ባህላዊ ቡፌ"), description: t("Doro wat, key wat, tibs, gomen, ayib, injera and salad", "ዶሮ ወጥ፣ ቀይ ወጥ፣ ጥብስ፣ ጎመን፣ አይብ፣ እንጀራና ሰላጣ"), price: birr(1200), tag: t("Most chosen", "በብዛት የሚመረጥ"), image: P.dish },
+                { name: t("Mixed buffet", "ድብልቅ ቡፌ"), description: t("Ethiopian and international dishes with dessert", "የአገር ውስጥና የውጭ ምግቦች ከጣፋጭ ጋር"), price: birr(1800) },
+                { name: t("Fasting buffet", "የጾም ቡፌ"), description: t("Shiro, misir, gomen, atkilt, fish and fasting pasta", "ሽሮ፣ ምስር፣ ጎመን፣ አትክልት፣ ዓሣና የጾም ፓስታ"), price: birr(950), tag: t("Fasting", "የጾም") },
+                { name: t("Soft drinks and water", "ለስላሳ መጠጥና ውሃ"), price: birr(150) },
+              ],
+            },
+            {
+              name: t("Extras, per event", "ተጨማሪዎች፣ ለአንድ ዝግጅት"),
+              items: [
+                { name: t("Coffee ceremony corner", "የቡና ሥነ ሥርዓት ማዕዘን"), description: t("A host in habesha dress, with popcorn and incense", "የሀበሻ ልብስ የለበሰች አስተናጋጅ፣ ከፈንዲሻና ከዕጣን ጋር"), price: birr(8000) },
+                { name: t("Wedding cake", "የሠርግ ኬክ"), description: t("Three tiers, about 150 slices", "ባለ ሦስት ደረጃ፣ ወደ 150 ቁራጭ"), price: birr(25000) },
+                { name: t("DJ and sound", "ዲጄና የድምፅ መሣሪያ"), description: t("Six hours, with two wireless microphones", "ለስድስት ሰዓት፣ ከሁለት ገመድ አልባ ማይክ ጋር"), price: birr(35000) },
+                { name: t("Photo and video", "ፎቶና ቪዲዮ"), description: t("Two photographers and one videographer, full day", "ሁለት ፎቶ አንሺና አንድ ቪዲዮ ቀራጭ፣ ሙሉ ቀን"), price: birr(60000) },
+                { name: t("Decorated bridal car", "ያጌጠ የሙሽራ መኪና"), description: t("With driver, for the day", "ከሹፌር ጋር፣ ለዕለቱ"), price: birr(18000) },
+              ],
+            },
+          ],
+        },
+        {
+          type: "faq",
+          heading: t("Before you book", "ከመያዝዎ በፊት"),
+          items: [
+            { question: t("How early should we book?", "ምን ያህል ቀደም ብለን እንያዝ?"), answer: t("For January and April weddings, six months ahead. For other months, three is usually enough.", "ለጥርና ለሚያዝያ ሠርግ ከስድስት ወር በፊት። ለሌሎች ወራት ሦስት ወር ብዙ ጊዜ ይበቃል።") },
+            { question: t("How do we pay?", "ክፍያው እንዴት ነው?"), answer: t("30% holds the date, 40% one month before and the rest in the week of the event. Bank transfer or Telebirr.", "30% ቀኑን ያስይዛል፣ 40% ከአንድ ወር በፊት፣ ቀሪው በዝግጅቱ ሳምንት ይከፈላል። በባንክ ዝውውር ወይም በቴሌብር።") },
+            { question: t("Can we bring our own caterer or DJ?", "የራሳችንን ምግብ አቅራቢ ወይም ዲጄ ማምጣት እንችላለን?"), answer: t("Yes. We coordinate with any supplier you choose.", "አዎ። ከመረጡት ማንኛውም አቅራቢ ጋር እናስተባብራለን።") },
+            { question: t("Do you work outside Addis Ababa?", "ከአዲስ አበባ ውጭ ትሠራላችሁ?"), answer: t("Often in Bishoftu and Hawassa. Elsewhere, transport and rooms for the team are added to the quote.", "በቢሾፍቱና በሐዋሳ ብዙ ጊዜ እንሠራለን። በሌላ ቦታ የቡድኑ የትራንስፖርትና የማደሪያ ወጪ በዋጋው ላይ ይጨመራል።") },
+            { question: t("What if the date changes?", "ቀኑ ቢቀየርስ?"), answer: t("We move your booking once, free, if the new date is open and you tell us 60 days ahead.", "አዲሱ ቀን ነፃ ከሆነና ከ60 ቀን በፊት ካሳወቁን አንድ ጊዜ በነፃ እናዛውራለን።") },
+          ],
+        },
+        {
+          type: "cta",
+          heading: t("Is your date still free?", "ቀንዎ አሁንም ነፃ ነው?"),
+          body: t("We take only a few events each month. Ask early.", "በወር ጥቂት ዝግጅት ብቻ እንቀበላለን። ቀደም ብለው ይጠይቁ።"),
+          image: P.hall,
+          primaryAction: ask,
+          secondaryAction: link("Call us", "ይደውሉልን", "tel:+251911000000"),
+        },
+      ],
+    },
+    {
+      path: "/work",
+      title: t("Our work", "ሥራዎቻችን"),
+      nav: t("Our work", "ሥራዎቻችን"),
+      description: t("Weddings, melse, company events and graduations planned by Fikir Events.", "በፍቅር ኢቨንትስ የተዘጋጁ ሠርጎች፣ መልሶች፣ የድርጅት ዝግጅቶችና ምረቃዎች።"),
+      sections: [
+        {
+          type: "hero",
+          variant: "banner",
+          eyebrow: t("Our work", "ሥራዎቻችን"),
+          heading: t("Halls, gardens and lake shores", "አዳራሽ፣ ግቢና የሐይቅ ዳርቻ"),
+          subheading: t("A few of the days we have planned since 2016.", "ከ2016 ጀምሮ ካዘጋጀናቸው ቀናት ጥቂቶቹ።"),
+          image: P.hall,
+        },
+        {
+          type: "cards",
+          layout: "feature",
+          eyebrow: t("Three days", "ሦስት ቀናት"),
+          heading: t("How they came together", "እንዴት እንደተዘጋጁ"),
+          items: [
+            { image: P.garden, subtitle: t("Garden wedding · Bishoftu", "የግቢ ሠርግ · ቢሾፍቱ"), title: t("A procession across the lawn", "በሣሩ ላይ የሚዜዎች ጉዞ"), meta: [t("220 guests", "220 እንግዶች"), t("Full planning", "ሙሉ ዝግጅት"), t("5 months", "5 ወር")], description: t("A marquee by the lake, a live band for the entrance and lunch served within forty minutes of the vows.", "በሐይቁ ዳር የተተከለ ድንኳን፣ ለመግቢያው የቀጥታ ባንድ፣ ከቃል ኪዳኑ በአርባ ደቂቃ ውስጥ የቀረበ ምሳ።") },
+            { image: P.arch, subtitle: t("Hall wedding · Addis Ababa", "የአዳራሽ ሠርግ · አዲስ አበባ"), title: t("Ivory, gold and four hundred chairs", "ነጭ፣ ወርቃማና አራት መቶ ወንበር"), meta: [t("400 guests", "400 እንግዶች"), t("Decor and styling", "ዲኮርና ማስዋብ"), t("Set up overnight", "በአንድ ሌሊት የተዘጋጀ")], description: t("A flower arch, a draped ceiling and a stage the couple could be seen on from the last table.", "የአበባ ቅስት፣ በጨርቅ ያጌጠ ጣሪያ እና ከመጨረሻው ጠረጴዛ ሙሽሮቹ የሚታዩበት መድረክ።") },
+            { image: P.conference, subtitle: t("Company event · Addis Ababa", "የድርጅት ዝግጅት · አዲስ አበባ"), title: t("A product launch for 150", "ለ150 ሰው የምርት ማስተዋወቂያ"), meta: [t("150 guests", "150 እንግዶች"), t("Half day", "ግማሽ ቀን"), t("Sound and screens", "ድምፅና ስክሪን")], description: t("Registration desk, three screens, a coffee ceremony at the break and everyone out by one o'clock.", "የምዝገባ ጠረጴዛ፣ ሦስት ስክሪን፣ በእረፍት ሰዓት የቡና ሥነ ሥርዓት፤ ሁሉም በሰባት ሰዓት ተጠናቀቀ።") },
+          ],
+        },
+        {
+          type: "gallery",
+          layout: "scroll",
+          eyebrow: t("Moments", "ቅጽበቶች"),
+          heading: t("The parts people remember", "ሰው የሚያስታውሳቸው ጊዜያት"),
+          images: [P.bride, P.dancing, P.habesha, P.couple, P.flowers, P.graduation],
+        },
+        {
+          type: "stats",
+          tone: "dark",
+          items: [
+            { value: t("120+", "120+"), label: t("weddings and events planned", "የተዘጋጁ ሠርጎችና ዝግጅቶች") },
+            { value: t("600", "600"), label: t("guests at our largest wedding", "በትልቁ ሠርጋችን የነበሩ እንግዶች") },
+            { value: t("40+", "40+"), label: t("halls and gardens we know well", "በደንብ የምናውቃቸው አዳራሾችና ግቢዎች") },
+          ],
+        },
+        {
+          type: "testimonials",
+          eyebrow: t("Kind words", "የደንበኞች ቃል"),
+          heading: t("From couples and clients", "ከሙሽሮችና ከደንበኞች"),
+          items: [
+            { quote: t("My mother was sure a planner would ignore our customs. By the melse she was asking them to plan my sister's wedding.", "እናቴ አዘጋጅ ወጋችንን አያከብርም ብላ ነበር። በመልሱ ቀን ግን የእህቴን ሠርግ እንዲያዘጋጁ ስትጠይቃቸው ነበር።"), name: "Bethlehem G.", role: t("Wedding and melse", "ሠርግና መልስ") },
+            { quote: t("They kept to the budget we agreed in the first meeting, to the Birr.", "በመጀመሪያው ቀጠሮ ከተስማማንበት በጀት አንድ ብር አላለፉም።"), name: "Henok A.", role: t("Wedding, 350 guests", "ሠርግ፣ 350 እንግዶች") },
+            { quote: t("Our launch started on time, which never happens. We have booked them for the year-end dinner.", "ዝግጅታችን በሰዓቱ ተጀመረ፤ ይህ ተለምዶ አያውቅም። ለዓመት መጨረሻ እራትም ይዘናቸዋል።"), name: "Rahel M.", role: t("Company event", "የድርጅት ዝግጅት") },
+          ],
+        },
+        {
+          type: "cta",
+          heading: t("Let us plan yours", "የእርስዎንም እናዘጋጅ"),
+          body: t("Tell us the date and the number of guests. The first meeting is free.", "ቀኑንና የእንግዶቹን ብዛት ይንገሩን። የመጀመሪያው ቀጠሮ በነፃ ነው።"),
+          primaryAction: ask,
+          secondaryAction: link("See packages", "ፓኬጆቹን ይመልከቱ", "/packages"),
+        },
+      ],
+    },
+    {
+      path: "/contact",
+      title: t("Contact", "አድራሻ"),
+      nav: t("Contact", "አድራሻ"),
+      description: t("Visit the Fikir Events office in Bole, call or write on Telegram.", "በቦሌ የሚገኘውን የፍቅር ኢቨንትስ ቢሮ ይጎብኙ፣ ይደውሉ ወይም በቴሌግራም ይጻፉ።"),
+      sections: [
+        { type: "contact", heading: t("Come and say hello", "መጥተው ያነጋግሩን"), intro: t("See decor samples and photo books at our office. Please call first so a planner is there for you.", "የዲኮር ናሙናዎችንና የፎቶ አልበሞችን በቢሯችን ይመልከቱ። አዘጋጅ እንዲጠብቅዎ አስቀድመው ይደውሉ።") },
+        {
+          type: "form",
+          id: "message",
+          kind: "contact",
+          heading: t("Send a message", "መልእክት ይላኩ"),
+          intro: t("For suppliers, venues and any other question.", "ለአቅራቢዎች፣ ለአዳራሾችና ለሌላ ማንኛውም ጥያቄ።"),
+          fields: [nameField, phoneField, { name: "message", label: t("Message", "መልእክት"), type: "textarea", required: true }],
+          submitLabel: t("Send", "ላክ"),
+          successMessage: t("Thank you. We will answer soon.", "እናመሰግናለን። በቅርቡ እንመልሳለን።"),
+        },
+        { type: "map", heading: t("Our office in Bole", "በቦሌ ያለው ቢሯችን"), query: "Atlas, Bole, Addis Ababa" },
+      ],
+    },
+  ],
+});

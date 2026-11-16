@@ -623,10 +623,6 @@
                     "amountMinor": 6000,
                     "currency": "ETB"
                   },
-                  "tag": {
-                    "en": "Popular",
-                    "am": "ተወዳጅ"
-                  },
                   "image": {
                     "src": "/stock/cafe-card-jebena-pour.webp",
                     "alt": {
@@ -849,13 +845,6 @@
                   "tag": {
                     "en": "Fasting",
                     "am": "የጾም"
-                  },
-                  "image": {
-                    "src": "/stock/cafe-card-injera-veg-plate.webp",
-                    "alt": {
-                      "en": "A plate of rolled injera with red lentils, yellow lentils and collard greens",
-                      "am": "የተጠቀለለ እንጀራ ከምስር ወጥ፣ ከክክ አልጫና ከጎመን ጋር"
-                    }
                   }
                 },
                 {

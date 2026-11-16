@@ -66,12 +66,12 @@
           "type": "hero",
           "variant": "split",
           "eyebrow": {
-            "en": "Hawassa · since 2016",
-            "am": "ሀዋሳ · ከ2008 ዓ.ም. ጀምሮ"
+            "en": "Lake Hawassa · since 2016",
+            "am": "ሀዋሳ ሐይቅ ዙሪያ · ከ2008 ዓ.ም."
           },
           "heading": {
-            "en": "Every girl around Lake Hawassa finishes school",
-            "am": "በሀዋሳ ዙሪያ ያለች ሴት ልጅ ሁሉ ትምህርቷን ትጨርስ"
+            "en": "Every girl finishes school",
+            "am": "ሴት ልጅ ሁሉ ትምህርቷን ትጨርስ"
           },
           "subheading": {
             "en": "We work with 14 schools and 38 women's savings groups so that girls stay in class and their families can pay for it.",
@@ -203,7 +203,7 @@
           },
           "heading": {
             "en": "Four programmes, one goal",
-            "am": "አራት መርሐ ግብሮች፣ አንድ ግብ"
+            "am": "አራት ሥራዎች፣ አንድ ግብ"
           },
           "intro": {
             "en": "Each one removes a reason a girl might leave school.",
@@ -386,20 +386,6 @@
             "am": "ከእያንዳንዱ 100 ብር 86ቱ ለመርሐ ግብሮች፣ 9ኙ ለቢሮ ሥራ፣ 5ቱ ለገቢ ማሰባሰቢያ ይውላል።"
           },
           "items": [
-            {
-              "title": {
-                "en": "Seedlings for a school club",
-                "am": "ለትምህርት ቤት ክበብ ችግኞች"
-              },
-              "description": {
-                "en": "Fifty seedlings, tools and a planting day for one club.",
-                "am": "ሃምሳ ችግኞች፣ መሣሪያዎች እና ለአንድ ክበብ የተከላ ቀን።"
-              },
-              "price": {
-                "amountMinor": 50000,
-                "currency": "ETB"
-              }
-            },
             {
               "title": {
                 "en": "Seed for one family",
