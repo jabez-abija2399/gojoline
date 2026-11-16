@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { securityHeaders } from "./lib/security/headers";
+import { demoHeaders, securityHeaders } from "./lib/security/headers";
 
 const nextConfig: NextConfig = {
   // Cache Components / PPR are off: a nonce-based CSP needs every page rendered per request.
@@ -34,6 +34,17 @@ const nextConfig: NextConfig = {
         source: "/templates/:path(.+\\.(?:webp|png|jpe?g|avif))",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
       },
+      // Live template demos (public/demo/<id>/, built by scripts/template-demos.mjs): shown in a
+      // frame on Gojoline's own preview pages only, with the same strict policy as published sites,
+      // and kept out of search engines. Later entries override the same header above.
+      { source: "/demo/:path*", headers: demoHeaders },
+    ];
+  },
+  async rewrites() {
+    // A demo page is a folder with an index.html; files (scripts, photos, fonts) are served as they are.
+    return [
+      { source: "/demo/:id", destination: "/demo/:id/index.html" },
+      { source: "/demo/:id/:page*", destination: "/demo/:id/:page*/index.html" },
     ];
   },
 };

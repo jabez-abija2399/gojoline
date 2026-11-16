@@ -23,7 +23,7 @@ test("start from an industry template in Amharic: a ready site, no AI needed", a
   await expect(page.getByRole("main").getByRole("link", { name: "ሆቴል ወይም የእንግዳ ማረፊያ", exact: true })).toBeVisible();
 });
 
-test("a template's preview shows every page and section before it is picked", async ({ page }) => {
+test("a template's preview runs the real site and lists every page and section before it is picked", async ({ page }) => {
   await page.goto("/en/templates/hotel");
   await expect(page.getByRole("heading", { level: 1, name: "Hotel or guest house" })).toBeVisible();
   await expect(page.getByText("Example: Tana Shore Lodge")).toBeVisible();
@@ -31,6 +31,10 @@ test("a template's preview shows every page and section before it is picked", as
   await expectNoSeriousA11yIssues(page);
   // Each section is named: what it is and its own title.
   await expect(page.getByRole("button", { name: /Rooms and suites/ })).toBeVisible();
+  // The preview is the real site, running: its own headline and menu are inside the frame.
+  const live = page.frameLocator('iframe[title="Tana Shore Lodge, live"]');
+  await expect(live.getByRole("heading", { level: 1 })).toContainText("Rest where the lake begins");
+  await expect(live.getByRole("link", { name: "Rooms" }).first()).toBeAttached();
   // Other pages of the template, and the phone layout.
   await page.getByRole("button", { name: "Dining" }).click();
   await expect(page.getByRole("button", { name: "Dining" })).toHaveAttribute("aria-pressed", "true");
@@ -45,6 +49,17 @@ test("a template's preview shows every page and section before it is picked", as
   await page.getByRole("button", { name: "Use this template" }).filter({ visible: true }).click();
   await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
   await expect(page.getByText("Your Hotel or guest house site is ready").first()).toBeAttached();
+});
+
+test("a live demo is served with the site's own strict headers and can't be framed by others", async ({ request }) => {
+  const res = await request.get("/demo/hotel");
+  expect(res.status()).toBe(200);
+  expect(res.headers()["x-frame-options"]).toBe("SAMEORIGIN");
+  expect(res.headers()["content-security-policy"]).toContain("frame-ancestors 'self'");
+  expect(res.headers()["content-security-policy"]).toContain("script-src 'self';");
+  expect(res.headers()["x-robots-tag"]).toContain("noindex");
+  expect(await res.text()).toContain("Rest where the lake begins");
+  expect((await request.get("/demo/hotel/am/rooms")).status()).toBe(200);
 });
 
 test("the templates page: search and filters narrow the list, and a card opens the full preview", async ({ page }) => {

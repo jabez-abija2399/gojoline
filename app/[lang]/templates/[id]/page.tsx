@@ -165,10 +165,12 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
             </div>
 
             <section aria-label={p.pages} className="order-2 flex min-w-0 flex-col gap-8 lg:col-start-1 lg:row-start-1">
+              <p className="text-ink-muted">{p.hint}</p>
               <TemplatePreviewer
+                name={preview.name}
                 pages={preview.pages}
                 host={exampleAddress(preview.id)}
-                t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, pageHeading: p.pageHeading, fullSize: p.fullSize, address: p.address, sectionsLabel: p.sectionsLabel, screenLabel: p.screenLabel, kinds: p.kinds }}
+                t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, pageHeading: p.pageHeading, liveTitle: p.liveTitle, openTab: p.openTab, address: p.address, sectionsLabel: p.sectionsLabel, screenLabel: p.screenLabel, kinds: p.kinds }}
               />
             </section>
           </div>

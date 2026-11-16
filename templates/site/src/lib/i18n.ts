@@ -1,3 +1,4 @@
+import { BASE } from "./base";
 import type { Lang, Price, Site, Text } from "./types";
 
 type Langs = Pick<Site, "languages">;
@@ -15,7 +16,8 @@ export function localePath(path: string, lang: Lang, site: Langs): string {
 
 /** Splits "/am/menu" into { lang: "am", path: "/menu" } for this site. */
 export function parsePath(pathname: string, site: Langs): { lang: Lang; path: string } {
-  const clean = pathname.replace(/\/index\.html$/, "").replace(/\/+$/, "") || "/";
+  const local = BASE && pathname.startsWith(BASE) ? pathname.slice(BASE.length) || "/" : pathname;
+  const clean = local.replace(/\/index\.html$/, "").replace(/\/+$/, "") || "/";
   const parts = clean.split("/").filter(Boolean);
   const first = parts[0];
   const others: string[] = site.languages.slice(1);
