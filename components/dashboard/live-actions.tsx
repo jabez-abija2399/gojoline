@@ -40,10 +40,10 @@ export function LiveActions({ t, href, text, siteName, scan, only }: { t: T; hre
           {qrButton}
         </div>
       )}
-      <Modal open={sheet === "share"} onClose={() => setSheet(null)} title={t.shareTitle} closeLabel={t.close} labelId="share-title">
+      <Modal open={sheet === "share"} onClose={() => setSheet(null)} title={t.shareTitle} closeLabel={t.close} labelId="dash-share-title">
         <ShareOptions t={t} href={href} text={format(t.shareMessage, { name: siteName })} />
       </Modal>
-      <Modal open={sheet === "qr"} onClose={() => setSheet(null)} title={t.qrTitle} closeLabel={t.close} labelId="qr-title">
+      <Modal open={sheet === "qr"} onClose={() => setSheet(null)} title={t.qrTitle} closeLabel={t.close} labelId="dash-qr-title">
         <QrPanel t={t} href={href} text={text} siteName={siteName} scan={scan} />
       </Modal>
     </>
@@ -160,10 +160,10 @@ async function downloadPoster(matrix: Matrix, siteName: string, scan: string[], 
   fit(siteName, 700, 96, 220);
   scan.forEach((line, i) => fit(line, 600, 64, 340 + i * 84));
   const n = matrix.length;
-  const size = 860;
+  const size = 820;
   const cell = Math.floor(size / n);
-  const x0 = (W - cell * n) / 2;
-  const y0 = 470;
+  const x0 = Math.round((W - cell * n) / 2);
+  const y0 = 520;
   g.fillStyle = "#FFFFFF";
   g.fillRect(x0 - 24, y0 - 24, cell * n + 48, cell * n + 48);
   g.fillStyle = "#121212";

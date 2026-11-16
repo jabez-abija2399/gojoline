@@ -34,8 +34,8 @@ export function SettingsPanel({ t, tb, locale, projectId, bot, s }: { t: T; tb: 
       <div id="telegram" className="scroll-mt-4">
         <TelegramPanel t={t} locale={locale} bot={bot} />
       </div>
-      <section id="address" aria-labelledby="address-title" className={card}>
-        <h2 id="address-title" className="text-base font-semibold">{t.addressTitle}</h2>
+      <section id="address" aria-labelledby="dash-address-title" className={card}>
+        <h2 id="dash-address-title" className="text-base font-semibold">{t.addressTitle}</h2>
         {s.address ? (
           <div className="flex flex-wrap items-center gap-2">
             <p className="min-w-0 basis-full break-all rounded-xl bg-sunken px-3 py-2.5 font-medium sm:basis-auto">{s.address.text}</p>
@@ -95,8 +95,8 @@ function OfflineSection({ t, projectId, status, bot }: { t: T; projectId: string
     router.refresh();
   };
   return (
-    <section id="offline" aria-labelledby="offline-title" className={card}>
-      <h2 id="offline-title" className="flex items-center gap-2 text-base font-semibold">
+    <section id="offline" aria-labelledby="dash-offline-title" className={card}>
+      <h2 id="dash-offline-title" className="flex items-center gap-2 text-base font-semibold">
         {resting && <Moon aria-hidden="true" className="size-5 text-warning" />}
         {resting ? t.onlineTitle : t.offlineTitle}
       </h2>
@@ -117,7 +117,7 @@ function OfflineSection({ t, projectId, status, bot }: { t: T; projectId: string
         </>
       )}
       <p role={note?.alert ? "alert" : "status"} className={note?.alert ? "text-danger" : "text-ink"}>{note?.text}</p>
-      <Confirm open={ask} onClose={() => setAsk(false)} onConfirm={() => void run()} busy={busy} danger={!resting} title={resting ? t.onlineConfirmTitle : t.offlineConfirmTitle} body={resting ? t.onlineConfirmBody : t.offlineConfirmBody} confirmLabel={resting ? t.onlineConfirm : t.offlineConfirm} cancelLabel={t.cancel} closeLabel={t.close} labelId="offline-confirm-title" />
+      <Confirm open={ask} onClose={() => setAsk(false)} onConfirm={() => void run()} busy={busy} danger={!resting} title={resting ? t.onlineConfirmTitle : t.offlineConfirmTitle} body={resting ? t.onlineConfirmBody : t.offlineConfirmBody} confirmLabel={resting ? t.onlineConfirm : t.offlineConfirm} cancelLabel={t.cancel} closeLabel={t.close} labelId="dash-offline-confirm-title" />
     </section>
   );
 }
@@ -167,9 +167,9 @@ function SeoSection({ t, projectId, s }: { t: T; projectId: string; s: SettingsS
   const image = seo?.image ? `/api/projects/${projectId}/assets/${seo.image}` : null;
 
   return (
-    <section aria-labelledby="seo-title" className={card}>
+    <section aria-labelledby="dash-seo-title" className={card}>
       <div className="flex flex-col gap-1">
-        <h2 id="seo-title" className="text-base font-semibold">{t.seoTitle}</h2>
+        <h2 id="dash-seo-title" className="text-base font-semibold">{t.seoTitle}</h2>
         <p className="text-ink-muted">{t.seoIntro}</p>
       </div>
       {failed ? (
@@ -286,9 +286,9 @@ function VersionsSection({ t, locale, projectId, s }: { t: T; locale: Locale; pr
     router.refresh();
   };
   return (
-    <section id="versions" aria-labelledby="versions-title" className={card}>
+    <section id="versions" aria-labelledby="dash-versions-title" className={card}>
       <div className="flex flex-col gap-1">
-        <h2 id="versions-title" className="text-base font-semibold">{t.versionsTitle}</h2>
+        <h2 id="dash-versions-title" className="text-base font-semibold">{t.versionsTitle}</h2>
         <p className="text-ink-muted">{t.versionsIntro}</p>
       </div>
       <div className="flex flex-col gap-2">
@@ -322,7 +322,7 @@ function VersionsSection({ t, locale, projectId, s }: { t: T; locale: Locale; pr
       {!all && s.versions.length > 5 && (
         <button type="button" onClick={() => setAll(true)} className={outline}>{format(t.showMore, { n: s.versions.length - 5 })}</button>
       )}
-      <Confirm open={ask !== null} onClose={() => setAsk(null)} onConfirm={() => void restore()} busy={busy} title={format(t.restoreTitle, { n: ask ?? 0 })} body={t.restoreBody} confirmLabel={busy ? t.restoring : t.restoreConfirm} cancelLabel={t.cancel} closeLabel={t.close} labelId="restore-title" />
+      <Confirm open={ask !== null} onClose={() => setAsk(null)} onConfirm={() => void restore()} busy={busy} title={format(t.restoreTitle, { n: ask ?? 0 })} body={t.restoreBody} confirmLabel={busy ? t.restoring : t.restoreConfirm} cancelLabel={t.cancel} closeLabel={t.close} labelId="dash-restore-title" />
     </section>
   );
 }

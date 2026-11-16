@@ -150,7 +150,7 @@ export function MessagesPanel({ t, locale, projectId }: { t: Messages["dashboard
             const next = nextStatus(m.status);
             const NextIcon = m.status === "new" ? CornerUpLeft : m.status === "replied" ? Check : RotateCcw;
             return (
-              <li key={m.id} className={`flex flex-col gap-3 rounded-2xl border bg-white p-4 ${m.status === "new" ? "border-coral" : "border-line"}`}>
+              <li key={m.id} className={`flex flex-col gap-3 rounded-2xl border bg-white p-4 border-line ${m.status === "new" ? "border-s-4 border-s-coral" : ""}`}>
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                   <h3 className="font-semibold">{heading(m.formKey)}</h3>
                   <StatusBadge status={m.status} t={t} />
@@ -204,7 +204,7 @@ export function MessagesPanel({ t, locale, projectId }: { t: Messages["dashboard
           })}
         </ul>
       )}
-      <Confirm open={deleting !== null} onClose={() => setDeleting(null)} onConfirm={() => void remove()} title={t.deleteTitle} body={t.deleteBody} confirmLabel={t.deleteConfirm} cancelLabel={t.cancel} closeLabel={t.close} danger busy={busy} labelId="delete-title" />
+      <Confirm open={deleting !== null} onClose={() => setDeleting(null)} onConfirm={() => void remove()} title={t.deleteTitle} body={t.deleteBody} confirmLabel={t.deleteConfirm} cancelLabel={t.cancel} closeLabel={t.close} danger busy={busy} labelId="dash-delete-title" />
     </div>
   );
 }

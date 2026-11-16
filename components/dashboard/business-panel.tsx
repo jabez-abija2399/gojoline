@@ -100,8 +100,8 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
       <form onSubmit={submit} noValidate className="flex flex-col gap-4">
         <p className="text-ink-muted">{t.infoIntro}</p>
 
-        <section aria-labelledby="contact-title" className={card}>
-          <h2 id="contact-title" className="text-base font-semibold">{t.infoContact}</h2>
+        <section aria-labelledby="dash-contact-title" className={card}>
+          <h2 id="dash-contact-title" className="text-base font-semibold">{t.infoContact}</h2>
           <Field id="bi-phone" label={t.phone} hint={t.phoneHint}>
             <input id="bi-phone" type="tel" inputMode="tel" autoComplete="off" maxLength={30} value={info.phone ?? ""} onChange={(e) => set({ phone: e.target.value })} aria-describedby="bi-phone-hint" className={input} />
           </Field>
@@ -125,9 +125,9 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
           )}
         </section>
 
-        <section aria-labelledby="hours-title" className={card}>
+        <section aria-labelledby="dash-hours-title" className={card}>
           <div className="flex flex-col gap-1">
-            <h2 id="hours-title" className="text-base font-semibold">{t.hoursTitle}</h2>
+            <h2 id="dash-hours-title" className="text-base font-semibold">{t.hoursTitle}</h2>
             <p className="text-sm text-ink-muted">{t.hoursHint}</p>
           </div>
           <ul className="flex flex-col divide-y divide-line">
@@ -136,7 +136,7 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
               const mode = v === undefined ? "unset" : v === null ? "closed" : "open";
               const name = t.info.dayNames[d];
               return (
-                <li key={d} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center">
+                <li key={d} className="grid grid-cols-[minmax(5.5rem,auto)_1fr] items-center gap-2 py-3 sm:flex sm:flex-row">
                   <label htmlFor={`bi-day-${d}`} className="font-medium sm:w-28">{name}</label>
                   <select id={`bi-day-${d}`} value={mode} onChange={(e) => setDay(d, e.target.value === "unset" ? undefined : e.target.value === "closed" ? null : (info.hours?.mon ?? { open: "08:00", close: "18:00" }))} className={`${input} sm:w-36`}>
                     <option value="unset">{t.dayState.unset}</option>
@@ -144,10 +144,10 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
                     <option value="closed">{t.dayState.closed}</option>
                   </select>
                   {v && (
-                    <div className="flex items-center gap-2">
-                      <input type="time" value={v.open} onChange={(e) => setDay(d, { ...v, open: e.target.value })} aria-label={`${name}: ${t.opens}`} className={`${input} flex-1 sm:w-32 sm:flex-none`} />
+                    <div className="col-span-2 flex items-center gap-2">
+                      <input type="time" value={v.open} onChange={(e) => setDay(d, { ...v, open: e.target.value })} aria-label={`${name}: ${t.opens}`} className={`${input} min-w-0 flex-1 sm:w-32 sm:flex-none`} />
                       <span aria-hidden="true">–</span>
-                      <input type="time" value={v.close} onChange={(e) => setDay(d, { ...v, close: e.target.value })} aria-label={`${name}: ${t.closes}`} className={`${input} flex-1 sm:w-32 sm:flex-none`} />
+                      <input type="time" value={v.close} onChange={(e) => setDay(d, { ...v, close: e.target.value })} aria-label={`${name}: ${t.closes}`} className={`${input} min-w-0 flex-1 sm:w-32 sm:flex-none`} />
                     </div>
                   )}
                 </li>
@@ -163,8 +163,8 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
           <Check id="bi-now" checked={Boolean(info.closedForNow)} onChange={(on) => set({ closedForNow: on })} label={t.closedForNow} hint={t.closedForNowHint} />
         </section>
 
-        <section aria-labelledby="banner-title" className={card}>
-          <h2 id="banner-title" className="text-base font-semibold">{t.banner}</h2>
+        <section aria-labelledby="dash-banner-title" className={card}>
+          <h2 id="dash-banner-title" className="text-base font-semibold">{t.banner}</h2>
           <Check id="bi-banner" checked={Boolean(info.announcement?.on)} onChange={(on) => set({ announcement: { text: info.announcement?.text ?? {}, on } })} label={t.bannerOn} hint={t.bannerHint} />
           {info.announcement?.on &&
             languages.map((lang) => (
@@ -183,8 +183,8 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
       </form>
 
       {/* How the site will show it (the same grouping the live site gets). */}
-      <aside aria-labelledby="preview-title" className="flex flex-col gap-2 lg:sticky lg:top-4">
-        <h2 id="preview-title" className="text-sm font-semibold text-ink-muted">{t.preview} · {t.previewNote}</h2>
+      <aside aria-labelledby="dash-preview-title" className="flex flex-col gap-2 lg:sticky lg:top-4">
+        <h2 id="dash-preview-title" className="text-sm font-semibold text-ink-muted">{t.preview} · {t.previewNote}</h2>
         <div className="overflow-hidden rounded-2xl border border-line bg-paper">
           {(notice || banner) && (
             <ul className="flex flex-col gap-0.5 bg-ink px-4 py-2 text-center text-sm font-medium text-white">

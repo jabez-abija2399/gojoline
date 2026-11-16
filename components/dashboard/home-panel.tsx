@@ -68,9 +68,9 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
   return (
     <div className="flex flex-col gap-4">
       {/* Is the site out in the world? Draft sites lead with publishing (the page's coral). */}
-      <section aria-labelledby="site-state" className={`${card} flex flex-col gap-4 p-5 sm:p-6`}>
+      <section aria-labelledby="dash-site-state" className={`${card} flex flex-col gap-4 p-5 sm:p-6`}>
         <div className="flex flex-col gap-1">
-          <h2 id="site-state" className="flex items-center gap-2 text-lg font-semibold">
+          <h2 id="dash-site-state" className="flex items-center gap-2 text-lg font-semibold">
             {o.status === "live" ? (
               <span aria-hidden="true" className="relative flex size-2.5"><span className="absolute inline-flex size-full animate-[ping_1.2s_cubic-bezier(0,0,0.2,1)_3] rounded-full bg-lagoon opacity-60 motion-reduce:hidden" /><span className="relative inline-flex size-2.5 rounded-full bg-lagoon" /></span>
             ) : o.status === "taken_down" ? (
@@ -122,13 +122,13 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
 
       {/* One next step; the whole list waits behind a disclosure. Drafts see the list (publishing leads above). */}
       {draft ? (
-        <section aria-labelledby="steps-title" className={`${card} flex flex-col gap-2 p-5`}>
-          <h2 id="steps-title" className="text-base font-semibold">{format(t.allSteps, { done, total: o.steps.length })}</h2>
+        <section aria-labelledby="dash-steps-title" className={`${card} flex flex-col gap-2 p-5`}>
+          <h2 id="dash-steps-title" className="text-base font-semibold">{format(t.allSteps, { done, total: o.steps.length })}</h2>
           {steps}
         </section>
       ) : (
-        <section aria-labelledby="next-title" className={`${card} flex flex-col gap-3 p-5`}>
-          <h2 id="next-title" className="text-sm font-semibold text-ink-muted">{t.nextTitle}</h2>
+        <section aria-labelledby="dash-next-title" className={`${card} flex flex-col gap-3 p-5`}>
+          <h2 id="dash-next-title" className="text-sm font-semibold text-ink-muted">{t.nextTitle}</h2>
           {next ? (
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
@@ -153,19 +153,19 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
       {!draft && (
         <>
           {/* Three numbers for the last 7 days, each with the week before in words. */}
-          <section aria-labelledby="kpi-title" className="flex flex-col gap-2">
-            <h2 id="kpi-title" className="text-sm font-semibold text-ink-muted">{t.kpiTitle}</h2>
+          <section aria-labelledby="dash-kpi-title" className="flex flex-col gap-2">
+            <h2 id="dash-kpi-title" className="text-sm font-semibold text-ink-muted">{t.kpiTitle}</h2>
             <ul className="grid gap-3 sm:grid-cols-3">
-              <Kpi icon={Users} label={t.kpiVisitors} value={format(t.kpiAbout, { n: num.format(o.visits.thisWeek) })} hint={trendWords(t, people.visitors)} />
+              <Kpi icon={Users} label={t.kpiVisitors} value={o.visits.thisWeek > 0 ? format(t.kpiAbout, { n: num.format(o.visits.thisWeek) }) : num.format(0)} hint={trendWords(t, people.visitors)} />
               <Kpi icon={MessageCircle} label={t.kpiMessages} value={num.format(o.messages.thisWeek)} hint={trendWords(t, people.messages)} />
               <Kpi icon={Inbox} label={t.kpiWaiting} value={num.format(o.messages.waiting)} hint={o.messages.waiting > 0 ? t.kpiWaitingHint : t.kpiWaitingNone} href={o.messages.waiting > 0 ? tab("messages") : undefined} attention={o.messages.waiting > 0} />
             </ul>
           </section>
 
           <div className="grid gap-4 lg:grid-cols-2">
-            <section aria-labelledby="visits-title" className={`${card} flex flex-col gap-3 p-5`}>
+            <section aria-labelledby="dash-visits-title" className={`${card} flex flex-col gap-3 p-5`}>
               <div className="flex flex-col gap-0.5">
-                <h2 id="visits-title" className="text-base font-semibold">{t.chartVisitors}</h2>
+                <h2 id="dash-visits-title" className="text-base font-semibold">{t.chartVisitors}</h2>
                 <p className="text-sm text-ink-muted">{t.privacyNote}</p>
               </div>
               {o.visits.any ? (
@@ -180,9 +180,9 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
 
             <div className="flex flex-col gap-4">
               {o.visits.any && <Sources o={o} t={t} num={num} />}
-              <section aria-labelledby="recent-title" className={`${card} flex flex-col gap-2 p-5`}>
+              <section aria-labelledby="dash-recent-title" className={`${card} flex flex-col gap-2 p-5`}>
                 <div className="flex items-center justify-between gap-3">
-                  <h2 id="recent-title" className="text-base font-semibold">{t.recentTitle}</h2>
+                  <h2 id="dash-recent-title" className="text-base font-semibold">{t.recentTitle}</h2>
                   {o.recent.length > 0 && (
                     <Link href={tab("messages")} className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-link underline-offset-4 hover:underline lg:min-h-9">
                       {t.seeAll}
@@ -246,9 +246,9 @@ function Sources({ o, t, num }: { o: Home; t: T; num: Intl.NumberFormat }) {
   const deviceTotal = devices.reduce((n, r) => n + r.value, 0);
   const pct = (v: number, all: number) => format(t.percent, { n: Math.round((v / Math.max(1, all)) * 100) });
   return (
-    <section aria-labelledby="sources-title" className={`${card} flex flex-col gap-4 p-5`}>
+    <section aria-labelledby="dash-sources-title" className={`${card} flex flex-col gap-4 p-5`}>
       <div className="flex flex-col gap-2">
-        <h2 id="sources-title" className="text-base font-semibold">{t.sourcesTitle}</h2>
+        <h2 id="dash-sources-title" className="text-base font-semibold">{t.sourcesTitle}</h2>
         {total > 0 ? <Bars label={t.sourcesTitle} rows={sources.map((r) => ({ ...r, text: `${num.format(r.value)} · ${pct(r.value, total)}` }))} /> : <p className="text-ink-muted">{t.trendNone}</p>}
       </div>
       {deviceTotal > 0 && (
