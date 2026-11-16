@@ -5,10 +5,13 @@ import type { Locale } from "@/lib/i18n/config";
 import { monthsFree, PLAN_IDS, yearlySaving, type Product } from "@/lib/billing/plans";
 import { BillingToggle, type BillingPeriod } from "@/components/pricing/billing-toggle";
 import { formatBirr, PlanHighlights } from "@/components/pricing/plan-highlights";
+import { looksSignedIn } from "@/lib/auth/signed-in";
 
 /** Plan cards with a Monthly / Yearly switch; prices come from Admin → Settings. */
-export function Pricing({ t, locale, prices, period }: { t: Messages; locale: Locale; prices: Record<Product, number>; period: BillingPeriod }) {
+export async function Pricing({ t, locale, prices, period }: { t: Messages; locale: Locale; prices: Record<Product, number>; period: BillingPeriod }) {
   const tp = t.plans;
+  // Signed in already: straight to Your sites or to the Plan page (the choice preselected), no sign-in hop.
+  const signedIn = await looksSignedIn();
   const birr = (minor: number) => `${formatBirr(minor)} ${t.landing.pricing.birr}`;
   const free = Math.min(monthsFree(prices.starter_month, prices.starter_year), monthsFree(prices.business_month, prices.business_year));
   return (
@@ -45,7 +48,11 @@ export function Pricing({ t, locale, prices, period }: { t: Messages; locale: Lo
                 <PlanHighlights plan={p} t={tp.hl} className="flex-1" />
                 <Link
                   // Paid plans preselect what to pay for (month or year, as switched above) on the Plan page.
-                  href={p === "free" ? `/${locale}/sign-in?next=/${locale}/build` : `/${locale}/sign-in?next=${encodeURIComponent(`/${locale}/billing?product=${p}_${period}`)}`}
+                  href={
+                    p === "free"
+                      ? signedIn ? `/${locale}/build` : `/${locale}/sign-in?next=/${locale}/build`
+                      : signedIn ? `/${locale}/billing?product=${p}_${period}` : `/${locale}/sign-in?next=${encodeURIComponent(`/${locale}/billing?product=${p}_${period}`)}`
+                  }
                   className={`inline-flex min-h-12 items-center justify-center rounded-full px-5 text-center font-semibold ${popular ? "bg-ink text-white hover:bg-ink-hover" : "border border-line hover:border-faint"}`}
                 >
                   {p === "free" ? tp.ctaFree : format(tp.ctaPaid, { plan: t.billing.plans[p] })}

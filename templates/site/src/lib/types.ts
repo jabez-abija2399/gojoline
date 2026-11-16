@@ -130,6 +130,12 @@ export interface HeroSection {
   image?: Image;
   primaryAction?: Link;
   secondaryAction?: Link;
+  /** A few words set round a slowly turning circle on the picture: "Since 2014 · Addis Ababa". */
+  stamp?: Text;
+  /** split only: false hides the opening hours shown beside the picture (on by default when the business has hours). */
+  hours?: boolean;
+  /** immersive only: the photo starts inside a rounded frame and opens to the full width as the page scrolls. */
+  frame?: boolean;
   /** Up to 4 short facts shown as a strip under the hero. */
   facts?: Fact[];
 }
@@ -143,6 +149,8 @@ export interface AboutSection {
   image?: Image;
   /** Which side the picture sits on, on wide screens. Default "start". */
   imageSide?: "start" | "end";
+  /** arch: the picture's top is rounded like a doorway (hotels, weddings, worship). */
+  imageShape?: "arch";
   highlights?: Fact[];
   /** Short points shown as a ticked list under the text. */
   points?: Text[];
@@ -176,6 +184,8 @@ export interface ServicesSection {
   intro?: Text;
   /** bento: cards, the first one large. list: compact rows with icons. numbered: 01, 02, 03 columns. */
   variant?: "bento" | "list" | "numbered";
+  /** With list or numbered: a photo that stays in place beside the list while it scrolls (computers). */
+  image?: Image;
   items: { title: Text; description: Text; price?: Price; icon?: IconName }[];
 }
 
@@ -185,8 +195,8 @@ export interface GallerySection {
   eyebrow?: Text;
   heading: Text;
   intro?: Text;
-  /** mosaic: a grid, the first photo large. scroll: one row to swipe through. */
-  layout?: "mosaic" | "scroll";
+  /** mosaic: a grid, the first photo large. scroll: one row to swipe through. wall: columns of photos drifting slowly up and down (weddings, events; 6 or more photos). */
+  layout?: "mosaic" | "scroll" | "wall";
   images: Image[];
 }
 
@@ -202,6 +212,8 @@ export interface CardItem {
   priceNote?: Text;
   /** A small label on the picture: "For sale", "New", "Best seller". */
   badge?: Text;
+  /** More photos of the same thing (a home, a room): swiped inside the card, with a 1/4 counter. Grid layout. */
+  photos?: Image[];
   /** Up to 5 short facts: "2 guests", "King bed", "120 m²", "3 days". */
   meta?: Text[];
   action?: Link;
@@ -218,8 +230,14 @@ export interface CardsSection {
    * grid: picture on top, three across. feature: large alternating rows (rooms, projects).
    * scroll: tall picture cards in a row to swipe (destinations, collections).
    * people: portraits with a name and role (doctors, team, stylists).
+   * stack: large cards that pile up on each other as the visitor scrolls (rooms, projects, programmes).
+   * index: a list of big titles in rows; on a computer the picture follows the mouse (portfolios, projects, collections).
    */
-  layout?: "grid" | "feature" | "scroll" | "people";
+  layout?: "grid" | "feature" | "scroll" | "people" | "stack" | "index";
+  /** arch: pictures rounded at the top like a doorway (feature, scroll and people layouts). */
+  imageShape?: "arch";
+  /** With 4 or more cards carrying 2 or more different badges, pills above let visitors show one kind ("For sale", "For rent"). Default true. */
+  filters?: boolean;
   items: CardItem[];
   /** A link under the cards: "See all rooms". */
   action?: Link;
@@ -255,8 +273,47 @@ export interface ScheduleSection {
   intro?: Text;
   /** list: rows. tiles: a tile per time (prayer times, a few sessions). */
   layout?: "list" | "tiles";
-  items: { time: Text; title: Text; note?: Text }[];
+  /** Show today's date above the times in these calendars (for prayer and service times). */
+  dates?: ("gregorian" | "ethiopian" | "hijri")[];
+  /** `at`: the time as "HH:MM" (24 hours, Addis Ababa time). With it, the next one is highlighted with a countdown. */
+  items: { time: Text; title: Text; note?: Text; at?: string }[];
   footnote?: Text;
+}
+
+/** Topics as tabs: each tab swaps a picture and a short text (programmes, departments, service days). */
+export interface TabsSection {
+  type: "tabs";
+  id?: string;
+  eyebrow?: Text;
+  heading: Text;
+  intro?: Text;
+  items: { label: Text; heading?: Text; body: Text; image?: Image; points?: Text[]; action?: Link }[];
+}
+
+/** A giving box: amount buttons, once or monthly, what each amount does, a goal bar. The button fills in the giving form. */
+export interface GiveSection {
+  type: "give";
+  id?: string;
+  eyebrow?: Text;
+  heading: Text;
+  intro?: Text;
+  amounts: { price: Price; impact?: Text }[];
+  /** Offer "monthly" next to "once". */
+  monthly?: boolean;
+  /** Where the button goes, usually the giving form ("#give"). The amount follows its label, or goes where the label says "{amount}" ("{amount} ይለግሱ"). */
+  action: Link;
+  /** A campaign goal: how much has come in so far. */
+  goal?: { raised: Price; target: Price; label?: Text };
+  image?: Image;
+}
+
+/** A ribbon of short words that moves slowly across the page: what you offer, places, promises. */
+export interface MarqueeSection {
+  type: "marquee";
+  id?: string;
+  items: Text[];
+  /** dark: on the accent colour. primary: on the brand colour. light: on a soft tint. Default "dark". */
+  tone?: "dark" | "primary" | "light";
 }
 
 /** One strong sentence in large type: a mission, a verse, a founder's words. */
@@ -368,7 +425,10 @@ export type Section =
   | StatsSection
   | StepsSection
   | ScheduleSection
-  | QuoteSection;
+  | QuoteSection
+  | MarqueeSection
+  | TabsSection
+  | GiveSection;
 
 export interface Page {
   /** "/" for the home page, otherwise "/menu", "/about" (lowercase, no trailing slash) */
@@ -414,6 +474,8 @@ export interface Business {
 export interface Site {
   name: Text;
   tagline?: Text;
+  /** Short lines in a thin moving strip above the menu: "Order on Telegram", "Pay on delivery". */
+  announcement?: Text[];
   /** First language is the default (served at "/"); the second is served under "/am" or "/en". */
   languages: Lang[];
   theme: Theme;

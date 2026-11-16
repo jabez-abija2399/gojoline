@@ -28,7 +28,8 @@ describe("render", () => {
     expect(page.head).toContain("<title>ቦሌ ቡና ቤት</title>");
     expect(page.head).toContain("noto-sans-ethiopic-core.woff2");
     expect(page.html.match(/<h1/g)).toHaveLength(1);
-    expect(page.html).toContain("በየማለዳው የሚቆላ ቡና");
+    // Hero words are animated one by one but read as one line of text.
+    expect(page.html.replace(/<[^>]+>/g, "")).toContain("በየማለዳው የሚቆላ ቡና");
   });
   it("promotes the first heading to h1 on pages without a hero", () => {
     const html = render("/menu")!.html;

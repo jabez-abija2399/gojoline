@@ -32,6 +32,7 @@
           "type": "hero",
           "variant": "immersive",
           "eyebrow": { "en": "Haya Hulet · Addis Ababa", "am": "ሃያ ሁለት · አዲስ አበባ" },
+          "id": "top",
           "heading": { "en": "Hair, done with care", "am": "ለፀጉርዎ የሚገባ እንክብካቤ" },
           "subheading": { "en": "Braids, natural hair, colour and nails under one roof, with a barber corner for the men in your life.", "am": "ሹሩባ፣ የተፈጥሮ ፀጉር፣ ቀለምና ጥፍር በአንድ ጣሪያ ሥር፤ ለወንዶችም የራሱ ፀጉር ቤት አለው።" },
           "image": {
@@ -59,6 +60,107 @@
               "value": { "en": "7 days", "am": "7 ቀን" },
               "label": { "en": "open every week", "am": "በሳምንት ክፍት" }
             }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "signature",
+          "layout": "stack",
+          "eyebrow": { "en": "What we do", "am": "የምንሠራው" },
+          "heading": { "en": "Four things we do best", "am": "አሳምረን የምንሠራቸው አራት ነገሮች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/salon-card-braids.webp",
+                "alt": { "en": "A smiling woman in a red top having long braids plaited by a stylist's hands", "am": "ቀይ ልብስ የለበሰች ፈገግተኛ ሴት ረጅም ሹሩባ በባለሙያ እጆች ሲሠራላት" }
+              },
+              "badge": { "en": "Most booked", "am": "በብዛት የሚያዝ" },
+              "subtitle": { "en": "Cornrows, albaso, box and knotless", "am": "ቀጭን ሹሩባ፣ አልባሶ፣ ቦክስና ኖትለስ" },
+              "title": { "en": "Braids", "am": "ሹሩባ" },
+              "description": { "en": "Neat parts and light hands: we braid without pulling. Come with washed hair, or add a wash here.", "am": "ቀጥ ያለ መስመርና ቀላል እጅ፤ ሳንጎትት እንሠራለን። ፀጉርዎን ታጥበው ይምጡ፤ አሊያም እዚሁ እናጥብልዎታለን።" },
+              "meta": [
+                { "en": "1 to 5 hrs", "am": "ከ1 እስከ 5 ሰዓት" },
+                { "en": "Braiding hair sold here", "am": "የሹሩባ ፀጉር እዚሁ ይገኛል" },
+                { "en": "Lower prices for kids", "am": "ለልጆች ቅናሽ ዋጋ" }
+              ],
+              "price": { "amountMinor": 60000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Book braids", "am": "ለሹሩባ ቀጠሮ ይያዙ" },
+                "href": "/#booking"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/salon-hero-natural-curls.webp",
+                "alt": { "en": "A young woman with full natural curls against a soft pink background", "am": "ሙሉ የተፈጥሮ ጥቅልል ፀጉር ያላት ወጣት ሴት፣ በለስላሳ ሮዝ ዳራ ፊት" }
+              },
+              "subtitle": { "en": "Silk press, curl styling, colour, steam care", "am": "ካውያ፣ የጥቅልል አሠራር፣ ቀለም፣ የእንፋሎት እንክብካቤ" },
+              "title": { "en": "Natural hair and colour", "am": "የተፈጥሮ ፀጉርና ቀለም" },
+              "description": { "en": "Gentle products for natural hair, and the price agreed before we start, so there are no surprises at the till.", "am": "ለተፈጥሮ ፀጉር ለስላሳ ምርቶች እንጠቀማለን፤ ዋጋውንም ከመጀመራችን በፊት እንስማማለን፤ ስለዚህ ሲከፍሉ አይደነግጡም።" },
+              "meta": [
+                { "en": "45 min to 3 hrs", "am": "ከ45 ደቂቃ እስከ 3 ሰዓት" },
+                { "en": "Gentle products", "am": "ለስላሳ ምርቶች" }
+              ],
+              "price": { "amountMinor": 50000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Book a visit", "am": "ቀጠሮ ይያዙ" },
+                "href": "/#booking"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/salon-card-barber.webp",
+                "alt": { "en": "A barber in gloves and an apron trimming a client's curly top with a fade", "am": "ጓንትና ሽርጥ ያደረገ ፀጉር አስተካካይ የደንበኛውን ፀጉር ሲያስተካክል" }
+              },
+              "subtitle": { "en": "Cuts, fades, beards and kids' cuts", "am": "ቁርጥ፣ ፌድ፣ ፂምና የልጆች ቁርጥ" },
+              "title": { "en": "Barber corner", "am": "የወንዶች ፀጉር ቤት" },
+              "description": { "en": "Two chairs with their own door, beside the salon. Walk in any day, or book a time and skip the queue.", "am": "ከሳሎኑ ጎን፣ የራሱ በር ያለው ሁለት ወንበር። በማንኛውም ቀን ይምጡ፤ ወይም ቀጠሮ ይዘው ወረፋ ይለፉ።" },
+              "meta": [
+                { "en": "15 to 45 min", "am": "ከ15 እስከ 45 ደቂቃ" },
+                { "en": "Walk in any day", "am": "በማንኛውም ቀን ይምጡ" }
+              ],
+              "price": { "amountMinor": 30000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "See the barber corner", "am": "የወንዶች ፀጉር ቤቱን ይመልከቱ" },
+                "href": "/barber"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/events-gallery-bride-veil-bouquet.webp",
+                "alt": { "en": "A smiling bride lifting her lace veil over a bouquet of white roses", "am": "ፈገግተኛ ሙሽሪት የዳንቴል ዓይነ ርግቧን በነጭ ጽጌረዳ እቅፍ አበባ ላይ ስታነሳ" }
+              },
+              "subtitle": { "en": "Hair, makeup, nails and henna for the day", "am": "ለዕለቱ ፀጉር፣ ሜካፕ፣ ጥፍርና ሂና" },
+              "title": { "en": "Brides", "am": "ለሙሽሮች" },
+              "description": { "en": "A trial a week before, then the whole morning with you. Inside Addis Ababa we can come to your home.", "am": "ከአንድ ሳምንት በፊት ሙከራ እናደርጋለን፤ በዕለቱም ማለዳውን ሙሉ ከእርስዎ ጋር ነን። በአዲስ አበባ ውስጥ ቤትዎ ድረስ እንመጣለን።" },
+              "meta": [
+                { "en": "Trial included", "am": "ሙከራን ጨምሮ" },
+                { "en": "Bridesmaids too", "am": "ለሚዜዎችም" }
+              ],
+              "price": { "amountMinor": 600000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Ask about your date", "am": "ስለ ቀንዎ ይጠይቁ" },
+                "href": "/#booking"
+              }
+            }
+          ]
+        },
+        {
+          "type": "marquee",
+          "id": "words",
+          "tone": "dark",
+          "items": [
+            { "en": "Braids", "am": "ሹሩባ" },
+            { "en": "Albaso", "am": "አልባሶ" },
+            { "en": "Silk press", "am": "ካውያ" },
+            { "en": "Natural curls", "am": "የተፈጥሮ ጥቅልል" },
+            { "en": "Fades", "am": "ፌድ" },
+            { "en": "Gel nails", "am": "ጄል ጥፍር" },
+            { "en": "Henna", "am": "ሂና" }
           ]
         },
         {
@@ -163,14 +265,12 @@
         },
         {
           "type": "gallery",
+          "id": "looks",
+          "layout": "scroll",
           "eyebrow": { "en": "Looks", "am": "አሠራሮች" },
           "heading": { "en": "Styles we love doing", "am": "ወደን የምንሠራቸው" },
           "intro": { "en": "From wash-and-go curls to holiday albaso and wedding mornings.", "am": "ከተፈጥሮ ጥቅልል እስከ የበዓል አልባሶ፣ እስከ ሠርግ ማለዳ።" },
           "images": [
-            {
-              "src": "/stock/salon-hero-natural-curls.webp",
-              "alt": { "en": "A young woman with full natural curls against a soft pink background", "am": "ሙሉ የተፈጥሮ ጥቅልል ፀጉር ያላት ወጣት ሴት፣ በለስላሳ ሮዝ ዳራ ፊት" }
-            },
             {
               "src": "/stock/salon-card-afro.webp",
               "alt": { "en": "A woman with a full round afro in a black jacket against a grey wall", "am": "ሙሉ ክብ ጎፈሬ ያላት ሴት፣ ጥቁር ጃኬት ለብሳ በግራጫ ግድግዳ ፊት" }
@@ -180,12 +280,16 @@
               "alt": { "en": "A woman with full curly hair, a braided crown and silver jewellery in a white habesha kemis", "am": "ሙሉ ጥቅልል ፀጉር፣ በግንባሯ ዙሪያ ሹሩባና የብር ጌጥ ያላት ሴት፣ ነጭ የሀበሻ ቀሚስ ለብሳ" }
             },
             {
-              "src": "/stock/events-gallery-bride-veil-bouquet.webp",
-              "alt": { "en": "A smiling bride lifting her lace veil over a bouquet of white roses", "am": "ፈገግተኛ ሙሽሪት የዳንቴል ዓይነ ርግቧን በነጭ ጽጌረዳ እቅፍ አበባ ላይ ስታነሳ" }
+              "src": "/stock/salon-card-manicure.webp",
+              "alt": { "en": "Close-up of a nail technician working on a client's manicure", "am": "የጥፍር ባለሙያ የደንበኛዋን ጥፍር ስትሠራ በቅርበት" }
             },
             {
               "src": "/stock/personal-hero-man-turtleneck.webp",
               "alt": { "en": "Studio portrait of a man with a short, neat beard in a black turtleneck", "am": "አጭርና የተስተካከለ ፂም ያለው ወንድ፣ ጥቁር ሹራብ ለብሶ" }
+            },
+            {
+              "src": "/stock/salon-gallery-serum-bottle.webp",
+              "alt": { "en": "An amber glass dropper bottle on a wooden pedestal with palm-leaf shadows", "am": "በእንጨት መቆሚያ ላይ ያለ ቡናማ የብርጭቆ ጠርሙስ፣ የዘንባባ ጥላ ያረፈበት" }
             }
           ]
         },
@@ -193,33 +297,22 @@
           "type": "cards",
           "id": "team",
           "layout": "people",
+          "imageShape": "arch",
           "eyebrow": { "en": "Your stylists", "am": "ባለሙያዎቻችን" },
           "heading": { "en": "Ask for them by name", "am": "በስማቸው ይጠይቁ" },
           "intro": { "en": "Each of us does a few things, and does them well.", "am": "እያንዳንዳችን ጥቂት ነገር እንሠራለን፤ እሱንም አሳምረን።" },
           "items": [
             {
-              "image": {
-                "src": "/stock/salon-card-braids.webp",
-                "alt": { "en": "A smiling woman in a red top having long braids plaited by a stylist's hands", "am": "ቀይ ልብስ የለበሰች ፈገግተኛ ሴት ረጅም ሹሩባ በባለሙያ እጆች ሲሠራላት" }
-              },
               "title": { "en": "Tigist", "am": "ትግስት" },
               "subtitle": { "en": "Braids and natural hair", "am": "ሹሩባና የተፈጥሮ ፀጉር" },
               "description": { "en": "Neat parts, light hands, no pulling. Monday to Saturday.", "am": "ቀጥ ያለ መስመር፣ ቀላል እጅ፣ ያለ ሕመም። ከሰኞ እስከ ቅዳሜ።" }
             },
             {
-              "image": {
-                "src": "/stock/salon-card-barber.webp",
-                "alt": { "en": "A barber in gloves and an apron trimming a client's curly top with a fade", "am": "ጓንትና ሽርጥ ያደረገ ፀጉር አስተካካይ የደንበኛውን ፀጉር ሲያስተካክል" }
-              },
               "title": { "en": "Yonas", "am": "ዮናስ" },
               "subtitle": { "en": "Barber", "am": "ፀጉር አስተካካይ" },
               "description": { "en": "Fades, beards and kids' cuts in the barber corner. Every day.", "am": "ፌድ፣ ፂምና የልጆች ቁርጥ በወንዶች ፀጉር ቤታችን። በየቀኑ።" }
             },
             {
-              "image": {
-                "src": "/stock/salon-card-manicure.webp",
-                "alt": { "en": "Close-up of a nail technician working on a client's manicure", "am": "የጥፍር ባለሙያ የደንበኛዋን ጥፍር ስትሠራ በቅርበት" }
-              },
               "title": { "en": "Bethlehem", "am": "ቤተልሔም" },
               "subtitle": { "en": "Nails and henna", "am": "ጥፍርና ሂና" },
               "description": { "en": "Gel, manicure, pedicure and bridal henna. Tuesday to Sunday.", "am": "ጄል፣ ማኒኪዩር፣ ፔዲኪዩርና የሙሽራ ሂና። ከማክሰኞ እስከ እሑድ።" }
@@ -232,6 +325,7 @@
         },
         {
           "type": "testimonials",
+          "id": "reviews",
           "eyebrow": { "en": "Clients say", "am": "ደንበኞች ምን ይላሉ" },
           "heading": { "en": "Why they come back", "am": "ለምን ይመለሳሉ" },
           "items": [
@@ -254,6 +348,7 @@
         },
         {
           "type": "about",
+          "id": "salon",
           "eyebrow": { "en": "The salon", "am": "ስለ ሳሎኑ" },
           "heading": { "en": "A calm room above a busy street", "am": "ከሚጨናነቅ መንገድ በላይ፣ ጸጥ ያለ ቤት" },
           "body": { "en": "Saba opened with two chairs and one rule: nobody leaves with a sore scalp or a surprise bill. Today there are eight chairs, a nail table and a barber corner with its own door.\n\nWe use clean tools for every client, gentle products for natural hair, and we always show you the mirror before you pay.", "am": "ሳባ የተከፈተው በሁለት ወንበርና በአንድ መርሕ ነው፦ ማንም ደንበኛ ራሱ ታምሞ ወይም ያልጠበቀው ሒሳብ ገጥሞት አይወጣም። ዛሬ ስምንት ወንበር፣ የጥፍር ጠረጴዛና የራሱ በር ያለው የወንዶች ፀጉር ቤት አለን።\n\nለእያንዳንዱ ደንበኛ ንጹሕ መሣሪያ፣ ለተፈጥሮ ፀጉር ለስላሳ ምርቶች እንጠቀማለን፤ ከመክፈልዎ በፊትም ሁልጊዜ በመስታወት እናሳይዎታለን።" },
@@ -262,6 +357,7 @@
             "alt": { "en": "Black-and-white view of an empty salon with arched lit mirrors and styling chairs", "am": "ቅስት መስታወቶችና የፀጉር ወንበሮች ያሉት ባዶ ሳሎን፣ ጥቁርና ነጭ ፎቶ" }
           },
           "imageSide": "end",
+          "imageShape": "arch",
           "points": [
             { "en": "Tools cleaned and combs changed for every client", "am": "ለእያንዳንዱ ደንበኛ የጸዳ መሣሪያና አዲስ ማበጠሪያ" },
             { "en": "The price agreed before we start", "am": "ከመጀመራችን በፊት የተስማማ ዋጋ" },
@@ -327,12 +423,8 @@
           "intro": { "en": "Walk-ins are welcome when a chair is free. For braids and colour, book a day ahead.", "am": "ወንበር ካለ ያለ ቀጠሮም ይስተናገዳሉ። ለሹሩባና ለቀለም ግን ከአንድ ቀን በፊት ቀጠሮ ይያዙ።" }
         },
         {
-          "type": "map",
-          "heading": { "en": "Find us in Haya Hulet", "am": "በሃያ ሁለት ያገኙናል" },
-          "query": "Haya Hulet, Addis Ababa"
-        },
-        {
           "type": "cta",
+          "id": "end",
           "heading": { "en": "Your chair is waiting", "am": "ወንበርዎ እየጠበቀዎ ነው" },
           "body": { "en": "Book today, pay at the salon.", "am": "ዛሬ ቀጠሮ ይያዙ፤ ክፍያ በሳሎኑ።" },
           "image": {

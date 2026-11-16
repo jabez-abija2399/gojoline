@@ -19,6 +19,7 @@ export const en = {
   },
   landing: {
     hero: {
+      pauseDemo: "Pause the demo",
       eyebrow: "The website builder that speaks Amharic",
       titleStart: "Build your",
       titleEnd: "home online",
@@ -32,7 +33,7 @@ export const en = {
       picked: "Showing {name}. An example description was added to the box below.",
       build: "Build my site",
     },
-    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", menu: "Menu", seeTemplates: "See all 14 templates" },
+    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", seeTemplates: "See all 14 templates" },
     demo: {
       pick: "Choose a kind of business",
       prompts: {
@@ -50,6 +51,15 @@ export const en = {
       { value: "14", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
+    marquee: { title: "Made for every kind of business and community", pause: "Pause the moving list" },
+    compare: {
+      title: "See the difference",
+      body: "Write about your business the way you'd tell a friend. Gojoline turns it into a site your customers can visit, book and order from.",
+      before: "Your message",
+      after: "Your website",
+      slider: "Slide to compare your message and your website",
+      from: "Selam Coffee",
+    },
     proofTitle: "Gojoline in numbers",
     proofNote: "Measured on our own test builds, November 2026.",
     steps: {
@@ -216,6 +226,7 @@ export const en = {
       title: "What will you build?",
       body: "Start free. See your first site in about a minute.",
       cta: "Start free",
+      ctaSignedIn: "Open your sites",
     },
   },
   plans: {
@@ -468,7 +479,7 @@ export const en = {
       busy: "I'm still working on your last change. Try again in a moment.",
       taken_down: "This site was taken down. Please contact support.",
       build_failed: "Your site couldn't be prepared for publishing. Ask in the chat to fix it, then try again.",
-      unfinished: "Your site still has example details: the phone +251 911 000 000, an example Telegram name, text in [square brackets], or the template's example reviews and people. Tell me your real details in the chat (or ask me to remove the reviews and people), then publish.",
+      unfinished: "Your site still has example details: the phone +251 911 000 000, an example Telegram name, text in [square brackets], or the template's example reviews, people or giving goal. Tell me your real details in the chat (or ask me to remove the reviews and people), then publish.",
       blocked: "Your site has something we can't publish, such as a password or payment form, or content against our rules. Please change it and try again.",
       failed: "Publishing didn't work this time. Please try again.",
       too_many: "You've published many times. Please wait a little.",

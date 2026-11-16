@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { looksSignedIn } from "@/lib/auth/signed-in";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/landing/faq";
 import { FinalCta } from "@/components/landing/final-cta";
@@ -36,7 +37,7 @@ export default async function PricingPage({ params, searchParams }: PageProps<"/
         <div className="mx-auto flex max-w-6xl flex-col gap-12 px-4 py-8 sm:px-6 md:py-12">
           <PlanComparison t={t.plans.compare} planNames={t.billing.plans} />
           <PricingNotes t={t.plans.notes} />
-          <PricingExtras t={t.plans.extras} locale={lang} topupMinor={prices.topup} />
+          <PricingExtras t={t.plans.extras} locale={lang} topupMinor={prices.topup} topupHref={(await looksSignedIn()) ? `/${lang}/billing` : undefined} />
         </div>
         <Faq t={t.landing.faq} />
         <FinalCta t={t.landing.final} locale={lang} />

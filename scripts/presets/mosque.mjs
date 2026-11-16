@@ -6,6 +6,25 @@ const callOffice = link("Call the office", "ወደ ቢሮ ይደውሉ", "tel:+2
 const request = link("Ask the office", "ቢሮውን ይጠይቁ", "/services#request");
 const enrol = link("Enrol a student", "ተማሪ ያስመዝግቡ", "/madrasa#enrol");
 
+// The giving box fills this form: `amount`, and `frequency` with the kit's "Once"/"Monthly" words.
+const giveForm = {
+  type: "form",
+  id: "give",
+  kind: "contact",
+  eyebrow: t("Your gift", "ስጦታዎ"),
+  heading: t("Send your pledge", "ቃልዎን ይላኩ"),
+  intro: t("Leave your number and the office calls you the same day with the Telebirr and bank details, in sha Allah. Zakat is recorded separately and given in full to those entitled to it in Kolfe. You can also give in the boxes by the door.", "ስልክዎን ይተዉልን፤ ኢንሻአላህ ቢሮው በዕለቱ ደውሎ የቴሌብርና የባንክ መረጃውን ይሰጥዎታል። ዘካ ለብቻው ተመዝግቦ ሙሉ በሙሉ በኮልፌ ለሚገባቸው ይሰጣል። በበሩ አጠገብ ባሉት ሳጥኖችም መስጠት ይችላሉ።"),
+  fields: [
+    { name: "name", label: t("Your name", "ስምዎ"), type: "text", required: true },
+    { name: "phone", label: t("Phone number", "ስልክ ቁጥር"), type: "tel", required: true },
+    { name: "amount", label: t("Amount", "መጠን"), type: "text", required: true },
+    { name: "frequency", label: t("How often", "በምን ያህል ጊዜ"), type: "select", required: true, options: [t("Once", "አንድ ጊዜ"), t("Monthly", "በየወሩ")] },
+    { name: "fund", label: t("Where it goes", "የሚውልበት"), type: "select", required: true, options: [t("Sadaqah: running the masjid", "ሰደቃ፦ ለመስጂዱ የዕለት ሥራ"), t("Zakat", "ዘካ"), t("Building fund", "የግንባታ ፈንድ")] },
+  ],
+  submitLabel: t("Send my pledge", "ቃሌን ላክ"),
+  successMessage: t("Jazakallahu khayran. The office will call you today to complete your gift.", "ጀዛከላሁ ኸይረን። ስጦታዎን ለማጠናቀቅ ቢሮው ዛሬ ይደውልልዎታል።"),
+};
+
 const endCta = (image) => ({
   type: "cta",
   heading: t("Pray with us today", "ዛሬ አብረውን ይስገዱ"),
@@ -58,13 +77,14 @@ save("mosque", {
           layout: "tiles",
           eyebrow: t("Today at Al-Noor", "ዛሬ በአል-ኑር"),
           heading: t("Prayer times", "የሶላት ሰዓት"),
-          intro: t("The large time is the iqamah, when the congregation stands. The adhan is called at the time below it.", "በትልቁ የተጻፈው ጀማዓው የሚቆምበት የኢቃም ሰዓት ነው፤ ከሥሩ ያለው የአዛን ሰዓት ነው። ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።"),
+          intro: t("The large time is the iqamah, when the congregation stands; the adhan is called at the time below it. The next prayer is marked, with the time left until it.", "በትልቁ የተጻፈው ጀማዓው የሚቆምበት የኢቃም ሰዓት ነው፤ ከሥሩ ያለው የአዛን ሰዓት ነው። ቀጣዩ ሶላት የቀረው ጊዜ ተጠቅሶ ይታያል። ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።"),
+          dates: ["gregorian", "ethiopian", "hijri"],
           items: [
-            { title: t("Fajr", "ሱብሒ"), time: t("5:25 am", "11:25"), note: t("Adhan 5:05", "አዛን 11:05 · ንጋት") },
-            { title: t("Dhuhr", "ዙህር"), time: t("12:45 pm", "6:45"), note: t("Adhan 12:20", "አዛን 6:20 · ቀን") },
-            { title: t("Asr", "ዐስር"), time: t("3:50 pm", "9:50"), note: t("Adhan 3:35", "አዛን 9:35 · ቀን") },
-            { title: t("Maghrib", "መግሪብ"), time: t("6:10 pm", "12:10"), note: t("Adhan 6:05", "አዛን 12:05 · ምሽት") },
-            { title: t("Isha", "ዒሻ"), time: t("7:40 pm", "1:40"), note: t("Adhan 7:20", "አዛን 1:20 · ምሽት") },
+            { title: t("Fajr", "ሱብሒ"), time: t("5:25 am", "11:25"), note: t("Adhan 5:05", "አዛን 11:05 · ንጋት"), at: "05:25" },
+            { title: t("Dhuhr", "ዙህር"), time: t("12:45 pm", "6:45"), note: t("Adhan 12:20", "አዛን 6:20 · ቀን"), at: "12:45" },
+            { title: t("Asr", "ዐስር"), time: t("3:50 pm", "9:50"), note: t("Adhan 3:35", "አዛን 9:35 · ቀን"), at: "15:50" },
+            { title: t("Maghrib", "መግሪብ"), time: t("6:10 pm", "12:10"), note: t("Adhan 6:05", "አዛን 12:05 · ምሽት"), at: "18:10" },
+            { title: t("Isha", "ዒሻ"), time: t("7:40 pm", "1:40"), note: t("Adhan 7:20", "አዛን 1:20 · ምሽት"), at: "19:40" },
             { title: t("Jumu'ah", "ጁሙዓ"), time: t("12:45 pm", "6:45"), note: t("Khutbah · prayer 1:15", "ኹጥባ · ሶላት 7:15") },
           ],
           footnote: t("These are sample times for mid-November. Prayer times move by a few minutes through the year; this week's timetable is posted at the entrance and on our Telegram channel.", "እነዚህ ለኅዳር ወር አጋማሽ የተቀመጡ ናሙና ሰዓቶች ናቸው። የሶላት ሰዓት በዓመቱ ውስጥ በጥቂት ደቂቃዎች ይለዋወጣል፤ የሳምንቱ ሰዓት በመግቢያው በር እና በቴሌግራም ቻናላችን ይለጠፋል።"),
@@ -103,6 +123,7 @@ save("mosque", {
         },
         {
           type: "about",
+          id: "about",
           eyebrow: t("Our masjid", "መስጂዳችን"),
           heading: t("Built by the neighbourhood, open to all", "ሰፈሩ የገነባው፣ ለሁሉም ክፍት"),
           body: t(
@@ -111,6 +132,7 @@ save("mosque", {
           ),
           image: img("mosque-about-bright-prayer-hall", "Worshippers praying and sitting on a patterned carpet in a bright white and green prayer hall with chandeliers", "በብሩህ ነጭና አረንጓዴ መስገጃ ውስጥ በምንጣፍ ላይ የሚሰግዱና የተቀመጡ ሰጋጆች"),
           imageSide: "end",
+          imageShape: "arch",
           points: [
             t("Sisters' prayer hall with its own entrance and wudu area", "የተለየ መግቢያና የውዱእ ቦታ ያለው የእህቶች መስገጃ"),
             t("Friday khutbah in Amharic, with Arabic", "የጁሙዓ ኹጥባ በአማርኛ፣ ከዐረብኛ ጋር"),
@@ -120,6 +142,7 @@ save("mosque", {
         },
         {
           type: "gallery",
+          id: "gallery",
           layout: "mosaic",
           eyebrow: t("In the masjid", "በመስጂዱ ውስጥ"),
           heading: t("Moments of the day", "የዕለቱ ገጽታዎች"),
@@ -133,22 +156,31 @@ save("mosque", {
         },
         {
           type: "quote",
-          quote: t("Our doors are open to everyone who comes to pray, to learn or to ask.", "ለመስገድ፣ ለመማር ወይም ለመጠየቅ ለሚመጣ ሁሉ በራችን ክፍት ነው።"),
-          name: t("Kolfe Al-Noor Mosque", "ኮልፌ አል-ኑር መስጂድ"),
+          id: "hadith",
+          quote: t("Charity does not decrease wealth.", "ሰደቃ ገንዘብን አይቀንስም።"),
+          name: t("The Prophet Muhammad, peace be upon him", "ነቢዩ ሙሐመድ (ሰ.ዐ.ወ)"),
+          role: t("Sahih Muslim", "ሶሒሕ ሙስሊም"),
         },
         {
-          type: "services",
+          type: "give",
           id: "giving",
-          variant: "numbered",
-          eyebrow: t("Giving", "ሰደቃና ዘካ"),
+          eyebrow: t("Sadaqah and zakat", "ሰደቃና ዘካ"),
           heading: t("Support the masjid", "መስጂዱን ይደግፉ"),
-          intro: t("Choose where your gift goes. Give in the boxes by the door, at the office, or ask us for the bank and Telebirr details by phone or Telegram.", "ስጦታዎ የት እንደሚውል ይምረጡ። በበሩ አጠገብ ባሉት ሳጥኖች ወይም በቢሮ መስጠት፣ አለዚያም የባንክና የቴሌብር ቁጥሩን በስልክ ወይም በቴሌግራም መጠየቅ ይችላሉ።"),
-          items: [
-            { icon: "heart", title: t("Sadaqah", "ሰደቃ"), description: t("Keeps the masjid running day to day: water, light, cleaning, the imam and the madrasa teachers.", "የመስጂዱን የዕለት ተዕለት ሥራ ያስቀጥላል፤ ውሃ፣ መብራት፣ ጽዳት፣ ኢማሙና የመድረሳ አስተማሪዎች።") },
-            { icon: "users", title: t("Zakat", "ዘካ"), description: t("Collected and given in full to those entitled to it in Kolfe, with a record kept by the committee.", "ተሰብስቦ ሙሉ በሙሉ በኮልፌ ለሚገባቸው ይሰጣል፤ ኮሚቴውም መዝገብ ይይዛል።") },
-            { icon: "building", title: t("Building fund", "የግንባታ ፈንድ"), description: t("For the new madrasa classrooms above the wudu area and a larger sisters' hall.", "ከውዱእ ቦታው በላይ ለሚሠሩ አዳዲስ የመድረሳ ክፍሎችና ለሰፋ የእህቶች መስገጃ።") },
+          intro: t("Al-Noor runs on what the congregation gives. Choose an amount, once or every month, and see what it does; then tell us if it is sadaqah, zakat or for the building fund.", "አል-ኑር የሚተዳደረው ጀማዓው በሚሰጠው ነው። መጠን ይምረጡ፣ አንድ ጊዜ ወይም በየወሩ፣ የሚሠራውንም ይመልከቱ፤ ከዚያ ሰደቃ፣ ዘካ ወይም ለግንባታ ፈንድ መሆኑን ይንገሩን።"),
+          amounts: [
+            { price: birr(100), impact: t("Water and light for the masjid for a day.", "ለመስጂዱ የአንድ ቀን ውሃና መብራት።") },
+            { price: birr(250), impact: t("Notebooks and a Qur'an reader for one madrasa child.", "ለአንድ የመድረሳ ልጅ ደብተርና የቁርኣን መማሪያ መጽሐፍ።") },
+            { price: birr(500), impact: t("Iftar for ten fasting neighbours in Ramadan.", "በረመዳን ለአሥር ጿሚ ጎረቤቶች ኢፍጣር።") },
+            { price: birr(1000), impact: t("A food basket for a family in need: flour, oil, lentils and sugar.", "ለአንድ የተቸገረ ቤተሰብ የምግብ ቅርጫት፦ ዱቄት፣ ዘይት፣ ምስርና ስኳር።") },
+            { price: birr(2500), impact: t("Eight months of madrasa fees for a child whose family cannot pay.", "ቤተሰቡ መክፈል ለማይችል ልጅ የስምንት ወር የመድረሳ ክፍያ።") },
+            { price: birr(5000), impact: t("Towards the new madrasa classrooms above the wudu area.", "ከውዱእ ቦታው በላይ ለሚሠሩት አዳዲስ የመድረሳ ክፍሎች።") },
           ],
+          monthly: true,
+          action: link("Give", "{amount} ይስጡ", "#give"),
+          goal: { raised: birr(1240000), target: birr(3000000), label: t("Building fund: new madrasa classrooms", "የግንባታ ፈንድ፦ አዳዲስ የመድረሳ ክፍሎች") },
+          image: img("mosque-about-courtyard-arches", "A stone mosque courtyard with arcades of arches and a green dome under a blue sky", "በሰማያዊ ሰማይ ሥር ቅስት በረንዳዎችና አረንጓዴ ጉልላት ያለው የድንጋይ መስጂድ ግቢ"),
         },
+        giveForm,
         { type: "contact", heading: t("Visit or call us", "ይጎብኙን ወይም ይደውሉ"), intro: t("The office is beside the main gate. For a janazah, call at any hour.", "ቢሮው ከዋናው በር አጠገብ ነው። ለጀናዛ ጉዳይ በማንኛውም ሰዓት ይደውሉ።") },
         { type: "map", heading: t("Find us in Kolfe", "በኮልፌ ያገኙናል"), query: "Kolfe Keranio, Addis Ababa" },
         endCta(img("mosque-hero-sunlit-prayer-hall", "A lone worshipper kneeling on a teal carpet in a large prayer hall, with low sun streaming through arched windows", "በቅስት መስኮቶች የፀሐይ ብርሃን በሚገባበት ሰፊ መስገጃ ውስጥ በአረንጓዴ ምንጣፍ ላይ ብቻውን የተቀመጠ ሰጋጅ")),
@@ -382,7 +414,7 @@ save("mosque", {
             { question: t("When should I arrive for Jumu'ah?", "ለጁሙዓ መቼ ልድረስ?"), answer: t("The hall fills by 12:30 pm. Come before the adhan at 12:20 and make wudu at home if you can.", "መስገጃው ከቀኑ 6:30 በፊት ይሞላል። ከ6:20 አዛን በፊት ይድረሱ፤ ከቻሉ ውዱእ በቤትዎ ያድርጉ።") },
             { question: t("Is there space for sisters on Fridays?", "በጁሙዓ ለእህቶች ቦታ አለ?"), answer: t("Yes. The sisters' hall is open for every prayer, including Jumu'ah and Tarawih.", "አዎ። የእህቶች መስገጃ ለሁሉም ሶላት ክፍት ነው፤ ለጁሙዓና ለተራዊሕም ጭምር።") },
             { question: t("Is there parking?", "የመኪና ማቆሚያ አለ?"), answer: t("Only a few spaces inside the gate. On Fridays please walk or come by taxi, and do not block the neighbours' gates.", "በግቢው ውስጥ ጥቂት ቦታ ብቻ አለ። በጁሙዓ በእግር ወይም በታክሲ ይምጡ፤ የጎረቤት በር አይዝጉ።") },
-            { question: t("How do I pay zakat through the masjid?", "ዘካዬን በመስጂዱ በኩል እንዴት ልክፈል?"), answer: t("Bring it to the office or ask for the account details. Tell us it is zakat so it is recorded and given separately.", "ወደ ቢሮ ያምጡ ወይም የሒሳብ ቁጥሩን ይጠይቁ። ዘካ መሆኑን ይንገሩን፤ ለብቻው ተመዝግቦ ይሰጣል።") },
+            { question: t("How do I pay zakat through the masjid?", "ዘካዬን በመስጂዱ በኩል እንዴት ልክፈል?"), answer: t("Choose Zakat in the giving form on the home page, or bring it to the office. Tell us it is zakat so it is recorded and given separately.", "በመነሻ ገጹ ባለው የስጦታ ቅጽ ላይ ዘካን ይምረጡ ወይም ወደ ቢሮ ያምጡ። ዘካ መሆኑን ይንገሩን፤ ለብቻው ተመዝግቦ ይሰጣል።") },
           ],
         },
         { type: "contact", heading: t("Talk to the office", "ቢሮውን ያነጋግሩ"), intro: t("Call, write on Telegram, or stop by the office beside the main gate.", "ይደውሉ፣ በቴሌግራም ይጻፉ ወይም ከዋናው በር አጠገብ ወዳለው ቢሮ ጎራ ይበሉ።") },

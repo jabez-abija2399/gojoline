@@ -30,7 +30,9 @@
       "sections": [
         {
           "type": "hero",
+          "id": "top",
           "variant": "immersive",
+          "frame": true,
           "eyebrow": { "en": "Ethiopia tours since 2014", "am": "ከ2006 ዓ.ም. ጀምሮ የኢትዮጵያ ጉዞዎች" },
           "heading": { "en": "Walk the roof of Africa", "am": "በአፍሪካ ጣሪያ ላይ ይራመዱ" },
           "subheading": { "en": "Rock churches, high trails and salt deserts, with guides who grew up beside them.", "am": "ውቅር አብያተ ክርስቲያናት፣ የደጋ መንገዶችና የጨው በረሃዎች፤ በአጠገባቸው ካደጉ አስጎብኚዎች ጋር።" },
@@ -66,6 +68,19 @@
           ]
         },
         {
+          "type": "marquee",
+          "id": "places",
+          "tone": "dark",
+          "items": [
+            { "en": "Lalibela", "am": "ላሊበላ" },
+            { "en": "Simien Mountains", "am": "ስሜን ተራሮች" },
+            { "en": "Danakil", "am": "ዳናኪል" },
+            { "en": "Gondar", "am": "ጎንደር" },
+            { "en": "Lake Tana", "am": "ጣና ሐይቅ" },
+            { "en": "Addis Ababa", "am": "አዲስ አበባ" }
+          ]
+        },
+        {
           "type": "cards",
           "id": "trips",
           "layout": "grid",
@@ -78,7 +93,7 @@
                 "src": "/stock/worship-hero-lalibela-st-george.webp",
                 "alt": { "en": "The rock-hewn Church of St George in Lalibela, framed by red rock walls", "am": "በቀይ አለት ግድግዳ የተከበበው የላሊበላ ቤተ ጊዮርጊስ ውቅር ቤተ ክርስቲያን" }
               },
-              "badge": { "en": "Best seller", "am": "በጣም ተመራጭ" },
+              "badge": { "en": "History and culture", "am": "ታሪክና ባህል" },
               "subtitle": { "en": "Addis → Lalibela → Addis", "am": "አዲስ አበባ → ላሊበላ → አዲስ አበባ" },
               "title": { "en": "Lalibela rock churches", "am": "የላሊበላ ውቅር አብያተ ክርስቲያናት" },
               "meta": [
@@ -94,7 +109,7 @@
                 "src": "/stock/tours-card-simien-escarpment.webp",
                 "alt": { "en": "Sunlit green escarpments and deep valleys of the Simien Mountains", "am": "ፀሐይ ያረፈባቸው የስሜን ተራሮች አረንጓዴ ገደሎችና ጥልቅ ሸለቆዎች" }
               },
-              "badge": { "en": "Trek", "am": "የእግር ጉዞ" },
+              "badge": { "en": "Trekking", "am": "የእግር ጉዞ" },
               "subtitle": { "en": "Gondar → Geech → Chenek", "am": "ጎንደር → ግጭ → ጨነቅ" },
               "title": { "en": "Simien Mountains trek", "am": "የስሜን ተራሮች የእግር ጉዞ" },
               "meta": [
@@ -110,6 +125,7 @@
                 "src": "/stock/tours-card-danakil-dallol.webp",
                 "alt": { "en": "Yellow, green and rust-coloured sulphur springs at Dallol in the Danakil", "am": "በዳሎል የሚገኙ ቢጫ፣ አረንጓዴና ዝገት ቀለም ያላቸው የድኝ ምንጮች" }
               },
+              "badge": { "en": "Adventure", "am": "ጀብዱ" },
               "subtitle": { "en": "Semera → Erta Ale → Dallol", "am": "ሰመራ → ኤርታ አሌ → ዳሎል" },
               "title": { "en": "Danakil Depression", "am": "የዳናኪል ዝቅተኛ ሥፍራ" },
               "meta": [
@@ -125,7 +141,7 @@
                 "src": "/stock/tours-gallery-gondar-castle.webp",
                 "alt": { "en": "Fasilides castle in Gondar, framed by two tall trees", "am": "በሁለት ረጃጅም ዛፎች መካከል የሚታየው የጎንደር ፋሲል ግንብ" }
               },
-              "badge": { "en": "Classic", "am": "ዋናው ጉዞ" },
+              "badge": { "en": "History and culture", "am": "ታሪክና ባህል" },
               "subtitle": { "en": "Bahir Dar → Gondar → Lalibela", "am": "ባሕር ዳር → ጎንደር → ላሊበላ" },
               "title": { "en": "The historic north", "am": "ታሪካዊው ሰሜን" },
               "meta": [
@@ -141,7 +157,7 @@
                 "src": "/stock/tours-card-blue-nile-falls.webp",
                 "alt": { "en": "The Blue Nile Falls in full flow, surrounded by green forest", "am": "በአረንጓዴ ደን የተከበበው የጢስ ዓባይ ፏፏቴ በሙላት ሲወርድ" }
               },
-              "badge": { "en": "Weekend", "am": "የሳምንት መጨረሻ" },
+              "badge": { "en": "Short trips", "am": "አጫጭር ጉዞዎች" },
               "subtitle": { "en": "Addis → Bahir Dar → Addis", "am": "አዲስ አበባ → ባሕር ዳር → አዲስ አበባ" },
               "title": { "en": "Blue Nile Falls and Lake Tana", "am": "ጢስ ዓባይና ጣና ሐይቅ" },
               "meta": [
@@ -157,6 +173,7 @@
                 "src": "/stock/tours-gallery-spice-market.webp",
                 "alt": { "en": "A woman in a green headscarf sorting chillies and ginger at an open-air market", "am": "አረንጓዴ ሻሽ ያሰረች ሴት በገበያ ላይ በርበሬና ዝንጅብል ስትለቅም" }
               },
+              "badge": { "en": "Short trips", "am": "አጫጭር ጉዞዎች" },
               "subtitle": { "en": "Merkato → Entoto → Piazza", "am": "መርካቶ → እንጦጦ → ፒያሳ" },
               "title": { "en": "Addis in a day", "am": "አዲስ አበባ በአንድ ቀን" },
               "meta": [
@@ -177,6 +194,7 @@
           "type": "cards",
           "id": "destinations",
           "layout": "scroll",
+          "imageShape": "arch",
           "eyebrow": { "en": "Where we go", "am": "የምንሄድባቸው" },
           "heading": { "en": "Four places, four worlds", "am": "አራት ሥፍራዎች፣ አራት ዓለማት" },
           "items": [
@@ -216,6 +234,7 @@
         },
         {
           "type": "services",
+          "id": "why",
           "variant": "bento",
           "eyebrow": { "en": "Why Selam Trails", "am": "ለምን ሰላም ትሬልስ" },
           "heading": { "en": "Travel with people who live here", "am": "እዚሁ ከሚኖሩ ሰዎች ጋር ይጓዙ" },
@@ -249,6 +268,7 @@
         },
         {
           "type": "steps",
+          "id": "how",
           "eyebrow": { "en": "How it works", "am": "አካሄዱ" },
           "heading": { "en": "Three steps to the trail", "am": "ወደ ጉዞ ሦስት እርምጃ" },
           "items": [
@@ -272,6 +292,7 @@
         },
         {
           "type": "about",
+          "id": "guide",
           "eyebrow": { "en": "Your guide", "am": "አስጎብኚዎ" },
           "heading": { "en": "Started on the Lalibela road", "am": "በላሊበላ መንገድ ላይ የተጀመረ" },
           "body": { "en": "Henok, our founder, began guiding visitors around the churches of his home town at nineteen. In 2014 he and two driver friends bought one old Land Cruiser and started Selam Trails.\n\nToday we are fourteen guides and drivers. We still plan every trip ourselves and one of us is on every departure.", "am": "መሥራቻችን ሄኖክ በአሥራ ዘጠኝ ዓመቱ በትውልድ ከተማው ያሉትን አብያተ ክርስቲያናት ለጎብኚዎች ማስጎብኘት ጀመረ። በ2006 ዓ.ም. ከሁለት ሹፌር ጓደኞቹ ጋር አንድ ያገለገለ ላንድ ክሩዘር ገዝተው ሰላም ትሬልስን መሠረቱ።\n\nዛሬ አሥራ አራት አስጎብኚዎችና ሹፌሮች ነን። እያንዳንዱን ጉዞ አሁንም ራሳችን እናቅዳለን፤ በእያንዳንዱ ጉዞም ከመካከላችን አንዱ አብሮ ይሄዳል።" },
@@ -292,6 +313,7 @@
         },
         {
           "type": "testimonials",
+          "id": "reviews",
           "eyebrow": { "en": "Travellers say", "am": "ተጓዦች ምን ይላሉ" },
           "heading": { "en": "Stories from the road", "am": "ከመንገድ የተገኙ አስተያየቶች" },
           "items": [
@@ -367,6 +389,8 @@
         },
         {
           "type": "faq",
+          "id": "faq",
+          "eyebrow": { "en": "Good to know", "am": "ማወቅ ያለብዎት" },
           "heading": { "en": "Before you travel", "am": "ከመጓዝዎ በፊት" },
           "items": [
             {
@@ -389,6 +413,7 @@
         },
         {
           "type": "cta",
+          "id": "plan",
           "heading": { "en": "Your dates, our roads", "am": "ቀኑ የእርስዎ፣ መንገዱ የእኛ" },
           "body": { "en": "Send your dates today and have a full plan tomorrow.", "am": "ቀንዎን ዛሬ ይላኩ፤ ሙሉ ዕቅድ ነገ ይደርስዎታል።" },
           "image": {
@@ -435,7 +460,7 @@
                 "src": "/stock/worship-hero-lalibela-st-george.webp",
                 "alt": { "en": "The rock-hewn Church of St George in Lalibela, framed by red rock walls", "am": "በቀይ አለት ግድግዳ የተከበበው የላሊበላ ቤተ ጊዮርጊስ ውቅር ቤተ ክርስቲያን" }
               },
-              "badge": { "en": "Best seller", "am": "በጣም ተመራጭ" },
+              "badge": { "en": "History and culture", "am": "ታሪክና ባህል" },
               "subtitle": { "en": "Addis → Lalibela → Addis", "am": "አዲስ አበባ → ላሊበላ → አዲስ አበባ" },
               "title": { "en": "Lalibela rock churches", "am": "የላሊበላ ውቅር አብያተ ክርስቲያናት" },
               "meta": [
@@ -456,7 +481,7 @@
                 "src": "/stock/tours-card-simien-escarpment.webp",
                 "alt": { "en": "Sunlit green escarpments and deep valleys of the Simien Mountains", "am": "ፀሐይ ያረፈባቸው የስሜን ተራሮች አረንጓዴ ገደሎችና ጥልቅ ሸለቆዎች" }
               },
-              "badge": { "en": "Trek", "am": "የእግር ጉዞ" },
+              "badge": { "en": "Trekking", "am": "የእግር ጉዞ" },
               "subtitle": { "en": "Gondar → Geech → Chenek", "am": "ጎንደር → ግጭ → ጨነቅ" },
               "title": { "en": "Simien Mountains trek", "am": "የስሜን ተራሮች የእግር ጉዞ" },
               "meta": [
@@ -477,6 +502,7 @@
                 "src": "/stock/tours-card-danakil-dallol.webp",
                 "alt": { "en": "Yellow, green and rust-coloured sulphur springs at Dallol in the Danakil", "am": "በዳሎል የሚገኙ ቢጫ፣ አረንጓዴና ዝገት ቀለም ያላቸው የድኝ ምንጮች" }
               },
+              "badge": { "en": "Adventure", "am": "ጀብዱ" },
               "subtitle": { "en": "Semera → Erta Ale → Dallol", "am": "ሰመራ → ኤርታ አሌ → ዳሎል" },
               "title": { "en": "Danakil Depression", "am": "የዳናኪል ዝቅተኛ ሥፍራ" },
               "meta": [
@@ -497,7 +523,7 @@
                 "src": "/stock/tours-gallery-gondar-castle.webp",
                 "alt": { "en": "Fasilides castle in Gondar, framed by two tall trees", "am": "በሁለት ረጃጅም ዛፎች መካከል የሚታየው የጎንደር ፋሲል ግንብ" }
               },
-              "badge": { "en": "Classic", "am": "ዋናው ጉዞ" },
+              "badge": { "en": "History and culture", "am": "ታሪክና ባህል" },
               "subtitle": { "en": "Bahir Dar → Gondar → Lalibela", "am": "ባሕር ዳር → ጎንደር → ላሊበላ" },
               "title": { "en": "The historic north", "am": "ታሪካዊው ሰሜን" },
               "meta": [
@@ -518,7 +544,7 @@
                 "src": "/stock/tours-card-blue-nile-falls.webp",
                 "alt": { "en": "The Blue Nile Falls in full flow, surrounded by green forest", "am": "በአረንጓዴ ደን የተከበበው የጢስ ዓባይ ፏፏቴ በሙላት ሲወርድ" }
               },
-              "badge": { "en": "Weekend", "am": "የሳምንት መጨረሻ" },
+              "badge": { "en": "Short trips", "am": "አጫጭር ጉዞዎች" },
               "subtitle": { "en": "Addis → Bahir Dar → Addis", "am": "አዲስ አበባ → ባሕር ዳር → አዲስ አበባ" },
               "title": { "en": "Blue Nile Falls and Lake Tana", "am": "ጢስ ዓባይና ጣና ሐይቅ" },
               "meta": [
@@ -539,6 +565,7 @@
                 "src": "/stock/tours-gallery-spice-market.webp",
                 "alt": { "en": "A woman in a green headscarf sorting chillies and ginger at an open-air market", "am": "አረንጓዴ ሻሽ ያሰረች ሴት በገበያ ላይ በርበሬና ዝንጅብል ስትለቅም" }
               },
+              "badge": { "en": "Short trips", "am": "አጫጭር ጉዞዎች" },
               "subtitle": { "en": "Merkato → Entoto → Piazza", "am": "መርካቶ → እንጦጦ → ፒያሳ" },
               "title": { "en": "Addis in a day", "am": "አዲስ አበባ በአንድ ቀን" },
               "meta": [

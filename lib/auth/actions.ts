@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { parseContact } from "@/lib/contact";
 import { isLocale } from "@/lib/i18n/config";
@@ -81,6 +82,8 @@ export async function signInStep(rawPrev: SignInState, form: FormData): Promise<
 export async function signOut(form: FormData) {
   const lang = isLocale(field(form, "lang")) ? field(form, "lang") : "en";
   await getAuth()?.api.signOut({ headers: await headers() }).catch(() => undefined);
+  // Pages kept in the browser were drawn signed in ("Your sites"): draw them again signed out.
+  revalidatePath("/", "layout");
   redirect(`/${lang}`);
 }
 

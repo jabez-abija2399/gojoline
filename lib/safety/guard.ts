@@ -25,6 +25,23 @@ const ENTITIES: Record<string, string> = { nbsp: " ", amp: "&", lt: "<", gt: ">"
 const decode = (s: string) => s.replace(/&(nbsp|amp|lt|gt|quot|#39|apos);/g, (_, e: string) => ENTITIES[e] ?? "");
 
 const MAX_PAGE_CHARS = 1_000_000;
+
+/** The page with every <script>…</script> removed, in one pass (fast on any markup). */
+function withoutScripts(html: string): string {
+  const lower = html.toLowerCase();
+  let out = "";
+  let i = 0;
+  while (i < html.length) {
+    const start = lower.indexOf("<script", i);
+    if (start === -1) break;
+    out += html.slice(i, start) + " ";
+    const end = lower.indexOf("</script", start + 7);
+    if (end === -1) return out;
+    const close = lower.indexOf(">", end);
+    i = close === -1 ? html.length : close + 1;
+  }
+  return out + html.slice(i);
+}
 const ATTR = /\s(?:alt|title|placeholder|aria-label|value|content|label)\s*=\s*(?:"([^"]{0,2000})"|'([^']{0,2000})')/gi;
 
 /**
@@ -66,7 +83,9 @@ export function visibleText(files: PublishFile[]): string {
   const parts: string[] = [];
   for (const f of files) {
     if (!f.path.endsWith(".html")) continue;
-    const text = normalizeText(decode(pageText(f.data.toString("utf8", 0, MAX_PAGE_CHARS))));
+    // Script blocks (code and the page's own data) go first, so the limit applies to what visitors read.
+    const html = withoutScripts(f.data.toString("utf8"));
+    const text = normalizeText(decode(pageText(html.slice(0, MAX_PAGE_CHARS))));
     if (text && !seen.has(text)) {
       seen.add(text);
       parts.push(text);

@@ -1,6 +1,11 @@
 {
   "name": { "en": "Adama Tesfa Academy", "am": "አዳማ ተስፋ አካዳሚ" },
   "tagline": { "en": "A caring private school for KG to Grade 8 in Adama", "am": "ከመዋዕለ ሕፃናት እስከ 8ኛ ክፍል የሚያስተምር የግል ትምህርት ቤት በአዳማ" },
+  "announcement": [
+    { "en": "Registration is open for KG to Grade 8", "am": "ከኬጂ እስከ 8ኛ ክፍል ምዝገባ ተጀምሯል" },
+    { "en": "Visits any weekday morning", "am": "ከሰኞ እስከ ዓርብ በጠዋት ይጎብኙን" },
+    { "en": "School bus across Adama", "am": "በመላው አዳማ የተማሪዎች አውቶቡስ" }
+  ],
   "languages": [
     "en",
     "am"
@@ -31,7 +36,8 @@
         {
           "type": "hero",
           "variant": "split",
-          "eyebrow": { "en": "Registration is open", "am": "ምዝገባ ተጀምሯል" },
+          "eyebrow": { "en": "KG to Grade 8 · Adama", "am": "ከኬጂ እስከ 8ኛ ክፍል · አዳማ" },
+          "hours": false,
           "heading": { "en": "Where every child is known by name", "am": "እያንዳንዱ ልጅ በስሙ የሚታወቅበት" },
           "subheading": { "en": "Kindergarten to Grade 8 in the heart of Adama. Small classes, caring teachers and a place your child will be happy to come to.", "am": "ከመዋዕለ ሕፃናት እስከ 8ኛ ክፍል በአዳማ እምብርት። አነስተኛ ክፍሎች፣ አሳቢ መምህራን እና ልጅዎ በደስታ የሚመጣበት ቦታ።" },
           "image": {
@@ -63,6 +69,7 @@
         },
         {
           "type": "stats",
+          "id": "numbers",
           "tone": "soft",
           "items": [
             {
@@ -86,10 +93,10 @@
         {
           "type": "cards",
           "id": "programmes",
-          "layout": "grid",
+          "layout": "stack",
           "eyebrow": { "en": "Programmes", "am": "ፕሮግራሞች" },
           "heading": { "en": "A class for every age", "am": "ለየዕድሜው የሚሆን ክፍል" },
-          "intro": { "en": "Three stages on one safe compound, so brothers and sisters come to school together.", "am": "ሦስት እርከኖች በአንድ አስተማማኝ ግቢ፤ ወንድማማቾችና እህትማማቾች አብረው ይመጣሉ።" },
+          "intro": { "en": "Three stages on one safe compound, so brothers and sisters come to school together. Fees are per term and include books.", "am": "ሦስት እርከኖች በአንድ አስተማማኝ ግቢ፤ ወንድማማቾችና እህትማማቾች አብረው ይመጣሉ። ክፍያው በየሩብ ዓመቱ ሲሆን መጻሕፍትን ያካትታል።" },
           "items": [
             {
               "image": {
@@ -106,7 +113,11 @@
               ],
               "description": { "en": "Letters and numbers in Amharic and English through songs, stories and play, with a rest hour after lunch.", "am": "በመዝሙር፣ በተረትና በጨዋታ የአማርኛና የእንግሊዝኛ ፊደልና ቁጥር፤ ከምሳ በኋላ የዕረፍት ሰዓት አለ።" },
               "price": { "amountMinor": 950000, "currency": "ETB" },
-              "priceNote": { "en": "per term", "am": "በየሩብ ዓመቱ" }
+              "priceNote": { "en": "per term", "am": "በየሩብ ዓመቱ" },
+              "action": {
+                "label": { "en": "Apply now", "am": "አሁን ያመልክቱ" },
+                "href": "/#apply"
+              }
             },
             {
               "image": {
@@ -122,7 +133,11 @@
               ],
               "description": { "en": "Strong reading, writing and maths, with one class teacher who knows each child well.", "am": "ጠንካራ ንባብ፣ ጽሕፈትና ሒሳብ፤ እያንዳንዱን ልጅ በደንብ ከሚያውቅ የክፍል መምህር ጋር።" },
               "price": { "amountMinor": 1250000, "currency": "ETB" },
-              "priceNote": { "en": "per term", "am": "በየሩብ ዓመቱ" }
+              "priceNote": { "en": "per term", "am": "በየሩብ ዓመቱ" },
+              "action": {
+                "label": { "en": "Apply now", "am": "አሁን ያመልክቱ" },
+                "href": "/#apply"
+              }
             },
             {
               "image": {
@@ -138,7 +153,11 @@
               ],
               "description": { "en": "Subject teachers, a science lab and a computer room, and careful preparation for the Grade 8 exam.", "am": "የየትምህርቱ መምህራን፣ የሳይንስ ቤተ ሙከራና የኮምፒውተር ክፍል፤ ለ8ኛ ክፍል ፈተናም ጥንቃቄ የተሞላ ዝግጅት።" },
               "price": { "amountMinor": 1450000, "currency": "ETB" },
-              "priceNote": { "en": "per term", "am": "በየሩብ ዓመቱ" }
+              "priceNote": { "en": "per term", "am": "በየሩብ ዓመቱ" },
+              "action": {
+                "label": { "en": "Apply now", "am": "አሁን ያመልክቱ" },
+                "href": "/#apply"
+              }
             }
           ],
           "action": {
@@ -148,6 +167,7 @@
         },
         {
           "type": "about",
+          "id": "welcome",
           "eyebrow": { "en": "From the director", "am": "ከርዕሰ መምህርቷ" },
           "heading": { "en": "We teach children, not just lessons", "am": "የምናስተምረው ትምህርትን ብቻ ሳይሆን ልጆችን ነው" },
           "body": { "en": "When we opened with forty children, we promised parents two things: your child will be safe, and your child will be seen. Fourteen years on, we still greet every pupil at the gate each morning.\n\nWe follow the national curriculum and add what we think matters: reading for pleasure, spoken English from kindergarten, and time to play, paint and build.\n\nCome and see a normal school day. That will tell you more than any page can.\n\nW/ro Almaz G., School Director", "am": "በአርባ ልጆች ስንጀምር ለወላጆች ሁለት ቃል ገብተን ነበር፤ ልጅዎ በሰላም ይውላል፣ ልጅዎ ትኩረት ያገኛል። ከአሥራ አራት ዓመት በኋላም ዛሬ እያንዳንዱን ተማሪ በየጠዋቱ በበሩ ላይ እንቀበላለን።\n\nብሔራዊ ሥርዓተ ትምህርቱን እንከተላለን፤ በዚያ ላይ የምናምንባቸውን እንጨምራለን፤ ንባብን መውደድ፣ ከመዋዕለ ሕፃናት ጀምሮ የእንግሊዝኛ ንግግር እና ለጨዋታ፣ ለሥዕልና ለፈጠራ የሚሆን ጊዜ።\n\nመጥተው አንድ መደበኛ የትምህርት ቀን ይመልከቱ። ከማንኛውም ጽሑፍ በላይ ይነግርዎታል።\n\nወ/ሮ አልማዝ ገ.፣ ርዕሰ መምህርት" },
@@ -197,6 +217,7 @@
         },
         {
           "type": "gallery",
+          "id": "life",
           "layout": "mosaic",
           "eyebrow": { "en": "School life", "am": "የትምህርት ቤት ሕይወት" },
           "heading": { "en": "More than the classroom", "am": "ከክፍል ባሻገር" },
@@ -257,6 +278,7 @@
         },
         {
           "type": "testimonials",
+          "id": "parents",
           "eyebrow": { "en": "Parents say", "am": "ወላጆች ምን ይላሉ" },
           "heading": { "en": "Trusted by Adama families", "am": "የአዳማ ቤተሰቦች የሚተማመኑበት" },
           "items": [
@@ -279,6 +301,8 @@
         },
         {
           "type": "faq",
+          "id": "faq",
+          "eyebrow": { "en": "Good to know", "am": "ማወቅ ያለብዎ" },
           "heading": { "en": "Parents often ask", "am": "ወላጆች ብዙ ጊዜ የሚጠይቁት" },
           "items": [
             {

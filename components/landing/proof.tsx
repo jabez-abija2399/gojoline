@@ -1,4 +1,5 @@
 import type { Messages } from "@/lib/i18n";
+import { CountUp } from "./count-up";
 
 /** What we measured on our own test builds: four numbers between hairlines. */
 export function Proof({ t }: { t: Messages["landing"] }) {
@@ -12,7 +13,9 @@ export function Proof({ t }: { t: Messages["landing"] }) {
           {t.proof.map((p, i) => (
             <div key={p.label} className={`reveal flex flex-col-reverse justify-end gap-1 py-8 lg:px-8 lg:first:ps-0 ${i % 2 ? "max-lg:ps-4" : "max-lg:pe-4"} ${i < 2 ? "max-lg:border-b max-lg:border-line" : ""}`}>
               <dt className="text-ink-muted">{p.label}</dt>
-              <dd className="text-4xl display text-ink lg:text-5xl">{p.value}</dd>
+              <dd className="text-4xl display text-ink lg:text-5xl">
+                <CountUp value={p.value} />
+              </dd>
             </div>
           ))}
         </dl>

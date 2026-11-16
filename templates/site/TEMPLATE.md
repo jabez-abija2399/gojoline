@@ -31,16 +31,19 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 
 | `type` | Use for | Key fields |
 | --- | --- | --- |
-| `hero` | Top of a page | `variant` (`split`, `centered`, `banner`, `immersive`, `portrait`), `eyebrow`, `heading`, `subheading`, `image`, `primaryAction`, `secondaryAction`, `facts[]` (up to 4 `value` + `label`, only facts the owner gave) |
-| `about` | Story, mission, a feature with a picture | `eyebrow`, `heading`, `body` (blank line = new paragraph), `image`, `imageSide` (`start`, `end`), `points[]` (a ticked list), `highlights[]` (`value`, `label`), `action` |
-| `cards` | Anything shown as picture cards: rooms, properties, tours, products, dishes, team, projects, programmes | `layout` (`grid`, `feature`, `scroll`, `people`), `items[]` (`image`, `title`, `subtitle`, `description`, `price`, `priceNote`, `badge`, `meta[]`, `action`), `action` |
+| `hero` | Top of a page | `variant` (`split`, `centered`, `banner`, `immersive`, `portrait`), `eyebrow`, `heading`, `subheading`, `image`, `primaryAction`, `secondaryAction`, `facts[]` (up to 4 `value` + `label`, only facts the owner gave; numbers count up), `stamp` (a few words on a turning circle), `frame` (immersive: the photo opens out from a rounded frame), `hours` (split: `false` hides the opening hours beside the picture) |
+| `about` | Story, mission, a feature with a picture | `eyebrow`, `heading`, `body` (blank line = new paragraph), `image`, `imageSide` (`start`, `end`), `imageShape` (`arch`), `points[]` (a ticked list), `highlights[]` (`value`, `label`), `action` |
+| `cards` | Anything shown as picture cards: rooms, properties, tours, products, dishes, team, projects, programmes | `layout` (`grid`, `feature`, `scroll`, `people`, `stack`, `index`), `imageShape` (`arch`), `filters`, `items[]` (`image`, `title`, `subtitle`, `description`, `price`, `priceNote`, `badge`, `meta[]`, `action`), `action` |
 | `menu` | Food, drinks, price lists | `categories[]` with `items[]` (`name`, `description`, `price`, `tag`, `image` for a few signature items) |
-| `services` | What you offer, without pictures: treatments, amenities, departments, reasons to choose you | `variant` (`bento` cards, `list` compact rows, `numbered` 01 02 03), `items[]` (`title`, `description`, `price`, `icon`) |
+| `services` | What you offer, without pictures: treatments, amenities, departments, reasons to choose you | `variant` (`bento` cards, `list` compact rows, `numbered` 01 02 03), `image` (with `list` or `numbered`: a photo that stays beside the list as it scrolls), `items[]` (`title`, `description`, `price`, `icon`) |
 | `stats` | A band of 2 to 4 big numbers (years, guests, students, homes sold). Only numbers the owner gave | `items[]` (`value`, `label`), `tone` (`dark`, `soft`), `heading` |
 | `steps` | How it works, in order: booking, admissions, ordering | `items[]` (`title`, `description`), `action` |
-| `schedule` | Times: service times, prayer times, class times, an event programme, term dates | `layout` (`list`, `tiles`), `items[]` (`time`, `title`, `note`), `footnote` |
-| `quote` | One strong sentence in large type: a mission, a verse, a founder's words | `quote`, `name`, `role`, `image` |
-| `gallery` | Photos | `layout` (`mosaic`, `scroll`), `images[]`, `intro` |
+| `schedule` | Times: service times, prayer times, class times, an event programme, term dates. With `at` on items, the next one is highlighted with a countdown; `dates` shows today's date in Gregorian, Ethiopian and/or Hijri | `layout` (`list`, `tiles`), `items[]` (`time`, `title`, `note`, `at` as "HH:MM" 24 h), `dates` (`gregorian`, `ethiopian`, `hijri`), `footnote` |
+| `quote` | One strong sentence in large type: a mission, a verse, a founder's words. Its words darken one by one as it scrolls in | `quote`, `name`, `role`, `image` |
+| `marquee` | A ribbon of 3 to 8 short words moving slowly across the page, between two sections: places, dishes, promises ("Lalibela ✦ Simien ✦ Danakil") | `items[]`, `tone` (`dark`, `primary`, `light`) |
+| `tabs` | 2 to 6 topics where each tab swaps a picture and a short text: programmes, departments, room types, service days | `items[]` (`label`, `heading`, `body`, `image`, `points[]`, `action`) |
+| `give` | Donations: amount buttons, once or monthly, what each amount does, a goal bar; the button fills in the giving `form` (give the form an `amount` field, and a `frequency` select with "Once"/"Monthly" when `monthly` is on) | `amounts[]` (`price`, `impact`), `monthly`, `action` (to the form, e.g. `#give`; write `{amount}` in its label where the amount goes, e.g. "{amount} ይለግሱ"), `goal` (`raised`, `target`, `label`), `image` |
+| `gallery` | Photos; each opens large in a viewer | `layout` (`mosaic`, `scroll`, `wall`), `images[]`, `intro` |
 | `contact` | Call / Telegram buttons, phone, address, hours (from `business`) | `heading`, `intro` |
 | `map` | Location card that opens the maps app | `heading`, `query` (defaults to the English address) |
 | `testimonials` | Customer quotes (only real ones the owner gave) | `items[]` (`quote`, `name`, `role`) |
@@ -55,7 +58,7 @@ Every section with a title except `stats` and `cta` also takes `eyebrow`: two or
 
 Icons for `services`: coffee, utensils, bed, stethoscope, school, shopping-bag, church, calendar, heart, home, map, scissors, car, star, phone, check, wifi, clock, users, shield, leaf, award, globe, briefcase, camera, music, book, sparkles, truck, key, building, sun, plane, moon, droplet, mail, message, baby, palette, wrench, chart, graduation, pill, flask, mountain, tree, gift, ruler, bath, pin, laptop, handshake, mic, flower, dumbbell, bus.
 
-Cards: `grid` for things to compare (properties, products, programmes; put price, `meta` facts like "3 beds", "120 m²", "8 days" and a `badge` like "For sale"); `feature` for a few things that deserve a large picture each (rooms, projects); `scroll` for a row of tall picture cards to swipe (destinations, experiences, collections); `people` for portraits with a name (`title`) and role (`subtitle`). Give card `action`s a label that says what happens ("Book this room", "Ask about this home").
+Cards: `stack` for 3 or 4 big cards that pile up as the visitor scrolls (rooms, programmes, projects: an impressive centrepiece, one per page); `index` for a list of big titles where the picture follows the mouse on computers (portfolio work, collections); `grid` for things to compare (properties, products, programmes; put price, `meta` facts like "3 beds", "120 m²", "8 days" and a `badge` like "For sale"); `feature` for a few things that deserve a large picture each (rooms, projects); `scroll` for a row of tall picture cards to swipe (destinations, experiences, collections); `people` for portraits with a name (`title`) and role (`subtitle`). Give card `action`s a label that says what happens ("Book this room", "Ask about this home").
 
 ## Drawings (`image.art`)
 
@@ -116,6 +119,20 @@ Sections already animate (gentle reveal on scroll, lift and tilt on cards, a sof
 `theme.style` sets the site's whole character: `warm` (default: soft cards, coloured accents), `editorial` (light serif headlines, small capital labels, lots of air: pair with `elegant` or `classic` and radius `none` or `small`), `bold` (very large heavy headlines, pill buttons: pair with `grotesk` or `modern`), `clean` (crisp and calm with soft shadows: pair with `modern` or `friendly`).
 
 Choose the hero `variant` to fit: `immersive` for a full-screen photo with the words on it (needs a wide photo that is dark or calm in its lower two thirds, where the words sit; never one with faces or bright sky there; the menu sits on the photo), `split` for text beside a photo, `centered` for a strong statement with a wide photo under it, `banner` for words on a tinted photo (inner pages), `portrait` for a person. With 4 or more `services` the first becomes a large feature tile, so put the most important one first. In a `gallery` of 5 or more the first photo is shown large.
+
+## Motion and interaction
+
+Every site moves the way the best sites do, by itself: hero words rise in, the hero photo settles and drifts, photos wipe in, rows arrive one after another, numbers count up, a thin bar shows reading progress, the home page's main button sits in the header on computers, and elegant or bold sites close the footer with the name in large type. All of it respects visitors who ask for less motion and costs almost nothing to load. What you choose:
+
+- One impressive centrepiece per home page: `cards` `stack`, `gallery` `wall`, `cards` `index`, a `tabs` section, or `give` for causes. Don't stack them all on one page.
+- A `marquee` between two sections when the business has short, strong words (places, dishes, values); at most one per page.
+- `quote` for one big sentence; its words darken as the visitor reads.
+- `stamp` on a hero for a short identity line ("Woven by hand · Merkato"): at most one site in three needs it (shops, personal sites, cafés); never on a page that also has a `marquee`. Sites should not all look alike: use few of these extras, chosen for the business.
+- `imageShape: "arch"` for elegant sites (hotels, weddings, worship, salons).
+- A card's `photos[]` (grid cards) are swiped inside the card with a 1/4 counter: several views of a home or room.
+- `announcement` (site level): two or three short lines in a thin moving strip above the menu ("Order on Telegram", "Delivery in Addis").
+- Card `badge`s with two or more kinds give filter pills by themselves ("For sale" / "For rent").
+- Menus with three or more categories get tabs by themselves.
 
 ## Sample photos
 

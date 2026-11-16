@@ -101,22 +101,65 @@ const priceNote = t(
 
 const team = [
   {
-    image: P.braids,
     title: t("Tigist", "ትግስት"),
     subtitle: t("Braids and natural hair", "ሹሩባና የተፈጥሮ ፀጉር"),
     description: t("Neat parts, light hands, no pulling. Monday to Saturday.", "ቀጥ ያለ መስመር፣ ቀላል እጅ፣ ያለ ሕመም። ከሰኞ እስከ ቅዳሜ።"),
   },
   {
-    image: P.barber,
     title: t("Yonas", "ዮናስ"),
     subtitle: t("Barber", "ፀጉር አስተካካይ"),
     description: t("Fades, beards and kids' cuts in the barber corner. Every day.", "ፌድ፣ ፂምና የልጆች ቁርጥ በወንዶች ፀጉር ቤታችን። በየቀኑ።"),
   },
   {
-    image: P.manicure,
     title: t("Bethlehem", "ቤተልሔም"),
     subtitle: t("Nails and henna", "ጥፍርና ሂና"),
     description: t("Gel, manicure, pedicure and bridal henna. Tuesday to Sunday.", "ጄል፣ ማኒኪዩር፣ ፔዲኪዩርና የሙሽራ ሂና። ከማክሰኞ እስከ እሑድ።"),
+  },
+];
+
+// Centrepiece: signature services as cards that pile up while scrolling (Gielly's stacked
+// panels), each with a from-price and duration chips (Kalm's service cards).
+const signature = [
+  {
+    image: P.braids,
+    badge: t("Most booked", "በብዛት የሚያዝ"),
+    subtitle: t("Cornrows, albaso, box and knotless", "ቀጭን ሹሩባ፣ አልባሶ፣ ቦክስና ኖትለስ"),
+    title: t("Braids", "ሹሩባ"),
+    description: t("Neat parts and light hands: we braid without pulling. Come with washed hair, or add a wash here.", "ቀጥ ያለ መስመርና ቀላል እጅ፤ ሳንጎትት እንሠራለን። ፀጉርዎን ታጥበው ይምጡ፤ አሊያም እዚሁ እናጥብልዎታለን።"),
+    meta: [dur("1 to 5 hrs", "ከ1 እስከ 5 ሰዓት"), t("Braiding hair sold here", "የሹሩባ ፀጉር እዚሁ ይገኛል"), t("Lower prices for kids", "ለልጆች ቅናሽ ዋጋ")],
+    price: birr(600),
+    priceNote: t("from", "ጀምሮ"),
+    action: link("Book braids", "ለሹሩባ ቀጠሮ ይያዙ", "/#booking"),
+  },
+  {
+    image: P.curls,
+    subtitle: t("Silk press, curl styling, colour, steam care", "ካውያ፣ የጥቅልል አሠራር፣ ቀለም፣ የእንፋሎት እንክብካቤ"),
+    title: t("Natural hair and colour", "የተፈጥሮ ፀጉርና ቀለም"),
+    description: t("Gentle products for natural hair, and the price agreed before we start, so there are no surprises at the till.", "ለተፈጥሮ ፀጉር ለስላሳ ምርቶች እንጠቀማለን፤ ዋጋውንም ከመጀመራችን በፊት እንስማማለን፤ ስለዚህ ሲከፍሉ አይደነግጡም።"),
+    meta: [t("45 min to 3 hrs", "ከ45 ደቂቃ እስከ 3 ሰዓት"), t("Gentle products", "ለስላሳ ምርቶች")],
+    price: birr(500),
+    priceNote: t("from", "ጀምሮ"),
+    action: link("Book a visit", "ቀጠሮ ይያዙ", "/#booking"),
+  },
+  {
+    image: P.barber,
+    subtitle: t("Cuts, fades, beards and kids' cuts", "ቁርጥ፣ ፌድ፣ ፂምና የልጆች ቁርጥ"),
+    title: t("Barber corner", "የወንዶች ፀጉር ቤት"),
+    description: t("Two chairs with their own door, beside the salon. Walk in any day, or book a time and skip the queue.", "ከሳሎኑ ጎን፣ የራሱ በር ያለው ሁለት ወንበር። በማንኛውም ቀን ይምጡ፤ ወይም ቀጠሮ ይዘው ወረፋ ይለፉ።"),
+    meta: [t("15 to 45 min", "ከ15 እስከ 45 ደቂቃ"), t("Walk in any day", "በማንኛውም ቀን ይምጡ")],
+    price: birr(300),
+    priceNote: t("from", "ጀምሮ"),
+    action: link("See the barber corner", "የወንዶች ፀጉር ቤቱን ይመልከቱ", "/barber"),
+  },
+  {
+    image: P.bride,
+    subtitle: t("Hair, makeup, nails and henna for the day", "ለዕለቱ ፀጉር፣ ሜካፕ፣ ጥፍርና ሂና"),
+    title: t("Brides", "ለሙሽሮች"),
+    description: t("A trial a week before, then the whole morning with you. Inside Addis Ababa we can come to your home.", "ከአንድ ሳምንት በፊት ሙከራ እናደርጋለን፤ በዕለቱም ማለዳውን ሙሉ ከእርስዎ ጋር ነን። በአዲስ አበባ ውስጥ ቤትዎ ድረስ እንመጣለን።"),
+    meta: [t("Trial included", "ሙከራን ጨምሮ"), t("Bridesmaids too", "ለሚዜዎችም")],
+    price: birr(6000),
+    priceNote: t("from", "ጀምሮ"),
+    action: link("Ask about your date", "ስለ ቀንዎ ይጠይቁ", "/#booking"),
   },
 ];
 
@@ -171,6 +214,7 @@ save("salon", {
           type: "hero",
           variant: "immersive",
           eyebrow: t("Haya Hulet · Addis Ababa", "ሃያ ሁለት · አዲስ አበባ"),
+          id: "top",
           heading: t("Hair, done with care", "ለፀጉርዎ የሚገባ እንክብካቤ"),
           subheading: t("Braids, natural hair, colour and nails under one roof, with a barber corner for the men in your life.", "ሹሩባ፣ የተፈጥሮ ፀጉር፣ ቀለምና ጥፍር በአንድ ጣሪያ ሥር፤ ለወንዶችም የራሱ ፀጉር ቤት አለው።"),
           image: P.braiding,
@@ -181,6 +225,20 @@ save("salon", {
             { value: t("300 Br", "300 ብር"), label: t("haircuts from", "የፀጉር ቁርጥ መነሻ") },
             { value: t("7 days", "7 ቀን"), label: t("open every week", "በሳምንት ክፍት") },
           ],
+        },
+        {
+          type: "cards",
+          id: "signature",
+          layout: "stack",
+          eyebrow: t("What we do", "የምንሠራው"),
+          heading: t("Four things we do best", "አሳምረን የምንሠራቸው አራት ነገሮች"),
+          items: signature,
+        },
+        {
+          type: "marquee",
+          id: "words",
+          tone: "dark",
+          items: [t("Braids", "ሹሩባ"), t("Albaso", "አልባሶ"), t("Silk press", "ካውያ"), t("Natural curls", "የተፈጥሮ ጥቅልል"), t("Fades", "ፌድ"), t("Gel nails", "ጄል ጥፍር"), t("Henna", "ሂና")],
         },
         {
           type: "menu",
@@ -197,15 +255,18 @@ save("salon", {
         },
         {
           type: "gallery",
+          id: "looks",
+          layout: "scroll",
           eyebrow: t("Looks", "አሠራሮች"),
           heading: t("Styles we love doing", "ወደን የምንሠራቸው"),
           intro: t("From wash-and-go curls to holiday albaso and wedding mornings.", "ከተፈጥሮ ጥቅልል እስከ የበዓል አልባሶ፣ እስከ ሠርግ ማለዳ።"),
-          images: [P.curls, P.afro, P.kemis, P.bride, P.beard],
+          images: [P.afro, P.kemis, P.manicure, P.beard, P.serum],
         },
         {
           type: "cards",
           id: "team",
           layout: "people",
+          imageShape: "arch",
           eyebrow: t("Your stylists", "ባለሙያዎቻችን"),
           heading: t("Ask for them by name", "በስማቸው ይጠይቁ"),
           intro: t("Each of us does a few things, and does them well.", "እያንዳንዳችን ጥቂት ነገር እንሠራለን፤ እሱንም አሳምረን።"),
@@ -214,6 +275,7 @@ save("salon", {
         },
         {
           type: "testimonials",
+          id: "reviews",
           eyebrow: t("Clients say", "ደንበኞች ምን ይላሉ"),
           heading: t("Why they come back", "ለምን ይመለሳሉ"),
           items: [
@@ -224,6 +286,7 @@ save("salon", {
         },
         {
           type: "about",
+          id: "salon",
           eyebrow: t("The salon", "ስለ ሳሎኑ"),
           heading: t("A calm room above a busy street", "ከሚጨናነቅ መንገድ በላይ፣ ጸጥ ያለ ቤት"),
           body: t(
@@ -232,6 +295,7 @@ save("salon", {
           ),
           image: P.interior,
           imageSide: "end",
+          imageShape: "arch",
           points: [
             t("Tools cleaned and combs changed for every client", "ለእያንዳንዱ ደንበኛ የጸዳ መሣሪያና አዲስ ማበጠሪያ"),
             t("The price agreed before we start", "ከመጀመራችን በፊት የተስማማ ዋጋ"),
@@ -241,9 +305,9 @@ save("salon", {
         },
         bookingForm,
         { type: "contact", id: "contact", heading: t("Call, write or walk in", "ይደውሉ፣ ይጻፉ ወይም ይምጡ"), intro: t("Walk-ins are welcome when a chair is free. For braids and colour, book a day ahead.", "ወንበር ካለ ያለ ቀጠሮም ይስተናገዳሉ። ለሹሩባና ለቀለም ግን ከአንድ ቀን በፊት ቀጠሮ ይያዙ።") },
-        { type: "map", heading: t("Find us in Haya Hulet", "በሃያ ሁለት ያገኙናል"), query: "Haya Hulet, Addis Ababa" },
         {
           type: "cta",
+          id: "end",
           heading: t("Your chair is waiting", "ወንበርዎ እየጠበቀዎ ነው"),
           body: t("Book today, pay at the salon.", "ዛሬ ቀጠሮ ይያዙ፤ ክፍያ በሳሎኑ።"),
           image: P.chair,

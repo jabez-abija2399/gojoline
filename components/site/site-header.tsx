@@ -4,9 +4,10 @@ import type { Locale } from "@/lib/i18n/config";
 import type { Messages } from "@/lib/i18n";
 import { LanguageSwitch } from "./language-switch";
 import { PhoneMenu } from "./phone-menu";
+import { looksSignedIn } from "@/lib/auth/signed-in";
 
 /** `nav` is the marketing pages' floating bar: Templates, How it works, Prices, Sign in. */
-export function SiteHeader({ locale, t, nav = false, current }: { locale: Locale; t: Messages; nav?: boolean; current?: "templates" | "pricing" }) {
+export async function SiteHeader({ locale, t, nav = false, current }: { locale: Locale; t: Messages; nav?: boolean; current?: "templates" | "pricing" }) {
   const other: Locale = locale === "en" ? "am" : "en";
   const logo = (
     <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 items-center rounded-md">
@@ -14,7 +15,10 @@ export function SiteHeader({ locale, t, nav = false, current }: { locale: Locale
     </Link>
   );
   const language = <LanguageSwitch target={other} label={t.common.languageSwitch} ariaLabel={t.common.languageSwitchLabel} />;
-  const signIn = `/${locale}/sign-in?next=/${locale}/build`;
+  // Signed in already: every way in goes to the owner's sites instead of the sign-in page.
+  const signedIn = await looksSignedIn();
+  const signIn = signedIn ? `/${locale}/build` : `/${locale}/sign-in?next=/${locale}/build`;
+  const startLabel = signedIn ? t.landing.nav.mySites : t.landing.nav.start;
   const links = [
     { href: `/${locale}/templates`, label: t.landing.nav.templates, key: "templates" },
     { href: `/${locale}#how`, label: t.landing.nav.how, key: "how" },
@@ -34,12 +38,14 @@ export function SiteHeader({ locale, t, nav = false, current }: { locale: Locale
             ))}
           </nav>
           <div className="flex items-center gap-1">
-            <Link href={signIn} className="inline-flex min-h-11 items-center rounded-full px-3 font-medium text-ink hover:bg-sunken max-md:hidden">
-              {t.landing.nav.signIn}
-            </Link>
+            {!signedIn && (
+              <Link href={signIn} className="inline-flex min-h-11 items-center rounded-full px-3 font-medium text-ink hover:bg-sunken max-md:hidden">
+                {t.landing.nav.signIn}
+              </Link>
+            )}
             <span className="[&>a]:rounded-full [&>a]:border-0 [&>a]:px-3 [&>a]:hover:bg-sunken">{language}</span>
             <Link href={signIn} className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 font-medium text-white hover:bg-ink-hover max-md:hidden">
-              {t.landing.nav.start}
+              {startLabel}
             </Link>
             {/* Phones: the page links and Sign in live behind one button. */}
             <PhoneMenu
@@ -53,13 +59,13 @@ export function SiteHeader({ locale, t, nav = false, current }: { locale: Locale
               }
             >
               <nav aria-label={t.landing.nav.label} className="absolute end-0 top-full mt-3 flex w-60 flex-col gap-1 rounded-3xl border border-line bg-white p-2 shadow-xl">
-                {[...links, { href: signIn, label: t.landing.nav.signIn, key: "signin" }].map((l) => (
+                {[...links, ...(signedIn ? [] : [{ href: signIn, label: t.landing.nav.signIn, key: "signin" }])].map((l) => (
                   <Link key={l.key} href={l.href} aria-current={current === l.key ? "page" : undefined} className="flex min-h-11 items-center rounded-full px-4 font-medium text-ink hover:bg-sunken aria-[current=page]:bg-sunken">
                     {l.label}
                   </Link>
                 ))}
                 <Link href={signIn} className="flex min-h-11 items-center justify-center rounded-full bg-ink px-4 font-semibold text-white hover:bg-ink-hover">
-                  {t.landing.nav.start}
+                  {startLabel}
                 </Link>
               </nav>
             </PhoneMenu>
