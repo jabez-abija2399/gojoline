@@ -86,6 +86,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- e2e: `builder.spec.ts` "dark mode: chosen in the account menu…" on the phone project times out opening the account menu about one run in five, on `main` too (2026-11-16); passes on retry. Not yet traced.
 - e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
 - Site dashboard: a visitors count needs privacy-friendly visit counting on published sites (not built; no number is shown until it exists). A QR code of the site's address to print for the shop would suit owners well.
 - The Answers tab still reads 200 full answers and each form one after another; a `formHeadings` query would make it and the overview lighter (performance review).
