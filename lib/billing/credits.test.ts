@@ -137,6 +137,24 @@ describe("multi-change debits", () => {
     expect(await store.balance("u")).toBe(9);
   }, 30_000);
 
+  it("Postgres: parallel refunds never pass the daily cap", async () => {
+    const db = await testDb();
+    await makeUser(db, "u");
+    const store = new DbBillingStore(db);
+    const b = new Billing(store, () => new Date("2026-11-14T10:00:00Z"));
+    await store.addCredits("u", 40, "admin", "gift");
+    for (let i = 0; i < 6; i++) await b.consumeEdit("u", `x${i}`, 4);
+    const before = await store.balance("u");
+    const given = await Promise.all(Array.from({ length: 6 }, (_, i) => b.refundEdit("u", `x${i}`, 4)));
+    expect(given.filter(Boolean)).toHaveLength(3);
+    expect((await store.balance("u")) - before).toBe(REFUND_CREDITS_PER_DAY);
+    expect(await store.sumSince("u", ["refund"], new Date(0))).toBe(REFUND_CREDITS_PER_DAY);
+    // A new day starts a new cap.
+    const tomorrow = new Billing(store, () => new Date("2026-11-15T10:00:00Z"));
+    await tomorrow.consumeEdit("u", "y", 4);
+    expect(await tomorrow.refundEdit("u", "y", 4)).toBe(true);
+  }, 30_000);
+
   it("refunds at most REFUND_CREDITS_PER_DAY changes a day", async () => {
     const store = new MemoryBillingStore();
     const b = new Billing(store, () => new Date("2026-11-14T10:00:00Z"));

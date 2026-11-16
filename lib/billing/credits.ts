@@ -31,7 +31,7 @@ export const creditSettingsSchema = z
       .object({ small: int(1, 10), medium: int(1, 20), large: int(1, 50) })
       .strict()
       .refine((s) => s.small <= s.medium && s.medium <= s.large, { message: "order", path: ["medium"] }),
-    capCentsPerCredit: int(1, 500),
+    capCentsPerCredit: int(1, 100),
   })
   .strict();
 export type CreditSettings = z.infer<typeof creditSettingsSchema>;

@@ -16,6 +16,7 @@ const code = (over: Partial<DiscountCode> = {}): DiscountCode => ({
   uses: 0,
   expiresAt: null,
   firstPaymentOnly: false,
+  perCustomerOnce: false,
   active: true,
   createdAt: now,
   ...over,
@@ -54,9 +55,9 @@ describe("discount maths", () => {
   });
 
   it("validates admin input", () => {
-    const base = { code: " launch20 ", kind: "percent", percentOff: 20, amountOffMinor: null, products: ["topup"], maxUses: null, expiresAt: null, firstPaymentOnly: false };
+    const base = { code: " launch20 ", kind: "percent", percentOff: 20, amountOffMinor: null, products: ["topup"], maxUses: null, expiresAt: null, firstPaymentOnly: false, perCustomerOnce: true };
     expect(discountInputSchema.parse(base).code).toBe("LAUNCH20");
-    for (const bad of [{ code: "AB" }, { code: "BAD-CODE" }, { percentOff: 95 }, { percentOff: 0 }, { kind: "amount" }, { kind: "amount", percentOff: null, amountOffMinor: 1_050 }, { products: [] }, { products: ["topup", "topup"] }, { maxUses: 0 }]) {
+    for (const bad of [{ code: "AB" }, { code: "ABCDE" }, { code: "BAD-CODE" }, { percentOff: 95 }, { percentOff: 0 }, { kind: "amount" }, { kind: "amount", percentOff: null, amountOffMinor: 1_050 }, { products: [] }, { products: ["topup", "topup"] }, { maxUses: 0 }]) {
       expect(discountInputSchema.safeParse({ ...base, ...bad }).success, JSON.stringify(bad)).toBe(false);
     }
     expect(discountInputSchema.safeParse({ ...base, kind: "amount", percentOff: null, amountOffMinor: 5_000 }).success).toBe(true);
@@ -67,7 +68,7 @@ async function codesFlow(store: BillingStore, users: [string, string]) {
   const settings = new MemorySettingsStore();
   const b = new Billing(store, () => now, settings);
   const [alice, bob] = users;
-  const input = { code: "FIRST50", kind: "percent" as const, percentOff: 50, amountOffMinor: null, products: ["starter_month" as const], maxUses: 1, expiresAt: null, firstPaymentOnly: true };
+  const input = { code: "FIRST50", kind: "percent" as const, percentOff: 50, amountOffMinor: null, products: ["starter_month" as const], maxUses: 1, expiresAt: null, firstPaymentOnly: true, perCustomerOnce: true };
   expect(await b.createDiscount("admin", input)).toMatchObject({ code: "FIRST50", uses: 0, active: true });
   expect(await b.createDiscount("admin", input)).toBeNull();
 
@@ -113,13 +114,14 @@ describe("discount codes on payments", () => {
     await makeUser(db, "carol");
     const store = new DbBillingStore(db);
     const b = new Billing(store, () => now, new MemorySettingsStore());
-    const made = await b.createDiscount("admin", { code: "WELCOME", kind: "amount", percentOff: null, amountOffMinor: 10_000, products: ["topup", "starter_month"], maxUses: null, expiresAt: null, firstPaymentOnly: true });
+    const made = await b.createDiscount("admin", { code: "WELCOME", kind: "amount", percentOff: null, amountOffMinor: 10_000, products: ["topup", "starter_month"], maxUses: null, expiresAt: null, firstPaymentOnly: true, perCustomerOnce: true });
     const first = await b.submitPayment("carol", { product: "topup", method: "cbe", reference: "FT100001", receipt: null });
     if (!first.ok) throw new Error("submit failed");
     await b.review("admin", first.payment.id, "approve", null);
     expect(await b.quote("carol", "starter_month", "welcome")).toEqual({ ok: false, error: "first_only" });
     await b.setDiscountActive("admin", made!.id, false);
-    expect(await b.quote("carol", "starter_month", "welcome")).toEqual({ ok: false, error: "inactive" });
+    // Switched-off codes read like unknown ones to customers (no guessing which codes exist).
+    expect(await b.quote("carol", "starter_month", "welcome")).toEqual({ ok: false, error: "not_found" });
     expect((await store.discounts()).map((d) => [d.code, d.active])).toEqual([["WELCOME", false]]);
     expect((await store.auditFor("discount", made!.id)).map((x) => x.action)).toEqual(["discount.created", "discount.deactivated"]);
   }, 30_000);
@@ -134,4 +136,58 @@ describe("discount codes on payments", () => {
     expect(p.ok && p.payment).toMatchObject({ amountMinor: 116_900, originalAmountMinor: 129_900, discountSource: "offer", discountCode: null });
     expect((await store.auditFor("settings", "offer"))[0]?.action).toBe("settings.offer");
   });
+});
+
+describe("code rules at approval", () => {
+  async function setup() {
+    const db = await testDb();
+    await makeUser(db, "dan");
+    await makeUser(db, "eve");
+    const store = new DbBillingStore(db);
+    let clock = now;
+    const b = new Billing(store, () => clock, new MemorySettingsStore());
+    const make = (over: Partial<Parameters<Billing["createDiscount"]>[1]> = {}) =>
+      b.createDiscount("admin", { code: "SAVE10X", kind: "percent", percentOff: 10, amountOffMinor: null, products: ["topup"], maxUses: null, expiresAt: null, firstPaymentOnly: false, perCustomerOnce: true, ...over });
+    const pay = async (user: string, ref: string, code = "SAVE10X") => {
+      const r = await b.submitPayment(user, { product: "topup", method: "cbe", reference: ref, receipt: null, code });
+      if (!r.ok) throw new Error(r.error);
+      return r.payment;
+    };
+    return { b, store, make, pay, setClock: (d: Date) => (clock = d) };
+  }
+
+  it("a code switched off after sending keeps the payment pending, uses nothing", async () => {
+    const { b, store, make, pay } = await setup();
+    const code = await make();
+    const p = await pay("dan", "OFF00001");
+    await b.setDiscountActive("admin", code!.id, false);
+    expect(await b.review("admin", p.id, "approve", null)).toBe("discount_unavailable");
+    expect((await store.payment(p.id))?.status).toBe("pending");
+    expect((await store.discountByCode("SAVE10X"))?.uses).toBe(0);
+  }, 30_000);
+
+  it("a code that ended before the payment was sent isn't counted; one that ends after still is", async () => {
+    const { b, make, pay, setClock } = await setup();
+    await make({ expiresAt: new Date("2026-11-21T00:00:00Z") });
+    const p = await pay("dan", "END00001");
+    setClock(new Date("2026-11-25T00:00:00Z"));
+    expect(await b.review("admin", p.id, "approve", null)).toBe("ok");
+    expect(await b.quote("eve", "topup", "SAVE10X")).toEqual({ ok: false, error: "not_found" });
+  }, 30_000);
+
+  it("once per customer: checked when quoting and again atomically when approving", async () => {
+    const { b, store, make, pay } = await setup();
+    await make();
+    const first = await pay("dan", "ONE00001");
+    const second = await pay("dan", "ONE00002");
+    expect(await b.review("admin", first.id, "approve", null)).toBe("ok");
+    expect(await b.review("admin", second.id, "approve", null)).toBe("discount_unavailable");
+    expect(await b.quote("dan", "topup", "save10x")).toEqual({ ok: false, error: "already_used" });
+    // Another customer can still use it; a code made for repeat use works again.
+    expect((await b.quote("eve", "topup", "SAVE10X")).ok).toBe(true);
+    await make({ code: "AGAIN10", perCustomerOnce: false });
+    expect(await b.review("admin", (await pay("dan", "AGN00001", "AGAIN10")).id, "approve", null)).toBe("ok");
+    expect(await b.review("admin", (await pay("dan", "AGN00002", "AGAIN10")).id, "approve", null)).toBe("ok");
+    expect((await store.discountByCode("AGAIN10"))?.uses).toBe(2);
+  }, 30_000);
 });

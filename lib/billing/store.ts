@@ -68,6 +68,12 @@ export interface BillingStore {
    * are left or this ref was already charged.
    */
   debit(userId: string, ref: string, n?: number, meta?: LedgerMeta): Promise<boolean>;
+  /**
+   * Gives back up to `n` changes for a failed request, atomically within the daily cap: the
+   * day's refunds are counted on the balance row in the same update (parallel refunds can't
+   * pass the cap). Returns how many were given (0 when the cap is reached or the ref was refunded).
+   */
+  refund(userId: string, ref: string, n: number, cap: number, day: string, meta?: LedgerMeta): Promise<number>;
   /** The owner's credit movements, newest first. */
   ledger(userId: string, limit: number, offset: number): Promise<LedgerEntry[]>;
   /** Ledger entries of this kind since the given time (e.g. refunds today). */
@@ -85,16 +91,19 @@ export interface BillingStore {
   createPayment(p: NewPayment): Promise<Payment | null>;
   /** True when the user has an approved payment (other than `exceptId`). */
   hasApprovedPayment(userId: string, exceptId?: string): Promise<boolean>;
+  /** True when the user has an approved payment that used this code. */
+  hasUsedCode(userId: string, code: string): Promise<boolean>;
   discountByCode(code: string): Promise<DiscountCode | null>;
   /** Null when the code already exists. */
   createDiscount(input: Omit<DiscountInput, "kind">, by: string): Promise<DiscountCode | null>;
   discounts(): Promise<DiscountCode[]>;
   setDiscountActive(id: string, active: boolean): Promise<DiscountCode | null>;
   /**
-   * Counts one use of a code for an approved payment, atomically: false when its uses are
-   * already at the maximum, or it is for first payments and the user already has another approved one.
+   * Counts one use of a code for an approved payment, atomically: false when the code is
+   * switched off, ended before the payment was sent, at its maximum uses, for first payments
+   * and the user has another approved one, or once per customer and the user already used it.
    */
-  useDiscount(code: string, userId: string, paymentId: string): Promise<boolean>;
+  useDiscount(code: string, userId: string, paymentId: string, paymentCreatedAt: Date): Promise<boolean>;
   /** Gives a use back (approving the payment failed after the use was counted). */
   releaseDiscountUse(code: string): Promise<void>;
   paymentsFor(userId: string): Promise<Payment[]>;
@@ -111,6 +120,7 @@ export class MemoryBillingStore implements BillingStore {
   private subs = new Map<string, Subscription>();
   private rows: { userId: string; delta: number; reason: LedgerReason; ref: string; at: Date; size: RequestSize | null; note: string | null }[] = [];
   private codes: DiscountCode[] = [];
+  private refunded = new Map<string, { day: string; used: number }>();
   private pays: (Payment & { receipt: Buffer | null })[] = [];
   private log: { actorId: string; action: string; targetType: string; targetId: string; data: Record<string, unknown> | null; createdAt: Date }[] = [];
 
@@ -135,6 +145,16 @@ export class MemoryBillingStore implements BillingStore {
     if (bal < n || this.rows.some((l) => l.userId === userId && l.reason === "ai_edit" && l.ref === ref)) return false;
     this.rows.push({ userId, delta: -n, reason: "ai_edit", ref, at: new Date(), size: meta.size ?? null, note: meta.note ?? null });
     return true;
+  }
+  async refund(userId: string, ref: string, n: number, cap: number, day: string, meta: LedgerMeta = {}) {
+    // Single-threaded: the check and the write happen without an await in between.
+    const r = this.refunded.get(userId);
+    const used = r?.day === day ? r.used : 0;
+    const give = Math.min(n, cap - used);
+    if (give < 1 || this.rows.some((l) => l.userId === userId && l.reason === "refund" && l.ref === ref)) return 0;
+    this.rows.push({ userId, delta: give, reason: "refund", ref, at: new Date(), size: meta.size ?? null, note: meta.note ?? null });
+    this.refunded.set(userId, { day, used: used + give });
+    return give;
   }
   async ledger(userId: string, limit: number, offset: number) {
     return this.rows
@@ -175,6 +195,9 @@ export class MemoryBillingStore implements BillingStore {
   async hasApprovedPayment(userId: string, exceptId?: string) {
     return this.pays.some((p) => p.userId === userId && p.status === "approved" && p.id !== exceptId);
   }
+  async hasUsedCode(userId: string, code: string) {
+    return this.pays.some((p) => p.userId === userId && p.status === "approved" && p.discountSource === "code" && p.discountCode === code);
+  }
   async discountByCode(code: string) {
     const c = this.codes.find((x) => x.code === code);
     return c ? { ...c } : null;
@@ -194,11 +217,13 @@ export class MemoryBillingStore implements BillingStore {
     c.active = active;
     return { ...c };
   }
-  async useDiscount(code: string, userId: string, paymentId: string) {
+  async useDiscount(code: string, userId: string, paymentId: string, paymentCreatedAt: Date) {
     // Single-threaded: the checks and the count happen without an await in between.
     const c = this.codes.find((x) => x.code === code);
-    if (!c || (c.maxUses !== null && c.uses >= c.maxUses)) return false;
-    if (c.firstPaymentOnly && this.pays.some((p) => p.userId === userId && p.status === "approved" && p.id !== paymentId)) return false;
+    if (!c || !c.active || (c.expiresAt && c.expiresAt <= paymentCreatedAt) || (c.maxUses !== null && c.uses >= c.maxUses)) return false;
+    const others = this.pays.filter((p) => p.userId === userId && p.status === "approved" && p.id !== paymentId);
+    if (c.firstPaymentOnly && others.length) return false;
+    if (c.perCustomerOnce && others.some((p) => p.discountSource === "code" && p.discountCode === code)) return false;
     c.uses += 1;
     return true;
   }
@@ -310,6 +335,32 @@ export class DbBillingStore implements BillingStore {
       throw error;
     }
   }
+  async refund(userId: string, ref: string, n: number, cap: number, day: string, meta: LedgerMeta = {}) {
+    if (!Number.isInteger(n) || n < 1) return 0;
+    // The balance row is locked by the update, and its WHERE and SET are re-checked against the
+    // newest row when refunds race, so the day's total can't pass the cap.
+    const used = sql`(case when credit_balances.refund_day = ${day}::date then credit_balances.refund_used else 0 end)`;
+    const give = sql`least(${n}::int, ${cap}::int - ${used})`;
+    try {
+      const rows = await this.db.execute(sql`
+        with upd as (
+          update credit_balances set
+            refund_last = ${give},
+            refund_used = ${used} + ${give},
+            refund_day = ${day}::date,
+            balance = credit_balances.balance + ${give}
+          where user_id = ${userId} and ${used} < ${cap}::int
+            and not exists (select 1 from credit_ledger where user_id = ${userId} and reason = 'refund' and ref = ${ref})
+          returning user_id, refund_last
+        )
+        insert into credit_ledger (user_id, delta, reason, ref, size, note) select user_id, refund_last, 'refund', ${ref}, ${meta.size ?? null}, ${meta.note ?? null} from upd
+        returning delta`);
+      return Number((rowsOf(rows)[0] as { delta?: number } | undefined)?.delta ?? 0);
+    } catch (error) {
+      if (isUniqueViolation(error)) return 0;
+      throw error;
+    }
+  }
   async ledger(userId: string, limit: number, offset: number) {
     const rows = await this.db
       .select({ delta: creditLedger.delta, reason: creditLedger.reason, size: creditLedger.size, note: creditLedger.note, createdAt: creditLedger.createdAt })
@@ -375,6 +426,14 @@ export class DbBillingStore implements BillingStore {
       .returning(paymentCols);
     return (rows[0] as Payment | undefined) ?? null;
   }
+  async hasUsedCode(userId: string, code: string) {
+    const [row] = await this.db
+      .select({ id: payments.id })
+      .from(payments)
+      .where(and(eq(payments.userId, userId), eq(payments.status, "approved"), eq(payments.discountSource, "code"), eq(payments.discountCode, code)))
+      .limit(1);
+    return !!row;
+  }
   async hasApprovedPayment(userId: string, exceptId?: string) {
     const conds = [eq(payments.userId, userId), eq(payments.status, "approved")];
     if (exceptId) conds.push(ne(payments.id, exceptId));
@@ -400,14 +459,19 @@ export class DbBillingStore implements BillingStore {
     const [row] = await this.db.update(discountCodes).set({ active }).where(eq(discountCodes.id, id)).returning();
     return row ? toDiscount(row) : null;
   }
-  async useDiscount(code: string, userId: string, paymentId: string) {
+  async useDiscount(code: string, userId: string, paymentId: string, paymentCreatedAt: Date) {
     // One statement: the row lock serializes concurrent approvals, each re-checking uses < max_uses.
     const rows = await this.db.execute(sql`
       update discount_codes set uses = uses + 1
       where code = ${code}
+        and active
+        and (expires_at is null or expires_at > ${paymentCreatedAt.toISOString()}::timestamptz)
         and (max_uses is null or uses < max_uses)
         and (not first_payment_only or not exists (
           select 1 from payments where user_id = ${userId} and status = 'approved' and id <> ${paymentId}::uuid
+        ))
+        and (not per_customer_once or not exists (
+          select 1 from payments where user_id = ${userId} and status = 'approved' and discount_source = 'code' and discount_code = ${code} and id <> ${paymentId}::uuid
         ))
       returning 1 as ok`);
     return rowsOf(rows).length === 1;

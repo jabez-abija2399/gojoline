@@ -1,5 +1,5 @@
 {
-  "id": "355fd4c2-e358-4e8e-aad8-99b6830650ff",
+  "id": "7cdacaa2-daf0-4a01-bc5d-ee978dcd7e46",
   "prevId": "c3c1f393-b426-45c3-a31b-94aa9a263951",
   "version": "7",
   "dialect": "postgresql",
@@ -565,6 +565,26 @@
           "primaryKey": false,
           "notNull": true,
           "default": 0
+        },
+        "refund_day": {
+          "name": "refund_day",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refund_used": {
+          "name": "refund_used",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "refund_last": {
+          "name": "refund_last",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         }
       },
       "indexes": {},
@@ -775,6 +795,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": false
+        },
+        "per_customer_once": {
+          "name": "per_customer_once",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
         },
         "active": {
           "name": "active",

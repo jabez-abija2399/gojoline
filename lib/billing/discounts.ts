@@ -14,11 +14,14 @@ export interface DiscountCode {
   uses: number;
   expiresAt: Date | null;
   firstPaymentOnly: boolean;
+  /** Each customer can use it once (approved payments count). */
+  perCustomerOnce: boolean;
   active: boolean;
   createdAt: Date;
 }
 
-export const CODE_PATTERN = /^[A-Z0-9]{3,20}$/;
+/** At least 6 characters, so codes can't be guessed by trying short ones. */
+export const CODE_PATTERN = /^[A-Z0-9]{6,20}$/;
 
 /** Codes are typed in any case, with stray spaces; stored and compared in upper case. */
 export function normalizeCode(raw: string): string {
@@ -38,6 +41,7 @@ export const discountInputSchema = z
     maxUses: z.number().int().min(1).max(100_000).nullable(),
     expiresAt: z.date().nullable(),
     firstPaymentOnly: z.boolean(),
+    perCustomerOnce: z.boolean(),
   })
   .strict()
   .refine((d) => (d.kind === "percent" ? d.percentOff !== null && d.amountOffMinor === null : d.amountOffMinor !== null && d.percentOff === null), { path: ["kind"] });
@@ -81,17 +85,26 @@ export function discounted(baseMinor: number, offMinor: number): { finalMinor: n
 /** Santim off for a percentage, in integers only (the final price is rounded later). */
 export const percentOffMinor = (baseMinor: number, percent: number) => Math.floor((baseMinor * percent) / 100);
 
-export type CodeProblem = "not_found" | "inactive" | "expired" | "product" | "used_up" | "first_only";
+export type CodeProblem = "not_found" | "inactive" | "expired" | "product" | "used_up" | "first_only" | "already_used";
 
-/** Whether a code can be used for this product now; null when it can. */
-export function codeProblem(code: DiscountCode | null, product: Product, now: Date, hasApprovedPayment: boolean): CodeProblem | null {
+/**
+ * Whether a code can be used for this product now; null when it can. `usedByCustomer`: this
+ * customer already has an approved payment with the code.
+ */
+export function codeProblem(code: DiscountCode | null, product: Product, now: Date, hasApprovedPayment: boolean, usedByCustomer = false): CodeProblem | null {
   if (!code) return "not_found";
   if (!code.active) return "inactive";
   if (code.expiresAt && code.expiresAt <= now) return "expired";
   if (!code.products.includes(product)) return "product";
   if (code.maxUses !== null && code.uses >= code.maxUses) return "used_up";
   if (code.firstPaymentOnly && hasApprovedPayment) return "first_only";
+  if (code.perCustomerOnce && usedByCustomer) return "already_used";
   return null;
+}
+
+/** What the customer is told: unknown, switched-off and ended codes all read "not found" (no guessing which exist). */
+export function publicCodeProblem(p: CodeProblem): CodeProblem {
+  return p === "inactive" || p === "expired" ? "not_found" : p;
 }
 
 export interface Quote {

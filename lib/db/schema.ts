@@ -1,4 +1,4 @@
-import { bigint, boolean, customType, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { bigint, boolean, customType, date, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
@@ -319,6 +319,11 @@ export const creditBalances = pgTable("credit_balances", {
     .primaryKey()
     .references(() => user.id, { onDelete: "cascade" }),
   balance: integer("balance").notNull().default(0),
+  /** Changes given back today (refund_day, UTC), so the daily refund cap is checked in the same atomic update. */
+  refundDay: date("refund_day", { mode: "string" }),
+  refundUsed: integer("refund_used").notNull().default(0),
+  /** What the last refund gave (read back by the same statement that wrote it). */
+  refundLast: integer("refund_last").notNull().default(0),
 });
 
 /** Manual Birr payments (Telebirr / bank transfer) waiting for or after admin review. */
@@ -412,6 +417,8 @@ export const discountCodes = pgTable("discount_codes", {
   uses: integer("uses").notNull().default(0),
   expiresAt: timestamp("expires_at", { withTimezone: true }),
   firstPaymentOnly: boolean("first_payment_only").notNull().default(false),
+  /** Each customer can use the code once (on by default). */
+  perCustomerOnce: boolean("per_customer_once").notNull().default(true),
   active: boolean("active").notNull().default(true),
   createdBy: text("created_by").notNull(),
   createdAt: createdAt(),

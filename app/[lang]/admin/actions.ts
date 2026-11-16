@@ -186,6 +186,7 @@ export async function createDiscountCode(_prev: DiscountState, form: FormData): 
     maxUses: rawMax ? whole(rawMax) : null,
     expiresAt: date && !Number.isNaN(date.getTime()) ? date : date ? "bad" : null,
     firstPaymentOnly: form.get("firstPaymentOnly") === "on",
+    perCustomerOnce: form.get("perCustomerOnce") === "on",
   });
   if (!parsed.success) {
     const f = String(parsed.error.issues[0]?.path[0] ?? "");

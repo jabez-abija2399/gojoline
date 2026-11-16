@@ -1,6 +1,6 @@
 import type { Entitlements, EntitlementsResolver } from "./entitlements";
 import { nextMonthlyGrant, type CreditSettings } from "./credits";
-import { CODE_PATTERN, codeProblem, normalizeCode, quote, type CodeProblem, type DiscountCode, type DiscountInput, type LaunchOffer, type Quote } from "./discounts";
+import { CODE_PATTERN, codeProblem, publicCodeProblem, normalizeCode, quote, type CodeProblem, type DiscountCode, type DiscountInput, type LaunchOffer, type Quote } from "./discounts";
 import { entitlementsOf, PLAN_FEATURES, PRODUCTS, type Product } from "./plans";
 import { loadBillingSettings, loadCreditSettings, loadLaunchOffer, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
 import { randomUUID } from "node:crypto";
@@ -72,7 +72,7 @@ export class Billing {
   /** A new discount code; null when the code already exists. Audited. */
   async createDiscount(adminId: string, input: DiscountInput): Promise<DiscountCode | null> {
     // The kind only chooses which amount is set; the store keeps the amounts.
-    const rest = { code: input.code, percentOff: input.percentOff, amountOffMinor: input.amountOffMinor, products: input.products, maxUses: input.maxUses, expiresAt: input.expiresAt, firstPaymentOnly: input.firstPaymentOnly };
+    const rest = { code: input.code, percentOff: input.percentOff, amountOffMinor: input.amountOffMinor, products: input.products, maxUses: input.maxUses, expiresAt: input.expiresAt, firstPaymentOnly: input.firstPaymentOnly, perCustomerOnce: input.perCustomerOnce };
     const created = await this.db.createDiscount(rest, adminId);
     if (created) await this.db.audit({ actorId: adminId, action: "discount.created", targetType: "discount", targetId: created.id, data: { ...rest, expiresAt: rest.expiresAt?.toISOString() ?? null } });
     return created;
@@ -139,12 +139,8 @@ export class Billing {
    * REFUND_CREDITS_PER_DAY changes a day; past that, only what is left of the day's cap.
    */
   async refundEdit(userId: string, ref: string, n = 1, meta: LedgerMeta = {}): Promise<boolean> {
-    const today = new Date(this.now());
-    today.setUTCHours(0, 0, 0, 0);
-    const room = REFUND_CREDITS_PER_DAY - (await this.db.sumSince(userId, ["refund"], today));
-    const give = Math.min(n, room);
-    if (give < 1) return false;
-    return this.db.addCredits(userId, give, "refund", ref, meta);
+    const day = this.now().toISOString().slice(0, 10);
+    return (await this.db.refund(userId, ref, n, REFUND_CREDITS_PER_DAY, day, meta)) > 0;
   }
 
   /** Plan, changes left, and what the Plan page explains about them. */
@@ -224,8 +220,12 @@ export class Billing {
     const typed = rawCode ? normalizeCode(rawCode) : "";
     if (typed) {
       code = CODE_PATTERN.test(typed) ? await this.db.discountByCode(typed) : null;
-      const problem = codeProblem(code, product, now, code?.firstPaymentOnly ? await this.db.hasApprovedPayment(userId) : false);
-      if (problem) return { ok: false, error: problem };
+      const [paidBefore, usedBefore] = await Promise.all([
+        code?.firstPaymentOnly ? this.db.hasApprovedPayment(userId) : false,
+        code?.perCustomerOnce ? this.db.hasUsedCode(userId, code.code) : false,
+      ]);
+      const problem = codeProblem(code, product, now, paidBefore, usedBefore);
+      if (problem) return { ok: false, error: publicCodeProblem(problem) };
     }
     return { ok: true, quote: quote(product, prices[product], { offer, code, now }) };
   }
@@ -260,7 +260,7 @@ export class Billing {
       if (code) {
         let usable: boolean;
         try {
-          usable = await this.db.useDiscount(code, payment.userId, paymentId);
+          usable = await this.db.useDiscount(code, payment.userId, paymentId, payment.createdAt);
         } catch (error) {
           await this.db.unreview(paymentId);
           throw error;
