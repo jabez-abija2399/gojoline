@@ -560,7 +560,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 <li key={c.id} className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="font-mono text-lg font-semibold">{c.code}</p>
-                    <span className={`rounded-full px-3 py-1 text-sm font-semibold ${c.active ? "bg-sunken text-ink" : "border border-line bg-white text-ink-muted"}`}>{c.active ? t.admin.codeActive : t.admin.codeInactive}</span>
+                    <span className={`rounded-full px-3 py-1 text-sm font-semibold ${c.active ? "bg-sunken text-ink" : "border border-line bg-white text-ink-muted"}`}>{c.active ? t.admin.codeActive : t.admin.codeInactive}<span className="sr-only">, {c.code}</span></span>
                   </div>
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
                     <div><dt className="text-ink-muted">{t.admin.colDiscount}</dt><dd className="font-semibold">{c.percentOff !== null ? format(t.admin.percentOff, { n: c.percentOff }) : format(t.admin.birrOff, { n: amount(c.amountOffMinor ?? 0) })}</dd></div>
@@ -568,7 +568,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                     <div><dt className="text-ink-muted">{t.admin.colLastDay}</dt><dd className="font-semibold">{c.expiresAt ? dayFmt.format(c.expiresAt) : t.admin.noEnd}</dd></div>
                     <div><dt className="text-ink-muted">{t.admin.codeProducts}</dt><dd>{c.products.map((p) => names[p]).join(", ")}</dd></div>
                   </dl>
-                  {c.firstPaymentOnly && <p className="text-sm text-ink-muted">{t.admin.firstOnly}</p>}
+                  {(c.firstPaymentOnly || c.perCustomerOnce) && <p className="text-sm text-ink-muted">{[c.perCustomerOnce ? t.admin.codePerCustomer : "", c.firstPaymentOnly ? t.admin.firstOnly : ""].filter(Boolean).join(" · ")}</p>}
                   <form action={toggleDiscountCode}>
                     <input type="hidden" name="lang" value={lang} />
                     <input type="hidden" name="id" value={c.id} />

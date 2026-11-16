@@ -126,9 +126,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   }, []);
 
   const send = useCallback(
-    async (text: string, languages: SiteLanguages, confirmSize?: PendingConfirm["size"]) => {
+    async (text: string, languages: SiteLanguages, confirmed?: { size: PendingConfirm["size"]; cost: number }) => {
       // Going ahead with a bigger request: its message is already in the chat.
-      if (!confirmSize) setMessages((m) => [...m, { id: nextId(), role: "owner", text }]);
+      if (!confirmed) setMessages((m) => [...m, { id: nextId(), role: "owner", text }]);
       setConfirm(null);
       setWorking(true);
       setTimeline({ steps: [{ key: "understand", done: false }], edits: 0, startedAt: Date.now() });
@@ -138,7 +138,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         const res = await fetch(`/api/projects/${projectId}/messages`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, ...(versionsRef.current === 0 ? { languages } : {}), ...(confirmSize ? { confirmSize } : {}) }),
+          body: JSON.stringify({ text, ...(versionsRef.current === 0 ? { languages } : {}), ...(confirmed ? { confirmSize: confirmed.size, confirmCost: confirmed.cost } : {}) }),
         });
         if (res.status === 429) return addAssistant(t.tooMany, { tone: "error" });
         if (!res.ok || !res.body) return addAssistant(t.failed, { tone: "error" });
@@ -291,22 +291,32 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
     setFocusChat((k) => k + 1);
   }, [previous, restore, addAssistant, t.versionRestoreFailed]);
 
-  /** "Make it smaller": the request goes back into the message box, unsent and unpaid. */
-  const smaller = useCallback(() => {
+  /** Takes the waiting request out of the chat (it was never run or saved). */
+  const dropPending = useCallback(() => {
     if (!confirm) return;
     setMessages((m) => {
       const i = m.findLastIndex((x) => x.role === "owner" && x.text === confirm.text);
       return i >= 0 ? [...m.slice(0, i), ...m.slice(i + 1)] : m;
     });
-    setDraft(confirm.text);
     setConfirm(null);
+  }, [confirm]);
+
+  /** "Make it smaller": the request goes back into the message box, unsent and unpaid. */
+  const smaller = useCallback(() => {
+    if (!confirm) return;
+    dropPending();
+    setDraft(confirm.text);
     addAssistant(t.confirmSmallerHint);
     setFocusChat((k) => k + 1);
-  }, [confirm, addAssistant, t.confirmSmallerHint]);
+  }, [confirm, dropPending, addAssistant, t.confirmSmallerHint]);
 
   const chat = (
     <ChatPanel
-      confirm={confirm ? { ...confirm, onGo: () => void send(confirm.text, confirm.languages, confirm.size), onSmaller: smaller } : undefined}
+      confirm={confirm ? { ...confirm, onGo: () => {
+        void send(confirm.text, confirm.languages, { size: confirm.size, cost: confirm.cost });
+        // The card goes away: keyboard focus goes to the message box, not the page.
+        setFocusChat((k) => k + 1);
+      }, onSmaller: smaller, onDiscard: dropPending } : undefined}
       nextGrant={nextGrant}
       t={t}
       hasSite={versions.length > 0}

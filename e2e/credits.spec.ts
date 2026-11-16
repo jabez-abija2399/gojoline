@@ -28,27 +28,34 @@ test("a bigger request asks first, then uses its changes; low and zero changes a
   await expect(log(page).getByText("Free first build · 10 changes left")).toBeVisible();
 
   await say(page, "Add a new page for our menu");
-  const ask = page.getByRole("group", { name: /uses 2 changes/ });
-  await expect(ask).toContainText("This is a bigger change (a new section or page) and uses 2 changes. Go ahead?");
+  const ask = page.getByRole("group", { name: /uses 2 of your changes/ });
+  await expect(ask).toContainText("This is a medium change (a new section or page) and uses 2 of your changes. Go ahead?");
+  // The question takes focus, so it is read out and can be answered at once.
+  await expect(ask.getByRole("button", { name: "Go ahead" })).toBeFocused();
   await expect(ask).toContainText("You have 10 changes left.");
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
   await ask.getByRole("button", { name: "Go ahead" }).click();
+  // The card is gone: focus is in the message box, not lost on the page.
+  await expect(chat(page)).toBeFocused();
   await expect(log(page).getByText("Used 2 changes · 8 left")).toBeVisible();
   await expect(page.getByRole("link", { name: "8 changes left" })).toBeVisible();
 
   // "Make it smaller" puts the request back, unsent and unpaid.
   await say(page, "Redesign the whole website");
-  await page.getByRole("group", { name: /uses 4 changes/ }).getByRole("button", { name: "Make it smaller" }).click();
+  await page.getByRole("group", { name: /uses 4 of your changes/ }).getByRole("button", { name: "Make it smaller" }).click();
   await expect(chat(page)).toHaveValue("Redesign the whole website");
   await expect(chat(page)).toBeFocused();
   await expect(log(page).getByText(/Ask for one part at a time/)).toBeVisible();
   await chat(page).press("Enter");
-  await page.getByRole("group", { name: /uses 4 changes/ }).getByRole("button", { name: "Go ahead" }).click();
-  await expect(log(page).getByText("Used 4 changes · 4 left")).toBeVisible();
+  // A new message while a question waits drops the waiting request from the chat.
+  await say(page, "Make the title bigger");
+  await expect(page.getByRole("group", { name: /uses 4 of your changes/ })).toHaveCount(0);
+  await expect(log(page).getByText("Used 1 change · 7 left")).toBeVisible();
+  await say(page, "Redesign the whole website");
+  await page.getByRole("group", { name: /uses 4 of your changes/ }).getByRole("button", { name: "Go ahead" }).click();
+  await expect(log(page).getByText("Used 4 changes · 3 left")).toBeVisible();
 
-  await say(page, "Abol Cafe");
-  await expect(log(page).getByText("Used 1 change · 3 left")).toBeVisible();
   await expect(page.getByText("3 changes left this month")).toBeVisible();
   await expect(page.getByRole("link", { name: "Get more" })).toHaveAttribute("href", "/en/billing");
   await expectNoSeriousA11yIssues(page);
@@ -62,14 +69,16 @@ test("a bigger request asks first, then uses its changes; low and zero changes a
   }
   await expect(page.getByText(/No changes left\. Buy more, or wait until \d+ \w+ for your monthly changes\./)).toBeVisible();
   await expect(page.getByRole("link", { name: "Buy more changes" })).toHaveAttribute("href", "/en/billing");
+  // With nothing left, the suggestions make way for the note.
+  await expect(page.getByRole("list", { name: "What next?" })).toHaveCount(0);
   await expectNoHorizontalScroll(page);
 
   // The Plan page lists every movement, newest first.
   await page.goto("/en/billing");
   const history = page.getByRole("list", { name: "Changes added and used" });
-  await expect(history.getByRole("listitem").first()).toContainText("AI change, small");
-  await expect(history.getByRole("listitem").filter({ hasText: "AI change, large" })).toContainText("Redesign the whole website");
-  await expect(history.getByRole("listitem").filter({ hasText: "AI change, medium" })).toContainText("−2");
+  await expect(history.getByRole("listitem").first()).toContainText("Change to your site, small");
+  await expect(history.getByRole("listitem").filter({ hasText: "Change to your site, large" })).toContainText("Redesign the whole website");
+  await expect(history.getByRole("listitem").filter({ hasText: "Change to your site, medium" })).toContainText("−2");
   await expect(history.getByRole("listitem").filter({ hasText: "First build of a site (free)" })).toHaveCount(1);
   await expect(history.getByRole("listitem").filter({ hasText: "Monthly changes" })).toContainText("+10");
   await expect(page.getByText(/10 new monthly changes arrive on/)).toBeVisible();
@@ -128,7 +137,7 @@ test("discount code: an admin makes one, the owner sees the price before sending
   await page.goto("/en/admin?tab=discounts");
   const code = `E2E${test.info().project.name === "mobile" ? "M" : "D"}${Date.now().toString(36).toUpperCase()}`.slice(0, 20);
   const make = page.locator("form").filter({ has: page.getByRole("heading", { name: "New code" }) });
-  await make.getByLabel("Code (A–Z and 0–9, 3 to 20)").fill(code.toLowerCase());
+  await make.getByLabel("Code (A–Z and 0–9, 6 to 20)").fill(code.toLowerCase());
   await make.getByLabel("Percent (1 to 90)").fill("10");
   await make.getByRole("button", { name: "Make code" }).click();
   await expect(make.getByRole("status")).toHaveText("Code made.");
@@ -187,7 +196,7 @@ test("launch offer: the old price is struck through on the pricing and Plan page
   await form.getByLabel("Percent off (1 to 90)").fill("20");
   await form.getByLabel("Last day").fill("2030-12-31");
   // Only Business monthly, the same in both test projects (other tests check the other prices).
-  const products = form.getByRole("group", { name: "For" });
+  const products = form.getByRole("group", { name: "Applies to" });
   for (const box of await products.getByRole("checkbox").all()) await box.uncheck();
   await products.getByLabel("Business, 1 month").check();
   await form.getByRole("button", { name: "Save offer" }).click();

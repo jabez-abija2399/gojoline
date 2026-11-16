@@ -95,7 +95,16 @@ export function PaymentForm({
   // What the customer pays: the server's quote with a code, otherwise the price now (offer included).
   const price = code.kind === "ok" ? { base: code.originalMinor, final: code.finalMinor } : prices[product];
   const discounted = price.final < price.base;
-  const codeNote = code.kind !== "ok" ? null : code.source === "code" ? format(t.codeApplied, { code: code.code, amount: birr(code.discountMinor) }) : code.source === "offer" ? t.offerBetter : null;
+  const codeNote =
+    code.kind === "ok"
+      ? code.source === "code"
+        ? format(t.codeApplied, { code: code.code, amount: birr(code.discountMinor) })
+        : code.source === "offer"
+          ? t.offerBetter
+          : null
+      : discounted
+        ? format(t.offerApplied, { amount: birr(price.base - price.final) })
+        : null;
 
   return (
     <form onSubmit={submit} noValidate className="flex flex-col gap-4">
@@ -134,14 +143,14 @@ export function PaymentForm({
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                void check(product);
+                if (code.kind !== "checking") void check(product);
               }
             }}
             onChange={() => code.kind !== "none" && code.kind !== "checking" && setCode({ kind: "none" })}
             className="min-h-11 min-w-0 flex-1 rounded-lg border border-input px-3 font-mono text-base uppercase aria-invalid:border-destructive"
           />
-          <button type="button" onClick={() => void check(product)} aria-disabled={code.kind === "checking"} className="min-h-11 shrink-0 rounded-lg border border-line bg-white px-4 text-sm font-medium hover:border-faint aria-disabled:opacity-50 lg:min-h-9">
-            {t.codeApply}
+          <button type="button" onClick={() => code.kind !== "checking" && void check(product)} aria-disabled={code.kind === "checking"} className="min-h-11 shrink-0 rounded-lg border border-line bg-white px-4 text-sm font-medium hover:border-faint aria-disabled:opacity-50 lg:min-h-9">
+            {code.kind === "checking" ? t.codeChecking : t.codeApply}
           </button>
         </div>
         <p id="pay-code-hint" className="text-sm text-ink-muted">{t.codeHint}</p>

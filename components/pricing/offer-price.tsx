@@ -13,7 +13,7 @@ export function WasPrice({ price, was, className = "" }: { price: string; was: s
   );
 }
 
-/** "20% off until 31 Dec": a highlighter label (sun fill, dark text in both themes) beside an offer price. */
+/** "20% off until 31 Dec": a soft coral label beside an offer price (sun isn't used on public pages). */
 export function OfferBadge({ text, className = "" }: { text: string; className?: string }) {
-  return <span className={`inline-flex w-fit items-center rounded-full bg-sun px-2.5 py-0.5 text-sm font-semibold text-on-coral ${className}`}>{text}</span>;
+  return <span className={`inline-flex w-fit items-center rounded-full bg-coral-soft px-2.5 py-0.5 text-sm font-semibold text-ink ${className}`}>{text}</span>;
 }

@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import type { Messages } from "@/lib/i18n";
 import { saveCreditSettings, type CreditsState } from "@/app/[lang]/admin/actions";
 import type { CreditSettings } from "@/lib/billing/credits";
+import { format } from "@/lib/i18n/format";
 
 const PLANS = ["free", "starter", "business"] as const;
 const SIZES = ["small", "medium", "large"] as const;
@@ -22,10 +23,20 @@ function Save({ t }: { t: Messages["admin"] }) {
 export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin"]; planNames: Record<(typeof PLANS)[number], string>; lang: string; values: CreditSettings }) {
   const [state, action] = useActionState<CreditsState, FormData>(saveCreditSettings, { status: "idle" });
   const msgRef = useRef<HTMLParagraphElement>(null);
-  useEffect(() => {
-    if (state.status !== "idle") msgRef.current?.focus();
-  }, [state]);
+  const formRef = useRef<HTMLFormElement>(null);
   const bad = (name: string) => state.status === "invalid" && state.field === name;
+  // A bad field gets focus (its own error is read with it); otherwise the message does.
+  useEffect(() => {
+    if (state.status === "idle") return;
+    const field = state.status === "invalid" && state.field ? formRef.current?.querySelector<HTMLInputElement>(`[name="${state.field}"]`) : null;
+    (field ?? msgRef.current)?.focus();
+  }, [state]);
+  const labels: Record<string, string> = {
+    ...Object.fromEntries(PLANS.flatMap((p) => [[`monthly_${p}`, `${t.creditsMonthly}: ${planNames[p]}`], [`rollover_${p}`, `${t.creditsRollover}: ${planNames[p]}`]])),
+    ...Object.fromEntries(SIZES.map((x) => [`size_${x}`, t.creditsSize[x]])),
+    topupCredits: t.creditsTopup,
+    capUsd: t.creditsCap,
+  };
   const num = (name: string, label: string, value: number | string, extra: { min?: number; max?: number; hint?: string; decimal?: boolean } = {}) => (
     <label key={name} className="flex flex-col gap-1">
       <span className="font-medium">{label}</span>
@@ -35,15 +46,16 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
         inputMode={extra.decimal ? "decimal" : "numeric"}
         maxLength={extra.decimal ? 6 : 5}
         aria-invalid={bad(name) || undefined}
-        aria-describedby={extra.hint ? `${name}-hint` : undefined}
+        aria-describedby={[extra.hint ? `${name}-hint` : "", bad(name) ? `${name}-error` : ""].filter(Boolean).join(" ") || undefined}
         className="min-h-11 rounded-lg border border-input bg-white px-3 text-base tabular-nums aria-invalid:border-destructive"
       />
       {extra.hint && <span id={`${name}-hint`} className="text-sm text-ink-muted">{extra.hint}</span>}
+      {bad(name) && <span id={`${name}-error`} className="text-sm font-medium text-destructive">{t.fieldInvalid}</span>}
     </label>
   );
   const cap = (values.capCentsPerCredit / 100).toFixed(2);
   return (
-    <form action={action} aria-labelledby="credits-form-title" className="flex flex-col gap-5">
+    <form ref={formRef} action={action} aria-labelledby="credits-form-title" className="flex flex-col gap-5">
       <input type="hidden" name="lang" value={lang} />
       <div className="flex flex-col gap-1">
         <h2 id="credits-form-title" className="text-2xl font-bold">{t.creditsTitle}</h2>
@@ -68,7 +80,7 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
       </div>
       {state.status !== "idle" && (
         <p ref={msgRef} tabIndex={-1} role={state.status === "ok" ? "status" : "alert"} className={state.status === "ok" ? "font-medium text-ink" : "text-destructive"}>
-          {state.status === "ok" ? t.done : state.status === "invalid" ? t.creditsInvalid : state.status === "forbidden" ? t.forbidden : t.failed}
+          {state.status === "ok" ? t.done : state.status === "invalid" ? `${state.field && labels[state.field] ? format(t.fieldInvalidNamed, { field: labels[state.field] }) + " " : ""}${t.creditsInvalid}` : state.status === "forbidden" ? t.forbidden : t.failed}
         </p>
       )}
       <Save t={t} />
