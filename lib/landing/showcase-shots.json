@@ -1,4 +1,26 @@
 {
+  "business": {
+    "en": {
+      "src": "/showcase/business-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/business-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/business-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/business-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
   "cafe": {
     "en": {
       "src": "/showcase/cafe-en.webp",
@@ -143,7 +165,7 @@
     "en": {
       "src": "/showcase/ngo-en.webp",
       "width": 780,
-      "height": 6538,
+      "height": 7200,
       "top": {
         "src": "/showcase/ngo-en-top.webp",
         "width": 520,
@@ -153,7 +175,7 @@
     "am": {
       "src": "/showcase/ngo-am.webp",
       "width": 780,
-      "height": 6732,
+      "height": 7200,
       "top": {
         "src": "/showcase/ngo-am-top.webp",
         "width": 520,
@@ -210,6 +232,28 @@
       "height": 7200,
       "top": {
         "src": "/showcase/real-estate-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "salon": {
+    "en": {
+      "src": "/showcase/salon-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/salon-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/salon-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/salon-am-top.webp",
         "width": 520,
         "height": 933
       }

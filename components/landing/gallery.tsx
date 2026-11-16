@@ -5,7 +5,7 @@ import type { ShowcaseSite } from "@/lib/landing/showcase";
 import { PanShot } from "./pan-shot";
 import { StartFromLink } from "./start-from-link";
 
-/** Twelve real Gojoline sites as a grid of cards. On a mouse, resting on one scrolls through its page. */
+/** The real Gojoline starter sites as a grid of cards. On a mouse, resting on one scrolls through its page. */
 export function Gallery({ t, sites, labels, locale }: { t: Messages["landing"]["gallery"]; sites: ShowcaseSite[]; labels: Record<string, string>; locale: Locale }) {
   // This section is its own page (/templates), so its title is the page's h1.
   const href = `/${locale}/sign-in?next=/${locale}/build`;

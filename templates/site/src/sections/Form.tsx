@@ -77,6 +77,7 @@ export function Form({ section }: { section: FormSection }) {
     <section id={section.id} className="section">
       <div className="container-site grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-3">
+          {section.eyebrow && <p className="eyebrow">{text(section.eyebrow)}</p>}
           <SectionTitle>{text(section.heading)}</SectionTitle>
           {section.intro && <p className="max-w-[60ch] text-muted">{text(section.intro)}</p>}
           {!live && <p className="text-muted">{uiText("formPreview", lang)}</p>}

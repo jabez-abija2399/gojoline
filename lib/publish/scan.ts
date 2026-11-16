@@ -25,6 +25,8 @@ const ALLOWED_PATHS = [
   /^assets\/[\w.-]+\.(?:js|css)$/,
   /^fonts\/[\w.-]+\.woff2$/,
   /^images\/[\w.-]+\.(?:webp|png|jpe?g|avif)$/,
+  // Sample photos from the template's own library.
+  /^stock\/[a-z0-9-]+\.webp$/,
   /^favicon\.svg$/,
   /^sitemap\.xml$/,
   /^robots\.txt$/,

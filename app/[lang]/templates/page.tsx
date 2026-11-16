@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/templates"
   return { title: t.title, description: t.intro };
 }
 
-/** The twelve real starter sites: pick one, sign in, and it opens as your own. */
+/** The real starter sites: pick one, sign in, and it opens as your own. */
 export default async function TemplatesPage({ params }: PageProps<"/[lang]/templates">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();

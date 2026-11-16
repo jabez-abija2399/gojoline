@@ -1,547 +1,745 @@
 {
-  "name": {
-    "en": "Megenagna Family Clinic",
-    "am": "መገናኛ የቤተሰብ ክሊኒክ"
-  },
-  "tagline": {
-    "en": "Everyday care for adults and children in Megenagna",
-    "am": "ለአዋቂዎችና ለልጆች የዕለት ተዕለት ሕክምና በመገናኛ"
-  },
+  "name": { "en": "Megenagna Family Clinic", "am": "መገናኛ የቤተሰብ ክሊኒክ" },
+  "tagline": { "en": "Everyday care for adults and children in Megenagna", "am": "ለአዋቂዎችና ለልጆች የዕለት ተዕለት ሕክምና በመገናኛ" },
   "languages": [
     "en",
     "am"
   ],
-  "theme": {
-    "primary": "#0B6E7F",
-    "accent": "#1F4E79",
-    "background": "#F5FAFB",
-    "text": "#12232E",
-    "font": "modern",
-    "radius": "medium"
-  },
+  "theme": { "primary": "#0F766E", "accent": "#134E4A", "background": "#F0FDFA", "text": "#0F172A", "font": "modern", "radius": "medium", "style": "clean" },
   "business": {
     "phone": "+251 911 000 000",
     "telegram": "yourbusiness",
-    "address": {
-      "en": "Megenagna, near the roundabout, Addis Ababa",
-      "am": "መገናኛ፣ አደባባዩ አጠገብ፣ አዲስ አበባ"
-    },
+    "address": { "en": "Megenagna, near the roundabout, Addis Ababa", "am": "መገናኛ፣ አደባባዩ አጠገብ፣ አዲስ አበባ" },
     "hours": [
       {
-        "days": {
-          "en": "Monday to Saturday",
-          "am": "ከሰኞ እስከ ቅዳሜ"
-        },
-        "time": {
-          "en": "8:00 am to 8:00 pm",
-          "am": "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት"
-        }
+        "days": { "en": "Monday to Saturday", "am": "ከሰኞ እስከ ቅዳሜ" },
+        "time": { "en": "8:00 am to 8:00 pm", "am": "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት" }
       },
       {
-        "days": {
-          "en": "Sunday",
-          "am": "እሑድ"
-        },
-        "time": {
-          "en": "9:00 am to 1:00 pm",
-          "am": "ከጠዋቱ 3 እስከ ቀኑ 7 ሰዓት"
-        }
+        "days": { "en": "Sunday", "am": "እሑድ" },
+        "time": { "en": "9:00 am to 1:00 pm", "am": "ከጠዋቱ 3 እስከ ቀኑ 7 ሰዓት" }
       }
     ]
   },
   "pages": [
     {
       "path": "/",
-      "title": {
-        "en": "Home",
-        "am": "መነሻ"
-      },
-      "nav": {
-        "en": "Home",
-        "am": "መነሻ"
-      },
-      "description": {
-        "en": "A family clinic in Megenagna offering general check-ups, children's health visits, lab tests and ultrasound.",
-        "am": "በመገናኛ የሚገኝ የቤተሰብ ክሊኒክ፤ አጠቃላይ ምርመራ፣ የሕፃናት ሕክምና፣ የላብራቶሪ ምርመራ እና አልትራሳውንድ።"
-      },
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Home", "am": "መነሻ" },
+      "description": { "en": "A family clinic in Megenagna, Addis Ababa: doctors for adults and children, laboratory, ultrasound and pharmacy under one roof. Open every day.", "am": "በመገናኛ፣ አዲስ አበባ የሚገኝ የቤተሰብ ክሊኒክ፤ የአዋቂዎችና የሕፃናት ሐኪሞች፣ ላብራቶሪ፣ አልትራሳውንድ እና መድኃኒት ቤት በአንድ ቦታ። በየቀኑ ክፍት።" },
       "sections": [
         {
           "type": "hero",
           "variant": "split",
-          "eyebrow": {
-            "en": "Megenagna, Addis Ababa",
-            "am": "መገናኛ፣ አዲስ አበባ"
-          },
-          "heading": {
-            "en": "Care for the whole family, close to home",
-            "am": "ለመላው ቤተሰብ ሕክምና፣ በቅርብዎ"
-          },
-          "subheading": {
-            "en": "See a doctor, bring your child for a check-up, or do lab tests and ultrasound in one place.",
-            "am": "ሐኪም ማየት፣ ልጅዎን ማስመርመር፣ የላብራቶሪ ምርመራ እና አልትራሳውንድ በአንድ ቦታ።"
+          "eyebrow": { "en": "Megenagna · Addis Ababa", "am": "መገናኛ · አዲስ አበባ" },
+          "heading": { "en": "Care for the whole family, close to home", "am": "ለመላው ቤተሰብ ሕክምና፣ በቅርብዎ" },
+          "subheading": { "en": "Doctors for adults and children, a laboratory, ultrasound and a pharmacy under one roof. Walk in, or book and be seen on time.", "am": "የአዋቂዎችና የሕፃናት ሐኪሞች፣ ላብራቶሪ፣ አልትራሳውንድ እና መድኃኒት ቤት በአንድ ጣሪያ ሥር። በቀጥታ ይምጡ፤ ወይም ቀጠሮ ይዘው በሰዓትዎ ይታዩ።" },
+          "image": {
+            "src": "/stock/clinic-hero-two-nurses.webp",
+            "alt": { "en": "Two smiling nurses in green scrubs with stethoscopes in a bright clinic room", "am": "አረንጓዴ የሥራ ልብስ የለበሱ ሁለት ፈገግተኛ ነርሶች በብሩህ የክሊኒክ ክፍል ውስጥ" }
           },
           "primaryAction": {
-            "label": {
-              "en": "Book an appointment",
-              "am": "ቀጠሮ ይያዙ"
-            },
-            "href": "/appointments"
+            "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+            "href": "/#booking"
           },
           "secondaryAction": {
-            "label": {
-              "en": "Call us",
-              "am": "ይደውሉልን"
-            },
+            "label": { "en": "Call 0911 000 000", "am": "ይደውሉ 0911 000 000" },
             "href": "tel:+251911000000"
           },
-          "image": {
-            "alt": {
-              "en": "A medical cross and a heartbeat line",
-              "am": "የሕክምና መስቀል እና የልብ ምት መስመር"
-            },
-            "art": "clinic"
-          }
-        },
-        {
-          "type": "services",
-          "heading": {
-            "en": "What we offer",
-            "am": "የምንሰጣቸው አገልግሎቶች"
-          },
-          "items": [
+          "facts": [
             {
-              "title": {
-                "en": "General practice",
-                "am": "አጠቃላይ ሕክምና"
-              },
-              "description": {
-                "en": "Consultations and check-ups for adults.",
-                "am": "ለአዋቂዎች የሐኪም ምክክር እና ምርመራ።"
-              },
-              "icon": "stethoscope"
+              "value": { "en": "7 days", "am": "7 ቀን" },
+              "label": { "en": "open every week", "am": "በሳምንት ክፍት" }
             },
             {
-              "title": {
-                "en": "Children's health",
-                "am": "የሕፃናት ጤና"
-              },
-              "description": {
-                "en": "Check-ups and visits for babies and children.",
-                "am": "ለጨቅላ ሕፃናትና ለልጆች ምርመራ።"
-              },
-              "icon": "heart"
+              "value": { "en": "400 Br", "am": "400 ብር" },
+              "label": { "en": "doctor's visit", "am": "የሐኪም ምርመራ" }
             },
             {
-              "title": {
-                "en": "Lab tests",
-                "am": "የላብራቶሪ ምርመራ"
-              },
-              "description": {
-                "en": "Common blood, urine and stool tests.",
-                "am": "የተለመዱ የደም፣ የሽንት እና የሰገራ ምርመራዎች።"
-              },
-              "icon": "check"
-            },
-            {
-              "title": {
-                "en": "Ultrasound",
-                "am": "አልትራሳውንድ"
-              },
-              "description": {
-                "en": "Abdominal and pregnancy ultrasound by appointment.",
-                "am": "የሆድ እና የእርግዝና አልትራሳውንድ በቀጠሮ።"
-              },
-              "icon": "calendar"
+              "value": { "en": "2 hours", "am": "2 ሰዓት" },
+              "label": { "en": "for most lab results", "am": "አብዛኛው የላብራቶሪ ውጤት" }
             }
           ]
         },
         {
-          "type": "about",
-          "heading": {
-            "en": "A neighbourhood clinic for families",
-            "am": "የሰፈር የቤተሰብ ክሊኒክ"
-          },
-          "body": {
-            "en": "We are a small team of doctors, nurses and lab staff serving families around Megenagna.\n\nWe take time to listen, explain clearly and refer you to a specialist or hospital when needed.",
-            "am": "በመገናኛ አካባቢ ቤተሰቦችን የምናገለግል የሐኪሞች፣ የነርሶች እና የላብራቶሪ ባለሙያዎች ቡድን ነን።\n\nጊዜ ወስደን እናዳምጥዎታለን፣ በግልጽ እናስረዳለን፤ ሲያስፈልግም ወደ ስፔሻሊስት ወይም ሆስፒታል እንልክዎታለን።"
-          },
-          "image": {
-            "art": "people",
-            "alt": {
-              "en": "A family standing together",
-              "am": "አብሮ የቆመ ቤተሰብ"
+          "type": "services",
+          "id": "services",
+          "variant": "bento",
+          "eyebrow": { "en": "How we can help", "am": "የምንረዳዎ" },
+          "heading": { "en": "Care for every age", "am": "ለሁሉም ዕድሜ ሕክምና" },
+          "intro": { "en": "Most families find everything they need here, without crossing the city.", "am": "አብዛኛው ቤተሰብ የሚፈልገውን ሁሉ ከተማ ሳያቋርጥ እዚሁ ያገኛል።" },
+          "items": [
+            {
+              "icon": "stethoscope",
+              "title": { "en": "Feeling unwell", "am": "ሕመም ሲሰማዎ" },
+              "description": { "en": "Fever, cough, stomach trouble, headaches, infections. See a doctor the same day, with tests done on the spot if you need them. We also follow up blood pressure, diabetes and asthma, so the doctor who knows your history is the one who adjusts your medicine.", "am": "ትኩሳት፣ ሳል፣ የሆድ ሕመም፣ ራስ ምታት፣ ኢንፌክሽን። በዕለቱ ሐኪም ያያሉ፤ ምርመራ ካስፈለገም እዚሁ ይሠራል። የደም ግፊት፣ የስኳርና የአስም ክትትልም እናደርጋለን፤ መድኃኒትዎን የሚያስተካክለው ታሪክዎን የሚያውቀው ሐኪም ነው።" },
+              "price": { "amountMinor": 40000, "currency": "ETB" }
+            },
+            {
+              "icon": "baby",
+              "title": { "en": "Children's health", "am": "የሕፃናት ጤና" },
+              "description": { "en": "A children's doctor for babies and children up to 14.", "am": "እስከ 14 ዓመት ላሉ ሕፃናትና ልጆች የሕፃናት ሐኪም።" },
+              "price": { "amountMinor": 40000, "currency": "ETB" }
+            },
+            {
+              "icon": "heart",
+              "title": { "en": "Pregnancy care", "am": "የእርግዝና ክትትል" },
+              "description": { "en": "Follow-up visits and ultrasound from the first weeks.", "am": "ከመጀመሪያዎቹ ሳምንታት ጀምሮ ክትትልና አልትራሳውንድ።" },
+              "price": { "amountMinor": 90000, "currency": "ETB" }
+            },
+            {
+              "icon": "flask",
+              "title": { "en": "Laboratory", "am": "ላብራቶሪ" },
+              "description": { "en": "Blood, urine and stool tests. Most results in two hours.", "am": "የደም፣ የሽንትና የሰገራ ምርመራ። አብዛኛው ውጤት በሁለት ሰዓት።" }
+            },
+            {
+              "icon": "pill",
+              "title": { "en": "Pharmacy", "am": "መድኃኒት ቤት" },
+              "description": { "en": "Collect your medicine before you leave, with clear instructions.", "am": "መድኃኒትዎን ከግልጽ የአወሳሰድ መመሪያ ጋር ሳይወጡ ይውሰዱ።" }
+            },
+            {
+              "icon": "sparkles",
+              "title": { "en": "Teeth and gums", "am": "ጥርስና ድድ" },
+              "description": { "en": "Check-ups, cleaning and fillings, Tuesdays and Thursdays.", "am": "ምርመራ፣ እጥበትና ሙሌት፤ ማክሰኞና ሐሙስ።" },
+              "price": { "amountMinor": 50000, "currency": "ETB" }
             }
+          ]
+        },
+        {
+          "type": "stats",
+          "tone": "dark",
+          "items": [
+            {
+              "value": { "en": "12", "am": "12" },
+              "label": { "en": "years serving Megenagna", "am": "ዓመታት በመገናኛ አገልግሎት" }
+            },
+            {
+              "value": { "en": "3", "am": "3" },
+              "label": { "en": "doctors, plus nurses and lab staff", "am": "ሐኪሞች፣ ከነርሶችና የላብራቶሪ ባለሙያዎች ጋር" }
+            },
+            {
+              "value": { "en": "15 min", "am": "15 ደቂቃ" },
+              "label": { "en": "longest wait with an appointment", "am": "ቀጠሮ ላለው ከፍተኛው የጥበቃ ጊዜ" }
+            },
+            {
+              "value": { "en": "4", "am": "4" },
+              "label": { "en": "languages spoken by our staff", "am": "ባለሙያዎቻችን የሚናገሯቸው ቋንቋዎች" }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "doctors",
+          "layout": "people",
+          "eyebrow": { "en": "Our team", "am": "ባለሙያዎቻችን" },
+          "heading": { "en": "People you will meet", "am": "የሚያገኟቸው ባለሙያዎች" },
+          "intro": { "en": "The same faces each visit, so you don't have to explain your story twice.", "am": "በየጉብኝቱ የሚያውቋቸው ባለሙያዎች፤ ታሪክዎን ደጋግመው ማስረዳት አይኖርብዎትም።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/clinic-card-doctor-portrait.webp",
+                "alt": { "en": "A smiling woman doctor in a white coat holding a stethoscope", "am": "ነጭ ጋውን የለበሰች፣ ስቴቶስኮፕ የያዘች ፈገግተኛ ሐኪም" }
+              },
+              "title": { "en": "Dr. Hana T.", "am": "ዶ/ር ሃና ተ." },
+              "subtitle": { "en": "Family doctor", "am": "የቤተሰብ ሐኪም" }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-hero-doctor-clipboard.webp",
+                "alt": { "en": "A young doctor in a white coat and glasses writing on a folder", "am": "ነጭ ጋውንና መነጽር ያደረገ ወጣት ሐኪም በማህደር ላይ ሲጽፍ" }
+              },
+              "title": { "en": "Dr. Yonas B.", "am": "ዶ/ር ዮናስ በ." },
+              "subtitle": { "en": "Children's doctor", "am": "የሕፃናት ሐኪም" }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-card-nurse-portrait.webp",
+                "alt": { "en": "A smiling nurse in light-blue scrubs with a stethoscope", "am": "ውሃ ሰማያዊ የሥራ ልብስ የለበሰች፣ ስቴቶስኮፕ ያንጠለጠለች ፈገግተኛ ነርስ" }
+              },
+              "title": { "en": "Sr. Meron A.", "am": "ሲስተር ሜሮን አ." },
+              "subtitle": { "en": "Head nurse, mother and baby care", "am": "ዋና ነርስ፣ የእናቶችና የሕፃናት ክብካቤ" }
+            }
+          ],
+          "action": {
+            "label": { "en": "Meet the team", "am": "ባለሙያዎቹን ይተዋወቁ" },
+            "href": "/doctors"
           }
+        },
+        {
+          "type": "about",
+          "eyebrow": { "en": "Under one roof", "am": "በአንድ ቦታ" },
+          "heading": { "en": "Tests and answers in one visit", "am": "ምርመራና መልስ በአንድ ጉብኝት" },
+          "body": { "en": "Nobody who is unwell wants to be sent across town for a blood test. Our laboratory and ultrasound room are a few steps from the doctor's door.\n\nYou give your sample, wait in the lounge, and the doctor explains the result to you the same day.", "am": "የታመመ ሰው ለደም ምርመራ ከተማ ማቋረጥ አይፈልግም። ላብራቶሪያችንና የአልትራሳውንድ ክፍላችን ከሐኪሙ በር ጥቂት እርምጃ ላይ ናቸው።\n\nናሙና ይሰጣሉ፣ በማረፊያው ይጠብቃሉ፣ ሐኪሙም በዕለቱ ውጤቱን ያስረዳዎታል።" },
+          "image": {
+            "src": "/stock/clinic-card-lab-microscope.webp",
+            "alt": { "en": "A lab technician in a white coat looking through a microscope", "am": "ነጭ ጋውን የለበሰች የላብራቶሪ ባለሙያ በማይክሮስኮፕ ስትመለከት" }
+          },
+          "imageSide": "end",
+          "points": [
+            { "en": "Most results ready in two hours", "am": "አብዛኛው ውጤት በሁለት ሰዓት ይደርሳል" },
+            { "en": "Results sent to your Telegram if you ask", "am": "ከፈለጉ ውጤቱ በቴሌግራም ይላክልዎታል" },
+            { "en": "Prices told to you before any test", "am": "ከማንኛውም ምርመራ በፊት ዋጋው ይነገርዎታል" }
+          ],
+          "action": {
+            "label": { "en": "Services and prices", "am": "አገልግሎቶችና ዋጋዎች" },
+            "href": "/services"
+          }
+        },
+        {
+          "type": "steps",
+          "eyebrow": { "en": "Your visit", "am": "ጉብኝትዎ" },
+          "heading": { "en": "How a visit works", "am": "ሲመጡ ምን ይጠብቅዎታል" },
+          "items": [
+            {
+              "title": { "en": "Book or walk in", "am": "ቀጠሮ ይያዙ ወይም ይምጡ" },
+              "description": { "en": "Send the form, call us, or just come. Booked patients are seen at their time.", "am": "ቅጹን ይላኩ፣ ይደውሉ ወይም በቀጥታ ይምጡ። ቀጠሮ ያላቸው በሰዓታቸው ይታያሉ።" }
+            },
+            {
+              "title": { "en": "See the doctor", "am": "ሐኪሙን ያግኙ" },
+              "description": { "en": "A nurse takes your temperature and pressure, then the doctor listens and examines you.", "am": "ነርሷ ሙቀትና የደም ግፊት ትለካለች፤ ከዚያ ሐኪሙ አዳምጦ ይመረምርዎታል።" }
+            },
+            {
+              "title": { "en": "Tests, if needed", "am": "ካስፈለገ ምርመራ" },
+              "description": { "en": "Lab and ultrasound are in the same building. You are told the price first.", "am": "ላብራቶሪና አልትራሳውንድ በዚሁ ሕንፃ ናቸው። ዋጋው አስቀድሞ ይነገርዎታል።" }
+            },
+            {
+              "title": { "en": "Leave with a plan", "am": "ዕቅድ ይዘው ይሄዳሉ" },
+              "description": { "en": "Medicine from our pharmacy, written advice, and a follow-up date if you need one.", "am": "ከመድኃኒት ቤታችን መድኃኒት፣ የጽሑፍ ምክር እና ካስፈለገ የክትትል ቀጠሮ።" }
+            }
+          ],
+          "action": {
+            "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+            "href": "/#booking"
+          }
+        },
+        {
+          "type": "testimonials",
+          "eyebrow": { "en": "Patients say", "am": "ታካሚዎች ምን ይላሉ" },
+          "heading": { "en": "Trusted by families nearby", "am": "የአካባቢው ቤተሰቦች የሚተማመኑበት" },
+          "items": [
+            {
+              "quote": { "en": "My son had a fever at night. We came in the morning, the test was done in an hour and he was better by the weekend.", "am": "ልጄ ሌሊት ትኩሳት ነበረው። ጠዋት መጣን፣ ምርመራው በአንድ ሰዓት አለቀ፣ እስከ ሳምንቱ መጨረሻ ተሻለው።" },
+              "name": "Selam G.",
+              "role": { "en": "Mother of two, Megenagna", "am": "የሁለት ልጆች እናት፣ መገናኛ" }
+            },
+            {
+              "quote": { "en": "The doctor took time to explain my blood pressure medicine. Nobody rushed me.", "am": "ሐኪሟ ስለ ደም ግፊት መድኃኒቴ ጊዜ ወስዳ አስረዳችኝ። ማንም አላጣደፈኝም።" },
+              "name": "Tesfaye K.",
+              "role": { "en": "Patient for six years", "am": "ለስድስት ዓመት ታካሚ" }
+            },
+            {
+              "quote": { "en": "I did all my pregnancy follow-up here. The nurses knew my name from the second visit.", "am": "የእርግዝና ክትትሌን በሙሉ እዚህ ነው ያደረግሁት። ነርሶቹ ከሁለተኛው ጉብኝት ጀምሮ በስሜ ያውቁኛል።" },
+              "name": "Rahel D.",
+              "role": { "en": "Gerji", "am": "ገርጂ" }
+            }
+          ]
         },
         {
           "type": "faq",
-          "id": "questions",
-          "heading": {
-            "en": "Before you visit",
-            "am": "ከመምጣትዎ በፊት"
-          },
+          "heading": { "en": "Before you come", "am": "ከመምጣትዎ በፊት" },
           "items": [
             {
-              "question": {
-                "en": "Do I need an appointment?",
-                "am": "ቀጠሮ ያስፈልጋል?"
-              },
-              "answer": {
-                "en": "You can book with the form or call us, and we will tell you when to come.",
-                "am": "በቅጹ ቀጠሮ መያዝ ወይም መደወል ይችላሉ፤ መቼ እንደሚመጡ እንነግርዎታለን።"
-              }
+              "question": { "en": "Do I need an appointment?", "am": "ቀጠሮ ያስፈልገኛል?" },
+              "answer": { "en": "No. You can walk in any time we are open. With an appointment you are seen at your time instead of waiting your turn.", "am": "አያስፈልግም። ክፍት በሆንበት ሰዓት ሁሉ መምጣት ይችላሉ። ቀጠሮ ካለዎት ግን ተራ ሳይጠብቁ በሰዓትዎ ይታያሉ።" }
             },
             {
-              "question": {
-                "en": "What should I bring?",
-                "am": "ምን ይዤ ልምጣ?"
-              },
-              "answer": {
-                "en": "Bring any earlier test results and the medicines you take now.",
-                "am": "ከዚህ በፊት ያደረጓቸውን የምርመራ ውጤቶች እና አሁን የሚወስዷቸውን መድኃኒቶች ይዘው ይምጡ።"
-              }
+              "question": { "en": "How much is a visit?", "am": "ምርመራ ስንት ነው?" },
+              "answer": { "en": "A doctor's visit is 400 Birr. Tests and medicine are extra, and we tell you the price before we do anything.", "am": "የሐኪም ምርመራ 400 ብር ነው። የላብራቶሪ ምርመራና መድኃኒት ተጨማሪ ናቸው፤ ከመሥራታችን በፊት ዋጋውን እንነግርዎታለን።" }
             },
             {
-              "question": {
-                "en": "Can I come with my child?",
-                "am": "ከልጄ ጋር መምጣት እችላለሁ?"
-              },
-              "answer": {
-                "en": "Yes. Tell us when you book so we can prepare.",
-                "am": "አዎ። እንድንዘጋጅ ቀጠሮ ሲይዙ ይንገሩን።"
-              }
+              "question": { "en": "How can I pay?", "am": "ክፍያ እንዴት ነው?" },
+              "answer": { "en": "Cash, Telebirr or bank transfer at the front desk.", "am": "በጥሬ ገንዘብ፣ በቴሌብር ወይም በባንክ ዝውውር በእንግዳ መቀበያው።" }
+            },
+            {
+              "question": { "en": "When do I get lab results?", "am": "የላብራቶሪ ውጤት መቼ ይደርሳል?" },
+              "answer": { "en": "Most are ready in about two hours. A few special tests take one or two days; we call you when they arrive.", "am": "አብዛኛው በሁለት ሰዓት ገደማ ይደርሳል። ጥቂት ልዩ ምርመራዎች አንድ ወይም ሁለት ቀን ይወስዳሉ፤ ሲደርሱ እንደውልልዎታለን።" }
+            },
+            {
+              "question": { "en": "What if it is an emergency?", "am": "ድንገተኛ ቢሆንስ?" },
+              "answer": { "en": "Call us straight away during opening hours. We are not open at night: for a serious emergency after hours, go to the nearest hospital.", "am": "በሥራ ሰዓታችን ወዲያውኑ ይደውሉልን። ሌሊት ክፍት አይደለንም፤ ከሥራ ሰዓት ውጭ ለከባድ ድንገተኛ ሕመም በአቅራቢያዎ ወዳለ ሆስፒታል ይሂዱ።" }
             }
           ]
         },
-        {
-          "type": "contact",
-          "id": "contact",
-          "heading": {
-            "en": "Visit or call us",
-            "am": "ይጎብኙን ወይም ይደውሉልን"
-          },
-          "intro": {
-            "en": "In an emergency, go to the nearest hospital right away.",
-            "am": "ድንገተኛ ሁኔታ ሲያጋጥም ወዲያውኑ በአቅራቢያዎ ወዳለ ሆስፒታል ይሂዱ።"
-          }
-        },
-        {
-          "type": "cta",
-          "id": "next-step",
-          "heading": {
-            "en": "Feeling unwell? See a doctor today",
-            "am": "ሕመም ይሰማዎታል? ዛሬውኑ ሐኪም ይዩ"
-          },
-          "body": {
-            "en": "Book a time that suits you, or call us and we will help.",
-            "am": "የሚመችዎትን ሰዓት ይያዙ፤ ወይም ይደውሉልን፤ እንረዳዎታለን።"
-          },
-          "primaryAction": {
-            "label": {
-              "en": "Book an appointment",
-              "am": "ቀጠሮ ይያዙ"
-            },
-            "href": "/appointments"
-          },
-          "secondaryAction": {
-            "label": {
-              "en": "Contact us",
-              "am": "ያግኙን"
-            },
-            "href": "/contact"
-          }
-        }
-      ]
-    },
-    {
-      "path": "/services",
-      "title": {
-        "en": "Services and prices",
-        "am": "አገልግሎቶችና ዋጋዎች"
-      },
-      "nav": {
-        "en": "Services",
-        "am": "አገልግሎቶች"
-      },
-      "description": {
-        "en": "Consultation, children's health, lab test and ultrasound prices at Megenagna Family Clinic.",
-        "am": "በመገናኛ የቤተሰብ ክሊኒክ የምክክር፣ የሕፃናት፣ የላብራቶሪ እና የአልትራሳውንድ ዋጋዎች።"
-      },
-      "sections": [
-        {
-          "type": "services",
-          "heading": {
-            "en": "Services and starting prices",
-            "am": "አገልግሎቶችና መነሻ ዋጋዎች"
-          },
-          "intro": {
-            "en": "Prices are a guide. Your doctor will explain any extra tests before you pay.",
-            "am": "ዋጋዎቹ ግምታዊ ናቸው። ተጨማሪ ምርመራ ካስፈለገ ከመክፈልዎ በፊት ሐኪምዎ ያስረዳዎታል።"
-          },
-          "items": [
-            {
-              "title": {
-                "en": "Doctor consultation",
-                "am": "የሐኪም ምክክር"
-              },
-              "description": {
-                "en": "General visit for adults.",
-                "am": "ለአዋቂዎች አጠቃላይ ምርመራ።"
-              },
-              "price": {
-                "amountMinor": 50000,
-                "currency": "ETB"
-              },
-              "icon": "stethoscope"
-            },
-            {
-              "title": {
-                "en": "Child consultation",
-                "am": "የሕፃናት ምክክር"
-              },
-              "description": {
-                "en": "Visit for babies and children, with growth check.",
-                "am": "ለሕፃናትና ለልጆች ምርመራ፣ የዕድገት ክትትልን ጨምሮ።"
-              },
-              "price": {
-                "amountMinor": 60000,
-                "currency": "ETB"
-              },
-              "icon": "heart"
-            },
-            {
-              "title": {
-                "en": "Complete blood count (CBC)",
-                "am": "ሙሉ የደም ምርመራ (CBC)"
-              },
-              "description": {
-                "en": "Results usually the same day.",
-                "am": "ውጤቱ አብዛኛውን ጊዜ በዚያው ቀን ይደርሳል።"
-              },
-              "price": {
-                "amountMinor": 35000,
-                "currency": "ETB"
-              },
-              "icon": "check"
-            },
-            {
-              "title": {
-                "en": "Urine and stool tests",
-                "am": "የሽንት እና የሰገራ ምርመራ"
-              },
-              "description": {
-                "en": "Basic tests, each.",
-                "am": "መሠረታዊ ምርመራ፣ ለእያንዳንዱ።"
-              },
-              "price": {
-                "amountMinor": 20000,
-                "currency": "ETB"
-              },
-              "icon": "check"
-            },
-            {
-              "title": {
-                "en": "Abdominal ultrasound",
-                "am": "የሆድ አልትራሳውንድ"
-              },
-              "description": {
-                "en": "By appointment.",
-                "am": "በቀጠሮ።"
-              },
-              "price": {
-                "amountMinor": 120000,
-                "currency": "ETB"
-              },
-              "icon": "calendar"
-            },
-            {
-              "title": {
-                "en": "Pregnancy ultrasound",
-                "am": "የእርግዝና አልትራሳውንድ"
-              },
-              "description": {
-                "en": "By appointment.",
-                "am": "በቀጠሮ።"
-              },
-              "price": {
-                "amountMinor": 150000,
-                "currency": "ETB"
-              },
-              "icon": "calendar"
-            }
-          ]
-        },
-        {
-          "type": "about",
-          "heading": {
-            "en": "Before your visit",
-            "am": "ከመምጣትዎ በፊት"
-          },
-          "body": {
-            "en": "Bring any previous results and the medicines you take. For some blood tests you may need to come without eating; call us to check.",
-            "am": "ከዚህ በፊት የተመረመሩበትን ውጤት እና የሚወስዷቸውን መድኃኒቶች ይዘው ይምጡ። ለአንዳንድ የደም ምርመራዎች ሳይበሉ መምጣት ሊያስፈልግ ይችላል፤ ደውለው ይጠይቁን።"
-          }
-        }
-      ]
-    },
-    {
-      "path": "/appointments",
-      "title": {
-        "en": "Book an appointment",
-        "am": "ቀጠሮ ይያዙ"
-      },
-      "nav": {
-        "en": "Appointments",
-        "am": "ቀጠሮ"
-      },
-      "description": {
-        "en": "Request an appointment at Megenagna Family Clinic. We confirm by phone.",
-        "am": "በመገናኛ የቤተሰብ ክሊኒክ ቀጠሮ ይጠይቁ። በስልክ እናረጋግጣለን።"
-      },
-      "sections": [
         {
           "type": "form",
-          "id": "appointment",
+          "id": "booking",
           "kind": "booking",
-          "heading": {
-            "en": "Request an appointment",
-            "am": "ቀጠሮ ይጠይቁ"
-          },
-          "intro": {
-            "en": "Choose a day and time. We will call you to confirm. This form is not for emergencies.",
-            "am": "ቀንና ሰዓት ይምረጡ። ለማረጋገጥ እንደውልልዎታለን። ይህ ቅጽ ለድንገተኛ ሁኔታ አይደለም።"
-          },
+          "heading": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+          "intro": { "en": "Leave your name and number. We call you back within one working hour to agree a time. For anything urgent, please call instead.", "am": "ስምዎንና ስልክዎን ይተዉልን። በአንድ የሥራ ሰዓት ውስጥ ደውለን ሰዓት እንይዝልዎታለን። አስቸኳይ ከሆነ ግን በቀጥታ ይደውሉ።" },
           "fields": [
             {
-              "name": "full_name",
-              "label": {
-                "en": "Patient's full name",
-                "am": "የታካሚው ሙሉ ስም"
-              },
+              "name": "name",
+              "label": { "en": "Patient's name", "am": "የታካሚው ስም" },
               "type": "text",
               "required": true
             },
             {
               "name": "phone",
-              "label": {
-                "en": "Phone",
-                "am": "ስልክ"
-              },
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
               "type": "tel",
               "required": true
             },
             {
-              "name": "date",
-              "label": {
-                "en": "Preferred date",
-                "am": "የሚመርጡት ቀን"
-              },
-              "type": "date",
-              "required": true
-            },
-            {
-              "name": "time",
-              "label": {
-                "en": "Preferred time",
-                "am": "የሚመርጡት ሰዓት"
-              },
-              "type": "time",
-              "required": true
-            },
-            {
-              "name": "reason",
-              "label": {
-                "en": "Reason for visit",
-                "am": "የመጡበት ምክንያት"
-              },
+              "name": "service",
+              "label": { "en": "What do you need?", "am": "ምን አገልግሎት ይፈልጋሉ?" },
               "type": "select",
               "required": true,
               "options": [
+                { "en": "General check-up", "am": "አጠቃላይ ምርመራ" },
+                { "en": "Children's visit", "am": "የሕፃናት ሕክምና" },
+                { "en": "Pregnancy follow-up or ultrasound", "am": "የእርግዝና ክትትል ወይም አልትራሳውንድ" },
+                { "en": "Laboratory test", "am": "የላብራቶሪ ምርመራ" },
+                { "en": "Dental check-up", "am": "የጥርስ ምርመራ" },
+                { "en": "Not sure yet", "am": "እርግጠኛ አይደለሁም" }
+              ]
+            },
+            {
+              "name": "day",
+              "label": { "en": "Preferred day", "am": "የሚመችዎ ቀን" },
+              "type": "date"
+            },
+            {
+              "name": "note",
+              "label": { "en": "Anything we should know? (optional)", "am": "ልናውቀው የሚገባ ነገር አለ? (ካለ)" },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": { "en": "Request appointment", "am": "ቀጠሮ ጠይቅ" },
+          "successMessage": { "en": "Thank you. We will call you shortly to confirm your appointment.", "am": "እናመሰግናለን። ቀጠሮዎን ለማረጋገጥ በቅርቡ እንደውልልዎታለን።" }
+        },
+        {
+          "type": "contact",
+          "heading": { "en": "Visit or call us", "am": "ይምጡ ወይም ይደውሉልን" },
+          "intro": { "en": "The front desk answers the phone and Telegram whenever we are open.", "am": "እንግዳ መቀበያው ክፍት በሆንበት ሰዓት ሁሉ ስልክና ቴሌግራም ይመልሳል።" }
+        },
+        {
+          "type": "map",
+          "heading": { "en": "Near the Megenagna roundabout", "am": "መገናኛ አደባባይ አጠገብ" },
+          "query": "Megenagna, Addis Ababa"
+        }
+      ]
+    },
+    {
+      "path": "/services",
+      "title": { "en": "Services", "am": "አገልግሎቶች" },
+      "nav": { "en": "Services", "am": "አገልግሎቶች" },
+      "description": { "en": "Services and prices at Megenagna Family Clinic: doctor's visits, children's health, pregnancy care, laboratory, pharmacy and dental.", "am": "በመገናኛ የቤተሰብ ክሊኒክ የሚሰጡ አገልግሎቶችና ዋጋዎች፤ የሐኪም ምርመራ፣ የሕፃናት ጤና፣ የእርግዝና ክትትል፣ ላብራቶሪ፣ መድኃኒት ቤት እና የጥርስ ሕክምና።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "banner",
+          "eyebrow": { "en": "Services and prices", "am": "አገልግሎቶችና ዋጋዎች" },
+          "heading": { "en": "Clear care, clear prices", "am": "ግልጽ ሕክምና፣ ግልጽ ዋጋ" },
+          "subheading": { "en": "What we treat, what it costs, and what to bring. No surprises at the front desk.", "am": "የምናክመው፣ ዋጋው እና ይዘው የሚመጡት። በክፍያ ጊዜ የሚያስደነግጥ ነገር የለም።" },
+          "image": {
+            "src": "/stock/clinic-hero-doctor-clipboard.webp",
+            "alt": { "en": "A doctor in a white coat and glasses writing on a folder", "am": "ነጭ ጋውንና መነጽር ያደረገ ሐኪም በማህደር ላይ ሲጽፍ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+            "href": "/#booking"
+          }
+        },
+        {
+          "type": "cards",
+          "layout": "grid",
+          "eyebrow": { "en": "What we offer", "am": "የምንሰጠው" },
+          "heading": { "en": "Our services", "am": "አገልግሎቶቻችን" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/clinic-gallery-blood-pressure.webp",
+                "alt": { "en": "A clinician fitting a blood-pressure cuff on a seated young man", "am": "ባለሙያ ለተቀመጠ ወጣት የደም ግፊት መለኪያ ሲያስር" }
+              },
+              "title": { "en": "General check-up", "am": "አጠቃላይ ምርመራ" },
+              "subtitle": { "en": "Adults", "am": "ለአዋቂዎች" },
+              "description": { "en": "Everyday illness, plus regular follow-up for blood pressure, diabetes and asthma.", "am": "የዕለት ተዕለት ሕመም፣ እንዲሁም ለደም ግፊት፣ ለስኳርና ለአስም መደበኛ ክትትል።" },
+              "meta": [
+                { "en": "Every day", "am": "በየቀኑ" },
+                { "en": "About 20 minutes", "am": "20 ደቂቃ ገደማ" }
+              ],
+              "price": { "amountMinor": 40000, "currency": "ETB" },
+              "priceNote": { "en": "per visit", "am": "በአንድ ምርመራ" },
+              "action": {
+                "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+                "href": "/#booking"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-about-newborn-care.webp",
+                "alt": { "en": "A nurse gently tending a sleeping newborn wrapped in a blanket", "am": "ነርስ በብርድ ልብስ የተጠቀለለ የተኛ ሕፃን በጥንቃቄ ስትንከባከብ" }
+              },
+              "title": { "en": "Children's health", "am": "የሕፃናት ጤና" },
+              "subtitle": { "en": "Babies to 14 years", "am": "ከጨቅላ እስከ 14 ዓመት" },
+              "badge": { "en": "Most visited", "am": "በብዛት የሚጎበኝ" },
+              "description": { "en": "Fevers, coughs, tummy bugs, growth checks and advice for new parents.", "am": "ትኩሳት፣ ሳል፣ የሆድ ሕመም፣ የዕድገት ክትትል እና ለአዲስ ወላጆች ምክር።" },
+              "meta": [
+                { "en": "Mon, Wed, Sat", "am": "ሰኞ፣ ረቡዕ፣ ቅዳሜ" },
+                { "en": "Children's doctor", "am": "የሕፃናት ሐኪም" }
+              ],
+              "price": { "amountMinor": 40000, "currency": "ETB" },
+              "priceNote": { "en": "per visit", "am": "በአንድ ምርመራ" },
+              "action": {
+                "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+                "href": "/#booking"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-about-ultrasound-room.webp",
+                "alt": { "en": "Two smiling nurses doing an ultrasound scan for a patient lying on a bed", "am": "ሁለት ፈገግተኛ ነርሶች አልጋ ላይ ለተኛች ታካሚ አልትራሳውንድ ሲሠሩ" }
+              },
+              "title": { "en": "Pregnancy care and ultrasound", "am": "የእርግዝና ክትትልና አልትራሳውንድ" },
+              "subtitle": { "en": "Mothers", "am": "ለእናቶች" },
+              "description": { "en": "Follow-up from the first weeks to the last, with ultrasound in a private room.", "am": "ከመጀመሪያው ሳምንት እስከ መጨረሻው ክትትል፤ አልትራሳውንድ በግል ክፍል።" },
+              "meta": [
+                { "en": "Mon to Sat", "am": "ከሰኞ እስከ ቅዳሜ" },
+                { "en": "By appointment", "am": "በቀጠሮ" }
+              ],
+              "price": { "amountMinor": 90000, "currency": "ETB" },
+              "priceNote": { "en": "ultrasound", "am": "አልትራሳውንድ" },
+              "action": {
+                "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+                "href": "/#booking"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-card-lab-microscope.webp",
+                "alt": { "en": "A lab technician in a white coat looking through a microscope", "am": "ነጭ ጋውን የለበሰች የላብራቶሪ ባለሙያ በማይክሮስኮፕ ስትመለከት" }
+              },
+              "title": { "en": "Laboratory", "am": "ላብራቶሪ" },
+              "subtitle": { "en": "On site", "am": "በክሊኒኩ ውስጥ" },
+              "description": { "en": "Blood, urine and stool tests, blood sugar, malaria and typhoid tests.", "am": "የደም፣ የሽንትና የሰገራ ምርመራ፣ የስኳር፣ የወባና የታይፎይድ ምርመራ።" },
+              "meta": [
+                { "en": "Every day", "am": "በየቀኑ" },
+                { "en": "Results in 2 hours", "am": "ውጤት በ2 ሰዓት" }
+              ],
+              "price": { "amountMinor": 15000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-gallery-dental.webp",
+                "alt": { "en": "A dental clinician in teal scrubs adjusting the lamp over a patient in the chair", "am": "የጥርስ ባለሙያ ወንበር ላይ ላለ ታካሚ መብራቱን ስታስተካክል" }
+              },
+              "title": { "en": "Teeth and gums", "am": "ጥርስና ድድ" },
+              "subtitle": { "en": "Adults and children", "am": "ለአዋቂዎችና ለልጆች" },
+              "description": { "en": "Check-ups, cleaning, fillings and help with toothache.", "am": "ምርመራ፣ እጥበት፣ ሙሌት እና ለጥርስ ሕመም መፍትሔ።" },
+              "meta": [
+                { "en": "Tue and Thu", "am": "ማክሰኞና ሐሙስ" },
+                { "en": "By appointment", "am": "በቀጠሮ" }
+              ],
+              "price": { "amountMinor": 50000, "currency": "ETB" },
+              "priceNote": { "en": "check-up", "am": "ምርመራ" },
+              "action": {
+                "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+                "href": "/#booking"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-card-pharmacy.webp",
+                "alt": { "en": "A man and a woman reading a medicine box beside bright pharmacy shelves", "am": "አንድ ወንድና አንዲት ሴት በመድኃኒት መደርደሪያ አጠገብ የመድኃኒት ካርቶን ሲያነቡ" }
+              },
+              "title": { "en": "Pharmacy", "am": "መድኃኒት ቤት" },
+              "subtitle": { "en": "On site", "am": "በክሊኒኩ ውስጥ" },
+              "description": { "en": "Your prescription filled before you leave, and the pharmacist explains how to take it.", "am": "የታዘዘልዎ መድኃኒት ሳይወጡ ይሰጥዎታል፤ ፋርማሲስቱም አወሳሰዱን ያስረዳዎታል።" },
+              "meta": [
+                { "en": "Every day", "am": "በየቀኑ" },
+                { "en": "Open to everyone", "am": "ለሁሉም ክፍት" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "menu",
+          "eyebrow": { "en": "Price list", "am": "የዋጋ ዝርዝር" },
+          "heading": { "en": "Common prices", "am": "የተለመዱ ዋጋዎች" },
+          "intro": { "en": "Prices in Birr. Anything not listed here is told to you before it is done.", "am": "ዋጋዎቹ በብር ናቸው። እዚህ ያልተዘረዘረ አገልግሎት ከመሠራቱ በፊት ዋጋው ይነገርዎታል።" },
+          "categories": [
+            {
+              "name": { "en": "Visits", "am": "ምርመራ" },
+              "items": [
                 {
-                  "en": "General check-up",
-                  "am": "አጠቃላይ ምርመራ"
+                  "name": { "en": "Doctor's visit, adult", "am": "የሐኪም ምርመራ፣ አዋቂ" },
+                  "price": { "amountMinor": 40000, "currency": "ETB" }
                 },
                 {
-                  "en": "Child's health",
-                  "am": "የልጅ ጤና"
+                  "name": { "en": "Doctor's visit, child", "am": "የሐኪም ምርመራ፣ ልጅ" },
+                  "price": { "amountMinor": 40000, "currency": "ETB" }
                 },
                 {
-                  "en": "Lab test",
-                  "am": "የላብራቶሪ ምርመራ"
+                  "name": { "en": "Follow-up within 7 days", "am": "በ7 ቀን ውስጥ ክትትል" },
+                  "description": { "en": "For the same illness", "am": "ለተመሳሳይ ሕመም" },
+                  "tag": { "en": "Free", "am": "ነፃ" }
                 },
                 {
-                  "en": "Ultrasound",
-                  "am": "አልትራሳውንድ"
+                  "name": { "en": "Pregnancy follow-up visit", "am": "የእርግዝና ክትትል" },
+                  "price": { "amountMinor": 45000, "currency": "ETB" }
                 },
                 {
-                  "en": "Other",
-                  "am": "ሌላ"
+                  "name": { "en": "Dental check-up", "am": "የጥርስ ምርመራ" },
+                  "price": { "amountMinor": 50000, "currency": "ETB" }
                 }
               ]
             },
             {
-              "name": "notes",
-              "label": {
-                "en": "Anything we should know",
-                "am": "ልናውቀው የሚገባ ነገር"
-              },
-              "type": "textarea"
+              "name": { "en": "Tests", "am": "ምርመራዎች" },
+              "items": [
+                {
+                  "name": { "en": "Complete blood count", "am": "ሙሉ የደም ምርመራ" },
+                  "price": { "amountMinor": 35000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Blood sugar", "am": "የስኳር ምርመራ" },
+                  "price": { "amountMinor": 15000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Malaria test", "am": "የወባ ምርመራ" },
+                  "price": { "amountMinor": 20000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Urine test", "am": "የሽንት ምርመራ" },
+                  "price": { "amountMinor": 15000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Pregnancy ultrasound", "am": "የእርግዝና አልትራሳውንድ" },
+                  "price": { "amountMinor": 90000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Abdominal ultrasound", "am": "የሆድ አልትራሳውንድ" },
+                  "price": { "amountMinor": 110000, "currency": "ETB" }
+                }
+              ]
             }
-          ],
-          "submitLabel": {
-            "en": "Send request",
-            "am": "ጥያቄውን ይላኩ"
-          },
-          "successMessage": {
-            "en": "Thank you! We will call you soon to confirm your appointment.",
-            "am": "እናመሰግናለን! ቀጠሮዎን ለማረጋገጥ በቅርቡ እንደውልልዎታለን።"
-          }
+          ]
         },
         {
-          "type": "contact",
-          "heading": {
-            "en": "Prefer to call?",
-            "am": "መደወል ይመርጣሉ?"
+          "type": "services",
+          "variant": "numbered",
+          "eyebrow": { "en": "Be ready", "am": "ይዘጋጁ" },
+          "heading": { "en": "What to bring", "am": "ይዘው የሚመጡት" },
+          "items": [
+            {
+              "title": { "en": "Your patient card", "am": "የታካሚ ካርድዎ" },
+              "description": { "en": "If you have been here before. New patients get one at the front desk.", "am": "ከዚህ በፊት መጥተው ከሆነ። አዲስ ታካሚዎች በእንግዳ መቀበያው ይሰጣቸዋል።" }
+            },
+            {
+              "title": { "en": "Medicines you take", "am": "የሚወስዷቸው መድኃኒቶች" },
+              "description": { "en": "Bring the boxes or a photo of them, and any earlier test results.", "am": "ካርቶኖቹን ወይም ፎቶአቸውን፣ እንዲሁም የቀድሞ የምርመራ ውጤት ካለ ይዘው ይምጡ።" }
+            },
+            {
+              "title": { "en": "Your child's vaccination card", "am": "የልጅዎ የክትባት ካርድ" },
+              "description": { "en": "For every children's visit, so the doctor sees the full picture.", "am": "ለእያንዳንዱ የሕፃናት ምርመራ፤ ሐኪሙ ሙሉ መረጃ እንዲኖረው።" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "heading": { "en": "Not sure which service you need?", "am": "የትኛው አገልግሎት እንደሚያስፈልግዎ አላወቁም?" },
+          "body": { "en": "Tell us how you feel and we will point you to the right person.", "am": "የሚሰማዎትን ይንገሩን፤ ወደ ትክክለኛው ባለሙያ እንመራዎታለን።" },
+          "primaryAction": {
+            "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+            "href": "/#booking"
           },
-          "intro": {
-            "en": "You can also book by phone or Telegram during opening hours.",
-            "am": "በሥራ ሰዓት በስልክ ወይም በቴሌግራም ቀጠሮ መያዝ ይችላሉ።"
+          "secondaryAction": {
+            "label": { "en": "Call 0911 000 000", "am": "ይደውሉ 0911 000 000" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/doctors",
+      "title": { "en": "Our team", "am": "ባለሙያዎቻችን" },
+      "nav": { "en": "Doctors", "am": "ሐኪሞች" },
+      "description": { "en": "Meet the doctors and nurses of Megenagna Family Clinic and see which days they work.", "am": "የመገናኛ የቤተሰብ ክሊኒክ ሐኪሞችንና ነርሶችን ይተዋወቁ፤ የሥራ ቀናቸውንም ይመልከቱ።" },
+      "sections": [
+        {
+          "type": "cards",
+          "layout": "people",
+          "eyebrow": { "en": "Our team", "am": "ባለሙያዎቻችን" },
+          "heading": { "en": "Doctors and nurses who know your family", "am": "ቤተሰብዎን የሚያውቁ ሐኪሞችና ነርሶች" },
+          "intro": { "en": "A small team, so you see someone who remembers you.", "am": "ቡድናችን ትንሽ ነው፤ ስለዚህ የሚያስታውስዎ ባለሙያ ያገኛሉ።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/clinic-card-doctor-portrait.webp",
+                "alt": { "en": "A smiling woman doctor in a white coat holding a stethoscope", "am": "ነጭ ጋውን የለበሰች፣ ስቴቶስኮፕ የያዘች ፈገግተኛ ሐኪም" }
+              },
+              "title": { "en": "Dr. Hana T.", "am": "ዶ/ር ሃና ተ." },
+              "subtitle": { "en": "Family doctor", "am": "የቤተሰብ ሐኪም" },
+              "description": { "en": "Sees adults and older children for everyday illness, blood pressure and diabetes follow-up. Speaks Amharic and English.", "am": "አዋቂዎችንና ከፍ ያሉ ልጆችን ለዕለት ተዕለት ሕመም፣ ለደም ግፊትና ለስኳር ክትትል ታያለች። አማርኛና እንግሊዝኛ ትናገራለች።" }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-hero-doctor-clipboard.webp",
+                "alt": { "en": "A young doctor in a white coat and glasses writing on a folder", "am": "ነጭ ጋውንና መነጽር ያደረገ ወጣት ሐኪም በማህደር ላይ ሲጽፍ" }
+              },
+              "title": { "en": "Dr. Yonas B.", "am": "ዶ/ር ዮናስ በ." },
+              "subtitle": { "en": "Children's doctor", "am": "የሕፃናት ሐኪም" },
+              "description": { "en": "Looks after babies and children: fevers, coughs, growth checks and vaccination advice. Speaks Amharic and Afaan Oromo.", "am": "ሕፃናትንና ልጆችን ይከታተላል፤ ትኩሳት፣ ሳል፣ የዕድገት ክትትል እና የክትባት ምክር። አማርኛና አፋን ኦሮሞ ይናገራል።" }
+            },
+            {
+              "image": {
+                "src": "/stock/clinic-card-nurse-portrait.webp",
+                "alt": { "en": "A smiling nurse in light-blue scrubs with a stethoscope", "am": "ውሃ ሰማያዊ የሥራ ልብስ የለበሰች፣ ስቴቶስኮፕ ያንጠለጠለች ፈገግተኛ ነርስ" }
+              },
+              "title": { "en": "Sr. Meron A.", "am": "ሲስተር ሜሮን አ." },
+              "subtitle": { "en": "Head nurse, mother and baby care", "am": "ዋና ነርስ፣ የእናቶችና የሕፃናት ክብካቤ" },
+              "description": { "en": "Runs pregnancy follow-up and the baby clinic, and is the first face most patients meet. Speaks Amharic and Tigrinya.", "am": "የእርግዝና ክትትልንና የሕፃናት ክፍሉን ትመራለች፤ አብዛኛው ታካሚ መጀመሪያ የሚያገኛት እሷን ነው። አማርኛና ትግርኛ ትናገራለች።" }
+            }
+          ]
+        },
+        {
+          "type": "schedule",
+          "layout": "list",
+          "eyebrow": { "en": "Clinic days", "am": "የሥራ ቀናት" },
+          "heading": { "en": "Who is in, and when", "am": "ማን መቼ ይገኛል" },
+          "items": [
+            {
+              "time": { "en": "Mon to Fri", "am": "ከሰኞ እስከ ዓርብ" },
+              "title": { "en": "Family doctor", "am": "የቤተሰብ ሐኪም" },
+              "note": { "en": "8:00 am to 5:00 pm", "am": "ከጠዋቱ 2 እስከ ቀኑ 11 ሰዓት" }
+            },
+            {
+              "time": { "en": "Mon, Wed, Sat", "am": "ሰኞ፣ ረቡዕ፣ ቅዳሜ" },
+              "title": { "en": "Children's doctor", "am": "የሕፃናት ሐኪም" },
+              "note": { "en": "9:00 am to 4:00 pm", "am": "ከጠዋቱ 3 እስከ ቀኑ 10 ሰዓት" }
+            },
+            {
+              "time": { "en": "Mon to Sat", "am": "ከሰኞ እስከ ቅዳሜ" },
+              "title": { "en": "Pregnancy follow-up and ultrasound", "am": "የእርግዝና ክትትልና አልትራሳውንድ" },
+              "note": { "en": "8:30 am to 4:00 pm", "am": "ከጠዋቱ 2:30 እስከ ቀኑ 10 ሰዓት" }
+            },
+            {
+              "time": { "en": "Tue and Thu", "am": "ማክሰኞና ሐሙስ" },
+              "title": { "en": "Dentist", "am": "የጥርስ ሐኪም" },
+              "note": { "en": "9:00 am to 5:00 pm", "am": "ከጠዋቱ 3 እስከ ቀኑ 11 ሰዓት" }
+            },
+            {
+              "time": { "en": "Every day", "am": "በየቀኑ" },
+              "title": { "en": "Evening and Sunday doctor, laboratory, pharmacy", "am": "የምሽትና የእሑድ ሐኪም፣ ላብራቶሪ፣ መድኃኒት ቤት" },
+              "note": { "en": "All opening hours", "am": "በሥራ ሰዓት ሁሉ" }
+            }
+          ],
+          "footnote": { "en": "Days can change on public holidays. Call before you travel far.", "am": "በበዓላት ቀን ፕሮግራሙ ሊቀየር ይችላል። ከሩቅ ከመምጣትዎ በፊት ይደውሉ።" }
+        },
+        {
+          "type": "services",
+          "variant": "list",
+          "eyebrow": { "en": "Our promise", "am": "ቃላችን" },
+          "heading": { "en": "How we treat people", "am": "ታካሚን የምናስተናግድበት መንገድ" },
+          "items": [
+            {
+              "icon": "clock",
+              "title": { "en": "We keep your time", "am": "ሰዓትዎን እናከብራለን" },
+              "description": { "en": "Booked patients are seen within 15 minutes of their time.", "am": "ቀጠሮ ያላቸው ታካሚዎች ከሰዓታቸው በ15 ደቂቃ ውስጥ ይታያሉ።" }
+            },
+            {
+              "icon": "message",
+              "title": { "en": "We explain", "am": "እናስረዳለን" },
+              "description": { "en": "In plain Amharic, Afaan Oromo, Tigrinya or English, until it is clear.", "am": "በቀላል አማርኛ፣ አፋን ኦሮሞ፣ ትግርኛ ወይም እንግሊዝኛ፤ ግልጽ እስኪሆንልዎ።" }
+            },
+            {
+              "icon": "shield",
+              "title": { "en": "We keep it private", "am": "ምስጢርዎን እንጠብቃለን" },
+              "description": { "en": "Your file is seen only by the people treating you.", "am": "ማህደርዎን የሚያዩት የሚያክሙዎ ባለሙያዎች ብቻ ናቸው።" }
+            },
+            {
+              "icon": "check",
+              "title": { "en": "We tell you the price first", "am": "ዋጋውን አስቀድመን እንነግራለን" },
+              "description": { "en": "Before any test or treatment, every time.", "am": "ከማንኛውም ምርመራ ወይም ሕክምና በፊት፣ ሁልጊዜ።" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "heading": { "en": "See a doctor who knows your family", "am": "ቤተሰብዎን የሚያውቅ ሐኪም ያግኙ" },
+          "body": { "en": "Choose a day that suits you. We will call to confirm the time.", "am": "የሚመችዎን ቀን ይምረጡ። ሰዓቱን ለማረጋገጥ እንደውልልዎታለን።" },
+          "image": {
+            "src": "/stock/clinic-hero-two-nurses.webp",
+            "alt": { "en": "Two smiling nurses in green scrubs in a bright clinic room", "am": "አረንጓዴ የሥራ ልብስ የለበሱ ሁለት ፈገግተኛ ነርሶች በብሩህ የክሊኒክ ክፍል" }
+          },
+          "primaryAction": {
+            "label": { "en": "Book an appointment", "am": "ቀጠሮ ይያዙ" },
+            "href": "/#booking"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call 0911 000 000", "am": "ይደውሉ 0911 000 000" },
+            "href": "tel:+251911000000"
           }
         }
       ]
     },
     {
       "path": "/contact",
-      "title": {
-        "en": "Contact and location",
-        "am": "አድራሻና ቦታ"
-      },
-      "nav": {
-        "en": "Contact",
-        "am": "አድራሻ"
-      },
-      "description": {
-        "en": "Find Megenagna Family Clinic: address, phone and opening hours.",
-        "am": "የመገናኛ የቤተሰብ ክሊኒክ አድራሻ፣ ስልክ እና የሥራ ሰዓት።"
-      },
+      "title": { "en": "Contact", "am": "አድራሻ" },
+      "nav": { "en": "Contact", "am": "አድራሻ" },
+      "description": { "en": "Phone, Telegram, opening hours and directions to Megenagna Family Clinic.", "am": "የመገናኛ የቤተሰብ ክሊኒክ ስልክ፣ ቴሌግራም፣ የሥራ ሰዓት እና አቅጣጫ።" },
       "sections": [
         {
           "type": "contact",
-          "heading": {
-            "en": "Get in touch",
-            "am": "ያግኙን"
-          },
-          "intro": {
-            "en": "Call, message us on Telegram or walk in during opening hours.",
-            "am": "ይደውሉ፣ በቴሌግራም ይጻፉልን ወይም በሥራ ሰዓት ይምጡ።"
-          }
+          "heading": { "en": "Talk to us", "am": "ያነጋግሩን" },
+          "intro": { "en": "Call or write on Telegram whenever we are open. For an appointment, the booking form is quickest.", "am": "ክፍት በሆንበት ሰዓት ሁሉ ይደውሉ ወይም በቴሌግራም ይጻፉ። ለቀጠሮ የቀጠሮ ቅጹ ፈጣኑ መንገድ ነው።" }
+        },
+        {
+          "type": "services",
+          "variant": "list",
+          "eyebrow": { "en": "Getting here", "am": "አመጣጥ" },
+          "heading": { "en": "Easy to reach", "am": "ለመድረስ ቀላል" },
+          "items": [
+            {
+              "icon": "bus",
+              "title": { "en": "By taxi or bus", "am": "በታክሲ ወይም በአውቶቡስ" },
+              "description": { "en": "Get off at Megenagna roundabout. We are three minutes' walk away.", "am": "መገናኛ አደባባይ ይውረዱ። ከዚያ የሦስት ደቂቃ የእግር መንገድ ነው።" }
+            },
+            {
+              "icon": "car",
+              "title": { "en": "By car", "am": "በመኪና" },
+              "description": { "en": "Free parking for patients in front of the building.", "am": "ከሕንፃው ፊት ለፊት ለታካሚዎች ነፃ የመኪና ማቆሚያ አለ።" }
+            },
+            {
+              "icon": "users",
+              "title": { "en": "Easy access", "am": "ምቹ መግቢያ" },
+              "description": { "en": "Ground floor, with a ramp for wheelchairs and pushchairs.", "am": "ምድር ቤት ላይ፤ ለዊልቸርና ለሕፃናት ጋሪ መወጣጫ አለው።" }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "message",
+          "kind": "contact",
+          "heading": { "en": "Send us a question", "am": "ጥያቄ ይላኩልን" },
+          "intro": { "en": "For prices, opening days or anything else that is not urgent. Please don't send private medical details here.", "am": "ስለ ዋጋ፣ ስለ ሥራ ቀናት ወይም አስቸኳይ ላልሆነ ማንኛውም ጉዳይ። የግል የሕክምና ዝርዝር እዚህ አይጻፉ።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "message",
+              "label": { "en": "Your question", "am": "ጥያቄዎ" },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": { "en": "Send", "am": "ላክ" },
+          "successMessage": { "en": "Thank you. We will answer during opening hours.", "am": "እናመሰግናለን። በሥራ ሰዓታችን እንመልስልዎታለን።" }
         },
         {
           "type": "map",
-          "heading": {
-            "en": "How to find us",
-            "am": "እንዴት እንደሚያገኙን"
-          },
+          "heading": { "en": "Where we are", "am": "የምንገኝበት" },
           "query": "Megenagna, Addis Ababa"
         }
       ]
