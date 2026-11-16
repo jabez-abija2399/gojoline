@@ -125,6 +125,8 @@
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      /* Endless loops (marquee, glow, caret) end too, so nothing keeps moving. */
+      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
@@ -286,5 +288,150 @@
   }
   [data-gojo-theme="system"] .logo-light {
     display: none;
+  }
+}
+
+/* ---- Landing motion (all of it stops under prefers-reduced-motion, via the rule above or here) ---- */
+
+/* The playing chip's timer: a thin line that fills while that business is on screen. */
+.chip-progress {
+  animation: chip-fill linear both;
+  transform: scaleX(0);
+}
+@keyframes chip-fill {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* A blinking caret at the end of the message being typed in the hero demo. */
+.typing-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-inline-start: 2px;
+  vertical-align: -0.2em;
+  background: currentColor;
+  animation: caret 0.9s steps(1) infinite;
+}
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Business types drifting by; paused under a pointer or keyboard focus. */
+.marquee-row {
+  animation: marquee 48s linear infinite;
+}
+.marquee:hover .marquee-row,
+.marquee:focus-within .marquee-row {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    flex-wrap: wrap;
+    justify-content: center;
+    mask-image: none;
+  }
+  .marquee-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.75rem;
+  }
+  .marquee-row[aria-hidden] {
+    display: none;
+  }
+}
+
+/* Hero: the brush stroke under the promise draws itself once; two soft glows drift slowly
+   behind the headline (transform only, no blur filter, so cheap phones keep up). */
+.brush-draw path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: brush 0.9s 0.25s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+@keyframes brush {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brush-draw path {
+    stroke-dashoffset: 0;
+  }
+}
+.hero-glow {
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 620px;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(38% 46% at 30% 40%, color-mix(in oklab, var(--gojo-coral) 22%, transparent), transparent 70%),
+    radial-gradient(34% 40% at 72% 30%, color-mix(in oklab, var(--gojo-sun) 30%, transparent), transparent 70%);
+  animation: glow-drift 18s ease-in-out infinite alternate;
+}
+@keyframes glow-drift {
+  to {
+    transform: translate3d(3%, 4%, 0) scale(1.06);
+  }
+}
+
+/* A thin line along the top of the landing page that fills as you read (scroll-driven, no JS). */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .read-progress {
+      position: fixed;
+      inset: 0 0 auto;
+      height: 3px;
+      z-index: 50;
+      background: var(--gojo-ink);
+      transform-origin: 0 50%;
+      animation: read-fill linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+@keyframes read-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* "How it works": the line beside the steps draws as the section scrolls through. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .steps-line {
+      animation: line-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 60%;
+      transform-origin: top;
+    }
+  }
+}
+@keyframes line-draw {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow,
+  .typing-caret,
+  .chip-progress,
+  .marquee-row {
+    animation: none !important;
   }
 }

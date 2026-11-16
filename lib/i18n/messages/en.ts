@@ -19,6 +19,7 @@ export const en = {
   },
   landing: {
     hero: {
+      pauseDemo: "Pause the demo",
       eyebrow: "The website builder that speaks Amharic",
       titleStart: "Build your",
       titleEnd: "home online",
@@ -50,6 +51,16 @@ export const en = {
       { value: "14", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
+    marquee: { title: "Made for every kind of business" },
+    compare: {
+      title: "From one message to a real website",
+      body: "Write about your business the way you'd tell a friend. Gojoline turns it into a site your customers can visit, book and order from.",
+      before: "Your message",
+      after: "Your website",
+      slider: "Slide to compare your message and your website",
+      from: "Selam Coffee",
+      time: "9:41",
+    },
     proofTitle: "Gojoline in numbers",
     proofNote: "Measured on our own test builds, November 2026.",
     steps: {

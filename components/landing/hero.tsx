@@ -12,15 +12,16 @@ import { Mosaic } from "./mosaic";
  */
 export function Hero({ t, locale, sites, text, install, promptTitle, templates, signedIn }: { t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string; templates: { href: string; label: string }; signedIn: boolean }) {
   return (
-    <div className="relative">
+    <div className="relative isolate overflow-x-clip">
+      <div aria-hidden="true" className="hero-glow" />
       <section aria-labelledby="hero-title" className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 pt-10 text-center sm:px-6 md:gap-7 md:pt-16">
         <h1 id="hero-title" className={`max-w-[16ch] text-5xl display text-balance sm:text-7xl ${locale === "am" ? "leading-[1.3]" : "leading-[1.04]"}`}>
           {t.titleStart}{" "}
           <span className="relative inline-block whitespace-nowrap [line-height:inherit]">
             {t.titleEnd}
             {/* A brush stroke under the promise, drawn by hand rather than ruled. */}
-            <svg aria-hidden="true" focusable="false" viewBox="0 0 300 18" preserveAspectRatio="none" className="absolute inset-x-0 -bottom-[0.12em] -z-10 h-[0.22em] w-full text-coral">
-              <path d="M4 12C60 4 120 3 180 6s86 4 116 1" fill="none" stroke="currentColor" strokeWidth="9" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 300 18" preserveAspectRatio="none" className="brush-draw absolute inset-x-0 -bottom-[0.12em] -z-10 h-[0.22em] w-full text-coral">
+              <path pathLength={1} d="M4 12C60 4 120 3 180 6s86 4 116 1" fill="none" stroke="currentColor" strokeWidth="9" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
             </svg>
           </span>
         </h1>

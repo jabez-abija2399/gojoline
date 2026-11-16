@@ -198,3 +198,31 @@ test("signed out: the landing page offers sign-in and a free start", async ({ pa
   await page.goto("/en/pricing");
   await expect(page.getByRole("link", { name: "Start free" }).first()).toHaveAttribute("href", /\/en\/sign-in/);
 });
+
+test("landing motion: the demo plays itself and can be paused; reduced motion keeps it still", async ({ page, browser }) => {
+  await page.goto("/en");
+  const chips = page.getByRole("group", { name: "Gojoline for" });
+  await chips.scrollIntoViewIfNeeded();
+  await expect(chips.getByRole("button", { name: "Café" })).toHaveAttribute("aria-pressed", "true");
+  // After a few seconds the next business is shown by itself...
+  await expect(chips.getByRole("button", { name: "Hotel" })).toHaveAttribute("aria-pressed", "true", { timeout: 9000 });
+  // ...until the visitor pauses it.
+  await chips.getByRole("button", { name: "Pause the demo" }).click();
+  await page.waitForTimeout(7000);
+  await expect(chips.getByRole("button", { name: "Hotel" })).toHaveAttribute("aria-pressed", "true");
+
+  // Before and after: a slider anyone can move with the keyboard.
+  const slider = page.getByRole("slider", { name: "Slide to compare your message and your website" });
+  await slider.focus();
+  await page.keyboard.press("End");
+  await expect(slider).toHaveValue("100");
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+
+  const still = await browser.newContext({ reducedMotion: "reduce" });
+  const calm = await still.newPage();
+  await calm.goto("/en");
+  await calm.waitForTimeout(7000);
+  await expect(calm.getByRole("group", { name: "Gojoline for" }).getByRole("button", { name: "Café" })).toHaveAttribute("aria-pressed", "true");
+  await still.close();
+});

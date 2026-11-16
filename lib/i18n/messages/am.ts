@@ -20,6 +20,7 @@ export const am: Messages = {
   },
   landing: {
     hero: {
+      pauseDemo: "ማሳያውን ያቁሙ",
       eyebrow: "አማርኛ የሚናገር የድረ-ገጽ ገንቢ",
       titleStart: "ጎጆዎን",
       titleEnd: "ኦንላይን ይገንቡ",
@@ -51,6 +52,16 @@ export const am: Messages = {
       { value: "14", label: "ዝግጁ አብነቶች" },
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
+    marquee: { title: "ለሁሉም ዓይነት ንግድ የተሠራ" },
+    compare: {
+      title: "ከአንድ መልዕክት ወደ እውነተኛ ድረ-ገጽ",
+      body: "ለጓደኛዎ እንደሚነግሩት ስለ ንግድዎ ይጻፉ። ጎጆላይን ደንበኞችዎ የሚጎበኙት፣ ቦታ የሚያስይዙበት እና የሚያዝዙበት ድረ-ገጽ ያደርገዋል።",
+      before: "የእርስዎ መልዕክት",
+      after: "የእርስዎ ድረ-ገጽ",
+      slider: "መልዕክትዎን እና ድረ-ገጽዎን ለማነጻጸር ያንሸራትቱ",
+      from: "ሰላም ቡና",
+      time: "9:41",
+    },
     proofTitle: "ጎጆላይን በቁጥር",
     proofNote: "በራሳችን የሙከራ ግንባታዎች የተለካ፤ ኅዳር 2019 ዓ.ም.",
     steps: {

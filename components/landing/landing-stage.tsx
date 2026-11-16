@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Check, Lock } from "lucide-react";
+import { ArrowUp, Check, Lock, Pause, Play } from "lucide-react";
 import { LanguageChoice, type SiteLanguages } from "@/components/builder/language-choice";
 import { clearLandingPrompt, saveLandingPrompt } from "@/components/builder/start-prompt";
 import type { Locale } from "@/lib/i18n/config";
@@ -36,6 +36,8 @@ export interface StageText {
   showcaseLabel: string;
   /** Read to screen readers when a chip is picked. */
   picked: string;
+  /** The autoplay toggle (a pressed button means paused). */
+  pauseDemo: string;
   /** Small cards beside the phone on wide screens. */
   noteTitle: string;
   noteBody: string;
@@ -63,15 +65,59 @@ interface Props {
  * real builder with a real site for it, and the prompt box below is filled in ready to build.
  * The description waits while the visitor signs in, then their first site starts building.
  */
+/** How long each business stays on screen while the demo plays itself. */
+const AUTO_MS = 6000;
+
 export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, signedIn = false }: Props) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
+  // The demo plays by itself while it is on screen, until the visitor takes over or pauses it.
+  const [auto, setAuto] = useState(false);
+  const [inView, setInView] = useState(false);
+  // How many times the picture changed: the first view is still, every change animates.
+  const [shown, setShown] = useState(0);
+  const [typed, setTyped] = useState<number | null>(null);
+  const figureRef = useRef<HTMLElement>(null);
   const [text, setText] = useState("");
   const [languages, setLanguages] = useState<SiteLanguages>([locale]);
   const boxRef = useRef<HTMLTextAreaElement>(null);
   // A description from an earlier visit to this page is dropped: only this visit's counts.
   useEffect(clearLandingPrompt, []);
+
+  // Autoplay only for people who haven't asked for less motion, and only while it can be seen.
+  useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setTimeout(() => setAuto(true), 0);
+    const el = figureRef.current;
+    const io = el ? new IntersectionObserver(([e]) => setInView(!!e?.isIntersecting), { threshold: 0.15 }) : null;
+    if (el) io?.observe(el);
+    return () => {
+      clearTimeout(id);
+      io?.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    if (!auto || !inView) return;
+    const id = setTimeout(() => {
+      if (document.hidden) return;
+      setIndex((i) => (i + 1) % sites.length);
+      setShown((n) => n + 1);
+    }, AUTO_MS);
+    return () => clearTimeout(id);
+  }, [auto, inView, index, sites.length]);
+  // The owner's message types itself out after each change (its full size is kept, so nothing moves).
+  useEffect(() => {
+    if (shown === 0) return;
+    const full = [...sites[index]!.prompt].length;
+    let n = 0;
+    const tick = setInterval(() => {
+      n = Math.min(full, n + 2);
+      setTyped(n >= full ? null : n);
+      if (n >= full) clearInterval(tick);
+    }, 24);
+    return () => clearInterval(tick);
+  }, [shown, index, sites]);
   const site = sites[index]!;
   const next = `/${locale}/build`;
 
@@ -88,16 +134,28 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
               type="button"
               aria-pressed={i === index}
               onClick={() => {
+                setAuto(false);
                 setIndex(i);
                 setPicked(i);
+                setShown((n) => n + 1);
                 // Never replace the visitor's own words: only an empty box or an earlier example.
                 if (!text.trim() || sites.some((x) => x.prompt === text)) setText(s.prompt);
               }}
-              className="min-h-11 shrink-0 rounded-full border border-line bg-white px-4 font-medium text-ink transition-colors hover:border-faint aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+              className="relative min-h-11 shrink-0 overflow-hidden rounded-full border border-line bg-white px-4 font-medium text-ink transition-colors hover:border-faint aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
             >
               {s.label}
+              {auto && i === index && (
+                <span key={`bar-${shown}`} aria-hidden="true" className="chip-progress absolute inset-x-3 bottom-1 h-0.5 origin-left rounded-full bg-white/70" style={{ animationDuration: `${AUTO_MS}ms`, animationPlayState: inView ? "running" : "paused" }} />
+              )}
             </button>
           ))}
+          {/* Moving content that runs longer than five seconds can be paused (WCAG 2.2.2). */}
+          {(auto || shown > 0) && picked === null && (
+            <button type="button" onClick={() => setAuto((a) => !a)} aria-pressed={!auto} className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-faint">
+              {auto ? <Pause aria-hidden="true" className="size-4" /> : <Play aria-hidden="true" className="size-4" />}
+              <span className="sr-only">{t.pauseDemo}</span>
+            </button>
+          )}
         </div>
 
         {/* The real builder, drawn with its own pieces: the chat on the left, a real site on the right. */}
@@ -105,7 +163,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
         <p role="status" className="sr-only">
           {picked === null ? "" : t.picked.replace("{name}", site.name)}
         </p>
-        <figure role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-line bg-coral-soft p-4 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
+        <figure ref={figureRef} role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-line bg-coral-soft p-4 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
           {backdrop}
           <div aria-hidden="true" className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgb(18_18_18/0.45)] md:rounded-b-none md:border-b-0">
             <div className="flex items-center gap-3 border-b border-line px-3 py-2.5 sm:px-4">
@@ -122,12 +180,20 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
             </div>
             <div className="grid md:grid-cols-[minmax(0,18rem)_1fr] lg:grid-cols-[minmax(0,22rem)_1fr]">
               <div key={`c-${site.id}`} className="flex flex-col gap-3 p-4 text-start md:border-e md:border-line">
-                <p className="ms-auto max-w-[92%] rounded-2xl rounded-br-sm bg-ink px-4 py-3 text-white">{site.prompt}</p>
+                <p className="relative ms-auto max-w-[92%] rounded-2xl rounded-br-sm bg-ink px-4 py-3 text-white">
+                  <span className={typed === null ? "" : "invisible"}>{site.prompt}</span>
+                  {typed !== null && (
+                    <span className="absolute inset-0 px-4 py-3">
+                      {[...site.prompt].slice(0, typed).join("")}
+                      <span className="typing-caret" />
+                    </span>
+                  )}
+                </p>
                 <div className="rounded-2xl rounded-bl-sm border border-line px-4 py-3">
                   <p className="font-semibold">{t.buildTitle}</p>
                   <ol className="mt-2 flex flex-col gap-1.5">
                     {t.buildSteps.map((step, i) => (
-                      <li key={step} className={`flex items-center gap-2 text-ink-muted ${picked === null ? "" : "animate-[rise-in_0.35s_ease-out_backwards]"}`} style={{ animationDelay: `${i * 140}ms` }}>
+                      <li key={step} className={`flex items-center gap-2 text-ink-muted ${shown === 0 ? "" : "animate-[rise-in_0.35s_ease-out_backwards]"}`} style={{ animationDelay: `${(shown === 0 ? 0 : 600) + i * 160}ms` }}>
                         <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-lagoon text-white">
                           <Check className="size-3.5" strokeWidth={3} />
                         </span>
@@ -158,7 +224,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
                     {t.saved}
                   </p>
                 </div>
-                <div key={`p-${site.id}`} className={`h-[340px] w-[250px] shrink-0 overflow-hidden rounded-t-[2rem] border-x-[8px] border-t-[8px] border-ink bg-white md:h-[440px] md:w-[280px] lg:h-[480px] lg:w-[300px] ${picked === null ? "" : "animate-[pop-in_0.35s_ease-out]"}`}>
+                <div key={`p-${site.id}`} className={`h-[340px] w-[250px] shrink-0 overflow-hidden rounded-t-[2rem] border-x-[8px] border-t-[8px] border-ink bg-white md:h-[440px] md:w-[280px] lg:h-[480px] lg:w-[300px] ${shown === 0 ? "" : "animate-[pop-in_0.45s_ease-out]"}`}>
                   <Image src={site.shot.src} alt="" width={site.shot.width} height={site.shot.height} sizes="(min-width: 1024px) 284px, (min-width: 768px) 264px, 234px" priority={index === 0} className="h-auto w-full" />
                 </div>
               </div>

@@ -7,6 +7,8 @@ import { FinalCta } from "@/components/landing/final-cta";
 import { Hero } from "@/components/landing/hero";
 import { Proof } from "@/components/landing/proof";
 import { Steps } from "@/components/landing/steps";
+import { Marquee } from "@/components/landing/marquee";
+import { Compare } from "@/components/landing/compare";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { isLocale } from "@/lib/i18n/config";
@@ -39,6 +41,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const exampleAddress = (services().publish?.publisher.urlFor(EXAMPLE_SLUG) ?? `https://gojo-${EXAMPLE_SLUG}.vercel.app`).replace(/^https:\/\//, "");
   return (
     <>
+      <div aria-hidden="true" className="read-progress" />
       <SiteHeader locale={lang} t={t} nav />
       <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero
@@ -65,13 +68,16 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
             chatPlaceholder: b.chatPlaceholder,
             showcaseLabel: t.landing.hero.showcaseLabel,
             picked: t.landing.hero.picked,
+            pauseDemo: t.landing.hero.pauseDemo,
             noteTitle: t.landing.telegram.title,
             noteBody: t.landing.telegram.body,
             saved: b.versionSaved.replace("{n}", "1"),
           }}
         />
         <Proof t={t.landing} />
+        <Marquee title={t.landing.marquee.title} names={t.builder.templates} />
         <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={bot} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} languages={`${b.langEn} · ${b.langAm}`} />
+        <Compare t={t.landing.compare} message={t.landing.demo.prompts.cafe} shot={stageSites[0]?.shot ?? { src: "", width: 1, height: 1 }} />
         <Features
           title={f.title}
           items={(["language", "forms", "edits", "birr", "domain", "safe"] as const).map((key) => ({ key, title: f[key].title, body: f[key].body }))}
