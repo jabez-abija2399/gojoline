@@ -67,6 +67,10 @@ export const launchOfferSchema = z
   .strict();
 export type LaunchOffer = z.infer<typeof launchOfferSchema>;
 
+/** What the offer form saves: everything but on/off, which only the switch changes. */
+export const launchOfferTermsSchema = launchOfferSchema.omit({ active: true });
+export type LaunchOfferTerms = z.infer<typeof launchOfferTermsSchema>;
+
 /** The moment an offer ends: the end of its last day in Addis Ababa (UTC+3, no daylight saving); null without a last day. */
 export function offerEndsAt(offer: Pick<LaunchOffer, "until">): Date | null {
   return offer.until ? new Date(`${offer.until}T23:59:59.999+03:00`) : null;

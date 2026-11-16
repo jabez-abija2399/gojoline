@@ -10,7 +10,7 @@ import { isAdmin } from "@/lib/billing/service";
 import { billingSettingsSchema } from "@/lib/billing/settings";
 import { birrToMinor } from "@/lib/billing/plans";
 import { creditSettingsSchema, usdToCents } from "@/lib/billing/credits";
-import { discountInputSchema, launchOfferSchema, PRODUCT_IDS } from "@/lib/billing/discounts";
+import { discountInputSchema, launchOfferTermsSchema, PRODUCT_IDS } from "@/lib/billing/discounts";
 import { dismissReports, restoreSite, takeDownSite } from "@/lib/safety/takedown";
 import { refreshTemplateUsage } from "@/lib/landing/template-usage";
 import { after } from "next/server";
@@ -155,7 +155,7 @@ const text = (v: FormDataEntryValue | null) => (typeof v === "string" ? v.trim()
 
 /**
  * The launch offer's terms: percent off chosen products, an optional last day and an optional
- * name (both languages or neither). Its on/off state is kept: the switch changes that. Audited.
+ * name (both languages or neither), saved atomically without touching on/off (only the switch changes that). Audited.
  */
 export async function saveLaunchOffer(_prev: DiscountState, form: FormData): Promise<DiscountState> {
   const user = await currentUser();
@@ -163,15 +163,7 @@ export async function saveLaunchOffer(_prev: DiscountState, form: FormData): Pro
   const until = text(form.get("until"));
   const en = text(form.get("name_en"));
   const am = text(form.get("name_am"));
-  let current: Awaited<ReturnType<ReturnType<typeof services>["billing"]["launchOffer"]>>;
-  try {
-    current = await services().billing.launchOffer();
-  } catch (error) {
-    reportError("launch offer load failed", error);
-    return { status: "failed" };
-  }
-  const parsed = launchOfferSchema.safeParse({
-    active: current?.active ?? false,
+  const parsed = launchOfferTermsSchema.safeParse({
     percent: whole(form.get("percent")),
     products: products(form),
     ...(until ? { until } : {}),
@@ -182,7 +174,7 @@ export async function saveLaunchOffer(_prev: DiscountState, form: FormData): Pro
     return { status: "invalid", field: path[0] === "name" ? `name_${String(path[1] ?? "en")}` : String(path[0] ?? "") };
   }
   try {
-    await services().billing.saveLaunchOffer(user.id, parsed.data);
+    await services().billing.saveLaunchOfferTerms(user.id, parsed.data);
   } catch (error) {
     reportError("launch offer save failed", error);
     return { status: "failed" };

@@ -34,6 +34,9 @@ test("dashboard: Home first, no Content section, old Content links open Home", a
     await expect(tabs.getByRole("link", { name: "Home", exact: true })).toHaveAttribute("aria-current", "page");
     await expect(page.getByLabel("Price in Birr (optional)")).toHaveCount(0);
   }
+  // Editing lists without the AI is gone, also for old clients.
+  const projectId = dashboard.split("/").pop()!;
+  expect((await page.request.post(`/api/projects/${projectId}/lists`, { data: { key: "p1.s0.c0", items: [] } })).status()).toBe(410);
 });
 
 test("another owner can't see a dashboard", async ({ page, browser }) => {

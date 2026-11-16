@@ -1,6 +1,6 @@
 import type { Entitlements, EntitlementsResolver } from "./entitlements";
 import { nextMonthlyGrant, type CreditSettings } from "./credits";
-import { CODE_PATTERN, codeProblem, publicCodeProblem, normalizeCode, quote, type CodeProblem, type DiscountCode, type DiscountInput, type LaunchOffer, type Quote } from "./discounts";
+import { CODE_PATTERN, codeProblem, publicCodeProblem, normalizeCode, quote, type CodeProblem, type DiscountCode, type DiscountInput, type LaunchOffer, type LaunchOfferTerms, type Quote } from "./discounts";
 import { entitlementsOf, PLAN_FEATURES, PRODUCTS, type Product } from "./plans";
 import { loadBillingSettings, loadCreditSettings, loadLaunchOffer, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
 import { randomUUID } from "node:crypto";
@@ -70,14 +70,28 @@ export class Billing {
   }
 
   /**
-   * The one-click on/off switch: changes only `active`, keeping percent, products, last day and
-   * name. "none" when no offer was saved yet (there is nothing to switch on). Audited.
+   * The offer form: percent, products, last day and name, in one atomic change that leaves
+   * on/off alone (a switch made at the same moment is never undone). A new offer starts off. Audited.
+   */
+  async saveLaunchOfferTerms(adminId: string, terms: LaunchOfferTerms): Promise<void> {
+    const before = await this.launchOffer();
+    const patch: Record<string, unknown> = { percent: terms.percent, products: terms.products };
+    if (terms.until) patch.until = terms.until;
+    if (terms.name) patch.name = terms.name;
+    const remove = (["until", "name"] as const).filter((k) => !terms[k]);
+    const after = await this.settingsStore.merge("offer", patch, [...remove], adminId, { active: false });
+    await this.db.audit({ actorId: adminId, action: "settings.offer", targetType: "settings", targetId: "offer", data: { before, after } });
+  }
+
+  /**
+   * The one-click on/off switch: changes only `active`, atomically, keeping percent, products,
+   * last day and name. "none" when no offer was saved yet (nothing to switch on). Audited.
    */
   async setLaunchOfferActive(adminId: string, active: boolean): Promise<"ok" | "none"> {
     const before = await this.launchOffer();
     if (!before) return "none";
-    const after: LaunchOffer = { ...before, active };
-    await this.settingsStore.set("offer", after as unknown as Record<string, unknown>, adminId);
+    const after = await this.settingsStore.merge("offer", { active }, [], adminId, null);
+    if (!after) return "none";
     await this.db.audit({ actorId: adminId, action: "settings.offer_switch", targetType: "settings", targetId: "offer", data: { before, after } });
     return "ok";
   }

@@ -4,7 +4,7 @@ import { codeProblem, discounted, discountInputSchema, launchOfferSchema, offerA
 import { offerBadgeText, offerName, offerProductsText } from "./offer-text";
 import { getMessages } from "@/lib/i18n";
 import { Billing } from "./service";
-import { MemorySettingsStore } from "./settings";
+import { DbSettingsStore, MemorySettingsStore, type SettingsStore } from "./settings";
 import { DbBillingStore, MemoryBillingStore, type BillingStore } from "./store";
 
 const now = new Date("2026-11-20T10:00:00Z");
@@ -253,4 +253,25 @@ describe("launch offer without a last day, and its name", () => {
     expect(offerProductsText(["starter_month", "starter_year", "business_month", "business_year"], "en", en, 30)).toBe("Starter and Business");
     expect(offerProductsText(["starter_month", "business_month", "business_year", "topup"], "en", en, 30)).toBe("Starter, 1 month, Business, and 30 extra changes");
   });
+});
+
+describe("saving the offer's terms never touches its on/off state", () => {
+  const check = async (settings: SettingsStore) => {
+    const b = new Billing(new MemoryBillingStore(), () => now, settings);
+    // A new offer starts off.
+    await b.saveLaunchOfferTerms("admin", { percent: 15, products: ["topup"], until: "2026-12-31", name: { en: "Holiday offer", am: "የበዓል ቅናሽ" } });
+    expect(await b.launchOffer()).toEqual({ active: false, percent: 15, products: ["topup"], until: "2026-12-31", name: { en: "Holiday offer", am: "የበዓል ቅናሽ" } });
+    // Switched on meanwhile (e.g. in another tab): a later save of the terms keeps it on, and
+    // an empty last day and name are removed.
+    expect(await b.setLaunchOfferActive("admin", true)).toBe("ok");
+    await b.saveLaunchOfferTerms("admin", { percent: 25, products: ["business_month"] });
+    expect(await b.launchOffer()).toEqual({ active: true, percent: 25, products: ["business_month"] });
+  };
+  it("in memory", () => check(new MemorySettingsStore()));
+  it("in Postgres, in one statement", async () => {
+    const db = await testDb();
+    const settings = new DbSettingsStore(db);
+    expect(await settings.merge("offer", { active: true }, [], "admin", null)).toBeNull();
+    await check(settings);
+  }, 30_000);
 });
