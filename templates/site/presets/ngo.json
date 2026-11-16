@@ -4,20 +4,21 @@
     "am": "ተስፋ ሀዋሳ"
   },
   "tagline": {
-    "en": "Keeping girls in school and bringing clean water to communities around Hawassa",
-    "am": "ሴት ልጆችን በትምህርት ቤት ማቆየት እና በሀዋሳ ዙሪያ ላሉ ማኅበረሰቦች ንጹሕ ውሃ ማዳረስ"
+    "en": "A community organisation keeping girls in school and helping families earn around Lake Hawassa",
+    "am": "በሀዋሳ ሐይቅ ዙሪያ ሴት ልጆች በትምህርት እንዲዘልቁና ቤተሰቦች ገቢ እንዲያገኙ የሚሠራ የማኅበረሰብ ድርጅት"
   },
   "languages": [
     "en",
     "am"
   ],
   "theme": {
-    "primary": "#0E6B75",
-    "accent": "#B85A1C",
-    "background": "#F6FAF9",
-    "text": "#1A2A2E",
+    "primary": "#1E7A46",
+    "accent": "#0E3B26",
+    "background": "#FAF7EF",
+    "text": "#1C2420",
     "font": "friendly",
-    "radius": "large"
+    "radius": "large",
+    "style": "bold"
   },
   "business": {
     "phone": "+251 911 000 000",
@@ -60,520 +61,400 @@
         "en": "Home",
         "am": "መነሻ"
       },
-      "description": {
-        "en": "A local Hawassa organisation helping girls stay in school and bringing safe water to rural villages.",
-        "am": "ሴት ልጆች ትምህርታቸውን እንዲቀጥሉ የሚያግዝ እና ለገጠር መንደሮች ንጹሕ ውሃ የሚያቀርብ የሀዋሳ የአካባቢ ድርጅት።"
-      },
       "sections": [
         {
           "type": "hero",
           "variant": "split",
           "eyebrow": {
-            "en": "A local NGO in Hawassa",
-            "am": "በሀዋሳ የሚገኝ የአካባቢ በጎ አድራጎት ድርጅት"
+            "en": "Hawassa · since 2016",
+            "am": "ሀዋሳ · ከ2008 ዓ.ም. ጀምሮ"
           },
           "heading": {
-            "en": "When a girl has water nearby, she has time to learn",
-            "am": "ውሃ በቅርብ ስታገኝ፣ ሴት ልጅ ለመማር ጊዜ ታገኛለች"
+            "en": "Every girl around Lake Hawassa finishes school",
+            "am": "በሀዋሳ ዙሪያ ያለች ሴት ልጅ ሁሉ ትምህርቷን ትጨርስ"
           },
           "subheading": {
-            "en": "We build water points, support girls with school supplies and tutoring, and work with families so every girl can finish school.",
-            "am": "የውሃ ቦኖዎችን እንሠራለን፣ ሴት ተማሪዎችን በትምህርት ቁሳቁስ እና በማጠናከሪያ ትምህርት እንደግፋለን፤ እያንዳንዷ ልጅ ትምህርቷን እንድትጨርስ ከቤተሰቦች ጋር እንሠራለን።"
+            "en": "We work with 14 schools and 38 women's savings groups so that girls stay in class and their families can pay for it.",
+            "am": "ሴት ልጆች ከትምህርት እንዳይቀሩ፣ ቤተሰቦቻቸውም ወጪውን እንዲችሉ ከ14 ትምህርት ቤቶችና ከ38 የሴቶች የቁጠባ ቡድኖች ጋር እንሠራለን።"
+          },
+          "image": {
+            "src": "/stock/ngo-about-girl-clapping-community.webp",
+            "alt": {
+              "en": "A smiling girl in a red embroidered top clapping among women and children at a community gathering",
+              "am": "በማኅበረሰብ ስብሰባ ላይ በሴቶችና በልጆች መካከል ፈገግ ብላ የምታጨበጭብ ቀይ ጥልፍ ልብስ የለበሰች ልጅ"
+            }
           },
           "primaryAction": {
             "label": {
-              "en": "Become a volunteer",
-              "am": "በጎ ፈቃደኛ ይሁኑ"
+              "en": "Donate",
+              "am": "ይለግሱ"
             },
-            "href": "/volunteer"
+            "href": "/#give"
           },
           "secondaryAction": {
             "label": {
-              "en": "Our programs",
-              "am": "ፕሮግራሞቻችን"
+              "en": "Our work",
+              "am": "ሥራችን"
             },
-            "href": "/programs"
-          },
-          "image": {
-            "alt": {
-              "en": "Three people standing together",
-              "am": "አብረው የቆሙ ሦስት ሰዎች"
-            },
-            "art": "people"
+            "href": "/work"
           }
+        },
+        {
+          "type": "stats",
+          "tone": "dark",
+          "heading": {
+            "en": "Our work in numbers, 2016 to 2025",
+            "am": "ሥራችን በቁጥር፣ ከ2008 እስከ 2017 ዓ.ም."
+          },
+          "items": [
+            {
+              "value": {
+                "en": "1,240",
+                "am": "1,240"
+              },
+              "label": {
+                "en": "girls supported through school",
+                "am": "በትምህርታቸው የተደገፉ ሴት ተማሪዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "38",
+                "am": "38"
+              },
+              "label": {
+                "en": "women's savings groups",
+                "am": "የሴቶች የቁጠባ ቡድኖች"
+              }
+            },
+            {
+              "value": {
+                "en": "64,000",
+                "am": "64,000"
+              },
+              "label": {
+                "en": "tree seedlings planted",
+                "am": "የተተከሉ ችግኞች"
+              }
+            },
+            {
+              "value": {
+                "en": "86%",
+                "am": "86%"
+              },
+              "label": {
+                "en": "of every Birr goes to programmes",
+                "am": "ከእያንዳንዱ ብር ለመርሐ ግብር የሚውል"
+              }
+            }
+          ]
         },
         {
           "type": "about",
+          "eyebrow": {
+            "en": "Who we are",
+            "am": "እኛ ማን ነን"
+          },
           "heading": {
-            "en": "Our impact so far",
-            "am": "እስካሁን ያስመዘገብነው ውጤት"
+            "en": "Started by teachers and parents",
+            "am": "በመምህራንና በወላጆች የተጀመረ"
           },
           "body": {
-            "en": "Tesfa Hawassa was started by teachers and parents from Hawassa who saw girls missing school to fetch water.\n\nToday we work with schools, kebele leaders and families in villages around Lake Hawassa.",
-            "am": "ተስፋ ሀዋሳ የተመሠረተው ሴት ልጆች ውሃ ለመቅዳት ሲሉ ከትምህርት ቤት ሲቀሩ ባዩ የሀዋሳ መምህራን እና ወላጆች ነው።\n\nዛሬ በሀዋሳ ሐይቅ ዙሪያ ባሉ መንደሮች ከትምህርት ቤቶች፣ ከቀበሌ አመራሮች እና ከቤተሰቦች ጋር እንሠራለን።"
+            "en": "In 2016 six teachers and a group of mothers in Hawassa asked a simple question: why do so many bright girls leave school after grade six? The answers were practical. No uniform, no time to study, no money at home.\n\nSo we work on all three. Girls get the materials and tutoring they need, and their mothers save and earn together. Every plan is made with the school and the kebele, and every project is run by people who live there.",
+            "am": "በ2008 ዓ.ም. በሀዋሳ የሚገኙ ስድስት መምህራንና ጥቂት እናቶች አንድ ቀላል ጥያቄ አነሡ፦ ጎበዝ ሴት ተማሪዎች ከስድስተኛ ክፍል በኋላ ለምን ያቋርጣሉ? መልሶቹ ግልጽ ነበሩ፤ የደንብ ልብስ ማጣት፣ የጥናት ጊዜ ማጣት፣ የቤት ውስጥ የገንዘብ እጥረት።\n\nስለዚህ በሦስቱም ላይ እንሠራለን። ሴት ተማሪዎች የሚያስፈልጋቸውን ቁሳቁስና ማጠናከሪያ ትምህርት ያገኛሉ፤ እናቶቻቸው ደግሞ አብረው ይቆጥባሉ፣ ገቢም ያገኛሉ። እያንዳንዱ ዕቅድ ከትምህርት ቤቱና ከቀበሌው ጋር ይወጣል፤ ሥራውንም የሚመሩት የአካባቢው ነዋሪዎች ናቸው።"
           },
           "image": {
-            "art": "school",
+            "src": "/stock/ngo-about-women-group.webp",
             "alt": {
-              "en": "An open book and a pencil",
-              "am": "የተከፈተ መጽሐፍ እና እርሳስ"
+              "en": "Four women in white netela shawls and a girl holding a red flower standing together on a cobbled street",
+              "am": "ነጭ ነጠላ የለበሱ አራት ሴቶችና ቀይ አበባ የያዘች ልጅ በኮብልስቶን መንገድ ላይ አብረው ቆመው"
             }
+          },
+          "imageSide": "end",
+          "points": [
+            {
+              "en": "Run by 11 local staff and 120 volunteers",
+              "am": "በ11 የአካባቢው ሠራተኞችና በ120 በጎ ፈቃደኞች የሚመራ"
+            },
+            {
+              "en": "Plans agreed with schools and kebele leaders",
+              "am": "ዕቅዶች ከትምህርት ቤቶችና ከቀበሌ አመራሮች ጋር ይጸድቃሉ"
+            },
+            {
+              "en": "A printed report to every donor each year",
+              "am": "ለእያንዳንዱ ለጋሽ በየዓመቱ የታተመ ሪፖርት"
+            }
+          ],
+          "action": {
+            "label": {
+              "en": "Read our story",
+              "am": "ታሪካችንን ያንብቡ"
+            },
+            "href": "/work"
           }
         },
         {
-          "type": "faq",
-          "id": "questions",
-          "heading": {
-            "en": "How you can help",
-            "am": "እንዴት መርዳት ይችላሉ"
-          },
-          "items": [
-            {
-              "question": {
-                "en": "Do I need experience to volunteer?",
-                "am": "በጎ ፈቃደኛ ለመሆን ልምድ ያስፈልጋል?"
-              },
-              "answer": {
-                "en": "No. We show you what to do and you work beside our team.",
-                "am": "አያስፈልግም። ምን እንደሚሠሩ እናሳይዎታለን፤ ከቡድናችን ጋር አብረው ይሠራሉ።"
-              }
-            },
-            {
-              "question": {
-                "en": "How is my gift used?",
-                "am": "ልገሳዬ እንዴት ጥቅም ላይ ይውላል?"
-              },
-              "answer": {
-                "en": "It goes to our programs. Ask us and we will explain how gifts are used.",
-                "am": "ለፕሮግራሞቻችን ይውላል። ከጠየቁን ልገሳዎች እንዴት እንደሚውሉ እናስረዳዎታለን።"
-              }
-            },
-            {
-              "question": {
-                "en": "Can my company or school take part?",
-                "am": "ድርጅቴ ወይም ትምህርት ቤቴ መሳተፍ ይችላል?"
-              },
-              "answer": {
-                "en": "Yes. Write to us and we will plan a day together.",
-                "am": "አዎ። ይጻፉልን፤ አንድ ቀን አብረን እናቅዳለን።"
-              }
-            }
-          ]
-        },
-        {
-          "type": "cta",
-          "id": "next-step",
-          "heading": {
-            "en": "A few hours of your time changes a life",
-            "am": "ጥቂት ሰዓታትዎ የአንድን ሰው ሕይወት ይቀይራሉ"
-          },
-          "body": {
-            "en": "Join as a volunteer or write to us about giving.",
-            "am": "በጎ ፈቃደኛ ሆነው ይቀላቀሉን፤ ወይም ስለ ልገሳ ይጻፉልን።"
-          },
-          "primaryAction": {
-            "label": {
-              "en": "Volunteer with us",
-              "am": "በጎ ፈቃደኛ ይሁኑ"
-            },
-            "href": "/volunteer"
-          },
-          "secondaryAction": {
-            "label": {
-              "en": "Contact us",
-              "am": "ያግኙን"
-            },
-            "href": "/contact"
-          }
-        }
-      ]
-    },
-    {
-      "path": "/programs",
-      "title": {
-        "en": "Our programs",
-        "am": "ፕሮግራሞቻችን"
-      },
-      "nav": {
-        "en": "Programs",
-        "am": "ፕሮግራሞች"
-      },
-      "description": {
-        "en": "Girls' education and clean water programs in and around Hawassa.",
-        "am": "በሀዋሳ እና አካባቢዋ የሴቶች ትምህርት እና የንጹሕ ውሃ ፕሮግራሞች።"
-      },
-      "sections": [
-        {
-          "type": "services",
-          "heading": {
+          "type": "cards",
+          "id": "programmes",
+          "layout": "grid",
+          "eyebrow": {
             "en": "What we do",
-            "am": "የምንሠራው ሥራ"
+            "am": "የምንሠራው"
+          },
+          "heading": {
+            "en": "Four programmes, one goal",
+            "am": "አራት መርሐ ግብሮች፣ አንድ ግብ"
           },
           "intro": {
-            "en": "Two goals that work together: safe water and girls who finish school.",
-            "am": "አብረው የሚሄዱ ሁለት ግቦች፦ ንጹሕ ውሃ እና ትምህርታቸውን የሚጨርሱ ሴት ልጆች።"
+            "en": "Each one removes a reason a girl might leave school.",
+            "am": "እያንዳንዱ መርሐ ግብር ሴት ልጅን ከትምህርት የሚያስቀር አንድ ምክንያት ያስወግዳል።"
           },
           "items": [
             {
+              "image": {
+                "src": "/stock/ngo-card-teacher-classroom.webp",
+                "alt": {
+                  "en": "A classroom seen over a pupil's shoulder while the teacher holds up a sheet of paper",
+                  "am": "ከተማሪ ትከሻ በላይ የሚታይ ክፍል፤ መምህሩ ወረቀት ከፍ አድርጎ ሲያሳይ"
+                }
+              },
+              "subtitle": {
+                "en": "Education",
+                "am": "ትምህርት"
+              },
               "title": {
-                "en": "School support for girls",
-                "am": "ለሴት ተማሪዎች የትምህርት ድጋፍ"
+                "en": "Girls in school",
+                "am": "ሴት ልጆች በትምህርት ቤት"
               },
+              "badge": {
+                "en": "Largest programme",
+                "am": "ትልቁ መርሐ ግብር"
+              },
+              "meta": [
+                {
+                  "en": "14 schools",
+                  "am": "14 ትምህርት ቤቶች"
+                },
+                {
+                  "en": "Grades 5 to 10",
+                  "am": "ከ5ኛ እስከ 10ኛ ክፍል"
+                }
+              ],
               "description": {
-                "en": "Uniforms, exercise books, bags and school fees for girls from low-income families.",
-                "am": "ከአቅመ ደካማ ቤተሰቦች ለሚመጡ ሴት ተማሪዎች የደንብ ልብስ፣ ደብተር፣ ቦርሳ እና የትምህርት ክፍያ።"
-              },
-              "icon": "school"
+                "en": "A school kit each September, tutoring three afternoons a week and a girls' club in every partner school.",
+                "am": "በየመስከረሙ የትምህርት ቁሳቁስ፣ በሳምንት ሦስት ከሰዓት ማጠናከሪያ ትምህርት እና በእያንዳንዱ አጋር ትምህርት ቤት የሴቶች ክበብ።"
+              }
             },
             {
+              "image": {
+                "src": "/stock/ngo-gallery-community-meeting.webp",
+                "alt": {
+                  "en": "Women in colourful dresses seated on a bench at an outdoor community meeting",
+                  "am": "በቀለማት ያሸበረቁ ልብሶች የለበሱ ሴቶች በውጭ ስብሰባ ላይ አግዳሚ ወንበር ላይ ተቀምጠው"
+                }
+              },
+              "subtitle": {
+                "en": "Income",
+                "am": "ገቢ"
+              },
               "title": {
-                "en": "After-school tutoring",
-                "am": "ከትምህርት በኋላ ማጠናከሪያ"
+                "en": "Women's savings groups",
+                "am": "የሴቶች የቁጠባ ቡድኖች"
               },
+              "meta": [
+                {
+                  "en": "38 groups",
+                  "am": "38 ቡድኖች"
+                },
+                {
+                  "en": "760 members",
+                  "am": "760 አባላት"
+                }
+              ],
               "description": {
-                "en": "Weekly study groups in maths, English and science, led by trained volunteers.",
-                "am": "በሠለጠኑ በጎ ፈቃደኞች የሚመሩ የሂሳብ፣ የእንግሊዝኛ እና የሳይንስ ሳምንታዊ የጥናት ቡድኖች።"
-              },
-              "icon": "star"
+                "en": "Twenty women save together every week, lend to each other and start small businesses with training from our team.",
+                "am": "ሃያ ሴቶች በየሳምንቱ አብረው ይቆጥባሉ፣ እርስ በርስ ይበዳደራሉ፣ በቡድናችን ሥልጠና ታግዘውም አነስተኛ ንግድ ይጀምራሉ።"
+              }
             },
             {
+              "image": {
+                "src": "/stock/ngo-hero-grain-in-hands.webp",
+                "alt": {
+                  "en": "A woman's cupped hands pouring harvested grain",
+                  "am": "የተሰበሰበ እህል በእፍኟ የምታፈስ ሴት እጆች"
+                }
+              },
+              "subtitle": {
+                "en": "Food",
+                "am": "ምግብ"
+              },
               "title": {
-                "en": "Menstrual health kits",
-                "am": "የወር አበባ ንጽሕና መጠበቂያ ኪት"
+                "en": "Home gardens and seed",
+                "am": "የጓሮ አትክልትና ዘር"
               },
+              "meta": [
+                {
+                  "en": "410 households",
+                  "am": "410 አባወራዎች"
+                },
+                {
+                  "en": "9 kebeles",
+                  "am": "9 ቀበሌዎች"
+                }
+              ],
               "description": {
-                "en": "Reusable pads and health lessons so girls do not miss school every month.",
-                "am": "ሴት ልጆች በየወሩ ከትምህርት እንዳይቀሩ በድጋሚ የሚያገለግሉ ሞዴሶች እና የጤና ትምህርት።"
-              },
-              "icon": "heart"
+                "en": "Improved seed, enset and vegetable gardens, and a farmer trainer who visits every household each month.",
+                "am": "ምርጥ ዘር፣ የእንሰትና የአትክልት ጓሮ፣ እንዲሁም እያንዳንዱን ቤተሰብ በየወሩ የሚጎበኝ የግብርና አሠልጣኝ።"
+              }
             },
             {
+              "image": {
+                "src": "/stock/ngo-card-tree-planting.webp",
+                "alt": {
+                  "en": "Volunteers in gloves planting a tree seedling together",
+                  "am": "ጓንት ያደረጉ በጎ ፈቃደኞች አብረው ችግኝ ሲተክሉ"
+                }
+              },
+              "subtitle": {
+                "en": "Land",
+                "am": "መሬት"
+              },
               "title": {
-                "en": "Community water points",
-                "am": "የማኅበረሰብ የውሃ ቦኖዎች"
+                "en": "Trees for the lake hills",
+                "am": "ዛፎች ለሐይቁ ኮረብቶች"
               },
+              "meta": [
+                {
+                  "en": "64,000 seedlings",
+                  "am": "64,000 ችግኞች"
+                },
+                {
+                  "en": "3 nurseries",
+                  "am": "3 ችግኝ ጣቢያዎች"
+                }
+              ],
               "description": {
-                "en": "We build and repair water points near schools and villages, with local water committees.",
-                "am": "ከአካባቢው የውሃ ኮሚቴዎች ጋር በትምህርት ቤቶች እና በመንደሮች አቅራቢያ የውሃ ቦኖዎችን እንሠራለን፣ እንጠግናለን።"
-              },
-              "icon": "map"
-            },
-            {
-              "title": {
-                "en": "Hygiene and sanitation",
-                "am": "የግልና የአካባቢ ንጽሕና"
-              },
-              "description": {
-                "en": "Handwashing stations, clean latrines and hygiene clubs in partner schools.",
-                "am": "በአጋር ትምህርት ቤቶች የእጅ መታጠቢያ ቦታዎች፣ ንጹሕ መጸዳጃ ቤቶች እና የንጽሕና ክበባት።"
-              },
-              "icon": "check"
-            },
-            {
-              "title": {
-                "en": "Family conversations",
-                "am": "ከቤተሰብ ጋር ውይይት"
-              },
-              "description": {
-                "en": "Home visits and parent meetings about the value of keeping girls in school.",
-                "am": "ሴት ልጆችን በትምህርት ቤት ማቆየት ያለውን ጥቅም በተመለከተ የቤት ለቤት ጉብኝት እና የወላጆች ስብሰባ።"
-              },
-              "icon": "home"
+                "en": "School and youth clubs raise seedlings and plant them on the bare slopes above Lake Hawassa every rainy season.",
+                "am": "የትምህርት ቤትና የወጣት ክበቦች ችግኝ አፍልተው በየክረምቱ ከሀዋሳ ሐይቅ በላይ ባሉ የተራቆቱ ተዳፋቶች ላይ ይተክላሉ።"
+              }
             }
-          ]
+          ],
+          "action": {
+            "label": {
+              "en": "See all our work",
+              "am": "ሥራችንን በሙሉ ይመልከቱ"
+            },
+            "href": "/work"
+          }
+        },
+        {
+          "type": "quote",
+          "quote": {
+            "en": "With my first loan I bought two sacks of barley to sell. Now I pay my daughters' school costs myself, and I am the one who lends.",
+            "am": "በመጀመሪያው ብድሬ ሁለት ኩንታል ገብስ ገዝቼ ሸጥኩ። ዛሬ የልጆቼን የትምህርት ወጪ ራሴ እሸፍናለሁ፤ አበዳሪዋም እኔ ነኝ።"
+          },
+          "name": {
+            "en": "Almaz D.",
+            "am": "አልማዝ ደ."
+          },
+          "role": {
+            "en": "Treasurer of a savings group in Tula",
+            "am": "በቱላ የቁጠባ ቡድን ገንዘብ ያዥ"
+          },
+          "image": {
+            "src": "/stock/ngo-card-woman-farmer.webp",
+            "alt": {
+              "en": "A smiling woman in a headscarf standing among enset leaves",
+              "am": "በእንሰት ቅጠሎች መካከል ፈገግ ብላ የቆመች ሻሽ ያሰረች ሴት"
+            }
+          }
         },
         {
           "type": "services",
+          "variant": "numbered",
+          "id": "gifts",
+          "eyebrow": {
+            "en": "Where gifts go",
+            "am": "ልገሳዎ የሚውልበት"
+          },
           "heading": {
-            "en": "How your gift helps",
-            "am": "ድጋፍዎ እንዴት ይረዳል"
+            "en": "What your gift pays for",
+            "am": "ልገሳዎ ምን ይሸፍናል"
           },
           "intro": {
-            "en": "Call or message us on Telegram to give. Every birr is reported to our donors.",
-            "am": "ለመለገስ ይደውሉልን ወይም በቴሌግራም ይጻፉልን። እያንዳንዱ ብር ለለጋሾች ሪፖርት ይደረጋል።"
+            "en": "Out of every 100 Birr, 86 goes to programmes, 9 to running the office and 5 to raising funds.",
+            "am": "ከእያንዳንዱ 100 ብር 86ቱ ለመርሐ ግብሮች፣ 9ኙ ለቢሮ ሥራ፣ 5ቱ ለገቢ ማሰባሰቢያ ይውላል።"
           },
           "items": [
             {
               "title": {
-                "en": "School kit for one girl",
-                "am": "ለአንዲት ተማሪ የትምህርት ቁሳቁስ"
+                "en": "Seedlings for a school club",
+                "am": "ለትምህርት ቤት ክበብ ችግኞች"
               },
               "description": {
-                "en": "Uniform, books, pens and a bag for a full school year.",
-                "am": "ለአንድ ሙሉ የትምህርት ዘመን የደንብ ልብስ፣ ደብተር፣ እስክሪብቶ እና ቦርሳ።"
+                "en": "Fifty seedlings, tools and a planting day for one club.",
+                "am": "ሃምሳ ችግኞች፣ መሣሪያዎች እና ለአንድ ክበብ የተከላ ቀን።"
               },
               "price": {
-                "amountMinor": 250000,
+                "amountMinor": 50000,
                 "currency": "ETB"
-              },
-              "icon": "shopping-bag"
+              }
             },
             {
               "title": {
-                "en": "Health kit for one year",
-                "am": "የአንድ ዓመት የንጽሕና ኪት"
+                "en": "Seed for one family",
+                "am": "ለአንድ ቤተሰብ ዘር"
               },
               "description": {
-                "en": "Reusable pads and soap for one girl for twelve months.",
-                "am": "ለአንዲት ልጅ ለአሥራ ሁለት ወራት የሚያገለግል ሞዴስ እና ሳሙና።"
+                "en": "Vegetable seed and a season of visits from a farmer trainer.",
+                "am": "የአትክልት ዘር እና ለአንድ የምርት ወቅት የግብርና አሠልጣኝ ጉብኝት።"
               },
               "price": {
                 "amountMinor": 120000,
                 "currency": "ETB"
-              },
-              "icon": "heart"
+              }
             },
             {
               "title": {
-                "en": "Water point repair",
-                "am": "የውሃ ቦኖ ጥገና"
+                "en": "A school kit for one girl",
+                "am": "ለአንዲት ተማሪ የትምህርት ቁሳቁስ"
               },
               "description": {
-                "en": "Spare parts and labour to fix a broken water point.",
-                "am": "የተበላሸ የውሃ ቦኖ ለመጠገን የመለዋወጫ እና የጉልበት ወጪ።"
+                "en": "Uniform, shoes, bag, exercise books and pens for a full year.",
+                "am": "ለአንድ ሙሉ ዓመት የደንብ ልብስ፣ ጫማ፣ ቦርሳ፣ ደብተርና እስክሪብቶ።"
               },
               "price": {
-                "amountMinor": 1500000,
+                "amountMinor": 250000,
                 "currency": "ETB"
-              },
-              "icon": "check"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "path": "/volunteer",
-      "title": {
-        "en": "Volunteer with us",
-        "am": "ከእኛ ጋር በበጎ ፈቃድ ያገልግሉ"
-      },
-      "nav": {
-        "en": "Volunteer",
-        "am": "በጎ ፈቃድ"
-      },
-      "description": {
-        "en": "Give your time as a tutor, mentor or field helper in Hawassa.",
-        "am": "በሀዋሳ እንደ አስጠኚ፣ አማካሪ ወይም የመስክ ረዳት ጊዜዎን ይስጡ።"
-      },
-      "sections": [
-        {
-          "type": "hero",
-          "variant": "banner",
-          "heading": {
-            "en": "Your time can change a girl's future",
-            "am": "የእርስዎ ጊዜ የአንዲትን ልጅ የወደፊት ሕይወት ሊለውጥ ይችላል"
-          },
-          "subheading": {
-            "en": "Students, teachers, nurses and professionals are all welcome. A few hours a week makes a real difference.",
-            "am": "ተማሪዎች፣ መምህራን፣ ነርሶች እና ባለሙያዎች ሁሉ እንኳን ደህና መጡ። በሳምንት ጥቂት ሰዓታት ትልቅ ለውጥ ያመጣሉ።"
-          },
-          "primaryAction": {
-            "label": {
-              "en": "Register now",
-              "am": "አሁን ይመዝገቡ"
-            },
-            "href": "#volunteer-form"
-          }
-        },
-        {
-          "type": "services",
-          "heading": {
-            "en": "How to volunteer",
-            "am": "በጎ ፈቃደኛ ለመሆን"
-          },
-          "items": [
-            {
-              "title": {
-                "en": "1. Register",
-                "am": "1. ይመዝገቡ"
-              },
-              "description": {
-                "en": "Fill in the form below with your skills and free time.",
-                "am": "ከታች ያለውን ቅጽ ችሎታዎን እና ነፃ ጊዜዎን ገልጸው ይሙሉ።"
-              },
-              "icon": "check"
+              }
             },
             {
               "title": {
-                "en": "2. Meet us",
-                "am": "2. ከእኛ ጋር ይገናኙ"
+                "en": "A new savings group",
+                "am": "አዲስ የቁጠባ ቡድን"
               },
               "description": {
-                "en": "We call you for a short meeting at our office in Piazza.",
-                "am": "ፒያሳ በሚገኘው ቢሯችን ለአጭር ውይይት እንደውልልዎታለን።"
+                "en": "A cash box, record books and six months of training for twenty women.",
+                "am": "የገንዘብ ሣጥን፣ መዝገቦች እና ለሃያ ሴቶች የስድስት ወር ሥልጠና።"
               },
-              "icon": "phone"
-            },
-            {
-              "title": {
-                "en": "3. Orientation",
-                "am": "3. የመግቢያ ሥልጠና"
-              },
-              "description": {
-                "en": "A half-day training on child safety and how we work.",
-                "am": "ስለ ሕፃናት ደኅንነት እና ስለ አሠራራችን የግማሽ ቀን ሥልጠና።"
-              },
-              "icon": "calendar"
-            },
-            {
-              "title": {
-                "en": "4. Start helping",
-                "am": "4. ማገዝ ይጀምሩ"
-              },
-              "description": {
-                "en": "Join a tutoring group, a school club or a field visit.",
-                "am": "የማጠናከሪያ ቡድን፣ የትምህርት ቤት ክበብ ወይም የመስክ ጉብኝት ይቀላቀሉ።"
-              },
-              "icon": "heart"
+              "price": {
+                "amountMinor": 1800000,
+                "currency": "ETB"
+              }
             }
           ]
         },
         {
           "type": "form",
-          "id": "volunteer-form",
-          "kind": "registration",
-          "heading": {
-            "en": "Volunteer registration",
-            "am": "የበጎ ፈቃደኞች ምዝገባ"
-          },
-          "intro": {
-            "en": "Tell us a little about yourself. We will contact you within a week.",
-            "am": "ስለራስዎ ትንሽ ይንገሩን። በአንድ ሳምንት ውስጥ እናገኝዎታለን።"
-          },
-          "fields": [
-            {
-              "name": "full_name",
-              "label": {
-                "en": "Full name",
-                "am": "ሙሉ ስም"
-              },
-              "type": "text",
-              "required": true
-            },
-            {
-              "name": "phone",
-              "label": {
-                "en": "Phone",
-                "am": "ስልክ"
-              },
-              "type": "tel",
-              "required": true
-            },
-            {
-              "name": "email",
-              "label": {
-                "en": "Email (optional)",
-                "am": "ኢሜይል (ካለዎት)"
-              },
-              "type": "email"
-            },
-            {
-              "name": "area",
-              "label": {
-                "en": "How would you like to help?",
-                "am": "በምን ማገዝ ይፈልጋሉ?"
-              },
-              "type": "select",
-              "required": true,
-              "options": [
-                {
-                  "en": "Tutoring girls",
-                  "am": "ሴት ተማሪዎችን ማስጠናት"
-                },
-                {
-                  "en": "Mentoring and life skills",
-                  "am": "ምክር እና የሕይወት ክህሎት"
-                },
-                {
-                  "en": "Health and hygiene lessons",
-                  "am": "የጤና እና የንጽሕና ትምህርት"
-                },
-                {
-                  "en": "Water project field work",
-                  "am": "የውሃ ፕሮጀክት የመስክ ሥራ"
-                },
-                {
-                  "en": "Office and events",
-                  "am": "የቢሮ ሥራ እና ዝግጅቶች"
-                }
-              ]
-            },
-            {
-              "name": "availability",
-              "label": {
-                "en": "When are you free?",
-                "am": "መቼ ነፃ ነዎት?"
-              },
-              "type": "select",
-              "options": [
-                {
-                  "en": "Weekday afternoons",
-                  "am": "የሥራ ቀናት ከሰዓት በኋላ"
-                },
-                {
-                  "en": "Saturdays",
-                  "am": "ቅዳሜ"
-                },
-                {
-                  "en": "School holidays only",
-                  "am": "በትምህርት ቤት ዕረፍት ጊዜ ብቻ"
-                }
-              ]
-            },
-            {
-              "name": "message",
-              "label": {
-                "en": "Your skills or experience",
-                "am": "ችሎታዎ ወይም ልምድዎ"
-              },
-              "type": "textarea"
-            }
-          ],
-          "submitLabel": {
-            "en": "Register",
-            "am": "ይመዝገቡ"
-          },
-          "successMessage": {
-            "en": "Thank you for registering! We will call you soon.",
-            "am": "ስለተመዘገቡ እናመሰግናለን! በቅርቡ እንደውልልዎታለን።"
-          }
-        }
-      ]
-    },
-    {
-      "path": "/contact",
-      "title": {
-        "en": "Contact us",
-        "am": "ያግኙን"
-      },
-      "nav": {
-        "en": "Contact",
-        "am": "ያግኙን"
-      },
-      "description": {
-        "en": "Visit our office in Hawassa, call us or send a message.",
-        "am": "ሀዋሳ የሚገኘውን ቢሯችንን ይጎብኙ፣ ይደውሉ ወይም መልዕክት ይላኩ።"
-      },
-      "sections": [
-        {
-          "type": "contact",
-          "heading": {
-            "en": "Talk to us",
-            "am": "ያነጋግሩን"
-          },
-          "intro": {
-            "en": "Partners, donors and families are welcome at our office.",
-            "am": "አጋሮች፣ ለጋሾች እና ቤተሰቦች ወደ ቢሯችን እንኳን ደህና መጡ።"
-          }
-        },
-        {
-          "type": "form",
-          "id": "contact-form",
+          "id": "give",
           "kind": "contact",
           "heading": {
-            "en": "Send us a message",
-            "am": "መልዕክት ይላኩልን"
+            "en": "Donate",
+            "am": "ይለግሱ"
+          },
+          "intro": {
+            "en": "Tell us what you would like to give. We call you the same day with our Telebirr and bank details, and send a receipt for every gift.",
+            "am": "ምን ያህል መለገስ እንደሚፈልጉ ይንገሩን። በዕለቱ ደውለን የቴሌብርና የባንክ መረጃችንን እንሰጥዎታለን፤ ለእያንዳንዱ ልገሳም ደረሰኝ እንልካለን።"
           },
           "fields": [
             {
@@ -588,8 +469,868 @@
             {
               "name": "phone",
               "label": {
-                "en": "Phone",
-                "am": "ስልክ"
+                "en": "Phone number",
+                "am": "ስልክ ቁጥር"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "gift",
+              "label": {
+                "en": "Your gift",
+                "am": "ልገሳዎ"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "500 Birr: seedlings for a school club",
+                  "am": "500 ብር፦ ለትምህርት ቤት ክበብ ችግኞች"
+                },
+                {
+                  "en": "1,200 Birr: seed for one family",
+                  "am": "1,200 ብር፦ ለአንድ ቤተሰብ ዘር"
+                },
+                {
+                  "en": "2,500 Birr: a school kit for one girl",
+                  "am": "2,500 ብር፦ ለአንዲት ተማሪ የትምህርት ቁሳቁስ"
+                },
+                {
+                  "en": "Another amount",
+                  "am": "ሌላ መጠን"
+                }
+              ]
+            },
+            {
+              "name": "frequency",
+              "label": {
+                "en": "How often",
+                "am": "በምን ያህል ጊዜ"
+              },
+              "type": "select",
+              "options": [
+                {
+                  "en": "Once",
+                  "am": "አንድ ጊዜ"
+                },
+                {
+                  "en": "Every month",
+                  "am": "በየወሩ"
+                }
+              ]
+            },
+            {
+              "name": "note",
+              "label": {
+                "en": "Anything we should know",
+                "am": "ልንረዳው የሚገባ ነገር ካለ"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Send my pledge",
+            "am": "ቃሌን ላክ"
+          },
+          "successMessage": {
+            "en": "Thank you. We will call you today to complete your gift.",
+            "am": "እናመሰግናለን። ልገሳዎን ለማጠናቀቅ ዛሬ እንደውልልዎታለን።"
+          }
+        },
+        {
+          "type": "faq",
+          "heading": {
+            "en": "Before you give",
+            "am": "ከመለገስዎ በፊት"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "How do I send my gift?",
+                "am": "ልገሳዬን እንዴት እልካለሁ?"
+              },
+              "answer": {
+                "en": "By Telebirr, bank transfer or in person at our office in Piazza. Fill in the form and we call you with the details.",
+                "am": "በቴሌብር፣ በባንክ ዝውውር ወይም ፒያሳ ባለው ቢሯችን በአካል። ቅጹን ይሙሉ፤ ደውለን ዝርዝሩን እንነግርዎታለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Will I know how it was used?",
+                "am": "እንዴት እንደዋለ አውቃለሁ?"
+              },
+              "answer": {
+                "en": "Yes. You get a receipt at once and a report in September showing what was bought and for which school or group.",
+                "am": "አዎ። ወዲያውኑ ደረሰኝ፣ በመስከረም ደግሞ ምን እንደተገዛና ለየትኛው ትምህርት ቤት ወይም ቡድን እንደዋለ የሚያሳይ ሪፖርት ይደርስዎታል።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can I give something other than money?",
+                "am": "ከገንዘብ ውጭ መስጠት እችላለሁ?"
+              },
+              "answer": {
+                "en": "Yes. We welcome exercise books, sanitary pads, seedlings and your time as a tutor or trainer.",
+                "am": "አዎ። ደብተር፣ የንጽሕና መጠበቂያ፣ ችግኝ እንዲሁም በአስጠኚነት ወይም በአሠልጣኝነት የሚሰጡትን ጊዜ በደስታ እንቀበላለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can I visit a project?",
+                "am": "ሥራውን መጎብኘት እችላለሁ?"
+              },
+              "answer": {
+                "en": "Gladly. We visit a school and a savings group on the last Friday of each month. Call us to join.",
+                "am": "በደስታ። በየወሩ የመጨረሻ ዓርብ አንድ ትምህርት ቤትና አንድ የቁጠባ ቡድን እንጎበኛለን። ለመቀላቀል ይደውሉልን።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "heading": {
+            "en": "2,500 Birr keeps one girl in school this year",
+            "am": "2,500 ብር አንዲት ልጅን ዘንድሮ በትምህርት ያቆያል"
+          },
+          "body": {
+            "en": "Give once or every month. Or give a few hours as a volunteer.",
+            "am": "አንድ ጊዜ ወይም በየወሩ ይለግሱ። አልያም በበጎ ፈቃደኝነት ጥቂት ሰዓታት ይስጡ።"
+          },
+          "image": {
+            "src": "/stock/ngo-hero-highland-huts-meadow.webp",
+            "alt": {
+              "en": "Two thatched round houses in a green meadow of yellow flowers with terraced hills behind",
+              "am": "ቢጫ አበባ በሞላው አረንጓዴ መስክ ላይ ሁለት የሳር ክዳን ጎጆዎች፤ ከኋላቸው እርከን ያላቸው ኮረብቶች"
+            }
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Donate",
+              "am": "ይለግሱ"
+            },
+            "href": "/#give"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Volunteer",
+              "am": "በጎ ፈቃደኛ ይሁኑ"
+            },
+            "href": "/volunteer"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/work",
+      "title": {
+        "en": "Our work",
+        "am": "ሥራችን"
+      },
+      "nav": {
+        "en": "Our work",
+        "am": "ሥራችን"
+      },
+      "description": {
+        "en": "Tesfa Hawassa's programmes: girls' education, women's savings groups, home gardens and tree planting around Lake Hawassa.",
+        "am": "የተስፋ ሀዋሳ መርሐ ግብሮች፦ የሴት ልጆች ትምህርት፣ የሴቶች የቁጠባ ቡድኖች፣ የጓሮ አትክልትና የዛፍ ተከላ።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "banner",
+          "eyebrow": {
+            "en": "Our work",
+            "am": "ሥራችን"
+          },
+          "heading": {
+            "en": "Practical help, planned with the village",
+            "am": "ከመንደሩ ጋር የታቀደ ተግባራዊ ድጋፍ"
+          },
+          "subheading": {
+            "en": "We work in 9 kebeles within an hour of Hawassa: Tula, Dore Bafano, Wondo Genet and their neighbours.",
+            "am": "ከሀዋሳ በአንድ ሰዓት ርቀት ውስጥ ባሉ 9 ቀበሌዎች እንሠራለን፦ ቱላ፣ ዶሬ ባፋኖ፣ ወንዶ ገነትና አጎራባቾቻቸው።"
+          },
+          "image": {
+            "src": "/stock/ngo-hero-highland-huts-meadow.webp",
+            "alt": {
+              "en": "Two thatched round houses in a green meadow of yellow flowers with terraced hills behind",
+              "am": "ቢጫ አበባ በሞላው አረንጓዴ መስክ ላይ ሁለት የሳር ክዳን ጎጆዎች፤ ከኋላቸው እርከን ያላቸው ኮረብቶች"
+            }
+          }
+        },
+        {
+          "type": "cards",
+          "layout": "feature",
+          "eyebrow": {
+            "en": "Programmes",
+            "am": "መርሐ ግብሮች"
+          },
+          "heading": {
+            "en": "What we do, and where",
+            "am": "ምን እንሠራለን፣ የት"
+          },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/ngo-card-teacher-classroom.webp",
+                "alt": {
+                  "en": "A classroom seen over a pupil's shoulder while the teacher holds up a sheet of paper",
+                  "am": "ከተማሪ ትከሻ በላይ የሚታይ ክፍል፤ መምህሩ ወረቀት ከፍ አድርጎ ሲያሳይ"
+                }
+              },
+              "subtitle": {
+                "en": "Education",
+                "am": "ትምህርት"
+              },
+              "title": {
+                "en": "Girls in school",
+                "am": "ሴት ልጆች በትምህርት ቤት"
+              },
+              "badge": {
+                "en": "Largest programme",
+                "am": "ትልቁ መርሐ ግብር"
+              },
+              "meta": [
+                {
+                  "en": "14 schools",
+                  "am": "14 ትምህርት ቤቶች"
+                },
+                {
+                  "en": "Grades 5 to 10",
+                  "am": "ከ5ኛ እስከ 10ኛ ክፍል"
+                }
+              ],
+              "description": {
+                "en": "A school kit each September, tutoring three afternoons a week and a girls' club in every partner school.",
+                "am": "በየመስከረሙ የትምህርት ቁሳቁስ፣ በሳምንት ሦስት ከሰዓት ማጠናከሪያ ትምህርት እና በእያንዳንዱ አጋር ትምህርት ቤት የሴቶች ክበብ።"
+              },
+              "action": {
+                "label": {
+                  "en": "Sponsor a school kit",
+                  "am": "የትምህርት ቁሳቁስ ይደግፉ"
+                },
+                "href": "/#give"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/ngo-gallery-community-meeting.webp",
+                "alt": {
+                  "en": "Women in colourful dresses seated on a bench at an outdoor community meeting",
+                  "am": "በቀለማት ያሸበረቁ ልብሶች የለበሱ ሴቶች በውጭ ስብሰባ ላይ አግዳሚ ወንበር ላይ ተቀምጠው"
+                }
+              },
+              "subtitle": {
+                "en": "Income",
+                "am": "ገቢ"
+              },
+              "title": {
+                "en": "Women's savings groups",
+                "am": "የሴቶች የቁጠባ ቡድኖች"
+              },
+              "meta": [
+                {
+                  "en": "38 groups",
+                  "am": "38 ቡድኖች"
+                },
+                {
+                  "en": "760 members",
+                  "am": "760 አባላት"
+                }
+              ],
+              "description": {
+                "en": "Twenty women save together every week, lend to each other and start small businesses with training from our team.",
+                "am": "ሃያ ሴቶች በየሳምንቱ አብረው ይቆጥባሉ፣ እርስ በርስ ይበዳደራሉ፣ በቡድናችን ሥልጠና ታግዘውም አነስተኛ ንግድ ይጀምራሉ።"
+              },
+              "action": {
+                "label": {
+                  "en": "Fund a new group",
+                  "am": "አዲስ ቡድን ይደግፉ"
+                },
+                "href": "/#give"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/ngo-hero-grain-in-hands.webp",
+                "alt": {
+                  "en": "A woman's cupped hands pouring harvested grain",
+                  "am": "የተሰበሰበ እህል በእፍኟ የምታፈስ ሴት እጆች"
+                }
+              },
+              "subtitle": {
+                "en": "Food",
+                "am": "ምግብ"
+              },
+              "title": {
+                "en": "Home gardens and seed",
+                "am": "የጓሮ አትክልትና ዘር"
+              },
+              "meta": [
+                {
+                  "en": "410 households",
+                  "am": "410 አባወራዎች"
+                },
+                {
+                  "en": "9 kebeles",
+                  "am": "9 ቀበሌዎች"
+                }
+              ],
+              "description": {
+                "en": "Improved seed, enset and vegetable gardens, and a farmer trainer who visits every household each month.",
+                "am": "ምርጥ ዘር፣ የእንሰትና የአትክልት ጓሮ፣ እንዲሁም እያንዳንዱን ቤተሰብ በየወሩ የሚጎበኝ የግብርና አሠልጣኝ።"
+              },
+              "action": {
+                "label": {
+                  "en": "Give seed for a family",
+                  "am": "ለአንድ ቤተሰብ ዘር ይስጡ"
+                },
+                "href": "/#give"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/ngo-card-tree-planting.webp",
+                "alt": {
+                  "en": "Volunteers in gloves planting a tree seedling together",
+                  "am": "ጓንት ያደረጉ በጎ ፈቃደኞች አብረው ችግኝ ሲተክሉ"
+                }
+              },
+              "subtitle": {
+                "en": "Land",
+                "am": "መሬት"
+              },
+              "title": {
+                "en": "Trees for the lake hills",
+                "am": "ዛፎች ለሐይቁ ኮረብቶች"
+              },
+              "meta": [
+                {
+                  "en": "64,000 seedlings",
+                  "am": "64,000 ችግኞች"
+                },
+                {
+                  "en": "3 nurseries",
+                  "am": "3 ችግኝ ጣቢያዎች"
+                }
+              ],
+              "description": {
+                "en": "School and youth clubs raise seedlings and plant them on the bare slopes above Lake Hawassa every rainy season.",
+                "am": "የትምህርት ቤትና የወጣት ክበቦች ችግኝ አፍልተው በየክረምቱ ከሀዋሳ ሐይቅ በላይ ባሉ የተራቆቱ ተዳፋቶች ላይ ይተክላሉ።"
+              },
+              "action": {
+                "label": {
+                  "en": "Plant with us",
+                  "am": "ከእኛ ጋር ይትከሉ"
+                },
+                "href": "/volunteer"
+              }
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "eyebrow": {
+            "en": "Results",
+            "am": "ውጤት"
+          },
+          "heading": {
+            "en": "What changed last school year",
+            "am": "ባለፈው የትምህርት ዓመት ምን ተለወጠ"
+          },
+          "body": {
+            "en": "We count what matters to families and report it every September. Last year 312 girls received a school kit and joined tutoring. All but 13 of them moved up to the next grade.\n\nSavings groups lent 1.9 million Birr to their own members, and nearly all of it was repaid on time.",
+            "am": "ለቤተሰቦች ትርጉም ያለውን እንቆጥራለን፤ በየመስከረሙም ሪፖርት እናደርጋለን። ባለፈው ዓመት 312 ሴት ተማሪዎች የትምህርት ቁሳቁስ ተቀብለው ማጠናከሪያ ትምህርት ተከታትለዋል። ከእነርሱ ከ13ቱ በቀር ሁሉም ወደሚቀጥለው ክፍል ተዛውረዋል።\n\nየቁጠባ ቡድኖች ለራሳቸው አባላት 1.9 ሚሊዮን ብር አበድረዋል፤ ከሞላ ጎደል ሁሉም በጊዜው ተመልሷል።"
+          },
+          "image": {
+            "src": "/stock/ngo-gallery-smiling-girl.webp",
+            "alt": {
+              "en": "A smiling girl in an embroidered traditional dress with a crowd blurred behind her",
+              "am": "ጥልፍ ያለው የባህል ልብስ የለበሰች ፈገግተኛ ልጅ፤ ከኋላዋ ሕዝብ ደብዘዝ ብሎ ይታያል"
+            }
+          },
+          "highlights": [
+            {
+              "value": {
+                "en": "96%",
+                "am": "96%"
+              },
+              "label": {
+                "en": "moved up a grade",
+                "am": "ወደ ቀጣይ ክፍል የተዛወሩ"
+              }
+            },
+            {
+              "value": {
+                "en": "1.9 m Br",
+                "am": "1.9 ሚ ብር"
+              },
+              "label": {
+                "en": "lent by groups",
+                "am": "ቡድኖች ያበደሩት"
+              }
+            },
+            {
+              "value": {
+                "en": "98%",
+                "am": "98%"
+              },
+              "label": {
+                "en": "repaid on time",
+                "am": "በጊዜው የተመለሰ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "timeline",
+          "heading": {
+            "en": "Our story so far",
+            "am": "እስካሁን ያለው ታሪካችን"
+          },
+          "items": [
+            {
+              "period": {
+                "en": "2025",
+                "am": "2017 ዓ.ም."
+              },
+              "title": {
+                "en": "Fourteen partner schools",
+                "am": "አሥራ አራት አጋር ትምህርት ቤቶች"
+              },
+              "place": {
+                "en": "Hawassa and Wondo Genet",
+                "am": "ሀዋሳና ወንዶ ገነት"
+              },
+              "description": {
+                "en": "Tutoring now runs in every partner school, led by 46 volunteer tutors.",
+                "am": "ማጠናከሪያ ትምህርት በሁሉም አጋር ትምህርት ቤቶች በ46 በጎ ፈቃደኛ አስጠኚዎች ይሰጣል።"
+              }
+            },
+            {
+              "period": {
+                "en": "2022",
+                "am": "2014 ዓ.ም."
+              },
+              "title": {
+                "en": "Home gardens begin",
+                "am": "የጓሮ አትክልት ሥራ ተጀመረ"
+              },
+              "place": {
+                "en": "Dore Bafano",
+                "am": "ዶሬ ባፋኖ"
+              },
+              "description": {
+                "en": "Savings group members asked for seed and training. Sixty households started.",
+                "am": "የቁጠባ ቡድን አባላት ዘርና ሥልጠና ጠየቁ። ስልሳ አባወራዎች ጀመሩ።"
+              }
+            },
+            {
+              "period": {
+                "en": "2019",
+                "am": "2011 ዓ.ም."
+              },
+              "title": {
+                "en": "First tree nursery",
+                "am": "የመጀመሪያው ችግኝ ጣቢያ"
+              },
+              "place": {
+                "en": "Tula",
+                "am": "ቱላ"
+              },
+              "description": {
+                "en": "A school club raised 4,000 seedlings in its first season.",
+                "am": "አንድ የትምህርት ቤት ክበብ በመጀመሪያ ወቅቱ 4,000 ችግኞችን አፈላ።"
+              }
+            },
+            {
+              "period": {
+                "en": "2017",
+                "am": "2009 ዓ.ም."
+              },
+              "title": {
+                "en": "First savings group",
+                "am": "የመጀመሪያው የቁጠባ ቡድን"
+              },
+              "place": {
+                "en": "Tula",
+                "am": "ቱላ"
+              },
+              "description": {
+                "en": "Eighteen mothers began saving 20 Birr a week.",
+                "am": "አሥራ ስምንት እናቶች በሳምንት 20 ብር መቆጠብ ጀመሩ።"
+              }
+            },
+            {
+              "period": {
+                "en": "2016",
+                "am": "2008 ዓ.ም."
+              },
+              "title": {
+                "en": "Tesfa Hawassa is founded",
+                "am": "ተስፋ ሀዋሳ ተመሠረተ"
+              },
+              "place": {
+                "en": "Hawassa",
+                "am": "ሀዋሳ"
+              },
+              "description": {
+                "en": "Six teachers and a group of parents buy school kits for 40 girls.",
+                "am": "ስድስት መምህራንና ጥቂት ወላጆች ለ40 ሴት ተማሪዎች የትምህርት ቁሳቁስ ገዙ።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "heading": {
+            "en": "Help us reach the next school",
+            "am": "ቀጣዩን ትምህርት ቤት እንድንደርስ ያግዙን"
+          },
+          "body": {
+            "en": "Three more schools have asked to join in September.",
+            "am": "ሦስት ተጨማሪ ትምህርት ቤቶች በመስከረም ለመቀላቀል ጠይቀዋል።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Donate",
+              "am": "ይለግሱ"
+            },
+            "href": "/#give"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Talk to us",
+              "am": "ያነጋግሩን"
+            },
+            "href": "/contact"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/volunteer",
+      "title": {
+        "en": "Volunteer",
+        "am": "በጎ ፈቃድ"
+      },
+      "nav": {
+        "en": "Volunteer",
+        "am": "በጎ ፈቃድ"
+      },
+      "description": {
+        "en": "Tutor, train or plant with Tesfa Hawassa. A few hours a week is enough.",
+        "am": "ከተስፋ ሀዋሳ ጋር ያስጠኑ፣ ያሠልጥኑ ወይም ይትከሉ። በሳምንት ጥቂት ሰዓታት ይበቃል።"
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "banner",
+          "eyebrow": {
+            "en": "Volunteer",
+            "am": "በጎ ፈቃድ"
+          },
+          "heading": {
+            "en": "Give a few hours a week",
+            "am": "በሳምንት ጥቂት ሰዓታት ይስጡ"
+          },
+          "subheading": {
+            "en": "Students, teachers, farmers and professionals are all welcome. We train you and you work beside our team.",
+            "am": "ተማሪዎች፣ መምህራን፣ አርሶ አደሮችና ባለሙያዎች ሁሉ እንኳን ደህና መጡ። እናሠለጥንዎታለን፤ ከቡድናችን ጎን ይሠራሉ።"
+          },
+          "image": {
+            "src": "/stock/ngo-hero-grain-in-hands.webp",
+            "alt": {
+              "en": "A woman's cupped hands pouring harvested grain",
+              "am": "የተሰበሰበ እህል በእፍኟ የምታፈስ ሴት እጆች"
+            }
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Sign up",
+              "am": "ይመዝገቡ"
+            },
+            "href": "#volunteer"
+          }
+        },
+        {
+          "type": "services",
+          "variant": "bento",
+          "eyebrow": {
+            "en": "Ways to help",
+            "am": "የሚያግዙባቸው መንገዶች"
+          },
+          "heading": {
+            "en": "Choose what suits you",
+            "am": "የሚስማማዎትን ይምረጡ"
+          },
+          "items": [
+            {
+              "icon": "book",
+              "title": {
+                "en": "Tutor",
+                "am": "አስጠኚ"
+              },
+              "description": {
+                "en": "Maths, English or science for grades 5 to 10. Two afternoons a week at a school near you.",
+                "am": "ሒሳብ፣ እንግሊዝኛ ወይም ሳይንስ ከ5ኛ እስከ 10ኛ ክፍል። በአቅራቢያዎ ባለ ትምህርት ቤት በሳምንት ሁለት ከሰዓት።"
+              }
+            },
+            {
+              "icon": "chart",
+              "title": {
+                "en": "Bookkeeping trainer",
+                "am": "የሒሳብ አያያዝ አሠልጣኝ"
+              },
+              "description": {
+                "en": "Help a savings group keep clear records. One meeting a week.",
+                "am": "አንድ የቁጠባ ቡድን መዝገቡን በአግባቡ እንዲይዝ ያግዙ። በሳምንት አንድ ስብሰባ።"
+              }
+            },
+            {
+              "icon": "tree",
+              "title": {
+                "en": "Planting days",
+                "am": "የተከላ ቀናት"
+              },
+              "description": {
+                "en": "Join school clubs on Saturdays in June and July.",
+                "am": "በሰኔና በሐምሌ ቅዳሜዎች ከትምህርት ቤት ክበቦች ጋር ይትከሉ።"
+              }
+            },
+            {
+              "icon": "camera",
+              "title": {
+                "en": "Skills from afar",
+                "am": "ከሩቅ የሚሰጥ ሙያ"
+              },
+              "description": {
+                "en": "Photography, design, translation or accounting, from wherever you are.",
+                "am": "ፎቶግራፍ፣ ዲዛይን፣ ትርጉም ወይም የሒሳብ ሥራ፤ ካሉበት ሆነው።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "eyebrow": {
+            "en": "How it works",
+            "am": "አካሄዱ"
+          },
+          "heading": {
+            "en": "From sign-up to your first day",
+            "am": "ከምዝገባ እስከ መጀመሪያ ቀንዎ"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Sign up",
+                "am": "ይመዝገቡ"
+              },
+              "description": {
+                "en": "Fill in the form with your skills and free days.",
+                "am": "ሙያዎንና ነፃ ቀናትዎን በቅጹ ይሙሉ።"
+              }
+            },
+            {
+              "title": {
+                "en": "Meet us",
+                "am": "ይተዋወቁን"
+              },
+              "description": {
+                "en": "We call within a week and meet at our office.",
+                "am": "በአንድ ሳምንት ውስጥ ደውለን በቢሯችን እንገናኛለን።"
+              }
+            },
+            {
+              "title": {
+                "en": "Half-day training",
+                "am": "የግማሽ ቀን ሥልጠና"
+              },
+              "description": {
+                "en": "How we work, and how we keep children safe.",
+                "am": "አሠራራችን እና የሕፃናት ደኅንነት አጠባበቅ።"
+              }
+            },
+            {
+              "title": {
+                "en": "Start",
+                "am": "ይጀምሩ"
+              },
+              "description": {
+                "en": "Your first month is alongside an experienced volunteer.",
+                "am": "የመጀመሪያ ወርዎን ልምድ ካለው በጎ ፈቃደኛ ጋር ይሠራሉ።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "volunteer",
+          "kind": "registration",
+          "heading": {
+            "en": "Volunteer sign-up",
+            "am": "የበጎ ፈቃደኞች ምዝገባ"
+          },
+          "intro": {
+            "en": "Tell us a little about yourself. We answer within a week.",
+            "am": "ስለራስዎ ጥቂት ይንገሩን። በአንድ ሳምንት ውስጥ እንመልሳለን።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Full name",
+                "am": "ሙሉ ስም"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone number",
+                "am": "ስልክ ቁጥር"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "role",
+              "label": {
+                "en": "How you would like to help",
+                "am": "ማገዝ የሚፈልጉበት መንገድ"
+              },
+              "type": "select",
+              "required": true,
+              "options": [
+                {
+                  "en": "Tutor",
+                  "am": "አስጠኚ"
+                },
+                {
+                  "en": "Bookkeeping trainer",
+                  "am": "የሒሳብ አያያዝ አሠልጣኝ"
+                },
+                {
+                  "en": "Planting days",
+                  "am": "የተከላ ቀናት"
+                },
+                {
+                  "en": "Skills from afar",
+                  "am": "ከሩቅ የሚሰጥ ሙያ"
+                }
+              ]
+            },
+            {
+              "name": "days",
+              "label": {
+                "en": "Days you are free",
+                "am": "ነፃ የሚሆኑባቸው ቀናት"
+              },
+              "type": "text"
+            },
+            {
+              "name": "about",
+              "label": {
+                "en": "Your skills or studies",
+                "am": "ሙያዎ ወይም ትምህርትዎ"
+              },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": {
+            "en": "Sign me up",
+            "am": "መዝግቡኝ"
+          },
+          "successMessage": {
+            "en": "Thank you. We will call you within a week.",
+            "am": "እናመሰግናለን። በአንድ ሳምንት ውስጥ እንደውልልዎታለን።"
+          }
+        },
+        {
+          "type": "testimonials",
+          "eyebrow": {
+            "en": "Volunteers say",
+            "am": "በጎ ፈቃደኞች ምን ይላሉ"
+          },
+          "heading": {
+            "en": "Why they stay",
+            "am": "ለምን ይቀጥላሉ"
+          },
+          "items": [
+            {
+              "quote": {
+                "en": "I tutor maths on Tuesdays and Thursdays. Three of my students came top of their class this year.",
+                "am": "ማክሰኞና ሐሙስ ሒሳብ አስጠናለሁ። ዘንድሮ ሦስት ተማሪዎቼ ከክፍላቸው አንደኛ ወጥተዋል።"
+              },
+              "name": "Kidist A.",
+              "role": {
+                "en": "University student, tutor since 2023",
+                "am": "የዩኒቨርሲቲ ተማሪ፣ ከ2015 ዓ.ም. ጀምሮ አስጠኚ"
+              }
+            },
+            {
+              "quote": {
+                "en": "The women already knew how to trade. I only showed them how to write it down.",
+                "am": "ሴቶቹ ንግዱን ቀድመው ያውቁታል። እኔ ያሳየኋቸው መመዝገቡን ብቻ ነው።"
+              },
+              "name": "Tamirat B.",
+              "role": {
+                "en": "Accountant, bookkeeping trainer",
+                "am": "የሒሳብ ባለሙያ፣ አሠልጣኝ"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact",
+        "am": "አድራሻ"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "አድራሻ"
+      },
+      "sections": [
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Talk to us",
+            "am": "ያነጋግሩን"
+          },
+          "intro": {
+            "en": "Donors, partners, schools and families are welcome at our office in Piazza.",
+            "am": "ለጋሾች፣ አጋሮች፣ ትምህርት ቤቶችና ቤተሰቦች ፒያሳ ባለው ቢሯችን እንኳን ደህና መጡ።"
+          }
+        },
+        {
+          "type": "form",
+          "id": "message",
+          "kind": "contact",
+          "heading": {
+            "en": "Send a message",
+            "am": "መልእክት ይላኩ"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone number",
+                "am": "ስልክ ቁጥር"
               },
               "type": "tel",
               "required": true
@@ -597,13 +1338,13 @@
             {
               "name": "topic",
               "label": {
-                "en": "Topic",
-                "am": "ጉዳይ"
+                "en": "About",
+                "am": "ጉዳዩ"
               },
               "type": "select",
               "options": [
                 {
-                  "en": "Donation",
+                  "en": "Giving",
                   "am": "ልገሳ"
                 },
                 {
@@ -611,11 +1352,11 @@
                   "am": "አጋርነት"
                 },
                 {
-                  "en": "Support for a girl",
-                  "am": "ለአንዲት ልጅ ድጋፍ መጠየቅ"
+                  "en": "Support for a student",
+                  "am": "ለተማሪ ድጋፍ"
                 },
                 {
-                  "en": "Other",
+                  "en": "Something else",
                   "am": "ሌላ"
                 }
               ]
@@ -624,7 +1365,7 @@
               "name": "message",
               "label": {
                 "en": "Message",
-                "am": "መልዕክት"
+                "am": "መልእክት"
               },
               "type": "textarea",
               "required": true
@@ -635,15 +1376,15 @@
             "am": "ላክ"
           },
           "successMessage": {
-            "en": "Thank you! We will get back to you soon.",
-            "am": "እናመሰግናለን! በቅርቡ ምላሽ እንሰጥዎታለን።"
+            "en": "Thank you. We will answer within two working days.",
+            "am": "እናመሰግናለን። በሁለት የሥራ ቀናት ውስጥ እንመልሳለን።"
           }
         },
         {
           "type": "map",
           "heading": {
-            "en": "Our office",
-            "am": "ቢሯችን"
+            "en": "Our office in Piazza",
+            "am": "ፒያሳ ያለው ቢሯችን"
           },
           "query": "Piazza, Hawassa, Ethiopia"
         }
