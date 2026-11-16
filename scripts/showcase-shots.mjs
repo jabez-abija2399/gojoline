@@ -20,7 +20,7 @@ const WIDTH = 390;
 const MAX_HEIGHT = 3600;
 // The part of the page a gallery card shows (CSS px at phone width).
 const TOP_HEIGHT = 700;
-const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".txt": "text/plain", ".xml": "application/xml" };
+const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".webp": "image/webp", ".txt": "text/plain", ".xml": "application/xml" };
 
 let work = process.env.SHOWCASE_WORKDIR;
 if (!work) {
@@ -67,6 +67,15 @@ async function shoot(port, languages, lang) {
   await page.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: "networkidle" });
   // The phone call bar is fixed to the screen; in a picture of the whole page it would sit mid-page.
   await page.addStyleTag({ content: ".sticky-actions{display:none!important}" });
+  // Photos below the first screen load lazily: walk down the page once so they are all in the picture.
+  const tall = await page.evaluate(() => document.documentElement.scrollHeight);
+  for (let y = 0; y < Math.min(tall, MAX_HEIGHT + 800); y += 600) {
+    await page.mouse.wheel(0, 600);
+    await page.waitForTimeout(50);
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForLoadState("networkidle");
+  await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))));
   await page.evaluate(() => document.fonts.ready);
   const full = await page.evaluate(() => document.documentElement.scrollHeight);
   const height = Math.min(full, MAX_HEIGHT);
