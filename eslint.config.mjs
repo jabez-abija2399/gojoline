@@ -17,6 +17,10 @@ const eslintConfig = defineConfig([
     // Not app code: brand build scripts, the generated-site template (own lint), reports.
     "brand/**",
     "templates/**",
+    // Built template demos (scripts/template-demos.mjs).
+    "public/demo/**",
+    // Scratch scripts (git-ignored).
+    "scripts/.tmp/**",
     "playwright-report/**",
     "test-results/**",
     "coverage/**",

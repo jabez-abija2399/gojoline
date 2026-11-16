@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import { ExternalLink, Lock, Monitor, Smartphone } from "lucide-react";
 import type { PreviewPage } from "@/lib/landing/template-preview";
 
@@ -56,8 +56,11 @@ export function TemplatePreviewer({ name, pages, host, t }: { name: string; page
       <span aria-hidden="true" className={`block rounded-full border border-line bg-white ${size}`} />
     );
   // The live site loads once the page runs, in the one device that shows (never twice).
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const frames = useRef<Record<"d" | "m", HTMLIFrameElement | null>>({ d: null, m: null });
   /** Scrolls the live site to section i (inside its own window, never the page). */
   const jump = (i: number) => {
