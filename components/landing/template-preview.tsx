@@ -31,7 +31,7 @@ const subscribe = (cb: () => void) => {
  * any section opens full size in a new tab. The computer layout sits in a browser window and the
  * phone layout in a phone, both showing the address the site would have.
  */
-export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /** "gojo-bole-buna-house.vercel.app" */ host: string; t: PreviewLabels }) {
+export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /** "bole-buna-house.gojoline.site", or null to leave the bar empty */ host: string | null; t: PreviewLabels }) {
   const [page, setPage] = useState(0);
   const [view, setView] = useState<"auto" | "d" | "m">("auto");
   // Until the visitor picks, a large screen shows the computer layout and a smaller one the phone layout.
@@ -39,14 +39,18 @@ export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /*
   const shown = view === "auto" ? (wide ? "d" : "m") : view;
   const current = pages[page] ?? pages[0]!;
   const sections = current.parts.filter((x) => x.kind !== "footer").length;
-  const address = `${host}${current.path === "/" ? "" : current.path}`;
-  const addressBar = (size: string) => (
-    <p className={`flex min-w-0 items-center gap-1.5 rounded-full border border-line bg-white text-ink-muted ${size}`}>
-      <Lock aria-hidden="true" className="size-3.5 shrink-0" />
-      <span className="sr-only">{t.address}: </span>
-      <span className="truncate">{address}</span>
-    </p>
-  );
+  const address = host ? `${host}${current.path === "/" ? "" : current.path}` : null;
+  // Without an address we own, the bar stays as an empty, decorative shape.
+  const addressBar = (size: string) =>
+    address ? (
+      <p className={`flex min-w-0 items-center gap-1.5 rounded-full border border-line bg-white text-ink-muted ${size}`}>
+        <Lock aria-hidden="true" className="size-3.5 shrink-0" />
+        <span className="sr-only">{t.address}: </span>
+        <span className="truncate">{address}</span>
+      </p>
+    ) : (
+      <span aria-hidden="true" className={`block rounded-full border border-line bg-white ${size}`} />
+    );
   const caption = (part: PreviewPage["parts"][number], i: number) => (
     <figcaption className="flex flex-col gap-0.5 px-1 pb-2 text-sm sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-x-2">
       <span className="flex items-baseline gap-2">
@@ -62,9 +66,10 @@ export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /*
       {part.summary && <span className="sr-only">{part.summary}</span>}
     </figcaption>
   );
-  const picture = (size: { src: string; width: number; height: number }, i: number, rounded: string) => (
+  /** Only the phone's first section loads at once (phones are most visitors); the rest, and every computer picture, load when near. */
+  const picture = (size: { src: string; width: number; height: number }, first: { eager: boolean; high: boolean }, rounded: string) => (
     <a href={size.src} target="_blank" rel="noopener" className="group/pic relative block">
-      <Image src={size.src} alt="" width={size.width} height={size.height} unoptimized loading={i < 2 ? "eager" : "lazy"} className={`h-auto w-full border border-line bg-sunken shadow-sm ${rounded}`} />
+      <Image src={size.src} alt="" width={size.width} height={size.height} unoptimized loading={first.eager ? "eager" : "lazy"} fetchPriority={first.high ? "high" : undefined} className={`h-auto w-full border border-line bg-sunken shadow-sm ${rounded}`} />
       <span className="absolute end-2 bottom-2 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white/90 px-3 text-xs font-medium text-ink shadow-sm opacity-90 transition group-hover/pic:opacity-100">
         <Maximize2 aria-hidden="true" className="size-3.5" />
         {t.fullSize}
@@ -105,9 +110,9 @@ export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /*
       <div data-frame="browser" className="hidden min-w-0 overflow-hidden rounded-2xl border border-line bg-sunken shadow-sm lg:block group-data-[view=d]:block group-data-[view=m]:hidden">
         <div className="flex items-center gap-3 border-b border-line bg-paper px-3 py-2 sm:px-4">
           <span aria-hidden="true" className="flex shrink-0 gap-1.5">
-            <span className="size-2.5 rounded-full bg-faint/50" />
-            <span className="size-2.5 rounded-full bg-faint/50" />
-            <span className="size-2.5 rounded-full bg-faint/50" />
+            <span className="size-2.5 rounded-full bg-line" />
+            <span className="size-2.5 rounded-full bg-line" />
+            <span className="size-2.5 rounded-full bg-line" />
           </span>
           {addressBar("min-h-8 flex-1 px-3 text-sm sm:mx-auto sm:max-w-md")}
           <span aria-hidden="true" className="w-[2.625rem] shrink-0 max-sm:hidden" />
@@ -117,7 +122,7 @@ export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /*
             <li key={i}>
               <figure>
                 {caption(part, i)}
-                {picture(part.d, i, "rounded-lg")}
+                {picture(part.d, { eager: false, high: i === 0 }, "rounded-lg")}
               </figure>
             </li>
           ))}
@@ -136,7 +141,7 @@ export function TemplatePreviewer({ pages, host, t }: { pages: PreviewPage[]; /*
               <li key={i}>
                 <figure>
                   {caption(part, i)}
-                  {picture(part.m, i, "rounded-xl")}
+                  {picture(part.m, { eager: i === 0, high: i === 0 }, "rounded-xl")}
                 </figure>
               </li>
             ))}

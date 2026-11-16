@@ -25,7 +25,8 @@ test("start from an industry template in Amharic: a ready site, no AI needed", a
 
 test("a template's preview shows every page and section before it is picked", async ({ page }) => {
   await page.goto("/en/templates/hotel");
-  await expect(page.getByRole("heading", { level: 1, name: "Tana Shore Lodge" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Hotel or guest house" })).toBeVisible();
+  await expect(page.getByText("Example: Tana Shore Lodge")).toBeVisible();
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
   // Each section is named: what it is and its own title.
@@ -106,15 +107,20 @@ test("the gallery in Amharic: category chips, accessible, no sideways scroll", a
 });
 
 const CAFE = {
-  en: { crumbs: "Where you are", templates: "Templates", category: "Food and drink", current: "Café or restaurant", name: "Bole Buna House", who: "Juice bars", whoTitle: "Designed for", chips: "Key highlights", chip: "Menu with prices", chip2: "English and Amharic", use: "Use this template", address: "Example address", phone: "Phone", computer: "Computer" },
-  am: { crumbs: "ያሉበት ቦታ", templates: "አብነቶች", category: "ምግብና መጠጥ", current: "ካፌ ወይም ምግብ ቤት", name: "ቦሌ ቡና ቤት", who: "ጭማቂ ቤቶች", whoTitle: "የሚስማማቸው", chips: "ዋና ዋና ነገሮች", chip: "ምናሌ ከዋጋ ጋር", chip2: "እንግሊዝኛና አማርኛ", use: "ይህን አብነት ይጠቀሙ", address: "የምሳሌ አድራሻ", phone: "ስልክ", computer: "ኮምፒውተር" },
+  en: { crumbs: "Where you are", templates: "Templates", category: "Food and drink", current: "Café or restaurant", name: "Bole Buna House", example: "Example: Bole Buna House", who: "Juice bars", whoTitle: "Designed for", chips: "What's included", chip: "Menu with prices", chip2: "English and Amharic", use: "Use this template", address: "Example address", phone: "Phone", computer: "Computer" },
+  am: { crumbs: "ያሉበት ቦታ", templates: "አብነቶች", category: "ምግብና መጠጥ", current: "ካፌ ወይም ምግብ ቤት", name: "ቦሌ ቡና ቤት", example: "ምሳሌ፦ ቦሌ ቡና ቤት", who: "ጭማቂ ቤቶች", whoTitle: "የሚስማማቸው", chips: "ምን ምን አለው", chip: "ምናሌ ከዋጋ ጋር", chip2: "እንግሊዝኛና አማርኛ", use: "ይህን አብነት ይጠቀሙ", address: "የምሳሌ አድራሻ", phone: "ስልክ", computer: "ኮምፒውተር" },
 };
 
 for (const lang of ["en", "am"] as const) {
   test(`the café template in ${lang}: breadcrumb, who it suits, highlights, framed preview, one button`, async ({ page }) => {
     const copy = CAFE[lang];
     await page.goto(`/${lang}/templates/cafe`);
-    await expect(page.getByRole("heading", { level: 1, name: copy.name })).toBeVisible();
+    // The heading is the kind of business, the same words as the breadcrumb; the sample's name is a line under it.
+    await expect(page.getByRole("heading", { level: 1, name: copy.current })).toBeVisible();
+    await expect(page.getByText(copy.example)).toBeVisible();
+    // Search engines get the description in the page's language.
+    const description = await page.locator('meta[name="description"]').getAttribute("content");
+    expect(description).toContain(lang === "en" ? ". Designed for: " : "። የሚስማማቸው፦ ");
 
     // Breadcrumb: Templates › Category › Template.
     const crumbs = page.getByRole("navigation", { name: copy.crumbs });
@@ -139,15 +145,27 @@ for (const lang of ["en", "am"] as const) {
     await expect(frame.getByText(/bole-buna-house/)).toBeVisible();
     await expect(frame.getByText(copy.address)).toBeAttached();
 
-    // Large screens: details beside the preview. Phones: details first, then the preview.
-    const aside = await page.getByRole("region", { name: copy.name }).boundingBox();
+    // Large screens: the summary beside the preview. Phones: summary, then the preview, then who it suits.
+    const summary = await page.getByRole("region", { name: copy.current }).boundingBox();
     const box = await frame.boundingBox();
-    if (!aside || !box) throw new Error("layout not measured");
-    if (wide) expect(aside.x).toBeGreaterThanOrEqual(box.x + box.width);
-    else expect(aside.y + aside.height).toBeLessThanOrEqual(box.y);
+    const who = await page.getByRole("region", { name: copy.whoTitle }).boundingBox();
+    if (!summary || !box || !who) throw new Error("layout not measured");
+    if (wide) {
+      expect(summary.x).toBeGreaterThanOrEqual(box.x + box.width);
+      expect(who.x).toBeGreaterThanOrEqual(box.x + box.width);
+    } else {
+      expect(summary.y + summary.height).toBeLessThanOrEqual(box.y);
+      expect(who.y).toBeGreaterThanOrEqual(box.y + box.height);
+    }
     // Exactly one "Use this template" in view: beside the preview, or in the bar at the bottom.
     await expect(page.getByRole("link", { name: copy.use }).filter({ visible: true })).toHaveCount(1);
     await expect(page.locator("[data-use-bar]")).toBeVisible({ visible: !wide });
+    if (wide) {
+      // Far down a long preview, the button beside it is still in view (only the summary stays put).
+      await page.mouse.wheel(0, 3000);
+      await expect(page.getByRole("link", { name: copy.use }).filter({ visible: true })).toBeInViewport();
+      await page.mouse.wheel(0, -3000);
+    }
 
     await expectNoHorizontalScroll(page);
     await expectNoSeriousA11yIssues(page);
@@ -157,3 +175,17 @@ for (const lang of ["en", "am"] as const) {
     await expectNoHorizontalScroll(page);
   });
 }
+
+test("an unknown template answers 404", async ({ page }) => {
+  const res = await page.goto("/en/templates/not-a-template");
+  expect(res?.status()).toBe(404);
+});
+
+test("when a category hides every match, a link shows the matches in all templates", async ({ page }) => {
+  await page.goto("/en/templates?category=food");
+  await page.getByRole("searchbox", { name: "Search templates" }).fill("prayer");
+  await expect(page.getByText("No template matches")).toBeVisible();
+  await page.getByRole("link", { name: "See 1 matching in all templates" }).click();
+  await expect(page).toHaveURL(/\/en\/templates$/);
+  await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(1);
+});

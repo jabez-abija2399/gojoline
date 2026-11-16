@@ -91,6 +91,8 @@ export const en = {
       filters: "Filters",
       clear: "Clear filters",
       none: "No template matches. Try fewer filters or another word.",
+      seeAll: "See {n} matching in all templates",
+      seeAllOne: "See 1 matching in all templates",
       categories: {
         food: "Food and drink",
         travel: "Stay and travel",
@@ -140,7 +142,10 @@ export const en = {
       breadcrumb: "Where you are",
       templates: "Templates",
       designedFor: "Designed for",
-      highlightsTitle: "Key highlights",
+      highlightsTitle: "What's included",
+      example: "Example: {name}",
+      metaDescription: "{about}. Designed for: {list}.",
+      listSeparator: ", ",
       usedBy: "Used by {n} businesses",
       address: "Example address",
       highlights: {
@@ -152,7 +157,7 @@ export const en = {
         contactForm: "Message form",
         gallery: "Photo gallery",
         team: "Team with photos",
-        cards: "Cards with photos",
+        cards: "Products or services with photos",
         times: "Timetable",
         hours: "Opening hours",
         reviews: "Customer reviews",
@@ -168,7 +173,7 @@ export const en = {
       kinds: {
         hero: "Top of the page",
         about: "About",
-        cards: "Cards with photos",
+        cards: "Products or services with photos",
         menu: "Menu and prices",
         services: "Services",
         gallery: "Photos",

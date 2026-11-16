@@ -6,12 +6,11 @@ import { createProject } from "@/app/[lang]/build/actions";
 import { PendingButton } from "@/components/builder/pending-button";
 import { StartFromLink } from "@/components/landing/start-from-link";
 import { TemplatePreviewer } from "@/components/landing/template-preview";
-import { SiteFooter } from "@/components/site/site-footer";
-import { SiteHeader } from "@/components/site/site-header";
 import { currentUser } from "@/lib/auth/session";
 import { serif } from "@/lib/fonts-landing";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
+import { exampleHost } from "@/lib/landing/example-address";
 import { templateHighlights } from "@/lib/landing/template-highlights";
 import { TEMPLATE_INFO } from "@/lib/landing/template-info";
 import { templatePreview } from "@/lib/landing/template-preview";
@@ -29,18 +28,20 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/templates/
   const g = t.landing.gallery;
   return {
     title: `${t.builder.templates[preview.id]} · ${g.categories[TEMPLATE_INFO[preview.id].category]} · ${g.title}`,
-    description: `${g.about[preview.id]}. ${t.landing.templatePreview.designedFor}: ${TEMPLATE_INFO[preview.id].designedFor[lang].join(", ")}.`,
+    description: format(t.landing.templatePreview.metaDescription, {
+      about: g.about[preview.id],
+      list: TEMPLATE_INFO[preview.id].designedFor[lang].join(t.landing.templatePreview.listSeparator),
+    }),
   };
 }
 
-/** The address the example would get once published, in the real publish format (the English name as the slug). */
-function exampleHost(id: PresetId): string {
-  const slug = suggestSlug(presetName(id, "en"), id);
-  return (services().publish?.publisher.urlFor(slug) ?? `https://gojo-${slug}.vercel.app`).replace(/^https?:\/\//, "");
+/** The address the example would get on our own publishing domain (the English name as the slug), or null. */
+function exampleAddress(id: PresetId): string | null {
+  return exampleHost(suggestSlug(presetName(id, "en"), id), { PUBLISH_BASE_DOMAIN: process.env.PUBLISH_BASE_DOMAIN }, services().publish?.publisher ?? null);
 }
 
 /**
- * One template in full. Phones: what it is, who it suits and its highlights, then every page and
+ * One template in full (the header, footer and the check that the template exists are in layout.tsx). Phones: what it is, who it suits and its highlights, then every page and
  * section, with "Use this template" in a bar at the bottom. Large screens: the preview on the
  * left and the same details in a column on the right that stays in view, button included.
  */
@@ -80,19 +81,18 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
 
   return (
     <>
-      <SiteHeader locale={lang} t={t} nav current="templates" />
       <main id="main" tabIndex={-1} className={`${serif.variable} flex-1 focus:outline-none`}>
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 md:py-10">
           <nav aria-label={p.breadcrumb}>
             <ol className="flex flex-wrap items-center gap-x-1 text-sm">
               <li className="flex items-center gap-1">
-                <Link href={`/${lang}/templates`} className="inline-flex min-h-11 items-center font-medium text-link underline-offset-4 hover:underline lg:min-h-9">
+                <Link href={`/${lang}/templates`} className="inline-flex min-h-11 min-w-11 items-center justify-center font-medium text-link underline-offset-4 hover:underline lg:min-h-9">
                   {p.templates}
                 </Link>
                 <ChevronRight aria-hidden="true" className="size-4 shrink-0 text-ink-muted rtl:rotate-180" />
               </li>
               <li className="flex items-center gap-1">
-                <Link href={`/${lang}/templates?category=${info.category}`} className="inline-flex min-h-11 items-center font-medium text-link underline-offset-4 hover:underline lg:min-h-9">
+                <Link href={`/${lang}/templates?category=${info.category}`} className="inline-flex min-h-11 min-w-11 items-center justify-center font-medium text-link underline-offset-4 hover:underline lg:min-h-9">
                   {category}
                 </Link>
                 <ChevronRight aria-hidden="true" className="size-4 shrink-0 text-ink-muted rtl:rotate-180" />
@@ -105,13 +105,18 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
             </ol>
           </nav>
 
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_24rem]">
-            {/* First in reading order (and on phones); the right-hand column on large screens. */}
-            <section aria-labelledby="template-name" className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-24 lg:order-2 lg:max-h-[calc(100dvh-7rem)] lg:self-start lg:overflow-y-auto lg:pe-1">
-              <div className="flex flex-col gap-3">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_24rem]">
+            {/* Phones and tablets: summary, then the preview, then the details (this wrapper is display: contents).
+                Large screens: the right-hand column, where only the summary and its button stay in view. */}
+            <div className="contents lg:col-start-2 lg:row-start-1 lg:block">
+              <section
+                aria-labelledby="template-name"
+                className="order-1 flex min-w-0 flex-col gap-3 lg:sticky lg:top-24 lg:z-10 lg:bg-paper lg:pb-6 lg:before:absolute lg:before:inset-x-0 lg:before:bottom-full lg:before:h-24 lg:before:bg-paper"
+              >
                 <h1 id="template-name" className="display text-4xl sm:text-5xl lg:text-4xl">
-                  {preview.name}
+                  {label}
                 </h1>
+                <p className="font-medium">{format(p.example, { name: preview.name })}</p>
                 <p className="text-lg text-ink-muted">{g.about[preview.id]}</p>
                 <p className="text-ink-muted">
                   {pageWord} · {format(p.sectionCount, { n: String(preview.sectionCount) })} · {p.languages}
@@ -122,45 +127,47 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
                     {format(p.usedBy, { n: used.toLocaleString(lang === "am" ? "am-ET" : "en-US") })}
                   </p>
                 )}
+                {/* Large screens: the one button lives here (the bottom bar is for phones and tablets). */}
+                <div className="mt-3 max-lg:hidden [&_a]:w-full [&_button]:w-full">{use}</div>
+              </section>
+
+              <div className="order-3 flex min-w-0 flex-col gap-6 lg:pt-2">
+                <section aria-labelledby="designed-for" className="flex flex-col gap-2">
+                  <h2 id="designed-for" className="font-semibold">
+                    {p.designedFor}
+                  </h2>
+                  <ul className="flex flex-col gap-1.5">
+                    {info.designedFor[lang].map((who) => (
+                      <li key={who} className="flex items-start gap-2">
+                        <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-ink-muted" />
+                        <span>{who}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section aria-labelledby="highlights" className="flex flex-col gap-3">
+                  <h2 id="highlights" className="font-semibold">
+                    {p.highlightsTitle}
+                  </h2>
+                  {/* Plain facts, not buttons: flat tags with no border. */}
+                  <ul className="flex flex-wrap gap-2">
+                    {highlights.map((h) => (
+                      <li key={h.key} className="rounded-md bg-sunken px-2 py-1 text-sm">
+                        {h.label ?? p.highlights[h.key]}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <p className="text-sm text-ink-muted">{p.samples}</p>
               </div>
+            </div>
 
-              {/* Large screens: the one button lives here (the bottom bar is for phones and tablets). */}
-              <div className="max-lg:hidden [&_a]:w-full [&_button]:w-full">{use}</div>
-
-              <section aria-labelledby="designed-for" className="flex flex-col gap-2">
-                <h2 id="designed-for" className="font-semibold">
-                  {p.designedFor}
-                </h2>
-                <ul className="flex flex-col gap-1.5">
-                  {info.designedFor[lang].map((who) => (
-                    <li key={who} className="flex items-start gap-2">
-                      <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-ink-muted" />
-                      <span>{who}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <section aria-labelledby="highlights" className="flex flex-col gap-3">
-                <h2 id="highlights" className="font-semibold">
-                  {p.highlightsTitle}
-                </h2>
-                <ul className="flex flex-wrap gap-2">
-                  {highlights.map((h) => (
-                    <li key={h.key} className="rounded-full border border-line bg-white px-3 py-1.5 text-sm font-medium">
-                      {h.label ?? p.highlights[h.key]}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <p className="text-sm text-ink-muted">{p.samples}</p>
-            </section>
-
-            <section aria-label={p.pages} className="flex min-w-0 flex-col gap-8 lg:order-1">
+            <section aria-label={p.pages} className="order-2 flex min-w-0 flex-col gap-8 lg:col-start-1 lg:row-start-1">
               <TemplatePreviewer
                 pages={preview.pages}
-                host={exampleHost(preview.id)}
+                host={exampleAddress(preview.id)}
                 t={{ pages: p.pages, view: p.view, desktop: p.desktop, phone: p.phone, pageHeading: p.pageHeading, fullSize: p.fullSize, address: p.address, kinds: p.kinds }}
               />
             </section>
@@ -190,7 +197,6 @@ export default async function TemplatePage({ params }: PageProps<"/[lang]/templa
           </div>
         </div>
       </main>
-      <SiteFooter locale={lang} t={t} />
     </>
   );
 }

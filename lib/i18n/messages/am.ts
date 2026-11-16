@@ -92,6 +92,8 @@ export const am: Messages = {
       filters: "ማጣሪያ",
       clear: "ማጣሪያውን አጽዳ",
       none: "የሚስማማ አብነት የለም። ጥቂት ማጣሪያዎችን ወይም ሌላ ቃል ይሞክሩ።",
+      seeAll: "በሁሉም አብነቶች ውስጥ የሚስማሙ {n} ይዩ",
+      seeAllOne: "በሁሉም አብነቶች ውስጥ የሚስማማ 1 ይዩ",
       categories: {
         food: "ምግብና መጠጥ",
         travel: "ማረፊያና ጉዞ",
@@ -141,7 +143,10 @@ export const am: Messages = {
       breadcrumb: "ያሉበት ቦታ",
       templates: "አብነቶች",
       designedFor: "የሚስማማቸው",
-      highlightsTitle: "ዋና ዋና ነገሮች",
+      highlightsTitle: "ምን ምን አለው",
+      example: "ምሳሌ፦ {name}",
+      metaDescription: "{about}። የሚስማማቸው፦ {list}።",
+      listSeparator: "፣ ",
       usedBy: "{n} ንግዶች ተጠቅመውበታል",
       address: "የምሳሌ አድራሻ",
       highlights: {
@@ -153,7 +158,7 @@ export const am: Messages = {
         contactForm: "የመልእክት ቅጽ",
         gallery: "የፎቶ ማዕከል",
         team: "ቡድን ከፎቶ ጋር",
-        cards: "ፎቶ ያላቸው ካርዶች",
+        cards: "አገልግሎቶች ወይም ዕቃዎች ከፎቶ ጋር",
         times: "የጊዜ ሰሌዳ",
         hours: "የሥራ ሰዓት",
         reviews: "የደንበኞች አስተያየት",
@@ -169,7 +174,7 @@ export const am: Messages = {
       kinds: {
         hero: "የገጹ መጀመሪያ",
         about: "ስለ እኛ",
-        cards: "ፎቶ ያላቸው ካርዶች",
+        cards: "አገልግሎቶች ወይም ዕቃዎች ከፎቶ ጋር",
         menu: "ምናሌና ዋጋ",
         services: "አገልግሎቶች",
         gallery: "ፎቶዎች",
