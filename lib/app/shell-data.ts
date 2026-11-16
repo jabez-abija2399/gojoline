@@ -15,7 +15,8 @@ export interface OwnerSite {
 export const ownerSites = cache(async (ownerId: string): Promise<OwnerSite[]> => {
   const svc = services();
   if (!svc.builder) return [];
-  const [projects, sites] = await Promise.all([svc.builder.store.listProjects(ownerId), svc.publish?.sites.listByOwner(ownerId) ?? []]);
+  const projects = await svc.builder.store.listProjects(ownerId);
+  const sites = (await svc.publish?.sites.listByOwner(ownerId, projects.map((p) => p.id))) ?? [];
   const byProject = new Map(sites.map((s) => [s.projectId, s]));
   return projects.map((project) => {
     const s = byProject.get(project.id);
@@ -32,7 +33,7 @@ export const ownerAllowance = cache(async (ownerId: string) => {
 
 /** Where a published site lives, without the protocol; null when it isn't live. */
 export function liveAddress(site: OwnerSite["site"]): { href: string; text: string } | null {
-  if (!site || site.status !== "published" || !site.url) return null;
+  if (!site || site.status !== "published" || !site.url?.startsWith("https://")) return null;
   // Their own address only once it is known to point at us.
   const href = site.customDomain && site.customDomainVerifiedAt ? `https://${site.customDomain}` : site.url;
   return { href, text: href.replace(/^https?:\/\//, "") };

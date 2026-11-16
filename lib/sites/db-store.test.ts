@@ -27,8 +27,9 @@ describe("DbSiteStore", () => {
     });
     expect(saved.status).toBe("published");
     // The list of sites is the owner's own.
-    expect((await sites.listByOwner("alice")).map((s) => s.slug)).toEqual(["selam"]);
-    expect(await sites.listByOwner("bob")).toEqual([]);
+    expect((await sites.listByOwner("alice", [a.id])).map((s) => s.slug)).toEqual(["selam"]);
+    expect(await sites.listByOwner("bob", [a.id, b.id])).toEqual([]);
+    expect(await sites.listByOwner("alice", [])).toEqual([]);
     await expect(sites.savePublished("bob", { ...saved, projectId: a.id })).rejects.toThrow();
 
     // A project with a live site can't simply disappear.

@@ -27,6 +27,9 @@ describe("liveAddress", () => {
     expect(liveAddress({ ...base, status: "published", customDomain: "selamcoffee.com" })?.text).toBe("selam.gojoline.site");
     expect(liveAddress({ ...base, status: "published", customDomain: "selamcoffee.com", customDomainVerifiedAt: new Date() })?.text).toBe("selamcoffee.com");
   });
+  it("only ever links to https", () => {
+    expect(liveAddress({ ...base, status: "published", url: "http://selam.example" })).toBeNull();
+  });
 });
 
 describe("ago", () => {

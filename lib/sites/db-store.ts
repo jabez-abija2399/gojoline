@@ -12,8 +12,9 @@ export class DbSiteStore implements SiteStore, SiteAdminStore {
     return row ?? null;
   }
 
-  async listByOwner(ownerId: string): Promise<Site[]> {
-    return this.db.select().from(sites).where(eq(sites.ownerId, ownerId)).limit(100);
+  async listByOwner(ownerId: string, projectIds: string[]): Promise<Site[]> {
+    if (projectIds.length === 0) return [];
+    return this.db.select().from(sites).where(and(eq(sites.ownerId, ownerId), inArray(sites.projectId, projectIds)));
   }
 
   async slugTaken(slug: string, exceptProjectId: string): Promise<boolean> {
