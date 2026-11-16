@@ -163,8 +163,8 @@
                     "am": "እጥበትና ማድረቅ"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 50000,
@@ -181,8 +181,8 @@
                     "am": "ካውያ"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 90000,
@@ -199,8 +199,8 @@
                     "am": "የተፈጥሮ ፀጉር አሠራር"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 80000,
@@ -225,8 +225,8 @@
                     "am": "ቀጭን ሹሩባ"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 60000,
@@ -243,8 +243,8 @@
                     "am": "አልባሶ"
                   },
                   "tag": {
-                    "en": "2 hrs",
-                    "am": "2 ሰዓት"
+                    "en": "2 hrs",
+                    "am": "2 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 120000,
@@ -261,8 +261,8 @@
                     "am": "ቦክስ ብሬድ"
                   },
                   "tag": {
-                    "en": "4 hrs",
-                    "am": "4 ሰዓት"
+                    "en": "4 hrs",
+                    "am": "4 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 250000,
@@ -287,8 +287,8 @@
                     "am": "ፀጉር ቁርጥ"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 30000,
@@ -305,8 +305,8 @@
                     "am": "ፀጉርና ፂም"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 45000,
@@ -323,8 +323,8 @@
                     "am": "የልጆች ቁርጥ"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 20000,
@@ -349,8 +349,8 @@
                     "am": "ማኒኪዩር"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 50000,
@@ -363,8 +363,8 @@
                     "am": "ጄል ቀለም"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 90000,
@@ -381,8 +381,8 @@
                     "am": "ሜካፕ"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 200000,
@@ -429,8 +429,8 @@
             {
               "src": "/stock/shop-card-habesha-kemis.webp",
               "alt": {
-                "en": "A woman with braided hair and silver jewellery in a white habesha kemis",
-                "am": "ሹሩባ የተሠራችና የብር ጌጥ ያደረገች ሴት፣ ነጭ የሀበሻ ቀሚስ ለብሳ"
+                "en": "A woman with full curly hair, a braided crown and silver jewellery in a white habesha kemis",
+                "am": "ሙሉ ጥቅልል ፀጉር፣ በግንባሯ ዙሪያ ሹሩባና የብር ጌጥ ያላት ሴት፣ ነጭ የሀበሻ ቀሚስ ለብሳ"
               }
             },
             {
@@ -806,10 +806,10 @@
             "am": "ምን ያህል እንደሚያስከፍልና ምን ያህል ጊዜ እንደሚወስድ፤ ቀንዎን ለማቀድ እንዲመችዎ።"
           },
           "image": {
-            "src": "/stock/salon-card-manicure.webp",
+            "src": "/stock/salon-about-salon-interior.webp",
             "alt": {
-              "en": "Close-up of a nail technician working on a client's manicure",
-              "am": "የጥፍር ባለሙያ የደንበኛዋን ጥፍር ስትሠራ በቅርበት"
+              "en": "Black-and-white view of an empty salon with arched lit mirrors and styling chairs",
+              "am": "ቅስት መስታወቶችና የፀጉር ወንበሮች ያሉት ባዶ ሳሎን፣ ጥቁርና ነጭ ፎቶ"
             }
           },
           "primaryAction": {
@@ -848,8 +848,8 @@
                     "am": "እጥበትና ማድረቅ"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 50000,
@@ -866,8 +866,8 @@
                     "am": "እጥበትና ቢጉዲ"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 60000,
@@ -880,8 +880,8 @@
                     "am": "ካውያ"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 90000,
@@ -898,8 +898,8 @@
                     "am": "ጫፍ ማስተካከል"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 35000,
@@ -912,8 +912,8 @@
                     "am": "የተፈጥሮ ፀጉር አሠራር"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 80000,
@@ -938,8 +938,8 @@
                     "am": "ቀጭን ሹሩባ"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 60000,
@@ -956,8 +956,8 @@
                     "am": "አልባሶ"
                   },
                   "tag": {
-                    "en": "2 hrs",
-                    "am": "2 ሰዓት"
+                    "en": "2 hrs",
+                    "am": "2 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 120000,
@@ -974,8 +974,8 @@
                     "am": "ቦክስ ብሬድ"
                   },
                   "tag": {
-                    "en": "4 hrs",
-                    "am": "4 ሰዓት"
+                    "en": "4 hrs",
+                    "am": "4 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 250000,
@@ -992,8 +992,8 @@
                     "am": "ኖትለስ ብሬድ"
                   },
                   "tag": {
-                    "en": "5 hrs",
-                    "am": "5 ሰዓት"
+                    "en": "5 hrs",
+                    "am": "5 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 350000,
@@ -1006,8 +1006,8 @@
                     "am": "ቱዊስት"
                   },
                   "tag": {
-                    "en": "3 hrs",
-                    "am": "3 ሰዓት"
+                    "en": "3 hrs",
+                    "am": "3 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 200000,
@@ -1020,8 +1020,8 @@
                     "am": "ሹሩባ መፍታትና እጥበት"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 50000,
@@ -1042,8 +1042,8 @@
                     "am": "ሙሉ ቀለም"
                   },
                   "tag": {
-                    "en": "2 hrs",
-                    "am": "2 ሰዓት"
+                    "en": "2 hrs",
+                    "am": "2 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 250000,
@@ -1060,8 +1060,8 @@
                     "am": "የሥር ቀለም"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 140000,
@@ -1074,8 +1074,8 @@
                     "am": "ሃይላይት"
                   },
                   "tag": {
-                    "en": "3 hrs",
-                    "am": "3 ሰዓት"
+                    "en": "3 hrs",
+                    "am": "3 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 320000,
@@ -1088,8 +1088,8 @@
                     "am": "ሪላክሰር"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 120000,
@@ -1106,8 +1106,8 @@
                     "am": "ጥልቅ እንክብካቤ"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 80000,
@@ -1124,8 +1124,8 @@
                     "am": "የራስ ቆዳ እንክብካቤ"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 60000,
@@ -1146,8 +1146,8 @@
                     "am": "ማኒኪዩር"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 50000,
@@ -1160,8 +1160,8 @@
                     "am": "ጄል ቀለም"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 90000,
@@ -1178,8 +1178,8 @@
                     "am": "ፔዲኪዩር"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 70000,
@@ -1192,8 +1192,8 @@
                     "am": "ሂና፣ ለእጅ"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 60000,
@@ -1206,8 +1206,8 @@
                     "am": "ቅንድብ ማስተካከል"
                   },
                   "tag": {
-                    "en": "15 min",
-                    "am": "15 ደቂቃ"
+                    "en": "15 min",
+                    "am": "15 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 15000,
@@ -1220,8 +1220,8 @@
                     "am": "ሜካፕ"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 200000,
@@ -1246,8 +1246,8 @@
                     "am": "የሙሽራ ፀጉር"
                   },
                   "tag": {
-                    "en": "3 hrs",
-                    "am": "3 ሰዓት"
+                    "en": "3 hrs",
+                    "am": "3 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 600000,
@@ -1264,8 +1264,8 @@
                     "am": "የሙሽራ ፀጉርና ሜካፕ"
                   },
                   "tag": {
-                    "en": "4 hrs",
-                    "am": "4 ሰዓት"
+                    "en": "4 hrs",
+                    "am": "4 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 1200000,
@@ -1282,8 +1282,8 @@
                     "am": "የሚዜ አሠራር"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 150000,
@@ -1308,8 +1308,8 @@
                     "am": "ፀጉር ቁርጥ"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 30000,
@@ -1326,8 +1326,8 @@
                     "am": "ፌድ"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 40000,
@@ -1340,8 +1340,8 @@
                     "am": "ፀጉርና ፂም"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 45000,
@@ -1358,8 +1358,8 @@
                     "am": "ፂም ማስተካከል"
                   },
                   "tag": {
-                    "en": "15 min",
-                    "am": "15 ደቂቃ"
+                    "en": "15 min",
+                    "am": "15 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 15000,
@@ -1372,8 +1372,8 @@
                     "am": "ሙሉ ላጭ"
                   },
                   "tag": {
-                    "en": "20 min",
-                    "am": "20 ደቂቃ"
+                    "en": "20 min",
+                    "am": "20 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 25000,
@@ -1386,8 +1386,8 @@
                     "am": "የልጆች ቁርጥ"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 20000,
@@ -1588,8 +1588,8 @@
                     "am": "ፀጉር ቁርጥ"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 30000,
@@ -1606,8 +1606,8 @@
                     "am": "ፌድ"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 40000,
@@ -1620,8 +1620,8 @@
                     "am": "ፀጉርና ፂም"
                   },
                   "tag": {
-                    "en": "45 min",
-                    "am": "45 ደቂቃ"
+                    "en": "45 min",
+                    "am": "45 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 45000,
@@ -1638,8 +1638,8 @@
                     "am": "ፂም ማስተካከል"
                   },
                   "tag": {
-                    "en": "15 min",
-                    "am": "15 ደቂቃ"
+                    "en": "15 min",
+                    "am": "15 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 15000,
@@ -1652,8 +1652,8 @@
                     "am": "ሙሉ ላጭ"
                   },
                   "tag": {
-                    "en": "20 min",
-                    "am": "20 ደቂቃ"
+                    "en": "20 min",
+                    "am": "20 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 25000,
@@ -1666,8 +1666,8 @@
                     "am": "የልጆች ቁርጥ"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 20000,
@@ -1692,8 +1692,8 @@
                     "am": "በሙቅ ፎጣ መላጨት"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 30000,
@@ -1706,8 +1706,8 @@
                     "am": "ፀጉር እጥበት"
                   },
                   "tag": {
-                    "en": "10 min",
-                    "am": "10 ደቂቃ"
+                    "en": "10 min",
+                    "am": "10 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 10000,
@@ -1720,8 +1720,8 @@
                     "am": "ጥቁር ቀለም፣ ለፀጉር ወይም ለፂም"
                   },
                   "tag": {
-                    "en": "30 min",
-                    "am": "30 ደቂቃ"
+                    "en": "30 min",
+                    "am": "30 ደቂቃ"
                   },
                   "price": {
                     "amountMinor": 40000,
@@ -1734,8 +1734,8 @@
                     "am": "የሙሽራ ቁርጥና ፂም"
                   },
                   "tag": {
-                    "en": "1 hr",
-                    "am": "1 ሰዓት"
+                    "en": "1 hr",
+                    "am": "1 ሰዓት"
                   },
                   "price": {
                     "amountMinor": 100000,
