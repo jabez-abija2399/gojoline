@@ -6,14 +6,14 @@ import { DevOtpSender } from "@/lib/providers/notify/otp";
 import { testDb } from "@/test/db";
 import { createAuth, phoneEmail } from "./config";
 
-async function setup() {
+async function setup(secureCookies = false) {
   const db = await testDb();
   const sender = new DevOtpSender();
   const auth = createAuth({
     database: drizzleAdapter(db, { provider: "pg", schema: { user: schema.user, session: schema.session, account: schema.account, verification: schema.verification } }),
     secret: "test-secret-0123456789-0123456789-abcdef",
     baseURL: "http://localhost:3000",
-    secureCookies: false,
+    secureCookies,
     sender,
   });
   return { db, sender, auth };
@@ -61,5 +61,19 @@ describe("Better Auth on Postgres", () => {
     expect(u?.phoneNumberVerified).toBe(true);
     expect(u?.email).toBe(phoneEmail(phone));
     await expect(auth.api.sendPhoneNumberOTP({ body: { phoneNumber: "0911234567" } })).rejects.toThrow();
+  }, 30_000);
+
+  it("on https the session cookie is __Host- (host-only, Secure, path /), so sibling subdomains can't plant one", async () => {
+    const { sender, auth } = await setup(true);
+    const email = `host-${Date.now()}@example.com`;
+    await auth.api.sendVerificationOTP({ body: { email, type: "sign-in" } });
+    const res = await auth.api.signInEmailOTP({ body: { email, otp: sender.lastCode(email)! }, asResponse: true });
+    const cookies = res.headers.getSetCookie();
+    const session = cookies.find((c) => c.startsWith("__Host-gojo.session_token="));
+    expect(session, cookies.join("\n")).toBeTruthy();
+    expect(session).toMatch(/;\s*Secure/i);
+    expect(session).toMatch(/;\s*Path=\//i);
+    expect(session).not.toMatch(/Domain=/i);
+    expect(cookies.every((c) => c.startsWith("__Host-gojo."))).toBe(true);
   }, 30_000);
 });

@@ -1,7 +1,7 @@
 import "server-only";
 import { getSessionCookie } from "better-auth/cookies";
 import { headers } from "next/headers";
-import { AUTH_COOKIE_PREFIX } from "./config";
+import { AUTH_COOKIE_PREFIX, authCookiePrefix } from "./config";
 
 /**
  * Whether this visitor carries a session cookie: a hint for marketing pages, read without a
@@ -10,5 +10,6 @@ import { AUTH_COOKIE_PREFIX } from "./config";
  */
 export async function looksSignedIn(): Promise<boolean> {
   // Same prefix as the auth setup (lib/auth/config.ts: advanced.cookiePrefix).
-  return !!getSessionCookie(await headers(), { cookiePrefix: AUTH_COOKIE_PREFIX });
+  const h = await headers();
+  return !!(getSessionCookie(h, { cookiePrefix: authCookiePrefix(true) }) ?? getSessionCookie(h, { cookiePrefix: AUTH_COOKIE_PREFIX }));
 }

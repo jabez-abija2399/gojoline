@@ -46,6 +46,18 @@ describe("takedown", () => {
     expect((await sites.byId(site.id))?.takedownDeployedAt).toBeNull();
   });
 
+  it("takes a site down on the host it still lives on (not moved yet)", async () => {
+    const sites = new MemorySiteStore();
+    await sites.reserve("owner", "p1", "old-site", "memory");
+    const site = await sites.savePublished("owner", { projectId: "p1", slug: "old-site", provider: "memory", providerProjectId: "prj", url: "https://old-site.sites.example", publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+    const reports = new MemoryReportStore(async () => null);
+    const legacy = new MemoryPublishProvider();
+    const publisher = Object.assign(new MemoryPublishProvider(), { name: "cloudflare" });
+    expect(await takeDownSite({ sites, reports, publisher, legacy, audit: async () => undefined }, "admin", site.id, "scam")).toBe("ok");
+    expect(legacy.published.get("old-site")![0]!.data.toString()).toContain("This site is not available");
+    expect(publisher.published.size).toBe(0);
+  });
+
   it("the notice page has no scripts and both languages", () => {
     const html = takenDownPage();
     expect(html).not.toMatch(/<script/i);

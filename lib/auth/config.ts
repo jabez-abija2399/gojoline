@@ -3,8 +3,15 @@ import { emailOTP, phoneNumber } from "better-auth/plugins";
 import { normalizeEthiopianPhone } from "@/lib/contact";
 import type { OtpSender } from "@/lib/providers/notify/otp";
 
-/** Session cookies are named gojo.session_token (__Secure-gojo.… on https). */
+/** Session cookies are named gojo.session_token (__Host-gojo.… on https). */
 export const AUTH_COOKIE_PREFIX = "gojo";
+
+/**
+ * On https the cookies carry the __Host- prefix: browsers then refuse any copy set with a Domain
+ * attribute, so a published site on a sibling subdomain (name.afridea.et) can't plant or replace
+ * our session cookie (cookie tossing). __Secure- alone would not stop that.
+ */
+export const authCookiePrefix = (secure: boolean) => (secure ? `__Host-${AUTH_COOKIE_PREFIX}` : AUTH_COOKIE_PREFIX);
 
 /** Placeholder email for phone-only accounts (never sent to; .invalid is a reserved TLD). */
 export const phoneEmail = (phone: string) => `${phone.replace(/\D/g, "")}@phone.gojoline.invalid`;
@@ -46,7 +53,9 @@ export function createAuth(c: AuthConfig) {
     baseURL: c.baseURL,
     secret: c.secret,
     database: c.database,
-    advanced: { cookiePrefix: AUTH_COOKIE_PREFIX, useSecureCookies: c.secureCookies },
+    // useSecureCookies stays off so Better Auth doesn't add __Secure- in front of __Host-; the
+    // cookies are still Secure (and host-only, path /) through the default attributes.
+    advanced: { cookiePrefix: authCookiePrefix(c.secureCookies), useSecureCookies: false, ...(c.secureCookies ? { defaultCookieAttributes: { secure: true } } : {}) },
     session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
     // Google confirms the email, so a Google sign-in joins the account that already uses it.
     socialProviders: c.google ? { google: { clientId: c.google.clientId, clientSecret: c.google.clientSecret, prompt: "select_account" } } : undefined,

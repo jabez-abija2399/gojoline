@@ -2,6 +2,7 @@ import { reportError } from "@/lib/observability/report";
 import { getMessages } from "@/lib/i18n";
 import type { PublishProvider } from "@/lib/providers/publish/types";
 import { publishedSiteHeaders } from "@/lib/publish/scan";
+import { publisherFor } from "@/lib/publish/hosts";
 import type { SiteAdminStore } from "@/lib/sites/types";
 import type { ReportStore } from "./reports";
 
@@ -9,6 +10,8 @@ export interface ModerationDeps {
   sites: SiteAdminStore;
   reports: ReportStore;
   publisher: PublishProvider | null;
+  /** The previous host (sites not moved yet still live there). */
+  legacy?: PublishProvider | null;
   audit: (entry: { actorId: string; action: string; targetType: string; targetId: string; data?: Record<string, unknown> }) => Promise<void>;
 }
 
@@ -45,9 +48,10 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
     return "ok" as const;
   };
   if (!deps.publisher || !site.providerProjectId) return done();
+  const host = publisherFor(site, deps.publisher, deps.legacy);
   try {
     const page = Buffer.from(takenDownPage());
-    await deps.publisher.publish({
+    await host.publish({
       slug: site.slug,
       files: [
         { path: "index.html", data: page },
@@ -56,7 +60,7 @@ export async function takeDownSite(deps: ModerationDeps, adminId: string, siteId
       headers: publishedSiteHeaders(),
       providerProjectId: site.providerProjectId,
     });
-    await deps.publisher.restrictOldDeployments?.(site.providerProjectId).catch((e: unknown) => reportError("takedown protect failed", e, { siteId }));
+    await host.restrictOldDeployments?.(site.providerProjectId).catch((e: unknown) => reportError("takedown protect failed", e, { siteId }));
     return done();
   } catch (error) {
     reportError("takedown deploy failed", error, { siteId });

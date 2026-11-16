@@ -1,4 +1,5 @@
 import "server-only";
+import { movedPage, publisherFor } from "./hosts";
 import { reportError } from "@/lib/observability/report";
 import { extractForms } from "@/lib/cloud/forms";
 import type { CloudStore } from "@/lib/cloud/types";
@@ -26,6 +27,11 @@ export interface PublishDeps {
   sites: SiteStore;
   sandboxes: SandboxProvider;
   publisher: PublishProvider;
+  /**
+   * The host sites were published with before `publisher` (the Vercel fallback once Cloudflare
+   * is set up). A site still there moves on its next publish; its old address then forwards.
+   */
+  legacy?: PublishProvider | null;
   lock: Lock;
   appUrl: string;
   /** Origin of the public Data API the site's forms post to (defaults to the app's origin). */
@@ -180,6 +186,14 @@ async function deployLocked(
       lastDeploymentId: result.deploymentId,
       publishedAt: new Date(),
     });
+    if (existing?.providerProjectId && existing.provider !== deps.publisher.name && deps.legacy?.name === existing.provider) {
+      // Moved hosts: the old address now forwards to the new one (and stops showing old content).
+      const page = Buffer.from(movedPage(result.url));
+      await deps.legacy
+        .publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: existing.providerProjectId })
+        .then(() => deps.legacy?.restrictOldDeployments?.(existing.providerProjectId!))
+        .catch((e: unknown) => reportError("old host forward failed", e, { projectId }));
+    }
     // Forms on the live site accept answers only in the shape published here.
     await deps.cloud?.saveForms(site.id, extractForms(latest.files["src/site.json"] ?? ""));
     return { ok: true, site };
@@ -190,9 +204,10 @@ async function deployLocked(
       const site = await deps.sites.getByProject(user.id, projectId);
       if (site?.providerProjectId) {
         const page = Buffer.from(takenDownPage());
+        const host = publisherFor(site, deps.publisher, deps.legacy);
         try {
-          await deps.publisher.publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: site.providerProjectId });
-          await deps.publisher.restrictOldDeployments?.(site.providerProjectId);
+          await host.publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: site.providerProjectId });
+          await host.restrictOldDeployments?.(site.providerProjectId);
         } catch (e) {
           reportError("takedown redeploy failed", e, { projectId });
         }
