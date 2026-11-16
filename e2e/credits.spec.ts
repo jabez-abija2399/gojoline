@@ -207,10 +207,10 @@ test("launch offer: switched on in one click, struck-through prices, then no end
 
   // The switch at the top shows the state and saves at once.
   await page.reload();
-  const switchOn = page.getByRole("button", { name: "Switch on" });
+  const switchOn = page.getByRole("button", { name: "Switch on", exact: true });
   if (await switchOn.isVisible()) await switchOn.click();
   await expect(page.getByText("Launch offer is on: 20% off Business, 1 month, until 31 Dec")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Switch off" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Switch off", exact: true })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 
   await page.goto("/en/pricing");
