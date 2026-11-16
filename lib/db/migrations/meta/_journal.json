@@ -92,6 +92,13 @@
       "when": 1794719667337,
       "tag": "0012_app_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794829797207,
+      "tag": "0013_project_template",
+      "breakpoints": true
     }
   ]
 }
