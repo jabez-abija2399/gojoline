@@ -9,9 +9,10 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 | `src/site.json` | All content: name, languages, theme, business details, pages and their sections | Yes, this is the main file |
 | `src/site.ts` | Loads site.json with its type | No |
 | `src/lib/types.ts` | The content model (`Site`, `Page`, `Section`, `Text`, `Price`) | Read only |
-| `src/sections/*.tsx` | Section components (Hero, About, Menu, Services, Gallery, Contact, MapEmbed, Testimonials, Timeline, Faq, Cta, Form, Header, Footer) | No (read them to see what each field does) |
+| `src/sections/*.tsx` | Section components (Hero, About, Cards, Menu, Services, Gallery, Stats, Steps, Schedule, Quote, Contact, MapEmbed, Testimonials, Timeline, Faq, Cta, Form, Header, Footer) | No (read them to see what each field does) |
 | `src/styles.css` | Tailwind setup, theme utilities, `.btn`, `.section`, `.container-site` | Rarely, for small style tweaks |
 | `public/images/` | Photos the owner uploaded | Reference them as `/images/<name>` |
+| `/stock/<name>.webp` | Sample photos from Gojoline's library (see Sample photos below) | Reference only; you can't add to it |
 
 ## Content rules
 
@@ -20,7 +21,7 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 - Money: `price: { amountMinor: 15000, currency: "ETB" }` means 150 Birr. Integers only, never floats.
 - Page `path`: `"/"` for home, otherwise lowercase like `"/menu"`. Add `nav` to show a page in the navigation.
 - Links (`href`): `"#contact"`, `"/menu"`, `"tel:+251911234567"`, `"mailto:..."` or `https://...`. Nothing else is allowed.
-- Images: use the owner's photos when there are any. Without a photo, omit `src` and set `art` to the drawing that fits (see Drawings below); it is shown in the site's colours until a photo replaces it. Always write a short, specific `alt` in each language.
+- Images: use the owner's photos when there are any. Without one, use a sample photo from the library that truly fits (see Sample photos below), and tell the owner once, in your reply, that the pictures are samples to replace with their own. Where no sample fits, omit `src` and set `art` to a drawing (see Drawings below). Never use a sample photo to show something specific to this business that it doesn't show (their building, their staff by name, their products): use a drawing there. Always write a short, specific `alt` in each language that describes what is in the picture.
 - Never invent facts the owner did not give (prices, phone numbers, addresses, awards). Leave the field out instead; ask the owner if it matters.
 - Never use lorem ipsum. Write short, warm, concrete copy for the business.
 - The first section of the home page should be a `hero`; it becomes the page's only `<h1>`.
@@ -29,22 +30,31 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 
 | `type` | Use for | Key fields |
 | --- | --- | --- |
-| `hero` | Top of a page | `variant` (`split`, `centered`, `banner`), `eyebrow`, `heading`, `subheading`, `image`, `primaryAction`, `secondaryAction` |
-| `about` | Story, mission | `heading`, `body` (blank line = new paragraph), `image`, `highlights[]` (`value`, `label`) |
-| `menu` | Food, drinks, price lists | `categories[]` with `items[]` (`name`, `description`, `price`, `tag`) |
-| `services` | Clinics, salons, schools, hotels (rooms), tours | `items[]` (`title`, `description`, `price`, `icon`) |
-| `gallery` | Photos | `images[]` |
+| `hero` | Top of a page | `variant` (`split`, `centered`, `banner`, `immersive`, `portrait`), `eyebrow`, `heading`, `subheading`, `image`, `primaryAction`, `secondaryAction`, `facts[]` (up to 4 `value` + `label`, only facts the owner gave) |
+| `about` | Story, mission, a feature with a picture | `eyebrow`, `heading`, `body` (blank line = new paragraph), `image`, `imageSide` (`start`, `end`), `points[]` (a ticked list), `highlights[]` (`value`, `label`), `action` |
+| `cards` | Anything shown as picture cards: rooms, properties, tours, products, dishes, team, projects, programmes | `layout` (`grid`, `feature`, `scroll`, `people`), `items[]` (`image`, `title`, `subtitle`, `description`, `price`, `priceNote`, `badge`, `meta[]`, `action`), `action` |
+| `menu` | Food, drinks, price lists | `categories[]` with `items[]` (`name`, `description`, `price`, `tag`, `image` for a few signature items) |
+| `services` | What you offer, without pictures: treatments, amenities, departments, reasons to choose you | `variant` (`bento` cards, `list` compact rows, `numbered` 01 02 03), `items[]` (`title`, `description`, `price`, `icon`) |
+| `stats` | A band of 2 to 4 big numbers (years, guests, students, homes sold). Only numbers the owner gave | `items[]` (`value`, `label`), `tone` (`dark`, `soft`), `heading` |
+| `steps` | How it works, in order: booking, admissions, ordering | `items[]` (`title`, `description`), `action` |
+| `schedule` | Times: service times, prayer times, class times, an event programme, term dates | `layout` (`list`, `tiles`), `items[]` (`time`, `title`, `note`), `footnote` |
+| `quote` | One strong sentence in large type: a mission, a verse, a founder's words | `quote`, `name`, `role`, `image` |
+| `gallery` | Photos | `layout` (`mosaic`, `scroll`), `images[]`, `intro` |
 | `contact` | Call / Telegram buttons, phone, address, hours (from `business`) | `heading`, `intro` |
 | `map` | Location card that opens the maps app | `heading`, `query` (defaults to the English address) |
-| `testimonials` | Customer quotes (only real ones the owner gave) | `items[]` (`quote`, `name`) |
+| `testimonials` | Customer quotes (only real ones the owner gave) | `items[]` (`quote`, `name`, `role`) |
 | `timeline` | Personal sites (work, studies), "our story", milestones | `heading`, `intro`, `items[]` (`period`, `title`, `place`, `description`), newest first |
 | `faq` | Questions customers always ask (booking, delivery, payment, what to bring). 3 to 6, short answers, only facts the owner gave or plain how-to | `heading`, `intro`, `items[]` (`question`, `answer`) |
-| `cta` | One clear ask on a dark band, usually the last section of the home page | `heading`, `body`, `primaryAction`, `secondaryAction` |
+| `cta` | One clear ask on a dark band, usually the last section of the home page | `heading`, `body`, `primaryAction`, `secondaryAction`, `image` (a photo behind the band) |
 | `form` | Contact, booking, order or registration forms. Answers reach the owner's dashboard and Telegram | `id` (required, e.g. `"booking"`), `kind`, `heading`, `intro`, `fields[]`, `submitLabel`, `successMessage` |
 
 Form fields: `{ "name": "phone", "label": {...}, "type": "tel", "required": true }`. Types: text, email, tel, date, time, number, select (with `options`), textarea. Keep forms short (2 to 6 fields). Never ask for passwords, PINs, card numbers, bank details or ID numbers. Add a form when the owner wants bookings, orders, registrations or messages; link to it with `"#<id>"` (for example a hero button to `"#booking"`).
 
-Icons for `services`: coffee, utensils, bed, stethoscope, school, shopping-bag, church, calendar, heart, home, map, scissors, car, star, phone, check.
+Most sections also take `eyebrow`: two or three words above the title ("Our rooms", "Since 2012"). Use it on most sections of a site, never repeating the title.
+
+Icons for `services`: coffee, utensils, bed, stethoscope, school, shopping-bag, church, calendar, heart, home, map, scissors, car, star, phone, check, wifi, clock, users, shield, leaf, award, globe, briefcase, camera, music, book, sparkles, truck, key, building, sun, plane, moon, droplet, mail, message, baby, palette, wrench, chart, graduation, pill, flask, mountain, tree, gift, ruler, bath, pin, laptop, handshake, mic, flower, dumbbell, bus.
+
+Cards: `grid` for things to compare (properties, products, programmes; put price, `meta` facts like "3 beds", "120 m²", "8 days" and a `badge` like "For sale"); `feature` for a few things that deserve a large picture each (rooms, projects); `scroll` for a row of tall picture cards to swipe (destinations, experiences, collections); `people` for portraits with a name (`title`) and role (`subtitle`). Give card `action`s a label that says what happens ("Book this room", "Ask about this home").
 
 ## Drawings (`image.art`)
 
@@ -67,6 +77,29 @@ When there is no photo yet, `art` picks a drawing in the site's colours instead 
 
 Give the home hero and the `about` section a drawing that fits the business, and vary them (don't repeat one drawing down the page). Leave `art` out for a calm abstract shape. Once the owner uploads a photo, set `src` and remove `art`.
 
+## What the best sites of each kind do
+
+Build the home page in the order visitors of that kind of business look for things. These orders come from studying the best sites in each field.
+
+| Business | Style | Home page, top to bottom |
+| --- | --- | --- |
+| Hotel, lodge, guest house | `editorial`, font `elegant` | `immersive` hero (place as eyebrow, 2 to 5 word headline, one booking button, `facts`: rooms, distance, from-price) → `about` welcome → rooms as `cards` `feature` with `meta`, price and `priceNote` "per night" → amenities as `services` `list` → experiences as `cards` `scroll` → `gallery` → `testimonials` → booking `form` → `faq` → `map` → `cta` with a photo |
+| Café, restaurant | `warm`, font `classic` | photo hero with "See the menu" → signature dishes as `cards` `grid` with prices → `about` → `gallery` → `testimonials` → `contact` + `map` → `cta`; the full `menu` on its own page |
+| Clinic, dental, pharmacy | `clean`, font `modern` | `split` hero with "Book an appointment" and the phone → `services` `bento` in patient words → `stats` → doctors as `cards` `people` → `steps` (how a visit works) → `testimonials` → `faq` → booking `form` → `contact` + `map` |
+| School, training centre | `clean` or `warm`, font `friendly` | photo hero with "Apply" and "Book a visit" → `stats` → programmes as `cards` `grid` by age or grade → `about` (director's welcome) → admissions as `steps` → term dates as `schedule` → parent `testimonials` → `faq` → enquiry `form` |
+| Shop, boutique, crafts | `editorial` or `warm` | photo hero with "See products" and "Order on Telegram" → collections as `cards` `scroll` → products as `cards` `grid` with price and an order `action` → `steps` (how to order) → `about` the makers → `testimonials` → `contact` + `map` |
+| Church | `warm`, font `classic` | photo hero with "Service times" → `schedule` of services → `about` welcome → ministries as `cards` `grid` → `quote` (a verse) → giving as `services` → `contact` + `map` |
+| Mosque | `clean`, font `modern` | photo hero → `schedule` `tiles` with the five prayers and Jumu'ah → services (nikah, janazah, madrasa) as `services` → classes as `schedule` `list` → `about` → giving → `contact` + `map` |
+| Events, weddings | `editorial`, font `elegant` | `immersive` hero, one button → event types as `cards` `scroll` → `gallery` → packages as `cards` `grid` with "from" prices → `steps` → one big `quote` from a couple → `about` the planner → enquiry `form` (date, guests) |
+| NGO, charity | `bold`, font `grotesk` or `friendly` | hero that states the goal in under 12 words, "Donate" and "Our work" → `stats` → `about` mission → programmes as `cards` `grid` → one person's story as `quote` with a photo → how gifts are used as `services` `numbered` → `cta` |
+| Real estate | `clean`, font `modern` | `immersive` or `banner` hero → listings as `cards` `grid` (`badge` "For sale"/"For rent", price, `meta` beds, baths, m²) → `stats` → featured project as `about` with `points` → why us as `services` → `testimonials` → viewing `form` |
+| Tours, travel | `bold`, font `grotesk` | `immersive` landscape hero, "See our tours" → `facts` or `stats` → trips as `cards` `grid` (`badge`, `meta` days and difficulty, from-price) → destinations as `cards` `scroll` → why us as `services` → `steps` → guide story `about` → `testimonials` → enquiry `form` |
+| Personal, portfolio | `bold`, font `grotesk` | `portrait` hero (place and "Available for work" as eyebrow, name or role as a huge statement) → selected work as `cards` `feature` → `services` `numbered` → `about` → `timeline` → `testimonials` → contact `form` |
+| Company, consulting, construction | `clean`, font `modern` or `grotesk` | `split` hero with an outcome statement and "Request a quote" → `stats` → `services` `bento` → projects as `cards` `grid` → `steps` (how we work) → `about` → team as `cards` `people` → `testimonials` → enquiry `form` |
+| Salon, barber, spa | `editorial` (salon) or `bold` (barber) | photo hero with "Book now" and "See prices" → price list as `menu` → `gallery` → stylists as `cards` `people` → `testimonials` → `about` → `contact` + `map` |
+
+Rules that hold for all of them: one main action, repeated with the same words (hero, middle, end); prices visible wherever the owner gave them; the offer before the story; real numbers or none.
+
 ## A good home page
 
 Hero (with `art` or a photo, and a button to the thing visitors want: menu, booking, call) → what you offer (`menu` or `services`) → `about` → `faq` when the owner gave enough to answer real questions → `contact` (and `map`) → `cta` as the last section. On phones a bar with Call and Telegram (or WhatsApp) appears by itself when `business.phone`, `telegram` or `whatsapp` is set, and the hero shows the first `business.hours` line, so fill those in whenever the owner gives them. Don't repeat the hours in the hero `eyebrow`; use it for the place or what makes the business special.
@@ -77,7 +110,159 @@ For a person (portfolio, CV, freelancer, artist, coach, speaker): hero with thei
 
 ## Design and motion
 
-Sections already animate (gentle reveal on scroll, lift and tilt on cards, a soft glow behind the hero, cross-fades between pages) and respect "reduce motion". Headings use a real display font chosen by `theme.font`: `classic` (Fraunces, a warm serif: cafés, hotels, shops, worship, events), `modern` (Outfit, clean: clinics, real estate, tours, personal), `friendly` (Nunito, rounded: schools, NGOs, children). Choose the hero `variant` to fit: `split` for a business with a photo, `centered` for a strong statement or a person, `banner` for a big atmospheric photo. With 4 or more `services` the first becomes a large feature tile, so put the most important one first. In a `gallery` of 5 or more the first photo is shown large.
+Sections already animate (gentle reveal on scroll, lift and tilt on cards, a soft glow behind the hero, cross-fades between pages) and respect "reduce motion". Headings use a real display font chosen by `theme.font`: `classic` (Fraunces, a warm serif: cafés, shops, worship), `elegant` (Cormorant Garamond, a fine light serif: hotels, weddings, fashion, salons), `modern` (Outfit, clean: clinics, real estate, companies), `grotesk` (Bricolage Grotesque, strong and characterful: personal sites, tours, causes, agencies), `friendly` (Nunito, rounded: schools, children, community).
+
+`theme.style` sets the site's whole character: `warm` (default: soft cards, coloured accents), `editorial` (light serif headlines, small capital labels, lots of air: pair with `elegant` or `classic` and radius `none` or `small`), `bold` (very large heavy headlines, pill buttons: pair with `grotesk` or `modern`), `clean` (crisp and calm with soft shadows: pair with `modern` or `friendly`).
+
+Choose the hero `variant` to fit: `immersive` for a full-screen photo with the words on it (needs a strong wide photo; the menu sits on the photo), `split` for text beside a photo, `centered` for a strong statement with a wide photo under it, `banner` for words on a tinted photo (inner pages), `portrait` for a person. With 4 or more `services` the first becomes a large feature tile, so put the most important one first. In a `gallery` of 5 or more the first photo is shown large.
+
+## Sample photos
+
+Reference as `"src": "/stock/<name>.webp"`. Names with `-hero-` are wide photos that suit `immersive` and `banner` heroes and photo `cta` bands. Choose by what the photo shows, from any group. Don't use one photo twice on a page.
+
+<!-- stock:start -->
+- `business-about-handshake-team`: Three formally dressed African men laughing and shaking hands outdoors with palm trees behind.
+- `business-about-office`: Modern office corridor with black-framed glass partition walls, pendant lamps and a lounge area.
+- `business-card-addis-towers`: Vertical view of Addis Ababa's glass high-rise towers above green trees under a blue sky.
+- `business-card-analytics`: Over-the-shoulder view of a person in a navy blazer working on a laptop showing pie and bar charts.
+- `business-card-construction`: Curved multi-storey building under construction with scaffolding and a tower crane, red-leaved trees in front.
+- `business-card-warehouse`: Large logistics warehouse with orange pallet racking and motion-blurred workers in hi-vis vests walking the aisle.
+- `business-gallery-handshake`: Close-up of two Black businesspeople shaking hands in an office, sleeves in blue and white shirts.
+- `business-gallery-three-colleagues`: Three Black men in smart-casual clothes discussing around a white table with laptops and a tablet.
+- `business-hero-addis-street`: Elevated dusk view of a busy Addis Ababa avenue lined with modern glass mid-rise buildings and traffic.
+- `business-hero-team-meeting`: Five Black professionals in a bright meeting room around a white table, led by a man in a suit (a small laptop-lid logo is visible).
+- `cafe-about-ceremony-incense`: Portrait view of an Ethiopian coffee ceremony: jebena pouring into cini cups, incense smoking in a clay burner, baskets of green coffee beans on grass.
+- `cafe-about-roasted-beans-pan`: Hands of a woman in traditional striped dress holding a clay pan of freshly roasted coffee beans with a metal stirring spoon.
+- `cafe-card-injera-veg-plate`: Top view of a white plate with two rolls of injera, red lentil stew, yellow lentils and collard greens garnished with parsley.
+- `cafe-card-jebena-pour`: A hand pours coffee from a brown clay jebena into a white cup on a wooden tray scattered with coffee beans, warm blurred interior behind.
+- `cafe-card-latte-glass`: A milky coffee with rosetta latte art in a clear double-walled glass on a worn wooden table.
+- `cafe-card-tibs-injera`: Top view of a black clay plate of beef tibs, kitfo and ayib cheese beside a basket of rolled injera and a small bowl of mitmita spice on a wooden table.
+- `cafe-gallery-bread-baskets`: Hands of a woman in traditional dress cutting round ceremonial bread (difo dabo) in a woven basket, with other woven baskets around.
+- `cafe-gallery-cini-cups-tray`: used traditional cini coffee cups on an engraved metal tray with an older hand reaching for one (moody; cups are empty/used).
+- `cafe-gallery-pastries-coffee`: A cafe table with a latte in a black cup surrounded by a croissant, a fruit danish and sugared doughnuts on plates.
+- `cafe-hero-clay-pot-dish`: Close-up of a row of black clay pots of food garnished with a green herb sprig, with a softly blurred dark-and-cream restaurant background (calm area top and left).
+- `cafe-hero-coffee-ceremony-pour`: A woman in a white habesha dress with woven tibeb trim pours coffee from a black clay jebena into rows of small cini cups set in a carved wooden chest.
+- `clinic-about-newborn-care`: Nurse in cap and gown gently tending a sleeping newborn wrapped in a lilac blanket in a neonatal ward with leaf murals on the wall.
+- `clinic-about-ultrasound-room`: Two smiling nurses (white and green uniforms) performing an ultrasound scan on a patient lying on a bed in a clean, bright examination room.
+- `clinic-card-doctor-portrait`: Smiling Black woman doctor in a white coat holding a stethoscope towards the camera, outdoors in front of glass doors.
+- `clinic-card-lab-microscope`: Black woman lab technician in white coat and blue gloves looking through a microscope in a bright laboratory, test tubes in the foreground.
+- `clinic-card-nurse-portrait`: Portrait (vertical) of a smiling African nurse in light-blue scrubs with a stethoscope, against a teal wall.
+- `clinic-card-pharmacy`: A man in a white shirt and a woman in a pink blouse reading a medicine box together beside bright white pharmacy shelves.
+- `clinic-gallery-blood-pressure`: Clinician in a white shirt fitting a blood-pressure cuff on a seated young man in an examination room with a green wall.
+- `clinic-gallery-dental`: Dental clinician in teal scrubs, cap and mask adjusting the lamp over a patient in a dental chair, soft blue-white room.
+- `clinic-hero-doctor-clipboard`: Young Black male doctor in white coat, glasses and teal stethoscope writing on a blue folder against a plain white wall; the left third is empty white space for text.
+- `clinic-hero-two-nurses`: Two smiling African nurses in green scrubs with stethoscopes, arms crossed, in a bright clinic room with a pale grey wall.
+- `events-about-bridal-party-garden`: East African bridal party (groomsmen in beige suits, bridesmaids in rust satin dresses) dancing in procession across a sunny garden beside a white marquee.
+- `events-about-wedding-party-dancing`: Black African bride in a white satin gown dancing outdoors at night with groomsmen in waistcoats and bridesmaids in pale green dresses.
+- `events-card-corporate-conference-hall`: Modern empty conference hall with round white tables, white chairs, a timber ceiling and three blank projection screens.
+- `events-card-decor-floral-centrepiece`: Tall peach-and-pink rose centrepiece on a gold stand in a white marquee with round tables and gold chiavari chairs softly blurred behind.
+- `events-card-graduation-friends`: Three laughing East African graduates in black gowns with yellow hoods and mortarboards celebrating outdoors among greenery.
+- `events-card-wedding-couple-petals`: Smiling Black African bride and groom walking out of a brick chapel hand in hand while guests throw flower petals (a few guests wear face masks).
+- `events-gallery-bride-veil-bouquet`: Portrait-orientation photo of a smiling Ethiopian bride lifting her lace veil over a bouquet of white roses and baby's breath against a plain pale wall.
+- `events-gallery-habesha-dress-celebration`: Portrait-orientation photo of young women in white embroidered habesha dresses with green grass skirts clapping and singing at an Ethiopian street celebration (Ashenda style); one holds a microphone.
+- `events-hero-chandelier-banquet-hall`: Grand golden banquet hall with large chandeliers, set dinner tables, tall flower arrangements and an open polished floor in the foreground; no people.
+- `events-hero-floral-arch-reception-hall`: Warm cream-and-gold draped reception hall seen down a white aisle through a floral arch, with chair-covered tables and a bridal stage in the distance; no people.
+- `hotel-about-coffee-ceremony-host`: Woman in a white Ethiopian habesha dress pouring coffee from a clay jebena into rows of small cups on a carved wooden rekebot (face not shown).
+- `hotel-about-thatched-lounge`: Open-air lodge lounge and dining area under a high thatched roof with cane armchairs and a leather sofa, bush garden beyond (square crop).
+- `hotel-card-dining-bread-baskets`: Hands of a host in Ethiopian traditional dress cutting traditional bread (difo dabo) in a woven mesob basket, with more woven baskets alongside.
+- `hotel-card-spa-massage`: African woman with eyes closed receiving a back massage from a therapist, lying on a white table with a pink towel.
+- `hotel-card-standard-room`: Bright simple double room: white bed with ochre cushions and folded towels, arched headboard niche, two bedside lamps, woven rug.
+- `hotel-card-thatched-suite`: Large thatched-roof suite with a draped four-poster bed and two cream armchairs around a carved stool (flash-lit, darker edges).
+- `hotel-card-wooden-cabin-room`: Warm wood-panelled cabin bedroom with double bed, two round wicker chairs, curtains and a rug (extra card option).
+- `hotel-gallery-bush-dining-acacia`: Long red-clothed dining table set in open savanna beside a lone acacia under a big cloudy sky (extra; also works as a hero, sky is a calm text area).
+- `hotel-gallery-jebena-coffee-pour`: Close-up of a hand pouring coffee from an Ethiopian clay jebena into a white cup on a wooden tray scattered with beans (portrait).
+- `hotel-gallery-veranda-dusk`: Colonnaded lodge veranda with stone base, downlights and garden lawn at dusk.
+- `hotel-hero-infinity-pool-hills`: Curved infinity pool with loungers on a lodge terrace overlooking acacia-covered East African hills; pale calm sky in the upper half.
+- `hotel-hero-lodge-pool-dusk`: Thatched lodge lit by lanterns at blue hour, reflected in a dark pool, framed by large trees; dark calm water in the lower third.
+- `mosque-about-bright-prayer-hall`: Bright white and mint-green mosque prayer hall with chandeliers and mihrab, worshippers praying and sitting on a yellow patterned carpet.
+- `mosque-about-courtyard-arches`: Historic stone mosque courtyard with arcades of arches and a green dome under a blue sky, shot from a low angle between columns.
+- `mosque-card-quran-class-children`: Four children sitting on the floor reciting from Qurans on wooden stands in a madrasa class (South-East Asian setting).
+- `mosque-card-quran-on-rug`: Top-down view of a green and gold Quran on a wooden rehal stand resting on a green prayer rug.
+- `mosque-card-wudu`: Man in a striped robe and embroidered cap bending to wash his hands in ablution (wudu) at a fountain; small blurred figures in the background.
+- `mosque-gallery-men-praying-from-behind`: Men kneeling and sitting on a red carpet facing the mihrab between marble columns, seen from behind, stained glass windows above.
+- `mosque-gallery-timber-prayer-hall`: Modern mosque prayer hall with tree-like timber columns and skylights, one man sitting on the carpet (portrait orientation).
+- `mosque-hero-minaret-dusk-skyline`: Silhouette of a minaret and mosque dome against a purple, pink and orange dusk sky, with large empty sky above and dark foreground below.
+- `mosque-hero-sunlit-prayer-hall`: Lone worshipper kneeling, seen from behind, on a teal carpet in a large prayer hall with low sun streaming through arched windows.
+- `ngo-about-girl-clapping-community`: Smiling girl in a red embroidered top clapping among a group of women and children at a community gathering.
+- `ngo-about-women-group`: Four Ethiopian women in white netela shawls and a girl holding a red flower standing together on a cobbled street, looking at the camera.
+- `ngo-card-teacher-classroom`: Classroom seen over a pupil's shoulder, with a teacher holding up a sheet of paper in front of a whiteboard (teacher out of focus).
+- `ngo-card-tree-planting`: Volunteers in face masks and gloves planting a tree seedling in a forest, a woman in a hijab and a girl in a yellow hoodie in front (portrait orientation).
+- `ngo-card-woman-farmer`: Portrait of a smiling woman in a headscarf and cross necklace standing among enset/banana leaves.
+- `ngo-gallery-community-meeting`: Women in colourful dresses and headscarves seated on a wooden bench, seen from behind, at an outdoor community meeting.
+- `ngo-gallery-smiling-girl`: Smiling Ethiopian girl in an embroidered traditional dress with a crowd blurred behind her (portrait orientation).
+- `ngo-hero-grain-in-hands`: Close-up of a woman's cupped hands pouring harvested grain, with a bright blurred field and sky leaving the left half calm.
+- `ngo-hero-highland-huts-meadow`: Two thatched round houses in a green highland meadow of yellow flowers with terraced hills and cloudy sky behind (Ethiopia).
+- `personal-about-creative-desk`: Creative's wooden desk with pencils, brushes, books, rolled prints, a lamp and house plants.
+- `personal-about-woman-orange-blazer`: The same woman in the orange blazer, standing off-centre to the right of a pale teal wall with space for text.
+- `personal-card-brochure-layout`: Open printed brochure with a pink editorial layout and large 'GRAFICO' heading lying on a wooden surface.
+- `personal-card-editorial-portrait`: Editorial fashion portrait of an African woman in a red hat and red patterned dress holding a woven bag.
+- `personal-card-logo-tablet`: Hand with a stylus drawing a white bear-head logo on a black tablet screen at a desk.
+- `personal-card-website-laptop`: Laptop on a desk showing a teal architecture website with the line 'Build your dream website', next to a black mug.
+- `personal-gallery-lettering-sketches`: Hand-drawn logo and lettering sketches on loose paper and a sketchbook spread across a wooden desk.
+- `personal-gallery-pattern`: Vintage geometric repeat pattern in orange, grey-blue and yellow (public-domain print).
+- `personal-hero-man-turtleneck`: Studio portrait of a Black man with a short beard in a black turtleneck against a dark grey backdrop.
+- `personal-hero-woman-orange-blazer`: Confident young Black woman with natural hair, arms crossed, in an orange blazer against a pale teal wall.
+- `real-estate-about-addis-neighbourhood`: Daytime view over an Addis Ababa district of white and blue mid-rise blocks surrounded by dense green trees under a clear sky.
+- `real-estate-about-team-three-men`: Portrait-orientation photo of three young African men in smart shirts and dark trousers standing on a stone path beside a building with greenery behind.
+- `real-estate-card-apartment-block-yellow-balconies`: Newly finished nine-storey white apartment block with yellow balcony railings on a green hillside, a small excavator at its base.
+- `real-estate-card-bright-living-room`: Bright minimalist living room with two grey velvet sofas facing each other, a pale rug, light oak floor, linear fireplace and sliding glass doors.
+- `real-estate-card-midrise-apartments-balconies`: Contemporary mid-rise apartment building with glass balconies, large windows, pale cladding and a brick base.
+- `real-estate-card-modern-villa-palms`: Modern white flat-roofed villa with timber screens and planted terraces among palm trees under a deep blue sky.
+- `real-estate-gallery-kitchen-garden-window`: Warm modern kitchen with cream handleless cabinets, an island with a stool and a large picture window looking onto a palm and flowering trees.
+- `real-estate-gallery-master-bedroom`: Calm modern master bedroom with a grey upholstered bed, oak wall panelling, globe pendant lights and sheer curtains (appears to be a photorealistic 3D render).
+- `real-estate-hero-addis-skyline-trees`: Addis Ababa high-rise skyline with one tall glass tower rising above a dark band of trees under a wide, calm teal sky.
+- `real-estate-hero-modern-apartment-corner-sky`: Low-angle view of the top corner of a contemporary black-and-white mid-rise apartment block with large windows against a pale blue sky (calm sky area top left).
+- `salon-about-salon-chair-mirror`: Salon station with a black styling chair, round backlit mirror, wooden vanity and hexagon ceiling lights.
+- `salon-about-salon-interior`: Black-and-white view of an empty modern hair salon with arched lit mirrors and styling chairs.
+- `salon-card-afro`: Portrait of a Black woman with a full round afro wearing a black jacket against a grey wall.
+- `salon-card-barber`: Black barber in gloves and apron trimming a Black client's curly top with a fade in a barbershop.
+- `salon-card-braids`: Smiling African woman in a red top having long braids with blue extensions plaited by a stylist's hands.
+- `salon-card-manicure`: Close-up of a nail technician working on a client's manicure at a nail table.
+- `salon-gallery-serum-bottle`: Unlabelled amber glass dropper bottle on a turned wooden pedestal with palm-leaf shadows.
+- `salon-hero-braiding-salon`: Black-and-white photo of two stylists braiding a seated young woman's hair into cornrows inside a salon.
+- `salon-hero-natural-curls`: Studio portrait of a young Black woman with voluminous natural curly hair against a soft pink background.
+- `school-about-nursery-classroom`: Nursery teacher in a bright African-print top pointing at the alphabet on a chalkboard for small children seated on colourful chairs in a green-walled classroom.
+- `school-about-teacher-with-class`: Young woman in a yellow school shirt reading aloud from a booklet in a full classroom of attentive students in uniform.
+- `school-card-art-class`: Three young girls with curly hair in aprons painting a rainbow and shapes at a paint-covered wooden table in an art studio.
+- `school-card-kindergarten-swing`: Happy little girl with afro puffs in a cream shirt and orange skirt uniform on a playground swing, blue painted wall behind.
+- `school-card-primary-boy-desk`: Smiling primary-school boy in a pale blue uniform shirt holding a pen and paper at his desk, classmates blurred behind in a light blue classroom.
+- `school-card-stem-robotics`: Three Black girls building a small wheeled robot with blue gears on a round table in a bright white room.
+- `school-gallery-girls-uniform`: Close group of smiling young schoolchildren in green and yellow uniforms, two in white and green hijabs, looking at the camera.
+- `school-gallery-twin-boys`: Two smiling young boys in green gingham school shirts, one with a backpack, in front of a pale green school wall.
+- `school-hero-girls-reading`: Three schoolgirls in blue and purple hijab uniforms reading a book together at a desk in front of a dark chalkboard.
+- `school-hero-teacher-whiteboard`: Smiling Black woman teacher beside a whiteboard with a biology diagram while a boy stands at the board and a girl in the foreground raises her hand; bright white classroom.
+- `shop-about-loom-weaving-hands`: Over-the-shoulder view of a weaver's hands holding a tape measure over red-and-teal checked cloth on a wooden hand loom.
+- `shop-about-spinning-yarn`: An Ethiopian woman in an embroidered grey traditional dress and silver jewellery works thread in her hands in front of a golden field.
+- `shop-card-habesha-kemis`: Portrait of an Ethiopian woman wearing a white cotton habesha kemis with black-and-gold tibeb embroidery, silver jewellery and braided hair, green foliage behind.
+- `shop-card-jebena-pottery`: A red clay bottle with white hand-painted geometric patterns among glossy black clay jebena coffee pots.
+- `shop-card-leather-tote`: A tan hand-stitched leather tote bag hanging from the knobs of a white cupboard.
+- `shop-card-woven-scarves`: Four folded hand-woven cotton scarves in blue, tan, pink and purple with white stripes and fringed ends on a white surface.
+- `shop-gallery-boutique-rack`: A bright boutique interior with cream and blue dresses hanging from a rope-suspended wooden rail and accessories laid out on white tables.
+- `shop-gallery-handwoven-textile`: A hand holding the fringed edge of a white hand-woven cotton cloth with blue patterned bands, a loom blurred behind.
+- `shop-hero-habesha-dress-field`: A smiling Ethiopian woman in an embroidered traditional dress and silver jewellery stands between golden mounds of harvested grain under a blue sky (calm area on the left).
+- `shop-hero-woven-baskets-wall`: A wall of round coiled woven basket trays, brightly coloured on the left and natural straw on the right.
+- `tours-about-men-viewpoint-tree`: Three Ethiopian men in white shawls resting at a viewpoint under a broad-leafed tree, looking over a highland town and valley (Lalibela area).
+- `tours-about-pilgrims-red-path`: Men in white cotton shawls talking on a red-earth path between rock walls beside a bright green pool (Lalibela area).
+- `tours-card-blue-nile-falls`: Blue Nile Falls (Tis Abay) in full flow surrounded by green forest under a blue sky.
+- `tours-card-danakil-dallol`: Yellow, green and rust-coloured sulphur springs and mineral cones at Dallol in the Danakil Depression.
+- `tours-card-lalibela-monk`: Monk in a yellow robe reading beside a carved cross-shaped window of a rock-hewn church in Lalibela (portrait).
+- `tours-card-simien-escarpment`: Sunlit green terraced escarpments and deep valleys of the Simien Mountains.
+- `tours-gallery-gelada`: Gelada with its red chest patch sitting on a rock in front of wildflowers.
+- `tours-gallery-gondar-castle`: Fasilides castle in the royal enclosure at Gondar, framed by two tall trees.
+- `tours-gallery-salt-caravan`: Long camel salt caravan with herders crossing the cracked salt flats of the Danakil under a wide blue sky (extra; also a strong hero).
+- `tours-gallery-spice-market`: Woman in a green headscarf sorting red and green chillies and ginger at an open-air Ethiopian market (extra).
+- `tours-hero-highlands-sunset`: Sunset over Ethiopian highland ridges with a road winding through the valley; dark foreground and dramatic blue sky.
+- `tours-hero-simien-misty-peaks`: Layered misty rock pinnacles and table mountains of the Ethiopian highlands above a green hill; soft grey sky fills the top third.
+- `worship-about-priest-candle`: Elderly man in a white turban and purple shawl holding a lit taper candle against a dark stone wall, seen in profile.
+- `worship-about-priests-drum-lalibela`: Ethiopian Orthodox priests and deacons in white robes and turbans with prayer staffs, seated on carpets beside a large kebero drum against red rock.
+- `worship-card-bible-prayer-hands`: Clasped hands resting on an open Bible on a wooden table (face not shown).
+- `worship-card-choir`: African church choir in navy and red robes singing from hymn books on a stage, conductor in the foreground with his back to camera.
+- `worship-card-processional-cross`: Close-up of an ornate silver Ethiopian processional cross inside a church, icon painting blurred behind.
+- `worship-gallery-congregation-worship`: African congregation standing in worship indoors, a woman in blue with eyes closed and hand raised in the centre.
+- `worship-gallery-timkat-drummer`: Smiling boy carrying a kebero drum past a clapping line of white-clad Ethiopian Orthodox choir members at an outdoor festival.
+- `worship-hero-golden-dome-church`: Golden domes topped with Ethiopian crosses on a white church rising above green trees under a blue sky.
+- `worship-hero-lalibela-st-george`: Rock-hewn Church of St George (Bete Giyorgis), Lalibela, framed by dark red rock walls, with two white-robed men on its steps.
+<!-- stock:end -->
 
 ## Theme
 

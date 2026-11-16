@@ -27,7 +27,10 @@ export type ArtName =
   | "work";
 
 export interface Image {
-  /** Path under /public (e.g. "/images/coffee.webp") or an https URL. Omit to show a drawing instead. */
+  /**
+   * The owner's photo ("/images/<name>") or a sample photo from the library ("/stock/<name>.webp",
+   * listed in TEMPLATE.md). Omit to show a drawing instead.
+   */
   src?: string;
   /** Which drawing to show while there is no photo (ignored once `src` is set). */
   art?: ArtName;
@@ -64,27 +67,86 @@ export type IconName =
   | "car"
   | "star"
   | "phone"
-  | "check";
+  | "check"
+  | "wifi"
+  | "clock"
+  | "users"
+  | "shield"
+  | "leaf"
+  | "award"
+  | "globe"
+  | "briefcase"
+  | "camera"
+  | "music"
+  | "book"
+  | "sparkles"
+  | "truck"
+  | "key"
+  | "building"
+  | "sun"
+  | "plane"
+  | "moon"
+  | "droplet"
+  | "mail"
+  | "message"
+  | "baby"
+  | "palette"
+  | "wrench"
+  | "chart"
+  | "graduation"
+  | "pill"
+  | "flask"
+  | "mountain"
+  | "tree"
+  | "gift"
+  | "ruler"
+  | "bath"
+  | "pin"
+  | "laptop"
+  | "handshake"
+  | "mic"
+  | "flower"
+  | "dumbbell"
+  | "bus";
+
+/** A number or short fact with its label: "12" + "rooms", "4.8" + "guest rating". */
+export interface Fact {
+  value: Text;
+  label: Text;
+}
 
 export interface HeroSection {
   type: "hero";
   id?: string;
-  variant?: "split" | "centered" | "banner";
+  /**
+   * split: text beside a photo. centered: statement, photo below. banner: text on a tinted photo.
+   * immersive: a full-screen photo with the text over it (needs a photo). portrait: a person's
+   * name and statement beside a tall portrait.
+   */
+  variant?: "split" | "centered" | "banner" | "immersive" | "portrait";
   eyebrow?: Text;
   heading: Text;
   subheading?: Text;
   image?: Image;
   primaryAction?: Link;
   secondaryAction?: Link;
+  /** Up to 4 short facts shown as a strip under the hero. */
+  facts?: Fact[];
 }
 
 export interface AboutSection {
   type: "about";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
   body: Text;
   image?: Image;
-  highlights?: { value: Text; label: Text }[];
+  /** Which side the picture sits on, on wide screens. Default "start". */
+  imageSide?: "start" | "end";
+  highlights?: Fact[];
+  /** Short points shown as a ticked list under the text. */
+  points?: Text[];
+  action?: Link;
 }
 
 export interface MenuItem {
@@ -93,11 +155,14 @@ export interface MenuItem {
   price?: Price;
   /** Short tag like "New", "Vegan", "Popular" */
   tag?: Text;
+  /** A small photo of the dish, for the few signature items. */
+  image?: Image;
 }
 
 export interface MenuSection {
   type: "menu";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
   intro?: Text;
   categories: { name: Text; items: MenuItem[] }[];
@@ -106,16 +171,102 @@ export interface MenuSection {
 export interface ServicesSection {
   type: "services";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
   intro?: Text;
+  /** bento: cards, the first one large. list: compact rows with icons. numbered: 01, 02, 03 columns. */
+  variant?: "bento" | "list" | "numbered";
   items: { title: Text; description: Text; price?: Price; icon?: IconName }[];
 }
 
 export interface GallerySection {
   type: "gallery";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
+  intro?: Text;
+  /** mosaic: a grid, the first photo large. scroll: one row to swipe through. */
+  layout?: "mosaic" | "scroll";
   images: Image[];
+}
+
+/** One card with a picture: a room, a property, a tour, a product, a person, a project. */
+export interface CardItem {
+  image?: Image;
+  title: Text;
+  /** A line under the title: a role, a place, a category. */
+  subtitle?: Text;
+  description?: Text;
+  price?: Price;
+  /** Words beside the price: "per night", "from", "per month". */
+  priceNote?: Text;
+  /** A small label on the picture: "For sale", "New", "Best seller". */
+  badge?: Text;
+  /** Up to 5 short facts: "2 guests", "King bed", "120 m²", "3 days". */
+  meta?: Text[];
+  action?: Link;
+}
+
+/** Cards with pictures: rooms, properties, tours, products, team, projects. */
+export interface CardsSection {
+  type: "cards";
+  id?: string;
+  eyebrow?: Text;
+  heading: Text;
+  intro?: Text;
+  /**
+   * grid: picture on top, three across. feature: large alternating rows (rooms, projects).
+   * scroll: tall picture cards in a row to swipe (destinations, collections).
+   * people: portraits with a name and role (doctors, team, stylists).
+   */
+  layout?: "grid" | "feature" | "scroll" | "people";
+  items: CardItem[];
+  /** A link under the cards: "See all rooms". */
+  action?: Link;
+}
+
+/** A band of big numbers: years, guests, students, homes sold. Only real numbers. */
+export interface StatsSection {
+  type: "stats";
+  id?: string;
+  heading?: Text;
+  items: Fact[];
+  /** dark: on the accent colour. soft: on a light tint. Default "dark". */
+  tone?: "dark" | "soft";
+}
+
+/** How it works, in order: booking, admissions, how we build. */
+export interface StepsSection {
+  type: "steps";
+  id?: string;
+  eyebrow?: Text;
+  heading: Text;
+  intro?: Text;
+  items: { title: Text; description?: Text }[];
+  action?: Link;
+}
+
+/** Times and what happens then: service times, prayer times, class times, an event programme. */
+export interface ScheduleSection {
+  type: "schedule";
+  id?: string;
+  eyebrow?: Text;
+  heading: Text;
+  intro?: Text;
+  /** list: rows. tiles: a tile per time (prayer times, a few sessions). */
+  layout?: "list" | "tiles";
+  items: { time: Text; title: Text; note?: Text }[];
+  footnote?: Text;
+}
+
+/** One strong sentence in large type: a mission, a verse, a founder's words. */
+export interface QuoteSection {
+  type: "quote";
+  id?: string;
+  quote: Text;
+  name?: Text;
+  role?: Text;
+  image?: Image;
 }
 
 export interface ContactSection {
@@ -136,8 +287,10 @@ export interface MapSection {
 export interface TestimonialsSection {
   type: "testimonials";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
-  items: { quote: Text; name: string }[];
+  /** `role` says who they are: "Parent, Grade 4", "Stayed in March". */
+  items: { quote: Text; name: string; role?: Text }[];
 }
 
 export interface FormField {
@@ -189,6 +342,8 @@ export interface CtaSection {
   body?: Text;
   primaryAction: Link;
   secondaryAction?: Link;
+  /** A photo behind the band (darkened so the text stays readable). */
+  image?: Image;
 }
 
 export type Section =
@@ -203,7 +358,12 @@ export type Section =
   | TimelineSection
   | FaqSection
   | CtaSection
-  | FormSection;
+  | FormSection
+  | CardsSection
+  | StatsSection
+  | StepsSection
+  | ScheduleSection
+  | QuoteSection;
 
 export interface Page {
   /** "/" for the home page, otherwise "/menu", "/about" (lowercase, no trailing slash) */
@@ -224,8 +384,15 @@ export interface Theme {
   background: string;
   /** Body text (hex). Needs 4.5:1 contrast with the background. */
   text: string;
-  font: "modern" | "classic" | "friendly";
+  font: "modern" | "classic" | "friendly" | "elegant" | "grotesk";
   radius: "none" | "small" | "medium" | "large";
+  /**
+   * The site's character. warm (default): soft cards, coloured accents. editorial: light serif
+   * headlines, small capital labels, lots of air (hotels, weddings, fashion, property).
+   * bold: very large heavy headlines, pill buttons (people, tours, causes, agencies).
+   * clean: crisp and calm, soft shadows (clinics, schools, companies).
+   */
+  style?: "warm" | "editorial" | "bold" | "clean";
 }
 
 export interface Business {

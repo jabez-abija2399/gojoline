@@ -47,9 +47,10 @@ function socialUrl(hosts: string[]) {
 }
 
 const link = z.object({ label: text, href: safeHref }).strict();
+const fact = z.object({ value: text, label: text }).strict();
 const price = z.object({ amountMinor: z.number().int().nonnegative().max(1_000_000_000), currency: z.enum(["ETB", "USD"]) }).strict();
 const id = z.string().regex(/^[a-z][a-z0-9-]{0,40}$/).optional();
-const icon = z.enum(["coffee", "utensils", "bed", "stethoscope", "school", "shopping-bag", "church", "calendar", "heart", "home", "map", "scissors", "car", "star", "phone", "check"]);
+const icon = z.enum(["coffee", "utensils", "bed", "stethoscope", "school", "shopping-bag", "church", "calendar", "heart", "home", "map", "scissors", "car", "star", "phone", "check", "wifi", "clock", "users", "shield", "leaf", "award", "globe", "briefcase", "camera", "music", "book", "sparkles", "truck", "key", "building", "sun", "plane", "moon", "droplet", "mail", "message", "baby", "palette", "wrench", "chart", "graduation", "pill", "flask", "mountain", "tree", "gift", "ruler", "bath", "pin", "laptop", "handshake", "mic", "flower", "dumbbell", "bus"]);
 
 export const formFieldSchema = z
   .object({
@@ -76,17 +77,22 @@ export const formSectionSchema = z
   .strict();
 
 const section = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("hero"), id, variant: z.enum(["split", "centered", "banner"]).optional(), eyebrow: text.optional(), heading: text, subheading: text.optional(), image: image.optional(), primaryAction: link.optional(), secondaryAction: link.optional() }).strict(),
-  z.object({ type: z.literal("about"), id, heading: text, body: text, image: image.optional(), highlights: z.array(z.object({ value: text, label: text }).strict()).max(6).optional() }).strict(),
-  z.object({ type: z.literal("menu"), id, heading: text, intro: text.optional(), categories: z.array(z.object({ name: text, items: z.array(z.object({ name: text, description: text.optional(), price: price.optional(), tag: text.optional() }).strict()).min(1).max(80) }).strict()).min(1).max(20) }).strict(),
-  z.object({ type: z.literal("services"), id, heading: text, intro: text.optional(), items: z.array(z.object({ title: text, description: text, price: price.optional(), icon: icon.optional() }).strict()).min(1).max(30) }).strict(),
-  z.object({ type: z.literal("gallery"), id, heading: text, images: z.array(image).min(1).max(40) }).strict(),
+  z.object({ type: z.literal("hero"), id, variant: z.enum(["split", "centered", "banner", "immersive", "portrait"]).optional(), eyebrow: text.optional(), heading: text, subheading: text.optional(), image: image.optional(), primaryAction: link.optional(), secondaryAction: link.optional(), facts: z.array(fact).max(4).optional() }).strict(),
+  z.object({ type: z.literal("about"), id, eyebrow: text.optional(), heading: text, body: text, image: image.optional(), imageSide: z.enum(["start", "end"]).optional(), highlights: z.array(fact).max(6).optional(), points: z.array(text).max(8).optional(), action: link.optional() }).strict(),
+  z.object({ type: z.literal("menu"), id, eyebrow: text.optional(), heading: text, intro: text.optional(), categories: z.array(z.object({ name: text, items: z.array(z.object({ name: text, description: text.optional(), price: price.optional(), tag: text.optional(), image: image.optional() }).strict()).min(1).max(80) }).strict()).min(1).max(20) }).strict(),
+  z.object({ type: z.literal("services"), id, eyebrow: text.optional(), heading: text, intro: text.optional(), variant: z.enum(["bento", "list", "numbered"]).optional(), items: z.array(z.object({ title: text, description: text, price: price.optional(), icon: icon.optional() }).strict()).min(1).max(30) }).strict(),
+  z.object({ type: z.literal("gallery"), id, eyebrow: text.optional(), heading: text, intro: text.optional(), layout: z.enum(["mosaic", "scroll"]).optional(), images: z.array(image).min(1).max(40) }).strict(),
   z.object({ type: z.literal("contact"), id, heading: text, intro: text.optional() }).strict(),
   z.object({ type: z.literal("map"), id, heading: text, query: z.string().max(200).optional() }).strict(),
   z.object({ type: z.literal("timeline"), id, heading: text, intro: text.optional(), items: z.array(z.object({ period: text, title: text, place: text.optional(), description: text.optional() }).strict()).min(1).max(30) }).strict(),
-  z.object({ type: z.literal("testimonials"), id, heading: text, items: z.array(z.object({ quote: text, name: z.string().min(1).max(80) }).strict()).min(1).max(12) }).strict(),
+  z.object({ type: z.literal("testimonials"), id, eyebrow: text.optional(), heading: text, items: z.array(z.object({ quote: text, name: z.string().min(1).max(80), role: text.optional() }).strict()).min(1).max(12) }).strict(),
   z.object({ type: z.literal("faq"), id, heading: text, intro: text.optional(), items: z.array(z.object({ question: text, answer: text }).strict()).min(1).max(20) }).strict(),
-  z.object({ type: z.literal("cta"), id, heading: text, body: text.optional(), primaryAction: link, secondaryAction: link.optional() }).strict(),
+  z.object({ type: z.literal("cta"), id, heading: text, body: text.optional(), primaryAction: link, secondaryAction: link.optional(), image: image.optional() }).strict(),
+  z.object({ type: z.literal("cards"), id, eyebrow: text.optional(), heading: text, intro: text.optional(), layout: z.enum(["grid", "feature", "scroll", "people"]).optional(), items: z.array(z.object({ image: image.optional(), title: text, subtitle: text.optional(), description: text.optional(), price: price.optional(), priceNote: text.optional(), badge: text.optional(), meta: z.array(text).max(5).optional(), action: link.optional() }).strict()).min(1).max(24), action: link.optional() }).strict(),
+  z.object({ type: z.literal("stats"), id, heading: text.optional(), items: z.array(fact).min(2).max(4), tone: z.enum(["dark", "soft"]).optional() }).strict(),
+  z.object({ type: z.literal("steps"), id, eyebrow: text.optional(), heading: text, intro: text.optional(), items: z.array(z.object({ title: text, description: text.optional() }).strict()).min(2).max(8), action: link.optional() }).strict(),
+  z.object({ type: z.literal("schedule"), id, eyebrow: text.optional(), heading: text, intro: text.optional(), layout: z.enum(["list", "tiles"]).optional(), items: z.array(z.object({ time: text, title: text, note: text.optional() }).strict()).min(1).max(30), footnote: text.optional() }).strict(),
+  z.object({ type: z.literal("quote"), id, quote: text, name: text.optional(), role: text.optional(), image: image.optional() }).strict(),
   formSectionSchema,
 ]);
 
@@ -97,7 +103,7 @@ export const siteSchema = z
     name: text,
     tagline: text.optional(),
     languages: z.array(z.enum(["en", "am"])).min(1).max(2).refine((l) => new Set(l).size === l.length, "Languages must be unique"),
-    theme: z.object({ primary: hex, accent: hex, background: hex, text: hex, font: z.enum(["modern", "classic", "friendly"]), radius: z.enum(["none", "small", "medium", "large"]) }).strict(),
+    theme: z.object({ primary: hex, accent: hex, background: hex, text: hex, font: z.enum(["modern", "classic", "friendly", "elegant", "grotesk"]), radius: z.enum(["none", "small", "medium", "large"]), style: z.enum(["warm", "editorial", "bold", "clean"]).optional() }).strict(),
     business: z
       .object({
         phone: z.string().max(40).optional(),

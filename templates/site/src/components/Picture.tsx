@@ -10,6 +10,9 @@ interface Props {
   sizes?: string;
 }
 
+/** Library photos named "...-hero-..." also exist 1600 px wide, for full-width use on big screens. */
+const WIDE = /^\/stock\/[\w-]*-hero-[\w-]*\.webp$/;
+
 /**
  * A photo, or a drawing in the theme colours when no photo exists yet (`image.art` picks
  * which one). Drawings are decorative (no alt) so screen readers skip them.
@@ -23,16 +26,18 @@ export function Picture({ image, className = "", priority = false, sizes = "100v
       </div>
     );
   }
+  const wide = WIDE.test(image.src);
   return (
     <img
       src={image.src}
+      srcSet={wide ? `${image.src} 800w, ${image.src.replace(/\.webp$/, "-1600.webp")} 1600w` : undefined}
       alt={text(image.alt)}
       width={image.width ?? 1200}
       height={image.height ?? 900}
       loading={priority ? "eager" : "lazy"}
       fetchPriority={priority ? "high" : "auto"}
       decoding="async"
-      sizes={sizes}
+      sizes={wide ? sizes : undefined}
       className={`object-cover ${className}`}
     />
   );

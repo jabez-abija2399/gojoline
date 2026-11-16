@@ -1,3 +1,4 @@
+import { Picture } from "../components/Picture";
 import { SectionTitle } from "../components/SectionTitle";
 import { useSite } from "../lib/context";
 import type { CtaSection } from "../lib/types";
@@ -5,12 +6,19 @@ import type { CtaSection } from "../lib/types";
 /** One clear ask on a dark band, for the end of a page. */
 export function Cta({ section }: { section: CtaSection }) {
   const { text, href } = useSite();
+  const photo = Boolean(section.image?.src);
   return (
     <section id={section.id} className="section">
       <div className="container-site">
-        <div className="reveal relative isolate flex flex-col items-start gap-6 overflow-hidden rounded-site bg-accent px-6 py-12 text-on-accent sm:px-12 md:flex-row md:items-center md:justify-between md:py-16">
+        <div className={`on-dark reveal relative isolate flex flex-col items-start gap-6 overflow-hidden rounded-site px-6 py-12 sm:px-12 md:flex-row md:items-center md:justify-between md:py-16 ${photo ? "bg-black text-white md:py-24" : "bg-accent text-on-accent"}`}>
           {/* Two faint circles in the band's own text colour: depth, and text over them stays readable in any theme. */}
-          <svg aria-hidden="true" viewBox="0 0 400 200" preserveAspectRatio="xMaxYMid slice" className="absolute inset-0 -z-10 size-full">
+          {photo && (
+            <>
+              <Picture image={section.image} sizes="(min-width: 768px) 100vw, 70vw" className="absolute inset-0 -z-10 size-full" />
+              <span aria-hidden="true" className="absolute inset-0 -z-10 bg-black/60" />
+            </>
+          )}
+          <svg aria-hidden="true" viewBox="0 0 400 200" preserveAspectRatio="xMaxYMid slice" className={`absolute inset-0 -z-10 size-full ${photo ? "hidden" : ""}`}>
             <circle cx="360" cy="20" r="120" className="fill-on-accent opacity-[0.07]" />
             <circle cx="300" cy="210" r="90" className="fill-on-accent opacity-[0.05]" />
           </svg>
@@ -23,7 +31,7 @@ export function Cta({ section }: { section: CtaSection }) {
               {text(section.primaryAction.label)}
             </a>
             {section.secondaryAction && (
-              <a href={href(section.secondaryAction.href)} className="btn btn-outline">
+              <a href={href(section.secondaryAction.href)} className={`btn ${photo ? "btn-glass" : "btn-outline"}`}>
                 {text(section.secondaryAction.label)}
               </a>
             )}

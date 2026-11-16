@@ -1,9 +1,9 @@
 import "server-only";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { checkWritePath } from "@/lib/agent/workspace";
 
-const SKIP_DIRS = new Set(["node_modules", "dist", "dist-ssr", "test", ".vite", "presets"]);
+const SKIP_DIRS = new Set(["node_modules", "dist", "dist-ssr", "test", ".vite", "presets", "stock"]);
 const BINARY = /\.(woff2?|png|jpe?g|webp|avif|ico)$/i;
 
 export const TEMPLATE_ROOT = join(process.cwd(), "templates", "site");
@@ -41,4 +41,23 @@ export function isVersionedPath(path: string): boolean {
 /** Template files the agent may not change; re-written before every build. */
 export function lockedTemplateFiles(root = TEMPLATE_ROOT): TemplateFile[] {
   return templateFiles(root).filter((f) => !isVersionedPath(f.path));
+}
+
+const STOCK_REF = /\/stock\/([a-z0-9-]+)\.webp/g;
+
+/**
+ * The sample photos a site uses (`/stock/<name>.webp` in its site.json), with the wide version of
+ * hero photos. The library is large, so a sandbox gets only these, not the whole folder.
+ */
+export function stockFilesFor(siteJson: string, root = TEMPLATE_ROOT): TemplateFile[] {
+  const names = new Set<string>();
+  for (const m of siteJson.matchAll(STOCK_REF)) names.add(m[1]!);
+  const out: TemplateFile[] = [];
+  for (const name of [...names].sort().slice(0, 80)) {
+    for (const file of [`${name}.webp`, `${name}-1600.webp`]) {
+      const full = join(root, "public", "stock", file);
+      if (existsSync(full)) out.push({ path: `public/stock/${file}`, content: readFileSync(full) });
+    }
+  }
+  return out;
 }

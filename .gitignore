@@ -21,3 +21,4 @@ next-env.d.ts
 /.lighthouseci/
 evals/.runs/
 .vercel
+scripts/.tmp/

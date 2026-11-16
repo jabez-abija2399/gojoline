@@ -1,7 +1,7 @@
 import "server-only";
 import { Sandbox } from "@vercel/sandbox";
 import type { BuildResult } from "@/lib/agent/workspace";
-import { isVersionedPath, lockedTemplateFiles, templateFiles } from "@/lib/template/files";
+import { isVersionedPath, lockedTemplateFiles, stockFilesFor, templateFiles } from "@/lib/template/files";
 import type { SandboxProvider, SiteSandbox } from "./types";
 
 const PORT = 5173;
@@ -118,6 +118,14 @@ class VercelSiteSandbox implements SiteSandbox {
 
   async writeFile(path: string, content: string) {
     await this.sandbox.writeFiles([{ path: `${ROOT}/${path}`, content }]);
+    if (path === "src/site.json") await this.syncStock(content);
+  }
+
+  /** Copies in the sample photos the site uses (the library itself stays out of the sandbox). */
+  private async syncStock(siteJson?: string | null) {
+    const json = siteJson ?? (await this.readFile("src/site.json"));
+    const files = json ? stockFilesFor(json) : [];
+    if (files.length) await this.sandbox.writeFiles(files.map((f) => ({ path: `${ROOT}/${f.path}`, content: new Uint8Array(f.content as Buffer) })));
   }
 
   async deleteFile(path: string) {
@@ -134,6 +142,7 @@ class VercelSiteSandbox implements SiteSandbox {
     await this.sandbox.writeFiles(
       lockedTemplateFiles().map((f) => ({ path: `${ROOT}/${f.path}`, content: typeof f.content === "string" ? f.content : new Uint8Array(f.content) })),
     );
+    await this.syncStock();
   }
 
   async runBuild(): Promise<BuildResult> {
@@ -181,6 +190,7 @@ class VercelSiteSandbox implements SiteSandbox {
     if (stale.length) await this.sandbox.runCommand({ cmd: "rm", args: ["-f", "--", ...stale], cwd: ROOT });
     const entries = Object.entries(files).filter(([p]) => isVersionedPath(p));
     if (entries.length) await this.sandbox.writeFiles(entries.map(([path, content]) => ({ path: `${ROOT}/${path}`, content })));
+    await this.syncStock(files["src/site.json"]);
   }
 
   async stop() {
