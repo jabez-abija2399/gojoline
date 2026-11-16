@@ -12,6 +12,7 @@ import type { Submission } from "./types";
 const ORIGIN = "https://gojo-selam.vercel.app";
 let deps: SubmitDeps;
 let cloud: DbCloudStore;
+let sites: DbSiteStore;
 let projectId: string;
 let siteKey: string;
 const notified: Submission[] = [];
@@ -20,7 +21,7 @@ beforeEach(async () => {
   const db = await testDb();
   await makeUser(db, "alice");
   const store = new DbProjectStore(db);
-  const sites = new DbSiteStore(db);
+  sites = new DbSiteStore(db);
   cloud = new DbCloudStore(db);
   const p = await store.createProject("alice", { name: "Selam", locale: "en" });
   projectId = p.id;
@@ -45,8 +46,17 @@ describe("handleSubmission", () => {
     expect(list[0]).toMatchObject({ formKey: "booking", kind: "booking", lang: "am", data: { name: "Abebe" } });
     expect(notified).toHaveLength(1);
     expect(await cloud.listSubmissions("mallory", projectId)).toEqual([]);
-    await cloud.markRead("alice", projectId, [list[0]!.id]);
-    expect((await cloud.listSubmissions("alice", projectId))[0]!.readAt).not.toBeNull();
+    expect(list[0]!.status).toBe("new");
+    expect(await cloud.setStatus("mallory", projectId, [list[0]!.id], "replied")).toBe(0);
+    expect(await cloud.setStatus("alice", projectId, [list[0]!.id], "replied")).toBe(1);
+    expect((await cloud.listSubmissions("alice", projectId))[0]).toMatchObject({ status: "replied", readAt: expect.any(Date) });
+  });
+
+  it("refuses answers while the owner has the site offline", async () => {
+    await sites.setOffline("alice", projectId, true);
+    expect(await call()).toMatchObject({ status: 404, body: { error: "offline" } });
+    await sites.setOffline("alice", projectId, false);
+    expect((await call()).status).toBe(201);
   });
 
   it("refuses other origins, wrong keys, unknown sites and forms", async () => {
@@ -88,16 +98,39 @@ describe("handleSubmission", () => {
 
 describe("dashboard counts", () => {
   it("counts exactly per owner, and per Addis Ababa day in the database", async () => {
-    expect(await cloud.countSubmissions("alice", projectId)).toEqual({ total: 0, unread: 0 });
+    expect(await cloud.countSubmissions("alice", projectId)).toEqual({ total: 0, waiting: 0 });
     await call();
     await call({ ip: "2.2.2.2" });
     const [first] = await cloud.listSubmissions("alice", projectId, 1);
-    await cloud.markRead("alice", projectId, [first!.id]);
-    expect(await cloud.countSubmissions("alice", projectId)).toEqual({ total: 2, unread: 1 });
+    await cloud.setStatus("alice", projectId, [first!.id], "done");
+    expect(await cloud.countSubmissions("alice", projectId)).toEqual({ total: 2, waiting: 1 });
     // Another owner sees nothing of alice's.
-    expect(await cloud.countSubmissions("bob", projectId)).toEqual({ total: 0, unread: 0 });
+    expect(await cloud.countSubmissions("bob", projectId)).toEqual({ total: 0, waiting: 0 });
     expect(await cloud.answersPerDay("bob", projectId, new Date(0))).toEqual([]);
     const today = new Date(Date.now() + 3 * 3_600_000).toISOString().slice(0, 10);
     expect(await cloud.answersPerDay("alice", projectId, new Date(Date.now() - 86_400_000))).toEqual([{ day: today, count: 2 }]);
+  });
+});
+
+describe("message status and delete", () => {
+  it("moves New → Replied → Done, refuses moves that aren't allowed, and reopens", async () => {
+    await call();
+    const [m] = await cloud.listSubmissions("alice", projectId, 1);
+    expect(await cloud.setStatus("alice", projectId, [m!.id], "new")).toBe(0);
+    expect(await cloud.setStatus("alice", projectId, [m!.id], "replied")).toBe(1);
+    expect(await cloud.setStatus("alice", projectId, [m!.id], "done")).toBe(1);
+    expect(await cloud.setStatus("alice", projectId, [m!.id], "replied")).toBe(0);
+    expect(await cloud.setStatus("alice", projectId, [m!.id], "new")).toBe(1);
+    expect((await cloud.listSubmissions("alice", projectId, 1))[0]!.status).toBe("new");
+  });
+
+  it("deletes one message, only for its owner", async () => {
+    await call();
+    await call({ ip: "2.2.2.2" });
+    const [m] = await cloud.listSubmissions("alice", projectId, 1);
+    expect(await cloud.deleteSubmission("bob", projectId, m!.id)).toBe(false);
+    expect(await cloud.deleteSubmission("alice", projectId, m!.id)).toBe(true);
+    expect(await cloud.deleteSubmission("alice", projectId, m!.id)).toBe(false);
+    expect(await cloud.countSubmissions("alice", projectId)).toEqual({ total: 1, waiting: 1 });
   });
 });

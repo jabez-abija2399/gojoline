@@ -191,6 +191,10 @@ export const sites = pgTable(
     takenDownReason: text("taken_down_reason"),
     /** When the takedown notice replaced the live site (null: not yet, e.g. the deploy failed). */
     takedownDeployedAt: timestamp("takedown_deployed_at", { withTimezone: true }),
+    /** The owner took the site offline ("resting"); null = online. Separate from an admin takedown. */
+    offlineAt: timestamp("offline_at", { withTimezone: true }),
+    /** Which live-site features the published files have (1: reads business info, counts visits); null = published before them. */
+    runtimeVersion: integer("runtime_version"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -227,9 +231,42 @@ export const formSubmissions = pgTable(
     data: jsonb("data").$type<Record<string, string>>().notNull(),
     lang: text("lang"),
     readAt: timestamp("read_at", { withTimezone: true }),
+    /** new → replied → done (the owner's progress on it). Replaces read/unread; read_at is kept. */
+    status: text("status", { enum: ["new", "replied", "done"] }).notNull().default("new"),
     createdAt: createdAt(),
   },
   (t) => [index("form_submissions_owner_idx").on(t.ownerId, t.projectId, t.createdAt)],
+);
+
+/**
+ * Details the owner edits in the dashboard without AI or a rebuild (contact, hours, banner),
+ * and the Google and share preview applied on the next publish. One row per project.
+ */
+export const siteSettings = pgTable("site_settings", {
+  projectId: uuid("project_id")
+    .primaryKey()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  ownerId: text("owner_id").notNull(),
+  business: jsonb("business").$type<Record<string, unknown>>(),
+  seo: jsonb("seo").$type<Record<string, unknown>>(),
+  updatedAt: updatedAt(),
+});
+
+/** Visits per site per Addis Ababa day, rolled up from Redis (no IPs, no visitor ids). */
+export const siteVisitsDaily = pgTable(
+  "site_visits_daily",
+  {
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    day: date("day").notNull(),
+    views: integer("views").notNull().default(0),
+    visitors: integer("visitors").notNull().default(0),
+    referrers: jsonb("referrers").$type<Record<string, number>>().notNull().default({}),
+    devices: jsonb("devices").$type<Record<string, number>>().notNull().default({}),
+    updatedAt: updatedAt(),
+  },
+  (t) => [uniqueIndex("site_visits_daily_uq").on(t.projectId, t.day)],
 );
 
 /** Owner-uploaded photos (re-encoded WebP). Stored here until R2 is set up. */

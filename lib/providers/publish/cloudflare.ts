@@ -138,6 +138,18 @@ export class CloudflarePublishProvider implements PublishProvider {
     await Promise.all(ids.slice(previous).map(async (id) => this.storage.deleteMany((await this.storage.list(`sites/${slug}/d/${id}/`)).keys)));
   }
 
+  /** Flags the current pointer; the Worker then answers pages with its resting page (503). */
+  async setResting(providerProjectId: string, resting: boolean): Promise<void> {
+    const slug = slugOf(providerProjectId);
+    const key = `sites/${slug}/current.json`;
+    const raw = await this.storage.get(key);
+    if (!raw) throw new Error("Hosting project is missing");
+    const pointer = JSON.parse(raw.toString()) as Record<string, unknown>;
+    if (resting) pointer.resting = true;
+    else delete pointer.resting;
+    await this.storage.put(key, JSON.stringify(pointer), { contentType: "application/json", cacheControl: "no-store" });
+  }
+
   async restrictOldDeployments(providerProjectId: string): Promise<void> {
     const slug = slugOf(providerProjectId);
     const keep = await this.current(slug);

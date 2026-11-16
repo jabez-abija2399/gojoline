@@ -127,6 +127,18 @@ describe("sites worker", () => {
     for (const h of all) expect(r.headers.get(h.key), h.key).toBe(h.value);
   });
 
+  it("shows the resting page for pages while the owner has the site offline", async () => {
+    const e = env({ extra: { "sites/abeni/current.json": pointer({ files: FILES, resting: true }) } });
+    const r = await get("https://abeni.afridea.et/about", e);
+    expect(r.status).toBe(503);
+    expect(r.headers.get("retry-after")).toBe("86400");
+    const html = await r.text();
+    expect(html).toContain(TEXT.en.restingTitle);
+    expect(html).toContain(TEXT.am.restingTitle);
+    // Files (scripts, photos) still load; only pages rest.
+    expect((await get("https://abeni.afridea.et/assets/app-1.js", e)).status).toBe(200);
+  });
+
   it("keeps its page text equal to the app's messages", () => {
     for (const l of ["en", "am"] as const) {
       const m = getMessages(l).safety;

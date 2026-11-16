@@ -1057,6 +1057,8 @@ export const am: Messages = {
     notFoundLink: "በጎጆላይን ድረ-ገጽ ይሥሩ",
     pageMissingTitle: "ይህ ገጽ የለም",
     pageMissingLink: "ወደ መነሻ ገጹ ይሂዱ",
+    restingTitle: "ይህ ድረ-ገጽ ለጊዜው አርፏል",
+    restingBody: "ለጊዜው ዝግ ነው። እባክዎ በቅርቡ ይመለሱ።",
     downTitle: "ይህ ድረ-ገጽ አይገኝም",
     downBody: "ይህ ድረ-ገጽ የተሠራበትን የጎጆላይን ደንብ ስለጣሰ ወርዷል።",
     downOwner: "ድረ-ገጹ የእርስዎ ከሆነ ምክንያቱን እና ምን ማድረግ እንደሚችሉ ለማወቅ ወደ ጎጆላይን ይግቡ።",

@@ -1057,6 +1057,8 @@ export const en = {
     notFoundLink: "Make a site with Gojoline",
     pageMissingTitle: "This page doesn't exist",
     pageMissingLink: "Go to the home page",
+    restingTitle: "This site is resting",
+    restingBody: "It is closed for now. Please come back soon.",
     downTitle: "This site is not available",
     downBody: "This site was taken down because it broke the rules of Gojoline, the website builder it was made with.",
     downOwner: "If this is your site, sign in to Gojoline to find out why and what you can do.",

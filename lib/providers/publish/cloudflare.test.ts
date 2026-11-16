@@ -33,6 +33,16 @@ describe("CloudflarePublishProvider", () => {
     expect([...storage.objects.keys()].filter((k) => k.includes("evil") || k.includes("abs"))).toEqual([]);
   });
 
+  it("rests a site and brings it back without a new deployment", async () => {
+    const { storage, cf } = setup();
+    const r = await cf.publish({ slug: "abeni", files: [file("index.html")], headers });
+    await cf.setResting("cf:abeni", true);
+    expect(json(storage, "sites/abeni/current.json")).toMatchObject({ deployment: r.deploymentId, resting: true });
+    await cf.setResting("cf:abeni", false);
+    expect(json(storage, "sites/abeni/current.json")).toEqual({ deployment: r.deploymentId, headers, files: ["index.html"] });
+    await expect(cf.setResting("cf:nobody", true)).rejects.toThrow();
+  });
+
   it("keeps the previous deployment and drops older ones; a takedown keeps only the current one", async () => {
     const { storage, cf } = setup();
     const a = await cf.publish({ slug: "abeni", files: [file("index.html", "a")], headers });

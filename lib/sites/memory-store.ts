@@ -82,9 +82,16 @@ export class MemorySiteStore implements SiteStore, SiteAdminStore {
     const existing = this.sites.get(input.projectId);
     if (existing && existing.ownerId !== ownerId) throw new Error("Not your site");
     if (existing?.status === "taken_down") throw new Error("Site is taken down");
-    const site: Site = { id: existing?.id ?? randomUUID(), ownerId, status: "published", takenDownReason: null, customDomain: existing?.customDomain ?? null, siteKey: existing?.siteKey ?? randomBytes(18).toString("base64url"), ...input };
+    const site: Site = { ...existing, id: existing?.id ?? randomUUID(), ownerId, status: "published", takenDownReason: null, customDomain: existing?.customDomain ?? null, siteKey: existing?.siteKey ?? randomBytes(18).toString("base64url"), ...input };
     this.sites.set(input.projectId, site);
     return site;
+  }
+
+  async setOffline(ownerId: string, projectId: string, offline: boolean) {
+    const s = await this.getByProject(ownerId, projectId);
+    if (!s || s.status !== "published") return null;
+    s.offlineAt = offline ? (s.offlineAt ?? new Date()) : null;
+    return s;
   }
 
   async clearLegacy(ownerId: string, projectId: string) {

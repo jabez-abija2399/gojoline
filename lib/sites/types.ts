@@ -20,6 +20,10 @@ export interface Site {
   publishedAt: Date | null;
   takenDownReason: string | null;
   takedownDeployedAt?: Date | null;
+  /** The owner took the site offline (resting); null = online. An admin takedown is `status` instead. */
+  offlineAt?: Date | null;
+  /** Live-site features the published files have (see SITE_RUNTIME); null = published before them. */
+  runtimeVersion?: number | null;
 }
 
 /** Unscoped site access for admins and public reports only. Never use it for owner actions. */
@@ -55,6 +59,11 @@ export interface SiteStore {
   /** Drops a stale claim (only if it is still unverified and older than the cutoff). */
   releaseDomainClaim(siteId: string, domain: string, claimedBefore: Date): Promise<boolean>;
   savePublished(ownerId: string, input: Omit<Site, "id" | "ownerId" | "status" | "takenDownReason" | "customDomain" | "siteKey">): Promise<Site>;
+  /**
+   * The owner's own offline switch (a published site only; never one an admin took down).
+   * Returns the site as it now is, or null when it can't change.
+   */
+  setOffline(ownerId: string, projectId: string, offline: boolean): Promise<Site | null>;
   /** The old host now forwards: nothing left there to take down. */
   clearLegacy(ownerId: string, projectId: string): Promise<void>;
 }

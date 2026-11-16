@@ -62,6 +62,8 @@ export async function handleSubmission(deps: SubmitDeps, input: SubmitInput): Pr
   if (!site || site.status !== "published") return deny(404, "not_found");
   const origins = siteOrigins(site);
   const allowOrigin = input.origin && origins.includes(input.origin) ? input.origin : null;
+  // Resting (taken offline by its owner): the site says so, and nothing new arrives.
+  if (site.offline) return deny(404, "offline", allowOrigin);
   // Browsers always send Origin on cross-site POSTs; anything else isn't the site's own form.
   if (!allowOrigin) return deny(403, "origin");
   if (!site.siteKey || !input.siteKey || !sameKey(input.siteKey, site.siteKey)) return deny(403, "key", allowOrigin);

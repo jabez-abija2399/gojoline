@@ -45,6 +45,11 @@ export interface PublishProvider {
   checkDomain(providerProjectId: string, domain: string): Promise<DomainStatus>;
   /** Detaches a domain from a site (used to release stale, never-verified claims). */
   removeDomain(providerProjectId: string, domain: string): Promise<void>;
+  /**
+   * The owner's offline switch: pages show a resting page until it is switched back, without a
+   * new build. Hosts without it rely on the live site's own check (GET .../info says offline).
+   */
+  setResting?(providerProjectId: string, resting: boolean): Promise<void>;
   /** After a takedown: older deployment URLs stop being public (the site address shows the notice). */
   restrictOldDeployments?(providerProjectId: string): Promise<void>;
 }
