@@ -7,7 +7,8 @@ import { currentUser } from "@/lib/auth/session";
 import Link from "next/link";
 import { monthsFree, PLAN_IDS, PRODUCTS, productName, yearlySaving, type Product } from "@/lib/billing/plans";
 import { REQUEST_SIZES } from "@/lib/billing/credits";
-import { offerPrice, offerUntilLabel } from "@/lib/billing/discounts";
+import { offerPrice } from "@/lib/billing/discounts";
+import { offerBadgeText, offerName } from "@/lib/billing/offer-text";
 import { formatBirr, PlanHighlights } from "@/components/pricing/plan-highlights";
 import { OfferBadge, WasPrice } from "@/components/pricing/offer-price";
 import { isLocale } from "@/lib/i18n/config";
@@ -58,7 +59,7 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
   const payReady = !!(settings.telebirrNumber || settings.cbeAccount);
   const birr = (minor: number) => format(b.price, { price: formatBirr(minor) });
   const now = new Date();
-  const offerText = offer ? format(b.offerBadge, { percent: offer.percent, date: offerUntilLabel(offer, lang) }) : "";
+  const offerText = offer ? offerBadgeText(offer, lang, b) : "";
   // What each product costs now (the launch offer included), for the payment form.
   const productPrices = Object.fromEntries(
     (Object.keys(PRODUCTS) as Product[]).map((p) => {
@@ -163,7 +164,7 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
                 {settings.cbeAccount && <li>{format(b.payCbe, { account: settings.cbeAccount })}</li>}
                 {settings.accountName && <li>{format(b.payName, { name: settings.accountName })}</li>}
               </ul>
-              <PaymentForm t={b} prices={productPrices} topupCredits={credits.topupCredits} initialProduct={initialProduct} />
+              <PaymentForm t={b} offerName={offer ? offerName(offer, lang, b.offerName) : b.offerName} prices={productPrices} topupCredits={credits.topupCredits} initialProduct={initialProduct} />
             </>
           ) : (
             <p className="text-ink-muted">{b.payNotReady}</p>

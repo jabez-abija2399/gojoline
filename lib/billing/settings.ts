@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/lib/db/client";
 import { appSettings } from "@/lib/db/schema";
@@ -18,6 +18,12 @@ export type BillingSettings = z.infer<typeof billingSettingsSchema>;
 export interface SettingsStore {
   get(key: string): Promise<Record<string, unknown> | null>;
   set(key: string, value: Record<string, unknown>, by: string): Promise<void>;
+  /**
+   * One atomic change to a saved value: drops `remove` keys, then sets `patch` keys; other keys
+   * are untouched. A missing row is created from `create` plus the patch, or left missing (null)
+   * when `create` is null. Returns the new value.
+   */
+  merge(key: string, patch: Record<string, unknown>, remove: string[], by: string, create: Record<string, unknown> | null): Promise<Record<string, unknown> | null>;
 }
 
 export class MemorySettingsStore implements SettingsStore {
@@ -27,6 +33,15 @@ export class MemorySettingsStore implements SettingsStore {
   }
   async set(key: string, value: Record<string, unknown>) {
     this.data.set(key, value);
+  }
+  async merge(key: string, patch: Record<string, unknown>, remove: string[], _by: string, create: Record<string, unknown> | null) {
+    const old = this.data.get(key);
+    if (!old && !create) return null;
+    const next = { ...(old ?? create) };
+    for (const k of remove) delete next[k];
+    Object.assign(next, patch);
+    this.data.set(key, next);
+    return next;
   }
 }
 
@@ -41,6 +56,21 @@ export class DbSettingsStore implements SettingsStore {
       .insert(appSettings)
       .values({ key, value, updatedBy: by })
       .onConflictDoUpdate({ target: appSettings.key, set: { value, updatedBy: by, updatedAt: new Date() } });
+  }
+  async merge(key: string, patch: Record<string, unknown>, remove: string[], by: string, create: Record<string, unknown> | null) {
+    // One statement, so a change made at the same moment to another key is never lost.
+    const dropped = remove.length ? sql`(${appSettings.value} - ARRAY[${sql.join(remove.map((k) => sql`${k}`), sql`, `)}]::text[])` : sql`${appSettings.value}`;
+    const merged = sql`${dropped} || ${JSON.stringify(patch)}::jsonb`;
+    if (!create) {
+      const [row] = await this.db.update(appSettings).set({ value: merged, updatedBy: by, updatedAt: new Date() }).where(eq(appSettings.key, key)).returning({ value: appSettings.value });
+      return row?.value ?? null;
+    }
+    const [row] = await this.db
+      .insert(appSettings)
+      .values({ key, value: { ...create, ...patch }, updatedBy: by })
+      .onConflictDoUpdate({ target: appSettings.key, set: { value: merged, updatedBy: by, updatedAt: new Date() } })
+      .returning({ value: appSettings.value });
+    return row?.value ?? null;
   }
 }
 

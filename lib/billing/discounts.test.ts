@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { makeUser, testDb } from "@/test/db";
-import { codeProblem, discounted, discountInputSchema, offerApplies, offerEndsAt, quote, type DiscountCode, type LaunchOffer } from "./discounts";
+import { codeProblem, discounted, discountInputSchema, launchOfferSchema, offerApplies, offerEndsAt, offerUntilLabel, quote, type DiscountCode, type LaunchOffer } from "./discounts";
+import { offerBadgeText, offerName, offerProductsText } from "./offer-text";
+import { getMessages } from "@/lib/i18n";
 import { Billing } from "./service";
-import { MemorySettingsStore } from "./settings";
+import { DbSettingsStore, MemorySettingsStore, type SettingsStore } from "./settings";
 import { DbBillingStore, MemoryBillingStore, type BillingStore } from "./store";
 
 const now = new Date("2026-11-20T10:00:00Z");
@@ -38,7 +40,7 @@ describe("discount maths", () => {
     expect(quote("starter_month", 49_900, { offer: { ...offer, percent: 30 }, code: code(), now })).toMatchObject({ source: "offer", finalMinor: 34_900, code: null });
     // The offer only for its products, and only until the end of its last day (Addis Ababa time).
     expect(quote("starter_year", 499_000, { offer, code: null, now }).source).toBeNull();
-    expect(offerEndsAt(offer).toISOString()).toBe("2026-12-31T20:59:59.999Z");
+    expect(offerEndsAt(offer)!.toISOString()).toBe("2026-12-31T20:59:59.999Z");
     expect(offerApplies(offer, "starter_month", new Date("2026-12-31T20:59:00Z"))).toBe(true);
     expect(offerApplies(offer, "starter_month", new Date("2026-12-31T21:00:00Z"))).toBe(false);
     expect(offerApplies({ ...offer, active: false }, "starter_month", now)).toBe(false);
@@ -189,5 +191,87 @@ describe("code rules at approval", () => {
     expect(await b.review("admin", (await pay("dan", "AGN00001", "AGAIN10")).id, "approve", null)).toBe("ok");
     expect(await b.review("admin", (await pay("dan", "AGN00002", "AGAIN10")).id, "approve", null)).toBe("ok");
     expect((await store.discountByCode("AGAIN10"))?.uses).toBe(2);
+  }, 30_000);
+
+  it("switches the offer on and off in one step, keeping its terms; nothing to switch before one is saved", async () => {
+    const settings = new MemorySettingsStore();
+    const store = new MemoryBillingStore();
+    const b = new Billing(store, () => now, settings);
+    expect(await b.setLaunchOfferActive("admin", true)).toBe("none");
+    const open: LaunchOffer = { active: false, percent: 20, products: ["business_month"], name: { en: "Holiday offer", am: "የበዓል ቅናሽ" } };
+    await b.saveLaunchOffer("admin", open);
+    expect(await b.quote("u", "business_month", "")).toMatchObject({ ok: true, quote: { source: null } });
+    expect(await b.setLaunchOfferActive("admin", true)).toBe("ok");
+    expect(await b.launchOffer()).toEqual({ ...open, active: true });
+    expect(await b.quote("u", "business_month", "")).toMatchObject({ ok: true, quote: { source: "offer", finalMinor: 103_900 } });
+    await b.setLaunchOfferActive("admin", false);
+    expect((await b.launchOffer())?.active).toBe(false);
+    const audit = await store.auditFor("settings", "offer");
+    expect(audit.map((a) => a.action).filter((a) => a === "settings.offer_switch")).toHaveLength(2);
+  });
+});
+
+describe("launch offer without a last day, and its name", () => {
+  const open: LaunchOffer = { active: true, percent: 20, products: ["starter_month", "starter_year", "business_month", "business_year", "topup"] };
+  const en = getMessages("en").billing;
+  const am = getMessages("am").billing;
+
+  it("runs until switched off when it has no last day", () => {
+    expect(offerEndsAt(open)).toBeNull();
+    expect(offerUntilLabel(open, "en")).toBeNull();
+    expect(offerApplies(open, "topup", new Date("2040-01-01T00:00:00Z"))).toBe(true);
+    expect(offerApplies({ ...open, active: false }, "topup", now)).toBe(false);
+    // Still never stacks with a code: the better one wins.
+    expect(quote("starter_month", 49_900, { offer: open, code: code({ percentOff: 30 }), now })).toMatchObject({ source: "code" });
+  });
+
+  it("accepts older saved offers with a last day, and checks the name and percent", () => {
+    expect(launchOfferSchema.safeParse({ active: true, percent: 10, products: ["topup"], until: "2026-12-31" }).success).toBe(true);
+    expect(launchOfferSchema.safeParse({ active: true, percent: 10, products: ["topup"] }).success).toBe(true);
+    expect(launchOfferSchema.safeParse({ active: true, percent: 91, products: ["topup"] }).success).toBe(false);
+    expect(launchOfferSchema.safeParse({ active: true, percent: 0, products: ["topup"] }).success).toBe(false);
+    expect(launchOfferSchema.safeParse({ active: true, percent: 10, products: [] }).success).toBe(false);
+    expect(launchOfferSchema.safeParse({ active: true, percent: 10, products: ["topup"], until: "31/12/2026" }).success).toBe(false);
+    // A name needs both languages, one short line, no markup.
+    expect(launchOfferSchema.safeParse({ ...open, name: { en: "Holiday offer", am: "የበዓል ቅናሽ" } }).success).toBe(true);
+    expect(launchOfferSchema.safeParse({ ...open, name: { en: "Holiday offer" } }).success).toBe(false);
+    expect(launchOfferSchema.safeParse({ ...open, name: { en: "<b>x</b>", am: "x" } }).success).toBe(false);
+    expect(launchOfferSchema.safeParse({ ...open, name: { en: "x".repeat(41), am: "x" } }).success).toBe(false);
+  });
+
+  it("says no date without a last day, and uses the offer's own name when it has one", () => {
+    expect(offerBadgeText(open, "en", en)).toBe("Launch offer: 20% off");
+    expect(offerBadgeText({ ...open, until: "2026-12-31" }, "en", en)).toBe("Launch offer: 20% off until 31 Dec");
+    expect(offerBadgeText(open, "am", am)).toBe("የመክፈቻ ቅናሽ፦ የ20% ቅናሽ");
+    const named = { ...open, name: { en: "Holiday offer", am: "የበዓል ቅናሽ" } };
+    expect(offerBadgeText(named, "en", en)).toBe("Holiday offer: 20% off");
+    expect(offerBadgeText(named, "am", am)).toBe("የበዓል ቅናሽ፦ የ20% ቅናሽ");
+    expect(offerName(open, "en", en.offerName)).toBe("Launch offer");
+  });
+
+  it("names the products short: whole plans by plan name", () => {
+    expect(offerProductsText(["starter_month", "starter_year", "business_month", "business_year"], "en", en, 30)).toBe("Starter and Business");
+    expect(offerProductsText(["starter_month", "business_month", "business_year", "topup"], "en", en, 30)).toBe("Starter, 1 month, Business, and 30 extra changes");
+  });
+});
+
+describe("saving the offer's terms never touches its on/off state", () => {
+  const check = async (settings: SettingsStore) => {
+    const b = new Billing(new MemoryBillingStore(), () => now, settings);
+    // A new offer starts off.
+    await b.saveLaunchOfferTerms("admin", { percent: 15, products: ["topup"], until: "2026-12-31", name: { en: "Holiday offer", am: "የበዓል ቅናሽ" } });
+    expect(await b.launchOffer()).toEqual({ active: false, percent: 15, products: ["topup"], until: "2026-12-31", name: { en: "Holiday offer", am: "የበዓል ቅናሽ" } });
+    // Switched on meanwhile (e.g. in another tab): a later save of the terms keeps it on, and
+    // an empty last day and name are removed.
+    expect(await b.setLaunchOfferActive("admin", true)).toBe("ok");
+    await b.saveLaunchOfferTerms("admin", { percent: 25, products: ["business_month"] });
+    expect(await b.launchOffer()).toEqual({ active: true, percent: 25, products: ["business_month"] });
+  };
+  it("in memory", () => check(new MemorySettingsStore()));
+  it("in Postgres, in one statement", async () => {
+    const db = await testDb();
+    const settings = new DbSettingsStore(db);
+    expect(await settings.merge("offer", { active: true }, [], "admin", null)).toBeNull();
+    await check(settings);
   }, 30_000);
 });

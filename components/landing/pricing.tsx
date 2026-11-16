@@ -3,7 +3,8 @@ import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import type { Locale } from "@/lib/i18n/config";
 import { monthsFree, PLAN_IDS, yearlySaving, type PlanFeatures, type PlanId, type Product } from "@/lib/billing/plans";
-import { offerPrice, offerUntilLabel, type LaunchOffer } from "@/lib/billing/discounts";
+import { offerPrice, type LaunchOffer } from "@/lib/billing/discounts";
+import { offerBadgeText } from "@/lib/billing/offer-text";
 import { OfferBadge, WasPrice } from "@/components/pricing/offer-price";
 import { BillingToggle, type BillingPeriod } from "@/components/pricing/billing-toggle";
 import { formatBirr, PlanHighlights } from "@/components/pricing/plan-highlights";
@@ -38,7 +39,7 @@ export async function Pricing({ t, locale, prices, period, features, offer = nul
                 {popular && <span className="absolute -top-4 start-6 rounded-full bg-ink px-3 py-1 font-semibold text-white">{t.landing.pricing.popular}</span>}
                 <h2 className="text-xl font-bold">{t.billing.plans[p]}</h2>
                 <div className="flex min-h-[5.5rem] flex-col gap-1">
-                  {offered !== null && offer && <OfferBadge text={format(t.billing.offerBadge, { percent: offer.percent, date: offerUntilLabel(offer, locale) })} />}
+                  {offered !== null && offer && <OfferBadge text={offerBadgeText(offer, locale, t.billing)} />}
                   {offered !== null && <WasPrice price={birr(shown)} was={t.billing.was} />}
                   <p>
                     {/* "0 Birr", so the card doesn't say "Free" twice (the plan is already named Free). */}

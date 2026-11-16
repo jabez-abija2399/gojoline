@@ -21,11 +21,14 @@ const birr = (minor: number) => new Intl.NumberFormat("en-US", { maximumFraction
 
 export function PaymentForm({
   t,
+  offerName = t.offerName,
   prices,
   topupCredits,
   initialProduct = "starter_month",
 }: {
   t: Messages["billing"];
+  /** What the offer is called for customers ("Launch offer" unless an admin renamed it). */
+  offerName?: string;
   /** Santim: the list price and the price now (launch offer included). */
   prices: Record<ProductId, { base: number; final: number }>;
   topupCredits: number;
@@ -100,10 +103,10 @@ export function PaymentForm({
       ? code.source === "code"
         ? format(t.codeApplied, { code: code.code, amount: birr(code.discountMinor) })
         : code.source === "offer"
-          ? t.offerBetter
+          ? format(t.offerBetter, { name: offerName })
           : null
       : discounted
-        ? format(t.offerApplied, { amount: birr(price.base - price.final) })
+        ? format(t.offerApplied, { name: offerName, amount: birr(price.base - price.final) })
         : null;
 
   return (

@@ -1,10 +1,6 @@
 import { json } from "@/lib/api/guard";
 import { ownerRoute } from "@/lib/api/owner";
-import { saveListEdit } from "@/lib/cloud/content-service";
-import { listEditSchema, readLists } from "@/lib/cloud/lists";
-import { services } from "@/lib/server/services";
-
-export const maxDuration = 300;
+import { readLists } from "@/lib/cloud/lists";
 
 export async function GET(_request: Request, ctx: RouteContext<"/api/projects/[id]/lists">) {
   const { id } = await ctx.params;
@@ -14,12 +10,10 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/projects/[i
   return json(200, latest?.files["src/site.json"] ? (readLists(latest.files["src/site.json"]) ?? { languages: ["en"], lists: [] }) : { languages: ["en"], lists: [] });
 }
 
-export async function POST(request: Request, ctx: RouteContext<"/api/projects/[id]/lists">) {
-  const { id } = await ctx.params;
-  const r = await ownerRoute(id, { mutating: true, limit: { name: "list-edit", perHour: 20 } });
-  if (!r.ok) return r.response;
-  const parsed = listEditSchema.safeParse(await request.json().catch(() => null));
-  if (!parsed.success) return json(400, { error: "invalid" });
-  const result = await saveListEdit(r.builder, services().publish, r.user, id, parsed.data);
-  return result.ok ? json(200, result) : json(result.error === "busy" ? 409 : 422, { error: result.error });
+/**
+ * Editing lists without the AI is gone (2026-11-16): content changes go through the AI so they
+ * use credits. Old clients get 410 Gone; nothing is read or written.
+ */
+export function POST() {
+  return json(410, { error: "gone" });
 }
