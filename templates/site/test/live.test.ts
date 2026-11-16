@@ -38,3 +38,20 @@ describe("share preview", () => {
     expect(seoMeta(JSON.stringify({ title: { en: "Selam" }, image: "/images/front.webp", icon: "https://evil.example/x.png" }))).toEqual({ title: { en: "Selam" }, description: undefined, image: "/images/front.webp", icon: undefined });
   });
 });
+
+describe("baked details and late changes", () => {
+  it("reads the details baked in at publish", async () => {
+    const { bakedLive } = await import("../src/lib/live");
+    expect(bakedLive(undefined)).toEqual({});
+    expect(bakedLive("nope")).toEqual({});
+    expect(bakedLive(JSON.stringify({ business: { phone: "0911" }, announcement: [{ en: "Hi" }], offline: true }))).toEqual({ business: { phone: "0911" }, announcement: [{ en: "Hi" }] });
+  });
+  it("finds nothing to do when the runtime answer matches, and late lines when it doesn't", async () => {
+    const { liveChange } = await import("../src/lib/live");
+    const baked = { business: { phone: "0911" }, announcement: [{ en: "Free delivery" }] };
+    expect(liveChange(baked, { offline: false, ...baked })).toBeNull();
+    expect(liveChange(baked, { business: { phone: "0911" }, announcement: [{ en: "Closed today" }, { en: "Free delivery" }] })).toEqual({ keep: [{ en: "Free delivery" }], late: [{ en: "Closed today" }] });
+    expect(liveChange(baked, { business: { phone: "0922" }, announcement: [] })).toEqual({ business: { phone: "0922" }, keep: [], late: [] });
+    expect(liveChange({}, {})).toBeNull();
+  });
+});

@@ -130,5 +130,16 @@ describe("publish extras", () => {
     const r = await publishSite(deps, alice, p.id, "selam-coffee");
     expect(r.ok && r.site.runtimeVersion).toBe(SITE_RUNTIME);
     expect(JSON.parse(built[0]!.VITE_SEO!)).toEqual({ title: { en: "Selam Coffee, Bole" }, image: "/images/front.webp" });
+    expect(built[0]!.VITE_REST_AT_HOST).toBe("1");
+    expect(built[0]!.VITE_LIVE).toBeUndefined();
+  });
+
+  it("bakes the business details and banner into the build, but never \"closed today\"", async () => {
+    const p = await deps.store.createProject("alice", { name: "Selam Coffee", locale: "en" });
+    await deps.store.addVersion("alice", { projectId: p.id, summary: "v1", files: { "src/site.ts": siteTs } });
+    const today = new Date(Date.now() + 3 * 3_600_000).toISOString().slice(0, 10);
+    await deps.settings!.saveBusiness("alice", p.id, { phone: "0911223344", closedOn: today, announcement: { on: true, text: { en: "Free delivery" } } });
+    await publishSite(deps, alice, p.id, "selam-coffee");
+    expect(JSON.parse(built[0]!.VITE_LIVE!)).toEqual({ business: { phone: "0911223344" }, announcement: [{ en: "Free delivery" }] });
   });
 });

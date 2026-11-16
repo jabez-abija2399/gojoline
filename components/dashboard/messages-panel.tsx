@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Check, CornerUpLeft, Download, MessageCircle, MessageSquare, Phone, RotateCcw, Send, Trash2 } from "lucide-react";
+import { Check, CornerUpLeft, Download, MessageCircle, MessageSquare, MoreHorizontal, Phone, RotateCcw, Send, Trash2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { format } from "@/lib/i18n/format";
@@ -32,7 +32,7 @@ export function MessagesPanel({ t, locale, projectId }: { t: Messages["dashboard
   const [filter, setFilter] = useState<Filter>("all");
   const [form, setForm] = useState("all");
   const [note, setNote] = useState<{ text: string; alert?: boolean } | null>(null);
-  const [deleting, setDeleting] = useState<Message | null>(null);
+  const [deleting, setDeleting] = useState<{ m: Message; list: Message[] } | null>(null);
   const [busy, setBusy] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
@@ -63,24 +63,32 @@ export function MessagesPanel({ t, locale, projectId }: { t: Messages["dashboard
   }, [rows, form]);
   const formKeys = useMemo(() => [...new Set((rows ?? []).map((r) => r.formKey))], [rows]);
 
-  const move = async (m: Message, status: MessageStatus) => {
+  /** After a change, keyboard and screen-reader users land on the next message (or the list). */
+  const focusAfter = (id: string, list: Message[]) => {
+    const i = list.findIndex((r) => r.id === id);
+    const next = list[i + 1] ?? null;
+    requestAnimationFrame(() => (next ? document.getElementById(`msg-${next.id}`) : headingRef.current)?.focus());
+  };
+
+  const move = async (m: Message, status: MessageStatus, list: Message[]) => {
     setNote(null);
     const res = await fetch(`/api/projects/${projectId}/submissions`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ids: [m.id], status }) }).catch(() => null);
     if (!res?.ok) return setNote({ text: t.statusFailed, alert: true });
     setRows((rs) => (rs ?? []).map((r) => (r.id === m.id ? { ...r, status } : r)));
     setNote({ text: format(t.statusSaved, { status: t.status[status] }) });
+    focusAfter(m.id, list);
   };
 
   const remove = async () => {
     if (!deleting || busy) return;
     setBusy(true);
-    const res = await fetch(`/api/projects/${projectId}/submissions`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: deleting.id }) }).catch(() => null);
+    const res = await fetch(`/api/projects/${projectId}/submissions`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: deleting.m.id }) }).catch(() => null);
     setBusy(false);
     setDeleting(null);
     if (!res?.ok) return setNote({ text: t.statusFailed, alert: true });
-    setRows((rs) => (rs ?? []).filter((r) => r.id !== deleting.id));
+    setRows((rs) => (rs ?? []).filter((r) => r.id !== deleting.m.id));
     setNote({ text: t.deleted });
-    headingRef.current?.focus();
+    focusAfter(deleting.m.id, deleting.list);
   };
 
   if (error)
@@ -111,9 +119,9 @@ export function MessagesPanel({ t, locale, projectId }: { t: Messages["dashboard
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 ref={headingRef} tabIndex={-1} className="sr-only">{t.tabMessages}</h2>
+      <h2 ref={headingRef} tabIndex={-1} className="sr-only">{t.messagesLabel}</h2>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div role="group" aria-label={t.filterLabel} className="chips-scroll -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+        <div role="group" aria-label={t.filterLabel} className="flex flex-wrap gap-2">
           {(["all", ...MESSAGE_STATUSES] as Filter[]).map((f) => (
             <button key={f} type="button" aria-pressed={filter === f} onClick={() => setFilter(f)} className={`${chip} ${filter === f ? "border-ink bg-ink text-white" : "border-line bg-white text-ink hover:bg-sunken"}`}>
               {f === "all" ? t.filterAll : t.status[f]}
@@ -149,55 +157,57 @@ export function MessagesPanel({ t, locale, projectId }: { t: Messages["dashboard
             const name = Object.values(m.data).find((v) => v.trim() && !phoneLinks(v)) ?? heading(m.formKey);
             const next = nextStatus(m.status);
             const NextIcon = m.status === "new" ? CornerUpLeft : m.status === "replied" ? Check : RotateCcw;
+            const phone = Object.values(m.data).map((v) => phoneLinks(v)).find(Boolean) ?? null;
+            // Telegram by phone number often fails quietly (privacy settings): only a real username gets a button.
+            const tgUser = Object.entries(m.data).map(([k, v]) => (/telegram/i.test(k) || /^@\w/.test(v.trim()) ? v.trim().replace(/^@|^https?:\/\/t\.me\//i, "") : "")).find((v) => /^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(v));
             return (
-              <li key={m.id} className={`flex flex-col gap-3 rounded-2xl border bg-white p-4 border-line ${m.status === "new" ? "border-s-4 border-s-coral" : ""}`}>
+              <li key={m.id} className={`flex flex-col gap-3 rounded-2xl border border-line bg-white p-4 ${m.status === "new" ? "border-s-4 border-s-coral" : ""}`}>
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <h3 className="font-semibold">{heading(m.formKey)}</h3>
+                  <h3 id={`msg-${m.id}`} tabIndex={-1} className="font-semibold focus:outline-none focus-visible:underline">{heading(m.formKey)}</h3>
                   <StatusBadge status={m.status} t={t} />
                   <time dateTime={m.createdAt} className="ms-auto text-sm text-ink-muted">{fmt.format(new Date(m.createdAt))}</time>
+                  <details className="relative -me-2">
+                    <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-ink-muted hover:bg-sunken [&::-webkit-details-marker]:hidden">
+                      <MoreHorizontal aria-hidden="true" className="size-4" />
+                      {t.more}
+                    </summary>
+                    <div className="absolute end-0 z-10 mt-1 rounded-xl border border-line bg-white p-1 shadow-lg">
+                      <button type="button" onClick={() => setDeleting({ m, list: shown })} aria-label={format(t.deleteNamed, { name })} className="inline-flex min-h-11 items-center gap-1.5 whitespace-nowrap rounded-lg px-3 text-sm font-medium text-danger hover:bg-coral-soft">
+                        <Trash2 aria-hidden="true" className="size-4" />
+                        {t.delete}
+                      </button>
+                    </div>
+                  </details>
                 </div>
-                <dl className="grid min-w-0 gap-x-4 gap-y-2 sm:grid-cols-[max-content_1fr]">
-                  {Object.entries(m.data).map(([k, v]) => {
-                    const links = phoneLinks(v);
-                    return (
-                      <div key={k} className="contents">
-                        <dt className="text-sm font-medium text-ink-muted sm:text-base">{label(m.formKey, k)}</dt>
-                        <dd className="min-w-0 [overflow-wrap:anywhere]">
-                          {links ? (
-                            <div className="flex flex-col gap-2">
-                              <span className="font-medium">{v}</span>
-                              <div role="group" aria-label={format(t.replyTo, { name })} className="flex flex-wrap gap-2">
-                                <a href={links.tel} className={action}><Phone aria-hidden="true" className="size-4" />{t.call}</a>
-                                <a href={links.sms} className={action}><MessageSquare aria-hidden="true" className="size-4" />{t.sms}</a>
-                                {links.whatsapp && <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" className={action}><MessageCircle aria-hidden="true" className="size-4" />{t.whatsapp}<span className="sr-only">{t.newTab}</span></a>}
-                                {links.telegram && <a href={links.telegram} target="_blank" rel="noopener noreferrer" className={action}><Send aria-hidden="true" className="size-4" />{t.telegram}<span className="sr-only">{t.newTab}</span></a>}
-                              </div>
-                            </div>
-                          ) : (
-                            v
-                          )}
-                        </dd>
-                      </div>
-                    );
-                  })}
+                <dl className="grid min-w-0 gap-x-4 gap-y-1 sm:grid-cols-[max-content_1fr]">
+                  {Object.entries(m.data).map(([k, v]) => (
+                    <div key={k} className="contents">
+                      <dt className="text-sm font-medium text-ink-muted sm:text-base">{label(m.formKey, k)}</dt>
+                      <dd className="min-w-0 [overflow-wrap:anywhere]">{v}</dd>
+                    </div>
+                  ))}
                 </dl>
-                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
-                  <button type="button" onClick={() => void move(m, next)} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-ink px-4 text-sm font-semibold text-white hover:bg-ink-hover">
+                <div role="group" aria-label={format(t.replyTo, { name })} className="flex flex-wrap items-center gap-2 border-t border-line pt-3">
+                  {phone && (
+                    <a href={phone.tel} className={action}>
+                      <Phone aria-hidden="true" className="size-4" />
+                      {t.call}
+                    </a>
+                  )}
+                  <button type="button" onClick={() => void move(m, next, shown)} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-ink px-4 text-sm font-semibold text-white hover:bg-ink-hover">
                     <NextIcon aria-hidden="true" className="size-4" />
                     {m.status === "new" ? t.markReplied : m.status === "replied" ? t.markDone : t.reopen}
                   </button>
-                  <div className="flex gap-2">
-                    {m.status === "new" && (
-                      <button type="button" onClick={() => void move(m, "done")} className={action}>
-                        <Check aria-hidden="true" className="size-4" />
-                        {t.markDone}
-                      </button>
-                    )}
-                    <button type="button" onClick={() => setDeleting(m)} aria-label={format(t.deleteNamed, { name })} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-danger hover:bg-coral-soft">
-                      <Trash2 aria-hidden="true" className="size-4" />
-                      {t.delete}
-                    </button>
-                  </div>
+                  {(phone || tgUser) && (
+                    <details className="group w-full">
+                      <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-medium text-ink underline underline-offset-4">{t.otherWays}</summary>
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {phone && <a href={phone.sms} className={action}><MessageSquare aria-hidden="true" className="size-4" />{t.sms}</a>}
+                        {phone?.whatsapp && <a href={phone.whatsapp} target="_blank" rel="noopener noreferrer" className={action}><MessageCircle aria-hidden="true" className="size-4" />{t.whatsapp}<span className="sr-only">{t.newTab}</span></a>}
+                        {tgUser && <a href={`https://t.me/${tgUser}`} target="_blank" rel="noopener noreferrer" className={action}><Send aria-hidden="true" className="size-4" />{t.telegram}<span className="sr-only">{t.newTab}</span></a>}
+                      </div>
+                    </details>
+                  )}
                 </div>
               </li>
             );

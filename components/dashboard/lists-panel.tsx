@@ -56,7 +56,6 @@ export function ListsPanel({ t, locale, projectId }: { t: Messages["dashboard"];
 
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-ink-muted">{t.listsHint}</p>
       {data.lists.map((l) => (
         <ListEditor key={l.key} t={t} locale={locale} projectId={projectId} languages={data.languages} list={l} />
       ))}

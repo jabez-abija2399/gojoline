@@ -24,6 +24,9 @@ export class MemoryCloudStore implements CloudStore {
   async getForm(siteId: string, formKey: string) {
     return this.forms.get(siteId)?.find((f) => f.id === formKey) ?? null;
   }
+  async getForms(siteId: string, formKeys: string[]) {
+    return (this.forms.get(siteId) ?? []).filter((f) => formKeys.includes(f.id));
+  }
   async addSubmission(input: Omit<Submission, "id" | "readAt" | "status" | "createdAt">) {
     const s: Submission = { ...input, id: randomUUID(), readAt: null, status: "new", createdAt: new Date() };
     this.submissions.push(s);

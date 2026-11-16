@@ -89,6 +89,7 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
   };
 
   const labels = { days: t.info.days, closed: t.info.closed, closedToday: t.info.closedTodayNotice, closedForNow: t.info.closedForNowNotice };
+  // Same grouping and clock format as the live site (Intl, in this page's language).
   const hours = groupHours(info.hours ?? {}, { en: labels, am: labels });
   const notice = info.closedForNow ? t.info.closedForNowNotice : info.closedOn === today ? t.info.closedTodayNotice : null;
   const banner = info.announcement?.on ? (info.announcement.text[locale] || info.announcement.text.en || info.announcement.text.am) : null;
@@ -136,7 +137,7 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
               const mode = v === undefined ? "unset" : v === null ? "closed" : "open";
               const name = t.info.dayNames[d];
               return (
-                <li key={d} className="grid grid-cols-[minmax(5.5rem,auto)_1fr] items-center gap-2 py-3 sm:flex sm:flex-row">
+                <li key={d} className="grid grid-cols-[minmax(5.5rem,auto)_1fr] items-center gap-2 py-3 sm:flex sm:flex-row sm:flex-wrap">
                   <label htmlFor={`bi-day-${d}`} className="font-medium sm:w-28">{name}</label>
                   <select id={`bi-day-${d}`} value={mode} onChange={(e) => setDay(d, e.target.value === "unset" ? undefined : e.target.value === "closed" ? null : (info.hours?.mon ?? { open: "08:00", close: "18:00" }))} className={`${input} sm:w-36`}>
                     <option value="unset">{t.dayState.unset}</option>
@@ -150,15 +151,15 @@ export function BusinessPanel({ t, locale, projectId, state }: { t: Messages["da
                       <input type="time" value={v.close} onChange={(e) => setDay(d, { ...v, close: e.target.value })} aria-label={`${name}: ${t.closes}`} className={`${input} min-w-0 flex-1 sm:w-32 sm:flex-none`} />
                     </div>
                   )}
+                  {d === "mon" && v && (
+                    <button type="button" onClick={() => set({ hours: { ...info.hours, tue: v, wed: v, thu: v, fri: v } })} className="col-span-2 inline-flex min-h-11 w-fit items-center rounded-lg border border-line px-3 text-sm font-medium hover:bg-sunken sm:ms-auto">
+                      {t.sameAsMonday}
+                    </button>
+                  )}
                 </li>
               );
             })}
           </ul>
-          {info.hours?.mon && (
-            <button type="button" onClick={() => set({ hours: { ...info.hours, tue: info.hours!.mon, wed: info.hours!.mon, thu: info.hours!.mon, fri: info.hours!.mon } })} className="inline-flex min-h-11 w-fit items-center rounded-lg border border-line px-3 text-sm font-medium hover:bg-sunken">
-              {t.sameAsMonday}
-            </button>
-          )}
           <Check id="bi-today" checked={info.closedOn === today} onChange={(on) => set({ closedOn: on ? today : null })} label={t.closedToday} hint={t.closedTodayHint} />
           <Check id="bi-now" checked={Boolean(info.closedForNow)} onChange={(on) => set({ closedForNow: on })} label={t.closedForNow} hint={t.closedForNowHint} />
         </section>

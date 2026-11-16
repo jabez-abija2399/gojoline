@@ -5,7 +5,7 @@ import { liveAddress, ownerAllowance, ownerSites } from "@/lib/app/shell-data";
 import { SITE_RUNTIME } from "@/lib/publish/service";
 import { services } from "@/lib/server/services";
 import { visitStats, type VisitStats } from "@/lib/visits/stats";
-import { answerPreview, answerStats, setupSteps } from "./stats";
+import { answerStats, messagePreview, setupSteps } from "./stats";
 
 const DAY = 86_400_000;
 const none = { total: 0, waiting: 0 };
@@ -18,12 +18,10 @@ export type SiteState = "live" | "resting" | "draft" | "taken_down";
  */
 export const loadHeader = cache(async (ownerId: string, projectId: string) => {
   const svc = services();
-  const [sites, counts, site] = await Promise.all([
-    ownerSites(ownerId).catch(() => []),
-    svc.cloud?.countSubmissions(ownerId, projectId).catch(() => none) ?? none,
-    svc.publish?.sites.getByProject(ownerId, projectId).catch(() => null) ?? null,
-  ]);
+  const [sites, counts] = await Promise.all([ownerSites(ownerId).catch(() => []), svc.cloud?.countSubmissions(ownerId, projectId).catch(() => none) ?? none]);
   const entry = sites.find((s) => s.project.id === projectId);
+  // The sidebar's list already holds the site; only an older project (past its 100) is looked up.
+  const site = entry ? entry.site : ((await svc.publish?.sites.getByProject(ownerId, projectId).catch(() => null)) ?? null);
   const address = liveAddress(site ? { status: site.status, slug: site.slug, url: site.url, customDomain: site.customDomain, customDomainVerifiedAt: site.customDomainVerifiedAt } : null);
   const status: SiteState = site?.status === "taken_down" ? "taken_down" : !address ? "draft" : site?.offlineAt ? "resting" : "live";
   return {
@@ -57,10 +55,10 @@ export async function loadHome(ownerId: string, projectId: string, locale: "en" 
   const { site, address } = header;
   const messages = answerStats(perDay, header.counts);
 
-  // The heading of each form the latest messages came from ("Booking", "Order"), in parallel.
-  const keys = [...new Map(recent.map((a) => [a.formKey, a.siteId])).entries()];
-  const defs = await Promise.all(keys.map(([key, siteId]) => svc.cloud?.getForm(siteId, key).catch(() => null) ?? null));
-  const headings = new Map(keys.map(([key], i) => [key, defs[i]?.heading[locale] ?? defs[i]?.heading.en ?? defs[i]?.heading.am ?? key]));
+  // The heading of each form the latest messages came from ("Booking", "Order"), in one read.
+  const siteId = recent[0]?.siteId;
+  const defs = siteId ? await (svc.cloud?.getForms(siteId, [...new Set(recent.map((a) => a.formKey))]).catch(() => []) ?? []) : [];
+  const headings = new Map(defs.map((d) => [d.id, d.heading[locale] ?? d.heading.en ?? d.heading.am ?? d.id]));
   const b = settings.business;
 
   return {
@@ -69,7 +67,7 @@ export async function loadHome(ownerId: string, projectId: string, locale: "en" 
     address,
     messages,
     visits,
-    recent: recent.map((a) => ({ id: a.id, heading: headings.get(a.formKey) ?? a.formKey, preview: answerPreview(a.data), createdAt: a.createdAt, status: a.status })),
+    recent: recent.map((a) => ({ id: a.id, heading: headings.get(a.formKey) ?? a.formKey, preview: messagePreview(a.data), createdAt: a.createdAt, status: a.status })),
     steps: setupSteps({
       hasVersion: versions.count > 0,
       live: !!address,

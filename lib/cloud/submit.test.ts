@@ -112,6 +112,14 @@ describe("dashboard counts", () => {
   });
 });
 
+describe("getForms", () => {
+  it("reads several forms of a site at once, skipping unknown keys", async () => {
+    const site = (await cloud.publicSite(projectId))!;
+    expect((await cloud.getForms(site.siteId, ["booking", "nope"])).map((f) => f.id)).toEqual(["booking"]);
+    expect(await cloud.getForms(site.siteId, [])).toEqual([]);
+  });
+});
+
 describe("message status and delete", () => {
   it("moves New → Replied → Done, refuses moves that aren't allowed, and reopens", async () => {
     await call();

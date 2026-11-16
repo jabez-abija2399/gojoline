@@ -90,14 +90,14 @@ test("overview: live status, real numbers, latest answers and what to do next", 
   await expect(kpi("Waiting for an answer")).toContainText("3");
   await expect(kpi("Messages")).toContainText("your first week");
   // No visitors yet: the empty state says what to do, with the QR code one tap away.
-  await expect(page.getByText("No visitors yet. Share your QR code so people can find you.")).toBeVisible();
+  await expect(page.getByText("No visitors yet: share your link or QR code.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Show QR code" })).toBeVisible();
   const latest = page.getByRole("region", { name: "Latest messages" });
-  await expect(latest.getByText("Abebe Kebede · 0911000000 · 1")).toBeVisible();
+  await expect(latest.getByText("Abebe Kebede · 0911000000")).toBeVisible();
   await expect(latest.getByRole("link").first()).toHaveAttribute("href", /tab=messages/);
   await expect(latest.getByText("Booking").first()).toBeVisible();
   // The Messages tab says how many are new.
-  await expect(page.getByRole("navigation").getByRole("link", { name: /Messages 3 New/ })).toBeVisible();
+  await expect(page.getByRole("navigation").getByRole("link", { name: /Messages 3 waiting for an answer/i })).toBeVisible();
   // Built and published are ticked; the details, photos, Telegram and an own address are next.
   const next = page.getByRole("region", { name: "Next step" });
   await next.getByText("All steps (2 of 6 done)").click();

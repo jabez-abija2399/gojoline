@@ -34,6 +34,15 @@ export class DbCloudStore implements CloudStore {
     return parsed?.success ? parsed.data : null;
   }
 
+  async getForms(siteId: string, formKeys: string[]) {
+    if (!formKeys.length) return [];
+    const rows = await this.db.select().from(siteForms).where(and(eq(siteForms.siteId, siteId), inArray(siteForms.formKey, formKeys)));
+    return rows.flatMap((r) => {
+      const parsed = formDef.safeParse(r.definition);
+      return parsed.success ? [parsed.data] : [];
+    });
+  }
+
   async addSubmission(input: Omit<Submission, "id" | "readAt" | "status" | "createdAt">) {
     const [row] = await this.db.insert(formSubmissions).values(input).returning();
     return row as Submission;

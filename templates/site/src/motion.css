@@ -981,3 +981,15 @@
     visibility: visible;
   }
 }
+
+/* A banner line that arrived after the page was built slides in over it (transform only: no layout shift). */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .late-banner {
+    animation: late-in 0.35s ease-out both;
+  }
+}
+@keyframes late-in {
+  from {
+    transform: translateY(-100%);
+  }
+}

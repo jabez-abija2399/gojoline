@@ -14,6 +14,36 @@ export interface LiveInfo {
 
 const api = () => (publishMeta.dataApiUrl && publishMeta.siteId && publishMeta.siteKey ? `${publishMeta.dataApiUrl}/api/public/sites/${publishMeta.siteId}` : null);
 
+/** What the owner had set at publish time; the pages are prerendered with it, so nothing shifts. */
+export function bakedLive(raw: string | undefined = import.meta.env.VITE_LIVE as string | undefined): LiveInfo {
+  if (!raw) return {};
+  try {
+    const v = JSON.parse(raw) as LiveInfo;
+    return { business: v.business, announcement: v.announcement };
+  } catch {
+    return {};
+  }
+}
+
+const key = (v: unknown) => JSON.stringify(v ?? null);
+
+/**
+ * How the runtime answer differs from what was baked in: new business details (re-render),
+ * banner lines that arrived late (shown in an overlay, so the layout never moves), and the
+ * baked lines that are still wanted. Null when nothing changed.
+ */
+export function liveChange(baked: LiveInfo, live: LiveInfo): { business?: LiveInfo["business"]; keep: Text[]; late: Text[] } | null {
+  const was = baked.announcement ?? [];
+  const now = live.announcement ?? [];
+  if (key(baked.business) === key(live.business) && key(was) === key(now)) return null;
+  const has = (list: Text[], t: Text) => list.some((x) => key(x) === key(t));
+  return {
+    ...(key(baked.business) === key(live.business) ? {} : { business: live.business }),
+    keep: was.filter((t) => has(now, t)),
+    late: now.filter((t) => !has(was, t)),
+  };
+}
+
 /** The owner's details over the built-in ones; anything they left empty keeps the site's own. */
 export function mergeLive(site: Site, live: LiveInfo): Site {
   return { ...site, business: { ...site.business, ...live.business }, announcement: live.announcement ?? site.announcement };

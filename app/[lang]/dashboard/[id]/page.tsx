@@ -3,15 +3,17 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 import { ArrowLeft, House, Inbox, LayoutList, Settings, Sparkles, Store } from "lucide-react";
+import dynamic from "next/dynamic";
 import { HomePanel } from "@/components/dashboard/home-panel";
 import { ActiveTabInView } from "@/components/dashboard/active-tab";
 import { loadHeader, loadHome } from "@/lib/dashboard/overview";
 import { AppShell } from "@/components/app/app-shell";
-import { MessagesPanel } from "@/components/dashboard/messages-panel";
-import { BusinessPanel } from "@/components/dashboard/business-panel";
-import { ListsPanel } from "@/components/dashboard/lists-panel";
-import { PhotosPanel } from "@/components/dashboard/photos-panel";
-import { SettingsPanel } from "@/components/dashboard/settings-panel";
+// Each section's client code loads only with its own tab.
+const MessagesPanel = dynamic(() => import("@/components/dashboard/messages-panel").then((m) => m.MessagesPanel));
+const BusinessPanel = dynamic(() => import("@/components/dashboard/business-panel").then((m) => m.BusinessPanel));
+const ListsPanel = dynamic(() => import("@/components/dashboard/lists-panel").then((m) => m.ListsPanel));
+const PhotosPanel = dynamic(() => import("@/components/dashboard/photos-panel").then((m) => m.PhotosPanel));
+const SettingsPanel = dynamic(() => import("@/components/dashboard/settings-panel").then((m) => m.SettingsPanel));
 import { currentUser } from "@/lib/auth/session";
 import { readLists } from "@/lib/cloud/lists";
 import { isLocale } from "@/lib/i18n/config";
@@ -38,16 +40,17 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
   if (!builder) redirect(`/${lang}/build`);
   const rawTab = String((await searchParams).tab ?? "");
   const tab: Tab = TABS.find((x) => x === rawTab) ?? OLD_TABS[rawTab] ?? "home";
+  const header = await loadHeader(user.id, id);
+  // Ownership first: nothing else is read for a project that isn't this owner's.
+  // The sidebar's list already holds the project; an older one (past its 100) is looked up.
+  const project = header.project ?? (await builder.store.getProject(user.id, id));
+  if (!project) notFound();
   // Only the open section's data is read (every read is scoped to this owner).
-  const [header, home, versions, latest] = await Promise.all([
-    loadHeader(user.id, id),
+  const [home, versions, latest] = await Promise.all([
     tab === "home" ? loadHome(user.id, id, lang) : null,
     tab === "settings" ? builder.store.listVersions(user.id, id).catch(() => []) : null,
     tab === "settings" ? builder.store.latestVersion(user.id, id).catch(() => null) : null,
   ]);
-  // The sidebar's list already holds the project; an older one (past its 100) is looked up.
-  const project = header.project ?? (await builder.store.getProject(user.id, id));
-  if (!project) notFound();
   const t = getMessages(lang);
   const d = t.dashboard;
   const labels: Record<Tab, string> = { home: d.tabHome, messages: d.tabMessages, info: d.tabInfo, content: d.tabContent, settings: d.tabSettings };
@@ -96,9 +99,9 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
                 <Icon aria-hidden="true" className="size-4" />
                 {labels[x]}
                 {count > 0 && (
-                  <span className="rounded-full bg-coral px-1.5 text-xs font-semibold tabular-nums text-on-coral">
+                  <span className="rounded-full bg-ink px-1.5 text-xs font-semibold tabular-nums text-white">
                     {count}
-                    <span className="sr-only"> {d.status.new}</span>
+                    <span className="sr-only"> {d.kpiWaiting}</span>
                   </span>
                 )}
               </Link>

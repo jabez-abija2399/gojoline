@@ -7,7 +7,9 @@ import { DEVICES, SOURCES } from "@/lib/visits/classify";
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
+import { Address } from "./address";
 import { Bars } from "./bars";
+import { DayColumns } from "./day-columns";
 import { LiveActions } from "./live-actions";
 
 type T = Messages["dashboard"];
@@ -38,6 +40,7 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
   const num = new Intl.NumberFormat(locale === "am" ? "am-ET" : "en-US");
   const dayFmt = new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
   const formatDay = (day: string) => dayFmt.format(new Date(`${day}T00:00:00Z`));
+  const dayNum = new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { day: "numeric", timeZone: "UTC" });
   const done = o.steps.filter((s) => s.done).length;
   const next = nextStep(o.steps);
   const stepHref = (id: string) => (id === "info" ? tab("info") : id === "photos" ? tab("content", "#photos") : id === "telegram" ? tab("settings", "#telegram") : id === "domain" ? (o.canOwnDomain ? tab("settings", "#address") : `/${locale}/billing`) : builder);
@@ -86,7 +89,7 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
         </div>
         {live && o.address && (
           <>
-            <p className="break-all rounded-xl bg-sunken px-3 py-2.5 font-medium text-ink">{o.address.text}</p>
+            <p className="rounded-xl bg-sunken px-3 py-2.5 font-medium text-ink"><Address text={o.address.text} /></p>
             <LiveActions t={t} href={o.address.href} text={o.address.text} siteName={siteName} scan={scan} />
             {o.status === "resting" && (
               <Link href={tab("settings", "#offline")} className={`${secondary} w-fit`}>
@@ -144,7 +147,7 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
             <p className="flex items-center gap-2 font-medium"><Check aria-hidden="true" className="size-5 text-lagoon" />{t.allDone}</p>
           )}
           <details className="group">
-            <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-medium text-link underline-offset-4 hover:underline">{format(t.allSteps, { done, total: o.steps.length })}</summary>
+            <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-medium text-ink underline underline-offset-4">{format(t.allSteps, { done, total: o.steps.length })}</summary>
             {steps}
           </details>
         </section>
@@ -169,9 +172,9 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
                 <p className="text-sm text-ink-muted">{t.privacyNote}</p>
               </div>
               {o.visits.any ? (
-                <Bars label={t.chartVisitors} rows={[...o.visits.perDay].reverse().map((d) => ({ key: d.day, label: formatDay(d.day), value: d.value, text: num.format(d.value) }))} />
+                <DayColumns days={o.visits.perDay} label={t.chartVisitors} dayLabel={(d) => dayNum.format(new Date(`${d}T00:00:00Z`))} fullDay={formatDay} format={(n) => num.format(n)} />
               ) : (
-                <div className="flex flex-col gap-3 rounded-xl border border-dashed border-line p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                   <p className="text-ink-muted">{t.visitorsEmpty}</p>
                   {live && o.address && <LiveActions t={t} href={o.address.href} text={o.address.text} siteName={siteName} scan={scan} only="qr" />}
                 </div>
@@ -249,7 +252,7 @@ function Sources({ o, t, num }: { o: Home; t: T; num: Intl.NumberFormat }) {
     <section aria-labelledby="dash-sources-title" className={`${card} flex flex-col gap-4 p-5`}>
       <div className="flex flex-col gap-2">
         <h2 id="dash-sources-title" className="text-base font-semibold">{t.sourcesTitle}</h2>
-        {total > 0 ? <Bars label={t.sourcesTitle} rows={sources.map((r) => ({ ...r, text: `${num.format(r.value)} · ${pct(r.value, total)}` }))} /> : <p className="text-ink-muted">{t.trendNone}</p>}
+        {total > 0 ? <Bars label={t.sourcesTitle} rows={sources.map((r) => ({ ...r, text: pct(r.value, total), srText: format(t.people, { n: num.format(r.value) }) }))} /> : <p className="text-ink-muted">{t.trendNone}</p>}
       </div>
       {deviceTotal > 0 && (
         <div className="flex flex-col gap-2">

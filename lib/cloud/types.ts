@@ -33,6 +33,8 @@ export interface CloudStore {
   publicSite(projectId: string): Promise<PublicSite | null>;
   saveForms(siteId: string, forms: FormDef[]): Promise<void>;
   getForm(siteId: string, formKey: string): Promise<FormDef | null>;
+  /** Several forms of one site in one read (unknown keys are left out). */
+  getForms(siteId: string, formKeys: string[]): Promise<FormDef[]>;
   addSubmission(input: Omit<Submission, "id" | "readAt" | "status" | "createdAt">): Promise<Submission>;
   /** Owner-scoped. */
   listSubmissions(ownerId: string, projectId: string, limit?: number): Promise<Submission[]>;

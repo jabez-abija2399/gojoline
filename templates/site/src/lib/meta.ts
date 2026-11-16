@@ -11,6 +11,8 @@ export const publishMeta = {
   dataApiUrl: (env.VITE_DATA_API_URL as string | undefined) || undefined,
   siteKey: (env.VITE_SITE_KEY as string | undefined) || undefined,
   badge: env.VITE_BADGE !== "0",
+  /** The host answers with its own resting page when the owner takes the site offline (Cloudflare). */
+  restAtHost: env.VITE_REST_AT_HOST === "1",
 };
 
 /** The owner's Google and share preview (dashboard → Settings), set at publish time. */

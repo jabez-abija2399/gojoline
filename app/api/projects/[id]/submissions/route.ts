@@ -12,11 +12,9 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/projects/[i
   const submissions = cloud ? await cloud.listSubmissions(r.user.id, id) : [];
   // Field labels and form headings so the owner sees "Phone", not "phone".
   const forms: Record<string, { heading: Record<string, string>; labels: Record<string, Record<string, string>> }> = {};
-  for (const s of submissions) {
-    if (forms[s.formKey] || !cloud) continue;
-    const def = await cloud.getForm(s.siteId, s.formKey);
-    if (def) forms[s.formKey] = { heading: def.heading, labels: Object.fromEntries(def.fields.map((f) => [f.name, f.label])) };
-  }
+  const siteId = submissions[0]?.siteId;
+  const defs = cloud && siteId ? await cloud.getForms(siteId, [...new Set(submissions.map((s) => s.formKey))]) : [];
+  for (const def of defs) forms[def.id] = { heading: def.heading, labels: Object.fromEntries(def.fields.map((f) => [f.name, f.label])) };
   return json(200, { submissions, forms });
 }
 

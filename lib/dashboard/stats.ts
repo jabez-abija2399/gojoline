@@ -1,4 +1,5 @@
 import type { DayPoint } from "@/lib/admin/stats";
+import { normalizePhone } from "./phone";
 
 const DAY = 86_400_000;
 /** Days are Addis Ababa days (UTC+3, no daylight saving): an answer at 1 am belongs to that day. */
@@ -56,17 +57,17 @@ export function setupSteps(s: { hasVersion: boolean; live: boolean; info: boolea
   ];
 }
 
-/** The first few values of an answer, for a one-line preview ("Abebe · 0911… · 2 people"). */
-export function answerPreview(data: Record<string, string>, max = 3): string {
-  return Object.values(data)
-    .map((v) => v.trim().replace(/\s+/g, " "))
-    .filter(Boolean)
-    .slice(0, max)
-    .map((v) => ([...v].length > 40 ? `${[...v].slice(0, 39).join("")}…` : v))
-    .join(" · ");
-}
 
 /** The one step the Home page offers next: the first one not done (null when all are). */
 export function nextStep<T extends { done: boolean }>(steps: T[]): T | null {
   return steps.find((s) => !s.done) ?? null;
+}
+
+/** Who wrote and how to reach them, for the latest-messages list: "Abebe Kebede · 0911 000 000". */
+export function messagePreview(data: Record<string, string>): string {
+  const values = Object.values(data).map((v) => v.trim().replace(/\s+/g, " ")).filter(Boolean);
+  const phone = values.find((v) => normalizePhone(v));
+  const name = values.find((v) => v !== phone && !/^\d+([.,]\d+)?$/.test(v));
+  const short = (v: string) => ([...v].length > 40 ? `${[...v].slice(0, 39).join("")}…` : v);
+  return [name, phone].filter((v): v is string => Boolean(v)).map(short).join(" · ");
 }

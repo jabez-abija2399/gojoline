@@ -2,7 +2,7 @@
  * Horizontal bars with the number written beside each one: easy to read on a phone, no hover
  * needed, and a real list for screen readers. Colour stays neutral (ink); nothing here needs attention.
  */
-export function Bars({ rows, label, max }: { rows: { key: string; label: string; value: number; text: string }[]; label: string; max?: number }) {
+export function Bars({ rows, label, max }: { rows: { key: string; label: string; value: number; text: string; /** Said by screen readers after the text ("4 people"). */ srText?: string }[]; label: string; max?: number }) {
   const top = Math.max(1, max ?? Math.max(...rows.map((r) => r.value)));
   return (
     <ul aria-label={label} className="grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-1.5">
@@ -12,7 +12,10 @@ export function Bars({ rows, label, max }: { rows: { key: string; label: string;
           <span aria-hidden="true" className="h-3 overflow-hidden rounded-full bg-sunken">
             <span className="block h-full rounded-full bg-ink" style={{ width: `${(r.value / top) * 100}%` }} />
           </span>
-          <span className="min-w-8 text-end font-semibold tabular-nums">{r.text}</span>
+          <span className="min-w-8 text-end font-semibold tabular-nums">
+            {r.text}
+            {r.srText && <span className="sr-only"> ({r.srText})</span>}
+          </span>
         </li>
       ))}
     </ul>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addisDay, answerPreview, answerStats, nextStep, setupSteps, weekTrend } from "./stats";
+import { addisDay, answerStats, messagePreview, nextStep, setupSteps, weekTrend } from "./stats";
 
 const now = Date.UTC(2026, 10, 16, 12);
 
@@ -50,10 +50,11 @@ describe("setupSteps", () => {
   });
 });
 
-describe("answerPreview", () => {
-  it("joins the first values and shortens long ones", () => {
-    expect(answerPreview({ name: "Abebe", phone: " 0911 000 000 ", people: "2", note: "x" })).toBe("Abebe · 0911 000 000 · 2");
-    expect(answerPreview({ msg: "a".repeat(60) })).toBe(`${"a".repeat(39)}…`);
-    expect(answerPreview({ a: "", b: "  " })).toBe("");
+
+describe("messagePreview", () => {
+  it("shows the name and the phone only (no unlabelled numbers)", () => {
+    expect(messagePreview({ name: "Abebe Kebede", phone: "0911000000", people: "2" })).toBe("Abebe Kebede · 0911000000");
+    expect(messagePreview({ guests: "4", note: "Window seat please" })).toBe("Window seat please");
+    expect(messagePreview({ phone: "0911000000" })).toBe("0911000000");
   });
 });

@@ -15,6 +15,8 @@ import { PRESET_IDS, presetSiteJson } from "@/lib/template/presets";
 import type { Site, SiteStore } from "@/lib/sites/types";
 import type { SiteSettingsStore } from "@/lib/site-info/store";
 import { seoEnv } from "@/lib/site-info/seo";
+import { publicPatch } from "@/lib/site-info/business";
+import { infoLabels } from "@/lib/site-info/labels";
 import { takenDownPage } from "@/lib/safety/takedown";
 import { publishedSiteHeaders, scanBuiltSite, type ScanIssue } from "./scan";
 
@@ -148,7 +150,11 @@ async function deployLocked(
     const sandbox = await deps.sandboxes.open(projectId, latest.files);
     const photos = deps.assets ? await deps.assets.files(user.id, projectId) : [];
     if (deps.assets) await sandbox.writeAssets(photos);
-    const seo = deps.settings ? seoEnv((await deps.settings.get(user.id, projectId)).seo, photos.map((p) => p.path.replace(/^public\/images\//, ""))) : undefined;
+    const settings = deps.settings ? await deps.settings.get(user.id, projectId) : null;
+    const seo = settings ? seoEnv(settings.seo, photos.map((p) => p.path.replace(/^public\/images\//, ""))) : undefined;
+    // The owner's quick details go into the prerendered pages (no shift when the live copy loads).
+    // "Closed today" is left out: it only ever applies to one day, so it always comes at runtime.
+    const baked = publicPatch(settings?.business ?? null, infoLabels(), 0);
     const build = await sandbox.buildForPublish({
       VITE_SITE_URL: url,
       VITE_SITE_ID: projectId,
@@ -157,6 +163,8 @@ async function deployLocked(
       VITE_BADGE: plan && !plan.badge ? "0" : "1",
       ...(reserved?.siteKey ? { VITE_SITE_KEY: reserved.siteKey } : {}),
       ...(seo ? { VITE_SEO: seo } : {}),
+      ...(Object.keys(baked).length ? { VITE_LIVE: JSON.stringify(baked) } : {}),
+      ...(deps.publisher.setResting ? { VITE_REST_AT_HOST: "1" } : {}),
     });
     if (!build.ok) {
       console.warn("publish build failed", projectId, build.output.slice(-1500));

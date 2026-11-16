@@ -70,6 +70,7 @@ test("home: live card, share sheet, QR poster, private visitor numbers and the n
   await expect(page.getByText("Counted privately: no cookies, no tracking.")).toBeVisible();
   const sources = page.getByRole("region", { name: "Where visitors came from" });
   await expect(sources.getByText("Telegram")).toBeVisible();
+  await expect(sources.getByText("50%").first()).toBeVisible();
   await expect(sources.getByText("QR code")).toBeVisible();
   // One next step; the rest waits behind "All steps".
   const next = page.getByRole("region", { name: "Next step" });
@@ -86,17 +87,22 @@ test("messages: New → Replied → Done, with call and WhatsApp links, filters 
   expect((await page.request.post("/api/test/answers", { data: { projectId, count: 3 } })).status()).toBe(200);
   await page.goto(`/en/dashboard/${projectId}?tab=answers`);
   // Old links land on the renamed section; the badge counts New.
-  await expect(page.getByRole("link", { name: /Messages 3 New/ })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("link", { name: /Messages 3 waiting for an answer/i })).toHaveAttribute("aria-current", "page");
   const card = page.getByRole("listitem").filter({ hasText: "Abebe Kebede" });
   await expect(card.getByText("New", { exact: true })).toBeVisible();
+  // Call and the status step are the visible pair; SMS and WhatsApp wait behind "Other ways to reply".
   await expect(card.getByRole("link", { name: "Call" })).toHaveAttribute("href", "tel:+251911000000");
+  await card.getByText("Other ways to reply").click();
   await expect(card.getByRole("link", { name: "SMS" })).toHaveAttribute("href", "sms:+251911000000");
   await expect(card.getByRole("link", { name: /WhatsApp/ })).toHaveAttribute("href", "https://wa.me/251911000000");
-  await expect(card.getByRole("link", { name: /Telegram/ })).toHaveAttribute("href", "https://t.me/+251911000000");
+  // No Telegram-by-phone button (it often fails quietly); only a real username gets one.
+  await expect(card.getByRole("link", { name: /Telegram/ })).toHaveCount(0);
   await expectNoSeriousA11yIssues(page);
 
   await card.getByRole("button", { name: "Mark as replied" }).click();
   await expect(page.getByText("Marked as Replied.")).toBeVisible();
+  // Focus moves on to the next message (or the list heading after the last one).
+  await expect(page.locator("h2:focus, h3:focus")).toHaveCount(1);
   await expect(card.getByText("Replied", { exact: true })).toBeVisible();
   await card.getByRole("button", { name: "Mark as done" }).click();
   await expect(card.getByText("Done", { exact: true })).toBeVisible();
@@ -107,6 +113,7 @@ test("messages: New → Replied → Done, with call and WhatsApp links, filters 
   await expect(page.getByRole("listitem").filter({ hasText: "Hana Tesfaye" })).toHaveCount(0);
   await page.getByRole("button", { name: /^New 2/ }).click();
   const hana = page.getByRole("listitem").filter({ hasText: "Hana Tesfaye" });
+  await hana.getByText("More").click();
   await hana.getByRole("button", { name: /Delete message from Hana Tesfaye/ }).click();
   const confirm = page.getByRole("dialog", { name: "Delete this message?" });
   await expect(confirm).toContainText("This can't be undone.");
@@ -115,7 +122,7 @@ test("messages: New → Replied → Done, with call and WhatsApp links, filters 
   await expect(hana).toHaveCount(0);
 
   await page.reload();
-  await expect(page.getByRole("link", { name: /Messages 1 New/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Messages 1 waiting for an answer/i })).toBeVisible();
   await expect(page.getByRole("link", { name: "Download as a spreadsheet" })).toHaveAttribute("href", /submissions\/export$/);
   const csv = await (await page.request.get(`/api/projects/${projectId}/submissions/export`)).text();
   expect(csv).toContain('"date","form","status"');
@@ -141,11 +148,17 @@ test("business info: saved without AI and served by the public Data API", async 
   const preview = page.getByRole("complementary", { name: /Preview/ });
   await expect(preview.getByText("Free delivery in Bole")).toBeVisible();
   await expect(preview.getByText("Mon–Fri")).toBeVisible();
-  await expect(preview.getByText("07:30–19:00")).toBeVisible();
+  await expect(preview.getByText(/7:30\sAM–7:00\sPM/)).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.getByText("Saved. Your site shows it within a minute.")).toBeVisible();
+
+  // Words that try to steal from visitors never go live.
+  await page.getByLabel(/^Banner (text|in English)$/).fill("Enter your PIN to confirm your account");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByText("This text can't go on your site. Please change it.")).toBeVisible();
+  await page.getByLabel(/^Banner (text|in English)$/).fill("Free delivery in Bole");
 
   // A bad number is refused with a plain reason.
   await page.getByLabel("WhatsApp number").fill("12");
@@ -163,7 +176,7 @@ test("business info: saved without AI and served by the public Data API", async 
       phone: "0911 22 33 44",
       telegram: "bole_buna",
       hours: [
-        { days: { en: "Mon–Fri", am: "ሰኞ–ዓርብ" }, time: { en: "07:30–19:00", am: "07:30–19:00" } },
+        { days: { en: "Mon–Fri", am: "ሰኞ–ዓርብ" }, time: { en: expect.stringMatching(/^7:30\sAM–7:00\sPM$/), am: expect.stringMatching(/^7:30/) } },
         { days: { en: "Sun", am: "እሁድ" }, time: { en: "Closed", am: "ዝግ" } },
       ],
     },
@@ -187,6 +200,7 @@ test("settings: take the site offline and put it back, and restore an earlier ve
   const infoApi = () => page.request.get(`/api/public/sites/${projectId}/info?key=${encodeURIComponent(siteKey)}`, { headers: { Origin: origin } });
 
   await page.goto(`/en/dashboard/${projectId}?tab=telegram`);
+  const v1 = await page.getByRole("region", { name: "Earlier versions" }).getByRole("button", { name: /^Restore the version from / }).getAttribute("aria-label");
   await expect(page.getByRole("navigation", { name: "Your site's dashboard" }).getByRole("link", { name: "Settings" })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { name: "Get messages on Telegram" })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
@@ -210,12 +224,12 @@ test("settings: take the site offline and put it back, and restore an earlier ve
 
   // Earlier versions: restoring says what it keeps, then the list shows the new version.
   const versions = page.getByRole("region", { name: "Earlier versions" });
-  await versions.getByRole("button", { name: "Restore version 1" }).click();
-  const ask = page.getByRole("dialog", { name: "Restore version 1?" });
+  await versions.getByRole("button", { name: v1! }).click();
+  const ask = page.getByRole("dialog", { name: /^Go back to the version from / });
   await expect(ask).toContainText("Messages and photos are not deleted.");
   await ask.getByRole("button", { name: "Restore", exact: true }).click();
-  await expect(versions.getByText("Restored version 1. Publish to show it on your live site.")).toBeVisible();
-  await expect(versions.getByText("Back to version 1")).toBeVisible();
+  await expect(versions.getByText(/^Your site is back to the version from .+\. Publish to show it on your live site\.$/)).toBeVisible();
+  await expect(versions.getByText("Went back to an earlier version")).toBeVisible();
   await versions.getByRole("button", { name: "Publish now" }).click();
   await expect(versions.getByText("Published. Your live site is up to date.")).toBeVisible();
 });
@@ -226,7 +240,7 @@ test("every section in Amharic: no sideways scroll and no serious accessibility 
   expect((await page.request.post("/api/test/answers", { data: { projectId, count: 2 } })).status()).toBe(200);
   for (const tab of ["home", "messages", "info", "content", "settings"]) {
     await page.goto(`/am/dashboard/${projectId}?tab=${tab}`);
-    await expect(page.getByRole("link", { name: "ድረ-ገጼን በAI ቀይር" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "ድረ-ገጽዎን በAI ይቀይሩ" })).toBeVisible();
     await expect(page.locator("[aria-current=page]")).toBeVisible();
     // Wait for the section's own content (client sections load after the page).
     await expect(page.locator("[role=status] .animate-pulse, div[role=status][aria-label]")).toHaveCount(0, { timeout: 10_000 });

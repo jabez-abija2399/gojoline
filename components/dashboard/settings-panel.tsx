@@ -7,6 +7,7 @@ import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { format } from "@/lib/i18n/format";
 import { DomainSection } from "@/components/builder/domain-section";
+import { Address } from "./address";
 import { CopyLink } from "./copy-link";
 import { Confirm } from "./dialog";
 import { TelegramPanel } from "./telegram-panel";
@@ -38,7 +39,7 @@ export function SettingsPanel({ t, tb, locale, projectId, bot, s }: { t: T; tb: 
         <h2 id="dash-address-title" className="text-base font-semibold">{t.addressTitle}</h2>
         {s.address ? (
           <div className="flex flex-wrap items-center gap-2">
-            <p className="min-w-0 basis-full break-all rounded-xl bg-sunken px-3 py-2.5 font-medium sm:basis-auto">{s.address.text}</p>
+            <p className="min-w-0 basis-full rounded-xl bg-sunken px-3 py-2.5 font-medium sm:basis-auto"><Address text={s.address.text} /></p>
             <CopyLink url={s.address.href} label={t.copyLink} done={t.copied} />
           </div>
         ) : (
@@ -181,8 +182,8 @@ function SeoSection({ t, projectId, s }: { t: T; projectId: string; s: SettingsS
           <div className="flex flex-col gap-4">
             {s.languages.map((l) => (
               <div key={l} className="flex flex-col gap-3">
-                <Counted id={`seo-title-${l}`} lang={l} label={inLang(t.seoTitleIn, l)} max={70} value={seo.title?.[l] ?? ""} onChange={(v) => set({ title: { ...seo.title, [l]: v } })} t={t} />
-                <Counted id={`seo-desc-${l}`} lang={l} label={inLang(t.seoDescIn, l)} max={160} value={seo.description?.[l] ?? ""} onChange={(v) => set({ description: { ...seo.description, [l]: v } })} t={t} long />
+                <Counted id={`seo-title-${l}`} lang={l} label={inLang(t.seoTitleIn, l)} placeholder={s.siteName} max={70} value={seo.title?.[l] ?? ""} onChange={(v) => set({ title: { ...seo.title, [l]: v } })} t={t} />
+                <Counted id={`seo-desc-${l}`} lang={l} label={inLang(t.seoDescIn, l)} placeholder={t.seoDescPlaceholder} max={160} value={seo.description?.[l] ?? ""} onChange={(v) => set({ description: { ...seo.description, [l]: v } })} t={t} long />
               </div>
             ))}
             <fieldset className="flex flex-col gap-2">
@@ -211,13 +212,6 @@ function SeoSection({ t, projectId, s }: { t: T; projectId: string; s: SettingsS
                 </label>
               )}
             </fieldset>
-            <div className="flex flex-col gap-2">
-              <button type="submit" aria-disabled={save === "saving" || undefined} className="inline-flex min-h-11 w-fit items-center rounded-lg bg-ink px-5 text-sm font-semibold text-white hover:bg-ink-hover aria-disabled:opacity-60">
-                {save === "saving" ? t.saving : t.save}
-              </button>
-              <p role={save === "error" || save === "blocked" ? "alert" : "status"} className={save === "error" || save === "blocked" ? "text-danger" : "text-ink"}>{save === "saved" ? t.seoSaved : save === "blocked" ? t.infoErrors.blocked : save === "error" ? t.infoErrors.failed : ""}</p>
-              {save === "saved" && (s.status === "live" || s.status === "resting") && <PublishNow t={t} projectId={projectId} />}
-            </div>
           </div>
           {/* Live previews: a Google result and a Telegram link card. */}
           <div className="flex flex-col gap-4">
@@ -240,20 +234,27 @@ function SeoSection({ t, projectId, s }: { t: T; projectId: string; s: SettingsS
               </div>
             </figure>
           </div>
+            <div className="flex flex-col gap-2 lg:col-span-2">
+              <button type="submit" aria-disabled={save === "saving" || undefined} className="inline-flex min-h-11 w-fit items-center rounded-lg bg-ink px-5 text-sm font-semibold text-white hover:bg-ink-hover aria-disabled:opacity-60">
+                {save === "saving" ? t.saving : t.save}
+              </button>
+              <p role={save === "error" || save === "blocked" ? "alert" : "status"} className={save === "error" || save === "blocked" ? "text-danger" : "text-ink"}>{save === "saved" ? t.seoSaved : save === "blocked" ? t.infoErrors.blocked : save === "error" ? t.infoErrors.failed : ""}</p>
+              {save === "saved" && (s.status === "live" || s.status === "resting") && <PublishNow t={t} projectId={projectId} />}
+            </div>
         </form>
       )}
     </section>
   );
 }
 
-function Counted({ id, lang, label, max, value, onChange, t, long }: { id: string; lang: Lang; label: string; max: number; value: string; onChange: (v: string) => void; t: T; long?: boolean }) {
+function Counted({ id, lang, label, placeholder, max, value, onChange, t, long }: { id: string; lang: Lang; label: string; placeholder: string; max: number; value: string; onChange: (v: string) => void; t: T; long?: boolean }) {
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={id} className="font-medium">{label}</label>
       {long ? (
-        <textarea id={id} lang={lang} rows={3} maxLength={max} value={value} onChange={(e) => onChange(e.target.value)} aria-describedby={`${id}-left`} className={`${input} py-2`} />
+        <textarea id={id} lang={lang} rows={3} placeholder={placeholder} maxLength={max} value={value} onChange={(e) => onChange(e.target.value)} aria-describedby={`${id}-left`} className={`${input} py-2`} />
       ) : (
-        <input id={id} lang={lang} maxLength={max} value={value} onChange={(e) => onChange(e.target.value)} aria-describedby={`${id}-left`} className={input} />
+        <input id={id} lang={lang} placeholder={placeholder} maxLength={max} value={value} onChange={(e) => onChange(e.target.value)} aria-describedby={`${id}-left`} className={input} />
       )}
       <p id={`${id}-left`} className="text-sm text-ink-muted">{format(t.charsLeft, { n: max - [...value].length })}</p>
     </div>
@@ -268,9 +269,12 @@ function VersionsSection({ t, locale, projectId, s }: { t: T; locale: Locale; pr
   const [all, setAll] = useState(false);
   const fmt = new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
   const list = all ? s.versions : s.versions.slice(0, 5);
+  const dateOf = (n: number) => {
+    const v = s.versions.find((x) => x.number === n);
+    return v ? fmt.format(new Date(v.createdAt)) : "";
+  };
   const describe = (summary: string) => {
-    const from = /^restore:(\d+)$/.exec(summary)?.[1];
-    if (from) return format(t.restoredFrom, { n: from });
+    if (/^restore:\d+$/.test(summary)) return t.restoredFrom;
     if (/^template:/.test(summary)) return t.fromTemplate;
     return summary;
   };
@@ -282,7 +286,7 @@ function VersionsSection({ t, locale, projectId, s }: { t: T; locale: Locale; pr
     setBusy(false);
     setAsk(null);
     if (!res?.ok) return setNote({ text: t.restoreFailed, alert: true });
-    setNote({ text: format(t.restored, { n }), restored: true });
+    setNote({ text: format(t.restored, { date: dateOf(n) }), restored: true });
     router.refresh();
   };
   return (
@@ -303,14 +307,13 @@ function VersionsSection({ t, locale, projectId, s }: { t: T; locale: Locale; pr
             <li key={v.number} className="flex flex-wrap items-center justify-between gap-3 py-3">
               <div className="min-w-0 flex-1 basis-48">
                 <p className="font-semibold">
-                  {format(t.versionLabel, { n: v.number })}
+                  <time dateTime={v.createdAt}>{fmt.format(new Date(v.createdAt))}</time>
                   {v.number === s.current && <span className="ms-2 rounded-full bg-sunken px-2 py-0.5 text-xs font-semibold text-ink">{t.current}</span>}
                 </p>
                 <p className="text-ink-muted [overflow-wrap:anywhere]">{describe(v.summary)}</p>
-                <time dateTime={v.createdAt} className="text-sm text-ink-muted">{fmt.format(new Date(v.createdAt))}</time>
               </div>
               {v.number !== s.current && (
-                <button type="button" onClick={() => setAsk(v.number)} aria-label={format(t.restoreNamed, { n: v.number })} className={outline}>
+                <button type="button" onClick={() => setAsk(v.number)} aria-label={format(t.restoreNamed, { date: fmt.format(new Date(v.createdAt)) })} className={outline}>
                   <RotateCcw aria-hidden="true" className="size-4" />
                   {t.restore}
                 </button>
@@ -322,7 +325,7 @@ function VersionsSection({ t, locale, projectId, s }: { t: T; locale: Locale; pr
       {!all && s.versions.length > 5 && (
         <button type="button" onClick={() => setAll(true)} className={outline}>{format(t.showMore, { n: s.versions.length - 5 })}</button>
       )}
-      <Confirm open={ask !== null} onClose={() => setAsk(null)} onConfirm={() => void restore()} busy={busy} title={format(t.restoreTitle, { n: ask ?? 0 })} body={t.restoreBody} confirmLabel={busy ? t.restoring : t.restoreConfirm} cancelLabel={t.cancel} closeLabel={t.close} labelId="dash-restore-title" />
+      <Confirm open={ask !== null} onClose={() => setAsk(null)} onConfirm={() => void restore()} busy={busy} title={format(t.restoreTitle, { date: ask === null ? "" : dateOf(ask) })} body={t.restoreBody} confirmLabel={busy ? t.restoring : t.restoreConfirm} cancelLabel={t.cancel} closeLabel={t.close} labelId="dash-restore-title" />
     </section>
   );
 }

@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { businessInfo, groupHours, mapLink, publicPatch, type InfoLabels } from "./business";
+import { formatClock } from "./hours";
+
+const span = (a: string, b: string) => ({ en: `${formatClock(a, "en")}–${formatClock(b, "en")}`, am: `${formatClock(a, "am")}–${formatClock(b, "am")}` });
 
 const en: InfoLabels = { days: { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun" }, closed: "Closed", closedToday: "Closed today", closedForNow: "Closed for now" };
 const am: InfoLabels = { days: { mon: "ሰኞ", tue: "ማክሰኞ", wed: "ረቡዕ", thu: "ሐሙስ", fri: "ዓርብ", sat: "ቅዳሜ", sun: "እሁድ" }, closed: "ዝግ", closedToday: "ዛሬ ዝግ ነው", closedForNow: "ለጊዜው ዝግ ነው" };
@@ -43,14 +46,20 @@ describe("groupHours", () => {
     const open = { open: "08:00", close: "18:00" };
     const rows = groupHours({ mon: open, tue: open, wed: open, thu: open, fri: open, sat: { open: "09:00", close: "13:00" }, sun: null }, labels);
     expect(rows).toEqual([
-      { days: { en: "Mon–Fri", am: "ሰኞ–ዓርብ" }, time: { en: "08:00–18:00", am: "08:00–18:00" } },
-      { days: { en: "Sat", am: "ቅዳሜ" }, time: { en: "09:00–13:00", am: "09:00–13:00" } },
+      { days: { en: "Mon–Fri", am: "ሰኞ–ዓርብ" }, time: span("08:00", "18:00") },
+      { days: { en: "Sat", am: "ቅዳሜ" }, time: span("09:00", "13:00") },
       { days: { en: "Sun", am: "እሁድ" }, time: { en: "Closed", am: "ዝግ" } },
     ]);
   });
   it("skips days without hours set", () => {
     expect(groupHours({ wed: null }, labels)).toEqual([{ days: { en: "Wed", am: "ረቡዕ" }, time: { en: "Closed", am: "ዝግ" } }]);
   });
+});
+
+it("formats clock times per language", () => {
+  expect(formatClock("07:30", "en").replace(/\s/g, " ")).toBe("7:30 AM");
+  expect(formatClock("19:00", "en").replace(/\s/g, " ")).toBe("7:00 PM");
+  expect(formatClock("07:30", "am")).toMatch(/^7:30/);
 });
 
 describe("publicPatch", () => {
