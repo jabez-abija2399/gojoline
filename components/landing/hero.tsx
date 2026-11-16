@@ -47,10 +47,10 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates, 
                   const Icon = PILLAR_ICONS[i] ?? MessageCircle;
                   return (
                     <li key={p.title} className={`flex flex-col gap-2 border-t-2 pt-4 ${i === 0 ? "border-ink" : "border-line"}`}>
-                      <h3 className="flex items-center gap-2 font-sans text-lg font-semibold text-ink">
+                      <h2 className="flex items-center gap-2 font-sans text-lg font-semibold text-ink">
                         <Icon aria-hidden="true" className="size-5 shrink-0" />
                         {p.title}
-                      </h3>
+                      </h2>
                       <p className="text-ink-muted">{p.body}</p>
                     </li>
                   );

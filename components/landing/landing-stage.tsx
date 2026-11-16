@@ -247,12 +247,12 @@ export function LandingStage({ locale, sites, t, more, promptHeading, promptFoot
       </div>
 
       {/* "What does your business need?": one large box over a soft mosaic, as the reference does. */}
-      <section aria-labelledby="start-title" className="relative isolate overflow-hidden border-t border-line px-4 py-20 sm:px-6 md:py-28">
+      <section aria-labelledby="start-title" className="below-fold relative isolate overflow-hidden border-t border-line px-4 py-20 sm:px-6 md:py-28">
         <Mosaic className="fill-coral opacity-[0.18]" />
         <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-0 h-2/3 bg-[linear-gradient(to_bottom,transparent,var(--gojo-paper))]" />
         <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center gap-8 text-center">
           {promptHeading}
-          <div className="w-full rounded-[30px] border border-line bg-white/70 p-1.5 shadow-[0_24px_70px_-28px_rgb(18_18_18/0.35)] backdrop-blur-sm">
+          <div className="w-full rounded-[30px] border border-line bg-paper p-1.5 shadow-[0_24px_70px_-28px_rgb(18_18_18/0.35)]">
             <form
               action={signedIn ? next : `/${locale}/sign-in`}
               onSubmit={(e) => {
