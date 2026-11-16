@@ -1,6 +1,7 @@
 import { Banknote, Check, Lock, Send } from "lucide-react";
 import { FeatureTabs } from "./feature-tabs";
 import { Mosaic } from "./mosaic";
+import { Eyebrow } from "./eyebrow";
 
 export type FeatureKey = "language" | "forms" | "edits" | "birr" | "domain" | "safe";
 
@@ -110,12 +111,15 @@ export function FeatureMock({ kind, m }: { kind: FeatureKey; m: MockText }) {
  * What a small business gets: a list of features, and for the one picked, its piece of the
  * product on a coral panel.
  */
-export function Features({ title, items, m }: { title: string; items: FeatureItem[]; m: MockText }) {
+export function Features({ title, eyebrow, items, m }: { title: string; eyebrow: string; items: FeatureItem[]; m: MockText }) {
   return (
     <section aria-labelledby="features-title" className="below-fold mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
-      <h2 id="features-title" className="mx-auto max-w-[20ch] text-center text-3xl display sm:text-5xl">
-        {title}
-      </h2>
+      <div className="flex flex-col items-center gap-4">
+        <Eyebrow>{eyebrow}</Eyebrow>
+        <h2 id="features-title" className="reveal mx-auto max-w-[20ch] text-center text-3xl display sm:text-5xl">
+          {title}
+        </h2>
+      </div>
       <FeatureTabs items={items} panels={Object.fromEntries(items.map((it) => [it.key, <FeatureMock key={it.key} kind={it.key} m={m} />])) as Record<FeatureKey, React.ReactNode>} backdrop={<Mosaic cols={40} rows={16} className="fill-white opacity-40" />} />
     </section>
   );

@@ -4,7 +4,7 @@ import { expectNoHorizontalScroll, expectNoSeriousA11yIssues } from "./helpers";
 for (const lang of ["en", "am"] as const) {
   test(`privacy and terms pages in ${lang}, linked from the footer`, async ({ page }) => {
     await page.goto(`/${lang}`);
-    await page.getByRole("navigation", { name: lang === "en" ? "Legal and safety" : "ሕግ እና ደኅንነት" }).getByRole("link", { name: lang === "en" ? "Privacy" : "ግላዊነት" }).click();
+    await page.getByRole("contentinfo").getByRole("link", { name: lang === "en" ? "Privacy" : "ግላዊነት" }).click();
     await expect(page.getByRole("heading", { level: 1, name: lang === "en" ? "Privacy policy" : "የግላዊነት ፖሊሲ" })).toBeVisible();
     await expectNoHorizontalScroll(page);
     await expectNoSeriousA11yIssues(page);

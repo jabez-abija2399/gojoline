@@ -50,8 +50,8 @@ export default async function PricingPage({ params, searchParams }: PageProps<"/
             offer={topupOffer !== null && offer ? { priceMinor: topupOffer, badge: format(t.billing.offerBadge, { percent: offer.percent, date: offerUntilLabel(offer, lang) }), was: t.billing.was, birr: t.landing.pricing.birr } : null}
           />
         </div>
-        <Faq t={t.landing.faq} />
-        <FinalCta t={t.landing.final} locale={lang} />
+        <Faq t={t.landing.faq} eyebrow={t.landing.eyebrows.faq} />
+        <FinalCta t={t.landing.final} locale={lang} eyebrow={t.landing.eyebrows.final} templates={t.landing.nav.templates} />
       </main>
       <SiteFooter locale={lang} t={t} />
     </>

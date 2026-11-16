@@ -70,7 +70,7 @@ export default async function TemplatesPage({ params }: PageProps<"/[lang]/templ
             }}
           />
         </div>
-        <FinalCta t={t.landing.final} locale={lang} />
+        <FinalCta t={t.landing.final} locale={lang} eyebrow={t.landing.eyebrows.final} templates={t.landing.nav.templates} />
       </main>
       <SiteFooter locale={lang} t={t} />
     </>

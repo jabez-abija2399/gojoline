@@ -2,6 +2,7 @@ import { ArrowUp, Check, Globe, Send } from "lucide-react";
 import Image from "next/image";
 import type { Messages } from "@/lib/i18n";
 import { Mosaic } from "./mosaic";
+import { Eyebrow } from "./eyebrow";
 
 interface Props {
   t: Messages["landing"];
@@ -26,16 +27,17 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
   const panel = "relative isolate flex min-h-80 items-center justify-center overflow-hidden rounded-[1.75rem] p-5 sm:p-10";
   const card = "relative w-full max-w-md rounded-2xl bg-white text-ink shadow-[0_24px_60px_-24px_rgb(18_18_18/0.5)]";
   return (
-    <section id="how" aria-labelledby="how-title" className="bg-ink text-white">
+    <section id="how" aria-labelledby="how-title" className="how-scope relative z-10 bg-ink text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-16">
         <div className="flex flex-col gap-8 lg:sticky lg:top-24 lg:self-start">
-          <h2 id="how-title" className="text-[1.75rem] display text-balance text-white min-[400px]:text-3xl sm:text-5xl">
+          <Eyebrow dark>{t.eyebrows.how}</Eyebrow>
+          <h2 id="how-title" className="-mt-4 text-[1.75rem] display text-balance text-white min-[400px]:text-3xl sm:text-5xl">
             {s.title}
           </h2>
           <ol className="relative flex flex-col">
             <span aria-hidden="true" className="steps-line absolute start-[13px] top-5 bottom-5 -z-0 w-0.5 rounded-full bg-white/20" />
             {steps.map((step, i) => (
-              <li key={step.title} className="flex gap-4 border-t border-white/15 py-5">
+              <li key={step.title} className="how-item flex gap-4 border-t border-white/15 py-5" style={{ animationTimeline: `--step-${i + 1}` }}>
                 <span aria-hidden="true" className="relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full bg-coral font-display font-bold text-on-coral ring-4 ring-ink">
                   {i + 1}
                 </span>
@@ -49,7 +51,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
         </div>
         <div aria-hidden="true" className="flex flex-col gap-4 sm:gap-6">
           {/* 1. What the owner writes. */}
-          <div className={`${panel} bg-coral`}>
+          <div className={`${panel} bg-coral how-panel`} style={{ viewTimelineName: "--step-1" }}>
             <Mosaic cols={28} rows={12} className="fill-white opacity-50" />
             <div className={`${card} flex flex-col gap-3 p-3`}>
               <p className="px-2 pt-2 text-lg">{prompt}</p>
@@ -64,7 +66,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
             </div>
           </div>
           {/* 2. What the builder shows while it works, and the site that appears. */}
-          <div className={`${panel} bg-paper`}>
+          <div className={`${panel} bg-paper how-panel`} style={{ viewTimelineName: "--step-2" }}>
             <Mosaic cols={28} rows={12} className="fill-coral opacity-40" />
             <div className="relative flex w-full max-w-lg items-end gap-4">
               <div className={`${card} flex-1 px-4 py-3`}>
@@ -86,7 +88,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
             </div>
           </div>
           {/* 3. Live, and the first customer arrives on Telegram. */}
-          <div className={`${panel} bg-lagoon`}>
+          <div className={`${panel} bg-lagoon how-panel`} style={{ viewTimelineName: "--step-3" }}>
             <Mosaic cols={28} rows={12} className="fill-white opacity-20" />
             <div className="relative flex w-full max-w-md flex-col gap-4">
               <div className={`${card} flex items-center gap-3 px-4 py-3`}>

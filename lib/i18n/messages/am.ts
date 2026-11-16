@@ -62,6 +62,7 @@ export const am: Messages = {
       { value: "14", label: "ዝግጁ አብነቶች" },
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
+    eyebrows: { how: "እንዴት ይሠራል", features: "ባህሪያት", faq: "ማወቅ ያለብዎ", final: "ዛሬ ይጀምሩ" },
     pillarsLabel: "የሚያገኙት",
     pillars: [
       { title: "በውይይት ይገንቡ", body: "ስለ ንግድዎ በአማርኛ ወይም በእንግሊዝኛ ይግለጹ። ጎጆላይን ድረ-ገጹን ይጽፋል፤ ወቅታዊም ያደርገዋል።" },
@@ -78,14 +79,6 @@ export const am: Messages = {
       thinking: "በማሰብ ላይ",
     },
     marquee: { title: "ለሁሉም ዓይነት ንግድ እና ማኅበረሰብ የተሠራ", pause: "የሚንቀሳቀሰውን ዝርዝር ለአፍታ ያቁሙ" },
-    compare: {
-      title: "ልዩነቱን ይመልከቱ",
-      body: "ለጓደኛዎ እንደሚነግሩት ስለ ንግድዎ ይጻፉ። ጎጆላይን ደንበኞችዎ የሚጎበኙት፣ ቦታ የሚያስይዙበት እና የሚያዝዙበት ድረ-ገጽ ያደርገዋል።",
-      before: "የእርስዎ መልዕክት",
-      after: "የእርስዎ ድረ-ገጽ",
-      slider: "መልዕክትዎን እና ድረ-ገጽዎን ለማነጻጸር ያንሸራትቱ",
-      from: "ሰላም ቡና",
-    },
     proofTitle: "ጎጆላይን በቁጥር",
     proofNote: "በራሳችን የሙከራ ግንባታዎች የተለካ፤ ኅዳር 2019 ዓ.ም.",
     steps: {
@@ -1079,14 +1072,18 @@ export const am: Messages = {
     close: "ገባኝ",
   },
   footer: {
+    product: "ምርት",
+    help: "እገዛ",
+    legal: "ሕግ",
+    questions: "ጥያቄዎች",
+    telegramBot: "ጎጆላይን በቴሌግራም",
+    trust: ["ክፍያ በብር", "አማርኛ እና እንግሊዝኛ", "ድረ-ገጽዎ የእርስዎ ነው"],
     tagline: "ጎጆዎ ኦንላይን።",
     madeIn: "በአዲስ አበባ የተሠራ",
     rights: "© {year} ጎጆላይን",
     privacy: "ግላዊነት",
     terms: "የአጠቃቀም ውሎች",
     report: "ድረ-ገጽ ሪፖርት ያድርጉ",
-    pagesLabel: "ገጾች",
-    linksLabel: "ሕግ እና ደኅንነት",
   },
   errors: errorMessages.am,
 };

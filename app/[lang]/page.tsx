@@ -8,7 +8,6 @@ import { Hero } from "@/components/landing/hero";
 import { Proof } from "@/components/landing/proof";
 import { Steps } from "@/components/landing/steps";
 import { Marquee } from "@/components/landing/marquee";
-import { Compare } from "@/components/landing/compare";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { isLocale } from "@/lib/i18n/config";
@@ -90,9 +89,9 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
         <Proof t={t.landing} locale={lang} cafeName={{ en: cafe.en?.name ?? "", am: cafe.am?.name ?? "" }} />
         <Marquee title={t.landing.marquee.title} names={t.builder.templates} pause={t.landing.marquee.pause} />
         <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={bot} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} languages={`${b.langEn} · ${b.langAm}`} />
-        <Compare t={t.landing.compare} message={t.landing.demo.prompts.cafe} shot={stageSites[0]?.shot ?? { src: "", width: 1, height: 1 }} />
         <Features
           title={f.title}
+          eyebrow={t.landing.eyebrows.features}
           items={(["language", "forms", "edits", "birr", "domain", "safe"] as const).map((key) => ({ key, title: f[key].title, body: f[key].body }))}
           m={{
             sample,
@@ -109,8 +108,8 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
             ready: b.tlReady,
           }}
         />
-        <Faq t={t.landing.faq} />
-        <FinalCta t={t.landing.final} locale={lang} />
+        <Faq t={t.landing.faq} eyebrow={t.landing.eyebrows.faq} />
+        <FinalCta t={t.landing.final} locale={lang} eyebrow={t.landing.eyebrows.final} templates={t.landing.nav.templates} />
       </main>
       <SiteFooter locale={lang} t={t} />
     </>

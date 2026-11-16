@@ -16,7 +16,7 @@ test.describe("landing page", () => {
   test("redirects / to a language and remembers the choice", async ({ page }) => {
     await page.goto("/");
     await expect(page).toHaveURL(/\/en$/);
-    await page.getByRole("link", { name: "አማርኛ" }).click();
+    await page.getByRole("banner").getByRole("link", { name: "አማርኛ" }).click();
     await expect(page).toHaveURL(/\/am$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "am");
     await page.goto("/");
@@ -239,11 +239,6 @@ test("landing motion: the demo plays itself and can be paused; reduced motion ke
   await listToggle.click();
   await expect(listToggle).toHaveAttribute("aria-pressed", "true");
 
-  // Before and after: a slider anyone can move with the keyboard.
-  const slider = page.getByRole("slider", { name: "Slide to compare your message and your website" });
-  await slider.focus();
-  await page.keyboard.press("End");
-  await expect(slider).toHaveValue("100");
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 

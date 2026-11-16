@@ -61,6 +61,7 @@ export const en = {
       { value: "14", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
+    eyebrows: { how: "How it works", features: "Features", faq: "Good to know", final: "Start today" },
     pillarsLabel: "What you get",
     pillars: [
       { title: "Build by chatting", body: "Describe your business in Amharic or English. Gojoline writes the site and keeps it up to date." },
@@ -77,14 +78,6 @@ export const en = {
       thinking: "Thinking",
     },
     marquee: { title: "Made for every kind of business and community", pause: "Pause the moving list" },
-    compare: {
-      title: "See the difference",
-      body: "Write about your business the way you'd tell a friend. Gojoline turns it into a site your customers can visit, book and order from.",
-      before: "Your message",
-      after: "Your website",
-      slider: "Slide to compare your message and your website",
-      from: "Selam Coffee",
-    },
     proofTitle: "Gojoline in numbers",
     proofNote: "Measured on our own test builds, November 2026.",
     steps: {
@@ -1079,14 +1072,18 @@ export const en = {
     close: "Got it",
   },
   footer: {
+    product: "Product",
+    help: "Help",
+    legal: "Legal",
+    questions: "Questions",
+    telegramBot: "Gojoline on Telegram",
+    trust: ["Paid in Birr", "Amharic and English", "Your site stays yours"],
     tagline: "Your home online.",
     madeIn: "Made in Addis Ababa",
     rights: "© {year} Gojoline",
     privacy: "Privacy",
     terms: "Terms",
     report: "Report a site",
-    pagesLabel: "Pages",
-    linksLabel: "Legal and safety",
   },
   errors: errorMessages.en,
 };

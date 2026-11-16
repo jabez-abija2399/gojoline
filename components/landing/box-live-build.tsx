@@ -90,23 +90,41 @@ export function BoxLiveBuild(props: Props) {
   );
 }
 
+/** True once the window's load event has fired (false during server render and hydration). */
+function usePageLoaded() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    const done = () => setLoaded(true);
+    if (document.readyState === "complete") {
+      const t = setTimeout(done, 0);
+      return () => clearTimeout(t);
+    }
+    window.addEventListener("load", done, { once: true });
+    return () => window.removeEventListener("load", done);
+  }, []);
+  return loaded;
+}
+
 type State = Props & { ms: number; done: boolean; stepsDone: number; working: number; built: number; phoneView: boolean; choose: (view: "m" | "d") => void };
 
 /** The real site, section by section: built ones show, the rest are their outline. The column
  *  scrolls (a transform) to follow the newest section while it's being built. */
 /** `first`: how the first picture loads ("preload" for the visible device's main picture). `animate`: fade new
  *  sections in (only during a live build; the first view is simply there, for a fast first paint). */
-function SiteSections({ site, width, built, follow, first, animate }: { site: BuildSite; width: "d" | "m"; built: number; follow: boolean; first: "preload" | "eager" | "lazy"; animate: boolean }) {
+function SiteSections({ site, width, built, follow, first, animate }: { site: BuildSite; width: "d" | "m"; built: number; follow: boolean; first: "preload" | "lazy"; animate: boolean }) {
   const ratios = site.sections.map((s) => (s[width].height / s[width].width) * 100);
   // How far down the newest built section starts, in percent of the column's width.
   const newest = Math.min(built, site.sections.length) - 1;
   const offset = follow && newest > 0 ? ratios.slice(0, newest).reduce((a, b) => a + b, 0) * 0.7 : 0;
+  // With a preloaded first picture, the ones below it wait for the page to finish loading, so on
+  // a slow phone the first picture gets the whole connection (they sit below the phone's fold).
+  const pageLoaded = usePageLoaded();
   return (
     <div className="h-full overflow-hidden [container-type:inline-size]">
       <div className="transition-transform duration-700 ease-out" style={{ transform: `translateY(calc(${-offset} * 1cqw))` }}>
         {site.sections.map((s, i) => {
           const pic = s[width];
-          const shown = i < built;
+          const shown = i < built && (i === 0 || first !== "preload" || pageLoaded);
           return (
             <div key={`${site.id}-${width}-${i}`} className="relative overflow-hidden" style={{ aspectRatio: `${pic.width} / ${pic.height}` }}>
               <div className={`absolute inset-0 flex flex-col gap-3 bg-white p-[6%] transition-opacity duration-500 ${shown ? "opacity-0" : "opacity-100"}`}>
@@ -122,7 +140,8 @@ function SiteSections({ site, width, built, follow, first, animate }: { site: Bu
                   height={pic.height}
                   sizes={width === "d" ? "(min-width: 1280px) 640px, 50vw" : "260px"}
                   priority={i === 0 && first === "preload"}
-                  loading={i === 0 && first === "preload" ? undefined : i === 0 && first === "eager" ? "eager" : "lazy"}
+                  fetchPriority={i === 0 && first === "preload" ? "high" : undefined}
+                  loading={i === 0 && first === "preload" ? undefined : "lazy"}
                   className={`relative h-auto w-full ${animate ? "animate-[rise-in_0.5s_ease-out]" : ""}`}
                 />
               )}
@@ -184,7 +203,7 @@ function Toast({ booking, show }: { booking: Props["booking"]; show: boolean }) 
 }
 
 /** Large screens: a computer screen on its stand, with the Gojoline builder on it. */
-function MonitorView({ site, live, you, assistant, publish, booking, run, slug, priority, ms, done, stepsDone, working, built, phoneView, choose, sizes }: State) {
+function MonitorView({ site, live, you, assistant, publish, booking, run, slug, ms, done, stepsDone, working, built, phoneView, choose, sizes }: State) {
   const reply = live.reply.replace("{name}", site.name);
   return (
     <div className="mx-auto flex w-[min(100%,88rem,calc((100svh-10rem)*1.65))] min-w-[44rem] flex-col items-center max-md:hidden">
@@ -263,7 +282,7 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
                   </div>
                 ) : (
                   <div key="d" className="h-full overflow-hidden rounded-md border border-line bg-white shadow-sm">
-                    <SiteSections site={site} width="d" built={built} follow={!done} first={priority ? "eager" : "lazy"} animate={run > 0} />
+                    <SiteSections site={site} width="d" built={built} follow={!done} first="lazy" animate={run > 0} />
                   </div>
                 )}
                 <Toast booking={booking} show={ms >= BOOKED && run > 0} />
