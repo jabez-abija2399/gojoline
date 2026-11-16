@@ -300,6 +300,151 @@
   li:not(.schedule-tile) .next-badge {
     margin-inline: 0;
   }
+  /* Tabs: the new panel fades in. */
+  .menu-tab[aria-selected="true"] {
+    border-color: var(--site-text);
+    background: var(--site-text);
+    color: var(--site-background);
+  }
+  /* Today's date in several calendars. */
+  .date-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    width: fit-content;
+    border-radius: var(--site-radius);
+    background: var(--site-primary-soft);
+    padding: 0.5rem 0.875rem;
+  }
+  .date-line > span + span::before {
+    content: "\00b7";
+    margin-inline-end: 0.75rem;
+    opacity: 0.6;
+  }
+  /* Giving goal. */
+  .goal-bar {
+    height: 0.875rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--site-primary-soft);
+  }
+  .goal-fill {
+    display: block;
+    width: var(--p, 0%);
+    height: 100%;
+    border-radius: 999px;
+    background: var(--site-primary);
+    transform-origin: 0 50%;
+  }
+  /* The turning stamp. */
+  .stamp {
+    width: 7rem;
+    height: 7rem;
+    pointer-events: none;
+  }
+  @media (min-width: 768px) {
+    .stamp {
+      width: 8.5rem;
+      height: 8.5rem;
+    }
+  }
+  .stamp-disc {
+    fill: var(--site-primary);
+  }
+  .stamp-text {
+    fill: var(--site-on-primary);
+    font-family: var(--site-font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  :lang(am) .stamp-text {
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .stamp-star {
+    fill: var(--site-on-primary);
+  }
+  .stamp-on-photo .stamp-disc {
+    fill: rgb(255 255 255 / 0.14);
+    stroke: rgb(255 255 255 / 0.6);
+  }
+  .stamp-on-photo :is(.stamp-text, .stamp-star) {
+    fill: #fff;
+  }
+  @media (max-width: 767px) {
+    .stamp-on-photo {
+      display: none;
+    }
+  }
+  /* A list of big titles; the picture follows the mouse on computers. */
+  .index-list {
+    position: relative;
+    border-top: 1px solid var(--site-line);
+  }
+  .index-row {
+    border-bottom: 1px solid var(--site-line);
+  }
+  .index-inner {
+    display: flex;
+    min-height: 5.5rem;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 1rem;
+  }
+  .index-title {
+    font-family: var(--site-font-heading);
+    font-size: clamp(1.5rem, 1.1rem + 2vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .index-thumb {
+    display: block;
+    width: 4.5rem;
+    height: 4.5rem;
+    flex: none;
+  }
+  .index-preview {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .index-thumb {
+      display: none;
+    }
+    .index-inner {
+      transition: padding 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .index-row:hover .index-inner {
+      padding-inline-start: 1.25rem;
+    }
+    .index-preview {
+      position: absolute;
+      top: var(--y, 50%);
+      left: var(--x, 50%);
+      z-index: 5;
+      display: block;
+      width: 20rem;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.85) rotate(-3deg);
+      transition:
+        opacity 250ms,
+        transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.5);
+    }
+    .index-row:hover .index-preview {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(0);
+    }
+    /* Resting on one card or row softens the others. */
+    .dim-others:hover > li:not(:hover) {
+      opacity: 0.55;
+    }
+    .dim-others > li {
+      transition: opacity 250ms;
+    }
+  }
   /* Cards that pile up: each pins a little lower than the one before. */
   .stack-card {
     position: sticky;
@@ -319,6 +464,12 @@
   }
   .marquee-row {
     animation: site-marquee 38s linear infinite;
+  }
+  .stamp {
+    animation: site-spin 22s linear infinite;
+  }
+  .tab-panel {
+    animation: site-enter 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
   .marquee:hover .marquee-row,
   .marquee:focus-within .marquee-row {
@@ -346,6 +497,18 @@
     }
     .stack-card:last-child {
       animation: none;
+    }
+    /* The goal bar fills when it comes into view; section bars draw in. */
+    .goal-fill {
+      animation: site-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+    .section-title::before {
+      transform-origin: 0 50%;
+      animation: site-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
     }
   }
   @supports (animation-timeline: scroll()) {
@@ -426,6 +589,19 @@
   }
 }
 @keyframes site-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes site-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes site-grow {
   from {
     transform: scaleX(0);
   }

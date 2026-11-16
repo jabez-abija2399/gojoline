@@ -130,6 +130,8 @@ export interface HeroSection {
   image?: Image;
   primaryAction?: Link;
   secondaryAction?: Link;
+  /** A few words set round a slowly turning circle on the picture: "Since 2014 · Addis Ababa". */
+  stamp?: Text;
   /** Up to 4 short facts shown as a strip under the hero. */
   facts?: Fact[];
 }
@@ -219,8 +221,9 @@ export interface CardsSection {
    * scroll: tall picture cards in a row to swipe (destinations, collections).
    * people: portraits with a name and role (doctors, team, stylists).
    * stack: large cards that pile up on each other as the visitor scrolls (rooms, projects, programmes).
+   * index: a list of big titles in rows; on a computer the picture follows the mouse (portfolios, projects, collections).
    */
-  layout?: "grid" | "feature" | "scroll" | "people" | "stack";
+  layout?: "grid" | "feature" | "scroll" | "people" | "stack" | "index";
   items: CardItem[];
   /** A link under the cards: "See all rooms". */
   action?: Link;
@@ -256,9 +259,38 @@ export interface ScheduleSection {
   intro?: Text;
   /** list: rows. tiles: a tile per time (prayer times, a few sessions). */
   layout?: "list" | "tiles";
+  /** Show today's date above the times in these calendars (for prayer and service times). */
+  dates?: ("gregorian" | "ethiopian" | "hijri")[];
   /** `at`: the time as "HH:MM" (24 hours, Addis Ababa time). With it, the next one is highlighted with a countdown. */
   items: { time: Text; title: Text; note?: Text; at?: string }[];
   footnote?: Text;
+}
+
+/** Topics as tabs: each tab swaps a picture and a short text (programmes, departments, service days). */
+export interface TabsSection {
+  type: "tabs";
+  id?: string;
+  eyebrow?: Text;
+  heading: Text;
+  intro?: Text;
+  items: { label: Text; heading?: Text; body: Text; image?: Image; points?: Text[]; action?: Link }[];
+}
+
+/** A giving box: amount buttons, once or monthly, what each amount does, a goal bar. The button fills in the giving form. */
+export interface GiveSection {
+  type: "give";
+  id?: string;
+  eyebrow?: Text;
+  heading: Text;
+  intro?: Text;
+  amounts: { price: Price; impact?: Text }[];
+  /** Offer "monthly" next to "once". */
+  monthly?: boolean;
+  /** Where the button goes, usually the giving form ("#give"); its label is followed by the amount. */
+  action: Link;
+  /** A campaign goal: how much has come in so far. */
+  goal?: { raised: Price; target: Price; label?: Text };
+  image?: Image;
 }
 
 /** A ribbon of short words that moves slowly across the page: what you offer, places, promises. */
@@ -380,7 +412,9 @@ export type Section =
   | StepsSection
   | ScheduleSection
   | QuoteSection
-  | MarqueeSection;
+  | MarqueeSection
+  | TabsSection
+  | GiveSection;
 
 export interface Page {
   /** "/" for the home page, otherwise "/menu", "/about" (lowercase, no trailing slash) */

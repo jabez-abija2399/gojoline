@@ -15,7 +15,48 @@ export function Cards({ section }: { section: CardsSection }) {
     <section id={section.id ?? "cards"} className={`section ${layout === "scroll" ? "overflow-hidden" : ""}`}>
       <div className="container-site flex flex-col gap-8 md:gap-12">
         <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
-        {layout === "stack" ? (
+        {layout === "index" ? (
+          // Big titles in rows. On a computer the picture follows the mouse; on a phone it sits beside the title.
+          <ul
+            className="index-list dim-others"
+            onPointerMove={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              e.currentTarget.style.setProperty("--x", `${Math.round(e.clientX - r.left)}px`);
+              e.currentTarget.style.setProperty("--y", `${Math.round(e.clientY - r.top)}px`);
+            }}
+          >
+            {section.items.map((item, i) => {
+              const row = (
+                <>
+                  <span className="index-thumb">
+                    <Picture image={item.image} sizes="120px" className="aspect-square size-full rounded-site" />
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col gap-1 md:flex-row md:items-baseline md:gap-6">
+                    <span className="index-title">{text(item.title)}</span>
+                    {item.subtitle && <span className="text-muted">{text(item.subtitle)}</span>}
+                  </span>
+                  {item.meta && item.meta.length > 0 && <span className="shrink-0 text-muted max-sm:hidden">{item.meta.map((m) => text(m)).join(" · ")}</span>}
+                  {item.image?.src && (
+                    <span aria-hidden="true" className="index-preview">
+                      <Picture image={item.image} sizes="320px" className="aspect-[4/3] w-full rounded-site" />
+                    </span>
+                  )}
+                </>
+              );
+              return (
+                <li key={i} className="index-row reveal" style={{ "--i": 0 } as React.CSSProperties}>
+                  {item.action ? (
+                    <a href={href(item.action.href)} className="index-inner">
+                      {row}
+                    </a>
+                  ) : (
+                    <div className="index-inner">{row}</div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        ) : layout === "stack" ? (
           // Cards that pile up as the page scrolls: each one pins a little lower than the last.
           <ul className="stack flex flex-col gap-6">
             {section.items.map((item, i) => (
@@ -90,7 +131,7 @@ export function Cards({ section }: { section: CardsSection }) {
             ))}
           </ul>
         ) : (
-          <ul className={`grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
+          <ul className={`dim-others grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
             {section.items.map((item, i) => (
               <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className="card pcard reveal lift flex flex-col overflow-hidden">
                 <div className="zoom relative">

@@ -1,3 +1,4 @@
+import { DateLine } from "../components/DateLine";
 import { useNextTime } from "../components/NextUp";
 import { SectionHead } from "../components/SectionHead";
 import { uiText } from "../lib/i18n";
@@ -25,7 +26,9 @@ export function Schedule({ section }: { section: ScheduleSection }) {
   return (
     <section id={section.id ?? "schedule"} className="section">
       <div className={`container-site ${tiles ? "flex flex-col gap-8 md:gap-10" : "grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-14"}`}>
-        <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
+        <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro}>
+          {section.dates && section.dates.length > 0 && <DateLine calendars={section.dates} />}
+        </SectionHead>
         <div className="flex flex-col gap-4">
           {tiles ? (
             <ul className={`grid grid-cols-2 gap-3 sm:grid-cols-3 ${n >= 6 ? "lg:grid-cols-6" : n === 5 ? "lg:grid-cols-5" : n === 4 ? "lg:grid-cols-4" : ""}`}>

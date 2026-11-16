@@ -64,6 +64,11 @@ const ui = {
     inTime: "in {t}",
     hourShort: "h",
     minuteShort: "min",
+    once: "Once",
+    monthly: "Monthly",
+    perMonth: "a month",
+    raised: "raised of",
+    today: "Today",
   },
   am: {
     call: "ይደውሉልን",
@@ -102,6 +107,11 @@ const ui = {
     inTime: "በ{t} ውስጥ",
     hourShort: "ሰ",
     minuteShort: "ደ",
+    once: "አንድ ጊዜ",
+    monthly: "በየወሩ",
+    perMonth: "በወር",
+    raised: "ተሰብስቧል ከ",
+    today: "ዛሬ",
   },
 } as const;
 

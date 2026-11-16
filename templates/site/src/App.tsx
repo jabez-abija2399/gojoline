@@ -15,7 +15,9 @@ import { Quote } from "./sections/Quote";
 import { Schedule } from "./sections/Schedule";
 import { Stats } from "./sections/Stats";
 import { Steps } from "./sections/Steps";
+import { Give } from "./sections/Give";
 import { Marquee } from "./sections/Marquee";
+import { Tabs } from "./sections/Tabs";
 import { MapEmbed } from "./sections/MapEmbed";
 import { Menu } from "./sections/Menu";
 import { Services } from "./sections/Services";
@@ -61,6 +63,10 @@ function renderSection(section: Section, index: number) {
       return <Quote key={index} section={section} />;
     case "marquee":
       return <Marquee key={index} section={section} />;
+    case "tabs":
+      return <Tabs key={index} section={section} />;
+    case "give":
+      return <Give key={index} section={section} />;
   }
 }
 

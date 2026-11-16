@@ -1,6 +1,7 @@
 import { CountUp } from "../components/CountUp";
 import { Picture } from "../components/Picture";
 import { SplitWords } from "../components/SplitWords";
+import { Stamp } from "../components/Stamp";
 import { useSite } from "../lib/context";
 import type { Fact, HeroSection } from "../lib/types";
 
@@ -51,6 +52,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           {actions("btn-glass")}
           {facts && <Facts facts={facts} className="mt-4 border-t border-white/30 pt-5" />}
         </div>
+        {section.stamp && <Stamp text={text(section.stamp)} className="stamp-on-photo absolute end-4 top-24 md:end-10 md:top-28" />}
       </section>
     );
   }
@@ -115,8 +117,11 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
             {actions()}
             {facts && <Facts facts={facts} className="mt-2 border-t border-line pt-6" />}
           </div>
-          <div className="zoom mx-auto w-full max-w-sm rounded-site md:max-w-none">
-            <Picture image={section.image} priority={first} sizes="(min-width: 768px) 40vw, 225px" className="aspect-[4/5] w-full rounded-site" />
+          <div className="relative mx-auto w-full max-w-sm md:max-w-none">
+            <div className="zoom rounded-site">
+              <Picture image={section.image} priority={first} sizes="(min-width: 768px) 40vw, 225px" className="aspect-[4/5] w-full rounded-site" />
+            </div>
+            {section.stamp && <Stamp text={text(section.stamp)} className="absolute -start-8 -bottom-8 size-28 md:size-32" />}
           </div>
         </div>
       </section>
@@ -141,6 +146,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
               <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 225px" className="aspect-[4/3] w-full rounded-site" />
             </div>
           </div>
+          {section.stamp && <Stamp text={text(section.stamp)} className="absolute -end-4 -top-8 size-24 md:-end-8 md:size-32" />}
           {chip && (
             <p className="info-chip enter flex items-center gap-3 font-semibold" style={{ "--i": 5 } as React.CSSProperties}>
               <span aria-hidden="true" className="info-dot" />
