@@ -7,6 +7,7 @@ import { parseContact } from "@/lib/contact";
 import { isLocale } from "@/lib/i18n/config";
 import { clientIp } from "@/lib/server/request";
 import { services } from "@/lib/server/services";
+import { safeNext } from "./next";
 import { getAuth, googleAuth, otpSender } from "./server";
 
 export type SignInError = "contactInvalid" | "codeInvalid" | "tooMany" | "unavailable" | "smsUnavailable" | "google" | "generic";
@@ -17,11 +18,6 @@ export type SignInState =
 function field(form: FormData, key: string) {
   const v = form.get(key);
   return typeof v === "string" ? v : "";
-}
-
-/** Only same-site paths, so the redirect can't be used to send people elsewhere. */
-function safeNext(lang: string, raw: string): string {
-  return /^\/(en|am)\/[\w\-/]*$/.test(raw) && !raw.includes("//") ? raw : `/${lang}/build`;
 }
 
 // useActionState sends the previous state back from the browser, so it is untrusted input.
