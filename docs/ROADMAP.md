@@ -75,6 +75,12 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Dark mode for the signed-in area; one compact type scale on every screen
 - [x] Site dashboard Overview: live status and sharing, real numbers, 14-day answers chart, latest answers, setup checklist
 
+## Niche templates (2026-11-16)
+- [x] Research per niche: the best sites of each kind, written up as briefs (`docs/research/templates/`)
+- [x] Sample-photo library (141 photos, free commercial licences) with a catalogue; only the photos a site uses reach its sandbox and its published files
+- [x] Site template: four styles, two more heading fonts, full-screen and portrait heroes, picture cards, stats, steps, schedule and quote sections
+- [x] All templates rebuilt on the research with real photos, in English and Amharic, plus two new ones (company, salon): 14 in total
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
@@ -84,10 +90,15 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - The Answers tab still reads 200 full answers and each form one after another; a `formHeadings` query would make it and the overview lighter (performance review).
 - Every signed-in page shows its main content after about 3 s on a slow phone (budget 2.5 s): the largest shared script takes about 400 ms to start; not caused by one page (performance review).
 - Photo thumbnails in the builder and dashboard load the full stored photo; a small thumbnail size from the assets API would save data (performance review).
-- Landing page, from the reviews: real photos in the starter templates would make the gallery stronger (they show placeholder shapes now); the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
+- Landing page, from the reviews: the sign-in page could say that the typed description is kept; AVIF and an Ethiopic font preload on `/am` are not done (budgets are met without them).
 - Re-run `node scripts/showcase-shots.mjs` after changing the site template or a preset, so the landing page's pictures stay true.
 - The new builder and landing strings in Amharic (start box, ideas, suggestions, photos, gallery, numbers) need the same native-speaker review.
-- Amharic in the 12 templates (`templates/site/presets/`) needs the same native-speaker review as generated sites.
+- Amharic in the 14 templates (`templates/site/presets/`, sources in `scripts/presets/`) was rewritten on 2026-11-16 and needs a native-speaker review; the church and mosque wording should be read by members of those communities.
+- Sample photos: a few niches have little that is truly Ethiopian (hotel rooms, mosque interiors, real-estate interiors, a habesha wedding). Commissioned or licensed Ethiopian photos would lift them. Add photos with `node scripts/stock-photos.mjs <folder>`.
+- Generated-site speed after the photo templates (performance review, 2026-11-16): before the smaller photo sizes, Lighthouse LCP on slow 4G was 2.2 to 3.4 s on photo-heavy home pages against the 2.0 s target. The 480 px sizes cut first-load photo bytes by more than half, but Lighthouse was not run again: re-measure hotel, tours, cafe and shop. If still over, load card and gallery photos only when scrolled near, and stop bundling the whole `site.json` into the script (JS is at 93 to 98 KB of the 100 KB budget).
+- The photo library (12 MB) is traced into every route's function through the `"/**"` key in `next.config.ts`; scope it to the routes that build and publish.
+- The builder landing page measured LCP 3.4 to 3.75 s in one run on a loaded machine during the review (budget 2.5 s); not compared with `main`. Check the Lighthouse CI result after this merge.
+- Template ideas from the writers, not built: a "from" note on service prices, an action on services and menu sections, a focal point for cropped photos, an included/not-included list for tours.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 
 
@@ -104,7 +115,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
-- **Agent evals after the template guide change (2026-11-15):** `TEMPLATE.md` now teaches the agent `image.art`, `faq` and `cta`. The eval run costs real money and was not run in this session (not permitted). Run `EVAL_ONLY=en-cafe,am-clinic npm run evals` (about $0.30) or the full set, and record the result in `evals/RESULTS.md`.
+- **Agent evals after the template guide changes (2026-11-15 and 2026-11-16):** `TEMPLATE.md` now teaches the agent `image.art`, `faq`, `cta`, and since 2026-11-16 sample photos, site styles, picture cards, stats, steps, schedules and the section order per kind of business. The guide is about three times longer, so cost per site will have changed. The eval run costs real money and was not run in this session (not permitted). Run `EVAL_ONLY=en-cafe,am-clinic npm run evals` (about $0.30) or the full set, and record the result in `evals/RESULTS.md`.
 - **SMS sign-in:** needs a gateway for Ethiopian numbers (e.g. AfroMessage); until then phone users are asked to use email or Google.
 - Vercel Sandbox snapshot storage: sandboxes start again (checked 2026-11-15); the code no longer leaves snapshots behind. The 47 old automatic snapshots can still be deleted in the Vercel project to free space (keep the 2 manual ones).
 - Eval targets: build success (100%), cost per first site (median $0.089) and cost per edit (median $0.0295, 2026-11-15) are met. Still open: the Amharic quality score, which needs a native-speaker review of `evals/.runs/`.

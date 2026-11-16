@@ -4,6 +4,7 @@ import { MemoryProjectStore } from "@/lib/projects/memory-store";
 import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { MemorySandboxProvider } from "@/lib/providers/sandbox/memory";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
+import { presetSiteJson } from "@/lib/template/presets";
 import { hasExampleDetails, publishInfo, publishSite, type PublishDeps } from "./service";
 
 const siteTs = `export const site = { name: { en: "Selam Coffee" } }`;
@@ -89,6 +90,19 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify({ business: { telegram: "@BoleBunaHouse" } }))).toBe(true);
     expect(hasExampleDetails(JSON.stringify({ a: { href: "https://t.me/yourchurch" } }))).toBe(true);
     expect(hasExampleDetails(JSON.stringify({ business: { telegram: "selamcoffee" } }))).toBe(false);
+    expect(hasExampleDetails(JSON.stringify({ a: { label: { en: "Call 0911 000 000" } } }))).toBe(true);
+  });
+  it("blocks a template's reviews and people, and named people on sample photos", () => {
+    const site = (sections: unknown[]) => JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections }] });
+    const clinic = JSON.parse(presetSiteJson("clinic")) as { pages: { sections: { type: string; layout?: string; items?: { quote?: { en: string }; title?: { en: string } }[] }[] }[] };
+    const all = clinic.pages.flatMap((p) => p.sections);
+    const review = all.find((s) => s.type === "testimonials")!.items![0]!.quote!;
+    const doctor = all.find((s) => s.type === "cards" && s.layout === "people")!.items![0]!.title!;
+    expect(hasExampleDetails(site([{ type: "testimonials", items: [{ quote: review, name: "Someone" }] }]))).toBe(true);
+    expect(hasExampleDetails(site([{ type: "cards", layout: "people", items: [{ title: doctor }] }]))).toBe(true);
+    expect(hasExampleDetails(site([{ type: "cards", layout: "people", items: [{ title: { en: "Dr. Real Name" }, image: { src: "/stock/clinic-card-doctor-portrait.webp" } }] }]))).toBe(true);
+    expect(hasExampleDetails(site([{ type: "quote", quote: { en: "Our own words" }, name: { en: "The owner" }, image: { src: "/stock/ngo-card-woman-farmer.webp" } }]))).toBe(true);
+    expect(hasExampleDetails(site([{ type: "cards", layout: "people", items: [{ title: { en: "Dr. Real Name" }, image: { src: "/images/me.webp" } }] }, { type: "testimonials", items: [{ quote: { en: "A real review" }, name: "A." }] }, { type: "cards", layout: "grid", items: [{ title: { en: "Room" }, image: { src: "/stock/hotel-card-standard-room.webp" } }] }]))).toBe(false);
   });
 
   it("refuses while another change is running", async () => {

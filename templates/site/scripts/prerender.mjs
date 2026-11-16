@@ -1,5 +1,5 @@
 // Turns the client build (dist/) + SSR bundle (dist-ssr/) into static HTML for every page and language.
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -29,6 +29,14 @@ if (base) {
   writeFileSync(join(dist, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
 } else {
   writeFileSync(join(dist, "robots.txt"), "User-agent: *\nAllow: /\n");
+}
+
+// The published site carries only the sample photos it uses, not the whole library.
+const stockDir = join(dist, "stock");
+if (existsSync(stockDir)) {
+  const siteJson = readFileSync(join(root, "src", "site.json"), "utf8");
+  const used = new Set([...siteJson.matchAll(/\/stock\/([a-z0-9-]+)\.webp/g)].flatMap((m) => [`${m[1]}.webp`, `${m[1]}-480.webp`, `${m[1]}-1600.webp`]));
+  for (const file of readdirSync(stockDir)) if (!used.has(file)) rmSync(join(stockDir, file));
 }
 
 rmSync(join(root, "dist-ssr"), { recursive: true, force: true });

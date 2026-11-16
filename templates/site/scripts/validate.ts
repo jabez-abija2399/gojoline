@@ -3,7 +3,8 @@
 import { readFileSync } from "node:fs";
 import { siteSchema, themeWarnings } from "../src/lib/schema.ts";
 
-const raw = readFileSync(new URL("../src/site.json", import.meta.url), "utf8");
+// A path may be given to check another file (a preset); the default is the site itself.
+const raw = readFileSync(process.argv[2] ?? new URL("../src/site.json", import.meta.url), "utf8");
 let site: unknown;
 try {
   site = JSON.parse(raw);
@@ -21,6 +22,21 @@ if (!result.success) {
   for (const issue of result.error.issues) problems.push(`site.${issue.path.join(".")}: ${issue.message}`);
 } else {
   problems.push(...themeWarnings(result.data.theme));
+  // Sample photos must be ones the library has (TEMPLATE.md lists them).
+  const library = JSON.parse(readFileSync(new URL("../stock.json", import.meta.url), "utf8")) as Record<string, unknown>;
+  const seen = new Set<string>();
+  const walk = (v: unknown) => {
+    if (Array.isArray(v)) return v.forEach(walk);
+    if (!v || typeof v !== "object") return;
+    const src = (v as { src?: unknown }).src;
+    if (typeof src === "string" && src.startsWith("/stock/") && !seen.has(src)) {
+      seen.add(src);
+      const name = /^\/stock\/([a-z0-9-]+)\.webp$/.exec(src)?.[1];
+      if (!name || !(name in library)) problems.push(`"${src}" is not a photo in the library. Use a name from the "Sample photos" list in TEMPLATE.md, or a drawing (art).`);
+    }
+    Object.values(v).forEach(walk);
+  };
+  walk(result.data);
 }
 
 if (problems.length) {

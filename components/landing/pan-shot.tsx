@@ -12,7 +12,7 @@ interface Shot {
 /**
  * A card's picture: the top of a real site. On a large screen with a mouse, resting on the
  * card loads the whole page and scrolls through it. The whole page is fetched only then, so
- * nobody downloads twelve long pictures just by opening the landing page.
+ * nobody downloads fourteen long pictures just by opening the landing page.
  */
 export function PanShot({ top, full, eager = false, first = false }: { top: Shot; full: Shot; /** In the first row: load at once, not lazily. */ eager?: boolean; /** The very first picture: the page's largest paint. */ first?: boolean }) {
   const [whole, setWhole] = useState(false);
