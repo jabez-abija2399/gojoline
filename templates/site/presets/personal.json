@@ -4,20 +4,21 @@
     "am": "ሀና በቀለ"
   },
   "tagline": {
-    "en": "Graphic designer and photographer in Addis Ababa",
-    "am": "ግራፊክ ዲዛይነር እና ፎቶግራፈር በአዲስ አበባ"
+    "en": "Brand and web designer in Addis Ababa",
+    "am": "በአዲስ አበባ የምትሠራ የብራንድና የድረገጽ ዲዛይነር"
   },
   "languages": [
     "en",
     "am"
   ],
   "theme": {
-    "primary": "#B4432F",
-    "accent": "#23303F",
-    "background": "#FAF8F5",
-    "text": "#1E1E24",
-    "font": "modern",
-    "radius": "small"
+    "primary": "#E8590C",
+    "accent": "#17130F",
+    "background": "#FAF6EF",
+    "text": "#1F1B16",
+    "font": "grotesk",
+    "radius": "medium",
+    "style": "bold"
   },
   "business": {
     "phone": "+251 911 000 000",
@@ -25,19 +26,7 @@
     "address": {
       "en": "Addis Ababa, Ethiopia",
       "am": "አዲስ አበባ፣ ኢትዮጵያ"
-    },
-    "hours": [
-      {
-        "days": {
-          "en": "Monday to Saturday",
-          "am": "ከሰኞ እስከ ቅዳሜ"
-        },
-        "time": {
-          "en": "9:00 am to 6:00 pm, meetings by appointment",
-          "am": "ከጠዋቱ 3 እስከ ምሽቱ 12 ሰዓት፤ ስብሰባ በቀጠሮ"
-        }
-      }
-    ]
+    }
   },
   "pages": [
     {
@@ -51,263 +40,356 @@
         "am": "መነሻ"
       },
       "description": {
-        "en": "Hana Bekele, a freelance graphic designer and photographer in Addis Ababa.",
-        "am": "ሀና በቀለ፣ በአዲስ አበባ የምትሠራ የግል ግራፊክ ዲዛይነር እና ፎቶግራፈር።"
+        "en": "Hana Bekele, an independent brand and web designer in Addis Ababa. Identities, websites and print for businesses that want to be remembered.",
+        "am": "ሀና በቀለ፣ በአዲስ አበባ በግሏ የምትሠራ የብራንድና የድረገጽ ዲዛይነር። መታወስ ለሚፈልጉ ንግዶች መለያ፣ ድረገጽና ኅትመት።"
       },
       "sections": [
         {
           "type": "hero",
-          "variant": "split",
+          "variant": "portrait",
           "eyebrow": {
-            "en": "Freelance designer and photographer",
-            "am": "የግል ዲዛይነር እና ፎቶግራፈር"
+            "en": "Addis Ababa · Available for work",
+            "am": "አዲስ አበባ · ለአዲስ ሥራ ዝግጁ"
           },
           "heading": {
-            "en": "Hi, I'm Hana Bekele",
-            "am": "ሰላም፣ ሀና በቀለ እባላለሁ"
+            "en": "Brand & web designer",
+            "am": "ብራንድና ድረገጽ ዲዛይነር"
           },
           "subheading": {
-            "en": "I design brands and social media content, and photograph events across Addis Ababa.",
-            "am": "ለድርጅቶች መለያ እና የማኅበራዊ ሚዲያ ዲዛይን እሠራለሁ፤ በአዲስ አበባ የተለያዩ ዝግጅቶችንም ፎቶ አነሣለሁ።"
+            "en": "I'm Hana. I give Ethiopian businesses a name, a face and a website people remember.",
+            "am": "ሀና እባላለሁ። ለኢትዮጵያ ንግዶች ሰው የማይረሳው ስም፣ ገጽታና ድረገጽ እሠራለሁ።"
+          },
+          "image": {
+            "src": "/stock/personal-hero-woman-orange-blazer.webp",
+            "alt": {
+              "en": "A young woman with natural hair, arms crossed, in an orange blazer against a pale teal wall",
+              "am": "ብርቱካናማ ኮት የለበሰች፣ እጆቿን ያጣመረች ወጣት ሴት በፈዛዛ አረንጓዴ-ሰማያዊ ግድግዳ ፊት"
+            }
           },
           "primaryAction": {
             "label": {
-              "en": "See my work",
-              "am": "ሥራዎቼን ይመልከቱ"
+              "en": "Start a project",
+              "am": "ሥራ እንጀምር"
             },
-            "href": "/work"
+            "href": "/#project"
           },
           "secondaryAction": {
             "label": {
-              "en": "Start a project",
-              "am": "ሥራ እናስጀምር"
+              "en": "See the work",
+              "am": "ሥራዎቹን ይመልከቱ"
             },
-            "href": "/contact"
+            "href": "/work"
           },
-          "image": {
-            "alt": {
-              "en": "A portrait",
-              "am": "የቁም ምስል"
+          "facts": [
+            {
+              "value": {
+                "en": "9 years",
+                "am": "9 ዓመት"
+              },
+              "label": {
+                "en": "designing brands",
+                "am": "በብራንድ ዲዛይን"
+              }
             },
-            "art": "portrait"
-          }
+            {
+              "value": {
+                "en": "60+",
+                "am": "60+"
+              },
+              "label": {
+                "en": "projects delivered",
+                "am": "የተጠናቀቁ ሥራዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "2",
+                "am": "2"
+              },
+              "label": {
+                "en": "languages, one voice",
+                "am": "ቋንቋ፣ አንድ ድምፅ"
+              }
+            }
+          ]
         },
         {
-          "type": "about",
-          "id": "about",
+          "type": "cards",
+          "id": "work",
+          "layout": "feature",
+          "eyebrow": {
+            "en": "Selected work",
+            "am": "የተመረጡ ሥራዎች"
+          },
           "heading": {
-            "en": "About me",
-            "am": "ስለ እኔ"
+            "en": "Four projects, four results",
+            "am": "አራት ሥራዎች፣ አራት ውጤቶች"
           },
-          "body": {
-            "en": "I'm a graphic designer and photographer based in Addis Ababa. I help small businesses, start-ups and families tell their story through clear design and honest photos.\n\nI like to start every project with a coffee and a good conversation, so I understand what you need before I open my laptop.",
-            "am": "በአዲስ አበባ የምኖር ግራፊክ ዲዛይነር እና ፎቶግራፈር ነኝ። አነስተኛ ንግዶች፣ አዳዲስ ድርጅቶች እና ቤተሰቦች ታሪካቸውን በግልጽ ዲዛይን እና በእውነተኛ ፎቶ እንዲያሳዩ እረዳለሁ።\n\nማንኛውንም ሥራ ከመጀመሬ በፊት በቡና ላይ ተገናኝተን መወያየት እወዳለሁ፤ ኮምፒውተሬን ከመክፈቴ በፊት የሚፈልጉትን በደንብ ለመረዳት።"
-          },
-          "image": {
-            "art": "work",
-            "alt": {
-              "en": "Finished work in frames",
-              "am": "በፍሬም ያሉ የተጠናቀቁ ሥራዎች"
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-card-website-laptop.webp",
+                "alt": {
+                  "en": "A laptop on a desk showing a teal architecture website",
+                  "am": "በጠረጴዛ ላይ ያለ ላፕቶፕ፤ አረንጓዴ-ሰማያዊ የአርክቴክቸር ድረገጽ ያሳያል"
+                }
+              },
+              "subtitle": {
+                "en": "Web design",
+                "am": "የድረገጽ ዲዛይን"
+              },
+              "title": {
+                "en": "Sefer Architects",
+                "am": "ሰፈር አርክቴክትስ"
+              },
+              "meta": [
+                {
+                  "en": "Website",
+                  "am": "ድረገጽ"
+                },
+                {
+                  "en": "2026",
+                  "am": "2026"
+                },
+                {
+                  "en": "English + Amharic",
+                  "am": "እንግሊዝኛ + አማርኛ"
+                }
+              ],
+              "description": {
+                "en": "A calm two-language site that puts the buildings first. Enquiries doubled in three months.",
+                "am": "ሕንጻዎቹን የሚያስቀድም፣ በሁለት ቋንቋ የተሠራ ረጋ ያለ ድረገጽ። በሦስት ወር ውስጥ የደንበኛ ጥያቄ በእጥፍ ጨመረ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-logo-tablet.webp",
+                "alt": {
+                  "en": "A hand with a stylus drawing a white bear-head logo on a black tablet",
+                  "am": "በጥቁር ታብሌት ላይ ነጭ የድብ ራስ ሎጎ የሚሥል እጅ"
+                }
+              },
+              "subtitle": {
+                "en": "Brand identity",
+                "am": "የብራንድ መለያ"
+              },
+              "title": {
+                "en": "Dib Trek Gear",
+                "am": "ድብ የጉዞ ዕቃዎች"
+              },
+              "meta": [
+                {
+                  "en": "Logo and identity",
+                  "am": "ሎጎና መለያ"
+                },
+                {
+                  "en": "2025",
+                  "am": "2025"
+                },
+                {
+                  "en": "6 weeks",
+                  "am": "6 ሳምንት"
+                }
+              ],
+              "description": {
+                "en": "A bear mark that stays clear on a zip pull and on a shop sign. Now on every bag they sell.",
+                "am": "በዚፕ ጫፍም በሱቅ ሰሌዳም ላይ ጥርት ብሎ የሚታይ የድብ ምልክት። ዛሬ በሚሸጡት ቦርሳ ሁሉ ላይ አለ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-brochure-layout.webp",
+                "alt": {
+                  "en": "An open printed brochure with a pink layout and the large heading GRAFICO, on a wooden surface",
+                  "am": "በእንጨት ላይ የተከፈተ የታተመ ብሮሸር፤ ሮዝ ገጽና ትልቅ GRAFICO የሚል ርእስ አለው"
+                }
+              },
+              "subtitle": {
+                "en": "Editorial design",
+                "am": "የኅትመት ዲዛይን"
+              },
+              "title": {
+                "en": "Grafico Magazine",
+                "am": "ግራፊኮ መጽሔት"
+              },
+              "meta": [
+                {
+                  "en": "Print",
+                  "am": "ኅትመት"
+                },
+                {
+                  "en": "2024",
+                  "am": "2024"
+                },
+                {
+                  "en": "48 pages",
+                  "am": "48 ገጽ"
+                }
+              ],
+              "description": {
+                "en": "Grid, type and cover for a design yearbook. The first print run sold out in two weeks.",
+                "am": "ለዓመታዊ የዲዛይን መጽሔት የገጽ አቀማመጥ፣ የፊደል ምርጫና ሽፋን። የመጀመሪያው ኅትመት በሁለት ሳምንት ተሸጦ አለቀ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/shop-card-woven-scarves.webp",
+                "alt": {
+                  "en": "Four folded hand-woven cotton scarves in blue, tan, pink and purple on a white surface",
+                  "am": "በነጭ ገጽ ላይ የተጣጠፉ አራት በእጅ የተሸመኑ የጥጥ ሻርፖች፤ ሰማያዊ፣ ቡናማ፣ ሮዝና ወይን ጠጅ"
+                }
+              },
+              "subtitle": {
+                "en": "Art direction",
+                "am": "የሥነ ጥበብ አመራር"
+              },
+              "title": {
+                "en": "Shema Collective",
+                "am": "ሸማ ኮሌክቲቭ"
+              },
+              "meta": [
+                {
+                  "en": "Product campaign",
+                  "am": "የምርት ዘመቻ"
+                },
+                {
+                  "en": "2025",
+                  "am": "2025"
+                },
+                {
+                  "en": "12 images",
+                  "am": "12 ምስሎች"
+                }
+              ],
+              "description": {
+                "en": "One white table, four colours, nothing else. A launch shoot that filled the weavers' order book before opening day.",
+                "am": "አንድ ነጭ ጠረጴዛ፣ አራት ቀለም፣ ሌላ ምንም የለም። ሱቁ ከመከፈቱ በፊት የሸማኔዎቹን የትዕዛዝ ደብተር የሞላ የማስተዋወቂያ ፎቶ ሥራ።"
+              }
             }
+          ],
+          "action": {
+            "label": {
+              "en": "See all work",
+              "am": "ሁሉንም ሥራዎች ይመልከቱ"
+            },
+            "href": "/work"
           }
         },
         {
           "type": "services",
+          "variant": "numbered",
           "id": "services",
-          "heading": {
+          "eyebrow": {
             "en": "What I do",
-            "am": "የምሠራቸው ሥራዎች"
+            "am": "የምሠራው"
+          },
+          "heading": {
+            "en": "Three things, done well",
+            "am": "ሦስት ነገር፣ በጥራት"
           },
           "intro": {
-            "en": "Prices are starting points. I send a clear quote after we talk.",
-            "am": "ዋጋዎቹ መነሻ ናቸው። ከተነጋገርን በኋላ ግልጽ የዋጋ ዝርዝር እልክልዎታለሁ።"
+            "en": "Prices are where projects start. You get a fixed quote before any work begins.",
+            "am": "ዋጋዎቹ መነሻ ናቸው። ሥራ ከመጀመሩ በፊት የማይለወጥ የዋጋ ዝርዝር ይደርስዎታል።"
           },
           "items": [
             {
+              "icon": "palette",
               "title": {
-                "en": "Brand design",
-                "am": "የመለያ (ብራንድ) ዲዛይን"
+                "en": "Brand identity",
+                "am": "የብራንድ መለያ"
               },
               "description": {
-                "en": "Logo, colours, fonts and business cards that make your business easy to recognise.",
-                "am": "ንግድዎን በቀላሉ የሚያስለይ ሎጎ፣ ቀለሞች፣ የፊደል ዓይነት እና የመታወቂያ ካርድ።"
+                "en": "Name, logo, colours, type and a short guide your printer can follow.",
+                "am": "ስም፣ ሎጎ፣ ቀለም፣ የፊደል ዓይነት እና አታሚዎ የሚከተለው አጭር መመሪያ።"
+              },
+              "price": {
+                "amountMinor": 4500000,
+                "currency": "ETB"
+              }
+            },
+            {
+              "icon": "laptop",
+              "title": {
+                "en": "Websites",
+                "am": "ድረገጾች"
+              },
+              "description": {
+                "en": "Designed for the phone first, in English and Amharic, ready to hand to your developer or built by me.",
+                "am": "መጀመሪያ ለስልክ የሚታሰብ፣ በእንግሊዝኛና በአማርኛ፤ ለገንቢዎ የሚሰጥ ወይም በእኔ የሚገነባ።"
+              },
+              "price": {
+                "amountMinor": 6000000,
+                "currency": "ETB"
+              }
+            },
+            {
+              "icon": "book",
+              "title": {
+                "en": "Print and editorial",
+                "am": "ኅትመት"
+              },
+              "description": {
+                "en": "Menus, magazines, reports and packaging, checked on paper before they go to press.",
+                "am": "ምናሌ፣ መጽሔት፣ ሪፖርትና ማሸጊያ፤ ወደ ማተሚያ ከመሄዱ በፊት በወረቀት ተፈትሾ።"
               },
               "price": {
                 "amountMinor": 2500000,
                 "currency": "ETB"
-              },
-              "icon": "star"
-            },
-            {
-              "title": {
-                "en": "Event photography",
-                "am": "የዝግጅት ፎቶግራፍ"
-              },
-              "description": {
-                "en": "Weddings, graduations, launches and conferences. Half-day coverage with edited photos.",
-                "am": "ሠርግ፣ ምረቃ፣ የምርት ማስተዋወቂያ እና ጉባኤ። የግማሽ ቀን ሽፋን ከተስተካከሉ ፎቶዎች ጋር።"
-              },
-              "price": {
-                "amountMinor": 1500000,
-                "currency": "ETB"
-              },
-              "icon": "calendar"
-            },
-            {
-              "title": {
-                "en": "Social media design",
-                "am": "የማኅበራዊ ሚዲያ ዲዛይን"
-              },
-              "description": {
-                "en": "Monthly posts and stories for Facebook, Instagram, TikTok and Telegram, in English and Amharic.",
-                "am": "ለፌስቡክ፣ ኢንስታግራም፣ ቲክቶክ እና ቴሌግራም ወርሃዊ ፖስቶች እና ስቶሪዎች፤ በእንግሊዝኛ እና በአማርኛ።"
-              },
-              "price": {
-                "amountMinor": 1200000,
-                "currency": "ETB"
-              },
-              "icon": "heart"
+              }
             }
           ]
         },
         {
-          "type": "faq",
-          "id": "questions",
-          "heading": {
-            "en": "Working with me",
-            "am": "ከእኔ ጋር ሲሠሩ"
+          "type": "about",
+          "id": "about",
+          "eyebrow": {
+            "en": "About",
+            "am": "ስለ እኔ"
           },
-          "items": [
-            {
-              "question": {
-                "en": "How do we start?",
-                "am": "እንዴት እንጀምራለን?"
-              },
-              "answer": {
-                "en": "Send me a short message about what you need. I reply with questions and a price.",
-                "am": "ስለሚፈልጉት ነገር አጭር መልዕክት ይላኩልኝ። ከጥያቄዎች እና ከዋጋ ጋር እመልሳለሁ።"
-              }
-            },
-            {
-              "question": {
-                "en": "How long does a project take?",
-                "am": "አንድ ሥራ ምን ያህል ጊዜ ይወስዳል?"
-              },
-              "answer": {
-                "en": "It depends on the work. I give you a date before we start and keep to it.",
-                "am": "እንደ ሥራው ይለያያል። ከመጀመራችን በፊት ቀን እሰጥዎታለሁ፤ እጠብቀዋለሁም።"
-              }
-            },
-            {
-              "question": {
-                "en": "Can I ask for changes?",
-                "am": "ለውጥ መጠየቅ እችላለሁ?"
-              },
-              "answer": {
-                "en": "Yes. Tell me what you would like changed and we agree on it together.",
-                "am": "አዎ። ምን እንዲቀየር እንደሚፈልጉ ይንገሩኝ፤ አብረን እንስማማበታለን።"
-              }
-            }
-          ]
-        },
-        {
-          "type": "cta",
-          "id": "next-step",
           "heading": {
-            "en": "Have a project in mind?",
-            "am": "በልብዎ ያለ ሥራ አለ?"
+            "en": "I start with coffee, not a computer",
+            "am": "ከኮምፒውተር በፊት ቡና"
           },
           "body": {
-            "en": "Tell me about it and I will reply with ideas and a price.",
-            "am": "ይንገሩኝ፤ ከሐሳቦች እና ከዋጋ ጋር እመልሳለሁ።"
+            "en": "Nine years ago I was setting type beside a printing press in Piassa. Today I work on my own with founders who care how their business looks and sounds.\n\nI take one project at a time. You talk to me, not an account manager, and you see real work every week.",
+            "am": "ከዘጠኝ ዓመት በፊት ፒያሳ ውስጥ ከማተሚያ ማሽን አጠገብ ፊደል አስተካክል ነበር። ዛሬ ንግዳቸው እንዴት እንደሚታይና እንደሚሰማ ከሚጨነቁ መሥራቾች ጋር በግሌ እሠራለሁ።\n\nበአንድ ጊዜ አንድ ሥራ ብቻ እይዛለሁ። የሚያነጋግሩት እኔን ነው እንጂ ወኪል አይደለም፤ በየሳምንቱም የተሠራውን ያያሉ።"
           },
-          "primaryAction": {
+          "image": {
+            "src": "/stock/personal-about-woman-orange-blazer.webp",
+            "alt": {
+              "en": "The same woman in the orange blazer standing beside a pale teal wall",
+              "am": "ያችው ብርቱካናማ ኮት የለበሰች ሴት በፈዛዛ አረንጓዴ-ሰማያዊ ግድግዳ አጠገብ ቆማ"
+            }
+          },
+          "imageSide": "end",
+          "points": [
+            {
+              "en": "One project at a time",
+              "am": "በአንድ ጊዜ አንድ ሥራ"
+            },
+            {
+              "en": "Amharic and English designed together",
+              "am": "አማርኛና እንግሊዝኛ አብረው ይነደፋሉ"
+            },
+            {
+              "en": "Files you own, ready for any printer",
+              "am": "የራስዎ የሆኑ፣ ለማንኛውም አታሚ ዝግጁ ፋይሎች"
+            }
+          ],
+          "action": {
             "label": {
               "en": "Start a project",
-              "am": "ሥራ እናስጀምር"
+              "am": "ሥራ እንጀምር"
             },
-            "href": "/contact"
-          },
-          "secondaryAction": {
-            "label": {
-              "en": "See my work",
-              "am": "ሥራዎቼን ይመልከቱ"
-            },
-            "href": "/work"
+            "href": "/#project"
           }
-        }
-      ]
-    },
-    {
-      "path": "/work",
-      "title": {
-        "en": "My work",
-        "am": "ሥራዎቼ"
-      },
-      "nav": {
-        "en": "Work",
-        "am": "ሥራዎች"
-      },
-      "description": {
-        "en": "Selected design and photography work, plus my experience and education.",
-        "am": "የተመረጡ የዲዛይን እና የፎቶ ሥራዎች፣ እንዲሁም የሥራ ልምዴ እና ትምህርቴ።"
-      },
-      "sections": [
-        {
-          "type": "gallery",
-          "id": "selected-work",
-          "heading": {
-            "en": "Selected work",
-            "am": "የተመረጡ ሥራዎች"
-          },
-          "images": [
-            {
-              "alt": {
-                "en": "Logo and business cards for a local coffee brand",
-                "am": "ለአንድ የአገር ውስጥ ቡና ድርጅት የተሠራ ሎጎ እና የመታወቂያ ካርዶች"
-              },
-              "art": "work"
-            },
-            {
-              "alt": {
-                "en": "Bride and groom at a wedding in Addis Ababa",
-                "am": "በአዲስ አበባ በሠርግ ላይ ሙሽሮች"
-              },
-              "art": "people"
-            },
-            {
-              "alt": {
-                "en": "Set of Instagram posts for a fashion shop",
-                "am": "ለአንድ የልብስ ሱቅ የተዘጋጁ የኢንስታግራም ፖስቶች"
-              },
-              "art": "work"
-            },
-            {
-              "alt": {
-                "en": "Speaker on stage at a conference",
-                "am": "በጉባኤ መድረክ ላይ ንግግር የሚያደርግ ተናጋሪ"
-              },
-              "art": "event"
-            },
-            {
-              "alt": {
-                "en": "Graduation portrait of a student in gown",
-                "am": "ጋውን የለበሰ ተማሪ የምረቃ ፎቶ"
-              },
-              "art": "portrait"
-            }
-          ]
         },
         {
           "type": "timeline",
           "id": "experience",
           "heading": {
-            "en": "Experience and education",
-            "am": "የሥራ ልምድ እና ትምህርት"
-          },
-          "intro": {
-            "en": "Newest first.",
-            "am": "ከቅርቡ ጀምሮ።"
+            "en": "Experience",
+            "am": "የሥራ ልምድ"
           },
           "items": [
             {
@@ -316,16 +398,16 @@
                 "am": "ከ2022 እስከ አሁን"
               },
               "title": {
-                "en": "Freelance graphic designer and photographer",
-                "am": "የግል ግራፊክ ዲዛይነር እና ፎቶግራፈር"
+                "en": "Independent brand and web designer",
+                "am": "በግል የምሠራ የብራንድና የድረገጽ ዲዛይነር"
               },
               "place": {
                 "en": "Addis Ababa",
                 "am": "አዲስ አበባ"
               },
               "description": {
-                "en": "Brand, social media and photography work for businesses and families.",
-                "am": "ለንግድ ድርጅቶች እና ለቤተሰቦች የብራንድ፣ የማኅበራዊ ሚዲያ እና የፎቶ ሥራዎች።"
+                "en": "Identities and websites for cafés, studios, shops and start-ups. Around twelve projects a year.",
+                "am": "ለካፌዎች፣ ለስቱዲዮዎች፣ ለሱቆችና ለአዳዲስ ድርጅቶች መለያና ድረገጽ። በዓመት አሥራ ሁለት ያህል ሥራዎች።"
               }
             },
             {
@@ -334,62 +416,95 @@
                 "am": "ከ2019 እስከ 2022"
               },
               "title": {
-                "en": "Junior designer",
-                "am": "ጀማሪ ዲዛይነር"
+                "en": "Senior designer",
+                "am": "ከፍተኛ ዲዛይነር"
               },
               "place": {
-                "en": "Design and print studio, Addis Ababa",
-                "am": "የዲዛይን እና ኅትመት ስቱዲዮ፣ አዲስ አበባ"
+                "en": "Brand agency, Bole",
+                "am": "የብራንድ ኤጀንሲ፣ ቦሌ"
               },
               "description": {
-                "en": "Posters, packaging and printed materials for local clients.",
-                "am": "ለአገር ውስጥ ደንበኞች ፖስተሮች፣ ማሸጊያዎች እና የኅትመት ሥራዎች።"
+                "en": "Led identity work for banks, drinks and telecom launches with a team of four.",
+                "am": "ከአራት ሰው ቡድን ጋር ለባንኮች፣ ለመጠጥና ለቴሌኮም ምርቶች የመለያ ሥራ መርቻለሁ።"
               }
             },
             {
               "period": {
-                "en": "2015 to 2019",
-                "am": "ከ2015 እስከ 2019"
+                "en": "2016 to 2019",
+                "am": "ከ2016 እስከ 2019"
               },
               "title": {
-                "en": "Degree in graphic design",
-                "am": "በግራፊክ ዲዛይን ዲግሪ"
+                "en": "Junior designer",
+                "am": "ጀማሪ ዲዛይነር"
               },
               "place": {
-                "en": "School of fine arts and design, Addis Ababa",
-                "am": "የሥነ ጥበብ እና ዲዛይን ትምህርት ቤት፣ አዲስ አበባ"
+                "en": "Design and print studio, Piassa",
+                "am": "የዲዛይንና ኅትመት ስቱዲዮ፣ ፒያሳ"
+              },
+              "description": {
+                "en": "Posters, packaging and a lot of time beside the press, learning how ink behaves.",
+                "am": "ፖስተሮች፣ ማሸጊያዎች፣ እና ቀለም በወረቀት ላይ እንዴት እንደሚሆን ለመማር ከማተሚያው አጠገብ ያሳለፍኩት ረጅም ጊዜ።"
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "path": "/contact",
-      "title": {
-        "en": "Contact",
-        "am": "ያግኙኝ"
-      },
-      "nav": {
-        "en": "Contact",
-        "am": "ያግኙኝ"
-      },
-      "description": {
-        "en": "Tell me about your project and I will get back to you.",
-        "am": "ስለ ሥራዎ ይንገሩኝ፤ መልስ እሰጥዎታለሁ።"
-      },
-      "sections": [
+        },
+        {
+          "type": "testimonials",
+          "eyebrow": {
+            "en": "Clients",
+            "am": "ደንበኞች"
+          },
+          "heading": {
+            "en": "In their words",
+            "am": "በራሳቸው አንደበት"
+          },
+          "items": [
+            {
+              "quote": {
+                "en": "Hana asked more questions in one coffee than our last agency did in a year. The logo was right the first time.",
+                "am": "ሀና በአንድ ቡና ላይ የጠየቀችን ጥያቄ የቀድሞው ኤጀንሲያችን በአንድ ዓመት አልጠየቀንም። ሎጎው በመጀመሪያው ዙር ትክክል ነበር።"
+              },
+              "name": "Yonas A.",
+              "role": {
+                "en": "Founder, outdoor gear shop",
+                "am": "መሥራች፣ የጉዞ ዕቃዎች ሱቅ"
+              }
+            },
+            {
+              "quote": {
+                "en": "Clients now call us after seeing the website. Before, we had to explain who we were.",
+                "am": "አሁን ደንበኞች ድረገጹን አይተው ራሳቸው ይደውሉልናል። ከዚህ በፊት ማን እንደሆንን ማስረዳት ነበረብን።"
+              },
+              "name": "Meron G.",
+              "role": {
+                "en": "Partner, architecture studio",
+                "am": "አጋር፣ የአርክቴክቸር ስቱዲዮ"
+              }
+            },
+            {
+              "quote": {
+                "en": "On time, on budget, and the Amharic looks as good as the English. That is rare.",
+                "am": "በጊዜው፣ በበጀቱ፤ አማርኛውም እንደ እንግሊዝኛው ያምራል። ይህ ብዙ ጊዜ አይገኝም።"
+              },
+              "name": "Selam T.",
+              "role": {
+                "en": "Editor, design magazine",
+                "am": "አዘጋጅ፣ የዲዛይን መጽሔት"
+              }
+            }
+          ]
+        },
         {
           "type": "form",
-          "id": "project-enquiry",
+          "id": "project",
           "kind": "contact",
           "heading": {
-            "en": "Tell me about your project",
-            "am": "ስለ ሥራዎ ይንገሩኝ"
+            "en": "Start a project",
+            "am": "ሥራ እንጀምር"
           },
           "intro": {
-            "en": "Share a few details and I will reply within two working days.",
-            "am": "ጥቂት ዝርዝሮችን ያጋሩኝ፤ በሁለት የሥራ ቀናት ውስጥ እመልስልዎታለሁ።"
+            "en": "Tell me what you are building. I reply within two working days with questions, a date and a price.",
+            "am": "ምን እየገነቡ እንደሆነ ይንገሩኝ። በሁለት የሥራ ቀን ውስጥ ከጥያቄ፣ ከቀንና ከዋጋ ጋር እመልሳለሁ።"
           },
           "fields": [
             {
@@ -404,22 +519,14 @@
             {
               "name": "phone",
               "label": {
-                "en": "Phone",
-                "am": "ስልክ"
+                "en": "Phone or Telegram",
+                "am": "ስልክ ወይም ቴሌግራም"
               },
               "type": "tel",
               "required": true
             },
             {
-              "name": "email",
-              "label": {
-                "en": "Email",
-                "am": "ኢሜይል"
-              },
-              "type": "email"
-            },
-            {
-              "name": "service",
+              "name": "need",
               "label": {
                 "en": "What do you need?",
                 "am": "ምን ይፈልጋሉ?"
@@ -428,60 +535,849 @@
               "required": true,
               "options": [
                 {
-                  "en": "Brand design",
-                  "am": "የመለያ (ብራንድ) ዲዛይን"
+                  "en": "Brand identity",
+                  "am": "የብራንድ መለያ"
                 },
                 {
-                  "en": "Event photography",
-                  "am": "የዝግጅት ፎቶግራፍ"
+                  "en": "Website",
+                  "am": "ድረገጽ"
                 },
                 {
-                  "en": "Social media design",
-                  "am": "የማኅበራዊ ሚዲያ ዲዛይን"
+                  "en": "Print and editorial",
+                  "am": "ኅትመት"
                 },
                 {
-                  "en": "Something else",
-                  "am": "ሌላ"
+                  "en": "Not sure yet",
+                  "am": "ገና አልወሰንኩም"
                 }
               ]
             },
             {
-              "name": "event_date",
+              "name": "budget",
               "label": {
-                "en": "Event or deadline date",
-                "am": "የዝግጅቱ ወይም የማስረከቢያ ቀን"
+                "en": "Budget",
+                "am": "በጀት"
               },
-              "type": "date"
+              "type": "select",
+              "options": [
+                {
+                  "en": "Under 50,000 Birr",
+                  "am": "ከ50,000 ብር በታች"
+                },
+                {
+                  "en": "50,000 to 150,000 Birr",
+                  "am": "ከ50,000 እስከ 150,000 ብር"
+                },
+                {
+                  "en": "Over 150,000 Birr",
+                  "am": "ከ150,000 ብር በላይ"
+                }
+              ]
             },
             {
-              "name": "message",
+              "name": "about",
               "label": {
-                "en": "About your project",
-                "am": "ስለ ሥራዎ"
+                "en": "A few words about the project",
+                "am": "ስለ ሥራው ጥቂት ቃላት"
               },
               "type": "textarea",
               "required": true
             }
           ],
           "submitLabel": {
-            "en": "Send enquiry",
-            "am": "ጥያቄውን ይላኩ"
+            "en": "Send",
+            "am": "ላክ"
           },
           "successMessage": {
-            "en": "Thank you! I will get back to you soon.",
-            "am": "እናመሰግናለን! በቅርቡ አገኝዎታለሁ።"
+            "en": "Thank you. I will write back within two working days.",
+            "am": "አመሰግናለሁ። በሁለት የሥራ ቀን ውስጥ እጽፍልዎታለሁ።"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/work",
+      "title": {
+        "en": "Work",
+        "am": "ሥራዎች"
+      },
+      "nav": {
+        "en": "Work",
+        "am": "ሥራዎች"
+      },
+      "description": {
+        "en": "Selected brand, web, print and lettering projects by Hana Bekele, 2023 to 2026.",
+        "am": "በሀና በቀለ የተሠሩ የተመረጡ የብራንድ፣ የድረገጽ፣ የኅትመትና የፊደል ሥራዎች፤ ከ2023 እስከ 2026።"
+      },
+      "sections": [
+        {
+          "type": "cards",
+          "layout": "grid",
+          "eyebrow": {
+            "en": "Work, 2023 to 2026",
+            "am": "ሥራዎች፣ ከ2023 እስከ 2026"
+          },
+          "heading": {
+            "en": "Six projects I'm proud of",
+            "am": "የምኮራባቸው ስድስት ሥራዎች"
+          },
+          "intro": {
+            "en": "Each one began with a conversation and ended with something a business uses every day.",
+            "am": "እያንዳንዱ በውይይት ጀምሮ ንግዱ በየቀኑ በሚጠቀምበት ነገር ተጠናቋል።"
+          },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-card-website-laptop.webp",
+                "alt": {
+                  "en": "A laptop on a desk showing a teal architecture website",
+                  "am": "በጠረጴዛ ላይ ያለ ላፕቶፕ፤ አረንጓዴ-ሰማያዊ የአርክቴክቸር ድረገጽ ያሳያል"
+                }
+              },
+              "subtitle": {
+                "en": "Web design",
+                "am": "የድረገጽ ዲዛይን"
+              },
+              "title": {
+                "en": "Sefer Architects",
+                "am": "ሰፈር አርክቴክትስ"
+              },
+              "meta": [
+                {
+                  "en": "Website",
+                  "am": "ድረገጽ"
+                },
+                {
+                  "en": "2026",
+                  "am": "2026"
+                },
+                {
+                  "en": "English + Amharic",
+                  "am": "እንግሊዝኛ + አማርኛ"
+                }
+              ],
+              "description": {
+                "en": "A calm two-language site that puts the buildings first. Enquiries doubled in three months.",
+                "am": "ሕንጻዎቹን የሚያስቀድም፣ በሁለት ቋንቋ የተሠራ ረጋ ያለ ድረገጽ። በሦስት ወር ውስጥ የደንበኛ ጥያቄ በእጥፍ ጨመረ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-logo-tablet.webp",
+                "alt": {
+                  "en": "A hand with a stylus drawing a white bear-head logo on a black tablet",
+                  "am": "በጥቁር ታብሌት ላይ ነጭ የድብ ራስ ሎጎ የሚሥል እጅ"
+                }
+              },
+              "subtitle": {
+                "en": "Brand identity",
+                "am": "የብራንድ መለያ"
+              },
+              "title": {
+                "en": "Dib Trek Gear",
+                "am": "ድብ የጉዞ ዕቃዎች"
+              },
+              "meta": [
+                {
+                  "en": "Logo and identity",
+                  "am": "ሎጎና መለያ"
+                },
+                {
+                  "en": "2025",
+                  "am": "2025"
+                },
+                {
+                  "en": "6 weeks",
+                  "am": "6 ሳምንት"
+                }
+              ],
+              "description": {
+                "en": "A bear mark that stays clear on a zip pull and on a shop sign. Now on every bag they sell.",
+                "am": "በዚፕ ጫፍም በሱቅ ሰሌዳም ላይ ጥርት ብሎ የሚታይ የድብ ምልክት። ዛሬ በሚሸጡት ቦርሳ ሁሉ ላይ አለ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/shop-card-woven-scarves.webp",
+                "alt": {
+                  "en": "Four folded hand-woven cotton scarves in blue, tan, pink and purple on a white surface",
+                  "am": "በነጭ ገጽ ላይ የተጣጠፉ አራት በእጅ የተሸመኑ የጥጥ ሻርፖች፤ ሰማያዊ፣ ቡናማ፣ ሮዝና ወይን ጠጅ"
+                }
+              },
+              "subtitle": {
+                "en": "Art direction",
+                "am": "የሥነ ጥበብ አመራር"
+              },
+              "title": {
+                "en": "Shema Collective",
+                "am": "ሸማ ኮሌክቲቭ"
+              },
+              "meta": [
+                {
+                  "en": "Product campaign",
+                  "am": "የምርት ዘመቻ"
+                },
+                {
+                  "en": "2025",
+                  "am": "2025"
+                },
+                {
+                  "en": "12 images",
+                  "am": "12 ምስሎች"
+                }
+              ],
+              "description": {
+                "en": "One white table, four colours, nothing else. A launch shoot that filled the weavers' order book before opening day.",
+                "am": "አንድ ነጭ ጠረጴዛ፣ አራት ቀለም፣ ሌላ ምንም የለም። ሱቁ ከመከፈቱ በፊት የሸማኔዎቹን የትዕዛዝ ደብተር የሞላ የማስተዋወቂያ ፎቶ ሥራ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-brochure-layout.webp",
+                "alt": {
+                  "en": "An open printed brochure with a pink layout and the large heading GRAFICO, on a wooden surface",
+                  "am": "በእንጨት ላይ የተከፈተ የታተመ ብሮሸር፤ ሮዝ ገጽና ትልቅ GRAFICO የሚል ርእስ አለው"
+                }
+              },
+              "subtitle": {
+                "en": "Editorial design",
+                "am": "የኅትመት ዲዛይን"
+              },
+              "title": {
+                "en": "Grafico Magazine",
+                "am": "ግራፊኮ መጽሔት"
+              },
+              "meta": [
+                {
+                  "en": "Print",
+                  "am": "ኅትመት"
+                },
+                {
+                  "en": "2024",
+                  "am": "2024"
+                },
+                {
+                  "en": "48 pages",
+                  "am": "48 ገጽ"
+                }
+              ],
+              "description": {
+                "en": "Grid, type and cover for a design yearbook. The first print run sold out in two weeks.",
+                "am": "ለዓመታዊ የዲዛይን መጽሔት የገጽ አቀማመጥ፣ የፊደል ምርጫና ሽፋን። የመጀመሪያው ኅትመት በሁለት ሳምንት ተሸጦ አለቀ።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-gallery-lettering-sketches.webp",
+                "alt": {
+                  "en": "Hand-drawn logo and lettering sketches on loose paper and a sketchbook on a wooden desk",
+                  "am": "በእንጨት ጠረጴዛ ላይ በወረቀትና በደብተር የተሣሉ የሎጎና የፊደል ንድፎች"
+                }
+              },
+              "subtitle": {
+                "en": "Lettering",
+                "am": "የፊደል ጥበብ"
+              },
+              "title": {
+                "en": "Buna Bet Lettering",
+                "am": "የቡና ቤት ፊደላት"
+              },
+              "meta": [
+                {
+                  "en": "Hand lettering",
+                  "am": "የእጅ ጽሑፍ"
+                },
+                {
+                  "en": "2023",
+                  "am": "2023"
+                },
+                {
+                  "en": "Latin + Ge'ez",
+                  "am": "ላቲን + ግዕዝ"
+                }
+              ],
+              "description": {
+                "en": "Forty sketches to find one word mark that reads as well in Ge'ez as in Latin.",
+                "am": "በግዕዝም በላቲንም እኩል የሚነበብ አንድ የስም ምልክት ለማግኘት የተሣሉ አርባ ንድፎች።"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-gallery-pattern.webp",
+                "alt": {
+                  "en": "A geometric repeat pattern in orange, grey-blue and yellow",
+                  "am": "በብርቱካናማ፣ በግራጫ-ሰማያዊና በቢጫ የተደጋገመ ጂኦሜትሪያዊ ጥለት"
+                }
+              },
+              "subtitle": {
+                "en": "Pattern design",
+                "am": "የጥለት ዲዛይን"
+              },
+              "title": {
+                "en": "Tibeb Tea Packaging",
+                "am": "ጥበብ ሻይ ማሸጊያ"
+              },
+              "meta": [
+                {
+                  "en": "Packaging",
+                  "am": "ማሸጊያ"
+                },
+                {
+                  "en": "2023",
+                  "am": "2023"
+                },
+                {
+                  "en": "5 flavours",
+                  "am": "5 ጣዕሞች"
+                }
+              ],
+              "description": {
+                "en": "A pattern family drawn from woven borders, one colourway for each flavour on the shelf.",
+                "am": "ከጥለት ጠርዞች የተቀዳ የጥለት ቤተሰብ፤ ለእያንዳንዱ ጣዕም የራሱ ቀለም።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "stats",
+          "tone": "dark",
+          "items": [
+            {
+              "value": {
+                "en": "60+",
+                "am": "60+"
+              },
+              "label": {
+                "en": "projects delivered",
+                "am": "የተጠናቀቁ ሥራዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "9",
+                "am": "9"
+              },
+              "label": {
+                "en": "years of practice",
+                "am": "ዓመት ልምድ"
+              }
+            },
+            {
+              "value": {
+                "en": "7 in 10",
+                "am": "ከ10ሩ 7ቱ"
+              },
+              "label": {
+                "en": "clients come back",
+                "am": "ደንበኞች ተመልሰው ይመጣሉ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "eyebrow": {
+            "en": "Process",
+            "am": "አሠራር"
+          },
+          "heading": {
+            "en": "How a project runs",
+            "am": "አንድ ሥራ እንዴት ይሄዳል"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "We talk",
+                "am": "እንነጋገራለን"
+              },
+              "description": {
+                "en": "An hour over coffee or a call. I listen and take notes.",
+                "am": "አንድ ሰዓት በቡና ላይ ወይም በስልክ። አዳምጣለሁ፣ እጽፋለሁ።"
+              }
+            },
+            {
+              "title": {
+                "en": "I quote",
+                "am": "ዋጋ እሰጣለሁ"
+              },
+              "description": {
+                "en": "A fixed price, a date and a clear list of what you get.",
+                "am": "የማይለወጥ ዋጋ፣ ቀን እና የሚረከቡት ነገር ግልጽ ዝርዝር።"
+              }
+            },
+            {
+              "title": {
+                "en": "I design",
+                "am": "እነድፋለሁ"
+              },
+              "description": {
+                "en": "Two directions first, then one refined together, week by week.",
+                "am": "መጀመሪያ ሁለት አቅጣጫ፤ ከዚያ አንዱን በየሳምንቱ አብረን እናጠራዋለን።"
+              }
+            },
+            {
+              "title": {
+                "en": "You launch",
+                "am": "ይጀምራሉ"
+              },
+              "description": {
+                "en": "Final files, a short guide and my help on the day it goes live.",
+                "am": "የመጨረሻ ፋይሎች፣ አጭር መመሪያ እና በመጀመሪያው ቀን የእኔ እገዛ።"
+              }
+            }
+          ],
+          "action": {
+            "label": {
+              "en": "Start a project",
+              "am": "ሥራ እንጀምር"
+            },
+            "href": "/#project"
           }
         },
         {
-          "type": "contact",
-          "id": "contact",
+          "type": "cta",
           "heading": {
-            "en": "Call or message me",
-            "am": "ይደውሉልኝ ወይም መልዕክት ይላኩልኝ"
+            "en": "Yours could be next",
+            "am": "ቀጣዩ የእርስዎ ሊሆን ይችላል"
+          },
+          "body": {
+            "en": "I have room for two new projects this quarter.",
+            "am": "በዚህ ሩብ ዓመት ለሁለት አዲስ ሥራ ቦታ አለኝ።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Start a project",
+              "am": "ሥራ እንጀምር"
+            },
+            "href": "/#project"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Write on Telegram",
+              "am": "በቴሌግራም ይጻፉ"
+            },
+            "href": "https://t.me/yourbusiness"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/about",
+      "title": {
+        "en": "About",
+        "am": "ስለ እኔ"
+      },
+      "nav": {
+        "en": "About",
+        "am": "ስለ እኔ"
+      },
+      "description": {
+        "en": "About Hana Bekele: nine years of brand, print and web design in Addis Ababa.",
+        "am": "ስለ ሀና በቀለ፦ በአዲስ አበባ ዘጠኝ ዓመት የብራንድ፣ የኅትመትና የድረገጽ ዲዛይን።"
+      },
+      "sections": [
+        {
+          "type": "about",
+          "eyebrow": {
+            "en": "About Hana",
+            "am": "ስለ ሀና"
+          },
+          "heading": {
+            "en": "Designer, printer's apprentice, Addis born",
+            "am": "ዲዛይነር፣ የማተሚያ ቤት ተማሪ፣ የአዲስ አበባ ልጅ"
+          },
+          "body": {
+            "en": "I grew up near Piassa, where every shop sign was painted by hand. I still think a good brand should be simple enough to paint on a wall.\n\nI learned the craft at a print studio, led identity work at an agency in Bole, and went independent in 2022. Since then I have worked with cafés, architects, makers and a magazine.\n\nGe'ez script is not an afterthought in my work. I draw and set Amharic first, so it never looks like a translation.",
+            "am": "ያደግሁት ፒያሳ አካባቢ ነው፤ የሱቅ ሰሌዳ ሁሉ በእጅ በሚጻፍበት። ዛሬም ጥሩ ብራንድ በግድግዳ ላይ በብሩሽ ሊጻፍ የሚችል ያህል ቀላል መሆን አለበት ብዬ አምናለሁ።\n\nሙያውን የተማርኩት በማተሚያ ስቱዲዮ ነው፤ ከዚያ ቦሌ በሚገኝ ኤጀንሲ የመለያ ሥራ መራሁ፤ በ2022 በግሌ መሥራት ጀመርኩ። ከዚያ ወዲህ ከካፌዎች፣ ከአርክቴክቶች፣ ከእጅ ባለሙያዎችና ከአንድ መጽሔት ጋር ሠርቻለሁ።\n\nበሥራዬ የግዕዝ ፊደል በኋላ የሚጨመር ነገር አይደለም። አማርኛውን አስቀድሜ ስለምነድፍ ትርጉም አይመስልም።"
+          },
+          "image": {
+            "src": "/stock/personal-about-creative-desk.webp",
+            "alt": {
+              "en": "A wooden desk with pencils, brushes, books, rolled prints, a lamp and house plants",
+              "am": "እርሳሶች፣ ብሩሾች፣ መጻሕፍት፣ የተጠቀለሉ ኅትመቶች፣ መብራትና የቤት አትክልት ያሉበት የእንጨት ጠረጴዛ"
+            }
+          },
+          "imageSide": "end",
+          "highlights": [
+            {
+              "value": {
+                "en": "9",
+                "am": "9"
+              },
+              "label": {
+                "en": "years",
+                "am": "ዓመት"
+              }
+            },
+            {
+              "value": {
+                "en": "60+",
+                "am": "60+"
+              },
+              "label": {
+                "en": "projects",
+                "am": "ሥራዎች"
+              }
+            },
+            {
+              "value": {
+                "en": "12",
+                "am": "12"
+              },
+              "label": {
+                "en": "a year, no more",
+                "am": "በዓመት፣ ከዚያ አይበልጥም"
+              }
+            }
+          ]
+        },
+        {
+          "type": "timeline",
+          "heading": {
+            "en": "Experience and education",
+            "am": "የሥራ ልምድና ትምህርት"
           },
           "intro": {
-            "en": "You can also reach me on Telegram.",
-            "am": "በቴሌግራምም ሊያገኙኝ ይችላሉ።"
+            "en": "Newest first.",
+            "am": "ከቅርቡ ጀምሮ።"
+          },
+          "items": [
+            {
+              "period": {
+                "en": "2022 to now",
+                "am": "ከ2022 እስከ አሁን"
+              },
+              "title": {
+                "en": "Independent brand and web designer",
+                "am": "በግል የምሠራ የብራንድና የድረገጽ ዲዛይነር"
+              },
+              "place": {
+                "en": "Addis Ababa",
+                "am": "አዲስ አበባ"
+              },
+              "description": {
+                "en": "Identities and websites for cafés, studios, shops and start-ups. Around twelve projects a year.",
+                "am": "ለካፌዎች፣ ለስቱዲዮዎች፣ ለሱቆችና ለአዳዲስ ድርጅቶች መለያና ድረገጽ። በዓመት አሥራ ሁለት ያህል ሥራዎች።"
+              }
+            },
+            {
+              "period": {
+                "en": "2019 to 2022",
+                "am": "ከ2019 እስከ 2022"
+              },
+              "title": {
+                "en": "Senior designer",
+                "am": "ከፍተኛ ዲዛይነር"
+              },
+              "place": {
+                "en": "Brand agency, Bole",
+                "am": "የብራንድ ኤጀንሲ፣ ቦሌ"
+              },
+              "description": {
+                "en": "Led identity work for banks, drinks and telecom launches with a team of four.",
+                "am": "ከአራት ሰው ቡድን ጋር ለባንኮች፣ ለመጠጥና ለቴሌኮም ምርቶች የመለያ ሥራ መርቻለሁ።"
+              }
+            },
+            {
+              "period": {
+                "en": "2016 to 2019",
+                "am": "ከ2016 እስከ 2019"
+              },
+              "title": {
+                "en": "Junior designer",
+                "am": "ጀማሪ ዲዛይነር"
+              },
+              "place": {
+                "en": "Design and print studio, Piassa",
+                "am": "የዲዛይንና ኅትመት ስቱዲዮ፣ ፒያሳ"
+              },
+              "description": {
+                "en": "Posters, packaging and a lot of time beside the press, learning how ink behaves.",
+                "am": "ፖስተሮች፣ ማሸጊያዎች፣ እና ቀለም በወረቀት ላይ እንዴት እንደሚሆን ለመማር ከማተሚያው አጠገብ ያሳለፍኩት ረጅም ጊዜ።"
+              }
+            },
+            {
+              "period": {
+                "en": "2012 to 2016",
+                "am": "ከ2012 እስከ 2016"
+              },
+              "title": {
+                "en": "Degree in graphic design",
+                "am": "በግራፊክ ዲዛይን ዲግሪ"
+              },
+              "place": {
+                "en": "School of fine arts and design, Addis Ababa",
+                "am": "የሥነ ጥበብና ዲዛይን ትምህርት ቤት፣ አዲስ አበባ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "variant": "list",
+          "eyebrow": {
+            "en": "How I work",
+            "am": "የአሠራር መርሆች"
+          },
+          "heading": {
+            "en": "What you can count on",
+            "am": "ሊተማመኑበት የሚችሉት"
+          },
+          "items": [
+            {
+              "icon": "users",
+              "title": {
+                "en": "You work with me",
+                "am": "ከእኔ ጋር ይሠራሉ"
+              },
+              "description": {
+                "en": "No hand-offs. The person you brief is the person who designs.",
+                "am": "ሥራው ለሌላ አይተላለፍም። የሚያስረዱትም የሚነድፈውም አንድ ሰው ነው።"
+              }
+            },
+            {
+              "icon": "calendar",
+              "title": {
+                "en": "Dates are kept",
+                "am": "ቀን ይከበራል"
+              },
+              "description": {
+                "en": "You get a calendar on day one and an update every Friday.",
+                "am": "በመጀመሪያው ቀን የጊዜ ሰሌዳ፣ በየዓርቡ ደግሞ የሥራ ሪፖርት ያገኛሉ።"
+              }
+            },
+            {
+              "icon": "globe",
+              "title": {
+                "en": "Two scripts, one brand",
+                "am": "ሁለት ፊደል፣ አንድ ብራንድ"
+              },
+              "description": {
+                "en": "Ge'ez and Latin are drawn to sit together from the first sketch.",
+                "am": "ግዕዝና ላቲን ከመጀመሪያው ንድፍ ጀምሮ አብረው እንዲሄዱ ይሣላሉ።"
+              }
+            },
+            {
+              "icon": "key",
+              "title": {
+                "en": "You own the files",
+                "am": "ፋይሎቹ የእርስዎ ናቸው"
+              },
+              "description": {
+                "en": "Every source file is handed over when the last invoice is paid.",
+                "am": "የመጨረሻው ክፍያ ሲፈጸም ሁሉም ዋና ፋይል ይረከባሉ።"
+              }
+            },
+            {
+              "icon": "ruler",
+              "title": {
+                "en": "Tested in real life",
+                "am": "በተግባር የተፈተነ"
+              },
+              "description": {
+                "en": "Logos are printed small, sites are opened on a slow phone.",
+                "am": "ሎጎ በትንሹ ታትሞ፣ ድረገጽ በዘገምተኛ ስልክ ተከፍቶ ይፈተናል።"
+              }
+            },
+            {
+              "icon": "message",
+              "title": {
+                "en": "Plain words",
+                "am": "ግልጽ ቋንቋ"
+              },
+              "description": {
+                "en": "No design jargon. I explain each choice in a sentence.",
+                "am": "የሙያ ቃል አላበዛም። እያንዳንዱን ምርጫ በአንድ ዓረፍተ ነገር አስረዳለሁ።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "quote": {
+            "en": "If it can't be painted on a wall in Merkato, it isn't finished.",
+            "am": "መርካቶ ውስጥ በግድግዳ ላይ ሊጻፍ ካልቻለ ገና አላለቀም።"
+          },
+          "name": {
+            "en": "Hana Bekele",
+            "am": "ሀና በቀለ"
+          },
+          "role": {
+            "en": "on what makes a good logo",
+            "am": "ጥሩ ሎጎ ምን እንደሆነ ስትናገር"
+          }
+        },
+        {
+          "type": "cta",
+          "heading": {
+            "en": "Let's make something clear",
+            "am": "ጥርት ያለ ነገር አብረን እንሥራ"
+          },
+          "body": {
+            "en": "One conversation is enough to know if we fit.",
+            "am": "መስማማታችንን ለማወቅ አንድ ውይይት ይበቃል።"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Start a project",
+              "am": "ሥራ እንጀምር"
+            },
+            "href": "/#project"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "See the work",
+              "am": "ሥራዎቹን ይመልከቱ"
+            },
+            "href": "/work"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": {
+        "en": "Contact",
+        "am": "ያግኙኝ"
+      },
+      "nav": {
+        "en": "Contact",
+        "am": "ያግኙኝ"
+      },
+      "description": {
+        "en": "Call, write on Telegram or send a message to Hana Bekele about your project.",
+        "am": "ስለ ሥራዎ ለሀና በቀለ ይደውሉ፣ በቴሌግራም ይጻፉ ወይም መልእክት ይላኩ።"
+      },
+      "sections": [
+        {
+          "type": "contact",
+          "heading": {
+            "en": "Say hello",
+            "am": "ሰላም ይበሉኝ"
+          },
+          "intro": {
+            "en": "Telegram is fastest. I answer calls on weekdays and meet by appointment anywhere in Addis.",
+            "am": "ፈጣኑ መንገድ ቴሌግራም ነው። በሥራ ቀናት ስልክ እመልሳለሁ፤ በቀጠሮ በአዲስ አበባ የትም እንገናኛለን።"
+          }
+        },
+        {
+          "type": "form",
+          "id": "message",
+          "kind": "contact",
+          "heading": {
+            "en": "Send a message",
+            "am": "መልእክት ይላኩ"
+          },
+          "intro": {
+            "en": "For a quick question, a talk invitation or anything that is not a project yet.",
+            "am": "ለአጭር ጥያቄ፣ ለንግግር ግብዣ ወይም ገና ሥራ ላልሆነ ማንኛውም ነገር።"
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": {
+                "en": "Your name",
+                "am": "ስምዎ"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": {
+                "en": "Phone or Telegram",
+                "am": "ስልክ ወይም ቴሌግራም"
+              },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "message",
+              "label": {
+                "en": "Message",
+                "am": "መልእክት"
+              },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": {
+            "en": "Send",
+            "am": "ላክ"
+          },
+          "successMessage": {
+            "en": "Thank you. I will answer soon.",
+            "am": "አመሰግናለሁ። በቅርቡ እመልሳለሁ።"
+          }
+        },
+        {
+          "type": "faq",
+          "heading": {
+            "en": "Before you write",
+            "am": "ከመጻፍዎ በፊት"
+          },
+          "items": [
+            {
+              "question": {
+                "en": "How long does a project take?",
+                "am": "አንድ ሥራ ምን ያህል ጊዜ ይወስዳል?"
+              },
+              "answer": {
+                "en": "A brand identity takes four to six weeks, a website six to eight. You get the dates before we start.",
+                "am": "የብራንድ መለያ ከአራት እስከ ስድስት ሳምንት፣ ድረገጽ ከስድስት እስከ ስምንት ሳምንት ይወስዳል። ቀኖቹን ከመጀመራችን በፊት ያውቃሉ።"
+              }
+            },
+            {
+              "question": {
+                "en": "How do I pay?",
+                "am": "ክፍያ እንዴት ነው?"
+              },
+              "answer": {
+                "en": "Half to start and half on delivery, by bank transfer or Telebirr, in Birr.",
+                "am": "ግማሹ ሲጀመር፣ ግማሹ ሲረከቡ፤ በባንክ ዝውውር ወይም በቴሌብር፣ በብር።"
+              }
+            },
+            {
+              "question": {
+                "en": "Can I ask for changes?",
+                "am": "ለውጥ መጠየቅ እችላለሁ?"
+              },
+              "answer": {
+                "en": "Yes. Every stage includes two rounds of changes, and we agree on anything more together.",
+                "am": "አዎ። በእያንዳንዱ ደረጃ ሁለት ዙር ማስተካከያ ተካትቷል፤ ከዚያ በላይ ካስፈለገ አብረን እንስማማለን።"
+              }
+            },
+            {
+              "question": {
+                "en": "Do you work outside Addis Ababa?",
+                "am": "ከአዲስ አበባ ውጭ ይሠራሉ?"
+              },
+              "answer": {
+                "en": "Yes. Most of the work happens on Telegram and video calls.",
+                "am": "አዎ። አብዛኛው ሥራ በቴሌግራምና በቪዲዮ ጥሪ ይከናወናል።"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "heading": {
+            "en": "Ready when you are",
+            "am": "እርስዎ ሲዘጋጁ እኔ ዝግጁ ነኝ"
+          },
+          "primaryAction": {
+            "label": {
+              "en": "Start a project",
+              "am": "ሥራ እንጀምር"
+            },
+            "href": "/#project"
+          },
+          "secondaryAction": {
+            "label": {
+              "en": "Call me",
+              "am": "ይደውሉልኝ"
+            },
+            "href": "tel:+251911000000"
           }
         }
       ]
