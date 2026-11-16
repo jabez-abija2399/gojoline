@@ -68,7 +68,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "immersive",
+          "variant": "split",
           "eyebrow": {
             "en": "Registration is open",
             "am": "ምዝገባ ተጀምሯል"

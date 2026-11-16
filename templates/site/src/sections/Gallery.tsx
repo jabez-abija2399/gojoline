@@ -12,7 +12,7 @@ export function Gallery({ section }: { section: GallerySection }) {
         <div className="container-site flex flex-col gap-8 md:gap-10">
           <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
           {/* A row to swipe: tall and wide photos alternate, like a contact sheet. */}
-          <ul tabIndex={0} aria-label={text(section.heading)} className="rail">
+          <ul role="group" tabIndex={0} aria-label={text(section.heading)} className="rail">
             {section.images.map((image, i) => (
               <li key={i} className={`zoom flex-none snap-start rounded-site ${i % 3 === 1 ? "w-[78vw] sm:w-[30rem]" : "w-[58vw] sm:w-[22rem]"}`}>
                 <Picture image={image} sizes="(min-width: 640px) 30rem, 78vw" className="h-72 w-full rounded-site sm:h-96" />

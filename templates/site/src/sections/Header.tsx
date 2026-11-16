@@ -36,11 +36,11 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
         {uiText("skip", lang)}
       </a>
       <div className="container-site flex items-center justify-between gap-3 py-2">
-        <a href={href("/")} className="wordmark flex min-h-11 min-w-0 items-center gap-2.5 font-heading text-xl font-bold">
+        <a href={href("/")} className="wordmark flex min-h-11 min-w-0 items-center gap-2.5 font-heading text-lg leading-tight font-bold min-[480px]:text-xl">
           <span aria-hidden="true" className="brand-mark">
             {[...text(site.name).trim()][0]?.toUpperCase()}
           </span>
-          <span className="truncate">{text(site.name)}</span>
+          <span className="line-clamp-2">{text(site.name)}</span>
         </a>
         <nav aria-label={uiText("pages", lang)} className="nav-desktop hidden items-center gap-1 md:flex">
           {links}
@@ -57,10 +57,10 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
             }}
           >
             <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-site border border-current/30 px-3 font-medium [&::-webkit-details-marker]:hidden">
-              <svg aria-hidden="true" viewBox="0 0 24 24" className="me-2 size-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 min-[400px]:me-2" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
                 <path d="M4 6h16M4 12h16M4 18h16" />
               </svg>
-              <span>{uiText("pages", lang)}</span>
+              <span className="max-[399px]:sr-only">{uiText("pages", lang)}</span>
             </summary>
             <nav
               aria-label={uiText("pages", lang)}

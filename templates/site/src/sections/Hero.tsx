@@ -118,9 +118,11 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           {actions()}
           {facts && <Facts facts={facts} className="mt-2 border-t border-line pt-6" />}
         </div>
-        <div className="depth-frame me-3.5 mb-3.5">
-          <div className="zoom rounded-site">
-            <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 70vw" className="aspect-[4/3] w-full rounded-site" />
+        <div className="relative me-3.5 mb-3.5">
+          <div className="depth-frame">
+            <div className="zoom rounded-site">
+              <Picture image={section.image} priority={first} sizes="(min-width: 768px) 50vw, 70vw" className="aspect-[4/3] w-full rounded-site" />
+            </div>
           </div>
           {chip && (
             <p className="info-chip enter flex items-center gap-3 font-semibold" style={{ "--i": 5 } as React.CSSProperties}>
@@ -145,7 +147,7 @@ function Facts({ facts, className = "" }: { facts: Fact[]; className?: string })
     <dl className={`enter flex flex-wrap gap-x-10 gap-y-4 ${className}`} style={{ "--i": 4 } as React.CSSProperties}>
       {facts.map((f, i) => (
         <div key={i} className="flex flex-col-reverse">
-          <dt className="text-sm opacity-80">{text(f.label)}</dt>
+          <dt className="small-label">{text(f.label)}</dt>
           <dd className="fact-value">{text(f.value)}</dd>
         </div>
       ))}

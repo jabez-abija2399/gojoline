@@ -18,7 +18,7 @@ export function Schedule({ section }: { section: ScheduleSection }) {
                 <li key={i} className="card reveal flex flex-col gap-1 p-4 text-center">
                   <span className="font-semibold">{text(item.title)}</span>
                   <span className="time-value">{text(item.time)}</span>
-                  {item.note && <span className="text-sm text-muted">{text(item.note)}</span>}
+                  {item.note && <span className="small-label text-muted">{text(item.note)}</span>}
                 </li>
               ))}
             </ul>

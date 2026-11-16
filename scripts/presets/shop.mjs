@@ -78,7 +78,7 @@ save("shop", {
       sections: [
         {
           type: "hero",
-          variant: "immersive",
+          variant: "centered",
           eyebrow: t("Merkato · Addis Ababa", "መርካቶ · አዲስ አበባ"),
           heading: t("Woven by hand, worn with pride", "በእጅ የተሸመነ፣ በኩራት የሚለበስ"),
           subheading: t("Habesha kemis, netela and handmade goods from weavers we know by name. Order by message and pay when it reaches you.", "በስም ከምናውቃቸው ሸማኔዎች የተገኙ የሀበሻ ቀሚስ፣ ነጠላና የእጅ ሥራዎች። በመልእክት ይዘዙ፤ ሲደርስዎ ይክፈሉ።"),

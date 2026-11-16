@@ -39,7 +39,7 @@ export function About({ section }: { section: AboutSection }) {
             <dl className="mt-2 grid grid-cols-2 gap-4 sm:grid-cols-3">
               {section.highlights.map((h, i) => (
                 <div key={i} className="highlight lift flex flex-col-reverse justify-end rounded-site bg-primary-soft p-4">
-                  <dt className="text-muted">{text(h.label)}</dt>
+                  <dt>{text(h.label)}</dt>
                   <dd className="font-heading text-2xl font-bold">{text(h.value)}</dd>
                 </div>
               ))}

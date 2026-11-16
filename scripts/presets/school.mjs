@@ -70,7 +70,7 @@ save("school", {
       sections: [
         {
           type: "hero",
-          variant: "immersive",
+          variant: "split",
           eyebrow: t("Registration is open", "ምዝገባ ተጀምሯል"),
           heading: t("Where every child is known by name", "እያንዳንዱ ልጅ በስሙ የሚታወቅበት"),
           subheading: t("Kindergarten to Grade 8 in the heart of Adama. Small classes, caring teachers and a place your child will be happy to come to.", "ከመዋዕለ ሕፃናት እስከ 8ኛ ክፍል በአዳማ እምብርት። አነስተኛ ክፍሎች፣ አሳቢ መምህራን እና ልጅዎ በደስታ የሚመጣበት ቦታ።"),

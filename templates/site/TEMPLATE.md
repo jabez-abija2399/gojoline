@@ -51,7 +51,7 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 
 Form fields: `{ "name": "phone", "label": {...}, "type": "tel", "required": true }`. Types: text, email, tel, date, time, number, select (with `options`), textarea. Keep forms short (2 to 6 fields). Never ask for passwords, PINs, card numbers, bank details or ID numbers. Add a form when the owner wants bookings, orders, registrations or messages; link to it with `"#<id>"` (for example a hero button to `"#booking"`).
 
-Most sections also take `eyebrow`: two or three words above the title ("Our rooms", "Since 2012"). Use it on most sections of a site, never repeating the title.
+Every section with a title except `stats` and `cta` also takes `eyebrow`: two or three words above the title ("Our rooms", "Since 2012"). Use it on most sections of a site, never repeating the title.
 
 Icons for `services`: coffee, utensils, bed, stethoscope, school, shopping-bag, church, calendar, heart, home, map, scissors, car, star, phone, check, wifi, clock, users, shield, leaf, award, globe, briefcase, camera, music, book, sparkles, truck, key, building, sun, plane, moon, droplet, mail, message, baby, palette, wrench, chart, graduation, pill, flask, mountain, tree, gift, ruler, bath, pin, laptop, handshake, mic, flower, dumbbell, bus.
 
@@ -85,29 +85,29 @@ Build the home page in the order visitors of that kind of business look for thin
 | Business | Style | Home page, top to bottom |
 | --- | --- | --- |
 | Hotel, lodge, guest house | `editorial`, font `elegant` | `immersive` hero (place as eyebrow, 2 to 5 word headline, one booking button, `facts`: rooms, distance, from-price) → `about` welcome → rooms as `cards` `feature` with `meta`, price and `priceNote` "per night" → amenities as `services` `list` → experiences as `cards` `scroll` → `gallery` → `testimonials` → booking `form` → `faq` → `map` → `cta` with a photo |
-| Café, restaurant | `warm`, font `classic` | photo hero with "See the menu" → signature dishes as `cards` `grid` with prices → `about` → `gallery` → `testimonials` → `contact` + `map` → `cta`; the full `menu` on its own page |
+| Café, restaurant | `warm`, font `classic` | `immersive` hero with "See the menu" → signature dishes as `cards` `grid` with prices → `about` → `gallery` → `testimonials` → `contact` + `map` → `cta`; the full `menu` on its own page |
 | Clinic, dental, pharmacy | `clean`, font `modern` | `split` hero with "Book an appointment" and the phone → `services` `bento` in patient words → `stats` → doctors as `cards` `people` → `steps` (how a visit works) → `testimonials` → `faq` → booking `form` → `contact` + `map` |
-| School, training centre | `clean` or `warm`, font `friendly` | photo hero with "Apply" and "Book a visit" → `stats` → programmes as `cards` `grid` by age or grade → `about` (director's welcome) → admissions as `steps` → term dates as `schedule` → parent `testimonials` → `faq` → enquiry `form` |
-| Shop, boutique, crafts | `editorial` or `warm` | photo hero with "See products" and "Order on Telegram" → collections as `cards` `scroll` → products as `cards` `grid` with price and an order `action` → `steps` (how to order) → `about` the makers → `testimonials` → `contact` + `map` |
-| Church | `warm`, font `classic` | photo hero with "Service times" → `schedule` of services → `about` welcome → ministries as `cards` `grid` → `quote` (a verse) → giving as `services` → `contact` + `map` |
-| Mosque | `clean`, font `modern` | photo hero → `schedule` `tiles` with the five prayers and Jumu'ah → services (nikah, janazah, madrasa) as `services` → classes as `schedule` `list` → `about` → giving → `contact` + `map` |
+| School, training centre | `clean` or `warm`, font `friendly` | `split` or `immersive` hero with "Apply" and "Book a visit" → `stats` → programmes as `cards` `grid` by age or grade → `about` (director's welcome) → admissions as `steps` → term dates as `schedule` → parent `testimonials` → `faq` → enquiry `form` |
+| Shop, boutique, crafts | `editorial` or `warm` | `centered` or `immersive` hero with "See products" and "Order on Telegram" → collections as `cards` `scroll` → products as `cards` `grid` with price and an order `action` → `steps` (how to order) → `about` the makers → `testimonials` → `contact` + `map` |
+| Church | `warm`, font `classic` | `immersive` hero with "Service times" → `schedule` of services → `about` welcome → ministries as `cards` `grid` → `quote` (a verse) → giving as `services` → `contact` + `map` |
+| Mosque | `clean`, font `modern` | `immersive` hero → `schedule` `tiles` with the five prayers and Jumu'ah → services (nikah, janazah, madrasa) as `services` → classes as `schedule` `list` → `about` → giving → `contact` + `map` |
 | Events, weddings | `editorial`, font `elegant` | `immersive` hero, one button → event types as `cards` `scroll` → `gallery` → packages as `cards` `grid` with "from" prices → `steps` → one big `quote` from a couple → `about` the planner → enquiry `form` (date, guests) |
 | NGO, charity | `bold`, font `grotesk` or `friendly` | hero that states the goal in under 12 words, "Donate" and "Our work" → `stats` → `about` mission → programmes as `cards` `grid` → one person's story as `quote` with a photo → how gifts are used as `services` `numbered` → `cta` |
 | Real estate | `clean`, font `modern` | `immersive` or `banner` hero → listings as `cards` `grid` (`badge` "For sale"/"For rent", price, `meta` beds, baths, m²) → `stats` → featured project as `about` with `points` → why us as `services` → `testimonials` → viewing `form` |
 | Tours, travel | `bold`, font `grotesk` | `immersive` landscape hero, "See our tours" → `facts` or `stats` → trips as `cards` `grid` (`badge`, `meta` days and difficulty, from-price) → destinations as `cards` `scroll` → why us as `services` → `steps` → guide story `about` → `testimonials` → enquiry `form` |
 | Personal, portfolio | `bold`, font `grotesk` | `portrait` hero (place and "Available for work" as eyebrow, name or role as a huge statement) → selected work as `cards` `feature` → `services` `numbered` → `about` → `timeline` → `testimonials` → contact `form` |
 | Company, consulting, construction | `clean`, font `modern` or `grotesk` | `split` hero with an outcome statement and "Request a quote" → `stats` → `services` `bento` → projects as `cards` `grid` → `steps` (how we work) → `about` → team as `cards` `people` → `testimonials` → enquiry `form` |
-| Salon, barber, spa | `editorial` (salon) or `bold` (barber) | photo hero with "Book now" and "See prices" → price list as `menu` → `gallery` → stylists as `cards` `people` → `testimonials` → `about` → `contact` + `map` |
+| Salon, barber, spa | `editorial` (salon) or `bold` (barber) | `immersive` hero with "Book now" and "See prices" → price list as `menu` → `gallery` → stylists as `cards` `people` → `testimonials` → `about` → `contact` + `map` |
 
 Rules that hold for all of them: one main action, repeated with the same words (hero, middle, end); prices visible wherever the owner gave them; the offer before the story; real numbers or none.
 
 ## A good home page
 
-Hero (with `art` or a photo, and a button to the thing visitors want: menu, booking, call) → what you offer (`menu` or `services`) → `about` → `faq` when the owner gave enough to answer real questions → `contact` (and `map`) → `cta` as the last section. On phones a bar with Call and Telegram (or WhatsApp) appears by itself when `business.phone`, `telegram` or `whatsapp` is set, and the hero shows the first `business.hours` line, so fill those in whenever the owner gives them. Don't repeat the hours in the hero `eyebrow`; use it for the place or what makes the business special.
+Follow the order for the kind of business in the table above. For a kind that isn't listed: hero (with a photo or a drawing, and a button to the thing visitors want: menu, booking, call) → what you offer (`cards`, `menu` or `services`) → `about` → `faq` when the owner gave enough to answer real questions → `contact` (and `map`) → `cta` as the last section.
 
-## Personal websites
+On phones a bar with Call and Telegram (or WhatsApp) appears by itself when `business.phone`, `telegram` or `whatsapp` is set, so fill those in whenever the owner gives them. The `split` hero also shows the first `business.hours` lines beside its picture; don't repeat the hours in the hero `eyebrow`, use it for the place or what makes the business special.
 
-For a person (portfolio, CV, freelancer, artist, coach, speaker): hero with their name and what they do, `about` (their story, `highlights` only with facts they gave), `services` ("What I do"), `gallery` for their work, `timeline` for experience and education, then a contact `form`. Use first-person, warm copy. No prices unless they gave them.
+For a person, use first-person, warm copy; `highlights` and `facts` only with facts they gave; no prices unless they gave them; leave out `business.hours`.
 
 ## Design and motion
 
@@ -115,7 +115,7 @@ Sections already animate (gentle reveal on scroll, lift and tilt on cards, a sof
 
 `theme.style` sets the site's whole character: `warm` (default: soft cards, coloured accents), `editorial` (light serif headlines, small capital labels, lots of air: pair with `elegant` or `classic` and radius `none` or `small`), `bold` (very large heavy headlines, pill buttons: pair with `grotesk` or `modern`), `clean` (crisp and calm with soft shadows: pair with `modern` or `friendly`).
 
-Choose the hero `variant` to fit: `immersive` for a full-screen photo with the words on it (needs a strong wide photo; the menu sits on the photo), `split` for text beside a photo, `centered` for a strong statement with a wide photo under it, `banner` for words on a tinted photo (inner pages), `portrait` for a person. With 4 or more `services` the first becomes a large feature tile, so put the most important one first. In a `gallery` of 5 or more the first photo is shown large.
+Choose the hero `variant` to fit: `immersive` for a full-screen photo with the words on it (needs a wide photo that is dark or calm in its lower two thirds, where the words sit; never one with faces or bright sky there; the menu sits on the photo), `split` for text beside a photo, `centered` for a strong statement with a wide photo under it, `banner` for words on a tinted photo (inner pages), `portrait` for a person. With 4 or more `services` the first becomes a large feature tile, so put the most important one first. In a `gallery` of 5 or more the first photo is shown large.
 
 ## Sample photos
 
@@ -267,7 +267,7 @@ Reference as `"src": "/stock/<name>.webp"`. Names with `-hero-` are wide photos 
 
 ## Theme
 
-`theme.primary` (buttons, links), `theme.accent` (dark bands, footer), `theme.background` (light page background), `theme.text`, `theme.font` (`modern`, `classic`, `friendly`), `theme.radius` (`none`, `small`, `medium`, `large`).
+`theme.primary` (buttons, links), `theme.accent` (dark bands, footer), `theme.background` (light page background), `theme.text`, `theme.font` (`modern`, `classic`, `friendly`, `elegant`, `grotesk`), `theme.style` (`warm`, `editorial`, `bold`, `clean`; see Design and motion), `theme.radius` (`none`, `small`, `medium`, `large`).
 
 - `text` on `background` needs 4.5:1 contrast; `primary` on `background` needs 3:1. Button text colour is picked automatically.
 - Pick colours that fit the business (warm browns for coffee, calm teal/blue for clinics, deep green for hotels). Avoid using green, yellow and red together.

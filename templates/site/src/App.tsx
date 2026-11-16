@@ -69,8 +69,10 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
   const overlay = top?.type === "hero" && top.variant === "immersive" && Boolean(top.image?.src);
   return (
     <SiteProvider site={site} page={page} lang={lang}>
+      {/* The style wraps the page and the phone call bar alike. */}
+      <div data-style={site.theme.style ?? "warm"} className="contents">
       {/* Room at the bottom on phones so the call bar never hides the footer's last line. */}
-      <div data-style={site.theme.style ?? "warm"} className={`site-root relative flex min-h-screen flex-col ${hasStickyActions(site) ? "max-md:pb-[4.5rem]" : ""}`}>
+      <div className={`site-root relative flex min-h-screen flex-col ${hasStickyActions(site) ? "max-md:pb-[4.5rem]" : ""}`}>
         <Header overlay={overlay} />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {page.sections.map((section, i) =>
@@ -85,7 +87,8 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
         </main>
         <Footer />
       </div>
-      <StickyActions />
+        <StickyActions />
+      </div>
     </SiteProvider>
   );
 }

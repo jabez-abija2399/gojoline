@@ -1,5 +1,6 @@
 import { Picture } from "../components/Picture";
 import { SectionHead } from "../components/SectionHead";
+import { ItemTitle } from "../components/SectionTitle";
 import { formatPrice } from "../lib/i18n";
 import { useSite } from "../lib/context";
 import type { CardItem, CardsSection } from "../lib/types";
@@ -28,7 +29,7 @@ export function Cards({ section }: { section: CardsSection }) {
             ))}
           </ul>
         ) : layout === "scroll" ? (
-          <ul tabIndex={0} aria-label={text(section.heading)} className="rail">
+          <ul role="group" tabIndex={0} aria-label={text(section.heading)} className="rail">
             {section.items.map((item, i) => {
               const inner = (
                 <>
@@ -46,8 +47,9 @@ export function Cards({ section }: { section: CardsSection }) {
               return (
                 <li key={i} className="flex-none">
                   {item.action ? (
-                    <a href={href(item.action.href)} aria-label={`${text(item.title)}: ${text(item.action.label)}`} className={cls}>
+                    <a href={href(item.action.href)} className={cls}>
                       {inner}
+                      <span className="sr-only">{text(item.action.label)}</span>
                     </a>
                   ) : (
                     <div className={cls}>{inner}</div>
@@ -64,8 +66,8 @@ export function Cards({ section }: { section: CardsSection }) {
                   <Picture image={item.image?.src ? item.image : { art: "portrait", alt: item.title }} sizes="(min-width: 768px) 25vw, 50vw" className="aspect-[4/5] w-full rounded-site" />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <h3 className="text-lg leading-snug font-bold">{text(item.title)}</h3>
-                  {item.subtitle && <p className="font-medium text-primary">{text(item.subtitle)}</p>}
+                  <ItemTitle className="text-lg leading-snug">{text(item.title)}</ItemTitle>
+                  {item.subtitle && <p className="font-semibold">{text(item.subtitle)}</p>}
                   {item.description && <p className="text-muted">{text(item.description)}</p>}
                 </div>
               </li>
@@ -108,7 +110,7 @@ function PriceLine({ item }: { item: CardItem }) {
   return (
     <span className="flex flex-wrap items-baseline gap-x-2">
       <span className="font-heading text-xl font-bold">{formatPrice(item.price, lang)}</span>
-      {item.priceNote && <span className="text-sm opacity-80">{text(item.priceNote)}</span>}
+      {item.priceNote && <span className="small-label">{text(item.priceNote)}</span>}
     </span>
   );
 }
@@ -118,9 +120,9 @@ function Body({ item, large = false }: { item: CardItem; large?: boolean }) {
   return (
     <>
       {item.subtitle && <p className="eyebrow">{text(item.subtitle)}</p>}
-      <h3 className={large ? "font-heading text-3xl leading-tight font-bold md:text-4xl" : "text-xl leading-snug font-bold"}>{text(item.title)}</h3>
+      <ItemTitle className={large ? "font-heading text-3xl leading-tight md:text-4xl" : "text-xl leading-snug"}>{text(item.title)}</ItemTitle>
       {item.meta && item.meta.length > 0 && (
-        <ul className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">
+        <ul className="meta flex flex-wrap gap-x-3 gap-y-1 text-muted">
           {item.meta.map((m, i) => (
             <li key={i} className="meta-item">
               {text(m)}

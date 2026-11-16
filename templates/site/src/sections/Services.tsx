@@ -1,5 +1,6 @@
 import { Icon } from "../components/Icon";
 import { SectionHead } from "../components/SectionHead";
+import { ItemTitle } from "../components/SectionTitle";
 import { formatPrice } from "../lib/i18n";
 import { useSite } from "../lib/context";
 import type { ServicesSection } from "../lib/types";
@@ -20,7 +21,7 @@ export function Services({ section }: { section: ServicesSection }) {
                   <Icon name={item.icon ?? "check"} className="size-5" />
                 </span>
                 <div className="flex flex-col gap-1">
-                  <h3 className="text-lg font-bold">{text(item.title)}</h3>
+                  <ItemTitle className="text-lg">{text(item.title)}</ItemTitle>
                   <p className="whitespace-pre-line text-muted">{text(item.description)}</p>
                   {item.price && <p className="font-semibold">{formatPrice(item.price, lang)}</p>}
                 </div>
@@ -34,7 +35,7 @@ export function Services({ section }: { section: ServicesSection }) {
                 <span aria-hidden="true" className="numeral">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h3 className="text-xl font-bold">{text(item.title)}</h3>
+                <ItemTitle className="text-xl">{text(item.title)}</ItemTitle>
                 <p className="whitespace-pre-line text-muted">{text(item.description)}</p>
                 {item.price && <p className="mt-auto pt-2 font-semibold">{formatPrice(item.price, lang)}</p>}
               </li>
@@ -54,7 +55,7 @@ export function Services({ section }: { section: ServicesSection }) {
                 <span className="flex size-12 items-center justify-center rounded-site bg-primary-soft text-primary">
                   <Icon name={item.icon ?? "check"} />
                 </span>
-                <h3 className="text-xl font-bold">{text(item.title)}</h3>
+                <ItemTitle className="text-xl">{text(item.title)}</ItemTitle>
                 <p className="whitespace-pre-line text-muted">{text(item.description)}</p>
                 {item.price && <p className="mt-auto font-semibold">{formatPrice(item.price, lang)}</p>}
               </li>

@@ -1,4 +1,5 @@
 import { SectionHead } from "../components/SectionHead";
+import { ItemTitle } from "../components/SectionTitle";
 import { useSite } from "../lib/context";
 import type { StepsSection } from "../lib/types";
 
@@ -17,7 +18,7 @@ export function Steps({ section }: { section: StepsSection }) {
                 {i + 1}
               </span>
               <div className="flex flex-col gap-1.5">
-                <h3 className="text-xl font-bold">{text(item.title)}</h3>
+                <ItemTitle className="text-xl">{text(item.title)}</ItemTitle>
                 {item.description && <p className="text-muted">{text(item.description)}</p>}
               </div>
             </li>

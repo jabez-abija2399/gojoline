@@ -226,7 +226,7 @@
     display: flex;
     align-items: center;
     gap: 0.625rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-weight: 600;
     line-height: 1.3;
   }
@@ -257,6 +257,40 @@
   .hero-immersive :is(.headline, p, dl) {
     text-shadow: 0 1px 14px rgb(0 0 0 / 0.45);
   }
+  /* On photos and dark bands the focus ring is white (the accent would vanish); cards in a
+     row sit on light and dark alike, so theirs is white with a dark edge. */
+  :is(.hero-immersive, .header-overlay, .on-dark) :focus-visible {
+    outline-color: #fff;
+  }
+  .header-overlay nav :focus-visible {
+    outline-color: var(--site-focus);
+  }
+  .header-overlay .nav-desktop :focus-visible {
+    outline-color: #fff;
+  }
+  .rail a:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 0;
+    box-shadow: 0 0 0 6px #000;
+  }
+  .item-title {
+    font-weight: 700;
+  }
+  /* Short labels (a fact's caption, a price note) are one step smaller than body text. */
+  .small-label {
+    font-size: 0.9375rem;
+    line-height: 1.35;
+    opacity: 0.92;
+  }
+  .meta {
+    font-size: 0.9375rem;
+  }
+  :lang(am) :is(.small-label, .meta, .badge, .eyebrow) {
+    font-size: 1rem;
+  }
+  .highlight dt {
+    color: var(--site-text);
+  }
   .text-center > .eyebrow {
     justify-content: center;
   }
@@ -275,7 +309,7 @@
   .hero-shade {
     background:
       linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent 24%),
-      linear-gradient(to top, rgb(0 0 0 / 0.86), rgb(0 0 0 / 0.58) 45%, rgb(0 0 0 / 0.28) 78%, rgb(0 0 0 / 0.2));
+      linear-gradient(to top, rgb(0 0 0 / 0.88), rgb(0 0 0 / 0.72) 45%, rgb(0 0 0 / 0.52) 78%, rgb(0 0 0 / 0.4));
   }
   .card-shade {
     background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.35) 45%, transparent 70%);
@@ -290,7 +324,10 @@
     background: var(--site-primary-soft);
   }
   .nav-link[aria-current="page"] {
-    color: var(--site-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--site-primary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
   }
   .nav-lang {
     border-color: var(--site-line);
@@ -333,7 +370,7 @@
     background: var(--site-surface);
     color: var(--site-text);
     padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     line-height: 1.4;
     box-shadow: 0 4px 14px -6px rgb(0 0 0 / 0.5);
@@ -357,7 +394,11 @@
   }
   .arrow-link::after {
     content: "\2192";
-    transition: transform 200ms;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .arrow-link::after {
+      transition: transform 200ms;
+    }
   }
   .arrow-link:hover::after {
     transform: translateX(3px);
@@ -434,16 +475,24 @@
     font-size: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
     font-weight: 500;
   }
-  [data-style="editorial"] :is(h3, .stat-value, .time-value, .numeral, .fact-value) {
+  [data-style="editorial"] :is(.item-title, .stat-value, .time-value, .numeral, .fact-value) {
     font-weight: 600;
+  }
+  /* Ge'ez headings are set in the body font: a lighter weight keeps the editorial calm. */
+  :lang(am) [data-style="editorial"] :is(.headline, .section-title, .item-title) {
+    font-weight: 500;
   }
   [data-style="editorial"] :is(.section-title, .depth-frame)::before {
     display: none;
   }
   [data-style="editorial"] :is(.eyebrow, .hero-eyebrow, .btn, .wordmark, .badge) {
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    font-size: 0.875rem;
+  }
+  [data-style="editorial"] .btn {
+    font-size: 0.9375rem;
+    letter-spacing: 0.08em;
   }
   [data-style="editorial"] .hero-eyebrow {
     border: 0;
@@ -461,7 +510,7 @@
   @media (max-width: 479px) {
     [data-style="editorial"] .wordmark {
       font-size: 0.875rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.06em;
     }
   }
   [data-style="editorial"] .brand-mark {
@@ -491,9 +540,9 @@
     background: none;
     padding: 0;
   }
-  [data-style="editorial"] .meta-item:not(:last-child)::after {
+  [data-style="editorial"] .meta-item:not(:first-child)::before {
     content: "\00b7";
-    margin-inline-start: 0.75rem;
+    margin-inline-end: 0.75rem;
   }
   @media (min-width: 768px) {
     [data-style="editorial"] .section {
@@ -504,7 +553,7 @@
   [data-style="editorial"]:lang(am) :is(.eyebrow, .hero-eyebrow, .btn, .wordmark, .badge),
   :lang(am) [data-style="editorial"] :is(.eyebrow, .hero-eyebrow, .btn, .wordmark, .badge) {
     letter-spacing: 0;
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
 
   /* ---- bold: very large heavy headlines, pills, hard edges ---- */

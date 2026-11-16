@@ -68,7 +68,7 @@
       "sections": [
         {
           "type": "hero",
-          "variant": "immersive",
+          "variant": "centered",
           "eyebrow": {
             "en": "Merkato · Addis Ababa",
             "am": "መርካቶ · አዲስ አበባ"
