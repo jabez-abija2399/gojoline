@@ -101,7 +101,7 @@ test("admin owners: filter by plan, open an owner, give extra changes and set a 
   await page.goto(`/en/admin?tab=users&q=${encodeURIComponent(owner)}`);
   const filter = page.getByRole("navigation", { name: "Filter by plan" });
   await expect(filter.getByRole("link", { name: /^All \d+$/ })).toHaveAttribute("aria-current", "true");
-  await page.getByRole("link", { name: /Open details for/ }).first().click();
+  await page.getByRole("table").getByRole("link", { name: /Details$/ }).first().click();
   const details = page.getByRole("region", { name: /^Owner details/ });
   await expect(details).toBeVisible();
   await expect(details.getByText("Changes left").locator("..")).toContainText("10");
@@ -124,6 +124,54 @@ test("admin owners: filter by plan, open an owner, give extra changes and set a 
 
   await filter.getByRole("link", { name: /^Business \d+$/ }).click();
   await expect(page).toHaveURL(/plan=business/);
-  await expect(page.getByRole("link", { name: /Open details for/ })).toHaveCount(1);
+  await expect(page.getByRole("table").getByRole("link", { name: /Details$/ })).toHaveCount(1);
 });
 
+
+test("admin owners in Amharic: accessible, the panel isn't under the header, and a second owner gets focus", async ({ page }) => {
+  await signIn(page, { contact: `admin-e2e-am-${test.info().project.name}@example.com` });
+  // At least two owners in the list: the admin and one more.
+  await page.goto("/am/admin?tab=users");
+  const rows = page.getByRole("table").getByRole("link", { name: /ዝርዝር$/ });
+  await expect(rows.nth(1)).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+
+  // Other tests add owners while this runs, so rows can shift: open them by their address.
+  const [a, b] = [await rows.nth(0).getAttribute("href"), await rows.nth(1).getAttribute("href")];
+  await page.locator(`a[href="${a}"]`).click();
+  const panel = page.getByRole("region", { name: /^የባለቤቱ ዝርዝር/ });
+  await expect(panel).toBeVisible();
+  const first = await panel.getByRole("heading", { level: 3 }).textContent();
+  // Focus moved to the panel, and its top is below the sticky header.
+  await expect.poll(() => page.evaluate(() => !!document.activeElement?.querySelector("[aria-labelledby='owner-kicker owner-title']"))).toBe(true);
+  const headerBottom = await page.locator("header").first().evaluate((h) => h.getBoundingClientRect().bottom);
+  expect(await panel.evaluate((el) => el.getBoundingClientRect().top)).toBeGreaterThanOrEqual(headerBottom);
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+
+  await page.locator(`table a[href="${b}"]`).click();
+  await expect(panel.getByRole("heading", { level: 3 })).not.toHaveText(first ?? "");
+  await expect.poll(() => page.evaluate(() => !!document.activeElement?.querySelector("[aria-labelledby='owner-kicker owner-title']"))).toBe(true);
+  expect(await panel.evaluate((el) => el.getBoundingClientRect().top)).toBeGreaterThanOrEqual(headerBottom);
+});
+
+test("a pricing Choose button keeps the yearly choice through sign-in to the Plan page", async ({ page }) => {
+  await page.goto("/en/pricing?billing=yearly");
+  await page.getByRole("link", { name: "Choose Business" }).click();
+  await expect(page).toHaveURL(/sign-in\?next=/);
+  const contact = `owner-choose-${Date.now()}-${test.info().project.name}@example.com`;
+  await page.getByLabel("Phone or email").fill(contact);
+  await page.getByRole("button", { name: "Send me a code" }).click();
+  await expect(page.getByLabel("6-digit code")).toBeVisible();
+  const code = (await (await page.request.get(`/api/test/otp?to=${encodeURIComponent(contact)}`)).json()) as { code: string };
+  await page.getByLabel("6-digit code").fill(code.code);
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page).toHaveURL(/\/en\/billing\?product=business_year$/);
+  await expect(page.getByLabel("What are you paying for?")).toHaveValue("business_year");
+  // Signed in already: the same button goes straight to the Plan page.
+  await page.goto("/en/pricing");
+  await page.getByRole("link", { name: "Choose Starter" }).click();
+  await expect(page).toHaveURL(/\/en\/billing\?product=starter_month$/);
+  await expect(page.getByLabel("What are you paying for?")).toHaveValue("starter_month");
+});
