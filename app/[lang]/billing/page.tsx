@@ -3,7 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import { AppShell } from "@/components/app/app-shell";
 import { PaymentForm } from "@/components/billing/payment-form";
 import { currentUser } from "@/lib/auth/session";
-import { PLAN_FEATURES, PRODUCTS } from "@/lib/billing/plans";
+import Link from "next/link";
+import { monthsFree, PLAN_FEATURES, PLAN_IDS, PRODUCTS, productName, TOPUP_CREDITS, yearlySaving, type Product } from "@/lib/billing/plans";
+import { formatBirr, PlanHighlights } from "@/components/pricing/plan-highlights";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
@@ -14,10 +16,12 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/billing">)
   return { title: isLocale(lang) ? getMessages(lang).billing.metaTitle : undefined, robots: { index: false } };
 }
 
-const amount = (minor: number) => new Intl.NumberFormat("en-US").format(minor / 100);
 
-export default async function BillingPage({ params }: PageProps<"/[lang]/billing">) {
+export default async function BillingPage({ params, searchParams }: PageProps<"/[lang]/billing">) {
   const { lang } = await params;
+  // From the pricing page's "Choose" buttons (?product=starter_year); anything else is ignored.
+  const rawProduct = (await searchParams).product;
+  const initialProduct = typeof rawProduct === "string" && Object.hasOwn(PRODUCTS, rawProduct) ? (rawProduct as Product) : undefined;
   if (!isLocale(lang)) notFound();
   const user = await currentUser();
   if (!user) redirect(`/${lang}/sign-in?next=/${lang}/billing`);
@@ -29,7 +33,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
   const { plan, until, credits } = allowance ?? { plan: "free" as const, until: null, credits: 0 };
   const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
   const payReady = !!(settings.telebirrNumber || settings.cbeAccount);
-  const birr = (minor: number) => format(b.price, { price: amount(minor) });
+  const birr = (minor: number) => format(b.price, { price: formatBirr(minor) });
   const prices = Object.fromEntries(Object.entries(settings.prices).map(([k, v]) => [k, birr(v)])) as Record<keyof typeof PRODUCTS, string>;
 
   return (
@@ -46,33 +50,44 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
             </span>
             <p className="text-sm text-ink-muted">{format(t.app.creditsHint, { total: PLAN_FEATURES[plan].monthlyEdits })}</p>
           </div>
+          <a href="#pay-title" className="inline-flex min-h-11 w-fit items-center rounded-lg bg-ink px-4 text-sm font-medium text-white hover:bg-ink-hover lg:min-h-9">{b.payLink}</a>
         </section>
 
-        <ul className="grid gap-4 md:grid-cols-3">
-          {(["free", "starter", "business"] as const).map((p) => (
-            <li key={p} aria-current={p === plan ? "true" : undefined} className={`flex flex-col gap-2 rounded-xl border bg-white p-5 ${p === plan ? "border-ink ring-1 ring-ink" : "border-line"}`}>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-base font-semibold">{b.plans[p]}</h2>
-                {p === plan && <span className="rounded-full bg-sunken px-3 py-1 text-sm font-semibold text-ink">{b.currentBadge}</span>}
-              </div>
-              {p === "free" ? (
-                <p className="font-semibold">{b.freePrice}</p>
-              ) : (
-                <>
-                  <p className="font-semibold">{format(b.perMonth, { price: amount(settings.prices[`${p}_month`]) })}</p>
-                  <p className="text-ink-muted">{format(b.perYear, { price: amount(settings.prices[`${p}_year`]) })}</p>
-                </>
-              )}
-              <p className="text-ink-muted">{b.features[p]}</p>
-            </li>
-          ))}
-        </ul>
-        <p className="text-ink-muted">
-          <strong className="text-ink">{b.topup}:</strong> {format(b.topupDesc, { price: amount(settings.prices.topup) })}
-        </p>
+        <section aria-labelledby="plans-title" className="flex flex-col gap-4">
+          <h2 id="plans-title" className="text-lg font-semibold">{t.plans.includes}</h2>
+          <ul className="grid gap-4 md:grid-cols-3">
+            {PLAN_IDS.map((p) => {
+              const month = p === "free" ? 0 : settings.prices[`${p}_month`];
+              const year = p === "free" ? 0 : settings.prices[`${p}_year`];
+              const free = monthsFree(month, year);
+              return (
+                <li key={p} aria-current={p === plan ? "true" : undefined} className={`flex flex-col gap-3 rounded-xl border bg-white p-5 ${p === plan ? "border-ink ring-1 ring-ink" : "border-line"}`}>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="text-base font-semibold">{b.plans[p]}</h3>
+                    {p === plan && <span className="rounded-full bg-sunken px-3 py-1 text-sm font-semibold text-ink">{b.currentBadge}</span>}
+                  </div>
+                  {p === "free" ? (
+                    <p className="font-semibold">{b.freePrice}</p>
+                  ) : (
+                    <div className="flex flex-col gap-0.5">
+                      <p className="font-semibold">{format(b.perMonth, { price: formatBirr(month) })}</p>
+                      <p className="text-ink-muted">{format(b.perYear, { price: formatBirr(year) })}</p>
+                      {free > 0 && <p className="text-sm font-medium text-ink">{format(t.plans.yearSaving, { amount: formatBirr(yearlySaving(month, year)), months: free })}</p>}
+                    </div>
+                  )}
+                  <PlanHighlights plan={p} t={t.plans.hl} limit={4} className="text-sm" />
+                </li>
+              );
+            })}
+          </ul>
+          <Link href={`/${lang}/pricing#compare`} className="inline-flex min-h-11 w-fit items-center font-medium text-ink underline underline-offset-4 lg:min-h-9">{t.plans.compareLink}</Link>
+          <p className="rounded-xl bg-paper p-4 text-ink-muted">
+            <strong className="text-ink">{b.topup}:</strong> {format(b.topupDesc, { n: TOPUP_CREDITS, price: formatBirr(settings.prices.topup) })}
+          </p>
+        </section>
 
-        <section aria-labelledby="pay-title" className="flex flex-col gap-4 rounded-xl border border-line bg-white p-5">
-          <h2 id="pay-title" className="text-lg font-semibold">{b.payTitle}</h2>
+        <section aria-labelledby="pay-title" className="flex scroll-mt-6 flex-col gap-4 rounded-xl border border-line bg-white p-5">
+          <h2 id="pay-title" className="scroll-mt-6 text-lg font-semibold">{b.payTitle}</h2>
           {payReady ? (
             <>
               <ol className="flex list-decimal flex-col gap-1 ps-6 text-ink-muted">
@@ -85,7 +100,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
                 {settings.cbeAccount && <li>{format(b.payCbe, { account: settings.cbeAccount })}</li>}
                 {settings.accountName && <li>{format(b.payName, { name: settings.accountName })}</li>}
               </ul>
-              <PaymentForm t={b} prices={prices} />
+              <PaymentForm t={b} prices={prices} initialProduct={initialProduct} />
             </>
           ) : (
             <p className="text-ink-muted">{b.payNotReady}</p>
@@ -100,7 +115,7 @@ export default async function BillingPage({ params }: PageProps<"/[lang]/billing
             <ul className="flex flex-col gap-2">
               {history.map((p) => (
                 <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line bg-white p-3">
-                  <span>{b.productNames[p.product]} · {prices[p.product]}</span>
+                  <span>{productName(b.productNames, p.product)} · {birr(p.amountMinor)}</span>
                   <span className="text-ink-muted">{dateFmt.format(p.createdAt)}</span>
                   <span className={`rounded-full px-3 py-1 text-sm font-semibold ${p.status === "approved" ? "border border-lagoon bg-white text-lagoon" : p.status === "rejected" ? "bg-coral-soft text-destructive" : "bg-paper text-ink"}`}>{b.status[p.status]}</span>
                   {p.note && <span className="w-full text-ink-muted">{p.note}</span>}

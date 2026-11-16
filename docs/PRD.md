@@ -35,12 +35,16 @@ Ethiopian small businesses (cafés, restaurants, shops, salons, clinics, hotels,
 
 ## Plans (hypotheses to test)
 
+Defaults live in `lib/billing/plans.ts` (`PRODUCTS`, `PLAN_FEATURES`); prices can be changed in Admin → Settings.
+
 | Plan | Price | Includes |
 | --- | --- | --- |
-| Free | 0 | 1 site on subdomain, badge, small monthly AI edit allowance, capped forms |
-| Starter | ~399 ETB/month or ~3,999/year | 1 site, custom domain, no badge, forms + dashboard, Telegram notifications, ~50 edits/month |
-| Business | ~999 ETB/month or ~9,999/year | Up to 3 sites, more edits, Telegram bot edits, Chapa button, priority support |
-| Edit top-up | ~499 ETB | Extra AI edits |
+| Free | 0 | 1 site on a free Gojoline address, badge, 10 AI changes/month (no rollover), 100 form answers/month, 50 MB photos, support in the Telegram channel |
+| Starter | 499 ETB/month or 4,990/year | 1 site, own domain (bought separately) with a step-by-step guide, no badge, 50 changes/month (roll over up to 2 months), 2,000 answers/month, Telegram alerts, 500 MB photos, Telegram chat support |
+| Business | 1,299 ETB/month or 12,990/year | Up to 3 sites, own domain per site and we connect it, no badge, 150 changes/month (roll over up to 2 months), 10,000 answers/month, Telegram alerts and edits by Telegram, 2 GB photos, priority support with setup help |
+| Extra changes | 249 ETB | 30 more AI changes |
+
+Every site's first build is free (one per site the plan allows, each month); changes that fail on our side are refunded (up to 5 a day).
 
 ## Success metrics (private beta)
 

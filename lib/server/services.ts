@@ -166,7 +166,7 @@ export function services(): Services {
       moderation: null,
     };
     const svc = globalForServices.gojoServices;
-    if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r), left: (u) => billing.creditsLeft(u) };
+    if (svc.builder) svc.builder.credits = { consume: (u, r) => billing.consumeEdit(u, r), refund: (u, r) => billing.refundEdit(u, r), left: (u) => billing.creditsLeft(u), freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r) };
     svc.publish = pickPublish(process.env, svc.builder);
     if (svc.publish) {
       svc.publish.entitlements = billing.entitlements;
@@ -210,9 +210,15 @@ export function adminStats(): AdminStats {
   const db = getDb(process.env);
   if (db) return new DbAdminStats(db);
   const svc = services();
-  return new MemoryAdminStats(async () => ({
-    pendingPayments: (await svc.billing.store().pendingPayments()).length,
-    openReports: ((await svc.moderation?.reports.openBySite(1000)) ?? []).reduce((n, g) => n + g.reports.length, 0),
-    sitesLive: ((await svc.moderation?.sites.recent(1000)) ?? []).filter((x) => x.status === "published").length,
-  }));
+  const memory = (globalThis as unknown as { gojoAuthMemory?: { user?: { id: string; name: string; email: string; phoneNumber?: string | null; createdAt: Date }[] } }).gojoAuthMemory;
+  return new MemoryAdminStats({
+    counts: async () => ({
+      pendingPayments: (await svc.billing.store().pendingPayments()).length,
+      openReports: ((await svc.moderation?.reports.openBySite(1000)) ?? []).reduce((n, g) => n + g.reports.length, 0),
+      sitesLive: ((await svc.moderation?.sites.recent(1000)) ?? []).filter((x) => x.status === "published").length,
+    }),
+    accounts: () => memory?.user ?? [],
+    billing: svc.billing.store(),
+    projects: async (ownerId) => (await svc.builder?.store.listProjects(ownerId)) ?? [],
+  });
 }

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq, gte, sql } from "drizzle-orm";
+import { and, desc, eq, gt, gte, inArray, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { auditLog, creditBalances, creditLedger, payments, subscriptions, user } from "@/lib/db/schema";
 import type { Product } from "./plans";
@@ -11,7 +11,8 @@ export interface Subscription {
   currentPeriodEnd: Date;
 }
 
-export type LedgerReason = "monthly_grant" | "topup" | "ai_edit" | "refund" | "admin";
+/** "first_build" rows have delta 0: they only count free first builds. */
+export type LedgerReason = "monthly_grant" | "topup" | "ai_edit" | "refund" | "admin" | "first_build";
 export type PaymentMethod = "telebirr" | "cbe" | "other";
 
 export interface Payment {
@@ -40,6 +41,8 @@ export interface BillingStore {
   debit(userId: string, ref: string): Promise<boolean>;
   /** Ledger entries of this kind since the given time (e.g. refunds today). */
   countSince(userId: string, reason: LedgerReason, since: Date): Promise<number>;
+  /** Sum of credits added for these reasons since the given time (e.g. bought changes this year). */
+  sumSince(userId: string, reasons: LedgerReason[], since: Date): Promise<number>;
   /** Atomically extends (same plan, still active) or starts (otherwise) the subscription by one period. */
   extendSubscription(userId: string, plan: Subscription["plan"], period: Subscription["period"], now: Date): Promise<void>;
   /** Puts an approved/rejected payment back to pending (when applying the decision failed). */
@@ -88,6 +91,9 @@ export class MemoryBillingStore implements BillingStore {
   }
   async countSince(userId: string, reason: LedgerReason, since: Date) {
     return this.ledger.filter((l) => l.userId === userId && l.reason === reason && l.at >= since).length;
+  }
+  async sumSince(userId: string, reasons: LedgerReason[], since: Date) {
+    return this.ledger.filter((l) => l.userId === userId && reasons.includes(l.reason) && l.at >= since && l.delta > 0).reduce((n, l) => n + l.delta, 0);
   }
   async extendSubscription(userId: string, plan: Subscription["plan"], period: Subscription["period"], now: Date) {
     const cur = this.subs.get(userId);
@@ -206,6 +212,14 @@ export class DbBillingStore implements BillingStore {
       .select({ n: sql<number>`count(*)::int` })
       .from(creditLedger)
       .where(and(eq(creditLedger.userId, userId), eq(creditLedger.reason, reason), gte(creditLedger.createdAt, since)));
+    return Number(row?.n ?? 0);
+  }
+  async sumSince(userId: string, reasons: LedgerReason[], since: Date) {
+    if (!reasons.length) return 0;
+    const [row] = await this.db
+      .select({ n: sql<number>`coalesce(sum(${creditLedger.delta}), 0)::int` })
+      .from(creditLedger)
+      .where(and(eq(creditLedger.userId, userId), inArray(creditLedger.reason, reasons), gte(creditLedger.createdAt, since), gt(creditLedger.delta, 0)));
     return Number(row?.n ?? 0);
   }
   async extendSubscription(userId: string, plan: Subscription["plan"], period: Subscription["period"], now: Date) {

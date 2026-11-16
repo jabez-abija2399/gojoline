@@ -1,6 +1,6 @@
 /**
- * What a user's plan allows. Slice 6 (billing) computes this from the user's subscription;
- * until then everyone is on Free.
+ * What a user's plan allows, enforced on the server. `PLAN_FEATURES` in plans.ts holds the
+ * numbers for each plan; the billing service picks the row for the user's subscription.
  */
 export interface Entitlements {
   plan: "free" | "starter" | "business";
@@ -13,9 +13,13 @@ export interface Entitlements {
   telegramEdits: boolean;
   /** Form answers per site per month. */
   answersPerMonth: number;
+  /** Photo storage across all of the owner's sites, in bytes. */
+  storageBytes: number;
 }
 
-export const FREE: Entitlements = { plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100 };
+export const MB = 1024 * 1024;
+
+export const FREE: Entitlements = { plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 50 * MB };
 
 export type EntitlementsResolver = (userId: string) => Promise<Entitlements>;
 

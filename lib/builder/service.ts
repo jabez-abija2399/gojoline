@@ -22,7 +22,13 @@ export interface BuilderDeps {
   lock: Lock;
   assets?: AssetStore;
   /** AI edit credits; when set, each request costs one credit, refunded if the change fails. */
-  credits?: { consume(userId: string, ref: string): Promise<boolean>; refund(userId: string, ref: string): Promise<unknown>; left?(userId: string): Promise<number> };
+  credits?: {
+    consume(userId: string, ref: string): Promise<boolean>;
+    refund(userId: string, ref: string): Promise<unknown>;
+    left?(userId: string): Promise<number>;
+    /** True when this request is a free first build (a project with no saved version yet, within the daily cap). */
+    freeFirstBuild?(userId: string, ref: string): Promise<boolean>;
+  };
 }
 
 export type BuilderEvent =
@@ -84,14 +90,27 @@ export async function sendOwnerMessage(
   try {
     // Charge first: an unpaid request is never saved, so it can't ride along in later history.
     const ref = randomUUID();
-    const [paid, previous, latest, photoList] = await Promise.all([
-      deps.credits ? deps.credits.consume(input.ownerId, ref) : true,
+    const [previous, latest, photoList] = await Promise.all([
       store.listMessages(input.ownerId, project.id, 50),
       store.latestVersion(input.ownerId, project.id),
       deps.assets?.list(input.ownerId, project.id),
     ]);
+    // A site's first build is free (one per site the plan allows, each month), even with no changes left.
+    // Held per owner: requests on different projects can't race past the monthly cap.
+    let free = false;
+    if (!latest && deps.credits?.freeFirstBuild) {
+      const fb = await deps.lock.acquire(`first-build:${input.ownerId}`, 30_000);
+      if (fb) {
+        try {
+          free = await deps.credits.freeFirstBuild(input.ownerId, ref);
+        } finally {
+          await deps.lock.release(`first-build:${input.ownerId}`, fb);
+        }
+      }
+    }
+    const paid = free || (deps.credits ? await deps.credits.consume(input.ownerId, ref) : true);
     if (!paid) return input.onEvent({ type: "error", code: "no_credits", credits: 0 });
-    chargedRef = deps.credits ? ref : null;
+    chargedRef = deps.credits && !free ? ref : null;
     await store.addMessage(input.ownerId, { projectId: project.id, role: "owner", text: input.text });
 
     // Boot the sandbox while the model reads the request; tools wait for it.

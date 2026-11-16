@@ -15,20 +15,20 @@ describe("billing settings", () => {
     const env = { PAYMENT_TELEBIRR_NUMBER: "0911" } as unknown as NodeJS.ProcessEnv;
     expect((await loadBillingSettings(settings, env)).telebirrNumber).toBe("0911");
     const before = await b.submitPayment("u", { product: "starter_month", method: "telebirr", reference: "AAA111", receipt: null });
-    expect(before?.amountMinor).toBe(39_900);
+    expect(before?.amountMinor).toBe(49_900);
     const s = await b.settings();
     await b.saveSettings("admin", { ...s, prices: { ...s.prices, starter_month: 45_000 }, telebirrNumber: "0911 22 33 44" });
     expect((await b.settings()).prices.starter_month).toBe(45_000);
     const after = await b.submitPayment("u", { product: "starter_month", method: "telebirr", reference: "BBB222", receipt: null });
     expect(after?.amountMinor).toBe(45_000);
-    expect((await store.payment(before!.id))?.amountMinor).toBe(39_900);
+    expect((await store.payment(before!.id))?.amountMinor).toBe(49_900);
     expect((await store.auditFor("settings", "billing"))[0]?.action).toBe("settings.billing");
   });
 
   it("ignores broken saved settings instead of showing them", async () => {
     const settings = new MemorySettingsStore();
     await settings.set("billing", { prices: { topup: -5 } });
-    expect((await loadBillingSettings(settings, {} as NodeJS.ProcessEnv)).prices.topup).toBe(49_900);
+    expect((await loadBillingSettings(settings, {} as NodeJS.ProcessEnv)).prices.topup).toBe(24_900);
   });
 });
 
@@ -39,7 +39,7 @@ describe("payment notices", () => {
     const tg = { store: new MemoryTelegramStore(), client: new MemoryTelegramClient() };
     await tg.store.link({ userId: "u", chatId: "7", username: null, locale: "am" });
     const deps = { email, appUrl: "https://gojoline.afridea.et", adminEmails: ["boss@example.com"], store, telegram: tg };
-    const p = (await store.createPayment({ userId: "u", product: "topup", amountMinor: 49_900, method: "cbe", reference: "FT123", receipt: null }))!;
+    const p = (await store.createPayment({ userId: "u", product: "topup", amountMinor: 24_900, method: "cbe", reference: "FT123", receipt: null }))!;
     await noticeNewPayment(deps, p);
     expect(email.sent[0]).toMatchObject({ to: "boss@example.com" });
     expect(email.sent[0]!.text).toContain("https://gojoline.afridea.et/en/admin?tab=payments");

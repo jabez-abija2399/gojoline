@@ -26,9 +26,17 @@ export interface AssetStore {
   totalBytes(ownerId: string): Promise<number>;
 }
 
-export const MAX_ASSET_BYTES_PER_USER = 150 * 1024 * 1024;
-
 export const MAX_ASSETS_PER_PROJECT = 60;
+
+/**
+ * Whether one more photo fits. The byte limit comes from the owner's plan (`storageBytes`);
+ * photos already stored are never removed, only new uploads over the limit are refused.
+ */
+export function photoQuota(q: { count: number; usedBytes: number; newBytes: number; limitBytes: number }): "ok" | "too_many_photos" | "storage_full" {
+  if (q.count >= MAX_ASSETS_PER_PROJECT) return "too_many_photos";
+  if (q.usedBytes + q.newBytes > q.limitBytes) return "storage_full";
+  return "ok";
+}
 
 const toAsset = (a: Asset): Asset => ({ id: a.id, projectId: a.projectId, name: a.name, mime: a.mime, width: a.width, height: a.height, size: a.size, createdAt: a.createdAt });
 
