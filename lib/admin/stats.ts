@@ -1,4 +1,4 @@
-import { and, count, desc, eq, gte, ilike, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, getTableName, gte, ilike, or, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { abuseReports, aiUsage, auditLog, creditBalances, payments, projects, sites, subscriptions, user } from "@/lib/db/schema";
 
@@ -50,6 +50,11 @@ export function lastDays(rows: { day: string; value: number }[], days: number, n
   return out;
 }
 
+/**
+ * The outer users.id, fully qualified. A bare `${user.id}` renders as `"id"`, which inside a
+ * correlated subquery resolves to the subquery's own table (uuid) and fails with text = uuid.
+ */
+export const outerUserId = sql`${sql.identifier(getTableName(user))}.${sql.identifier(user.id.name)}`;
 
 export class DbAdminStats implements AdminStats {
   constructor(private db: Database) {}
@@ -84,25 +89,30 @@ export class DbAdminStats implements AdminStats {
     };
   }
 
-  async users(search: string, limit: number): Promise<AdminUser[]> {
+  /** The users query, built separately so a test can check its SQL. */
+  usersQuery(search: string, limit: number) {
     // Plain substring match: % _ and \ typed by the admin are literal characters.
     const q = search.trim().slice(0, 100).replace(/[\\%_]/g, (c) => `\\${c}`);
     const where = q ? or(ilike(user.email, `%${q}%`), ilike(user.phoneNumber, `%${q}%`), ilike(user.name, `%${q}%`)) : undefined;
-    const rows = await this.db
+    return this.db
       .select({
         id: user.id,
         name: user.name,
         email: user.email,
         phone: user.phoneNumber,
         joined: user.createdAt,
-        plan: sql<string | null>`(select ${subscriptions.plan} from ${subscriptions} where ${subscriptions.userId} = ${user.id} and ${subscriptions.currentPeriodEnd} > now())`,
-        sites: sql<number>`(select count(*)::int from ${sites} where ${sites.ownerId} = ${user.id} and ${sites.status} = 'published')`,
-        credits: sql<number>`coalesce((select ${creditBalances.balance} from ${creditBalances} where ${creditBalances.userId} = ${user.id}), 0)`,
+        plan: sql<string | null>`(select ${subscriptions.plan} from ${subscriptions} where ${subscriptions.userId} = ${outerUserId} and ${subscriptions.currentPeriodEnd} > now())`,
+        sites: sql<number>`(select count(*)::int from ${sites} where ${sites.ownerId} = ${outerUserId} and ${sites.status} = 'published')`,
+        credits: sql<number>`coalesce((select ${creditBalances.balance} from ${creditBalances} where ${creditBalances.userId} = ${outerUserId}), 0)`,
       })
       .from(user)
       .where(where)
       .orderBy(desc(user.createdAt))
       .limit(limit);
+  }
+
+  async users(search: string, limit: number): Promise<AdminUser[]> {
+    const rows = await this.usersQuery(search, limit);
     return rows.map((r) => ({
       id: r.id,
       name: r.name,
