@@ -14,8 +14,8 @@ import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
 import { creditSettings, launchOffer, planFeatures } from "@/lib/app/shell-data";
-import { offerPrice, offerUntilLabel } from "@/lib/billing/discounts";
-import { format } from "@/lib/i18n";
+import { offerPrice } from "@/lib/billing/discounts";
+import { offerBadgeText } from "@/lib/billing/offer-text";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/pricing">): Promise<Metadata> {
   const { lang } = await params;
@@ -47,7 +47,7 @@ export default async function PricingPage({ params, searchParams }: PageProps<"/
             topupMinor={prices.topup}
             topupCredits={credits.topupCredits}
             topupHref={(await looksSignedIn()) ? `/${lang}/billing` : undefined}
-            offer={topupOffer !== null && offer ? { priceMinor: topupOffer, badge: format(t.billing.offerBadge, { percent: offer.percent, date: offerUntilLabel(offer, lang) }), was: t.billing.was, birr: t.landing.pricing.birr } : null}
+            offer={topupOffer !== null && offer ? { priceMinor: topupOffer, badge: offerBadgeText(offer, lang, t.billing), was: t.billing.was, birr: t.landing.pricing.birr } : null}
           />
         </div>
         <Faq t={t.landing.faq} />

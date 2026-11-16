@@ -69,6 +69,19 @@ export class Billing {
     await this.db.audit({ actorId: adminId, action: "settings.offer", targetType: "settings", targetId: "offer", data: { before, after: next } });
   }
 
+  /**
+   * The one-click on/off switch: changes only `active`, keeping percent, products, last day and
+   * name. "none" when no offer was saved yet (there is nothing to switch on). Audited.
+   */
+  async setLaunchOfferActive(adminId: string, active: boolean): Promise<"ok" | "none"> {
+    const before = await this.launchOffer();
+    if (!before) return "none";
+    const after: LaunchOffer = { ...before, active };
+    await this.settingsStore.set("offer", after as unknown as Record<string, unknown>, adminId);
+    await this.db.audit({ actorId: adminId, action: "settings.offer_switch", targetType: "settings", targetId: "offer", data: { before, after } });
+    return "ok";
+  }
+
   /** A new discount code; null when the code already exists. Audited. */
   async createDiscount(adminId: string, input: DiscountInput): Promise<DiscountCode | null> {
     // The kind only chooses which amount is set; the store keeps the amounts.

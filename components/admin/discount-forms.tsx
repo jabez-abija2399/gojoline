@@ -30,12 +30,14 @@ function FieldError({ id, text }: { id: string; text: string }) {
   );
 }
 
-/** A labelled text field that shows its own error when the server names it. */
-function Field({ name, label, invalid, error, className = "", ...rest }: { name: string; label: string; invalid: boolean; error: string; className?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+/** A labelled text field that shows its own error when the server names it, and an optional hint. */
+function Field({ name, label, invalid, error, hint, className = "", ...rest }: { name: string; label: string; invalid: boolean; error: string; hint?: string; className?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  const described = [hint ? `${name}-hint` : "", invalid ? `${name}-error` : ""].filter(Boolean).join(" ") || undefined;
   return (
     <label className="flex flex-col gap-1">
       <span className="font-medium">{label}</span>
-      <input name={name} aria-invalid={invalid || undefined} aria-describedby={invalid ? `${name}-error` : undefined} className={`${input} ${className}`} {...rest} />
+      <input name={name} aria-invalid={invalid || undefined} aria-describedby={described} className={`${input} ${className}`} {...rest} />
+      {hint && <span id={`${name}-hint`} className="text-xs text-ink-muted">{hint}</span>}
       {invalid && <FieldError id={`${name}-error`} text={error} />}
     </label>
   );
@@ -79,28 +81,28 @@ function Message({ state, refEl, ok, invalid, t, label }: { state: DiscountState
   );
 }
 
-/** The site-wide launch offer: on/off, percent, products, last day. */
+/** The launch offer's terms: percent, products, optional last day and name. On/off is the switch above it. */
 export function OfferForm({ t, names, lang, value }: { t: Messages["admin"]; names: ProductNames; lang: string; value: LaunchOffer | null }) {
   const [state, action] = useActionState<DiscountState, FormData>(saveLaunchOffer, { status: "idle" });
   const { formRef, msgRef } = useFocusAfter(state);
   const bad = (f: string) => state.status === "invalid" && state.field === f;
-  const labels: Record<string, string> = { percent: t.offerPercent, until: t.offerUntil, products: t.offerProducts };
+  const labels: Record<string, string> = { percent: t.offerPercent, until: t.offerUntil, products: t.offerProducts, name_en: t.offerNameEn, name_am: t.offerNameAm };
   return (
-    <form ref={formRef} action={action} aria-labelledby="offer-title" className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:p-5">
+    <form ref={formRef} action={action} aria-labelledby="offer-title" className="flex flex-col gap-3 rounded-xl border border-line bg-white p-3 sm:p-4">
       <input type="hidden" name="lang" value={lang} />
       <div className="flex flex-col gap-1">
-        <h2 id="offer-title" className="text-xl font-bold">{t.offerTitle}</h2>
-        <p className="text-ink-muted">{t.offerHint}</p>
+        <h2 id="offer-title" className="text-base font-semibold">{t.offerTitle}</h2>
+        <p className="text-xs text-ink-muted">{t.offerHint}</p>
       </div>
-      <label className="flex min-h-11 items-center gap-3 font-medium">
-        <input type="checkbox" name="active" defaultChecked={value?.active ?? false} className="size-5 accent-ink" />
-        {t.offerOn}
-      </label>
       <div className="grid gap-3 sm:grid-cols-2 sm:items-start">
         <Field name="percent" label={t.offerPercent} invalid={bad("percent")} error={t.fieldInvalid} inputMode="numeric" maxLength={2} defaultValue={value?.percent ?? 20} />
-        <Field name="until" label={t.offerUntil} invalid={bad("until")} error={t.fieldInvalid} type="date" defaultValue={value?.until ?? ""} />
+        <Field name="until" label={t.offerUntil} invalid={bad("until")} error={t.fieldInvalid} hint={t.offerUntilHint} type="date" defaultValue={value?.until ?? ""} />
       </div>
       <ProductChoice legend={t.offerProducts} names={names} selected={value?.products ?? []} invalid={bad("products")} error={t.chooseOne} idPrefix="offer" />
+      <div className="grid gap-3 sm:grid-cols-2 sm:items-start">
+        <Field name="name_en" label={t.offerNameEn} invalid={bad("name_en")} error={t.fieldInvalid} hint={t.offerNameHint} maxLength={40} defaultValue={value?.name?.en ?? ""} lang="en" />
+        <Field name="name_am" label={t.offerNameAm} invalid={bad("name_am")} error={t.fieldInvalid} maxLength={40} defaultValue={value?.name?.am ?? ""} lang="am" />
+      </div>
       <Message state={state} refEl={msgRef} ok={t.done} invalid={t.offerInvalid} t={t} label={state.field ? labels[state.field] : undefined} />
       <Submit label={t.offerSave} working={t.working} />
     </form>

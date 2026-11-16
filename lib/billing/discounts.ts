@@ -47,25 +47,35 @@ export const discountInputSchema = z
   .refine((d) => (d.kind === "percent" ? d.percentOff !== null && d.amountOffMinor === null : d.amountOffMinor !== null && d.percentOff === null), { path: ["kind"] });
 export type DiscountInput = z.infer<typeof discountInputSchema>;
 
-/** The site-wide launch offer (app_settings "offer"): a percentage off chosen products until a date. */
+/** A name customers see instead of "Launch offer", e.g. "Holiday offer" (plain text, one line). */
+const offerNameText = z.string().trim().min(1).max(40).regex(/^[^<>\n\r]*$/);
+
+/**
+ * The site-wide offer (app_settings "offer"): a percentage off chosen products. With `until` it
+ * ends after that day; without it, it runs until an admin switches it off. `name` (both languages,
+ * or neither) replaces the default "Launch offer" wording on public pages.
+ */
 export const launchOfferSchema = z
   .object({
     active: z.boolean(),
     percent: z.number().int().min(1).max(90),
     products: productList,
-    /** Last day of the offer (YYYY-MM-DD, Addis Ababa time). */
-    until: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    /** Last day of the offer (YYYY-MM-DD, Addis Ababa time); absent: no end date. */
+    until: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    name: z.object({ en: offerNameText, am: offerNameText }).strict().optional(),
   })
   .strict();
 export type LaunchOffer = z.infer<typeof launchOfferSchema>;
 
-/** The moment an offer ends: the end of its last day in Addis Ababa (UTC+3, no daylight saving). */
-export function offerEndsAt(offer: Pick<LaunchOffer, "until">): Date {
-  return new Date(`${offer.until}T23:59:59.999+03:00`);
+/** The moment an offer ends: the end of its last day in Addis Ababa (UTC+3, no daylight saving); null without a last day. */
+export function offerEndsAt(offer: Pick<LaunchOffer, "until">): Date | null {
+  return offer.until ? new Date(`${offer.until}T23:59:59.999+03:00`) : null;
 }
 
 export function offerApplies(offer: LaunchOffer | null, product: Product, now: Date): offer is LaunchOffer {
-  return !!offer && offer.active && offer.products.includes(product) && now <= offerEndsAt(offer);
+  if (!offer || !offer.active || !offer.products.includes(product)) return false;
+  const end = offerEndsAt(offer);
+  return end === null || now <= end;
 }
 
 /** Minimum price after any discount: 1 Birr. */
@@ -137,7 +147,8 @@ export function offerPrice(offer: LaunchOffer | null, product: Product, baseMino
   return q.source === "offer" ? q.finalMinor : null;
 }
 
-/** "31 Dec" (or the Amharic month), for "20% off until …". */
-export function offerUntilLabel(offer: LaunchOffer, locale: "en" | "am"): string {
-  return new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { day: "numeric", month: "short", timeZone: "Africa/Addis_Ababa" }).format(offerEndsAt(offer));
+/** "31 Dec" (or the Amharic month), for "20% off until …"; null when the offer has no last day. */
+export function offerUntilLabel(offer: LaunchOffer, locale: "en" | "am"): string | null {
+  const end = offerEndsAt(offer);
+  return end ? new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { day: "numeric", month: "short", timeZone: "Africa/Addis_Ababa" }).format(end) : null;
 }

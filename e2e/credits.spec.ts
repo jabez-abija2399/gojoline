@@ -188,23 +188,34 @@ test("discount code: an admin makes one, the owner sees the price before sending
   await expectNoHorizontalScroll(page);
 });
 
-test("launch offer: the old price is struck through on the pricing and Plan pages", async ({ page }) => {
+test("launch offer: switched on in one click, struck-through prices, then no end date and a new name", async ({ page }) => {
+  // The offer is one site-wide setting: both test projects changing it at once would race, so the
+  // whole flow runs once, and checks the phone width itself.
+  test.skip(test.info().project.name !== "desktop", "one site-wide setting: runs once (checks 360 px inside)");
   await signIn(page, { contact: `admin-e2e-offer-${test.info().project.name}@example.com` });
   await page.goto("/en/admin?tab=discounts");
   const form = page.locator("form").filter({ has: page.getByRole("heading", { name: "Launch offer" }) });
-  await form.getByLabel("Offer is on").check();
   await form.getByLabel("Percent off (1 to 90)").fill("20");
-  await form.getByLabel("Last day").fill("2030-12-31");
-  // Only Business monthly, the same in both test projects (other tests check the other prices).
+  await form.getByLabel("Last day (optional)").fill("2030-12-31");
+  await expect(form.getByText("Leave empty to keep it on until you switch it off.")).toBeVisible();
+  // Only Business monthly (other tests check the other prices).
   const products = form.getByRole("group", { name: "Applies to" });
   for (const box of await products.getByRole("checkbox").all()) await box.uncheck();
   await products.getByLabel("Business, 1 month").check();
   await form.getByRole("button", { name: "Save offer" }).click();
   await expect(form.getByRole("status")).toHaveText("Saved.");
 
+  // The switch at the top shows the state and saves at once.
+  await page.reload();
+  const switchOn = page.getByRole("button", { name: "Switch on" });
+  if (await switchOn.isVisible()) await switchOn.click();
+  await expect(page.getByText("Launch offer is on: 20% off Business, 1 month, until 31 Dec")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Switch off" })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+
   await page.goto("/en/pricing");
   const card = page.locator("li").filter({ has: page.getByRole("heading", { name: "Business", level: 2 }) });
-  await expect(card.getByText("20% off until 31 Dec")).toBeVisible();
+  await expect(card.getByText("Launch offer: 20% off until 31 Dec")).toBeVisible();
   // 1,299 less 20% = 1,039.20, rounded down to whole Birr.
   await expect(card.getByText("1,039 Birr", { exact: true })).toBeVisible();
   await expect(card.locator("s")).toContainText("was 1,299 Birr");
@@ -217,8 +228,33 @@ test("launch offer: the old price is struck through on the pricing and Plan page
   await page.getByLabel("What are you paying for?").selectOption("business_month");
   await expect(page.getByText("You pay 1,039 Birr")).toBeVisible();
 
+  // No last day: on until switched off, and the public pages name no date. A new name too.
+  await page.goto("/en/admin?tab=discounts");
+  await form.getByLabel("Last day (optional)").fill("");
+  await form.getByLabel("Name in English (optional)").fill("Holiday offer");
+  await form.getByLabel("Name in Amharic (optional)").fill("የበዓል ቅናሽ");
+  await form.getByRole("button", { name: "Save offer" }).click();
+  await expect(form.getByRole("status")).toHaveText("Saved.");
+  await page.reload();
+  await expect(page.getByText("Launch offer is on: 20% off Business, 1 month", { exact: true })).toBeVisible();
+
+  await page.goto("/en/pricing");
+  await expect(card.getByText("Holiday offer: 20% off", { exact: true })).toBeVisible();
+  await expect(card).not.toContainText("until");
+  await expect(card.getByText("1,039 Birr", { exact: true })).toBeVisible();
+  await page.setViewportSize({ width: 360, height: 780 });
   await page.goto("/am/pricing");
-  await expect(page.getByText(/የ20% ቅናሽ/).first()).toBeVisible();
+  await expect(page.getByText("የበዓል ቅናሽ፦ የ20% ቅናሽ").first()).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
+
+  // Back to the default name, still with no end date (other runs and tests see the usual wording).
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/en/admin?tab=discounts");
+  await form.getByLabel("Name in English (optional)").fill("");
+  await form.getByLabel("Name in Amharic (optional)").fill("");
+  await form.getByRole("button", { name: "Save offer" }).click();
+  await expect(form.getByRole("status")).toHaveText("Saved.");
+  await page.goto("/en/pricing");
+  await expect(card.getByText("Launch offer: 20% off", { exact: true })).toBeVisible();
 });

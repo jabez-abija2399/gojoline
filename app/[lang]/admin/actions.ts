@@ -151,12 +151,36 @@ export type DiscountState = { status: "idle" | "ok" | "invalid" | "exists" | "fo
 
 const products = (form: FormData) => form.getAll("products").map(String).filter((p) => (PRODUCT_IDS as string[]).includes(p));
 
-/** The launch offer: percent off chosen products until a date (shown with the old price struck through). Audited. */
+const text = (v: FormDataEntryValue | null) => (typeof v === "string" ? v.trim() : "");
+
+/**
+ * The launch offer's terms: percent off chosen products, an optional last day and an optional
+ * name (both languages or neither). Its on/off state is kept: the switch changes that. Audited.
+ */
 export async function saveLaunchOffer(_prev: DiscountState, form: FormData): Promise<DiscountState> {
   const user = await currentUser();
   if (!user || !isAdmin(user)) return { status: "forbidden" };
-  const parsed = launchOfferSchema.safeParse({ active: form.get("active") === "on", percent: whole(form.get("percent")), products: products(form), until: String(form.get("until") ?? "") });
-  if (!parsed.success) return { status: "invalid", field: String(parsed.error.issues[0]?.path[0] ?? "") };
+  const until = text(form.get("until"));
+  const en = text(form.get("name_en"));
+  const am = text(form.get("name_am"));
+  let current: Awaited<ReturnType<ReturnType<typeof services>["billing"]["launchOffer"]>>;
+  try {
+    current = await services().billing.launchOffer();
+  } catch (error) {
+    reportError("launch offer load failed", error);
+    return { status: "failed" };
+  }
+  const parsed = launchOfferSchema.safeParse({
+    active: current?.active ?? false,
+    percent: whole(form.get("percent")),
+    products: products(form),
+    ...(until ? { until } : {}),
+    ...(en || am ? { name: { en, am } } : {}),
+  });
+  if (!parsed.success) {
+    const path = parsed.error.issues[0]?.path ?? [];
+    return { status: "invalid", field: path[0] === "name" ? `name_${String(path[1] ?? "en")}` : String(path[0] ?? "") };
+  }
   try {
     await services().billing.saveLaunchOffer(user.id, parsed.data);
   } catch (error) {
@@ -166,6 +190,24 @@ export async function saveLaunchOffer(_prev: DiscountState, form: FormData): Pro
   const lang = form.get("lang") === "am" ? "am" : "en";
   for (const path of [`/${lang}/admin`, `/${lang}/billing`, `/${lang}/pricing`, `/${lang}`]) revalidatePath(path);
   return { status: "ok" };
+}
+
+/** The one-click launch offer switch at the top of the Discounts tab: on or off at once. Audited. */
+export async function switchLaunchOffer(form: FormData) {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) redirect("/");
+  const lang = form.get("lang") === "am" ? "am" : "en";
+  const active = z.enum(["true", "false"]).safeParse(form.get("active"));
+  let done: "ok" | "failed" | "not_found" = "failed";
+  if (active.success) {
+    try {
+      done = (await services().billing.setLaunchOfferActive(me.id, active.data === "true")) === "ok" ? "ok" : "not_found";
+    } catch (error) {
+      reportError("launch offer switch failed", error);
+    }
+  }
+  for (const path of [`/${lang}/admin`, `/${lang}/billing`, `/${lang}/pricing`, `/${lang}`]) revalidatePath(path);
+  redirect(`/${lang}/admin?tab=discounts&done=${done}`);
 }
 
 /** A new discount code (percent or whole Birr off, products, uses, last day, first payment only). Audited. */

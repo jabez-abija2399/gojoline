@@ -14,7 +14,9 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
 import { BarChart } from "@/components/admin/bar-chart";
-import { setAdminTheme, toggleDiscountCode } from "./actions";
+import { setAdminTheme, switchLaunchOffer, toggleDiscountCode } from "./actions";
+import { offerEndsAt, offerUntilLabel } from "@/lib/billing/discounts";
+import { offerProductsText } from "@/lib/billing/offer-text";
 import { CreditsForm } from "@/components/admin/credits-form";
 import { CodeForm, OfferForm } from "@/components/admin/discount-forms";
 import { planFeaturesWith } from "@/lib/billing/credits";
@@ -543,8 +545,34 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const [offer, codes, credits] = await Promise.all([svc.billing.launchOffer(), svc.billing.store().discounts(), svc.billing.credits()]);
     const names = Object.fromEntries((["starter_month", "starter_year", "business_month", "business_year", "topup"] as const).map((p) => [p, productName(t.billing.productNames, p, credits.topupCredits)])) as Record<"starter_month" | "starter_year" | "business_month" | "business_year" | "topup", string>;
     const dayFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeZone: "Africa/Addis_Ababa" });
+    /** The one-click on/off switch, with the offer's state in words. Saves at once (audited). */
+    function OfferSwitch() {
+      const end = offer ? offerEndsAt(offer) : null;
+      const date = offer ? offerUntilLabel(offer, lang as "en" | "am") : null;
+      const values = offer ? { percent: offer.percent, products: offerProductsText(offer.products, lang as "en" | "am", t.billing, credits.topupCredits), date: date ?? "" } : null;
+      const ended = !!offer?.active && end !== null && end < new Date();
+      const state = !offer ? t.admin.offerStateNone : !offer.active ? t.admin.offerStateOff : ended ? format(t.admin.offerStateEnded, values!) : format(date ? t.admin.offerStateOnUntil : t.admin.offerStateOn, values!);
+      return (
+        <section aria-labelledby="offer-state" className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3 sm:p-4 ${offer?.active && !ended ? "border-lagoon bg-white" : "border-line bg-white"}`}>
+          <p id="offer-state" className="flex min-w-0 items-center gap-2 font-semibold">
+            <span aria-hidden="true" className={`size-2.5 shrink-0 rounded-full ${offer?.active && !ended ? "bg-lagoon" : "bg-faint"}`} />
+            <span className="min-w-0">{state}</span>
+          </p>
+          {offer && (
+            <form action={switchLaunchOffer}>
+              <input type="hidden" name="lang" value={lang} />
+              <input type="hidden" name="active" value={offer.active ? "false" : "true"} />
+              <button className={`inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-semibold lg:min-h-9 ${offer.active ? "border border-line bg-white text-ink hover:border-faint" : "bg-ink text-white hover:bg-ink-hover"}`}>
+                {offer.active ? t.admin.offerSwitchOff : t.admin.offerSwitchOn}
+              </button>
+            </form>
+          )}
+        </section>
+      );
+    }
     return (
       <div className="flex flex-col gap-6">
+        <OfferSwitch />
         <OfferForm t={t.admin} names={names} lang={lang} value={offer} />
         <section aria-labelledby="codes-title" className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
