@@ -16,7 +16,8 @@ export function MapEmbed({ section }: { section: MapSection }) {
   return (
     <section id={section.id ?? "map"} className="section bg-surface">
       <div className="container-site flex flex-col gap-6">
-        <SectionTitle>{text(section.heading)}</SectionTitle>
+        {section.eyebrow && <p className="eyebrow">{text(section.eyebrow)}</p>}
+          <SectionTitle>{text(section.heading)}</SectionTitle>
         <a
           href={url}
           rel="noopener"

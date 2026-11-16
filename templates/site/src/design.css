@@ -242,6 +242,21 @@
   .hero-immersive .eyebrow::before {
     background: currentColor;
   }
+  /* A label already carries the brand line; the title under it needs no bar of its own. */
+  .eyebrow + .section-title::before {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .feature-tile h3 {
+      font-size: 1.75rem;
+    }
+    .feature-tile p {
+      font-size: 1.125rem;
+    }
+  }
+  .hero-immersive :is(.headline, p, dl) {
+    text-shadow: 0 1px 14px rgb(0 0 0 / 0.45);
+  }
   .text-center > .eyebrow {
     justify-content: center;
   }
@@ -260,7 +275,7 @@
   .hero-shade {
     background:
       linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent 24%),
-      linear-gradient(to top, rgb(0 0 0 / 0.82), rgb(0 0 0 / 0.45) 45%, rgb(0 0 0 / 0.12) 75%);
+      linear-gradient(to top, rgb(0 0 0 / 0.86), rgb(0 0 0 / 0.58) 45%, rgb(0 0 0 / 0.28) 78%, rgb(0 0 0 / 0.2));
   }
   .card-shade {
     background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.35) 45%, transparent 70%);
@@ -476,9 +491,9 @@
     background: none;
     padding: 0;
   }
-  [data-style="editorial"] .meta-item + .meta-item {
-    border-inline-start: 1px solid var(--site-line);
-    padding-inline-start: 0.75rem;
+  [data-style="editorial"] .meta-item:not(:last-child)::after {
+    content: "\00b7";
+    margin-inline-start: 0.75rem;
   }
   @media (min-width: 768px) {
     [data-style="editorial"] .section {

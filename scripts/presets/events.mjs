@@ -118,7 +118,7 @@ save("events", {
           layout: "mosaic",
           eyebrow: t("Recent work", "የቅርብ ጊዜ ሥራዎች"),
           heading: t("Days we were part of", "አብረን ያሳለፍናቸው ቀናት"),
-          images: [P.dancing, P.bride, P.outdoor, P.veranda, P.dish],
+          images: [P.dancing, P.bride, P.veranda],
         },
         {
           type: "cards",

@@ -38,7 +38,7 @@ export function Picture({ image, className = "", priority = false, sizes = "100v
       fetchPriority={priority ? "high" : "auto"}
       decoding="async"
       sizes={wide ? sizes : undefined}
-      className={`object-cover ${className}`}
+      className={`object-cover object-[50%_32%] ${className}`}
     />
   );
 }

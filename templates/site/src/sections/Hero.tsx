@@ -6,11 +6,11 @@ import type { Fact, HeroSection } from "../lib/types";
 const FULL = "(min-width: 768px) 100vw, 70vw";
 
 export function Hero({ section, first }: { section: HeroSection; first: boolean }) {
-  const { site, text, href } = useSite();
+  const { site, page, text, href } = useSite();
   // On the home page's hero: when they are open (or, without hours, the phone number).
   // Up to two lines, so a business open on other days at other times isn't made to look closed.
   const hours = (site.business.hours ?? []).slice(0, 2).map((h) => `${text(h.days)} · ${text(h.time)}`);
-  const chip = first ? (hours.length ? hours : site.business.phone ? [site.business.phone] : undefined) : undefined;
+  const chip = first && page.path === "/" ? (hours.length ? hours : site.business.phone ? [site.business.phone] : undefined) : undefined;
   // A full-screen photo needs a photo: with only a drawing, the tinted banner reads better.
   const asked = section.variant ?? "split";
   const variant = asked === "immersive" && !section.image?.src ? "banner" : asked;
@@ -52,8 +52,8 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
     const photo = Boolean(section.image?.src);
     return (
       <section id={section.id} className="relative isolate overflow-hidden bg-accent text-on-accent">
-        <Picture image={section.image} priority={first} sizes={FULL} className={`absolute inset-0 -z-10 size-full ${photo ? "opacity-45" : "opacity-30"}`} />
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-accent via-accent/70 to-accent/20" />
+        <Picture image={section.image} priority={first} sizes={FULL} className={`absolute inset-0 -z-10 size-full ${photo ? "opacity-70" : "opacity-30"}`} />
+        <div aria-hidden="true" className={`absolute inset-0 -z-10 bg-gradient-to-t ${photo ? "from-accent/95 via-accent/60 to-accent/35" : "from-accent via-accent/70 to-accent/20"}`} />
         <div className="container-site flex flex-col gap-5 py-24 md:py-36">
           {section.eyebrow && <p className="eyebrow enter text-on-accent!">{text(section.eyebrow)}</p>}
           <Heading className="headline max-w-4xl">{text(section.heading)}</Heading>

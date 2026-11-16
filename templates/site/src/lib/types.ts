@@ -272,6 +272,7 @@ export interface QuoteSection {
 export interface ContactSection {
   type: "contact";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
   intro?: Text;
 }
@@ -279,6 +280,7 @@ export interface ContactSection {
 export interface MapSection {
   type: "map";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
   /** Place to show, e.g. "Bole, Addis Ababa". Defaults to the English business address. */
   query?: string;
@@ -289,8 +291,8 @@ export interface TestimonialsSection {
   id?: string;
   eyebrow?: Text;
   heading: Text;
-  /** `role` says who they are: "Parent, Grade 4", "Stayed in March". */
-  items: { quote: Text; name: string; role?: Text }[];
+  /** `name` may be plain text or given per language. `role` says who they are: "Parent, Grade 4", "Stayed in March". */
+  items: { quote: Text; name: string | Text; role?: Text }[];
 }
 
 export interface FormField {
@@ -309,6 +311,7 @@ export interface FormSection {
   /** Unique form key on the site, e.g. "booking" (lowercase, dashes). Required. */
   id: string;
   kind: "contact" | "booking" | "order" | "registration";
+  eyebrow?: Text;
   heading: Text;
   intro?: Text;
   fields: FormField[];
@@ -320,6 +323,7 @@ export interface FormSection {
 export interface TimelineSection {
   type: "timeline";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
   intro?: Text;
   items: { period: Text; title: Text; place?: Text; description?: Text }[];
@@ -329,6 +333,7 @@ export interface TimelineSection {
 export interface FaqSection {
   type: "faq";
   id?: string;
+  eyebrow?: Text;
   heading: Text;
   intro?: Text;
   items: { question: Text; answer: Text }[];

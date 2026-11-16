@@ -15,7 +15,7 @@ export function Testimonials({ section }: { section: TestimonialsSection }) {
               <figure className="reveal lift flex h-full flex-col gap-4 rounded-site border border-current/20 bg-current/5 p-6">
                 <blockquote className={n === 1 ? "pull-quote" : "text-lg"}>“{text(item.quote)}”</blockquote>
                 <figcaption className="mt-auto flex flex-col">
-                  <span className="font-semibold">{item.name}</span>
+                  <span className="font-semibold">{typeof item.name === "string" ? item.name : text(item.name)}</span>
                   {item.role && <span className="opacity-80">{text(item.role)}</span>}
                 </figcaption>
               </figure>

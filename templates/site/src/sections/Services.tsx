@@ -28,7 +28,7 @@ export function Services({ section }: { section: ServicesSection }) {
             ))}
           </ul>
         ) : variant === "numbered" ? (
-          <ol className="grid gap-x-10 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+          <ol className={`grid gap-x-10 gap-y-2 sm:grid-cols-2 ${section.items.length % 4 === 0 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
             {section.items.map((item, i) => (
               <li key={i} className="reveal flex flex-col gap-2 border-t-2 border-text py-6">
                 <span aria-hidden="true" className="numeral">
@@ -44,7 +44,13 @@ export function Services({ section }: { section: ServicesSection }) {
           // Bento: with 4+ items the first one is a feature tile, sized so the grid has no holes.
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {section.items.map((item, i) => (
-              <li key={i} className={`card tilt reveal flex flex-col gap-3 p-6 ${i === 0 ? featureClass(section.items.length) : ""}`}>
+              <li key={i} className={`card tilt reveal relative flex flex-col gap-3 overflow-hidden p-6 ${i === 0 ? featureClass(section.items.length) : ""}`}>
+                {/* The large tile carries its icon again, big and faint, so it never looks empty. */}
+                {i === 0 && section.items.length >= 4 && (
+                  <span aria-hidden="true" className="pointer-events-none absolute -end-6 -top-6 hidden text-primary opacity-10 lg:block">
+                    <Icon name={item.icon ?? "check"} className="size-48" />
+                  </span>
+                )}
                 <span className="flex size-12 items-center justify-center rounded-site bg-primary-soft text-primary">
                   <Icon name={item.icon ?? "check"} />
                 </span>
@@ -66,5 +72,5 @@ export function featureClass(count: number): string {
   const sm = count % 2 === 0 ? "" : "sm:col-span-2";
   const r = (count - 1) % 3;
   const lg = r === 0 ? "lg:col-span-3" : r === 1 ? "lg:col-span-2" : "lg:col-span-2 lg:row-span-2";
-  return `${sm} ${lg} lg:justify-end lg:border-primary/40 lg:p-8`.trim();
+  return `${sm} ${lg} feature-tile lg:justify-end lg:border-primary/40 lg:p-8`.trim();
 }
