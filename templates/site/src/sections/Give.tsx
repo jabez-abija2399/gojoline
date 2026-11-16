@@ -15,7 +15,11 @@ export function Give({ section }: { section: GiveSection }) {
   const [monthly, setMonthly] = useState(false);
   const chosen = section.amounts[pick]!;
   const amount = formatPrice(chosen.price, lang);
-  const label = `${text(section.action.label)} ${amount}${monthly ? ` ${uiText("perMonth", lang)}` : ""}`;
+  // "{amount}" in the label puts the amount where the language wants it ("{amount} ይለግሱ"); otherwise it follows.
+  const withAmount = `${amount}${monthly ? ` ${uiText("perMonth", lang)}` : ""}`;
+  const base = text(section.action.label);
+  const label = base.includes("{amount}") ? base.replace("{amount}", withAmount) : `${base} ${withAmount}`;
+  const [beforeRaised = "", afterRaised = ""] = uiText("raised", lang).split("{raised}");
   const goal = section.goal;
   const percent = goal ? Math.min(100, Math.round((goal.raised.amountMinor / Math.max(1, goal.target.amountMinor)) * 100)) : 0;
   // Fill the giving form's amount (and how often) if it has such fields.
@@ -40,12 +44,14 @@ export function Give({ section }: { section: GiveSection }) {
           <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
           {goal && (
             <div className="flex flex-col gap-2">
-              <div className="goal-bar" role="img" aria-label={`${formatPrice(goal.raised, lang)} ${uiText("raised", lang)} ${formatPrice(goal.target, lang)}`}>
+              <div className="goal-bar" role="img" aria-label={uiText("raised", lang).replace("{raised}", formatPrice(goal.raised, lang)).replace("{target}", formatPrice(goal.target, lang))}>
                 <span className="goal-fill" style={{ "--p": `${percent}%` } as React.CSSProperties} />
               </div>
               <p className="flex flex-wrap justify-between gap-x-4">
                 <span>
-                  <strong className="font-heading text-xl">{formatPrice(goal.raised, lang)}</strong> {uiText("raised", lang)} {formatPrice(goal.target, lang)}
+                  {beforeRaised.replace("{target}", formatPrice(goal.target, lang))}
+                  <strong className="font-heading text-xl">{formatPrice(goal.raised, lang)}</strong>
+                  {afterRaised.replace("{target}", formatPrice(goal.target, lang))}
                 </span>
                 {goal.label && <span className="text-muted">{text(goal.label)}</span>}
               </p>
@@ -67,7 +73,7 @@ export function Give({ section }: { section: GiveSection }) {
               ))}
             </div>
           )}
-          <div role="group" aria-label={text(section.heading)} className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div role="group" aria-label={text(section.heading)} className={`grid grid-cols-2 gap-3 ${section.amounts.length % 3 === 0 ? "sm:grid-cols-3" : ""}`}>
             {section.amounts.map((a, i) => (
               <button key={i} type="button" aria-pressed={pick === i} onClick={() => setPick(i)} className={`${chip} ${pick === i ? "border-primary bg-primary text-on-primary" : "border-line bg-surface hover:border-text"}`}>
                 {formatPrice(a.price, lang)}

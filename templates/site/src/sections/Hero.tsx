@@ -13,7 +13,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
   // On the home page's hero: when they are open (or, without hours, the phone number).
   // Up to two lines, so a business open on other days at other times isn't made to look closed.
   const hours = (site.business.hours ?? []).slice(0, 2).map((h) => `${text(h.days)} · ${text(h.time)}`);
-  const chip = first && page.path === "/" ? (hours.length ? hours : site.business.phone ? [site.business.phone] : undefined) : undefined;
+  const chip = first && page.path === "/" && section.hours !== false ? (hours.length ? hours : site.business.phone ? [site.business.phone] : undefined) : undefined;
   // A full-screen photo needs a photo: with only a drawing, the tinted banner reads better.
   const asked = section.variant ?? "split";
   const variant = asked === "immersive" && !section.image?.src ? "banner" : asked;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Picture } from "../components/Picture";
+import { CardPhotos } from "../components/CardPhotos";
 import { Rail } from "../components/Rail";
 import { SectionHead } from "../components/SectionHead";
 import { ItemTitle } from "../components/SectionTitle";
@@ -152,7 +153,11 @@ export function Cards({ section }: { section: CardsSection }) {
             {items.map((item, i) => (
               <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className="card pcard reveal lift flex flex-col overflow-hidden">
                 <div className="zoom relative">
-                  <Picture image={item.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" className="aspect-[4/3] w-full" />
+                  {item.photos && item.photos.length > 0 && item.image ? (
+                    <CardPhotos photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
+                  ) : (
+                    <Picture image={item.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" className="aspect-[4/3] w-full" />
+                  )}
                   <Badge item={item} />
                 </div>
                 <div className="flex flex-1 flex-col gap-2.5 p-5">

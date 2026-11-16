@@ -285,7 +285,7 @@
           ],
           "monthly": true,
           "action": {
-            "label": { "en": "Give", "am": "ይስጡ፦" },
+            "label": { "en": "Give", "am": "{amount} ይስጡ" },
             "href": "#give"
           },
           "goal": {

@@ -59,7 +59,7 @@ const giveBox = {
     { price: birr(5000), impact: t("School kits for two girls, and a year of tutoring three afternoons a week.", "ለሁለት ሴት ተማሪዎች የትምህርት ቁሳቁስና በሳምንት ሦስት ከሰዓት የአንድ ዓመት ማጠናከሪያ ትምህርት።") },
   ],
   monthly: true,
-  action: link("Give", "ልገሳ፦", "#give"),
+  action: link("Give", "{amount} ይለግሱ", "#give"),
   goal: { raised: birr(186400), target: birr(300000), label: t("120 school kits by September", "እስከ መስከረም 120 የትምህርት ቁሳቁሶች") },
   image: img("ngo-gallery-smiling-girl", "A smiling girl in an embroidered traditional dress with a crowd blurred behind her", "ጥልፍ ያለው የባህል ልብስ የለበሰች ፈገግተኛ ልጅ፤ ከኋላዋ ሕዝብ ደብዘዝ ብሎ ይታያል"),
 };
@@ -106,6 +106,7 @@ save("ngo", {
         {
           type: "hero",
           variant: "split",
+          hours: false,
           id: "top",
           eyebrow: t("Girls' education · Lake Hawassa", "የሴት ልጆች ትምህርት · ሀዋሳ ሐይቅ"),
           heading: t("Every girl finishes school", "ሴት ልጅ ሁሉ ትምህርቷን ትጨርስ"),

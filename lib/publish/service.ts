@@ -223,6 +223,9 @@ function peopleAndQuotes(site: unknown): { text: string; samplePhoto: boolean }[
       if (s.type === "testimonials") for (const i of items) for (const t of texts(i.quote)) out.push({ text: t, samplePhoto: false });
       if (s.type === "quote") for (const t of texts(s.quote)) out.push({ text: t, samplePhoto: Boolean(s.name) && isStock(s.image) });
       if (s.type === "cards" && s.layout === "people") for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: isStock(i.image) });
+      // A giving goal is a claim about real money: the templates' sample goals must not go live.
+      const goal = (s.type === "give" ? (s as { goal?: { raised?: { amountMinor?: number }; target?: { amountMinor?: number } } }).goal : undefined);
+      if (goal) out.push({ text: `goal:${goal.raised?.amountMinor}/${goal.target?.amountMinor}`, samplePhoto: false });
     }
   }
   return out;
@@ -237,7 +240,7 @@ function templateSamples(): Set<string> {
 
 /**
  * True while a site still shows a template's examples: the placeholder phone or Telegram name,
- * [bracketed] text, a template's invented reviews, quotes or staff, or a named person shown
+ * [bracketed] text, a template's invented reviews, quotes, staff or giving goal, or a named person shown
  * with a sample photo (a stranger's face must never stand for someone at the business).
  */
 export function hasExampleDetails(siteJson: string): boolean {

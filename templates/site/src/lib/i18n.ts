@@ -67,7 +67,7 @@ const ui = {
     once: "Once",
     monthly: "Monthly",
     perMonth: "a month",
-    raised: "raised of",
+    raised: "{raised} raised of {target}",
     today: "Today",
   },
   am: {
@@ -110,7 +110,7 @@ const ui = {
     once: "አንድ ጊዜ",
     monthly: "በየወሩ",
     perMonth: "በወር",
-    raised: "ተሰብስቧል ከ",
+    raised: "ከ{target} ውስጥ {raised} ተሰብስቧል",
     today: "ዛሬ",
   },
 } as const;

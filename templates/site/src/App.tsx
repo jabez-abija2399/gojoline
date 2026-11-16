@@ -1,3 +1,4 @@
+import { Announcement } from "./components/Announcement";
 import { HeadingLevel } from "./components/SectionTitle";
 import { SiteProvider } from "./lib/context";
 import type { Lang, Page, Section, Site } from "./lib/types";
@@ -84,7 +85,8 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
       <div className={`site-root relative flex min-h-screen flex-col ${hasStickyActions(site) ? "max-md:pb-[4.5rem]" : ""}`}>
         {/* How far down the page the visitor is (motion.css; only where the browser can do it without scripts). */}
         <div aria-hidden="true" className="scroll-progress" />
-        <Header overlay={overlay} />
+        <Announcement />
+        <Header overlay={overlay && !site.announcement?.length} />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {page.sections.map((section, i) =>
             i === 0 && !firstIsHero ? (

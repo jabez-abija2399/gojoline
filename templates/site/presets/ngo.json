@@ -30,6 +30,7 @@
         {
           "type": "hero",
           "variant": "split",
+          "hours": false,
           "id": "top",
           "eyebrow": { "en": "Girls' education · Lake Hawassa", "am": "የሴት ልጆች ትምህርት · ሀዋሳ ሐይቅ" },
           "heading": { "en": "Every girl finishes school", "am": "ሴት ልጅ ሁሉ ትምህርቷን ትጨርስ" },
@@ -74,7 +75,7 @@
           ],
           "monthly": true,
           "action": {
-            "label": { "en": "Give", "am": "ልገሳ፦" },
+            "label": { "en": "Give", "am": "{amount} ይለግሱ" },
             "href": "#give"
           },
           "goal": {

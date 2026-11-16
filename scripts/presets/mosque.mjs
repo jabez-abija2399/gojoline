@@ -177,7 +177,7 @@ save("mosque", {
             { price: birr(5000), impact: t("Towards the new madrasa classrooms above the wudu area.", "ከውዱእ ቦታው በላይ ለሚሠሩት አዳዲስ የመድረሳ ክፍሎች።") },
           ],
           monthly: true,
-          action: link("Give", "ይስጡ፦", "#give"),
+          action: link("Give", "{amount} ይስጡ", "#give"),
           goal: { raised: birr(1240000), target: birr(3000000), label: t("Building fund: new madrasa classrooms", "የግንባታ ፈንድ፦ አዳዲስ የመድረሳ ክፍሎች") },
           image: img("mosque-about-courtyard-arches", "A stone mosque courtyard with arcades of arches and a green dome under a blue sky", "በሰማያዊ ሰማይ ሥር ቅስት በረንዳዎችና አረንጓዴ ጉልላት ያለው የድንጋይ መስጂድ ግቢ"),
         },

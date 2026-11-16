@@ -31,18 +31,18 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 
 | `type` | Use for | Key fields |
 | --- | --- | --- |
-| `hero` | Top of a page | `variant` (`split`, `centered`, `banner`, `immersive`, `portrait`), `eyebrow`, `heading`, `subheading`, `image`, `primaryAction`, `secondaryAction`, `facts[]` (up to 4 `value` + `label`, only facts the owner gave; numbers count up), `stamp` (a few words on a turning circle), `frame` (immersive: the photo opens out from a rounded frame) |
+| `hero` | Top of a page | `variant` (`split`, `centered`, `banner`, `immersive`, `portrait`), `eyebrow`, `heading`, `subheading`, `image`, `primaryAction`, `secondaryAction`, `facts[]` (up to 4 `value` + `label`, only facts the owner gave; numbers count up), `stamp` (a few words on a turning circle), `frame` (immersive: the photo opens out from a rounded frame), `hours` (split: `false` hides the opening hours beside the picture) |
 | `about` | Story, mission, a feature with a picture | `eyebrow`, `heading`, `body` (blank line = new paragraph), `image`, `imageSide` (`start`, `end`), `imageShape` (`arch`), `points[]` (a ticked list), `highlights[]` (`value`, `label`), `action` |
 | `cards` | Anything shown as picture cards: rooms, properties, tours, products, dishes, team, projects, programmes | `layout` (`grid`, `feature`, `scroll`, `people`, `stack`, `index`), `imageShape` (`arch`), `filters`, `items[]` (`image`, `title`, `subtitle`, `description`, `price`, `priceNote`, `badge`, `meta[]`, `action`), `action` |
 | `menu` | Food, drinks, price lists | `categories[]` with `items[]` (`name`, `description`, `price`, `tag`, `image` for a few signature items) |
-| `services` | What you offer, without pictures: treatments, amenities, departments, reasons to choose you | `variant` (`bento` cards, `list` compact rows, `numbered` 01 02 03), `items[]` (`title`, `description`, `price`, `icon`) |
+| `services` | What you offer, without pictures: treatments, amenities, departments, reasons to choose you | `variant` (`bento` cards, `list` compact rows, `numbered` 01 02 03), `image` (with `list` or `numbered`: a photo that stays beside the list as it scrolls), `items[]` (`title`, `description`, `price`, `icon`) |
 | `stats` | A band of 2 to 4 big numbers (years, guests, students, homes sold). Only numbers the owner gave | `items[]` (`value`, `label`), `tone` (`dark`, `soft`), `heading` |
 | `steps` | How it works, in order: booking, admissions, ordering | `items[]` (`title`, `description`), `action` |
 | `schedule` | Times: service times, prayer times, class times, an event programme, term dates. With `at` on items, the next one is highlighted with a countdown; `dates` shows today's date in Gregorian, Ethiopian and/or Hijri | `layout` (`list`, `tiles`), `items[]` (`time`, `title`, `note`, `at` as "HH:MM" 24 h), `dates` (`gregorian`, `ethiopian`, `hijri`), `footnote` |
 | `quote` | One strong sentence in large type: a mission, a verse, a founder's words. Its words darken one by one as it scrolls in | `quote`, `name`, `role`, `image` |
 | `marquee` | A ribbon of 3 to 8 short words moving slowly across the page, between two sections: places, dishes, promises ("Lalibela ✦ Simien ✦ Danakil") | `items[]`, `tone` (`dark`, `primary`, `light`) |
 | `tabs` | 2 to 6 topics where each tab swaps a picture and a short text: programmes, departments, room types, service days | `items[]` (`label`, `heading`, `body`, `image`, `points[]`, `action`) |
-| `give` | Donations: amount buttons, once or monthly, what each amount does, a goal bar; the button fills in the giving `form` (give the form an `amount` field, and a `frequency` select with "Once"/"Monthly" when `monthly` is on) | `amounts[]` (`price`, `impact`), `monthly`, `action` (to the form, e.g. `#give`), `goal` (`raised`, `target`, `label`), `image` |
+| `give` | Donations: amount buttons, once or monthly, what each amount does, a goal bar; the button fills in the giving `form` (give the form an `amount` field, and a `frequency` select with "Once"/"Monthly" when `monthly` is on) | `amounts[]` (`price`, `impact`), `monthly`, `action` (to the form, e.g. `#give`; write `{amount}` in its label where the amount goes, e.g. "{amount} ይለግሱ"), `goal` (`raised`, `target`, `label`), `image` |
 | `gallery` | Photos; each opens large in a viewer | `layout` (`mosaic`, `scroll`, `wall`), `images[]`, `intro` |
 | `contact` | Call / Telegram buttons, phone, address, hours (from `business`) | `heading`, `intro` |
 | `map` | Location card that opens the maps app | `heading`, `query` (defaults to the English address) |
@@ -129,6 +129,8 @@ Every site moves the way the best sites do, by itself: hero words rise in, the h
 - `quote` for one big sentence; its words darken as the visitor reads.
 - `stamp` on a hero for a short identity line ("Since 2014 · Addis Ababa"); not with long text.
 - `imageShape: "arch"` for elegant sites (hotels, weddings, worship, salons).
+- A card's `photos[]` (grid cards) are swiped inside the card with a 1/4 counter: several views of a home or room.
+- `announcement` (site level): two or three short lines in a thin moving strip above the menu ("Order on Telegram", "Delivery in Addis").
 - Card `badge`s with two or more kinds give filter pills by themselves ("For sale" / "For rent").
 - Menus with three or more categories get tabs by themselves.
 

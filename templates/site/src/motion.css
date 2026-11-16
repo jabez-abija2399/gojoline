@@ -286,7 +286,12 @@
   /* The next prayer, service or class. */
   .schedule-tile[aria-current] {
     border-color: var(--site-primary);
+    background: var(--site-primary-soft);
     box-shadow: 0 0 0 2px var(--site-primary);
+  }
+  .schedule-tile[aria-current] .time-value {
+    color: var(--site-text);
+    font-size: 1.625rem;
   }
   .next-badge {
     display: inline-block;
@@ -299,6 +304,7 @@
     padding: 0.125rem 0.625rem;
     font-size: 0.875rem;
     font-weight: 600;
+    white-space: nowrap;
   }
   li:not(.schedule-tile) > span > .next-badge,
   li:not(.schedule-tile) .next-badge {
@@ -762,8 +768,118 @@
   }
 }
 
-/* Pictures with a top like a doorway. Outside the layers so it wins over the rounded-corner utility. */
+/* Pictures with a top like a doorway. Outside the layers so it wins over the rounded-corner utility;
+   their wipe-in keeps the arch (no rounded clip). */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .arch.wipe {
+      animation-name: site-wipe-plain;
+    }
+  }
+}
+@keyframes site-wipe-plain {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
 .arch,
 .arch :is(img, .placeholder) {
   border-radius: 999px 999px var(--site-radius) var(--site-radius) / 50% 50% var(--site-radius) var(--site-radius);
+}
+
+/* A services list beside a pinned photo keeps to one or two columns. */
+.pinned-list > :is(ul, ol) {
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 1280px) {
+  .pinned-list > :is(ul, ol) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@layer components {
+  /* Several photos in one card. */
+  .card-photos-strip {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .card-photos-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .card-photos-count {
+    position: absolute;
+    inset-inline-end: 0.75rem;
+    bottom: 0.75rem;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.6);
+    color: #fff;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-photos-arrow {
+    position: absolute;
+    top: 50%;
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.9);
+    color: #111;
+    font-size: 1.5rem;
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+  .card-photos-arrow:disabled {
+    opacity: 0;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .card-photos:hover .card-photos-arrow,
+    .card-photos-arrow:focus-visible {
+      display: inline-flex;
+    }
+  }
+  /* The announcement strip. */
+  .announce {
+    position: relative;
+    z-index: 25;
+    overflow: hidden;
+    padding-block: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .announce-track {
+    display: flex;
+    flex: none;
+    white-space: nowrap;
+  }
+  .announce-track li::after {
+    content: "\2726";
+    margin-inline: 1.5rem;
+    opacity: 0.6;
+  }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  .announce-row {
+    animation-duration: 28s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .announce-track li[aria-hidden] {
+    display: none;
+  }
+}
+
+/* On an arched picture the label sits in the middle of the curve. */
+.arch .badge {
+  inset-inline-start: 50%;
+  top: 1.25rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }

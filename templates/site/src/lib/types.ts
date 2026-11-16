@@ -132,6 +132,8 @@ export interface HeroSection {
   secondaryAction?: Link;
   /** A few words set round a slowly turning circle on the picture: "Since 2014 · Addis Ababa". */
   stamp?: Text;
+  /** split only: false hides the opening hours shown beside the picture (on by default when the business has hours). */
+  hours?: boolean;
   /** immersive only: the photo starts inside a rounded frame and opens to the full width as the page scrolls. */
   frame?: boolean;
   /** Up to 4 short facts shown as a strip under the hero. */
@@ -182,6 +184,8 @@ export interface ServicesSection {
   intro?: Text;
   /** bento: cards, the first one large. list: compact rows with icons. numbered: 01, 02, 03 columns. */
   variant?: "bento" | "list" | "numbered";
+  /** With list or numbered: a photo that stays in place beside the list while it scrolls (computers). */
+  image?: Image;
   items: { title: Text; description: Text; price?: Price; icon?: IconName }[];
 }
 
@@ -208,6 +212,8 @@ export interface CardItem {
   priceNote?: Text;
   /** A small label on the picture: "For sale", "New", "Best seller". */
   badge?: Text;
+  /** More photos of the same thing (a home, a room): swiped inside the card, with a 1/4 counter. Grid layout. */
+  photos?: Image[];
   /** Up to 5 short facts: "2 guests", "King bed", "120 m²", "3 days". */
   meta?: Text[];
   action?: Link;
@@ -294,7 +300,7 @@ export interface GiveSection {
   amounts: { price: Price; impact?: Text }[];
   /** Offer "monthly" next to "once". */
   monthly?: boolean;
-  /** Where the button goes, usually the giving form ("#give"); its label is followed by the amount. */
+  /** Where the button goes, usually the giving form ("#give"). The amount follows its label, or goes where the label says "{amount}" ("{amount} ይለግሱ"). */
   action: Link;
   /** A campaign goal: how much has come in so far. */
   goal?: { raised: Price; target: Price; label?: Text };
@@ -468,6 +474,8 @@ export interface Business {
 export interface Site {
   name: Text;
   tagline?: Text;
+  /** Short lines in a thin moving strip above the menu: "Order on Telegram", "Pay on delivery". */
+  announcement?: Text[];
   /** First language is the default (served at "/"); the second is served under "/am" or "/en". */
   languages: Lang[];
   theme: Theme;
