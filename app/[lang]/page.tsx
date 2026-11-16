@@ -15,6 +15,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { serif } from "@/lib/fonts-landing";
 import { HERO_IDS, showcaseSites } from "@/lib/landing/showcase";
+import { firstSections } from "@/lib/landing/template-preview";
 import { services } from "@/lib/server/services";
 import { EXAMPLE_SLUG } from "@/lib/sites/slug";
 
@@ -29,7 +30,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
   const byId = new Map(sites.map((x) => [x.id, x]));
   const stageSites = HERO_IDS.flatMap((id) => {
     const x = byId.get(id);
-    return x ? [{ id, label: t.landing.demo.labels[id], name: x.name, prompt: t.landing.demo.prompts[id], shot: x.brand ?? x.top }] : [];
+    return x ? [{ id, label: t.landing.demo.labels[id], name: x.name, prompt: t.landing.demo.prompts[id], shot: x.brand ?? x.top, sections: firstSections(id, lang) }] : [];
   });
   // The same café, in both languages, for the language card.
   const cafe = { en: showcaseSites("en").find((s) => s.id === "cafe"), am: showcaseSites("am").find((s) => s.id === "cafe") };
@@ -48,9 +49,6 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
       <SiteHeader locale={lang} t={t} nav />
       <main id="main" tabIndex={-1} className={`${serif.variable} focus:outline-none`}>
         <Hero
-          // Design options for the frame, to compare: ?hero=a (workspace), b (three phones), c (builder).
-          variant={(["a", "b", "c", "d"] as const).find((v) => v === sp.hero) ?? "d"}
-          box={t.landing.box}
           live={t.landing.live}
           you={b.you}
           assistant={b.assistant}

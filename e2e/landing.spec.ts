@@ -1,6 +1,17 @@
 import { expect, test } from "@playwright/test";
 import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
+
+/** Desktop shows the business chips; phones show one "Choose your business" picker instead. */
+async function pickBusiness(page: import("@playwright/test").Page, label: string) {
+  if (test.info().project.name === "mobile") await page.getByLabel("Choose your business").selectOption({ label });
+  else await page.getByRole("button", { name: label, exact: true }).click();
+}
+async function expectPicked(page: import("@playwright/test").Page, label: string, timeout?: number) {
+  if (test.info().project.name === "mobile") await expect(page.getByLabel("Choose your business").locator("option:checked")).toHaveText(label, { timeout });
+  else await expect(page.getByRole("button", { name: label, exact: true })).toHaveAttribute("aria-pressed", "true", { timeout });
+}
+
 test.describe("landing page", () => {
   test("redirects / to a language and remembers the choice", async ({ page }) => {
     await page.goto("/");
@@ -37,9 +48,8 @@ test.describe("landing page", () => {
 
   test("hero: pick a business; FAQ opens; the menu leads to Templates and Prices; Start free goes to sign-in", async ({ page }) => {
     await page.goto("/en");
-    const clinic = page.getByRole("button", { name: "Clinic", exact: true });
-    await clinic.click();
-    await expect(clinic).toHaveAttribute("aria-pressed", "true");
+    await pickBusiness(page, "Clinic");
+    await expectPicked(page, "Clinic");
     // The description is filled in for editing.
     await expect(page.getByRole("textbox", { name: "Describe your business" })).toHaveValue(/A family clinic in Megenagna/);
     // Features: picking one shows its description; the one before closes.
@@ -100,12 +110,12 @@ test.describe("landing page", () => {
   test("Start from this: the picked real site opens after sign-in; typed words are never replaced", async ({ page }) => {
     await page.goto("/en");
     // The showcase opens on the café; picking another never overwrites what the visitor wrote.
-    await expect(page.getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expectPicked(page, "Café");
     const box = page.getByRole("textbox", { name: "Describe your business" });
     await box.fill("My own words");
-    await page.getByRole("button", { name: "Hotel", exact: true }).click();
+    await pickBusiness(page, "Hotel");
     await expect(box).toHaveValue("My own words");
-    await expect(page.getByRole("button", { name: "Hotel", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expectPicked(page, "Hotel");
     await expect(page.getByRole("img", { name: /builder with the site it made for Tana Shore Lodge/ })).toBeVisible();
 
     await page.getByRole("link", { name: "See all 14 templates" }).click();
@@ -207,12 +217,10 @@ test("signed out: the landing page offers sign-in and a free start", async ({ pa
 });
 
 test("landing motion: the demo plays itself and can be paused; reduced motion keeps it still", async ({ page, browser }) => {
-  // It waits for the demo to move on by itself, twice.
-  test.setTimeout(75_000);
+  // It waits for the live build to finish and move on by itself, twice.
+  test.setTimeout(100_000);
   await page.goto("/en");
-  const chips = page.getByRole("group", { name: "Gojoline for" });
-  await chips.scrollIntoViewIfNeeded();
-  await expect(chips.getByRole("button", { name: "Café" })).toHaveAttribute("aria-pressed", "true");
+  await expectPicked(page, "Café");
   // Pausing straight away keeps the control (and focus) so it can be played again.
   const toggle = page.getByRole("button", { name: "Pause the demo" });
   await toggle.click();
@@ -220,11 +228,11 @@ test("landing motion: the demo plays itself and can be paused; reduced motion ke
   await expect(toggle).toBeFocused();
   await toggle.click();
   // After a few seconds the next business is shown by itself...
-  await expect(chips.getByRole("button", { name: "Hotel" })).toHaveAttribute("aria-pressed", "true", { timeout: 15_000 });
+  await expectPicked(page, "Hotel", 25_000);
   // ...until the visitor pauses it.
   await page.getByRole("button", { name: "Pause the demo" }).click();
   await page.waitForTimeout(7000);
-  await expect(chips.getByRole("button", { name: "Hotel" })).toHaveAttribute("aria-pressed", "true");
+  await expectPicked(page, "Hotel");
 
   // The moving list of businesses can be paused on any device.
   const listToggle = page.getByRole("button", { name: "Pause the moving list" });
@@ -243,6 +251,8 @@ test("landing motion: the demo plays itself and can be paused; reduced motion ke
   const calm = await still.newPage();
   await calm.goto("/en");
   await calm.waitForTimeout(7000);
-  await expect(calm.getByRole("group", { name: "Gojoline for" }).getByRole("button", { name: "Café" })).toHaveAttribute("aria-pressed", "true");
+  // Still on the first business (the picker on phones, the chips on larger screens).
+  if (test.info().project.name === "mobile") await expect(calm.getByLabel("Choose your business").locator("option:checked")).toHaveText("Café");
+  else await expect(calm.getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "true");
   await still.close();
 });

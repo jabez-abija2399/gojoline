@@ -1,14 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUp, BedDouble, Check, ChevronDown, ChevronRight, Coffee, Lock, Pause, Play, ShoppingBag, Sparkles, Stethoscope, UserRound } from "lucide-react";
-import { TypingBubble } from "./typing-bubble";
-import { BoxStory } from "./box-story";
-import { BoxLiveBuild, BUILD_CYCLE_MS } from "./box-live-build";
-import { BoxWorkspace } from "./box-workspace";
+import { ArrowUp, BedDouble, ChevronDown, ChevronRight, Coffee, Pause, Play, ShoppingBag, Sparkles, Stethoscope, UserRound } from "lucide-react";
+import { BoxLiveBuild, BUILD_CYCLE_MS, type BuildSite } from "./box-live-build";
 import type { Messages } from "@/lib/i18n";
 import { LanguageChoice, type SiteLanguages } from "@/components/builder/language-choice";
 import { clearLandingPrompt, saveLandingPrompt } from "@/components/builder/start-prompt";
@@ -23,6 +19,8 @@ export interface StageSite {
   prompt: string;
   /** Picture of the top of the real site. */
   shot: { src: string; width: number; height: number };
+  /** The real template's first sections at computer and phone width (the live build). */
+  sections: BuildSite["sections"];
 }
 
 export interface StageText {
@@ -55,7 +53,6 @@ interface Props {
   sites: StageSite[];
   t: StageText;
   /** Background of the showcase (the mosaic), drawn on the server. */
-  backdrop: React.ReactNode;
   /** Heading of the prompt section, written on the server. */
   /** A link under the showcase (to all the templates). */
   more: React.ReactNode;
@@ -64,12 +61,9 @@ interface Props {
   promptFooter: React.ReactNode;
   /** The last chip: every template ("More"). */
   moreChip: { href: string; label: string };
-  /** What the frame shows: d = a live build (default), a = workspace, b = three phones, c = the builder. */
-  variant?: "a" | "b" | "c" | "d";
   live: Messages["landing"]["live"];
   you: string;
   assistant: string;
-  box: Messages["landing"]["box"];
   /** Phones: the picker that replaces the row of chips. */
   chooseLabel: string;
   /** Has a session cookie: the description goes straight to "Your sites" (no sign-in page). */
@@ -86,12 +80,10 @@ const EXAMPLE_SLUGS: Record<string, string> = { cafe: "bole-buna", hotel: "tana-
 
 const SITE_ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, shop: ShoppingBag, personal: UserRound } as const;
 
-/** How long each business stays on screen while the demo plays itself. */
-const AUTO_MS = 6000;
 
-export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, promptFooter, moreChip, chooseLabel, variant = "d", box, live, you, assistant, signedIn = false }: Props) {
-  // A live build takes longer than a picture swap: the next business waits for it to finish.
-  const cycleMs = variant === "d" ? BUILD_CYCLE_MS : AUTO_MS;
+export function LandingStage({ locale, sites, t, more, promptHeading, promptFooter, moreChip, chooseLabel, live, you, assistant, signedIn = false }: Props) {
+  // The next business waits for the live build to finish.
+  const cycleMs = BUILD_CYCLE_MS;
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -122,7 +114,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
       setAuto(true);
       setAutoStarted(true);
       // The live build plays for the business on screen first.
-      if (variant === "d") setShown((n) => n + 1);
+      setShown((n) => n + 1);
     };
     let id: ReturnType<typeof setTimeout> | undefined;
     const onLoad = () => (id = setTimeout(begin, 1500));
@@ -136,11 +128,11 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
       removeEventListener("load", onLoad);
       io?.disconnect();
     };
-  }, [variant]);
+  }, []);
   useEffect(() => {
     if (!auto || !inView) return;
     // Fetch the next business's picture a second early, so it's there when it swaps in.
-    const nextShot = sites[(index + 1) % sites.length]!.shot;
+    const nextShot = sites[(index + 1) % sites.length]!.sections[0]?.d ?? sites[(index + 1) % sites.length]!.shot;
     const early = setTimeout(() => {
       const img = new window.Image();
       img.src = `/_next/image?url=${encodeURIComponent(nextShot.src)}&w=640&q=75`;
@@ -176,7 +168,7 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
 
   return (
     <>
-      <div className="flex flex-col items-center gap-8 md:gap-10">
+      <div className="flex flex-col items-center gap-5 md:gap-6">
         <div className="flex w-full items-center justify-center gap-2 px-4 sm:px-0">
           {/* Phones: one picker, as on the product sites this page learns from. */}
           <label className="relative flex min-h-12 w-full max-w-xs items-center gap-3 rounded-full border border-line bg-white ps-2 pe-10 shadow-sm sm:hidden has-[select:focus-visible]:outline has-[select:focus-visible]:outline-3 has-[select:focus-visible]:outline-offset-2 has-[select:focus-visible]:outline-link">
@@ -238,73 +230,8 @@ export function LandingStage({ locale, sites, t, backdrop, more, promptHeading, 
         <p role="status" className="sr-only">
           {picked === null ? "" : t.picked.replace("{name}", site.name)}
         </p>
-        <figure ref={figureRef} role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full overflow-hidden rounded-[1.75rem] border border-coral/15 bg-[color-mix(in_oklab,var(--gojo-coral-soft)_55%,var(--gojo-paper))] p-3 pt-8 sm:rounded-[2.25rem] sm:p-6 md:p-10 md:pb-0">
-          {backdrop}
-          {variant === "d" ? (
-            <BoxLiveBuild site={site} live={live} you={you} assistant={assistant} publish={t.publish} booking={{ title: t.noteTitle, body: t.noteBody }} run={shown} slug={EXAMPLE_SLUGS[site.id] ?? "my-site"} priority={index === 0} />
-          ) : variant === "c" ? (
-          <div aria-hidden="true" className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgb(18_18_18/0.45)] md:rounded-b-none md:border-b-0">
-            <div className="flex items-center gap-3 border-b border-line px-3 py-2.5 sm:px-4">
-              <span className="flex gap-1.5">
-                <span className="size-2.5 rounded-full bg-line" />
-                <span className="size-2.5 rounded-full bg-line" />
-                <span className="size-2.5 rounded-full bg-line" />
-              </span>
-              <span className="flex min-w-0 flex-1 items-center justify-start gap-2 text-ink-muted sm:ps-8">
-                <Lock className="size-3.5 shrink-0" />
-                <span className="truncate">{site.name}</span>
-              </span>
-              <span className="rounded-full bg-ink px-3 py-1 font-medium text-white">{t.publish}</span>
-            </div>
-            <div className="grid md:grid-cols-[minmax(0,18rem)_1fr] lg:grid-cols-[minmax(0,22rem)_1fr]">
-              <div key={`c-${site.id}`} className="flex flex-col gap-3 p-4 text-start md:border-e md:border-line">
-                <TypingBubble text={site.prompt} run={shown} />
-                <div className="rounded-2xl rounded-bl-sm border border-line px-4 py-3">
-                  <p className="font-semibold">{t.buildTitle}</p>
-                  <ol className="mt-2 flex flex-col gap-1.5">
-                    {t.buildSteps.map((step, i) => (
-                      <li key={step} className={`flex items-center gap-2 text-ink-muted ${shown === 0 ? "" : "animate-[rise-in_0.35s_ease-out_backwards]"}`} style={{ animationDelay: `${(shown === 0 ? 0 : 600) + i * 160}ms` }}>
-                        <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-lagoon text-white">
-                          <Check className="size-3.5" strokeWidth={3} />
-                        </span>
-                        {step}
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-                <p className="w-fit rounded-2xl rounded-bl-sm bg-sunken px-4 py-3 font-medium">{t.ready}</p>
-                <div className="mt-auto flex items-center gap-2 rounded-2xl border border-line p-1.5 max-md:hidden">
-                  <span className="flex-1 truncate px-2.5 text-ink-muted">{t.chatPlaceholder}</span>
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ink text-white">
-                    <ArrowUp className="size-5" />
-                  </span>
-                </div>
-              </div>
-              <div className="relative flex items-end justify-center gap-6 bg-paper bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] px-4 pt-6 max-md:border-t max-md:border-line md:pt-10 lg:min-h-[32rem]">
-                {/* Wide screens: what happens around the site, beside it. */}
-                <div className="mb-16 flex w-52 flex-col gap-3 text-start max-lg:hidden">
-                  <p className="rounded-2xl border border-line bg-white px-4 py-3 shadow-lg">
-                    <strong className="block">{t.noteTitle}</strong>
-                    <span className="text-ink-muted">{t.noteBody}</span>
-                  </p>
-                  <p className="flex w-fit items-center gap-2 rounded-full border border-line bg-white px-3 py-2 font-medium shadow-lg">
-                    <span className="flex size-5 items-center justify-center rounded-full bg-lagoon text-white">
-                      <Check className="size-3.5" strokeWidth={3} />
-                    </span>
-                    {t.saved}
-                  </p>
-                </div>
-                <div key={`p-${site.id}`} className={`h-[340px] w-[250px] shrink-0 overflow-hidden rounded-t-[2rem] border-x-[8px] border-t-[8px] border-ink bg-white md:h-[440px] md:w-[280px] lg:h-[480px] lg:w-[300px] ${shown === 0 ? "" : "animate-[pop-in_0.45s_ease-out]"}`}>
-                  <Image src={site.shot.src} alt="" width={site.shot.width} height={site.shot.height} sizes="(min-width: 1024px) 284px, (min-width: 768px) 264px, 234px" priority={index === 0} className="h-auto w-full" />
-                </div>
-              </div>
-            </div>
-          </div>
-          ) : variant === "a" ? (
-            <BoxWorkspace site={site} box={box} slug={EXAMPLE_SLUGS[site.id] ?? "my-site"} priority={index === 0} animate={shown > 0} />
-          ) : (
-            <BoxStory site={site} box={box} steps={t.buildSteps} buildTitle={t.buildTitle} priority={index === 0} animate={shown > 0} />
-          )}
+        <figure ref={figureRef} role="img" aria-label={t.showcaseLabel.replace("{name}", site.name)} className="relative w-full">
+          <BoxLiveBuild site={site} live={live} you={you} assistant={assistant} publish={t.publish} booking={{ title: t.noteTitle, body: t.noteBody }} run={shown} slug={EXAMPLE_SLUGS[site.id] ?? "my-site"} priority={index === 0} />
         </figure>
         </div>
         {more}

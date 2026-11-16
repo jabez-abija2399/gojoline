@@ -4,17 +4,16 @@ import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { InstallApp } from "@/components/pwa/install-app";
 import { LandingStage, type StageSite, type StageText } from "./landing-stage";
-import { Mosaic } from "./mosaic";
 
 /**
  * Headline, then the real product: pick a business and the builder below shows a real site
  * for it. Then one box to describe your own.
  */
-export function Hero({ t, locale, sites, text, install, promptTitle, templates, signedIn, variant, box, live, you, assistant }: { variant: "a" | "b" | "c" | "d"; box: Messages["landing"]["box"]; live: Messages["landing"]["live"]; you: string; assistant: string; t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string; templates: { href: string; label: string }; signedIn: boolean }) {
+export function Hero({ t, locale, sites, text, install, promptTitle, templates, signedIn, live, you, assistant }: { live: Messages["landing"]["live"]; you: string; assistant: string; t: Messages["landing"]["hero"]; locale: Locale; sites: StageSite[]; text: StageText; install: Messages["pwa"]; promptTitle: string; templates: { href: string; label: string }; signedIn: boolean }) {
   return (
     <div className="relative isolate overflow-x-clip">
       <div aria-hidden="true" className="hero-glow" />
-      <section aria-labelledby="hero-title" className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 pt-10 text-center sm:px-6 md:gap-7 md:pt-16">
+      <section aria-labelledby="hero-title" className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 pt-6 text-center sm:px-6 md:gap-4 md:pt-8">
         <h1 id="hero-title" className={`relative isolate display whitespace-nowrap text-[clamp(1.6rem,7.6vw,4.75rem)] ${locale === "am" ? "leading-[1.3]" : "leading-[1.08]"}`}>
           {t.titleStart}{" "}
           <span className="relative inline-block whitespace-nowrap [line-height:inherit]">
@@ -25,19 +24,16 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates, 
             </svg>
           </span>
         </h1>
-        <p className="max-w-[56ch] text-lg text-ink-muted sm:text-xl">{t.subtitle}</p>
+        <p className="max-w-[56ch] text-ink-muted sm:text-lg">{t.subtitle}</p>
       </section>
-      <div className="mx-auto mt-8 max-w-6xl sm:px-6 md:mt-10">
+      <div className="mx-auto mt-5 max-w-6xl sm:px-6 md:mt-6">
         <LandingStage
           signedIn={signedIn}
           locale={locale}
           sites={sites}
           t={text}
-          backdrop={<Mosaic className="fill-coral opacity-30" />}
           moreChip={{ href: templates.href, label: t.moreChip }}
           chooseLabel={t.choose}
-          variant={variant}
-          box={box}
           live={live}
           you={you}
           assistant={assistant}
