@@ -11,17 +11,17 @@ import { ThemeToggle } from "./theme-toggle";
 /** `nav` is the marketing pages' floating bar: Templates, How it works, Prices, Sign in. */
 export async function SiteHeader({ locale, t, nav = false, current }: { locale: Locale; t: Messages; nav?: boolean; current?: "templates" | "pricing" }) {
   const other: Locale = locale === "en" ? "am" : "en";
+  const theme = await readTheme();
   const logo = (
     <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 items-center rounded-md">
       {/* The brand logo: dark letters on light pages, its reversed version in dark mode. */}
-      <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority className={`logo-light ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
-      <Image src={locale === "am" ? "/brand/logo-am-reversed.svg" : "/brand/logo-reversed.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} className={`logo-dark ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
+      <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority={theme === "light"} className={`logo-light ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
+      <Image src={locale === "am" ? "/brand/logo-am-reversed.svg" : "/brand/logo-reversed.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority={theme === "dark"} className={`logo-dark ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
     </Link>
   );
   const language = <LanguageSwitch target={other} label={t.common.languageSwitch} ariaLabel={t.common.languageSwitchLabel} />;
   // Signed in already: every way in goes to the owner's sites instead of the sign-in page.
   const signedIn = await looksSignedIn();
-  const theme = await readTheme();
   const signIn = signedIn ? `/${locale}/build` : `/${locale}/sign-in?next=/${locale}/build`;
   const startLabel = signedIn ? t.landing.nav.mySites : t.landing.nav.start;
   const links = [

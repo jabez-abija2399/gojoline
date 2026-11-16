@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
-import { applyTheme } from "@/components/app/theme-switch";
+import { applyTheme } from "@/lib/app/theme-client";
 import type { Theme } from "@/lib/app/theme-shared";
 
 const QUERY = "(prefers-color-scheme: dark)";
