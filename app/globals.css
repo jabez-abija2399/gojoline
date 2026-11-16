@@ -546,7 +546,15 @@
         animation-duration: 1ms;
         animation-timing-function: linear;
         animation-fill-mode: both;
-        animation-range: cover 15% cover 85%;
+        animation-range: cover 0% cover 100%;
+      }
+      /* The number badge is decorative, so it can dim further and grow when its step lights. */
+      .how-badge {
+        animation-name: how-badge;
+        animation-duration: 1ms;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-range: cover 0% cover 100%;
       }
     }
   }
@@ -561,13 +569,31 @@
     transform: none;
   }
 }
+@keyframes how-badge {
+  0%,
+  30%,
+  70%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+  38%,
+  62% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+/* A step is lit while its panel's middle crosses the middle of the screen (panels are spaced
+   so only one is there at a time). Dimmed, not faded: sunken text on ink stays above 4.5:1. */
 @keyframes how-light {
   0%,
+  30%,
+  70%,
   100% {
-    opacity: 0.4;
+    opacity: 0.8;
   }
-  20%,
-  80% {
+  38%,
+  62% {
     opacity: 1;
   }
 }

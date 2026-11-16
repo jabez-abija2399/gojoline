@@ -24,11 +24,11 @@ interface Props {
 export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, languages }: Props) {
   const s = t.steps;
   const steps = [s.one, s.two, s.three];
-  const panel = "relative isolate flex min-h-80 items-center justify-center overflow-hidden rounded-[1.75rem] p-5 sm:p-10";
+  const panel = "relative isolate flex min-h-80 items-center lg:min-h-[26rem] justify-center overflow-hidden rounded-[1.75rem] p-5 sm:p-10";
   const card = "relative w-full max-w-md rounded-2xl bg-white text-ink shadow-[0_24px_60px_-24px_rgb(18_18_18/0.5)]";
   return (
     <section id="how" aria-labelledby="how-title" className="how-scope relative z-10 bg-ink text-white">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-16">
+      <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-16">
         <div className="flex flex-col gap-8 lg:sticky lg:top-24 lg:self-start">
           <Eyebrow dark>{t.eyebrows.how}</Eyebrow>
           <h2 id="how-title" className="-mt-4 text-[1.75rem] display text-balance text-white min-[400px]:text-3xl sm:text-5xl">
@@ -38,7 +38,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
             <span aria-hidden="true" className="steps-line absolute start-[13px] top-5 bottom-5 -z-0 w-0.5 rounded-full bg-white/20" />
             {steps.map((step, i) => (
               <li key={step.title} className="how-item flex gap-4 border-t border-white/15 py-5" style={{ animationTimeline: `--step-${i + 1}` }}>
-                <span aria-hidden="true" className="relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full bg-coral font-display font-bold text-on-coral ring-4 ring-ink">
+                <span aria-hidden="true" className="how-badge relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full bg-coral font-display font-bold text-on-coral ring-4 ring-ink" style={{ animationTimeline: `--step-${i + 1}` }}>
                   {i + 1}
                 </span>
                 <div className="flex flex-col gap-1">
@@ -49,7 +49,7 @@ export function Steps({ t, prompt, buildSteps, buildTitle, bot, site, address, l
             ))}
           </ol>
         </div>
-        <div aria-hidden="true" className="flex flex-col gap-4 sm:gap-6">
+        <div aria-hidden="true" className="flex flex-col gap-4 sm:gap-6 lg:gap-24">
           {/* 1. What the owner writes. */}
           <div className={`${panel} bg-coral how-panel`} style={{ viewTimelineName: "--step-1" }}>
             <Mosaic cols={28} rows={12} className="fill-white opacity-50" />
