@@ -1,9 +1,11 @@
 import type { Entitlements, EntitlementsResolver } from "./entitlements";
-import { PLAN_FEATURES, PRODUCTS, ROLLOVER_CAP_MONTHS, TOPUP_CREDITS, type Product } from "./plans";
+import { entitlementsOf, PLAN_FEATURES, PRODUCTS, TOPUP_CREDITS, type Product } from "./plans";
 import { loadBillingSettings, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
 import { canonicalReference, type BillingStore, type PaymentMethod } from "./store";
 
 const REFUNDS_PER_DAY = 5;
+/** Free first builds (a project's very first AI run) per owner per day, so new sites can't become unlimited free AI. */
+export const FREE_FIRST_BUILDS_PER_DAY = 3;
 
 const monthRef = (d: Date) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 
@@ -36,25 +38,23 @@ export class Billing {
     return { plan: s.plan, until: s.currentPeriodEnd };
   }
 
-  entitlements: EntitlementsResolver = async (userId) => {
-    const { plan } = await this.plan(userId);
-    const { monthlyEdits: _edits, ...entitlements } = PLAN_FEATURES[plan];
-    void _edits;
-    return entitlements;
-  };
+  entitlements: EntitlementsResolver = async (userId) => entitlementsOf((await this.plan(userId)).plan);
 
   /** Grants already applied in this process: skips two queries on almost every edit. */
   private granted = new Set<string>();
 
-  /** Adds this month's edits once (idempotent), rolling unused ones over up to a cap. */
+  /**
+   * Adds this month's edits once (idempotent). Paid plans keep unused changes up to two
+   * months' allowance; Free is topped up to one month's allowance (no rollover).
+   */
   async ensureMonthlyGrant(userId: string): Promise<void> {
     const { plan } = await this.plan(userId);
     const ref = `${plan}:${monthRef(this.now())}`;
     const key = `${userId}:${ref}`;
     if (this.granted.has(key)) return;
-    const allowance = PLAN_FEATURES[plan].monthlyEdits;
+    const { monthlyEdits: allowance, rolloverMonths } = PLAN_FEATURES[plan];
     const balance = await this.db.balance(userId);
-    const grant = Math.max(0, Math.min(allowance, allowance * ROLLOVER_CAP_MONTHS - balance));
+    const grant = Math.max(0, Math.min(allowance, allowance * rolloverMonths - balance));
     await this.db.addCredits(userId, grant, "monthly_grant", ref);
     if (this.granted.size > 50_000) this.granted.clear();
     this.granted.add(key);
@@ -80,6 +80,17 @@ export class Billing {
     today.setUTCHours(0, 0, 0, 0);
     if ((await this.db.countSince(userId, "refund", today)) >= REFUNDS_PER_DAY) return false;
     return this.db.addCredits(userId, 1, "refund", ref);
+  }
+
+  /**
+   * A project's first build costs no change, at most FREE_FIRST_BUILDS_PER_DAY times a day per
+   * owner (every attempt counts, so failing or abandoned first builds can't loop for free).
+   */
+  async freeFirstBuild(userId: string, ref: string): Promise<boolean> {
+    const today = new Date(this.now());
+    today.setUTCHours(0, 0, 0, 0);
+    if ((await this.db.countSince(userId, "first_build", today)) >= FREE_FIRST_BUILDS_PER_DAY) return false;
+    return this.db.addCredits(userId, 0, "first_build", ref);
   }
 
   async submitPayment(userId: string, input: { product: Product; method: PaymentMethod; reference: string; receipt: Buffer | null }) {

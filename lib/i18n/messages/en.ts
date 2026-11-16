@@ -451,6 +451,7 @@ export const en = {
       too_large: "That photo is too big. Please use one under 8 MB.",
       not_image: "That file isn't a photo we can use (JPEG, PNG, WebP or HEIC).",
       too_many_photos: "You have the most photos allowed. Remove one first.",
+      storage_full: "Your photo space is full. Remove a photo, or get more space on a paid plan.",
       failed: "The photo couldn't be added. Please try again.",
     },
   },

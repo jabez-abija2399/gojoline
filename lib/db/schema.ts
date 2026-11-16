@@ -298,7 +298,7 @@ export const creditLedger = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     delta: integer("delta").notNull(),
-    reason: text("reason", { enum: ["monthly_grant", "topup", "ai_edit", "refund", "admin"] }).notNull(),
+    reason: text("reason", { enum: ["monthly_grant", "topup", "ai_edit", "refund", "admin", "first_build"] }).notNull(),
     ref: text("ref").notNull(),
     createdAt: createdAt(),
   },

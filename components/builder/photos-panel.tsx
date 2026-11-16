@@ -38,7 +38,7 @@ export const PhotosPanel = memo(function PhotosPanel({ t, tp, projectId, photos,
       else {
         setError((tp.photoErrors as Record<string, string>)[result.error] ?? tp.photoErrors.failed);
         // No point sending the rest once the site is full.
-        if (result.error === "too_many_photos") break;
+        if (result.error === "too_many_photos" || result.error === "storage_full") break;
       }
     }
     if (added > 0) setStatus(tp.photoAdded);

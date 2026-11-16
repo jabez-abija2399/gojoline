@@ -72,7 +72,7 @@ describe("publishSite", () => {
   it("keeps to the plan's number of live sites", async () => {
     const a = await projectWithVersion();
     const b = await projectWithVersion();
-    deps.entitlements = async () => ({ plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100 });
+    deps.entitlements = async () => ({ plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 50 * 1024 * 1024 });
     expect((await publishSite(deps, alice, a.id, "site-one")).ok).toBe(true);
     expect(await publishSite(deps, alice, b.id, "site-two")).toEqual({ ok: false, error: "plan_limit" });
     // Republishing the existing site is always fine.

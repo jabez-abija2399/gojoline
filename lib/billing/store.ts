@@ -11,7 +11,8 @@ export interface Subscription {
   currentPeriodEnd: Date;
 }
 
-export type LedgerReason = "monthly_grant" | "topup" | "ai_edit" | "refund" | "admin";
+/** "first_build" rows have delta 0: they only count free first builds. */
+export type LedgerReason = "monthly_grant" | "topup" | "ai_edit" | "refund" | "admin" | "first_build";
 export type PaymentMethod = "telebirr" | "cbe" | "other";
 
 export interface Payment {

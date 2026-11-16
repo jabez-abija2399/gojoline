@@ -8,27 +8,56 @@ describe("credits", () => {
     let now = new Date("2026-11-14T10:00:00Z");
     const store = new MemoryBillingStore();
     const b = new Billing(store, () => now);
-    expect(await b.creditsLeft("u")).toBe(15);
-    expect(await b.creditsLeft("u")).toBe(15); // idempotent
+    expect(await b.creditsLeft("u")).toBe(10);
+    expect(await b.creditsLeft("u")).toBe(10); // idempotent
     expect(await b.consumeEdit("u", "m1")).toBe(true);
     expect(await b.consumeEdit("u", "m1")).toBe(false); // same request can't be charged twice
     await b.refundEdit("u", "m1");
     await b.refundEdit("u", "m1");
-    expect(await b.creditsLeft("u")).toBe(15);
-    for (let i = 0; i < 15; i++) await b.consumeEdit("u", `x${i}`);
+    expect(await b.creditsLeft("u")).toBe(10);
+    for (let i = 0; i < 10; i++) await b.consumeEdit("u", `x${i}`);
     expect(await b.consumeEdit("u", "over")).toBe(false);
     now = new Date("2026-12-01T00:00:00Z");
-    expect(await b.creditsLeft("u")).toBe(15);
+    expect(await b.creditsLeft("u")).toBe(10);
   });
 
-  it("rolls unused edits over up to two months", async () => {
+  it("Free doesn't roll over: unused changes top up to one month's allowance", async () => {
     let now = new Date("2026-11-01T00:00:00Z");
     const b = new Billing(new MemoryBillingStore(), () => now);
     await b.creditsLeft("u");
+    await b.consumeEdit("u", "a");
     now = new Date("2026-12-02T00:00:00Z");
-    expect(await b.creditsLeft("u")).toBe(30);
+    expect(await b.creditsLeft("u")).toBe(10);
+    expect(await b.creditsLeft("u")).toBe(10);
+  });
+
+  it("paid plans roll unused edits over up to two months", async () => {
+    let now = new Date("2026-11-01T00:00:00Z");
+    const store = new MemoryBillingStore();
+    await store.setSubscription({ userId: "u", plan: "starter", period: "year", currentPeriodEnd: new Date("2027-11-01T00:00:00Z") });
+    const b = new Billing(store, () => now);
+    expect(await b.creditsLeft("u")).toBe(50);
+    now = new Date("2026-12-02T00:00:00Z");
+    expect(await b.creditsLeft("u")).toBe(100);
+    expect(await b.creditsLeft("u")).toBe(100); // idempotent
     now = new Date("2027-01-02T00:00:00Z");
-    expect(await b.creditsLeft("u")).toBe(30);
+    expect(await b.creditsLeft("u")).toBe(100);
+  });
+
+  it("caps free first builds per day", async () => {
+    const b = new Billing(new MemoryBillingStore(), () => new Date("2026-11-14T10:00:00Z"));
+    const got = [];
+    for (let i = 0; i < 5; i++) got.push(await b.freeFirstBuild("u", `r${i}`));
+    expect(got).toEqual([true, true, true, false, false]);
+    expect(await b.creditsLeft("u")).toBe(10);
+  });
+
+  it("plan limits come from PLAN_FEATURES, photo storage included", async () => {
+    const store = new MemoryBillingStore();
+    const b = new Billing(store, () => new Date("2026-11-14T10:00:00Z"));
+    expect((await b.entitlements("u")).storageBytes).toBe(50 * 1024 * 1024);
+    await store.setSubscription({ userId: "u", plan: "business", period: "month", currentPeriodEnd: new Date("2026-12-14T10:00:00Z") });
+    expect(await b.entitlements("u")).toEqual({ plan: "business", customDomain: true, maxSites: 3, badge: false, telegramNotify: true, telegramEdits: true, answersPerMonth: 10_000, storageBytes: 2048 * 1024 * 1024 });
   });
 });
 
@@ -37,9 +66,9 @@ describe("atomic credits (Postgres)", () => {
     const db = await testDb();
     await makeUser(db, "u");
     const b = new Billing(new DbBillingStore(db), () => new Date("2026-11-14T10:00:00Z"));
-    expect(await b.creditsLeft("u")).toBe(15);
+    expect(await b.creditsLeft("u")).toBe(10);
     const results = await Promise.all(Array.from({ length: 20 }, (_, i) => b.consumeEdit("u", `m${i}`)));
-    expect(results.filter(Boolean)).toHaveLength(15);
+    expect(results.filter(Boolean)).toHaveLength(10);
     expect(await b.creditsLeft("u")).toBe(0);
     const refunds = [];
     for (let i = 0; i < 7; i++) refunds.push(await b.refundEdit("u", `m${i}`));
@@ -56,7 +85,7 @@ describe("payments", () => {
     const now = new Date("2026-11-14T10:00:00Z");
     const b = new Billing(store, () => now);
     const p = await b.submitPayment("owner", { product: "starter_month", method: "telebirr", reference: "TB123", receipt: Buffer.from("img") });
-    expect(p).toMatchObject({ amountMinor: 39_900, currency: "ETB", status: "pending", hasReceipt: true });
+    expect(p).toMatchObject({ amountMinor: 49_900, currency: "ETB", status: "pending", hasReceipt: true });
     // The same transaction can't be sent again, even written differently or under another method.
     expect(await b.submitPayment("owner", { product: "starter_month", method: "other", reference: "tb-12 3", receipt: null })).toBeNull();
 
@@ -73,7 +102,7 @@ describe("payments", () => {
     const top = await b.submitPayment("owner", { product: "topup", method: "cbe", reference: "FT999", receipt: null });
     const before = await b.creditsLeft("owner");
     await b.review("admin", top!.id, "approve", "ok");
-    expect(await b.creditsLeft("owner")).toBe(before + 50);
+    expect(await b.creditsLeft("owner")).toBe(before + 30);
 
     const bad = await b.submitPayment("owner", { product: "business_year", method: "cbe", reference: "FAKE", receipt: null });
     await b.review("admin", bad!.id, "reject", "No such transfer");
