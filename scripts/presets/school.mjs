@@ -50,6 +50,11 @@ const admissionSteps = [
 save("school", {
   name: t("Adama Tesfa Academy", "አዳማ ተስፋ አካዳሚ"),
   tagline: t("A caring private school for KG to Grade 8 in Adama", "ከመዋዕለ ሕፃናት እስከ 8ኛ ክፍል የሚያስተምር የግል ትምህርት ቤት በአዳማ"),
+  announcement: [
+    t("Registration is open for KG to Grade 8", "ከኬጂ እስከ 8ኛ ክፍል ምዝገባ ተጀምሯል"),
+    t("Visits any weekday morning", "ከሰኞ እስከ ዓርብ በጠዋት ይጎብኙን"),
+    t("School bus across Adama", "በመላው አዳማ የተማሪዎች አውቶቡስ"),
+  ],
   languages: ["en", "am"],
   theme: { primary: "#1E3A8A", accent: "#0B1F4B", background: "#FBF8F1", text: "#1F2937", font: "friendly", radius: "large", style: "warm" },
   business: {
@@ -71,7 +76,9 @@ save("school", {
         {
           type: "hero",
           variant: "split",
-          eyebrow: t("Registration is open", "ምዝገባ ተጀምሯል"),
+          eyebrow: t("KG to Grade 8 · Adama", "ከኬጂ እስከ 8ኛ ክፍል · አዳማ"),
+          stamp: t("Small classes · Caring teachers", "አነስተኛ ክፍሎች · አሳቢ መምህራን"),
+          hours: false,
           heading: t("Where every child is known by name", "እያንዳንዱ ልጅ በስሙ የሚታወቅበት"),
           subheading: t("Kindergarten to Grade 8 in the heart of Adama. Small classes, caring teachers and a place your child will be happy to come to.", "ከመዋዕለ ሕፃናት እስከ 8ኛ ክፍል በአዳማ እምብርት። አነስተኛ ክፍሎች፣ አሳቢ መምህራን እና ልጅዎ በደስታ የሚመጣበት ቦታ።"),
           image: img("school-hero-girls-reading", "Three schoolgirls in blue and purple uniforms reading a book together at a desk", "ሰማያዊና ሐምራዊ የደንብ ልብስ የለበሱ ሦስት ሴት ተማሪዎች በዴስክ ላይ አብረው መጽሐፍ ሲያነቡ"),
@@ -85,6 +92,7 @@ save("school", {
         },
         {
           type: "stats",
+          id: "numbers",
           tone: "soft",
           items: [
             { value: t("640", "640"), label: t("students this year", "ተማሪዎች በዚህ ዓመት") },
@@ -96,15 +104,16 @@ save("school", {
         {
           type: "cards",
           id: "programmes",
-          layout: "grid",
+          layout: "stack",
           eyebrow: t("Programmes", "ፕሮግራሞች"),
           heading: t("A class for every age", "ለየዕድሜው የሚሆን ክፍል"),
-          intro: t("Three stages on one safe compound, so brothers and sisters come to school together.", "ሦስት እርከኖች በአንድ አስተማማኝ ግቢ፤ ወንድማማቾችና እህትማማቾች አብረው ይመጣሉ።"),
-          items: programmes.map(({ action, ...p }) => p),
+          intro: t("Three stages on one safe compound, so brothers and sisters come to school together. Fees are per term and include books.", "ሦስት እርከኖች በአንድ አስተማማኝ ግቢ፤ ወንድማማቾችና እህትማማቾች አብረው ይመጣሉ። ክፍያው በየሩብ ዓመቱ ሲሆን መጻሕፍትን ያካትታል።"),
+          items: programmes,
           action: link("See the programmes", "ፕሮግራሞቹን ይመልከቱ", "/programmes"),
         },
         {
           type: "about",
+          id: "welcome",
           eyebrow: t("From the director", "ከርዕሰ መምህርቷ"),
           heading: t("We teach children, not just lessons", "የምናስተምረው ትምህርትን ብቻ ሳይሆን ልጆችን ነው"),
           body: t(
@@ -131,6 +140,7 @@ save("school", {
         },
         {
           type: "gallery",
+          id: "life",
           layout: "mosaic",
           eyebrow: t("School life", "የትምህርት ቤት ሕይወት"),
           heading: t("More than the classroom", "ከክፍል ባሻገር"),
@@ -159,6 +169,7 @@ save("school", {
         },
         {
           type: "testimonials",
+          id: "parents",
           eyebrow: t("Parents say", "ወላጆች ምን ይላሉ"),
           heading: t("Trusted by Adama families", "የአዳማ ቤተሰቦች የሚተማመኑበት"),
           items: [
@@ -169,6 +180,8 @@ save("school", {
         },
         {
           type: "faq",
+          id: "faq",
+          eyebrow: t("Good to know", "ማወቅ ያለብዎ"),
           heading: t("Parents often ask", "ወላጆች ብዙ ጊዜ የሚጠይቁት"),
           items: [
             { question: t("How old must my child be for KG 1?", "ለኬጂ 1 ልጄ ስንት ዓመት መሆን አለበት?"), answer: t("Four years old by the first day of school in September.", "በመስከረም ትምህርት በሚጀምርበት ቀን አራት ዓመት የሞላው።") },

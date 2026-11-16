@@ -790,14 +790,9 @@
   border-radius: 999px 999px var(--site-radius) var(--site-radius) / 50% 50% var(--site-radius) var(--site-radius);
 }
 
-/* A services list beside a pinned photo keeps to one or two columns. */
+/* A services list beside a pinned photo is one column, so the photo stays pinned while it scrolls. */
 .pinned-list > :is(ul, ol) {
   grid-template-columns: minmax(0, 1fr);
-}
-@media (min-width: 1280px) {
-  .pinned-list > :is(ul, ol) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 @layer components {
   /* Several photos in one card. */

@@ -1,6 +1,11 @@
 {
   "name": { "en": "Megenagna Family Clinic", "am": "መገናኛ የቤተሰብ ክሊኒክ" },
   "tagline": { "en": "Everyday care for adults and children in Megenagna", "am": "ለአዋቂዎችና ለልጆች የዕለት ተዕለት ሕክምና በመገናኛ" },
+  "announcement": [
+    { "en": "Open every day, Sunday mornings too", "am": "በየቀኑ ክፍት ነን፤ እሑድ ጠዋትም" },
+    { "en": "Most lab results in 2 hours", "am": "አብዛኛው የላብራቶሪ ውጤት በ2 ሰዓት" },
+    { "en": "Book on Telegram or call 0911 000 000", "am": "በቴሌግራም ቀጠሮ ይያዙ ወይም 0911 000 000 ይደውሉ" }
+  ],
   "languages": [
     "en",
     "am"
@@ -32,6 +37,7 @@
           "type": "hero",
           "variant": "split",
           "eyebrow": { "en": "Megenagna · Addis Ababa", "am": "መገናኛ · አዲስ አበባ" },
+          "stamp": { "en": "Open every day · Megenagna", "am": "በየቀኑ ክፍት · መገናኛ" },
           "heading": { "en": "Care for the whole family, close to home", "am": "ለመላው ቤተሰብ ሕክምና፣ በቅርብዎ" },
           "subheading": { "en": "Doctors for adults and children, a laboratory, ultrasound and a pharmacy under one roof. Walk in, or book and be seen on time.", "am": "የአዋቂዎችና የሕፃናት ሐኪሞች፣ ላብራቶሪ፣ አልትራሳውንድ እና መድኃኒት ቤት በአንድ ጣሪያ ሥር። በቀጥታ ይምጡ፤ ወይም ቀጠሮ ይዘው በሰዓትዎ ይታዩ።" },
           "image": {
@@ -64,49 +70,65 @@
         {
           "type": "services",
           "id": "services",
-          "variant": "bento",
+          "variant": "list",
           "eyebrow": { "en": "How we can help", "am": "የምንረዳዎ" },
           "heading": { "en": "Care for every age", "am": "ለሁሉም ዕድሜ ሕክምና" },
-          "intro": { "en": "Most families find everything they need here, without crossing the city.", "am": "አብዛኛው ቤተሰብ የሚፈልገውን ሁሉ ከተማ ሳያቋርጥ እዚሁ ያገኛል።" },
+          "intro": { "en": "Most families find everything they need here, without crossing the city. The price of any test is told to you before it is done.", "am": "አብዛኛው ቤተሰብ የሚፈልገውን ሁሉ ከተማ ሳያቋርጥ እዚሁ ያገኛል። የማንኛውም ምርመራ ዋጋ ከመሠራቱ በፊት ይነገርዎታል።" },
+          "image": {
+            "src": "/stock/clinic-gallery-blood-pressure.webp",
+            "alt": { "en": "A clinician fitting a blood-pressure cuff on a seated young man", "am": "ባለሙያ ለተቀመጠ ወጣት የደም ግፊት መለኪያ ሲያስር" }
+          },
           "items": [
             {
               "icon": "stethoscope",
               "title": { "en": "Feeling unwell", "am": "ሕመም ሲሰማዎ" },
-              "description": { "en": "Fever, cough, stomach trouble, headaches, infections. See a doctor the same day, with tests done on the spot if you need them. We also follow up blood pressure, diabetes and asthma, so the doctor who knows your history is the one who adjusts your medicine.", "am": "ትኩሳት፣ ሳል፣ የሆድ ሕመም፣ ራስ ምታት፣ ኢንፌክሽን። በዕለቱ ሐኪም ያያሉ፤ ምርመራ ካስፈለገም እዚሁ ይሠራል። የደም ግፊት፣ የስኳርና የአስም ክትትልም እናደርጋለን፤ መድኃኒትዎን የሚያስተካክለው ታሪክዎን የሚያውቀው ሐኪም ነው።" },
+              "description": { "en": "Fever, cough, stomach trouble, headaches, infections. See a doctor the same day.", "am": "ትኩሳት፣ ሳል፣ የሆድ ሕመም፣ ራስ ምታት፣ ኢንፌክሽን። በዕለቱ ሐኪም ያያሉ።" },
+              "price": { "amountMinor": 40000, "currency": "ETB" }
+            },
+            {
+              "icon": "heart",
+              "title": { "en": "Blood pressure and diabetes", "am": "የደም ግፊትና ስኳር" },
+              "description": { "en": "Regular follow-up with the doctor who knows your history and adjusts your medicine.", "am": "ታሪክዎን በሚያውቅና መድኃኒትዎን በሚያስተካክል ሐኪም መደበኛ ክትትል።" },
               "price": { "amountMinor": 40000, "currency": "ETB" }
             },
             {
               "icon": "baby",
               "title": { "en": "Children's health", "am": "የሕፃናት ጤና" },
-              "description": { "en": "A children's doctor for babies and children up to 14.", "am": "እስከ 14 ዓመት ላሉ ሕፃናትና ልጆች የሕፃናት ሐኪም።" },
+              "description": { "en": "A children's doctor for babies and children up to 14: fevers, growth checks, vaccination advice.", "am": "እስከ 14 ዓመት ላሉ ሕፃናትና ልጆች የሕፃናት ሐኪም፤ ትኩሳት፣ የዕድገት ክትትል፣ የክትባት ምክር።" },
               "price": { "amountMinor": 40000, "currency": "ETB" }
             },
             {
-              "icon": "heart",
+              "icon": "users",
               "title": { "en": "Pregnancy care", "am": "የእርግዝና ክትትል" },
-              "description": { "en": "Follow-up visits and ultrasound from the first weeks.", "am": "ከመጀመሪያዎቹ ሳምንታት ጀምሮ ክትትልና አልትራሳውንድ።" },
+              "description": { "en": "Follow-up visits and ultrasound in a private room, from the first weeks to the last.", "am": "ከመጀመሪያው ሳምንት እስከ መጨረሻው ክትትልና አልትራሳውንድ በግል ክፍል።" },
               "price": { "amountMinor": 90000, "currency": "ETB" }
             },
             {
               "icon": "flask",
               "title": { "en": "Laboratory", "am": "ላብራቶሪ" },
-              "description": { "en": "Blood, urine and stool tests. Most results in two hours.", "am": "የደም፣ የሽንትና የሰገራ ምርመራ። አብዛኛው ውጤት በሁለት ሰዓት።" }
-            },
-            {
-              "icon": "pill",
-              "title": { "en": "Pharmacy", "am": "መድኃኒት ቤት" },
-              "description": { "en": "Collect your medicine before you leave, with clear instructions.", "am": "መድኃኒትዎን ከግልጽ የአወሳሰድ መመሪያ ጋር ሳይወጡ ይውሰዱ።" }
+              "description": { "en": "Blood, urine, stool, sugar, malaria and typhoid tests. Most results in two hours.", "am": "የደም፣ የሽንት፣ የሰገራ፣ የስኳር፣ የወባና የታይፎይድ ምርመራ። አብዛኛው ውጤት በሁለት ሰዓት።" }
             },
             {
               "icon": "sparkles",
               "title": { "en": "Teeth and gums", "am": "ጥርስና ድድ" },
-              "description": { "en": "Check-ups, cleaning and fillings, Tuesdays and Thursdays.", "am": "ምርመራ፣ እጥበትና ሙሌት፤ ማክሰኞና ሐሙስ።" },
+              "description": { "en": "Check-ups, cleaning, fillings and help with toothache, Tuesdays and Thursdays.", "am": "ምርመራ፣ እጥበት፣ ሙሌትና ለጥርስ ሕመም መፍትሔ፤ ማክሰኞና ሐሙስ።" },
               "price": { "amountMinor": 50000, "currency": "ETB" }
+            },
+            {
+              "icon": "pill",
+              "title": { "en": "Pharmacy", "am": "መድኃኒት ቤት" },
+              "description": { "en": "Collect your medicine before you leave, with clear instructions on how to take it.", "am": "መድኃኒትዎን ከግልጽ የአወሳሰድ መመሪያ ጋር ሳይወጡ ይውሰዱ።" }
+            },
+            {
+              "icon": "message",
+              "title": { "en": "Results on Telegram", "am": "ውጤት በቴሌግራም" },
+              "description": { "en": "Ask at the front desk and your lab results are sent to your phone.", "am": "በእንግዳ መቀበያው ይጠይቁ፤ የላብራቶሪ ውጤትዎ ወደ ስልክዎ ይላካል።" }
             }
           ]
         },
         {
           "type": "stats",
+          "id": "numbers",
           "tone": "dark",
           "items": [
             {
@@ -167,6 +189,7 @@
         },
         {
           "type": "about",
+          "id": "lab",
           "eyebrow": { "en": "Under one roof", "am": "በአንድ ቦታ" },
           "heading": { "en": "Tests and answers in one visit", "am": "ምርመራና መልስ በአንድ ጉብኝት" },
           "body": { "en": "Nobody who is unwell wants to be sent across town for a blood test. Our laboratory and ultrasound room are a few steps from the doctor's door.\n\nYou give your sample, wait in the lounge, and the doctor explains the result to you the same day.", "am": "የታመመ ሰው ለደም ምርመራ ከተማ ማቋረጥ አይፈልግም። ላብራቶሪያችንና የአልትራሳውንድ ክፍላችን ከሐኪሙ በር ጥቂት እርምጃ ላይ ናቸው።\n\nናሙና ይሰጣሉ፣ በማረፊያው ይጠብቃሉ፣ ሐኪሙም በዕለቱ ውጤቱን ያስረዳዎታል።" },
@@ -187,6 +210,7 @@
         },
         {
           "type": "steps",
+          "id": "visit",
           "eyebrow": { "en": "Your visit", "am": "ጉብኝትዎ" },
           "heading": { "en": "How a visit works", "am": "ሲመጡ ምን ይጠብቅዎታል" },
           "items": [
@@ -214,6 +238,7 @@
         },
         {
           "type": "testimonials",
+          "id": "reviews",
           "eyebrow": { "en": "Patients say", "am": "ታካሚዎች ምን ይላሉ" },
           "heading": { "en": "Trusted by families nearby", "am": "የአካባቢው ቤተሰቦች የሚተማመኑበት" },
           "items": [
@@ -236,6 +261,8 @@
         },
         {
           "type": "faq",
+          "id": "faq",
+          "eyebrow": { "en": "Good to know", "am": "ማወቅ ያለብዎ" },
           "heading": { "en": "Before you come", "am": "ከመምጣትዎ በፊት" },
           "items": [
             {
