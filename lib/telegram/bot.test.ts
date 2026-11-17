@@ -142,7 +142,7 @@ describe("telegram bot", () => {
         consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
         refund: (u, r, n) => billing.refundEdit(u, r, n),
         left: (u) => billing.creditsLeft(u),
-        pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15 }),
+        pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15, firstBuildCapCents: 75 }),
       },
     };
     await linked();
@@ -173,7 +173,7 @@ describe("telegram bot", () => {
         consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
         refund: (u, r, n) => billing.refundEdit(u, r, n),
         left: (u) => billing.creditsLeft(u),
-        pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15 }),
+        pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15, firstBuildCapCents: 75 }),
       },
     };
     await linked();

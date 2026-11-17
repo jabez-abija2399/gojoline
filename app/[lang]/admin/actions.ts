@@ -124,6 +124,8 @@ export async function saveCreditSettings(_prev: CreditsState, form: FormData): P
   if (!user || !isAdmin(user)) return { status: "forbidden" };
   const cap = usdToCents(String(form.get("capUsd") ?? ""));
   if (cap === null) return { status: "invalid", field: "capUsd" };
+  const firstCap = usdToCents(String(form.get("firstCapUsd") ?? ""));
+  if (firstCap === null) return { status: "invalid", field: "firstCapUsd" };
   const plans = ["free", "starter", "business"] as const;
   const sizes = ["small", "medium", "large"] as const;
   const parsed = creditSettingsSchema.safeParse({
@@ -132,10 +134,11 @@ export async function saveCreditSettings(_prev: CreditsState, form: FormData): P
     topupCredits: whole(form.get("topupCredits")),
     sizeCredits: Object.fromEntries(sizes.map((x) => [x, whole(form.get(`size_${x}`))])),
     capCentsPerCredit: cap,
+    firstBuildCapCents: firstCap,
   });
   if (!parsed.success) {
     const path = parsed.error.issues[0]?.path ?? [];
-    const field = path[0] === "monthly" ? `monthly_${String(path[1])}` : path[0] === "rollover" ? `rollover_${String(path[1])}` : path[0] === "sizeCredits" ? `size_${String(path[1])}` : path[0] === "capCentsPerCredit" ? "capUsd" : String(path[0] ?? "");
+    const field = path[0] === "monthly" ? `monthly_${String(path[1])}` : path[0] === "rollover" ? `rollover_${String(path[1])}` : path[0] === "sizeCredits" ? `size_${String(path[1])}` : path[0] === "capCentsPerCredit" ? "capUsd" : path[0] === "firstBuildCapCents" ? "firstCapUsd" : String(path[0] ?? "");
     return { status: "invalid", field };
   }
   try {

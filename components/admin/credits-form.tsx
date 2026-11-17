@@ -19,7 +19,7 @@ function Save({ t }: { t: Messages["admin"] }) {
   );
 }
 
-/** Admin → Settings → Changes (credits): monthly changes, rollover, pack size, sizes, cost cap. */
+/** Admin → Settings → Changes (credits): monthly changes, rollover, pack size, sizes, cost caps (per change and first build). */
 export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin"]; planNames: Record<(typeof PLANS)[number], string>; lang: string; values: CreditSettings }) {
   const [state, action] = useActionState<CreditsState, FormData>(saveCreditSettings, { status: "idle" });
   const msgRef = useRef<HTMLParagraphElement>(null);
@@ -36,6 +36,7 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
     ...Object.fromEntries(SIZES.map((x) => [`size_${x}`, t.creditsSize[x]])),
     topupCredits: t.creditsTopup,
     capUsd: t.creditsCap,
+    firstCapUsd: t.creditsFirstCap,
   };
   const num = (name: string, label: string, value: number | string, extra: { min?: number; max?: number; hint?: string; decimal?: boolean } = {}) => (
     <label key={name} className="flex flex-col gap-1">
@@ -54,6 +55,7 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
     </label>
   );
   const cap = (values.capCentsPerCredit / 100).toFixed(2);
+  const firstCap = (values.firstBuildCapCents / 100).toFixed(2);
   return (
     <form ref={formRef} action={action} aria-labelledby="credits-form-title" className="flex flex-col gap-4">
       <input type="hidden" name="lang" value={lang} />
@@ -74,9 +76,10 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
         <legend className="px-1 font-semibold">{t.creditsSizes}</legend>
         {SIZES.map((s) => num(`size_${s}`, t.creditsSize[s], values.sizeCredits[s]))}
       </fieldset>
-      <div className="grid gap-3 sm:grid-cols-2 sm:items-start">
+      <div className="grid gap-3 sm:grid-cols-3 sm:items-start">
         {num("topupCredits", t.creditsTopup, values.topupCredits)}
         {num("capUsd", t.creditsCap, cap, { decimal: true, hint: t.creditsCapHint })}
+        {num("firstCapUsd", t.creditsFirstCap, firstCap, { decimal: true, hint: t.creditsFirstCapHint })}
       </div>
       {state.status !== "idle" && (
         <p ref={msgRef} tabIndex={-1} role={state.status === "ok" ? "status" : "alert"} className={state.status === "ok" ? "font-medium text-ink" : "text-destructive"}>

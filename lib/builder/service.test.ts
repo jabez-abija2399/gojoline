@@ -25,6 +25,7 @@ import { sendOwnerMessage, type BuilderDeps, type BuilderEvent } from "./service
 import { HeuristicSizer } from "@/lib/agent/size";
 import { toolUseBlock } from "@/lib/providers/llm/fake";
 import { costNanoUsd } from "@/lib/providers/llm/pricing";
+import { MAX_FIRST_BUILD_CAP_CENTS } from "@/lib/billing/credits";
 
 describe("AI edit credits", () => {
   const starter = readFileSync("templates/site/src/site.json", "utf8");
@@ -93,7 +94,7 @@ describe("changes by request size", () => {
         refund: (u, r, n, meta) => billing.refundEdit(u, r, n, meta),
         left: (u) => billing.creditsLeft(u),
         freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
-        pricing: async () => ({ sizeCredits: (await billing.credits()).sizeCredits, capCentsPerCredit: 15 }),
+        pricing: async () => ({ sizeCredits: (await billing.credits()).sizeCredits, capCentsPerCredit: 15, firstBuildCapCents: 75 }),
       },
       sizer: new HeuristicSizer(),
     };
@@ -162,5 +163,59 @@ describe("changes by request size", () => {
     const failed = await send("break it: add a new page", "medium");
     expect(failed).toMatchObject({ type: "done", charged: 0, credits: 3 });
     expect(failed.type === "done" && failed.message.status).toBe("failed");
+  });
+});
+
+describe("free first build budget", () => {
+  const starter = readFileSync("templates/site/src/site.json", "utf8");
+  /** A model that keeps working (reads a file each turn) at 5,000 output tokens (US$0.10) a turn. */
+  const busy = (requests: number[]): BuilderDeps["llm"] => ({
+    complete: async (req) => {
+      requests.push(req.maxTokens);
+      const usage = { inputTokens: 0, outputTokens: 5000, cacheReadTokens: 0, cacheWriteTokens: 0 };
+      return { content: [toolUseBlock("read_file", { path: "src/site.json" })], stopReason: "tool_use", model: req.model, usage, costNanoUsd: costNanoUsd(req.model, usage), durationMs: 1, firstTokenMs: 1 };
+    },
+  });
+  async function spend(firstBuildCapCents: number) {
+    const billing = new Billing(new MemoryBillingStore());
+    const requests: number[] = [];
+    const usage = new MemoryUsageLogger();
+    const deps: BuilderDeps = {
+      store: new MemoryProjectStore(),
+      sandboxes: new MemorySandboxProvider({ "src/site.json": starter }),
+      llm: busy(requests),
+      usage,
+      model: "claude-opus-5-5",
+      lock: new MemoryLock(),
+      credits: {
+        consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
+        refund: (u, r, n, meta) => billing.refundEdit(u, r, n, meta),
+        left: (u) => billing.creditsLeft(u),
+        freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
+        pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15, firstBuildCapCents }),
+      },
+    };
+    const p = (await deps.store.createProject("u", { name: "", locale: "en" })).id;
+    const events: BuilderEvent[] = [];
+    await sendOwnerMessage(deps, { ownerId: "u", projectId: p, text: "Selam Coffee", onEvent: (e) => events.push(e) });
+    const cost = usage.records.reduce((s, r) => s + r.costNanoUsd, 0);
+    return { cost, turns: requests.length, done: events.at(-1), events, left: await billing.creditsLeft("u") };
+  }
+
+  it("uses the first-build cap from the admin settings, logs the cost and charges nothing", async () => {
+    const small = await spend(30);
+    const big = await spend(75);
+    expect(small.turns).toBeLessThan(big.turns);
+    expect(small.cost).toBeLessThanOrEqual(30 * 10_000_000 + 1024 * 20_000);
+    expect(big.cost).toBeLessThanOrEqual(75 * 10_000_000 + 1024 * 20_000);
+    expect(big.done).toMatchObject({ type: "done", charged: 0, tooBig: true });
+    expect(big.left).toBe(10);
+    // The model was told to finish before the cap stopped it.
+    expect(big.events.some((e) => e.type === "wrap_up")).toBe(true);
+  });
+
+  it("never spends past the hard limit, whatever the setting says", async () => {
+    const r = await spend(100_000);
+    expect(r.cost).toBeLessThanOrEqual(MAX_FIRST_BUILD_CAP_CENTS * 10_000_000 + 1024 * 20_000);
   });
 });

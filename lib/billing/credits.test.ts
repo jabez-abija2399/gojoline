@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { makeUser, testDb } from "@/test/db";
-import { costCapNano, creditSettingsSchema, defaultCreditSettings, mergeCreditSettings, nextMonthlyGrant, planFeaturesWith, usdToCents } from "./credits";
+import { costCapNano, creditSettingsSchema, DEFAULT_FIRST_BUILD_CAP_CENTS, firstBuildCapNano, MAX_FIRST_BUILD_CAP_CENTS, defaultCreditSettings, mergeCreditSettings, nextMonthlyGrant, planFeaturesWith, usdToCents } from "./credits";
 import { planComparison, planHighlights } from "./compare";
 import { Billing, REFUND_CREDITS_PER_DAY } from "./service";
 import { loadCreditSettings, MemorySettingsStore } from "./settings";
@@ -14,6 +14,7 @@ describe("credit settings", () => {
       topupCredits: 30,
       sizeCredits: { small: 1, medium: 2, large: 4 },
       capCentsPerCredit: 15,
+      firstBuildCapCents: 75,
     });
   });
 
@@ -33,6 +34,14 @@ describe("credit settings", () => {
     expect(creditSettingsSchema.safeParse(ok).success).toBe(true);
     expect(creditSettingsSchema.safeParse({ ...ok, sizeCredits: { small: 1, medium: 1, large: 1 } }).success).toBe(true);
     expect(creditSettingsSchema.safeParse({ ...ok, capCentsPerCredit: 0 }).success).toBe(false);
+    // The first-build cap has a hard upper limit in code (US$2) and a floor that still builds a site.
+    expect(creditSettingsSchema.safeParse({ ...ok, firstBuildCapCents: MAX_FIRST_BUILD_CAP_CENTS }).success).toBe(true);
+    expect(creditSettingsSchema.safeParse({ ...ok, firstBuildCapCents: MAX_FIRST_BUILD_CAP_CENTS + 1 }).success).toBe(false);
+    expect(creditSettingsSchema.safeParse({ ...ok, firstBuildCapCents: 5 }).success).toBe(false);
+    expect(firstBuildCapNano({ firstBuildCapCents: 75 })).toBe(750_000_000);
+    expect(firstBuildCapNano({ firstBuildCapCents: 10_000 })).toBe(MAX_FIRST_BUILD_CAP_CENTS * 10_000_000);
+    // Settings saved before the first-build cap existed get the default.
+    expect(mergeCreditSettings({ capCentsPerCredit: 20 }).firstBuildCapCents).toBe(DEFAULT_FIRST_BUILD_CAP_CENTS);
     expect(creditSettingsSchema.safeParse({ ...ok, rollover: { ...ok.rollover, starter: 13 } }).success).toBe(false);
   });
 
