@@ -5,10 +5,17 @@ import type { Locale } from "@/lib/i18n/config";
 import { readTheme } from "@/lib/app/theme";
 import { Sidebar } from "./sidebar";
 import { LazyInstallSheet } from "@/components/pwa/install-sheet-lazy";
+import { services } from "@/lib/server/services";
 
 /** The frame around every signed-in page except the builder itself: navigation, then the page. */
 export async function AppShell({ locale, t, user, children }: { locale: Locale; t: Messages; user: CurrentUser; children: React.ReactNode }) {
-  const [sites, allowance, theme] = await Promise.all([ownerSites(user.id), ownerAllowance(user.id), readTheme()]);
+  const [sites, allowance, theme, unread] = await Promise.all([
+    ownerSites(user.id),
+    ownerAllowance(user.id),
+    readTheme(),
+    // A badge, not the page: a failed count shows none.
+    services().feedback.unreadReplies(user.id).catch(() => 0),
+  ]);
   const a = t.app;
   return (
     <div data-gojo-theme={theme} className="flex min-h-dvh flex-1 flex-col bg-paper leading-normal text-ink lg:flex-row">
@@ -19,6 +26,7 @@ export async function AppShell({ locale, t, user, children }: { locale: Locale; 
         monthly={allowance?.monthly ?? 0}
         theme={{ value: theme, label: a.theme, names: a.themes }}
         canUpgrade={!allowance || allowance.plan !== "business"}
+        feedbackUnread={unread}
         recent={sites.slice(0, 6).map((s) => ({ id: s.project.id, name: s.project.name || t.builder.untitled, live: !!liveAddress(s.site) }))}
         text={{
           sidebarLabel: a.sidebarLabel,
@@ -45,6 +53,8 @@ export async function AppShell({ locale, t, user, children }: { locale: Locale; 
           language: t.common.languageSwitch,
           languageLabel: t.common.languageSwitchLabel,
           pwa: t.pwa,
+          feedback: t.feedback.navLabel,
+          feedbackUnread: unread === 0 ? "" : unread === 1 ? t.feedback.navUnreadOne : t.feedback.navUnread.replace("{n}", String(unread)),
         }}
       />
       <div id="app-content" className="flex min-w-0 flex-1 flex-col">

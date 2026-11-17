@@ -64,6 +64,8 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
             language: t.common.languageSwitch,
             languageLabel: t.common.languageSwitchLabel,
             more: t.builder.menuMore,
+            feedback: t.feedback.navLabel,
+            feedbackAfterPublish: t.feedback.afterPublish,
             theme: t.app.theme,
             themes: t.app.themes,
             themeValue: theme,

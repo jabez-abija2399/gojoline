@@ -1,6 +1,7 @@
 import { dashboardAm } from "./dashboard-am";
 import type { Messages } from "./en";
 import { errorMessages } from "./errors";
+import { feedbackAm } from "./feedback-am";
 
 /**
  * Amharic catalog. Drafted by the build agent; must be reviewed by a native speaker
@@ -848,7 +849,7 @@ export const am: Messages = {
     rejectConfirm: "ይህን ክፍያ ውድቅ ያደርጋሉ? ደንበኛው «አልጸደቀም» ብሎ ያየዋል።",
     checkHint: "ከማጽደቅዎ በፊት በደረሰኙ ላይ ያለው መጠን፣ የግብይት ቁጥር እና የከፋዩ ስም ወይም ስልክ ከዚህ ደንበኛ ጋር መመሳሰሉን ያረጋግጡ።",
     working: "በማስቀመጥ ላይ...",
-    tabs: { overview: "አጠቃላይ", payments: "ክፍያዎች", reports: "ሪፖርቶች", sites: "ድረ-ገጾች", users: "ባለቤቶች", costs: "የAI ወጪ", discounts: "ቅናሾች", settings: "ቅንብሮች" },
+    tabs: { overview: "አጠቃላይ", payments: "ክፍያዎች", reports: "ሪፖርቶች", feedback: "አስተያየቶች", sites: "ድረ-ገጾች", users: "ባለቤቶች", costs: "የAI ወጪ", discounts: "ቅናሾች", settings: "ቅንብሮች" },
     brand: "የጎጆላይን አስተዳደር",
     backToApp: "ወደ ጎጆላይን ይመለሱ",
     theme: "ገጽታ",
@@ -867,6 +868,7 @@ export const am: Messages = {
     attention: "ትኩረትዎን የሚሹ",
     attPayments: "{n} የሚረጋገጡ ክፍያዎች",
     attReports: "{n} የሚመረመሩ ሪፖርቶች",
+    attFeedback: "{n} አዲስ አስተያየቶች",
     allClear: "ሁሉም ሰላም ነው። የሚጠብቅዎ ነገር የለም።",
     chSignups: "አዲስ ባለቤቶች፣ 30 ቀናት",
     chRevenue: "ገቢ፣ 30 ቀናት",
@@ -884,6 +886,8 @@ export const am: Messages = {
       site_taken_down: "ድረ-ገጽ ወርዷል",
       site_restored: "ድረ-ገጽ እንደገና ተፈቅዷል",
       reports_dismissed: "ሪፖርቶች ተዘግተዋል",
+      feedback_status: "የአስተያየት ሁኔታ ተቀይሯል",
+      feedback_reply: "ለአስተያየት መልስ ተሰጥቷል",
       settings_billing: "ዋጋዎች ወይም ሂሳቦች ተቀይረዋል",
       credits_granted: "ተጨማሪ ለውጦች ተሰጥተዋል",
       plan_set: "ዕቅድ በአስተዳዳሪ ተቀይሯል",
@@ -1153,5 +1157,6 @@ export const am: Messages = {
     terms: "የአጠቃቀም ውሎች",
     report: "ድረ-ገጽ ሪፖርት ያድርጉ",
   },
+  feedback: feedbackAm,
   errors: errorMessages.am,
 };

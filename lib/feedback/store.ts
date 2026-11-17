@@ -56,7 +56,8 @@ export class MemoryFeedbackStore implements FeedbackStore {
     r.status = status;
     return before;
   }
-  async reply(id: string, text: string) {
+  async reply(id: string, text: string, _adminId?: string) {
+    void _adminId;
     const r = this.rows.find((x) => x.id === id);
     if (!r) return false;
     Object.assign(r, { reply: text, repliedAt: new Date(), replyReadAt: null });

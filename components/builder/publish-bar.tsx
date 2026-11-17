@@ -15,11 +15,13 @@ interface Props {
   disabled: boolean;
   /** Tells the builder the live address (shown in the preview's address bar), or null. */
   onLive?: (url: string | null) => void;
+  /** "How was it?" after a publish: the feedback page, with where it came from. */
+  feedback?: { href: string; label: string };
   /** Places the status line and the Publish button in the top bar. */
   children: (parts: { status: React.ReactNode; button: React.ReactNode }) => React.ReactNode;
 }
 
-export function PublishBar({ t, projectId, hasVersion, disabled, onLive, children }: Props) {
+export function PublishBar({ t, projectId, hasVersion, disabled, onLive, feedback, children }: Props) {
   const [info, setInfo] = useState<Info | null>(null);
   const [loading, setLoading] = useState(false);
   const [slug, setSlug] = useState("");
@@ -178,6 +180,11 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, childre
                   {copied ? t.publishedCopied : t.publishedCopy}
                 </button>
               </div>
+              {feedback && (
+                <a href={feedback.href} className="inline-flex min-h-11 w-fit items-center text-sm font-medium text-ink-muted underline underline-offset-4 hover:text-ink lg:min-h-9">
+                  {feedback.label}
+                </a>
+              )}
             </div>
           ) : (
             <>
