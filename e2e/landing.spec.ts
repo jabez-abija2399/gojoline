@@ -216,6 +216,22 @@ test("signed out: the landing page offers sign-in and a free start", async ({ pa
   await expect(page.getByRole("link", { name: "Start free" }).first()).toHaveAttribute("href", /\/en\/sign-in/);
 });
 
+test("dark mode: the switch turns it on, it stays after a reload, and the page is still accessible", async ({ page, isMobile }) => {
+  await page.goto("/am");
+  if (isMobile) await page.getByRole("banner").locator("summary").click();
+  const toggle = page.getByRole("button", { name: "ጨለማ ገጽታ" });
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await toggle.click();
+  await expect(page.locator("body")).toHaveAttribute("data-gojo-theme", "dark");
+  await page.reload();
+  await expect(page.locator("body")).toHaveAttribute("data-gojo-theme", "dark");
+  // The page turns dark; the ink bands (How it works, the closing band, the footer) stay dark too.
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(18, 17, 16)");
+  await expect(page.locator("footer")).toHaveCSS("background-color", "rgb(18, 18, 18)");
+  await expectNoHorizontalScroll(page);
+  await expectNoSeriousA11yIssues(page);
+});
+
 test("landing motion: the demo plays itself and can be paused; reduced motion keeps it still", async ({ page, browser }) => {
   // It waits for the live build to finish and move on by itself, twice.
   test.setTimeout(100_000);

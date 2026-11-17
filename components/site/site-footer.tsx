@@ -44,7 +44,7 @@ export function SiteFooter({ locale, t }: { locale: Locale; t: Messages }) {
   ];
   const link = "inline-flex min-h-11 items-center text-sunken underline-offset-4 transition-colors hover:text-white hover:underline";
   return (
-    <footer className="relative z-10 mt-auto bg-ink text-white">
+    <footer className="gojo-tone-light relative z-10 mt-auto bg-ink text-white">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-4 py-14 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr_1fr] md:py-16">
         <div className="col-span-2 flex flex-col gap-4 md:col-span-1">
           <Image src={locale === "am" ? "/brand/logo-am-reversed.svg" : "/brand/logo-reversed.svg"} alt={t.common.logoAlt} width={locale === "am" ? 118 : 141} height={36} className="h-9 w-auto self-start" />

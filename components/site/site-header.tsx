@@ -5,13 +5,18 @@ import type { Messages } from "@/lib/i18n";
 import { LanguageSwitch } from "./language-switch";
 import { PhoneMenu } from "./phone-menu";
 import { looksSignedIn } from "@/lib/auth/signed-in";
+import { readTheme } from "@/lib/app/theme";
+import { ThemeToggle } from "./theme-toggle";
 
 /** `nav` is the marketing pages' floating bar: Templates, How it works, Prices, Sign in. */
 export async function SiteHeader({ locale, t, nav = false, current }: { locale: Locale; t: Messages; nav?: boolean; current?: "templates" | "pricing" }) {
   const other: Locale = locale === "en" ? "am" : "en";
+  const theme = await readTheme();
   const logo = (
     <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 items-center rounded-md">
-      <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority className={nav ? "h-9 w-auto" : "h-[42px] w-auto"} />
+      {/* The brand logo: dark letters on light pages, its reversed version in dark mode. */}
+      <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority={theme !== "dark"} className={`logo-light ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
+      <Image src={locale === "am" ? "/brand/logo-am-reversed.svg" : "/brand/logo-reversed.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority={theme === "dark"} className={`logo-dark ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
     </Link>
   );
   const language = <LanguageSwitch target={other} label={t.common.languageSwitch} ariaLabel={t.common.languageSwitchLabel} />;
@@ -44,6 +49,9 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
               </Link>
             )}
             <span className="[&>a]:rounded-full [&>a]:border-0 [&>a]:px-3 [&>a]:hover:bg-sunken">{language}</span>
+            <span className="max-md:hidden">
+              <ThemeToggle initial={theme} label={t.landing.nav.darkMode} />
+            </span>
             <Link href={signIn} className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 font-medium text-white hover:bg-ink-hover max-md:hidden">
               {startLabel}
             </Link>
@@ -64,6 +72,7 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
                     {l.label}
                   </Link>
                 ))}
+                <ThemeToggle initial={theme} label={t.landing.nav.darkMode} row />
                 <Link href={signIn} className="flex min-h-11 items-center justify-center rounded-full bg-ink px-4 font-semibold text-white hover:bg-ink-hover">
                   {startLabel}
                 </Link>
@@ -77,7 +86,10 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
     <header className="border-b border-line bg-paper/95">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         {logo}
-        {language}
+        <div className="flex items-center gap-1">
+          <ThemeToggle initial={theme} label={t.landing.nav.darkMode} />
+          {language}
+        </div>
       </div>
     </header>
   );

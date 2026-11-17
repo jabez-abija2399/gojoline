@@ -4,7 +4,7 @@
 const VERSION = "gojo-v1";
 const STATIC = `${VERSION}-static`;
 const OFFLINE_URL = "/offline.html";
-const PRECACHE = [OFFLINE_URL, "/brand/icon-192.png", "/brand/mark.svg"];
+const PRECACHE = [OFFLINE_URL, "/brand/icon-192.png", "/brand/logo.svg", "/brand/logo-reversed.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(STATIC).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
