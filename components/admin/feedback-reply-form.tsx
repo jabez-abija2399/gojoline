@@ -73,7 +73,7 @@ export function FeedbackReplyForm({
       onSubmit={(e) => {
         if (pending) e.preventDefault();
       }}
-      className="flex flex-col gap-2"
+      className="flex flex-col gap-1.5"
     >
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="lang" value={lang} />
@@ -102,16 +102,16 @@ export function FeedbackReplyForm({
       </div>
       {children}
       <details open={!!reply || status === "new"} className="group">
-        <summary className="flex min-h-11 pointer-fine:min-h-8 w-fit cursor-pointer items-center gap-2 text-sm font-medium">
+        <summary className="flex min-h-11 pointer-fine:min-h-7 w-fit cursor-pointer items-center gap-2 text-sm font-medium">
           {reply ? t.replySent : t.replyLabel}
           {reply && <span className="text-xs font-normal text-ink-muted">· {replyRead ? t.replyRead : t.replyUnread}</span>}
         </summary>
-        <div className="flex flex-col gap-1 pt-1">
+        <div className="flex flex-col gap-1 pt-0.5">
           <label htmlFor={`fb-reply-${id}`} className="sr-only">
             {t.replyLabel}
           </label>
           <textarea id={`fb-reply-${id}`} name="reply" rows={2} maxLength={REPLY_MAX} defaultValue={reply ?? ""} aria-describedby={`fb-reply-hint-${id}`} className="rounded-lg border border-input bg-white px-3 py-1.5 text-base pointer-fine:text-sm" />
-          <p id={`fb-reply-hint-${id}`} className="text-xs text-ink-muted">
+          <p id={`fb-reply-hint-${id}`} className="sr-only">
             {t.replyHint}
           </p>
         </div>

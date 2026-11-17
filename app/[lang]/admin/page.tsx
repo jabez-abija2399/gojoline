@@ -511,12 +511,12 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
       if (ty) params.set("type", ty);
       return `/${lang}/admin?${params.toString()}`;
     };
-    const chip = "inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink-muted hover:text-ink aria-[current=true]:border-ink aria-[current=true]:bg-ink aria-[current=true]:text-white pointer-fine:min-h-9";
+    const chip = "inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line bg-white px-3 text-sm font-medium text-ink-muted hover:text-ink aria-[current=true]:border-ink aria-[current=true]:bg-ink aria-[current=true]:text-white pointer-fine:min-h-9";
     const statusChips = [{ v: null, label: f.all, n: total }, ...FEEDBACK_STATUSES.map((x) => ({ v: x, label: f.status[x], n: fbCounts[x] }))];
     const typeChips = [{ v: null, label: f.allTypes }, ...FEEDBACK_TYPES.map((x) => ({ v: x, label: t.feedback.types[x] }))];
     return (
       <section aria-labelledby="fb-admin-title" className="flex flex-col gap-3">
-        <h2 id="fb-admin-title" className="text-base font-semibold">{f.title}</h2>
+        <h2 id="fb-admin-title" className="sr-only">{f.title}</h2>
         {fbDone && savedId && !savedHere && (
           <FocusOnMount>
             <p role="status" className="rounded-lg border border-lagoon bg-white px-4 py-2 font-medium text-lagoon">
@@ -524,8 +524,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             </p>
           </FocusOnMount>
         )}
+        <div className="flex flex-col gap-2 xl:flex-row xl:flex-wrap xl:items-center xl:gap-x-4">
         <nav aria-label={f.statusFilter}>
-          <ul className="flex flex-wrap gap-2">
+          <ul className="flex flex-wrap gap-1.5">
             {statusChips.map((c) => (
               <li key={c.v ?? "all"}>
                 <Link href={link({ status: c.v })} aria-current={(c.v ?? undefined) === status ? "true" : undefined} className={chip}>
@@ -537,7 +538,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           </ul>
         </nav>
         <nav aria-label={f.typeFilter}>
-          <ul className="flex flex-wrap gap-2">
+          <ul className="flex flex-wrap gap-1.5">
             {typeChips.map((c) => (
               <li key={c.v ?? "all"}>
                 <Link href={link({ type: c.v })} aria-current={(c.v ?? undefined) === type ? "true" : undefined} className={chip}>
@@ -547,6 +548,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             ))}
           </ul>
         </nav>
+        </div>
         {items.length === 0 ? (
           <p className="rounded-xl border border-dashed border-line px-4 py-6 text-ink-muted">{f.empty}</p>
         ) : (
@@ -601,7 +603,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                       {x.hasScreenshot && (
                         <a href={`/api/feedback/${x.id}/screenshot`} target="_blank" rel="noopener noreferrer" title={f.openScreenshot} className="shrink-0 self-start rounded-lg">
                           {/* eslint-disable-next-line @next/next/no-img-element -- private picture (cached per browser only): next/image would share it */}
-                          <img src={`/api/feedback/${x.id}/screenshot?size=thumb`} alt={f.screenshotAlt} loading="lazy" width={96} height={64} className="h-16 w-24 rounded-lg border border-line bg-paper object-cover" />
+                          <img src={`/api/feedback/${x.id}/screenshot?size=thumb`} alt={f.screenshotAlt} loading="lazy" width={72} height={48} className="h-12 w-18 rounded-lg border border-line bg-paper object-cover" />
                         </a>
                       )}
                     </div>
