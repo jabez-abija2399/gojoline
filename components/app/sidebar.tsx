@@ -130,13 +130,13 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
     <>
       {/* Phones: one slim bar. The changes left are always in sight. */}
       <header ref={headerRef} className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-paper/95 px-2 py-1.5 backdrop-blur lg:hidden">
-        <button ref={menuRef} type="button" aria-expanded={open} aria-controls="app-sidebar" onClick={() => setOpen(true)} className="relative inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-ink hover:bg-sunken">
+        <button ref={menuRef} type="button" aria-expanded={open} aria-controls="app-sidebar" aria-describedby={feedbackUnread > 0 ? "menu-unread" : undefined} onClick={() => setOpen(true)} className="relative inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-ink hover:bg-sunken">
           <Menu aria-hidden="true" className="size-6" />
           <span className="sr-only">{text.menu}</span>
           {feedbackUnread > 0 && (
             <>
               <span aria-hidden="true" className="absolute top-2 end-2 size-2.5 rounded-full bg-ink ring-2 ring-paper" />
-              <span className="sr-only">, {text.feedbackUnread}</span>
+              <span id="menu-unread" hidden>{text.feedbackUnread}</span>
             </>
           )}
         </button>
