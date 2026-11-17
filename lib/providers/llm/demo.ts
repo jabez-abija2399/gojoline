@@ -4,8 +4,8 @@ import type { LLMProvider, LLMRequest, LLMResponse } from "./types";
 
 /**
  * Deterministic stand-in used by e2e tests (E2E=1). Renames the site to the owner's message,
- * or writes a broken file when the message contains "break it", so UI paths can be tested
- * without spending money.
+ * or writes a broken file when the message contains "break it", answers with markdown for
+ * "telegram", and takes 1.5 s for "slowly", so UI paths can be tested without spending money.
  */
 export class DemoLLMProvider implements LLMProvider {
   async complete(req: LLMRequest): Promise<LLMResponse> {
@@ -20,6 +20,9 @@ export class DemoLLMProvider implements LLMProvider {
       content = [textBlock("Done. I updated your site.")];
     } else if (owner.toLowerCase().includes("question")) {
       content = [textBlock("What is your business called?")];
+    } else if (owner.toLowerCase().includes("telegram")) {
+      // A reply with a little markdown, as the real model writes them.
+      content = [textBlock("To add Telegram I need:\n- **Your Telegram username**\n- *Your phone number*")];
     } else if (owner.toLowerCase().includes("break it")) {
       content = [toolUseBlock("write_file", { path: "src/site.json", content: "BROKEN" }), toolUseBlock("run_build", {})];
     } else {
@@ -39,6 +42,8 @@ export class DemoLLMProvider implements LLMProvider {
         req.onToolInput?.(JSON.stringify(block.input));
       }
     }
+    // "slowly" holds the tool turn for a moment, so e2e can see the progress card move.
+    if (/\bslowly\b/i.test(owner) && !isToolResult) await new Promise((r) => setTimeout(r, 1500));
     const usage = { inputTokens: 100, outputTokens: 20, cacheReadTokens: 0, cacheWriteTokens: 0 };
     return {
       content,

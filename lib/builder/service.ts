@@ -56,6 +56,8 @@ const ONE_CHANGE: SizePricing = { sizeCredits: { small: 1, medium: 1, large: 1 }
 export type BuilderEvent =
   | AgentEvent
   | { type: "preview"; url: string }
+  /** The site built and its new version is being saved (progress). */
+  | { type: "saving" }
   /** A medium or large request waits for the owner's OK; nothing was charged or saved. */
   | { type: "needs_confirm"; size: RequestSize; cost: number; credits: number }
   | {
@@ -223,6 +225,7 @@ export async function sendOwnerMessage(
     // Sent back so the builder can show the site's new name straight away.
     let siteNameNow: string | undefined;
     if (result.status === "changed") {
+      input.onEvent({ type: "saving" });
       const version = await store.addVersion(input.ownerId, {
         projectId: project.id,
         summary: input.text.slice(0, 140),
