@@ -3,7 +3,7 @@ import { ScriptedLLMProvider, textBlock, toolUseBlock } from "@/lib/providers/ll
 import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
 import { costNanoUsd } from "@/lib/providers/llm/pricing";
 import type { LLMProvider } from "@/lib/providers/llm/types";
-import { MAX_FIX_ATTEMPTS, runAgent } from "./loop";
+import { MAX_FIX_ATTEMPTS, runAgent, WRAP_UP_NOTE, WRAP_UP_SHARE, type AgentEvent } from "./loop";
 import { MemoryWorkspace } from "./workspace";
 
 const base = { system: [{ type: "text" as const, text: "rules" }], history: [], model: "claude-opus-5-5", context: { userId: "u1", projectId: "p1" } };
@@ -28,6 +28,31 @@ describe("runAgent", () => {
     // Tool results go back in one user message, in order.
     const toolResults = llm.requests[1]!.messages.at(-1)!;
     expect(Array.isArray(toolResults.content) && toolResults.content.map((c) => c.type)).toEqual(["tool_result", "tool_result"]);
+  });
+
+  it("reports progress as the model works: planning, the tool it starts, the sections it writes", async () => {
+    const ws = new MemoryWorkspace({ "src/site.json": "{}" });
+    const site = JSON.stringify({ pages: [{ sections: [{ type: "hero" }, { type: "menu" }, { type: "gallery" }, { type: "form", fields: [{ type: "text" }] }, { type: "menu" }] }] }, null, 2);
+    const llm = new ScriptedLLMProvider([
+      { content: [textBlock("Building your café site."), toolUseBlock("write_file", { path: "src/site.json", content: site }), toolUseBlock("run_build", {})] },
+      { content: [textBlock("Done.")] },
+    ]);
+    const events: AgentEvent[] = [];
+    await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", onEvent: (e) => events.push(e) });
+    const progress = events.filter((e) => e.type !== "text").map((e) => (e.type === "section" || e.type === "tool_start" || e.type === "tool" ? `${e.type}:${e.name}` : e.type));
+    expect(progress).toEqual([
+      "plan",
+      "tool_start:write_file",
+      "section:hero",
+      "section:menu",
+      "section:gallery",
+      "section:form",
+      "tool_start:run_build",
+      "tool:write_file",
+      "tool:run_build",
+      "build",
+      "plan",
+    ]);
   });
 
   it("builds automatically if the model forgets", async () => {
@@ -100,19 +125,45 @@ describe("runAgent cost budget", () => {
     expect(ws.builds).toBe(1);
     expect(result.status).toBe("changed");
     expect(await ws.readFile("src/site.json")).toBe("c");
-    // After the first turn (half the budget) nothing was said; after the second the note was added.
-    const lastUser = llm.requests[1]!.messages.at(-1)!;
-    expect(JSON.stringify(lastUser.content)).not.toContain("Budget note");
+    // The first turn had the whole budget; the second could not afford another rewrite, so it was told to finish.
+    expect(JSON.stringify(llm.requests[0]!.messages)).not.toContain("Budget low");
+    expect(JSON.stringify(llm.requests[1]!.messages.at(-1)!.content)).toContain("Budget low: finish now");
   });
 
-  it("adds the wrap-up note once past 70% of the budget", async () => {
+  it(`tells the model to finish now, once, past ${WRAP_UP_SHARE * 100}% of the budget`, async () => {
     const ws = new MemoryWorkspace({ "src/site.json": "a" });
+    // Each turn writes 10,000 tokens (US$0.20) against a US$0.60 budget.
+    const usage = { inputTokens: 0, outputTokens: 10_000, cacheReadTokens: 0, cacheWriteTokens: 0 };
     const llm = new ScriptedLLMProvider([
-      { content: [toolUseBlock("read_file", { path: "src/site.json" })] },
-      { content: [textBlock("Done.")] },
+      { content: [toolUseBlock("write_file", { path: "src/site.json", content: "b" })], usage },
+      { content: [toolUseBlock("search_replace", { path: "src/site.json", old_string: "b", new_string: "c" }), toolUseBlock("run_build", {})], usage },
+      { content: [textBlock("Done.")], usage },
     ]);
-    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: turn + 1 });
-    expect(JSON.stringify(result.messages.at(-1)!.content)).toContain("Budget note");
+    const events: string[] = [];
+    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: 600_000_000, onEvent: (e) => events.push(e.type) });
+    // Turns 1 and 2 start below 60%: no note. Turn 3 starts at two thirds: the note, in its newest message.
+    expect(llm.requests.map((r) => JSON.stringify(r.messages.at(-1)).includes(WRAP_UP_NOTE))).toEqual([false, false, true]);
+    expect(events.filter((e) => e === "wrap_up")).toHaveLength(1);
+    expect(result.status).toBe("changed");
+    expect(result.reply).toBe("Done.");
+    expect(result.stoppedForBudget).toBe(false);
+  });
+
+  it("a cold first build with the recorded token counts finishes (cache reads are not priced as writes)", async () => {
+    // 2026-11-17 recording: the first turn wrote the whole site (cold cache: 28,608 tokens written,
+    // 4,576 out = US$0.235); the closing reply reads that from the cache (~US$0.03). The old
+    // estimate priced the cached prompt at the write price again, saw no room under US$0.40 and
+    // stopped with "stopped part-way" although the site was done.
+    const ws = new MemoryWorkspace({ "src/site.json": "starter" });
+    const llm = new ScriptedLLMProvider([
+      { content: [toolUseBlock("write_file", { path: "src/site.json", content: `{"name":"Selam Coffee",${"x".repeat(14_000)}}` }), toolUseBlock("run_build", {})], usage: { inputTokens: 4, outputTokens: 4576, cacheReadTokens: 0, cacheWriteTokens: 28_608 } },
+      { content: [textBlock("Your site is ready.")], usage: { inputTokens: 2, outputTokens: 159, cacheReadTokens: 28_608, cacheWriteTokens: 4_665 } },
+    ]);
+    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "Selam Coffee", budgetNanoUsd: 40 * 10_000_000 });
+    expect(result.stoppedForBudget).toBe(false);
+    expect(result.reply).toBe("Your site is ready.");
+    expect(result.turns).toBe(2);
+    expect(result.costNanoUsd).toBeLessThan(40 * 10_000_000);
   });
 
   it("limits each turn's output to what the budget pays for, so one turn can't blow past the cap", async () => {

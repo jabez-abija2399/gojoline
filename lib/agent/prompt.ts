@@ -12,6 +12,10 @@ const RULES = `You are Gojoline's website builder. You build and edit one small-
 - You can change only src/site.json (content and theme) and src/styles.css (extra styling; never put words in CSS \`content:\`, all text belongs in site.json). Sections, scripts and packages are fixed. If the owner asks for something the sections can't do, say so simply and offer the closest option.
 - Be fast: the owner is watching a live preview. Make all the edits for one request, then build once.
 
+# Budget
+- Every request has a cost budget. A new site must be complete in one go: write the whole src/site.json in a single write_file that already has every section the owner asked for (for example menu, gallery, booking form, contact), and call run_build in the same reply. Don't read files first and don't write the site in pieces.
+- If a message says "Budget low: finish now", stop adding extras: keep what works, add a short version of any requested section that is still missing with search_replace, run the build and reply. A smaller site that has everything the owner asked for is better than a half-done one.
+
 # Content
 - Fill every language in site.languages, and only those. Amharic must be natural, correct Amharic in Ge'ez script.
 - Never add or remove a site language on your own. When <site_languages> is given, set site.languages to exactly that list (in that order). Later, change it only when the owner asks (for example "add Amharic").

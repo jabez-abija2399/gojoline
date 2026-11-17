@@ -29,7 +29,16 @@ export class DemoLLMProvider implements LLMProvider {
         ? [toolUseBlock("search_replace", { path: "src/site.json", old_string: match[0], new_string: match[0].replace(match[1]!, name) }), toolUseBlock("run_build", {})]
         : [textBlock("I could not find the site name.")];
     }
-    req.onText?.(content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join(""));
+    // Reports its blocks like a streamed reply, so the progress card moves in e2e too.
+    for (const block of content) {
+      if (block.type === "text") {
+        req.onBlockStart?.({ type: "text" });
+        req.onText?.(block.text);
+      } else if (block.type === "tool_use") {
+        req.onBlockStart?.({ type: "tool_use", name: block.name });
+        req.onToolInput?.(JSON.stringify(block.input));
+      }
+    }
     const usage = { inputTokens: 100, outputTokens: 20, cacheReadTokens: 0, cacheWriteTokens: 0 };
     return {
       content,
