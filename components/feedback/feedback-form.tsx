@@ -102,7 +102,7 @@ export function FeedbackForm({ t, locale, page, initialType }: { t: Text; locale
             return (
               <label
                 key={x}
-                className="relative flex min-h-24 cursor-pointer flex-col items-start justify-between gap-2 rounded-xl border border-line bg-white p-3 transition-colors hover:border-faint has-[:checked]:border-ink has-[:checked]:ring-2 has-[:checked]:ring-ink has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-link"
+                className="relative flex min-h-24 cursor-pointer flex-col items-start gap-2 rounded-xl border border-line bg-white p-3 transition-colors hover:border-faint has-[:checked]:border-ink has-[:checked]:ring-2 has-[:checked]:ring-ink has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-link"
               >
                 <input type="radio" name="type" value={x} checked={type === x} onChange={() => setType(x)} aria-describedby={`fb-type-hint-${x}`} className="peer sr-only" />
                 <span aria-hidden="true" className="flex size-9 items-center justify-center rounded-lg bg-sunken text-ink peer-checked:bg-ink peer-checked:text-white">
