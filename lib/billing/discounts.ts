@@ -1,24 +1,10 @@
 import { z } from "zod";
 import { PRODUCTS, type Product } from "./plans";
+import { offerEndsAt, type DiscountCode, type LaunchOffer } from "./offer-math";
+
+export * from "./offer-math";
 
 export const PRODUCT_IDS = Object.keys(PRODUCTS) as Product[];
-
-/** A discount code as admins make it. Exactly one of percentOff or amountOffMinor is set. */
-export interface DiscountCode {
-  id: string;
-  code: string;
-  percentOff: number | null;
-  amountOffMinor: number | null;
-  products: Product[];
-  maxUses: number | null;
-  uses: number;
-  expiresAt: Date | null;
-  firstPaymentOnly: boolean;
-  /** Each customer can use it once (approved payments count). */
-  perCustomerOnce: boolean;
-  active: boolean;
-  createdAt: Date;
-}
 
 /** At least 6 characters, so codes can't be guessed by trying short ones. */
 export const CODE_PATTERN = /^[A-Z0-9]{6,20}$/;
@@ -65,39 +51,14 @@ export const launchOfferSchema = z
     name: z.object({ en: offerNameText, am: offerNameText }).strict().optional(),
   })
   .strict();
-export type LaunchOffer = z.infer<typeof launchOfferSchema>;
+// The schema's type is the plain interface in offer-math.ts (checked both ways at compile time).
+type SchemaOffer = z.infer<typeof launchOfferSchema>;
+const _sameOffer: [SchemaOffer extends LaunchOffer ? true : false, LaunchOffer extends SchemaOffer ? true : false] = [true, true];
+void _sameOffer;
 
 /** What the offer form saves: everything but on/off, which only the switch changes. */
 export const launchOfferTermsSchema = launchOfferSchema.omit({ active: true });
 export type LaunchOfferTerms = z.infer<typeof launchOfferTermsSchema>;
-
-/** The moment an offer ends: the end of its last day in Addis Ababa (UTC+3, no daylight saving); null without a last day. */
-export function offerEndsAt(offer: Pick<LaunchOffer, "until">): Date | null {
-  return offer.until ? new Date(`${offer.until}T23:59:59.999+03:00`) : null;
-}
-
-export function offerApplies(offer: LaunchOffer | null, product: Product, now: Date): offer is LaunchOffer {
-  if (!offer || !offer.active || !offer.products.includes(product)) return false;
-  const end = offerEndsAt(offer);
-  return end === null || now <= end;
-}
-
-/** Minimum price after any discount: 1 Birr. */
-export const MIN_PRICE_MINOR = 100;
-
-/**
- * The price after taking `offMinor` off, rounded down to whole Birr (customers never pay more
- * than the advertised discount) and never below 1 Birr. A base price under 1 Birr is left alone.
- */
-export function discounted(baseMinor: number, offMinor: number): { finalMinor: number; discountMinor: number } {
-  if (offMinor <= 0 || baseMinor <= MIN_PRICE_MINOR) return { finalMinor: baseMinor, discountMinor: 0 };
-  const raw = baseMinor - offMinor;
-  const finalMinor = Math.max(MIN_PRICE_MINOR, Math.floor(raw / 100) * 100);
-  return { finalMinor, discountMinor: baseMinor - finalMinor };
-}
-
-/** Santim off for a percentage, in integers only (the final price is rounded later). */
-export const percentOffMinor = (baseMinor: number, percent: number) => Math.floor((baseMinor * percent) / 100);
 
 export type CodeProblem = "not_found" | "inactive" | "expired" | "product" | "used_up" | "first_only" | "already_used";
 
@@ -119,36 +80,6 @@ export function codeProblem(code: DiscountCode | null, product: Product, now: Da
 /** What the customer is told: unknown, switched-off and ended codes all read "not found" (no guessing which exist). */
 export function publicCodeProblem(p: CodeProblem): CodeProblem {
   return p === "inactive" || p === "expired" ? "not_found" : p;
-}
-
-export interface Quote {
-  product: Product;
-  originalMinor: number;
-  finalMinor: number;
-  discountMinor: number;
-  /** Which discount applied; launch offer and code don't stack, the better one wins. */
-  source: "offer" | "code" | null;
-  code: string | null;
-}
-
-/** The price to pay: the better of the launch offer and a (valid) code; they never stack. */
-export function quote(product: Product, baseMinor: number, opts: { offer: LaunchOffer | null; code: DiscountCode | null; now: Date }): Quote {
-  const fromOffer = offerApplies(opts.offer, product, opts.now) ? discounted(baseMinor, percentOffMinor(baseMinor, opts.offer.percent)) : null;
-  const c = opts.code;
-  const fromCode = c ? discounted(baseMinor, c.percentOff !== null ? percentOffMinor(baseMinor, c.percentOff) : (c.amountOffMinor ?? 0)) : null;
-  const none: Quote = { product, originalMinor: baseMinor, finalMinor: baseMinor, discountMinor: 0, source: null, code: null };
-  // Ties go to the offer: the code then stays unused for a later payment.
-  if (fromCode && fromCode.discountMinor > 0 && fromCode.discountMinor > (fromOffer?.discountMinor ?? 0)) {
-    return { ...none, ...fromCode, source: "code", code: c!.code };
-  }
-  if (fromOffer && fromOffer.discountMinor > 0) return { ...none, ...fromOffer, source: "offer" };
-  return none;
-}
-
-/** The launch-offer price of a product now, or null when the offer doesn't apply to it. */
-export function offerPrice(offer: LaunchOffer | null, product: Product, baseMinor: number, now: Date): number | null {
-  const q = quote(product, baseMinor, { offer, code: null, now });
-  return q.source === "offer" ? q.finalMinor : null;
 }
 
 /** "31 Dec" (or the Amharic month), for "20% off until …"; null when the offer has no last day. */

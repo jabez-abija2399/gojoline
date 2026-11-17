@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
+import { testRoutesOpen } from "@/lib/server/test-routes";
 import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { services } from "@/lib/server/services";
@@ -12,7 +13,7 @@ const body = z.object({ left: z.number().int().min(0).max(500), plan: z.enum(["s
  * /api/test/answers: never with a real database).
  */
 export async function POST(request: Request) {
-  if (process.env.E2E !== "1" || process.env.VERCEL === "1" || process.env.DATABASE_URL) return new NextResponse(null, { status: 404 });
+  if (!testRoutesOpen()) return new NextResponse(null, { status: 404 });
   const user = await currentUser();
   const parsed = body.safeParse(await request.json().catch(() => null));
   if (!user || !parsed.success) return new NextResponse(null, { status: 404 });

@@ -171,7 +171,7 @@ export function PaymentForm({
               name="product"
               value={product}
               onChange={(e) => onProduct(e.target.value as ProductId)}
-              className="min-h-12 w-full appearance-none rounded-xl border border-input bg-white ps-4 pe-10 text-base font-medium"
+              className="min-h-12 w-full appearance-none rounded-xl border border-ink-muted bg-white ps-4 pe-10 text-base font-medium"
             >
               {PAY_PRODUCTS.map((x) => (
                 <option key={x} value={x}>{`${productName(t.productNames, x, topupCredits)} · ${format(t.price, { price: birr(prices[x].final) })}`}</option>
@@ -211,14 +211,14 @@ export function PaymentForm({
                   }
                 }}
                 onChange={() => code.kind !== "none" && code.kind !== "checking" && setCode({ kind: "none" })}
-                className="min-h-11 min-w-0 flex-1 rounded-lg border border-input bg-white px-3 font-mono text-base uppercase aria-invalid:border-destructive"
+                className="min-h-11 min-w-0 flex-1 rounded-lg border border-ink-muted bg-white px-3 font-mono text-base uppercase aria-invalid:border-danger"
               />
               <button type="button" onClick={() => code.kind !== "checking" && void check(product)} aria-disabled={code.kind === "checking"} className="min-h-11 shrink-0 rounded-lg border border-line bg-white px-4 text-sm font-medium hover:border-faint aria-disabled:opacity-50 lg:min-h-9">
                 {code.kind === "checking" ? t.codeChecking : t.codeApply}
               </button>
             </div>
             <p id="pay-code-hint" className="text-sm text-ink-muted">{t.codeHint}</p>
-            {codeErrorText && <p id="pay-code-error" role="alert" className="text-destructive">{codeErrorText}</p>}
+            {codeErrorText && <p id="pay-code-error" role="alert" className="text-danger">{codeErrorText}</p>}
           </div>
         </div>
         <div role="status" aria-live="polite" className="flex flex-col gap-1 rounded-xl bg-paper px-4 py-3">
@@ -293,10 +293,10 @@ export function PaymentForm({
             maxLength={50}
             aria-describedby={refError ? "pay-ref-hint pay-ref-error" : "pay-ref-hint"}
             aria-invalid={refError || undefined}
-            className="min-h-12 rounded-xl border border-input bg-white px-4 font-mono text-base uppercase aria-invalid:border-destructive"
+            className="min-h-12 rounded-xl border border-ink-muted bg-white px-4 font-mono text-base uppercase aria-invalid:border-danger"
           />
           <p id="pay-ref-hint" className="text-sm text-ink-muted">{t.referenceHint}</p>
-          {refError && <p id="pay-ref-error" role="alert" className="text-destructive">{errorText}</p>}
+          {refError && <p id="pay-ref-error" role="alert" className="text-danger">{errorText}</p>}
         </div>
         <div className="flex flex-col gap-2">
           <span id="pay-receipt-label" className="font-medium">{t.receipt}</span>
@@ -325,9 +325,9 @@ export function PaymentForm({
             </label>
           </div>
           <p id="pay-receipt-status" className="text-sm break-all text-ink-muted">{receipt ? format(t.receiptSelected, { name: receipt.name }) : t.noReceiptYet}</p>
-          {receiptError && <p id="pay-receipt-error" role="alert" className="text-destructive">{errorText}</p>}
+          {receiptError && <p id="pay-receipt-error" role="alert" className="text-danger">{errorText}</p>}
         </div>
-        {state.kind === "error" && !refError && !receiptError && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">{errorText}</p>}
+        {state.kind === "error" && !refError && !receiptError && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-danger">{errorText}</p>}
         <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-xl bg-coral px-5 text-base font-semibold text-on-coral hover:bg-coral-hover aria-disabled:opacity-50">
           {state.kind === "sending" ? t.submitting : t.submit}
         </button>

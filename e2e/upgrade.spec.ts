@@ -35,8 +35,9 @@ test("a Free owner at 0 changes sees the upgrade dialog on sending, and Upgrade 
   await expect(choices.getByRole("listitem").nth(0)).toContainText(/\d+ AI changes a month/);
   await expect(choices.getByRole("listitem").nth(1)).toContainText("Business");
   await expect(choices.getByRole("listitem").nth(1)).toContainText(/\d+ AI changes a month/);
-  // One coral action, and a way out.
-  await expect(dialog.getByRole("link", { name: "Upgrade to Starter" })).toBeVisible();
+  // One coral action, focused on open, and a way out.
+  await expect(dialog.getByRole("link", { name: "Upgrade to Starter" })).toBeFocused();
+  await expect(choices.getByRole("listitem").nth(0)).toContainText("Best for you");
   await expect(dialog.getByRole("button", { name: "Maybe later" })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
@@ -75,7 +76,7 @@ test("Amharic upgrade dialog at 360 px", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await ownerAtZero(page, "am");
   await say(page, "ርዕሱን ትልቅ አድርግ");
-  const dialog = page.getByRole("dialog", { name: "የAI ለውጦችዎን ሁሉ ተጠቅመዋል" });
+  const dialog = page.getByRole("dialog", { name: "የኤአይ ለውጦችዎን ሁሉ ተጠቅመዋል" });
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("link", { name: "ወደ ስታርተር ያሳድጉ" })).toBeVisible();
   await expectNoSeriousA11yIssues(page);

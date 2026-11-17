@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { Sparkles } from "lucide-react";
 import { Modal } from "@/components/dashboard/dialog";
 import { OfferBadge, WasPrice } from "@/components/pricing/offer-price";
@@ -33,6 +34,11 @@ export function UpgradeDialog({ open, onClose, info, t }: { open: boolean; onClo
   const first = info.choices[0];
   const free = info.plan === "free";
   const name = (c: UpgradeChoice) => (c.plan ? info.planNames[c.plan] : t.topupName);
+  const primaryRef = useRef<HTMLAnchorElement>(null);
+  // Runs after the dialog opened (child effects first): the main action has focus, not the close button.
+  useEffect(() => {
+    if (open) primaryRef.current?.focus();
+  }, [open]);
   const primaryLabel = !first ? "" : first.plan ? format(t.upgradeTo, { plan: name(first) }) : format(t.buyMore, { n: first.changes });
 
   return (
@@ -46,6 +52,7 @@ export function UpgradeDialog({ open, onClose, info, t }: { open: boolean; onClo
       <ul aria-label={t.choicesLabel} className={`grid gap-2 ${info.choices.length > 1 ? "grid-cols-2" : ""}`}>
         {info.choices.map((c, i) => (
           <li key={c.product} className={`flex min-w-0 flex-col gap-1 rounded-xl border p-3 ${i === 0 ? "border-ink ring-1 ring-ink" : "border-line"}`}>
+            {i === 0 && <span className="w-fit rounded-full bg-ink px-2 py-0.5 text-xs font-semibold text-paper">{t.best}</span>}
             <h3 className="font-semibold">{name(c)}</h3>
             <p className="flex flex-wrap items-baseline gap-x-1.5">
               <span className="font-display text-xl font-bold tabular-nums">{format(t.price, { price: birr(c.priceMinor) })}</span>
@@ -66,7 +73,7 @@ export function UpgradeDialog({ open, onClose, info, t }: { open: boolean; onClo
           {t.later}
         </button>
         {first && (
-          <Link href={first.href} onClick={onClose} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-coral px-4 text-sm font-semibold text-on-coral hover:bg-coral-hover">
+          <Link ref={primaryRef} href={first.href} onClick={onClose} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-coral px-4 text-sm font-semibold text-on-coral hover:bg-coral-hover">
             {primaryLabel}
           </Link>
         )}

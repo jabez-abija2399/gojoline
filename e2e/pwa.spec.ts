@@ -48,7 +48,8 @@ const memory = (page: import("@playwright/test").Page) => page.evaluate(() => JS
 test("install pop-up: not on the first visit, then on the second; Not now waits 14 days; Install asks once", async ({ page }) => {
   await signIn(page);
   await offerInstall(page);
-  const sheet = page.getByRole("dialog", { name: "Add Gojoline to your phone" });
+  // A phone or a computer, said the way the owner uses it.
+  const sheet = page.getByRole("complementary", { name: /Add Gojoline to your (phone|computer)/ });
   // First visit: never.
   await page.waitForTimeout(2500);
   await expect(sheet).toHaveCount(0);
@@ -58,7 +59,7 @@ test("install pop-up: not on the first visit, then on the second; Not now waits 
   await page.reload();
   await offerInstall(page);
   await expect(sheet).toBeVisible();
-  await expect(sheet).toContainText("Open your sites in one tap, even on slow internet.");
+  await expect(sheet).toContainText(/Open your sites in one (tap|click)/);
   // Not a blocking modal: the page behind still works.
   await expect(page.getByRole("button", { name: "Start a new site" })).toBeEnabled();
   await expectNoSeriousA11yIssues(page);
@@ -87,18 +88,29 @@ test("install pop-up: not on the first visit, then on the second; Not now waits 
   await expect(sheet).toHaveCount(0);
 });
 
-test("install pop-up after the first site is made, in Amharic at 360 px", async ({ page }) => {
+test("install pop-up after the first site is made: not over the builder on a phone, then on the next page (Amharic, 360 px)", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await signIn(page, { lang: "am" });
   await page.getByRole("button", { name: "አዲስ ድረ-ገጽ ይጀምሩ" }).click();
   await expect(page).toHaveURL(/\/am\/build\/[0-9a-f-]{36}$/);
   await offerInstall(page);
-  const sheet = page.getByRole("dialog", { name: "ጎጆላይንን ወደ ስልክዎ ያክሉ" });
+  const sheet = page.getByRole("complementary", { name: /ጎጆላይንን ወደ (ስልክዎ|ኮምፒውተርዎ) ያክሉ/ });
   await page.getByRole("textbox", { name: /መልዕክትዎ/ }).fill("Selam Coffee");
   await page.getByRole("textbox", { name: /መልዕክትዎ/ }).press("Enter");
-  // Never over the chat while the AI is working; offered once the site is made.
-  await expect(sheet).toBeVisible({ timeout: 30_000 });
-  await expect(sheet.getByRole("button", { name: "ይጫኑ" })).toBeVisible();
+  await expect(page.getByRole("log").getByText(/ነጻ የመጀመሪያ ግንባታ/)).toBeVisible();
+  // The chat box and the celebration stay clear on a phone.
+  await page.waitForTimeout(2500);
+  await expect(sheet).toHaveCount(0);
+  expect((await memory(page)).goodMoment).toBe(true);
+
+  await page.goto("/am/build");
+  await offerInstall(page);
+  await expect(sheet).toBeVisible();
+  await expect(sheet.getByRole("button", { name: "መተግበሪያውን ይጫኑ" })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
+  // Not modal: Escape puts it away even with focus elsewhere on the page.
+  await page.locator("body").click({ position: { x: 5, y: 200 } });
+  await page.keyboard.press("Escape");
+  await expect(sheet).toBeHidden();
 });

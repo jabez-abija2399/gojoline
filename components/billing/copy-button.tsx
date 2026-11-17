@@ -20,16 +20,21 @@ export function CopyButton({ value, what, copy, copied }: { value: string; what:
     }
   };
   return (
-    <button
-      type="button"
-      onClick={click}
-      className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border border-line bg-white px-3 text-sm font-medium text-ink hover:border-faint hover:bg-sunken lg:min-h-9"
-    >
-      {done ? <Check aria-hidden="true" className="size-4 text-lagoon" /> : <Copy aria-hidden="true" className="size-4" />}
-      {/* The name starts with the visible word, then says what is copied ("Copy Telebirr number"). */}
-      {done ? copied : copy}
-      <span className="sr-only"> {what}</span>
-      <span role="status" className="sr-only">{done ? copied : ""}</span>
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={click}
+        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border border-line bg-white px-3 text-sm font-medium text-ink hover:border-faint hover:bg-sunken lg:min-h-9"
+      >
+        {done ? <Check aria-hidden="true" className="size-4 text-lagoon" /> : <Copy aria-hidden="true" className="size-4" />}
+        {/* The name starts with the visible word, then says what is copied ("Copy Telebirr number"). */}
+        {done ? copied : copy}
+        <span className="sr-only"> {what}</span>
+      </button>
+      {/* Beside the button, not in it: a live region inside a control isn't reliably read out. */}
+      <span role="status" className="sr-only">
+        {done ? `${copied}: ${what}` : ""}
+      </span>
+    </>
   );
 }

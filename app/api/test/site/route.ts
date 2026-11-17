@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { testRoutesOpen } from "@/lib/server/test-routes";
 import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { services } from "@/lib/server/services";
@@ -8,7 +9,7 @@ import { services } from "@/lib/server/services";
  * public Data API the way the site does. 404 everywhere else (same rule as /api/test/answers).
  */
 export async function GET(request: Request) {
-  if (process.env.E2E !== "1" || process.env.VERCEL === "1" || process.env.DATABASE_URL) return new NextResponse(null, { status: 404 });
+  if (!testRoutesOpen()) return new NextResponse(null, { status: 404 });
   const user = await currentUser();
   const id = z.uuid().safeParse(new URL(request.url).searchParams.get("projectId"));
   const svc = services();

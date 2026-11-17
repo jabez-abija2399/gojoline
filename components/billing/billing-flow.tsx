@@ -61,6 +61,8 @@ export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerN
     document.getElementById("pay-product")?.focus({ preventScroll: true });
   };
   const maxFree = Math.max(...PAID.map((x) => monthsFree(prices[`${x}_month`].base, prices[`${x}_year`].base)));
+  // Coral is kept for "Send for checking"; the plan most owners pick gets the filled ink button.
+  const featured: PaidPlan | null = plan === "free" ? "starter" : null;
   const actionClass = "mt-auto inline-flex min-h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold lg:min-h-10";
 
   return (
@@ -75,7 +77,7 @@ export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerN
                 type="button"
                 aria-pressed={period === x}
                 onClick={() => setPeriod(x)}
-                className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 text-sm font-semibold text-ink-muted aria-pressed:bg-ink aria-pressed:text-paper"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-semibold text-ink-muted aria-pressed:bg-ink aria-pressed:text-paper lg:min-h-9"
               >
                 {x === "month" ? p.monthly : p.yearly}
                 {x === "year" && maxFree > 0 && <span className="text-xs font-medium opacity-90">· {format(p.yearlyHint, { months: maxFree })}</span>}
@@ -92,10 +94,15 @@ export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerN
             const saving = x !== "free" && period === "year" ? yearlySaving(prices[`${x}_month`].base, prices[`${x}_year`].base) : 0;
             const months = x !== "free" ? monthsFree(prices[`${x}_month`].base, prices[`${x}_year`].base) : 0;
             return (
-              <li key={x} aria-current={current ? "true" : undefined} className={`flex flex-col gap-3 rounded-2xl border bg-white p-5 ${current ? "border-ink ring-1 ring-ink" : "border-line"}`}>
+              // Phones: the plans to move to come first, the Free plan you're on last (payment sits higher).
+              <li key={x} aria-current={current ? "true" : undefined} className={`flex flex-col gap-3 rounded-2xl border bg-white p-5 ${current ? "border-ink ring-1 ring-ink" : "border-line"} ${current && x === "free" ? "max-md:order-last" : ""}`}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="font-display text-lg font-bold">{t.plans[x]}</h3>
-                  {current && <span className="rounded-full bg-sunken px-3 py-1 text-sm font-semibold text-ink">{t.currentBadge}</span>}
+                  {current ? (
+                    <span className="rounded-full bg-sunken px-3 py-1 text-sm font-semibold text-ink">{t.currentBadge}</span>
+                  ) : (
+                    featured === x && <span className="rounded-full bg-ink px-3 py-1 text-sm font-semibold text-paper">{p.mostChosen}</span>
+                  )}
                 </div>
                 {!price ? (
                   <p className="font-display text-2xl font-bold">{t.freePrice}</p>
@@ -111,7 +118,7 @@ export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerN
                 )}
                 {highlights[x]}
                 {id && (
-                  <a href={`?product=${id}#pay-title`} onClick={(e) => (e.preventDefault(), choose(id))} className={`${actionClass} bg-coral text-on-coral hover:bg-coral-hover`}>
+                  <a href={`?product=${id}#pay-title`} onClick={(e) => (e.preventDefault(), choose(id))} className={`${actionClass} ${featured === x ? "bg-ink text-paper hover:bg-ink-hover" : "border border-ink bg-white text-ink hover:bg-sunken"}`}>
                     {format(current ? p.renewPlan : p.choosePlan, { plan: t.plans[x] })}
                   </a>
                 )}
@@ -131,7 +138,7 @@ export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerN
             <span className="font-display text-xl font-bold tabular-nums">{format(t.price, { price: birr(prices.topup.final) })}</span>
             {prices.topup.final < prices.topup.base && <WasPrice price={format(t.price, { price: birr(prices.topup.base) })} was={t.was} className="text-sm" />}
           </p>
-          <a href="?product=topup#pay-title" onClick={(e) => (e.preventDefault(), choose("topup"))} className={`${actionClass} mt-0 bg-coral text-on-coral hover:bg-coral-hover`}>
+          <a href="?product=topup#pay-title" onClick={(e) => (e.preventDefault(), choose("topup"))} className={`${actionClass} mt-0 border border-ink bg-white text-ink hover:bg-sunken`}>
             {format(p.buyTopup, { n: topupCredits })}
           </a>
         </div>

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { testRoutesOpen } from "@/lib/server/test-routes";
 import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { formDef } from "@/lib/cloud/forms";
@@ -12,7 +13,7 @@ const body = z.object({ projectId: z.uuid(), count: z.number().int().min(1).max(
  */
 export async function POST(request: Request) {
   // Never against a real database: it replaces the site's forms with a sample one.
-  if (process.env.E2E !== "1" || process.env.VERCEL === "1" || process.env.DATABASE_URL) return new NextResponse(null, { status: 404 });
+  if (!testRoutesOpen()) return new NextResponse(null, { status: 404 });
   const user = await currentUser();
   const parsed = body.safeParse(await request.json().catch(() => null));
   const svc = services();

@@ -16,10 +16,11 @@ import { TabList } from "./tab-list";
 import { TopBar, type TopBarText } from "./top-bar";
 import { usePhotos } from "./use-photos";
 import { format } from "@/lib/i18n/format";
-import { UpgradeDialog, type UpgradeInfo } from "@/components/billing/upgrade-dialog";
-import { InstallSheet, type InstallSheetText } from "@/components/pwa/install-sheet";
+import type { UpgradeInfo } from "@/components/billing/upgrade-dialog";
+import type { InstallSheetText } from "@/components/pwa/install-sheet";
+import { LazyInstallSheet } from "@/components/pwa/install-sheet-lazy";
 import { markInstallMoment } from "@/components/pwa/install-memory";
-import { shouldOpenUpgrade, type UpgradeTrigger } from "@/lib/billing/upgrade";
+import { shouldOpenUpgrade, type UpgradeTrigger } from "@/lib/billing/upgrade-rules";
 
 /** "Used 2 changes · 18 left" under an AI answer (a free first build says so). */
 function usageNote(t: Messages["builder"], charged: number, left: number, firstBuild: boolean): string {
@@ -32,6 +33,8 @@ import type { UiVersion } from "./versions-panel";
 const VersionsPanel = dynamic(() => import("./versions-panel").then((m) => m.VersionsPanel));
 const PhotosPanel = dynamic(() => import("./photos-panel").then((m) => m.PhotosPanel));
 const CodePanel = dynamic(() => import("./code-panel").then((m) => m.CodePanel));
+// Shown only when an owner runs out: loaded after the page.
+const UpgradeDialog = dynamic(() => import("@/components/billing/upgrade-dialog").then((m) => m.UpgradeDialog), { ssr: false });
 
 type Tab = "chat" | "preview" | "photos" | "versions" | "code";
 type SideTab = Exclude<Tab, "chat">;
@@ -84,6 +87,8 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const [credits, setCredits] = useState<number | null>(initialCredits);
   const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  // Mounted from the first time it opens, then kept (closing it returns focus where it was).
+  const [upgradeSeen, setUpgradeSeen] = useState(false);
   // The balance before a run, to tell when a run used the last change.
   const creditsRef = useRef<number | null>(initialCredits);
   useEffect(() => {
@@ -92,7 +97,10 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const maybeUpgrade = useCallback(
     (trigger: UpgradeTrigger, before: number | null, after: number | null) => {
       const open = shouldOpenUpgrade(trigger, { before, after, hasSite: versionsRef.current > 0, dismissedMonth: readDismissed(upgrade.storageKey), month: upgrade.month });
-      if (open) setUpgradeOpen(true);
+      if (open) {
+        setUpgradeSeen(true);
+        setUpgradeOpen(true);
+      }
       return open;
     },
     [upgrade.storageKey, upgrade.month],
@@ -452,9 +460,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
           ))}
         </div>
       </main>
-      <UpgradeDialog open={upgradeOpen} onClose={closeUpgrade} info={upgrade} t={upgradeText} />
-      {/* Never over the chat while the AI is working, nor beside the upgrade question. */}
-      <InstallSheet t={installText} busy={working || upgradeOpen} />
+      {upgradeSeen && <UpgradeDialog open={upgradeOpen} onClose={closeUpgrade} info={upgrade} t={upgradeText} />}
+      {/* Large screens only (phones get it on the next page); never while the AI works or beside the upgrade question. */}
+      <LazyInstallSheet t={installText} busy={working || upgradeOpen} largeOnly />
     </div>
   );
 }

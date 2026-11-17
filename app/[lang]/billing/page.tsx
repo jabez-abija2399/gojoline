@@ -89,26 +89,20 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
           <div className="flex flex-col gap-1">
             <h1 id="plan-title" className="text-2xl font-semibold tracking-tight">{b.title}</h1>
           </div>
-          <div className="grid gap-5 md:grid-cols-[1.2fr_1fr]">
-            <section aria-labelledby="credits-title" className="flex flex-col gap-3 rounded-xl bg-paper p-4">
-              <p className="font-display text-xl font-bold">{format(b.currentPlan, { plan: b.plans[plan] })}</p>
-              {allowance?.until && <p className="-mt-2 text-sm text-ink-muted">{format(b.until, { date: dateFmt.format(allowance.until) })}</p>}
-              <h2 id="credits-title" className={`font-semibold ${left <= 3 ? "text-warning" : "text-ink"}`}>{format(b.creditsLeft, { n: left })}</h2>
-              <span aria-hidden="true" className="block h-2.5 overflow-hidden rounded-full bg-line">
-                <span className={`block h-full rounded-full ${left <= 3 ? "bg-warning" : "bg-ink"}`} style={{ width: `${monthly > 0 ? Math.round(Math.max(0, Math.min(1, left / monthly)) * 100) : 0}%` }} />
-              </span>
-              <ul className="flex flex-col gap-1 text-sm text-ink-muted">
-                {allowance && <li>{format(b.nextGrant, { n: monthly, date: dateFmt.format(allowance.nextGrant) })}</li>}
-                <li>{rolls ? format(b.rollover, { max: allowance?.keptMax ?? monthly }) : format(b.noRollover, { n: monthly })}</li>
-                {bought > 0 && <li>{format(b.bought, { n: bought })}</li>}
-              </ul>
-            </section>
-            <div className="flex flex-col gap-3">
-              <h2 className="font-semibold">{b.pay.includesTitle}</h2>
-              <PlanHighlights plan={plan} t={t.plans.hl} limit={4} className="text-sm" features={features} />
-              <a href="#choose-title" className="mt-auto inline-flex min-h-11 w-fit items-center rounded-lg bg-ink px-4 text-sm font-medium text-white hover:bg-ink-hover lg:min-h-9">{b.payLink}</a>
-            </div>
-          </div>
+          <section aria-labelledby="credits-title" className="flex flex-col gap-3 rounded-xl bg-paper p-4">
+            <p className="font-display text-xl font-bold">{format(b.currentPlan, { plan: b.plans[plan] })}</p>
+            {allowance?.until && <p className="-mt-2 text-sm text-ink-muted">{format(b.until, { date: dateFmt.format(allowance.until) })}</p>}
+            <h2 id="credits-title" className={`font-semibold ${left <= 3 ? "text-warning" : "text-ink"}`}>{format(b.creditsLeft, { n: left })}</h2>
+            <span aria-hidden="true" className="block h-2.5 overflow-hidden rounded-full bg-line">
+              <span className={`block h-full rounded-full ${left <= 3 ? "bg-warning" : "bg-ink"}`} style={{ width: `${monthly > 0 ? Math.round(Math.max(0, Math.min(1, left / monthly)) * 100) : 0}%` }} />
+            </span>
+            <ul className="flex flex-col gap-1 text-sm text-ink-muted">
+              {allowance && <li>{format(b.nextGrant, { n: monthly, date: dateFmt.format(allowance.nextGrant) })}</li>}
+              <li>{rolls ? format(b.rollover, { max: allowance?.keptMax ?? monthly }) : format(b.noRollover, { n: monthly })}</li>
+              {bought > 0 && <li>{format(b.bought, { n: bought })}</li>}
+            </ul>
+          </section>
+          <a href="#choose-title" className="inline-flex min-h-11 w-fit items-center rounded-lg border border-ink px-4 text-sm font-medium text-ink hover:bg-sunken lg:min-h-9">{b.payLink}</a>
         </section>
 
         <BillingFlow
