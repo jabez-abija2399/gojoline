@@ -8,7 +8,7 @@ const html = (text: string) => renderToStaticMarkup(<ChatMarkdown text={text} />
 describe("chat markdown", () => {
   it("renders bold, italic, code and line breaks", () => {
     expect(html("Hi **Selam**, *welcome*.\nSee `menu`.")).toBe(
-      '<div class="flex flex-col gap-2"><p>Hi <strong class="font-semibold">Selam</strong>, <em>welcome</em>.<br/>See <code class="rounded bg-sunken px-1 py-0.5 font-mono text-[0.9em]">menu</code>.</p></div>',
+      '<div class="chat-md flex flex-col gap-2 [overflow-wrap:anywhere]"><p>Hi <strong class="font-semibold">Selam</strong>, <em>welcome</em>.<br/>See <code class="rounded border border-line px-1 py-0.5 font-mono text-[0.9em]">menu</code>.</p></div>',
     );
   });
 

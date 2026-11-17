@@ -13,6 +13,14 @@ describe("build timeline labels", () => {
     expect(renderToStaticMarkup(<BuildTimeline t={am.builder} timeline={writing} streamText="" />)).toContain("ድረ-ገጽዎን በመጻፍ ላይ፦ …፣ የፎቶ ማዕከል፣ ቅጽ፣ ያግኙን");
   });
 
+  it("announces only the current step, without the changing section names", () => {
+    const html = renderToStaticMarkup(<BuildTimeline t={en.builder} timeline={writing} streamText="Hello **there**" />);
+    expect(html).toContain('<p role="status" class="sr-only">Writing your site</p>');
+    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expect(html).toContain('<ol aria-live="off"');
+    expect(html).toContain('role="group" aria-label="Building your site"');
+  });
+
   it("has a name for every section type in both languages", () => {
     for (const s of SECTION_TYPES) {
       expect(en.builder.tlSection[s]).toBeTruthy();

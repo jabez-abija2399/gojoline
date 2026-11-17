@@ -216,7 +216,7 @@ export const en = {
         testimonials: "Reviews",
         timeline: "Timeline",
         faq: "Questions",
-        cta: "Call to action",
+        cta: "Order or sign-up button",
         form: "Form",
         stats: "Numbers",
         steps: "Steps",
@@ -398,7 +398,7 @@ export const en = {
     tlPlan: "Planning your pages",
     tlWritingSections: "Writing your site: {sections}",
     tlListSep: ", ",
-    tlFinish: "Finishing the site",
+    tlFinish: "Finishing your site",
     tlSave: "Saving your site",
     tlSection: {
       hero: "Top banner",

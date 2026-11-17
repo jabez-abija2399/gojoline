@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { ChatMarkdown } from "@/components/chat/markdown";
 import type { Messages } from "@/lib/i18n";
@@ -35,9 +35,14 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
     ? format(t.tlWritingSections, { sections: [...(timeline.sections.length > SHOWN_SECTIONS ? ["…"] : []), ...sections].join(t.tlListSep) })
     : t.tlWriting;
   const label: Record<TimelineKey, string> = { understand: t.tlUnderstand, plan: t.tlPlan, write: writing, check: t.tlChecking, fix: t.tlFixing, finish: t.tlFinish, save: t.tlSave, ready: t.tlReady };
+  // Screen readers hear only the step, once when it changes (not section names or streamed text).
+  const current = timeline.steps.findLast((s) => !s.done) ?? timeline.steps.at(-1);
+  const announced = current ? (current.key === "write" ? t.tlWriting : label[current.key]) : "";
+  // Streamed text arrives in many small pieces: parse it at a lower priority than typing.
+  const deferredText = useDeferredValue(streamText);
 
   return (
-    <div role="status" className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-line bg-white px-4 pt-4 pb-3 shadow-sm">
+    <div role="group" aria-label={t.tlTitle} className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-line bg-white px-4 pt-4 pb-3 shadow-sm">
       <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 overflow-hidden bg-sunken">
         <span className="progress-slide block h-full w-1/3 rounded-full bg-ink" />
       </span>
@@ -45,9 +50,12 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
         <p className="font-semibold">{t.tlTitle}</p>
         <span className="text-sm tabular-nums text-ink-muted" aria-hidden="true">{t.tlElapsed.replace("{s}", String(seconds))}</span>
       </div>
-      <ol className="flex flex-col gap-2">
-        {timeline.steps.map((s) => (
-          <li key={s.key} className="flex items-center gap-3">
+      <p role="status" className="sr-only">
+        {announced}
+      </p>
+      <ol aria-live="off" className="flex flex-col gap-2">
+        {timeline.steps.map((s, i) => (
+          <li key={`${s.key}-${i}`} className="flex items-center gap-3">
             <span aria-hidden="true" className={`flex size-6 shrink-0 items-center justify-center rounded-full ${s.done ? "bg-ink text-white" : "bg-sunken text-ink"}`}>
               {s.done ? <Check className="size-4" /> : <Loader2 className="size-4 animate-spin" />}
             </span>
@@ -59,9 +67,9 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
           </li>
         ))}
       </ol>
-      {streamText && (
-        <div className="border-t border-line pt-3 text-ink">
-          <ChatMarkdown text={streamText} />
+      {deferredText && (
+        <div aria-live="off" className="border-t border-line pt-3 text-ink">
+          <ChatMarkdown text={deferredText} />
         </div>
       )}
     </div>

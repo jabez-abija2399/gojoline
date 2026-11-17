@@ -109,6 +109,11 @@
     font-family: var(--font-ethiopic), var(--font-inter), system-ui, sans-serif;
     line-height: 1.75;
   }
+  /* Ethiopic has no italics (browsers slant it artificially): emphasis is a heavier weight instead. */
+  em:lang(am) {
+    font-style: normal;
+    font-weight: 500;
+  }
   :lang(am) :is(h1, h2, h3) {
     font-family: var(--font-ethiopic), var(--font-outfit), system-ui, sans-serif;
     line-height: 1.35;

@@ -1,11 +1,11 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment, useMemo, type ReactNode } from "react";
 import { parseMarkdown, type Inline } from "@/lib/chat/markdown";
 
 function inline(nodes: Inline[], key = ""): ReactNode[] {
   return nodes.map((n, i) => {
     const k = `${key}${i}`;
     if (n.type === "text") return <Fragment key={k}>{n.text}</Fragment>;
-    if (n.type === "code") return <code key={k} className="rounded bg-sunken px-1 py-0.5 font-mono text-[0.9em]">{n.text}</code>;
+    if (n.type === "code") return <code key={k} className="rounded border border-line px-1 py-0.5 font-mono text-[0.9em]">{n.text}</code>;
     if (n.type === "bold") return <strong key={k} className="font-semibold">{inline(n.children, `${k}.`)}</strong>;
     return <em key={k}>{inline(n.children, `${k}.`)}</em>;
   });
@@ -16,9 +16,10 @@ function inline(nodes: Inline[], key = ""): ReactNode[] {
  * as React elements: every piece of text is escaped by React, nothing is set as HTML.
  */
 export function ChatMarkdown({ text }: { text: string }) {
-  const blocks = parseMarkdown(text);
+  const blocks = useMemo(() => parseMarkdown(text), [text]);
   return (
-    <div className="flex flex-col gap-2">
+    // Long words and code wrap anywhere, so nothing overflows a 360 px screen.
+    <div className="chat-md flex flex-col gap-2 [overflow-wrap:anywhere]">
       {blocks.map((b, i) => {
         if (b.type === "paragraph")
           return (
