@@ -462,3 +462,34 @@ export const discountCodes = pgTable("discount_codes", {
   createdBy: text("created_by").notNull(),
   createdAt: createdAt(),
 });
+
+/** Feedback owners send from the app (idea, problem, praise, question), and the team's reply. */
+export const feedback = pgTable(
+  "feedback",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: text("type", { enum: ["idea", "problem", "praise", "question"] }).notNull(),
+    message: text("message").notNull(),
+    /** "How easy is Gojoline?" 1–5, optional. */
+    rating: integer("rating"),
+    /** The path it was sent from, e.g. /en/build/<id>. */
+    page: text("page"),
+    locale: text("locale", { enum: ["en", "am"] }).notNull(),
+    device: text("device", { enum: ["phone", "tablet", "computer"] }).notNull(),
+    /** Trimmed to 200 characters. */
+    userAgent: text("user_agent"),
+    /** Re-encoded WebP (same handling as payment receipts); never served as uploaded. */
+    screenshot: bytea("screenshot"),
+    status: text("status", { enum: ["new", "seen", "planned", "done", "wont_do"] }).notNull().default("new"),
+    reply: text("reply"),
+    repliedBy: text("replied_by"),
+    repliedAt: timestamp("replied_at", { withTimezone: true }),
+    replyReadAt: timestamp("reply_read_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("feedback_owner_idx").on(t.ownerId, t.createdAt), index("feedback_status_idx").on(t.status, t.createdAt)],
+);
