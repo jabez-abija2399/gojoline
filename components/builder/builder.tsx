@@ -16,6 +16,10 @@ import { TabList } from "./tab-list";
 import { TopBar, type TopBarText } from "./top-bar";
 import { usePhotos } from "./use-photos";
 import { format } from "@/lib/i18n/format";
+import { UpgradeDialog, type UpgradeInfo } from "@/components/billing/upgrade-dialog";
+import { InstallSheet, type InstallSheetText } from "@/components/pwa/install-sheet";
+import { markInstallMoment } from "@/components/pwa/install-memory";
+import { shouldOpenUpgrade, type UpgradeTrigger } from "@/lib/billing/upgrade";
 
 /** "Used 2 changes · 18 left" under an AI answer (a free first build says so). */
 function usageNote(t: Messages["builder"], charged: number, left: number, firstBuild: boolean): string {
@@ -49,6 +53,19 @@ interface Props {
   initialVersions: UiVersion[];
   /** AI changes the owner has left when the page opens. */
   initialCredits: number;
+  /** The "no changes left" dialog: prices, plans and the offer from the server. */
+  upgrade: UpgradeInfo;
+  upgradeText: Messages["upgrade"];
+  installText: InstallSheetText;
+}
+
+/** The month the owner last closed the upgrade dialog; null when unknown or storage is blocked. */
+function readDismissed(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
 }
 
 let localId = 0;
@@ -63,9 +80,36 @@ export interface PendingConfirm {
   left: number;
 }
 
-export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant }: Props) {
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant, upgrade, upgradeText, installText }: Props) {
   const [credits, setCredits] = useState<number | null>(initialCredits);
   const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  // The balance before a run, to tell when a run used the last change.
+  const creditsRef = useRef<number | null>(initialCredits);
+  useEffect(() => {
+    creditsRef.current = credits;
+  }, [credits]);
+  const maybeUpgrade = useCallback(
+    (trigger: UpgradeTrigger, before: number | null, after: number | null) => {
+      const open = shouldOpenUpgrade(trigger, { before, after, hasSite: versionsRef.current > 0, dismissedMonth: readDismissed(upgrade.storageKey), month: upgrade.month });
+      if (open) setUpgradeOpen(true);
+      return open;
+    },
+    [upgrade.storageKey, upgrade.month],
+  );
+  const onLive = useCallback((url: string | null) => {
+    setLiveUrl(url);
+    // A live site: a good moment to offer the app.
+    if (url) markInstallMoment();
+  }, []);
+  const closeUpgrade = useCallback(() => {
+    setUpgradeOpen(false);
+    try {
+      localStorage.setItem(upgrade.storageKey, upgrade.month);
+    } catch {
+      // Not remembered: it may open once more after a run this month.
+    }
+  }, [upgrade.storageKey, upgrade.month]);
   // A site that only has its template version: show it first and say what to change.
   const templateId = initialVersions.length === 1 ? /^template:([a-z-]+)$/.exec(initialVersions[0]!.summary)?.[1] : undefined;
   const templateName = templateId ? (t.templates as Record<string, string>)[templateId] : undefined;
@@ -130,6 +174,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       // Going ahead with a bigger request: its message is already in the chat.
       if (!confirmed) setMessages((m) => [...m, { id: nextId(), role: "owner", text }]);
       setConfirm(null);
+      const before = creditsRef.current;
       setWorking(true);
       setTimeline({ steps: [{ key: "understand", done: false }], edits: 0, startedAt: Date.now() });
       setStreamText("");
@@ -189,7 +234,10 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 if (m.status === "failed") addAssistant(event.tooBig ? t.tooBigFailed : t.reverted, { tone: "error", usage });
                 else addAssistant(event.tooBig ? [m.text, t.tooBigPartial].filter(Boolean).join("\n\n") : m.text, { versionNumber: m.versionNumber, usage });
                 if (typeof event.siteName === "string" && event.siteName) setName(event.siteName);
+                if (typeof event.credits === "number") maybeUpgrade("after_run", before, event.credits);
                 if (m.versionNumber) {
+                  // The first site made: a good moment to offer the app.
+                  markInstallMoment();
                   if (versionsRef.current === 0) setCelebrate(true);
                   setPreviewFresh(true);
                   versionsRef.current += 1;
@@ -206,6 +254,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                   // Not enough for this request (but some left): say what it needs; none left: say so.
                   const some = typeof event.cost === "number" && (event.credits ?? 0) > 0;
                   addAssistant(some ? format(t.notEnough, { cost: event.cost, left: event.credits }) : noCredits.text, { tone: "error", action: { href: `/${locale}/billing`, label: noCredits.action } });
+                  if (typeof event.credits === "number") maybeUpgrade("refused", before, event.credits);
                 }
                 // A refusal is a normal answer, not a system failure.
                 else if (event.code === "blocked") addAssistant(t.blocked);
@@ -223,7 +272,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         setStreamText("");
       }
     },
-    [projectId, t, addAssistant, noCredits, locale],
+    [projectId, t, addAssistant, noCredits, locale, maybeUpgrade],
   );
 
   // A description typed on "Your sites" starts the build as soon as the new site opens.
@@ -318,6 +367,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         setFocusChat((k) => k + 1);
       }, onSmaller: smaller, onDiscard: dropPending } : undefined}
       nextGrant={nextGrant}
+      onBeforeSend={() => !maybeUpgrade("send", credits, credits)}
       t={t}
       hasSite={versions.length > 0}
       celebrate={celebrate && !liveUrl}
@@ -365,7 +415,13 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <PublishBar t={t} projectId={projectId} hasVersion={versions.length > 0} disabled={working} onLive={setLiveUrl}>
+      <PublishBar
+        t={t}
+        projectId={projectId}
+        hasVersion={versions.length > 0}
+        disabled={working}
+        onLive={onLive}
+      >
         {({ status, button }) => <TopBar locale={locale} projectId={projectId} text={chrome} siteName={name} status={status} publish={button} />}
       </PublishBar>
       <TabList
@@ -396,6 +452,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
           ))}
         </div>
       </main>
+      <UpgradeDialog open={upgradeOpen} onClose={closeUpgrade} info={upgrade} t={upgradeText} />
+      {/* Never over the chat while the AI is working, nor beside the upgrade question. */}
+      <InstallSheet t={installText} busy={working || upgradeOpen} />
     </div>
   );
 }

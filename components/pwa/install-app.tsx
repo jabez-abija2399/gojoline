@@ -1,54 +1,28 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-interface InstallPrompt extends Event {
-  prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
+import { markInstallAnswered } from "./install-memory";
+import { useInstall } from "./use-install";
 
 /**
  * "Install the app": the browser's own install prompt on Android and desktop Chrome/Edge;
  * on iPhone (no prompt exists) it shows the two Safari steps. Hidden once installed.
  */
 export function InstallApp({ t, className }: { t: { install: string; iosTitle: string; iosSteps: string; close: string }; className?: string }) {
-  const [prompt, setPrompt] = useState<InstallPrompt | null>(null);
-  const [ios, setIos] = useState(false);
+  const { canPrompt, ios, install } = useInstall();
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
-
-  useEffect(() => {
-    if (matchMedia("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone) return;
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setPrompt(e as InstallPrompt);
-    };
-    window.addEventListener("beforeinstallprompt", onPrompt);
-    const ua = navigator.userAgent;
-    // iPhone/iPad Safari, including iPadOS that reports itself as a Mac with touch.
-    // Decided after the first paint, so the server and client render the same HTML.
-    const isIos = /iPhone|iPad|iPod/.test(ua) || (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
-    const frame = isIos ? requestAnimationFrame(() => setIos(true)) : 0;
-    const onInstalled = () => setPrompt(null);
-    window.addEventListener("appinstalled", onInstalled);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("beforeinstallprompt", onPrompt);
-      window.removeEventListener("appinstalled", onInstalled);
-    };
-  }, []);
 
   useEffect(() => {
     if (open) dialogRef.current?.showModal();
     else dialogRef.current?.close();
   }, [open]);
 
-  if (!prompt && !ios) return null;
+  if (!canPrompt && !ios) return null;
   const click = async () => {
-    if (prompt) {
-      await prompt.prompt();
-      await prompt.userChoice.catch(() => undefined);
-      setPrompt(null);
+    if (canPrompt) {
+      // Answered here: the install pop-up doesn't ask again.
+      if (await install()) markInstallAnswered();
     } else setOpen(true);
   };
 

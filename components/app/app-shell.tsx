@@ -4,6 +4,7 @@ import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { readTheme } from "@/lib/app/theme";
 import { Sidebar } from "./sidebar";
+import { InstallSheet } from "@/components/pwa/install-sheet";
 
 /** The frame around every signed-in page except the builder itself: navigation, then the page. */
 export async function AppShell({ locale, t, user, children }: { locale: Locale; t: Messages; user: CurrentUser; children: React.ReactNode }) {
@@ -49,6 +50,7 @@ export async function AppShell({ locale, t, user, children }: { locale: Locale; 
       <div id="app-content" className="flex min-w-0 flex-1 flex-col">
         {children}
       </div>
+      <InstallSheet t={t.pwa} />
     </div>
   );
 }
