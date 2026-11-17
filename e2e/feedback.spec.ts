@@ -44,11 +44,14 @@ test("an owner sends feedback; an admin replies and plans it; the owner sees the
   await page.getByLabel("Add a screenshot (optional)").setInputFiles("e2e/fixtures/photo.jpg");
   await expect(page.getByText("photo.jpg")).toBeVisible();
   await send.click();
-  await expect(page.locator("main").getByRole("status")).toHaveText("Thank you, we read every message.");
+  await expect(page.locator("main").getByRole("status")).toHaveText("Thanks! Your message reached us.");
   await expect(page.locator("main").getByRole("status")).toBeFocused();
   const mine = page.getByRole("region", { name: "My feedback" }).getByRole("listitem").filter({ hasText: text });
   await expect(mine).toContainText("Sent");
   await expect(mine.getByRole("link", { name: "See your screenshot" })).toBeVisible();
+  // Send another starts again at the first choice.
+  await page.getByRole("button", { name: "Send another" }).click();
+  await expect(page.getByRole("radio", { name: /^Idea/ })).toBeFocused();
 
   // The admin sees it with the owner, the page, the rating and the screenshot.
   const adminCtx = await newContext(browser);
@@ -73,15 +76,20 @@ test("an owner sends feedback; an admin replies and plans it; the owner sees the
   await item.getByLabel("Status").selectOption("planned");
   await item.getByLabel("Reply to the owner").fill("Thank you! We are fixing this next week.");
   await item.getByRole("button", { name: "Save" }).click();
-  await expect(admin.getByRole("status").filter({ hasText: "Done." })).toBeVisible();
-  expect(await admin.evaluate(() => document.activeElement?.textContent ?? "")).toContain("Done.");
-  // Planned leaves the New list, and shows under Planned with the reply.
-  await expect(admin).toHaveURL(/status=new&type=problem&done=ok/);
+  // Planned leaves the New list: the outcome shows at the top, with focus.
+  await expect(admin.getByRole("status").filter({ hasText: "Saved." })).toBeVisible();
+  expect(await admin.evaluate(() => document.activeElement?.textContent ?? "")).toContain("Saved.");
+  await expect(admin).toHaveURL(/status=new&type=problem&fb=saved/);
   await expect(admin.getByRole("listitem").filter({ hasText: text })).toHaveCount(0);
   await admin.goto("/en/admin?tab=feedback&status=planned");
   await expect(item).toContainText("Planned");
   await expect(item.getByLabel("Reply to the owner")).toHaveValue("Thank you! We are fixing this next week.");
   await expect(item).toContainText("Not seen yet");
+  // A save that keeps the card in the list comes back to the card, its status line focused.
+  await item.getByRole("button", { name: "Save" }).click();
+  await expect(admin).toHaveURL(/fb=unchanged.*#fb-/);
+  await expect(item.getByRole("status")).toHaveText("Nothing changed.");
+  await expect(item.getByRole("status")).toBeFocused();
   await adminCtx.close();
 
   // The owner sees a badge, then the reply and the status.
@@ -92,11 +100,16 @@ test("an owner sends feedback; an admin replies and plans it; the owner sees the
   await expect(mine).toContainText("Planned");
   await expect(mine).toContainText("New reply");
   await expect(mine).toContainText("Thank you! We are fixing this next week.");
+  // On this page the menu has no badge: the reply is right here.
+  await expect(await feedbackLink(page)).not.toHaveAccessibleName(/new reply/);
+  await page.keyboard.press("Escape");
   await expectNoSeriousA11yIssues(page);
-  // Seen once: no badge next time.
-  await page.reload();
-  await expect(mine).toContainText("Thank you! We are fixing this next week.");
-  await expect(mine).not.toContainText("New reply");
+  // Seen once (the page tells the server after it shows): no badge next time.
+  await expect(async () => {
+    await page.reload();
+    await expect(mine).toContainText("Thank you! We are fixing this next week.", { timeout: 2000 });
+    await expect(mine).not.toContainText("New reply", { timeout: 500 });
+  }).toPass();
 });
 
 test("feedback in Amharic fits the screen and another owner's screenshot stays private", async ({ page, browser }) => {
@@ -111,12 +124,17 @@ test("feedback in Amharic fits the screen and another owner's screenshot stays p
   await page.getByLabel("መልዕክትዎ").fill("ምናሌውን በአማርኛ ማስተካከል ቢቻል ጥሩ ነው");
   await page.getByLabel("የስክሪን ፎቶ ያያይዙ (አማራጭ)").setInputFiles("e2e/fixtures/photo.jpg");
   await page.getByRole("button", { name: "አስተያየቱን ይላኩ" }).click();
-  await expect(page.locator("main").getByRole("status")).toHaveText("እናመሰግናለን፤ እያንዳንዱን መልዕክት እናነባለን።");
+  await expect(page.locator("main").getByRole("status")).toHaveText("እናመሰግናለን! መልዕክትዎ ደርሶናል።");
   const shot = page.getByRole("link", { name: "የስክሪን ፎቶዎን ይዩ" });
   await expect(shot).toBeVisible();
   await expectNoHorizontalScroll(page);
   const href = (await shot.getAttribute("href"))!;
-  expect((await page.request.get(href)).status()).toBe(200);
+  const full = await page.request.get(href);
+  expect(full.status()).toBe(200);
+  expect(full.headers()["cache-control"]).toBe("private, max-age=86400, immutable");
+  const thumb = await page.request.get(`${href}?size=thumb`);
+  expect(thumb.status()).toBe(200);
+  expect(thumb.headers()["content-type"]).toBe("image/webp");
 
   // Someone else signed in gets the same answer as for a missing picture.
   const otherCtx = await newContext(browser);

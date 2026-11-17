@@ -16,6 +16,7 @@ import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, Lay
 import { FeedbackReplyForm } from "@/components/admin/feedback-reply-form";
 import { TYPE_ICONS } from "@/components/feedback/type-icons";
 import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
+import { shortAgent } from "@/lib/feedback/agent";
 import { reportError } from "@/lib/observability/report";
 import { BarChart } from "@/components/admin/bar-chart";
 import { setAdminTheme, toggleDiscountCode } from "./actions";
@@ -498,6 +499,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const status = FEEDBACK_STATUSES.find((x) => x === sp.status);
     const type = FEEDBACK_TYPES.find((x) => x === sp.type);
     const items = await svc.feedback.adminList({ status, type }, 100);
+    const fbDone = sp.fb === "saved" || sp.fb === "unchanged" ? sp.fb : null;
+    const savedId = fbDone && typeof sp.item === "string" ? sp.item : null;
+    const savedHere = savedId && items.some((x) => x.id === savedId) ? savedId : null;
     const total = FEEDBACK_STATUSES.reduce((n, x) => n + fbCounts[x], 0);
     const link = (next: { status?: string | null; type?: string | null }) => {
       const params = new URLSearchParams({ tab: "feedback" });
@@ -510,10 +514,16 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const chip = "inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink-muted hover:text-ink aria-[current=true]:border-ink aria-[current=true]:bg-ink aria-[current=true]:text-white pointer-fine:min-h-9";
     const statusChips = [{ v: null, label: f.all, n: total }, ...FEEDBACK_STATUSES.map((x) => ({ v: x, label: f.status[x], n: fbCounts[x] }))];
     const typeChips = [{ v: null, label: f.allTypes }, ...FEEDBACK_TYPES.map((x) => ({ v: x, label: t.feedback.types[x] }))];
-    const statusTone = (x: (typeof FEEDBACK_STATUSES)[number]) => (x === "new" ? "bg-coral-soft text-ink" : x === "done" ? "border border-lagoon bg-white text-lagoon" : x === "planned" ? "bg-ink text-white" : "border border-line bg-paper text-ink-muted");
     return (
       <section aria-labelledby="fb-admin-title" className="flex flex-col gap-3">
         <h2 id="fb-admin-title" className="text-base font-semibold">{f.title}</h2>
+        {fbDone && savedId && !savedHere && (
+          <FocusOnMount>
+            <p role="status" className="rounded-lg border border-lagoon bg-white px-4 py-2 font-medium text-lagoon">
+              {fbDone === "saved" ? f.saved : f.unchanged}
+            </p>
+          </FocusOnMount>
+        )}
         <nav aria-label={f.statusFilter}>
           <ul className="flex flex-wrap gap-2">
             {statusChips.map((c) => (
@@ -540,58 +550,62 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         {items.length === 0 ? (
           <p className="rounded-xl border border-dashed border-line px-4 py-6 text-ink-muted">{f.empty}</p>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col gap-2">
             {items.map((x) => {
               const Icon = TYPE_ICONS[x.type];
+              const agent = shortAgent(x.userAgent);
               return (
-                <li key={x.id} id={`fb-${x.id}`} className="flex flex-col gap-3 rounded-xl border border-line bg-white p-3 sm:p-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 id={`fb-h-${x.id}`} className="inline-flex items-center gap-1.5 font-semibold">
-                      <Icon aria-hidden="true" className="size-4" /> {t.feedback.types[x.type]}
-                    </h3>
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusTone(x.status)}`}>{f.status[x.status]}</span>
-                    <span className="ms-auto text-xs text-ink-muted tabular-nums">{dateFmt.format(x.createdAt)}</span>
-                  </div>
-                  <p lang={langOf(x.message)} className="whitespace-pre-wrap break-words text-base pointer-fine:text-sm">{x.message}</p>
-                  <dl className="grid grid-cols-1 gap-x-6 gap-y-1 text-xs sm:grid-cols-2">
-                    <div className="flex min-w-0 gap-1">
-                      <dt className="text-ink-muted">{f.owner}:</dt>
-                      <dd className="min-w-0 [overflow-wrap:anywhere]">
-                        {x.owner ? (
-                          <Link href={`/${lang}/admin?tab=users&user=${encodeURIComponent(x.ownerId)}`} className="font-medium underline underline-offset-4">
-                            {x.owner.name || x.owner.contact}
-                          </Link>
-                        ) : (
-                          f.unknownOwner
-                        )}
-                        {x.owner?.name && x.owner.contact && <span className="text-ink-muted"> · {x.owner.contact}</span>}
-                        {x.owner && <span className="text-ink-muted"> · {t.billing.plans[x.owner.plan]}</span>}
-                      </dd>
+                <li key={x.id} id={`fb-${x.id}`} className="scroll-mt-44 rounded-xl border border-line bg-white px-3 py-2 lg:scroll-mt-28">
+                  <FeedbackReplyForm
+                    key={`${x.id}-${x.status}-${x.reply ?? ""}`}
+                    t={f}
+                    id={x.id}
+                    lang={lang}
+                    status={x.status}
+                    reply={x.reply}
+                    replyRead={!!x.replyReadAt}
+                    filters={{ status, type }}
+                    date={dateFmt.format(x.createdAt)}
+                    justSaved={savedHere === x.id ? fbDone : null}
+                    heading={
+                      <h3 className="inline-flex items-center gap-1.5 font-semibold">
+                        <Icon aria-hidden="true" className="size-4" /> {t.feedback.types[x.type]}
+                      </h3>
+                    }
+                  >
+                    <div className="flex gap-3">
+                      <div className="flex min-w-0 flex-1 flex-col gap-1">
+                        <p lang={langOf(x.message)} className="whitespace-pre-wrap break-words text-base pointer-fine:text-sm">{x.message}</p>
+                        <p className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-ink-muted">
+                          <span className="min-w-0 [overflow-wrap:anywhere]">
+                            {x.owner ? (
+                              <Link href={`/${lang}/admin?tab=users&user=${encodeURIComponent(x.ownerId)}`} className="font-medium text-ink underline underline-offset-4">
+                                {x.owner.name || x.owner.contact}
+                              </Link>
+                            ) : (
+                              f.unknownOwner
+                            )}
+                            {x.owner?.name && x.owner.contact && x.owner.contact !== x.owner.name && <> · {x.owner.contact}</>}
+                            {x.owner && <> · {t.billing.plans[x.owner.plan]}</>}
+                          </span>
+                          <span className="min-w-0 [overflow-wrap:anywhere]">
+                            {f.page}: <span className="font-mono">{x.page ?? f.noPage}</span>
+                          </span>
+                          <span className="font-medium text-ink">{x.rating ? format(f.rating, { n: x.rating }) : f.noRating}</span>
+                          <span title={x.userAgent ?? undefined}>
+                            {f.languages[x.locale]} · {f.devices[x.device]}
+                            {agent && <> · {agent}</>}
+                          </span>
+                        </p>
+                      </div>
+                      {x.hasScreenshot && (
+                        <a href={`/api/feedback/${x.id}/screenshot`} target="_blank" rel="noopener noreferrer" title={f.openScreenshot} className="shrink-0 self-start rounded-lg">
+                          {/* eslint-disable-next-line @next/next/no-img-element -- private picture (cached per browser only): next/image would share it */}
+                          <img src={`/api/feedback/${x.id}/screenshot?size=thumb`} alt={f.screenshotAlt} loading="lazy" width={96} height={64} className="h-16 w-24 rounded-lg border border-line bg-paper object-cover" />
+                        </a>
+                      )}
                     </div>
-                    <div className="flex min-w-0 gap-1">
-                      <dt className="text-ink-muted">{f.page}:</dt>
-                      <dd className="min-w-0 font-mono [overflow-wrap:anywhere]">{x.page ?? f.noPage}</dd>
-                    </div>
-                    <div className="flex gap-1">
-                      <dt className="sr-only">{t.feedback.ratingLabel}</dt>
-                      <dd className="font-medium">{x.rating ? format(f.rating, { n: x.rating }) : f.noRating}</dd>
-                    </div>
-                    <div className="flex min-w-0 gap-1">
-                      <dt className="sr-only">{f.browser}</dt>
-                      <dd className="min-w-0 text-ink-muted [overflow-wrap:anywhere]">
-                        {f.languages[x.locale]} · {f.devices[x.device]}
-                        {x.userAgent && <span className="block font-mono">{x.userAgent}</span>}
-                      </dd>
-                    </div>
-                  </dl>
-                  {x.hasScreenshot && (
-                    <a href={`/api/feedback/${x.id}/screenshot`} target="_blank" rel="noopener noreferrer" className="flex w-fit flex-col gap-1 text-xs font-medium underline underline-offset-4">
-                      {/* eslint-disable-next-line @next/next/no-img-element -- a private, per-admin image (no-store): next/image would cache it */}
-                      <img src={`/api/feedback/${x.id}/screenshot`} alt={f.screenshotAlt} loading="lazy" width={240} height={160} className="h-40 w-60 max-w-full rounded-lg border border-line bg-paper object-contain" />
-                      {f.openScreenshot}
-                    </a>
-                  )}
-                  <FeedbackReplyForm key={`${x.id}-${x.status}-${x.reply ?? ""}`} t={f} id={x.id} lang={lang} status={x.status} reply={x.reply} replyRead={!!x.replyReadAt} filters={{ status, type }} />
+                  </FeedbackReplyForm>
                 </li>
               );
             })}

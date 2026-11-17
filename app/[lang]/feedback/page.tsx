@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { AppShell } from "@/components/app/app-shell";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
+import { MarkRepliesRead } from "@/components/feedback/mark-read";
 import { TYPE_ICONS } from "@/components/feedback/type-icons";
 import { currentUser } from "@/lib/auth/session";
 import { pagePath } from "@/lib/feedback/schema";
@@ -41,19 +42,20 @@ export default async function FeedbackPage({ params, searchParams }: PageProps<"
   const f = t.feedback;
   const store = services().feedback;
   const items = await store.listForOwner(user.id, 50).catch((e: unknown) => (reportError("feedback list failed", e), null));
-  // Opening the list counts every reply as seen; the ones new on this visit keep their badge until the next one.
-  if (items?.some((x) => x.reply && !x.replyReadAt)) await store.markRepliesRead(user.id).catch((e: unknown) => reportError("feedback read failed", e));
+  // New replies keep their badge for this visit; the page tells the server they were seen (a POST, never this render).
+  const hasUnread = !!items?.some((x) => x.reply && !x.replyReadAt);
   const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
 
   return (
-    <AppShell locale={lang} t={t} user={user}>
+    <AppShell locale={lang} t={t} user={user} feedbackUnread={0}>
+      {hasUnread && <MarkRepliesRead />}
       <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-6 sm:py-10">
         <section aria-labelledby="fb-title" className="flex flex-col gap-5 rounded-2xl border border-line bg-white p-4 shadow-sm sm:p-6">
           <div className="flex flex-col gap-2">
             <h1 id="fb-title" className="text-2xl font-semibold tracking-tight">{f.title}</h1>
             <p className="max-w-prose text-ink-muted">{f.intro}</p>
           </div>
-          <FeedbackForm t={f} locale={lang} page={page} initialType={initialType} />
+          <FeedbackForm t={f} locale={lang} page={page} initialType={initialType} canAttach={user.verified} />
         </section>
 
         <section id="mine" aria-labelledby="mine-title" className="flex scroll-mt-20 flex-col gap-3">
@@ -79,7 +81,9 @@ export default async function FeedbackPage({ params, searchParams }: PageProps<"
                     </div>
                     <p lang={langOf(x.message)} className="whitespace-pre-wrap break-words">{x.message}</p>
                     {x.hasScreenshot && (
-                      <a href={`/api/feedback/${x.id}/screenshot`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 w-fit items-center text-sm font-medium text-ink underline underline-offset-4">
+                      <a href={`/api/feedback/${x.id}/screenshot`} target="_blank" rel="noopener noreferrer" className="flex w-fit items-center gap-3 text-sm font-medium text-ink underline underline-offset-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- private per-owner picture: next/image would cache it for everyone */}
+                        <img src={`/api/feedback/${x.id}/screenshot?size=thumb`} alt="" loading="lazy" width={96} height={64} className="h-16 w-24 rounded-lg border border-line bg-paper object-cover" />
                         {f.viewScreenshot}
                       </a>
                     )}

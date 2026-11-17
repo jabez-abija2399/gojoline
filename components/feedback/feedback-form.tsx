@@ -17,7 +17,8 @@ function deviceType(): Device {
   return Math.min(screen.width, screen.height) < 600 ? "phone" : "tablet";
 }
 
-export function FeedbackForm({ t, locale, page, initialType }: { t: Text; locale: "en" | "am"; page: string | null; initialType: FeedbackType | null }) {
+/** `canAttach`: only owners with a confirmed email or phone may add a screenshot (the server checks too). */
+export function FeedbackForm({ t, locale, page, initialType, canAttach }: { t: Text; locale: "en" | "am"; page: string | null; initialType: FeedbackType | null; canAttach: boolean }) {
   const router = useRouter();
   const [state, setState] = useState<State>({ kind: "idle" });
   const [type, setType] = useState<FeedbackType | null>(initialType);
@@ -29,18 +30,26 @@ export function FeedbackForm({ t, locale, page, initialType }: { t: Text; locale
   const fileRef = useRef<HTMLInputElement>(null);
   const sentRef = useRef<HTMLParagraphElement>(null);
   const alertRef = useRef<HTMLParagraphElement>(null);
+  const shotErrRef = useRef<HTMLParagraphElement>(null);
+  // "Send another" puts focus back at the start of the form.
+  const againRef = useRef(false);
   const code = state.kind === "error" ? state.code : null;
-  const shotError = code === "screenshot" || code === "screenshot_size";
+  const shotError = code === "screenshot" || code === "screenshot_size" || code === "screenshot_unverified" || code === "screenshot_quota";
 
   useEffect(() => {
     if (state.kind === "sent") sentRef.current?.focus();
     else if (code === "type") typeRef.current?.querySelector<HTMLInputElement>("input")?.focus();
     else if (code === "message") messageRef.current?.focus();
-    else if (shotError) fileRef.current?.focus();
+    else if (shotError) (fileRef.current ?? shotErrRef.current)?.focus();
     else if (code) alertRef.current?.focus();
+    else if (state.kind === "idle" && againRef.current) {
+      againRef.current = false;
+      typeRef.current?.querySelector<HTMLInputElement>("input")?.focus();
+    }
   }, [state, code, shotError]);
 
   const reset = () => {
+    againRef.current = true;
     setState({ kind: "idle" });
     setType(null);
     setMessage("");
@@ -152,18 +161,20 @@ export function FeedbackForm({ t, locale, page, initialType }: { t: Text; locale
             </label>
           ))}
           {rating !== null && (
-            <button type="button" onClick={() => setRating(null)} className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-muted underline underline-offset-4 hover:text-ink">
-              {t.ratingClear}
-            </button>
+            <>
+              <span className="text-sm font-medium text-ink">{t.ratings[`r${rating}` as keyof Text["ratings"]]}</span>
+              <button type="button" onClick={() => setRating(null)} className="min-h-11 rounded-lg px-2 text-sm font-medium text-ink-muted underline underline-offset-4 hover:text-ink">
+                {t.ratingClear}
+              </button>
+            </>
           )}
         </div>
-        {rating !== null && <p className="text-sm text-ink-muted">{t.ratings[`r${rating}` as keyof Text["ratings"]]}</p>}
       </fieldset>
 
       <div className="flex flex-col gap-2">
         <p id="fb-shot-label" className="font-medium">{t.screenshotLabel}</p>
-        <p id="fb-shot-hint" className="text-sm text-ink-muted">{t.screenshotHint}</p>
-        {file ? (
+        <p id="fb-shot-hint" className="text-sm text-ink-muted">{canAttach ? t.screenshotHint : t.screenshotVerify}</p>
+        {!canAttach ? null : file ? (
           <div className="flex min-h-11 items-center gap-2 rounded-lg border border-line bg-white ps-3">
             <ImagePlus aria-hidden="true" className="size-5 shrink-0 text-ink-muted" />
             <span className="min-w-0 flex-1 truncate">{file.name}</span>
@@ -201,7 +212,11 @@ export function FeedbackForm({ t, locale, page, initialType }: { t: Text; locale
             />
           </label>
         )}
-        {shotError && <p id="fb-shot-error" role="alert" className="text-destructive">{t.errors[code]}</p>}
+        {shotError && (
+          <p ref={shotErrRef} tabIndex={-1} id="fb-shot-error" role="alert" className="text-destructive">
+            {t.errors[code]}
+          </p>
+        )}
       </div>
 
       <p className="text-sm text-ink-muted">{t.autoNote}</p>
@@ -210,6 +225,9 @@ export function FeedbackForm({ t, locale, page, initialType }: { t: Text; locale
           {t.errors[code]}
         </p>
       )}
+      <p aria-live="polite" className="sr-only">
+        {state.kind === "sending" ? t.sending : ""}
+      </p>
       <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-lg bg-coral px-5 font-medium text-on-coral hover:bg-coral-hover aria-disabled:opacity-50 sm:w-fit">
         {state.kind === "sending" ? t.sending : t.send}
       </button>

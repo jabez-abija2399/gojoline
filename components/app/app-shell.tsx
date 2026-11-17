@@ -8,13 +8,14 @@ import { LazyInstallSheet } from "@/components/pwa/install-sheet-lazy";
 import { services } from "@/lib/server/services";
 
 /** The frame around every signed-in page except the builder itself: navigation, then the page. */
-export async function AppShell({ locale, t, user, children }: { locale: Locale; t: Messages; user: CurrentUser; children: React.ReactNode }) {
+/** `feedbackUnread`: set by a page that already knows (My feedback passes 0: the replies are on screen). */
+export async function AppShell({ locale, t, user, children, feedbackUnread }: { locale: Locale; t: Messages; user: CurrentUser; children: React.ReactNode; feedbackUnread?: number }) {
   const [sites, allowance, theme, unread] = await Promise.all([
     ownerSites(user.id),
     ownerAllowance(user.id),
     readTheme(),
     // A badge, not the page: a failed count shows none.
-    services().feedback.unreadReplies(user.id).catch(() => 0),
+    feedbackUnread ?? services().feedback.unreadReplies(user.id).catch(() => 0),
   ]);
   const a = t.app;
   return (
