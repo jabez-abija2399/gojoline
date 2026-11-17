@@ -65,7 +65,7 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
   const site = await sandboxes.open(`eval-${c.id}-${Date.now()}`, null);
   const previewOpenMs = Date.now() - t0;
   try {
-    const step = async (prompt: string, history: MessageParam[], must: string[], languages?: string[]) => {
+    const step = async (prompt: string, history: MessageParam[], must: string[], languages?: string[], siteLanguages?: ("en" | "am")[]) => {
       const start = Date.now();
       const before = usage.records.length;
       const r = await runAgent({
@@ -73,7 +73,7 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
         workspace: site,
         system: agentSystemPrompt(),
         history,
-        userContent: userTurn(prompt, await site.readFile("src/site.json")),
+        userContent: userTurn(prompt, await site.readFile("src/site.json"), [], siteLanguages),
         model: env.AGENT_MODEL || DEFAULT_MODEL,
         usage,
         context: { userId: null, projectId: `eval-${c.id}` },
@@ -100,7 +100,7 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
       };
       return { result, reply: r.reply };
     };
-    const first = await step(c.prompt, [], c.mustContain, c.languages);
+    const first = await step(c.prompt, [], c.mustContain, c.languages, c.siteLanguages);
     let edit: StepResult | undefined;
     if (c.edit) {
       const history: MessageParam[] = [

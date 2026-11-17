@@ -106,10 +106,16 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 ## Feedback (2026-11-17)
 - [x] Owner feedback: Send feedback (sidebar, builder menu, after publish) with type, message, optional rating and screenshot, page/language/device captured; My feedback with status, reply and an unread badge; admin Feedback tab with filters, status and reply (audited), new feedback in Needs your attention; 10 per owner and 30 per network an hour
 
+## Builder polish (2026-11-17)
+- [x] Free first builds finish: the first-build cost cap is an admin setting (default US$0.75 from measured runs, hard limit US$2), the next turn's input is estimated as cache reads (a cold first turn no longer ends a finished build as “stopped part-way”), and near the cap the agent is told “Budget low: finish now” and completes every requested section
+- [x] AI replies render a safe markdown subset (bold, italic, code, lists, line breaks) in the builder chat and the progress card; Telegram replies are escaped HTML with bullets
+- [x] Progress card follows real agent steps: understanding, planning, writing (with the sections being written), checking, fixing, finishing up, saving, ready (en, am)
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Builder polish (2026-11-17): the `design-reviewer`, `performance-reviewer` and `security-reviewer` agents were not run for this slice (the session that built it could not start agents); run them before merging. Paid edits keep the US$0.15-per-change cap: a cold-cache edit pays about US$0.12 for writing the system prompt to the cache alone, so measure cold edits next (`EVAL_ONLY=en-cafe npm run evals` after 5 idle minutes). The admin credits form clears what was typed after an invalid save (React resets uncontrolled forms after an action); keep the values on errors.
 - The sidebar's Upgrade link at 0 still goes to the Plan page (the dialog needs prices and the offer on every signed-in page; not worth the extra reads for now).
 - Manifest screenshots (Chrome's richer install sheet) not added: they need real app pictures without personal data.
 - Credits and discounts (2026-11-16): the Amharic for request sizes, the bigger-change question, the history and the discount screens needs the native-speaker review. A stricter daily limit for requests stopped at their cost cap was considered and not built (they are no longer refunded). Measure Haiku sizing against real requests (cost is logged as "size"); the 2 s timeout falls back to the word list. The landing page's feature card still shows the plain Starter price (not the launch offer). The design, performance and security review agents could not be run from this session (no sub-agent tool); a self-review was done instead.

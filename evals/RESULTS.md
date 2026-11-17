@@ -1,5 +1,19 @@
 # Agent eval results
 
+## 2026-11-17 · the recorded first build (`en-cafe-full`) · claude-opus-5-5, effort medium
+
+Request: “Selam Coffee in Bole, Addis Ababa. We serve jebena buna, macchiato, fresh juice and breakfast, every day from 7 am to 9 pm. I want a menu with prices in Birr, a gallery, and customers should be able to book a table and reach us on Telegram.” No cost cap (the eval passes no budget), real Vercel Sandbox.
+
+| Site languages | Cache | Turn 1 (write + build) | Turn 2 (reply) | Total | Model seconds |
+|---|---|---|---|---|---|
+| English | cold (28,608 tokens written) | $0.235 (4,576 out) | $0.032 | **$0.267** | 39 |
+| English | warm | $0.091 (4,243 out) | $0.031 | **$0.122** | 35 |
+| English | warm | $0.090 (4,213 out) | $0.031 | **$0.121** | 35 |
+| English and Amharic | system prompt cached | $0.159 (6,671 out) | $0.043 | **$0.202** | 57 |
+| English and Amharic | warm | $0.135 (6,465 out) | $0.043 | **$0.179** | 55 |
+
+All built first try with hero, menu, gallery, booking form, contact, map and calls to action. A cold English and Amharic build is about $0.32 (the same tokens with the system prompt written to the cache). The first-build cap is now $0.75 by default (docs/DECISIONS.md, 2026-11-17).
+
 ## 2026-11-14 (later) · after moving content to `site.json` and locking code · 6-case subset
 
 | Metric | Result |
