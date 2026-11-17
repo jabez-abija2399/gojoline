@@ -124,11 +124,11 @@ test("an admin changes Business's monthly changes and the pricing and Plan pages
   // The free first build's cost cap is a setting too, with a hard upper limit of US$2.
   const firstCap = form.getByLabel("AI cost cap for a free first build (US$)");
   await expect(firstCap).toHaveValue("0.75");
-  await business.fill("175");
   await firstCap.fill("5");
   await form.getByRole("button", { name: "Save changes settings" }).click();
   await expect(firstCap).toHaveAttribute("aria-invalid", "true");
   // Both test projects save the same numbers, so they can run side by side.
+  await business.fill("175");
   await firstCap.fill("0.75");
   await form.getByRole("button", { name: "Save changes settings" }).click();
   await expect(form.getByRole("status")).toHaveText("Saved.");
