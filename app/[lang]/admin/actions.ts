@@ -113,7 +113,10 @@ export async function saveBillingSettings(_prev: SettingsState, form: FormData):
   return { status: "ok" };
 }
 
-export type CreditsState = { status: "idle" | "ok" | "invalid" | "forbidden" | "failed"; field?: string };
+/** On "invalid", `values` holds what the admin typed, so the form shows it again (React resets forms after an action). */
+export type CreditsState = { status: "idle" | "ok" | "invalid" | "forbidden" | "failed"; field?: string; values?: Record<string, string> };
+
+const CREDIT_FIELDS = ["monthly_free", "monthly_starter", "monthly_business", "rollover_free", "rollover_starter", "rollover_business", "topupCredits", "size_small", "size_medium", "size_large", "capUsd", "firstCapUsd"] as const;
 
 /** A whole number typed in a form field, or NaN (so validation names the field). */
 const whole = (v: FormDataEntryValue | null) => (typeof v === "string" && /^\s*\d{1,6}\s*$/.test(v) ? Number(v) : NaN);
@@ -122,10 +125,11 @@ const whole = (v: FormDataEntryValue | null) => (typeof v === "string" && /^\s*\
 export async function saveCreditSettings(_prev: CreditsState, form: FormData): Promise<CreditsState> {
   const user = await currentUser();
   if (!user || !isAdmin(user)) return { status: "forbidden" };
-  const cap = usdToCents(String(form.get("capUsd") ?? ""));
-  if (cap === null) return { status: "invalid", field: "capUsd" };
-  const firstCap = usdToCents(String(form.get("firstCapUsd") ?? ""));
-  if (firstCap === null) return { status: "invalid", field: "firstCapUsd" };
+  const values = Object.fromEntries(CREDIT_FIELDS.map((f) => [f, String(form.get(f) ?? "").slice(0, 12)]));
+  const cap = usdToCents(values.capUsd!);
+  if (cap === null) return { status: "invalid", field: "capUsd", values };
+  const firstCap = usdToCents(values.firstCapUsd!);
+  if (firstCap === null) return { status: "invalid", field: "firstCapUsd", values };
   const plans = ["free", "starter", "business"] as const;
   const sizes = ["small", "medium", "large"] as const;
   const parsed = creditSettingsSchema.safeParse({
@@ -139,7 +143,7 @@ export async function saveCreditSettings(_prev: CreditsState, form: FormData): P
   if (!parsed.success) {
     const path = parsed.error.issues[0]?.path ?? [];
     const field = path[0] === "monthly" ? `monthly_${String(path[1])}` : path[0] === "rollover" ? `rollover_${String(path[1])}` : path[0] === "sizeCredits" ? `size_${String(path[1])}` : path[0] === "capCentsPerCredit" ? "capUsd" : path[0] === "firstBuildCapCents" ? "firstCapUsd" : String(path[0] ?? "");
-    return { status: "invalid", field };
+    return { status: "invalid", field, values };
   }
   try {
     await services().billing.saveCreditSettings(user.id, parsed.data);
