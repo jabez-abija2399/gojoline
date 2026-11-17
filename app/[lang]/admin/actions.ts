@@ -16,6 +16,9 @@ import { refreshTemplateUsage } from "@/lib/landing/template-usage";
 import { after } from "next/server";
 import { noticeDecision } from "@/lib/billing/notify";
 import { adminStats, paymentNotices, services } from "@/lib/server/services";
+import { adminFeedbackInput } from "@/lib/feedback/schema";
+import { updateFeedback } from "@/lib/feedback/admin";
+import { FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
 
@@ -314,4 +317,33 @@ export async function setAdminTheme(form: FormData) {
     (await cookies()).set("gojo_admin_theme", theme, { path: `/`, maxAge: 60 * 60 * 24 * 365, sameSite: "lax", httpOnly: true, secure: process.env.NODE_ENV === "production" });
   }
   redirect(`/${lang}/admin?tab=${tab}`);
+}
+
+export type FeedbackState = { status: "idle" | "invalid" | "forbidden" | "not_found" | "failed" };
+
+const fbFilters = z.object({ fStatus: z.enum(FEEDBACK_STATUSES).optional().catch(undefined), fType: z.enum(FEEDBACK_TYPES).optional().catch(undefined) });
+
+/** The admin's save on one feedback card: status and/or reply, each audited. Back to the same filters with the outcome on top. */
+export async function saveFeedback(_prev: FeedbackState, form: FormData): Promise<FeedbackState> {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) return { status: "forbidden" };
+  const parsed = adminFeedbackInput.safeParse({ id: form.get("id"), status: form.get("status"), reply: form.get("reply") ?? "", lang: form.get("lang") });
+  if (!parsed.success) return { status: "invalid" };
+  const { id, status, reply, lang } = parsed.data;
+  let result: Awaited<ReturnType<typeof updateFeedback>>;
+  try {
+    result = await updateFeedback({ store: services().feedback, audit: (e) => services().billing.store().audit(e) }, me.id, id, { status, reply });
+  } catch (error) {
+    reportError("feedback update failed", error);
+    return { status: "failed" };
+  }
+  if (result === "not_found") return { status: "not_found" };
+  revalidatePath(`/${lang}/admin`);
+  const back = fbFilters.parse({ fStatus: form.get("fStatus") || undefined, fType: form.get("fType") || undefined });
+  const params = new URLSearchParams({ tab: "feedback" });
+  if (back.fStatus) params.set("status", back.fStatus);
+  if (back.fType) params.set("type", back.fType);
+  params.set("done", "ok");
+  // The item may leave a filtered list, so the outcome is shown at the top of the page.
+  redirect(`/${lang}/admin?${params.toString()}`);
 }
