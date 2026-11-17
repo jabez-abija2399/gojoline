@@ -488,6 +488,7 @@ export const en = {
     usedOne: "Used 1 change · {left} left",
     usedMany: "Used {n} changes · {left} left",
     usedFree: "Free first build · {left} changes left",
+    usedFreeOne: "Free first build · 1 change left",
     usedNone: "No change used · {left} left",
     lowCredits: "{n} changes left this month",
     lowCreditsOne: "1 change left this month",

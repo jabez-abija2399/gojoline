@@ -488,6 +488,7 @@ export const am: Messages = {
     usedOne: "1 ለውጥ ተጠቅመዋል · {left} ቀርተዋል",
     usedMany: "{n} ለውጦች ተጠቅመዋል · {left} ቀርተዋል",
     usedFree: "ነጻ የመጀመሪያ ግንባታ · {left} ለውጦች ቀርተዋል",
+    usedFreeOne: "ነጻ የመጀመሪያ ግንባታ · 1 ለውጥ ቀርቷል",
     usedNone: "ምንም ለውጥ አልተጠቀሙም · {left} ቀርተዋል",
     lowCredits: "በዚህ ወር {n} ለውጦች ቀርተዋል",
     lowCreditsOne: "በዚህ ወር 1 ለውጥ ቀርቷል",
