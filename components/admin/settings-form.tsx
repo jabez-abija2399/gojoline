@@ -69,8 +69,8 @@ export function SettingsForm({ t, tb, lang, values, topupCredits }: { t: Message
       </fieldset>
       <fieldset className="grid gap-3">
         <legend className="mb-2 text-base font-semibold">{t.settingsAccounts}</legend>
-        {field("telebirrNumber", tb.methods.telebirr, values.telebirrNumber, { inputMode: "tel", maxLength: 40 })}
-        {field("cbeAccount", tb.methods.cbe, values.cbeAccount, { inputMode: "numeric", maxLength: 60 })}
+        {field("telebirrNumber", t.settingsTelebirr, values.telebirrNumber, { inputMode: "tel", maxLength: 40 })}
+        {field("cbeAccount", t.settingsCbe, values.cbeAccount, { inputMode: "numeric", maxLength: 60 })}
         {field("accountName", t.settingsAccountName, values.accountName, { maxLength: 120 })}
         <p className="text-ink-muted">{t.settingsAccountsHint}</p>
       </fieldset>

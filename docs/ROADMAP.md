@@ -98,10 +98,17 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Content section removed from the site dashboard (2026-11-16): menus, products, lists and photos change through the AI, which uses changes; old Content links open Home
 - [x] Launch offer made flexible (optional last day, one-click switch, own name in both languages) and admin made denser (2026-11-16)
 
+## Upgrade, install and payments (2026-11-16)
+- [x] Upgrade dialog when an owner runs out of changes (refused, sending at 0, once a month after the last change); plans and the top-up with real prices and the offer; goes to the payment form with the product chosen
+- [x] Install pop-up for signed-in owners (bottom sheet / corner card, after the first site or from the second visit, “Not now” for 14 days), one shared install hook with the menu item
+- [x] Plan and payments redesign: summary, plan cards with monthly/yearly, payment in three steps with copy buttons, checking status with a timeline, history with status chips (folded on phones); admin labels name the account holder and number
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- The sidebar's Upgrade link at 0 still goes to the Plan page (the dialog needs prices and the offer on every signed-in page; not worth the extra reads for now).
+- Manifest screenshots (Chrome's richer install sheet) not added: they need real app pictures without personal data.
 - Credits and discounts (2026-11-16): the Amharic for request sizes, the bigger-change question, the history and the discount screens needs the native-speaker review. A stricter daily limit for requests stopped at their cost cap was considered and not built (they are no longer refunded). Measure Haiku sizing against real requests (cost is logged as "size"); the 2 s timeout falls back to the word list. The landing page's feature card still shows the plain Starter price (not the launch offer). The design, performance and security review agents could not be run from this session (no sub-agent tool); a self-review was done instead.
 - Performance: phone LCP on `/templates` and template pages is ~3.5 s (budget 2.5 s), same as before template pages v2. Causes are site-wide: ~170 KB shared JS, the Ethiopic font preloaded on English pages, three Latin fonts, lazy pictures inside Chrome's load distance. Needs its own slice (2026-11-16).
 - Set `PUBLISH_BASE_DOMAIN` in production once the customer-site domain exists; until then the template browser frame shows an empty address bar (never a guessed address).

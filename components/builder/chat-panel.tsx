@@ -57,6 +57,8 @@ interface Props {
   confirm?: { size: "medium" | "large"; cost: number; left: number; onGo: () => void; onSmaller: () => void; onDiscard: () => void };
   /** When the next monthly changes arrive, for the "no changes left" note. */
   nextGrant: string;
+  /** Asked before sending; false keeps the message unsent (e.g. no changes left: the upgrade dialog opens). */
+  onBeforeSend?: () => boolean;
 }
 
 const amharic = /[ሀ-፿]/;
@@ -64,7 +66,7 @@ const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 const NEXT = ["contact", "colours", "prices", "language"] as const;
 const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line bg-white px-3.5 text-sm font-medium lg:min-h-9 text-ink transition-colors hover:border-faint hover:bg-sunken";
 
-export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits, confirm, nextGrant }: Props) {
+export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits, confirm, nextGrant, onBeforeSend }: Props) {
   const [undoing, setUndoing] = useState(false);
   const [attach, setAttach] = useState<{ busy: boolean; note?: string; error?: string }>({ busy: false });
   const listRef = useRef<HTMLDivElement>(null);
@@ -103,6 +105,8 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
     const text = draft.trim();
     // A new message while a bigger request waits replaces it (the waiting one was never run).
     if (!text || working) return;
+    // Kept in the box: the owner can send it once they have changes again.
+    if (onBeforeSend && !onBeforeSend()) return;
     // The waiting request is dropped from the chat (it was never run).
     confirm?.onDiscard();
     setDraft("");

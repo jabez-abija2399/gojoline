@@ -48,16 +48,23 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+/** Keeps the browser's install offer if it fires before React loads (read by components/pwa/use-install.ts). */
+const EARLY_INSTALL_SCRIPT = `addEventListener("beforeinstallprompt",function(e){e.preventDefault();window.__gojoInstall=e});`;
+
 export default async function RootLayout({ children, params }: LayoutProps<"/[lang]">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   // Reading headers makes every page render per request so the CSP nonce is applied.
-  await headers();
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   const t = getMessages(lang);
   // Light, dark or the device's choice, the same everywhere (public pages and the app).
   const theme = await readTheme();
   return (
     <html lang={lang} className={`${fontVariables} h-full`}>
+      <head>
+        {/* Chrome can offer installing before the app's code runs: keep that offer for the install button and pop-up. */}
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: EARLY_INSTALL_SCRIPT }} />
+      </head>
       <body data-gojo-theme={theme} className="flex min-h-full flex-col">
         <a
           href="#main"
