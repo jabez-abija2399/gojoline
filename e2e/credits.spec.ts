@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn, unfold } from "./helpers";
 
 // Runs against the deterministic demo AI (E2E=1); request sizes come from the word list there.
 async function newSite(page: Page, lang: "en" | "am" = "en") {
@@ -81,8 +81,7 @@ test("a bigger request asks first, then uses its changes; low and zero changes a
   // The Plan page lists every movement, newest first.
   await page.goto("/en/billing");
   // Phones fold the history away.
-  const fold = page.getByRole("button", { name: /History of your changes/ });
-  if (await fold.isVisible()) await fold.click();
+  await unfold(page, /History of your changes/);
   const history = page.getByRole("list", { name: "Changes added and used" });
   await expect(history.getByRole("listitem").first()).toContainText("Change to your site, small");
   await expect(history.getByRole("listitem").filter({ hasText: "Change to your site, large" })).toContainText("Redesign the whole website");

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn, unfold } from "./helpers";
 
 test("an owner sends a payment and an admin approves it", async ({ page, browser }) => {
   await signIn(page);
@@ -62,8 +62,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   await page.goto("/en/billing");
   await expect(page.getByText("Your plan: Starter")).toBeVisible();
   // Phones fold the payment list away.
-  const payments = page.getByRole("button", { name: /Your payments/ });
-  if (await payments.isVisible()) await payments.click();
+  await unfold(page, /Your payments/);
   await expect(page.getByText("Approved", { exact: true })).toBeVisible();
 });
 
