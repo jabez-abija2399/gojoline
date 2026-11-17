@@ -7,6 +7,7 @@ import { extractForms } from "@/lib/cloud/forms";
 import { MemoryLock } from "@/lib/lock";
 import { MemoryProjectStore } from "@/lib/projects/memory-store";
 import { DemoLLMProvider } from "@/lib/providers/llm/demo";
+import { ScriptedLLMProvider, textBlock } from "@/lib/providers/llm/fake";
 import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
 import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { MemorySandboxProvider } from "@/lib/providers/sandbox/memory";
@@ -106,6 +107,15 @@ describe("telegram bot", () => {
     await handleUpdate(deps, msg("Abol Cafe"));
     expect(last()).toContain("live on your site");
     expect((await builder.store.latestVersion("alice", p.id))?.files["src/site.json"]).toContain('"en": "Abol Cafe"');
+  });
+
+  it("sends the AI's markdown as Telegram HTML, escaped, with no stray asterisks", async () => {
+    await linked();
+    const p = await builder.store.createProject("alice", { name: "Selam", locale: "en" });
+    await builder.store.addVersion("alice", { projectId: p.id, summary: "v1", files: { "src/site.json": starter } });
+    builder.llm = new ScriptedLLMProvider([{ content: [textBlock("I need:\n- **Your Telegram username**\n- <b>x</b> & *phone*")] }]);
+    await handleUpdate(deps, msg("Add a Telegram link"));
+    expect(last()).toBe("I need:\n\n• <b>Your Telegram username</b>\n• &#60;b&#62;x&#60;/b&#62; &#38; <i>phone</i>");
   });
 
   it("lets the owner pick a site and saves photos", async () => {
