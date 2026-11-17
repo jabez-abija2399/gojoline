@@ -215,10 +215,13 @@ export function services(): Services {
       publicSites: new PublicSiteCache(async () => null),
       feedback: db
         ? new DbFeedbackStore(db)
-        : new MemoryFeedbackStore(async (id) => {
-            const u = await adminStats().user(id);
-            return u ? { name: u.name, contact: u.contact, plan: u.plan } : null;
-          }),
+        : new MemoryFeedbackStore(
+            async (id) => {
+              const u = await adminStats().user(id);
+              return u ? { name: u.name, contact: u.contact, plan: u.plan } : null;
+            },
+            (e) => billing.store().audit(e),
+          ),
     };
     const svc = globalForServices.gojoServices;
     if (svc.builder) {

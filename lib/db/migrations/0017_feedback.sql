@@ -9,6 +9,8 @@ CREATE TABLE "feedback" (
 	"device" text NOT NULL,
 	"user_agent" text,
 	"screenshot" "bytea",
+	"thumbnail" "bytea",
+	"screenshot_bytes" integer DEFAULT 0 NOT NULL,
 	"status" text DEFAULT 'new' NOT NULL,
 	"reply" text,
 	"replied_by" text,
@@ -20,4 +22,5 @@ CREATE TABLE "feedback" (
 --> statement-breakpoint
 ALTER TABLE "feedback" ADD CONSTRAINT "feedback_owner_id_users_id_fk" FOREIGN KEY ("owner_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "feedback_owner_idx" ON "feedback" USING btree ("owner_id","created_at");--> statement-breakpoint
-CREATE INDEX "feedback_status_idx" ON "feedback" USING btree ("status","created_at");
+CREATE INDEX "feedback_status_idx" ON "feedback" USING btree ("status","created_at");--> statement-breakpoint
+CREATE INDEX "feedback_unread_idx" ON "feedback" USING btree ("owner_id") WHERE "feedback"."reply" is not null and "feedback"."reply_read_at" is null;

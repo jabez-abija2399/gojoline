@@ -1,5 +1,5 @@
 {
-  "id": "d0bc6066-3b65-4125-bb45-a0c8dc478825",
+  "id": "73d79ba2-0965-46c8-bc86-e17693e9d42c",
   "prevId": "f5f5dcc0-5f2e-45ce-bb2b-30d385ca48ac",
   "version": "7",
   "dialect": "postgresql",
@@ -905,6 +905,19 @@
           "primaryKey": false,
           "notNull": false
         },
+        "thumbnail": {
+          "name": "thumbnail",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "screenshot_bytes": {
+          "name": "screenshot_bytes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
         "status": {
           "name": "status",
           "type": "text",
@@ -990,6 +1003,22 @@
             }
           ],
           "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "feedback_unread_idx": {
+          "name": "feedback_unread_idx",
+          "columns": [
+            {
+              "expression": "owner_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"feedback\".\"reply\" is not null and \"feedback\".\"reply_read_at\" is null",
           "concurrently": false,
           "method": "btree",
           "with": {}

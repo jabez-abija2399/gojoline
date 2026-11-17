@@ -1,8 +1,8 @@
 import { json } from "@/lib/api/guard";
 import { currentUser } from "@/lib/auth/session";
 import { sameOrigin } from "@/lib/builder/access";
-import { processImage } from "@/lib/cloud/images";
 import { ipBucket } from "@/lib/cloud/submit";
+import { processScreenshot } from "@/lib/feedback/image";
 import { submitFeedback } from "@/lib/feedback/submit";
 import { MAX_SCREENSHOT_BYTES } from "@/lib/feedback/types";
 import { reportError } from "@/lib/observability/report";
@@ -29,19 +29,20 @@ export async function POST(request: Request) {
       { store: svc.feedback, limiter: svc.rateLimiter },
       {
         ownerId: user.id,
+        verified: user.verified,
         network: ipBucket(await clientIp()),
         fields,
         userAgent: (await headers()).get("user-agent"),
+        hasScreenshot: file instanceof File && file.size > 0,
         screenshot: async () => {
-          if (!(file instanceof File) || file.size === 0) return null;
-          if (file.size > MAX_SCREENSHOT_BYTES || !file.type.startsWith("image/")) return "invalid";
-          // Re-encoded like payment receipts: only real images, metadata removed, WebP.
-          const img = await processImage(Buffer.from(await file.arrayBuffer()));
-          return img.ok ? img.data : "invalid";
+          if (!(file instanceof File) || file.size > MAX_SCREENSHOT_BYTES) return "invalid";
+          // One decode, pixel-limited; re-encoded to WebP with a thumbnail. Never stored as uploaded.
+          const img = await processScreenshot(Buffer.from(await file.arrayBuffer()));
+          return img.ok ? { full: img.full, thumb: img.thumb } : "invalid";
         },
       },
     );
-    if (!result.ok) return json(result.error === "too_many" ? 429 : 400, { error: result.error });
+    if (!result.ok) return json(result.error === "too_many" || result.error === "screenshot_quota" ? 429 : result.error === "screenshot_unverified" ? 403 : 400, { error: result.error });
     return json(201, { id: result.feedback.id });
   } catch (error) {
     reportError("feedback save failed", error);
