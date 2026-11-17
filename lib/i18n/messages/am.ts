@@ -804,7 +804,6 @@ export const am: Messages = {
       amount: "የሚላከው መጠን",
       copy: "ቅዳ",
       copied: "ተቀድቷል",
-      copyLabel: "{what} ቅዳ",
       preview: "የደረሰኝዎ ፎቶ",
       changePhoto: "ፎቶ ይቀይሩ",
       checkingTitle: "ክፍያዎን እያረጋገጥን ነው",

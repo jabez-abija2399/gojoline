@@ -263,7 +263,7 @@ export function PaymentForm({
               <span className="text-sm font-medium text-ink-muted">{account.label}</span>
               <span className={big}>{account.value}</span>
             </div>
-            <CopyButton value={account.value.replace(/\s+/g, "")} label={format(p.copyLabel, { what: account.label })} copy={p.copy} copied={p.copied} />
+            <CopyButton value={account.value.replace(/\s+/g, "")} what={account.label} copy={p.copy} copied={p.copied} />
           </div>
           {accounts.accountName && (
             <div className="flex min-w-0 flex-col">
@@ -276,7 +276,7 @@ export function PaymentForm({
               <span className="text-sm font-medium text-ink-muted">{p.amount}</span>
               <span className={big}>{amount}</span>
             </div>
-            <CopyButton value={(price.final / 100).toString()} label={format(p.copyLabel, { what: p.amount })} copy={p.copy} copied={p.copied} />
+            <CopyButton value={(price.final / 100).toString()} what={p.amount} copy={p.copy} copied={p.copied} />
           </div>
         </div>
       </Step>

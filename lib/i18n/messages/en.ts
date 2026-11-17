@@ -804,7 +804,6 @@ export const en = {
       amount: "Amount to send",
       copy: "Copy",
       copied: "Copied",
-      copyLabel: "Copy {what}",
       preview: "Your receipt photo",
       changePhoto: "Change photo",
       checkingTitle: "We're checking your payment",
