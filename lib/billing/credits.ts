@@ -10,8 +10,15 @@ export const biggerSize = (a: RequestSize, b: RequestSize): RequestSize => (size
 
 /** Default AI cost cap per change charged, in US cents (~3–5× the measured median edit). */
 export const DEFAULT_CAP_CENTS_PER_CREDIT = 15;
-/** A free first build has no change to measure against: its own cap, in US cents. */
-export const FIRST_BUILD_CAP_CENTS = 40;
+/**
+ * A free first build has no change to measure against: its own cap, in US cents (admin-editable).
+ * Measured 2026-11-17 for a full café site (menu, gallery, booking, Telegram): US$0.12 to 0.27 in
+ * English and US$0.18 to about 0.32 in English and Amharic, cold cache being the high end; 75 cents
+ * leaves room for a fix round and a rewrite (docs/DECISIONS.md).
+ */
+export const DEFAULT_FIRST_BUILD_CAP_CENTS = 75;
+/** Hard upper limit for the first-build cap: no saved setting can let a free build spend more. */
+export const MAX_FIRST_BUILD_CAP_CENTS = 200;
 /** Fewer agent turns for smaller requests: a cheap safety net beside the cost cap. */
 export const MAX_TURNS_BY_SIZE: Record<RequestSize | "first_build", number> = { small: 8, medium: 12, large: 16, first_build: 16 };
 
@@ -32,6 +39,7 @@ export const creditSettingsSchema = z
       .strict()
       .refine((s) => s.small <= s.medium && s.medium <= s.large, { message: "order", path: ["medium"] }),
     capCentsPerCredit: int(1, 100),
+    firstBuildCapCents: int(10, MAX_FIRST_BUILD_CAP_CENTS),
   })
   .strict();
 export type CreditSettings = z.infer<typeof creditSettingsSchema>;
@@ -43,6 +51,7 @@ export function defaultCreditSettings(): CreditSettings {
     topupCredits: TOPUP_CREDITS,
     sizeCredits: { small: 1, medium: 2, large: 4 },
     capCentsPerCredit: DEFAULT_CAP_CENTS_PER_CREDIT,
+    firstBuildCapCents: DEFAULT_FIRST_BUILD_CAP_CENTS,
   };
 }
 
@@ -70,6 +79,11 @@ export function planFeaturesWith(cs: CreditSettings): Record<PlanId, PlanFeature
 /** The AI cost cap for one request, in integer nano-USD (1 cent = 1e7 nano-USD). */
 export function costCapNano(cs: CreditSettings, credits: number): number {
   return credits * cs.capCentsPerCredit * 10_000_000;
+}
+
+/** The AI cost cap for a free first build, in integer nano-USD, never above the hard limit. */
+export function firstBuildCapNano(cs: Pick<CreditSettings, "firstBuildCapCents">): number {
+  return Math.min(cs.firstBuildCapCents, MAX_FIRST_BUILD_CAP_CENTS) * 10_000_000;
 }
 
 /** "0.15" or "1" US dollars → whole cents; null when not a price with at most 2 decimals. */

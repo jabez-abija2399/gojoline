@@ -28,7 +28,7 @@ e2e/                 Playwright tests
 
 ## Components
 
-- **Agent loop** (`lib/agent`): plan, then edit files with tools (`read_file`, `write_file`, `search_replace`, `list_files`, `run_build`, `read_errors`). Auto-fixes build errors up to 3 times. Only relevant files go into context; system prompt and template docs are cached. Streams progress to the UI. Logs tokens and cost per request.
+- **Agent loop** (`lib/agent`): plan, then edit files with tools (`read_file`, `write_file`, `search_replace`, `list_files`, `run_build`, `read_errors`). Auto-fixes build errors up to 3 times. Only relevant files go into context; system prompt and template docs are cached. Streams progress to the UI from real agent events (the model starting to think, a tool call starting, the site sections named in a streaming `site.json` write, builds, the budget wrap-up, saving), which drive the builder's progress card; no timers. Logs tokens and cost per request.
 - **Sandbox** (`SandboxProvider`, Vercel Sandbox first): a snapshot with the template's dependencies pre-installed so preview starts in seconds. The preview URL loads in an iframe.
 - **Versioning**: each AI change creates a snapshot (files to R2, row in Postgres) that can be restored.
 - **Gojoline Cloud**: one Postgres with rows scoped by `project_id` and checked on every query. Generated sites call a small public Data API (`/api/sites/:siteId/forms`, `/lists`, `/uploads`, owner login) with per-site keys and rate limits.

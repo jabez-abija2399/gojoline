@@ -121,8 +121,20 @@ test("an admin changes Business's monthly changes and the pricing and Plan pages
   await form.getByRole("button", { name: "Save changes settings" }).click();
   await expect(form.getByRole("alert")).toContainText("check the highlighted field");
   await expect(business).toHaveAttribute("aria-invalid", "true");
-  // Both test projects save the same numbers, so they can run side by side.
+  // The free first build's cost cap is a setting too, with a hard upper limit of US$2.
+  const firstCap = form.getByLabel("AI cost cap for a free first build (US$)");
+  await expect(firstCap).toHaveValue("0.75");
+  // What was typed stays after an invalid save.
+  await expect(business).toHaveValue("lots");
   await business.fill("175");
+  await firstCap.fill("5");
+  await form.getByRole("button", { name: "Save changes settings" }).click();
+  await expect(firstCap).toHaveAttribute("aria-invalid", "true");
+  await expect(form.getByText("Enter an amount from US$0.10 to US$2.00.").first()).toBeVisible();
+  await expect(firstCap).toHaveValue("5");
+  await expect(business).toHaveValue("175");
+  // Both test projects save the same numbers, so they can run side by side.
+  await firstCap.fill("0.75");
   await form.getByRole("button", { name: "Save changes settings" }).click();
   await expect(form.getByRole("status")).toHaveText("Saved.");
 

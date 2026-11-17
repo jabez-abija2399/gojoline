@@ -69,11 +69,19 @@ export async function openAccountMenu(page: Page, lang: "en" | "am" = "en") {
 
 /** Opens a section folded away on phones (its heading is a button there); does nothing on large screens. */
 export async function unfold(page: Page, name: RegExp) {
-  const button = page.getByRole("button", { name });
+  // includeHidden: on large screens the toggle is in the page but hidden (lg:hidden).
+  const button = page.getByRole("button", { name, includeHidden: true });
+  // Wait for the page to draw the toggle first: checking at once can run before it exists and
+  // skip unfolding on phones.
+  await button.waitFor({ state: "attached" });
   if (!(await button.isVisible())) return;
-  // Retried: a tap before the page is interactive does nothing.
+  // Wait for the page's code before tapping: React replays taps made during hydration, so quick
+  // retries could replay two taps and fold it again. Retried slowly, and only kept once it stays open.
+  await page.waitForLoadState("load");
   await expect(async () => {
     if ((await button.getAttribute("aria-expanded")) !== "true") await button.click();
-    await expect(button).toHaveAttribute("aria-expanded", "true", { timeout: 500 });
+    await expect(button).toHaveAttribute("aria-expanded", "true", { timeout: 2000 });
+    await page.waitForTimeout(300);
+    await expect(button).toHaveAttribute("aria-expanded", "true", { timeout: 100 });
   }).toPass();
 }

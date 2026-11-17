@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ArrowUp, CheckCircle2, Eye, ImagePlus, Loader2, PartyPopper, Sparkles, Undo2 } from "lucide-react";
+import { ChatMarkdown } from "@/components/chat/markdown";
 import { format } from "@/lib/i18n/format";
 import type { Messages } from "@/lib/i18n";
 import { BuildTimeline, type Timeline } from "./build-timeline";
@@ -366,14 +367,19 @@ function Bubble({ role, label, text, note, usage, tone, action, quietAction, see
         {!own && <Image src="/brand/mark.svg" alt="" width={20} height={20} className="size-5" />}
         {label}
       </span>
-      <p
-        lang={amharic.test(text) ? "am" : "en"}
-        className={`whitespace-pre-wrap rounded-2xl px-4 py-3 ${
-          own ? "rounded-br-sm bg-ink text-white" : tone === "error" ? "rounded-bl-sm border border-destructive bg-coral-soft text-destructive" : "rounded-bl-sm bg-paper text-ink"
-        }`}
-      >
-        {text}
-      </p>
+      {own ? (
+        <p lang={amharic.test(text) ? "am" : "en"} className="whitespace-pre-wrap rounded-2xl rounded-br-sm bg-ink px-4 py-3 text-white">
+          {text}
+        </p>
+      ) : (
+        // The AI's replies may use a little markdown (bold, lists); the owner's words stay as typed.
+        <div
+          lang={amharic.test(text) ? "am" : "en"}
+          className={`rounded-2xl rounded-bl-sm px-4 py-3 ${tone === "error" ? "border border-destructive bg-coral-soft text-destructive" : "bg-paper text-ink"}`}
+        >
+          <ChatMarkdown text={text} />
+        </div>
+      )}
       {action && (
         <Link href={action.href} className={`inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-medium lg:min-h-9 ${quietAction ? "bg-ink text-white hover:bg-ink-hover" : "bg-coral text-on-coral hover:bg-coral-hover"}`}>
           {action.label}

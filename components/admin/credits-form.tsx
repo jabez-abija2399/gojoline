@@ -19,7 +19,7 @@ function Save({ t }: { t: Messages["admin"] }) {
   );
 }
 
-/** Admin → Settings → Changes (credits): monthly changes, rollover, pack size, sizes, cost cap. */
+/** Admin → Settings → Changes (credits): monthly changes, rollover, pack size, sizes, cost caps (per change and first build). */
 export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin"]; planNames: Record<(typeof PLANS)[number], string>; lang: string; values: CreditSettings }) {
   const [state, action] = useActionState<CreditsState, FormData>(saveCreditSettings, { status: "idle" });
   const msgRef = useRef<HTMLParagraphElement>(null);
@@ -36,13 +36,18 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
     ...Object.fromEntries(SIZES.map((x) => [`size_${x}`, t.creditsSize[x]])),
     topupCredits: t.creditsTopup,
     capUsd: t.creditsCap,
+    firstCapUsd: t.creditsFirstCap,
   };
+  // After an invalid save the form shows what was typed, not the saved values.
+  const typed = state.status === "invalid" ? state.values : undefined;
+  /** The cost caps say their range; other fields ask for whole numbers. */
+  const fieldError = (name: string) => (name === "capUsd" ? t.creditsCapInvalid : name === "firstCapUsd" ? t.creditsFirstCapInvalid : t.fieldInvalid);
   const num = (name: string, label: string, value: number | string, extra: { min?: number; max?: number; hint?: string; decimal?: boolean } = {}) => (
     <label key={name} className="flex flex-col gap-1">
       <span className="font-medium">{label}</span>
       <input
         name={name}
-        defaultValue={String(value)}
+        defaultValue={typed?.[name] ?? String(value)}
         inputMode={extra.decimal ? "decimal" : "numeric"}
         maxLength={extra.decimal ? 6 : 5}
         aria-invalid={bad(name) || undefined}
@@ -50,10 +55,11 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
         className="min-h-11 pointer-fine:min-h-9 rounded-lg border border-input bg-white px-3 text-base pointer-fine:text-sm tabular-nums aria-invalid:border-destructive"
       />
       {extra.hint && <span id={`${name}-hint`} className="text-xs text-ink-muted">{extra.hint}</span>}
-      {bad(name) && <span id={`${name}-error`} className="text-sm font-medium text-destructive">{t.fieldInvalid}</span>}
+      {bad(name) && <span id={`${name}-error`} className="text-sm font-medium text-destructive">{fieldError(name)}</span>}
     </label>
   );
   const cap = (values.capCentsPerCredit / 100).toFixed(2);
+  const firstCap = (values.firstBuildCapCents / 100).toFixed(2);
   return (
     <form ref={formRef} action={action} aria-labelledby="credits-form-title" className="flex flex-col gap-4">
       <input type="hidden" name="lang" value={lang} />
@@ -74,13 +80,14 @@ export function CreditsForm({ t, planNames, lang, values }: { t: Messages["admin
         <legend className="px-1 font-semibold">{t.creditsSizes}</legend>
         {SIZES.map((s) => num(`size_${s}`, t.creditsSize[s], values.sizeCredits[s]))}
       </fieldset>
-      <div className="grid gap-3 sm:grid-cols-2 sm:items-start">
+      <div className="grid gap-3 sm:grid-cols-3 sm:items-start">
         {num("topupCredits", t.creditsTopup, values.topupCredits)}
         {num("capUsd", t.creditsCap, cap, { decimal: true, hint: t.creditsCapHint })}
+        {num("firstCapUsd", t.creditsFirstCap, firstCap, { decimal: true, hint: t.creditsFirstCapHint })}
       </div>
       {state.status !== "idle" && (
         <p ref={msgRef} tabIndex={-1} role={state.status === "ok" ? "status" : "alert"} className={state.status === "ok" ? "font-medium text-ink" : "text-destructive"}>
-          {state.status === "ok" ? t.done : state.status === "invalid" ? `${state.field && labels[state.field] ? format(t.fieldInvalidNamed, { field: labels[state.field] }) + " " : ""}${t.creditsInvalid}` : state.status === "forbidden" ? t.forbidden : t.failed}
+          {state.status === "ok" ? t.done : state.status === "invalid" ? `${state.field && labels[state.field] ? format(t.fieldInvalidNamed, { field: labels[state.field] }) + " " : ""}${state.field === "capUsd" || state.field === "firstCapUsd" ? fieldError(state.field) : t.creditsInvalid}` : state.status === "forbidden" ? t.forbidden : t.failed}
         </p>
       )}
       <Save t={t} />

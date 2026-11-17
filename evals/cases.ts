@@ -12,6 +12,8 @@ export interface EvalCase {
   mustContain: string[];
   /** Expected site.languages, if the prompt asks for specific ones. */
   languages?: ("en" | "am")[];
+  /** The site languages the owner picked before the build (sent as <site_languages>, as the builder does). */
+  siteLanguages?: ("en" | "am")[];
   edit?: { prompt: string; mustContain: string[] };
 }
 
@@ -30,6 +32,8 @@ export const cases: EvalCase[] = [
   { id: "en-salon", lang: "en", industry: "salon", prompt: "Glow Beauty Salon in Sarbet: hair braiding, makeup for weddings and nails. Booking by phone 0913 456 789.", mustContain: ["Glow Beauty", "913\\D?456\\D?789"] },
   { id: "en-garage", lang: "en", industry: "garage", prompt: "Kality Auto Service: engine repair, oil change and tyre fitting for all cars. Open Monday to Saturday. 0911 000 111.", mustContain: ["Kality Auto", "911\\D?000\\D?111"] },
   { id: "en-bakery", lang: "en", industry: "bakery", prompt: "Sweet Bites Bakery bakes birthday cakes to order, bread and cookies in Gerji. Orders need 2 days notice. Telegram @sweetbitesaddis", mustContain: ["Sweet Bites", "sweetbitesaddis"] },
+  // The first-build request from the 2026-11-17 recording: a menu, a gallery, booking and Telegram.
+  { id: "en-cafe-full", lang: "en", industry: "cafe", siteLanguages: ["en"], prompt: "Selam Coffee in Bole, Addis Ababa. We serve jebena buna, macchiato, fresh juice and breakfast, every day from 7 am to 9 pm. I want a menu with prices in Birr, a gallery, and customers should be able to book a table and reach us on Telegram.", mustContain: ["Selam Coffee", "gallery", "booking", "ETB"] },
   { id: "en-vague", lang: "en", industry: "unknown", prompt: "I need a website", mustContain: [] },
 
   { id: "am-cafe", lang: "am", industry: "cafe", prompt: "ሰላም! ጀበና ካፌ እባላለሁ፣ ካዛንቺስ ነን። ባህላዊ ቡና፣ ሻይ እና ቁርስ እናቀርባለን። ስልክ 0911 765 432። ድረ-ገጹ በአማርኛ ይሁን።", mustContain: ["ጀበና", "911\\D?765\\D?432"], edit: { prompt: "የቡና ዋጋ 35 ብር እና የሻይ ዋጋ 20 ብር ጨምር።", mustContain: ["3500", "2000"] } },

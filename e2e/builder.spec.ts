@@ -54,6 +54,40 @@ test("a change that breaks the site is undone", async ({ page }) => {
   await expect(page.getByText("No versions yet").filter({ visible: true })).toBeVisible();
 });
 
+test("the progress card follows the AI's real steps, and replies show bold and lists without asterisks", async ({ page }) => {
+  await newSite(page);
+  // "slowly" makes the demo AI pause after it starts writing and building.
+  await chat(page).fill("Selam Coffee slowly");
+  await chat(page).press("Enter");
+  const card = page.getByRole("group", { name: "Building your site" });
+  await expect(card).toContainText("Understanding your request (done)");
+  await expect(card).toContainText("Writing your site (done)");
+  await expect(card).toContainText("Checking everything works (in progress)");
+  // Screen readers hear only the current step, from one quiet status line.
+  await expect(card.getByRole("status")).toHaveText("Checking everything works");
+  await expect(page.getByText("Saved as version 1").first()).toBeVisible();
+  await expect(card).toHaveCount(0);
+
+  await chat(page).fill("Add our Telegram");
+  await chat(page).press("Enter");
+  const reply = page.locator("li").filter({ hasText: "Your Telegram username" });
+  await expect(reply.locator("strong")).toHaveText("Your Telegram username");
+  await expect(page.getByText("**Your Telegram username**")).toHaveCount(0);
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+});
+
+test("the progress card speaks Amharic", async ({ page }) => {
+  await newSite(page, "am");
+  await chat(page).fill("ሰላም ቡና slowly");
+  await chat(page).press("Enter");
+  const card = page.getByRole("group", { name: "ድረ-ገጽዎ እየተሠራ ነው" });
+  await expect(card).toContainText("ጥያቄዎን በመረዳት ላይ (ተጠናቋል)");
+  await expect(card).toContainText("ሁሉም ነገር መሥራቱን በማረጋገጥ ላይ (በሂደት ላይ)");
+  await expectNoHorizontalScroll(page);
+  await expect(card).toHaveCount(0, { timeout: 15_000 });
+});
+
 test("builder works in Amharic", async ({ page }) => {
   await newSite(page, "am");
   await expect(page.locator("html")).toHaveAttribute("lang", "am");

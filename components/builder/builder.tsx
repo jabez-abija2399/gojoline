@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Eye, FileText, History, Images, MessageCircle } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
-import { nextTimeline, type Timeline } from "./build-timeline";
+import { nextTimeline, startTimeline, type Timeline } from "./build-timeline";
 import { ChatPanel, type UiMessage } from "./chat-panel";
 import type { SiteLanguages } from "./language-choice";
 import type { PhotoText } from "./photos-panel";
@@ -24,7 +24,7 @@ import { shouldOpenUpgrade, type UpgradeTrigger } from "@/lib/billing/upgrade-ru
 
 /** "Used 2 changes · 18 left" under an AI answer (a free first build says so). */
 function usageNote(t: Messages["builder"], charged: number, left: number, firstBuild: boolean): string {
-  if (charged === 0) return format(firstBuild ? t.usedFree : t.usedNone, { left });
+  if (charged === 0) return format(firstBuild ? (left === 1 ? t.usedFreeOne : t.usedFree) : t.usedNone, { left });
   return format(charged === 1 ? t.usedOne : t.usedMany, { n: charged, left });
 }
 import type { UiVersion } from "./versions-panel";
@@ -184,7 +184,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       setConfirm(null);
       const before = creditsRef.current;
       setWorking(true);
-      setTimeline({ steps: [{ key: "understand", done: false }], edits: 0, startedAt: Date.now() });
+      setTimeline(startTimeline(Date.now()));
       setStreamText("");
       lastBuildFailed.current = false;
       try {
@@ -218,7 +218,14 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 setStreamText((s) => s + event.delta);
                 setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 break;
+              // Real progress from the agent: planning, a tool starting, the sections it writes,
+              // a tool that ran, finishing up near the budget, saving the new version.
+              case "plan":
+              case "tool_start":
+              case "section":
               case "tool":
+              case "wrap_up":
+              case "saving":
                 setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 break;
               case "build":

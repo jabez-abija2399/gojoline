@@ -232,7 +232,7 @@ export function services(): Services {
         freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
         pricing: async () => {
           const cs = await billing.credits();
-          return { sizeCredits: cs.sizeCredits, capCentsPerCredit: cs.capCentsPerCredit };
+          return { sizeCredits: cs.sizeCredits, capCentsPerCredit: cs.capCentsPerCredit, firstBuildCapCents: cs.firstBuildCapCents };
         },
       };
       // Claude Haiku sizes requests when an API key is set (never in e2e: the word list does).

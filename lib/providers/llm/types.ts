@@ -24,6 +24,10 @@ export interface LLMRequest {
   effort?: Effort;
   /** Called with each streamed text fragment (for live chat UI). */
   onText?: (delta: string) => void;
+  /** Called when the model starts a new content block (for progress: thinking, text or a tool call). */
+  onBlockStart?: (block: { type: "thinking" | "text" | "tool_use"; name?: string }) => void;
+  /** Called with each streamed fragment of a tool call's JSON input (for progress). */
+  onToolInput?: (partialJson: string) => void;
   signal?: AbortSignal;
   /** For usage logging. */
   purpose: string;
