@@ -83,12 +83,12 @@ test("admin dashboard: overview, owners, and dark mode", async ({ page }) => {
   await expect(page.getByRole("img", { name: /New owners, 30 days/ })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("button", { name: "Dark" }).first().click();
-  await expect(page.locator("[data-gojo-theme]")).toHaveAttribute("data-gojo-theme", "dark");
+  await expect(page.locator(".admin-root")).toHaveAttribute("data-gojo-theme", "dark");
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("link", { name: "Owners" }).first().click();
   await expect(page.getByRole("searchbox").or(page.getByPlaceholder("Search by name, email or phone"))).toBeVisible();
   await page.getByRole("button", { name: "Light" }).first().click();
-  await expect(page.locator("[data-gojo-theme]")).toHaveAttribute("data-gojo-theme", "light");
+  await expect(page.locator(".admin-root")).toHaveAttribute("data-gojo-theme", "light");
 });
 
 test("admin owners: filter by plan, open an owner, give extra changes and set a plan", async ({ page, browser }) => {

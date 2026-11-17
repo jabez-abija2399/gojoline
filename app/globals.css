@@ -173,6 +173,15 @@
 .gojo-tone-light {
   --color-white: #fff;
 }
+/* On a dark page the ink bands would melt into it: a hairline marks where each begins. */
+:root:has([data-gojo-theme="dark"]) .gojo-tone-light {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:has([data-gojo-theme="system"]) .gojo-tone-light {
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+  }
+}
 
 /* Builder: small, quick motion that says "something happened". All of it stops under
    prefers-reduced-motion (rule above). */

@@ -6,8 +6,10 @@ import type { Messages } from "@/lib/i18n";
 import { LanguageSwitch } from "@/components/site/language-switch";
 import type { CurrentUser } from "@/lib/auth/session";
 import { signOut } from "@/lib/auth/actions";
+import { readTheme } from "@/lib/app/theme";
+import { ThemeToggle } from "@/components/site/theme-toggle";
 
-export function BuilderHeader({
+export async function BuilderHeader({
   locale,
   t,
   backHref,
@@ -23,6 +25,7 @@ export function BuilderHeader({
   navLinks?: { href: string; label: string; icon: "dashboard" | "plan" }[];
 }) {
   const other: Locale = locale === "en" ? "am" : "en";
+  const theme = await readTheme();
   return (
     <header className="flex items-center justify-between gap-2 border-b border-line bg-white px-3 py-2 sm:px-4">
       <div className="flex min-w-0 items-center gap-3">
@@ -59,6 +62,7 @@ export function BuilderHeader({
             </button>
           </form>
         )}
+        <ThemeToggle initial={theme} label={t.landing.nav.darkMode} />
         <LanguageSwitch target={other} label={t.common.languageSwitch} ariaLabel={t.common.languageSwitchLabel} />
       </div>
     </header>

@@ -293,7 +293,7 @@ function MonitorView({ site, live, you, assistant, publish, booking, run, slug, 
         </div>
       </div>
       {/* The stand. */}
-      <div aria-hidden="true" className="h-10 w-32 bg-[linear-gradient(to_bottom,var(--gojo-ink),#3a3632)] [clip-path:polygon(18%_0,82%_0,100%_100%,0_100%)]" />
+      <div aria-hidden="true" className="h-10 w-32 bg-device [clip-path:polygon(18%_0,82%_0,100%_100%,0_100%)]" />
       <div aria-hidden="true" className="h-2.5 w-72 rounded-full bg-device/90 shadow-[0_8px_20px_-6px_rgb(18_18_18/0.5)]" />
     </div>
   );

@@ -1,31 +1,38 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
 import { applyTheme } from "@/lib/app/theme-client";
 import type { Theme } from "@/lib/app/theme-shared";
 
 const QUERY = "(prefers-color-scheme: dark)";
-const subscribe = (change: () => void) => {
-  const m = matchMedia(QUERY);
-  m.addEventListener("change", change);
-  return () => m.removeEventListener("change", change);
-};
+
+/** Whether the page is dark right now: the saved choice on <body>, or the device's when "Device". */
+function pageIsDark() {
+  const theme = document.body.dataset.gojoTheme;
+  return theme === "dark" || (theme !== "light" && matchMedia(QUERY).matches);
+}
+
+/** Changes of the device's setting, or of the page's theme (another switch on the page). */
+function subscribe(change: () => void) {
+  const media = matchMedia(QUERY);
+  media.addEventListener("change", change);
+  const observer = new MutationObserver(change);
+  observer.observe(document.body, { attributes: true, attributeFilter: ["data-gojo-theme"] });
+  return () => {
+    media.removeEventListener("change", change);
+    observer.disconnect();
+  };
+}
 
 /**
- * Dark mode on or off for the public pages. It starts from the saved choice ("Device" follows
- * the phone or computer) and saves the new one, the same setting as in the signed-in area.
- * `row` is the phone menu's full-width version; the icon swaps by CSS, so it is right before script.
+ * Dark mode on or off for the public pages. It reads the page itself, so every switch on the
+ * page agrees, and saves the choice (the same setting as in the signed-in area). `row` is the
+ * phone menu's full-width version; the icon swaps by CSS, so it is right before script.
  */
 export function ThemeToggle({ initial, label, row = false }: { initial: Theme; label: string; row?: boolean }) {
-  const [theme, setTheme] = useState<Theme>(initial);
-  const deviceDark = useSyncExternalStore(subscribe, () => matchMedia(QUERY).matches, () => false);
-  const dark = theme === "dark" || (theme === "system" && deviceDark);
-  const toggle = () => {
-    const next: Theme = dark ? "light" : "dark";
-    setTheme(next);
-    applyTheme(next);
-  };
+  const dark = useSyncExternalStore(subscribe, pageIsDark, () => initial === "dark");
+  const toggle = () => applyTheme(pageIsDark() ? "light" : "dark");
   const icons = (
     <>
       <Moon aria-hidden="true" className="logo-light size-5" />

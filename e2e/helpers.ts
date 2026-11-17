@@ -5,6 +5,9 @@ import { expect, type Page } from "@playwright/test";
 export async function expectNoSeriousA11yIssues(page: Page) {
   // Check the settled page, not a frame mid-animation (half-faded text reads as low contrast).
   await page.emulateMedia({ reducedMotion: "reduce" });
+  // Sections not yet scrolled to (`content-visibility: auto`) can report stale colours (seen in
+  // dark mode): render them all so axe reads what visitors will see.
+  await page.addStyleTag({ content: ".below-fold { content-visibility: visible !important; }" });
   // Scroll-driven animations (the landing "reveal") and transitions inside offscreen
   // `content-visibility: auto` sections never finish until scrolled to, so wait at most 3 s.
   await page.evaluate(() =>
