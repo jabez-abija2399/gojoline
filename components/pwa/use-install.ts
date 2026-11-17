@@ -17,6 +17,12 @@ const emit = () => subscribers.forEach((fn) => fn());
 function listen() {
   if (listening || typeof window === "undefined") return;
   listening = true;
+  // An offer caught by the early script in app/[lang]/layout.tsx, before this code loaded.
+  const early = (window as { __gojoInstall?: InstallPrompt }).__gojoInstall;
+  if (early) {
+    deferred = early;
+    (window as { __gojoInstall?: InstallPrompt }).__gojoInstall = undefined;
+  }
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferred = e as InstallPrompt;
@@ -24,6 +30,7 @@ function listen() {
   });
   window.addEventListener("appinstalled", () => {
     deferred = null;
+    (window as { __gojoInstall?: InstallPrompt }).__gojoInstall = undefined;
     emit();
   });
 }
