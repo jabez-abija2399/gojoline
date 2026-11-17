@@ -429,6 +429,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         hasVersion={versions.length > 0}
         disabled={working}
         onLive={onLive}
+        feedback={{ href: `/${locale}/feedback?from=${encodeURIComponent(`/${locale}/build/${projectId}`)}`, label: chrome.feedbackAfterPublish }}
       >
         {({ status, button }) => <TopBar locale={locale} projectId={projectId} text={chrome} siteName={name} status={status} publish={button} />}
       </PublishBar>

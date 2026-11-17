@@ -103,6 +103,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Install pop-up for signed-in owners (bottom sheet / corner card, after the first site or from the second visit, “Not now” for 14 days), one shared install hook with the menu item
 - [x] Plan and payments redesign: summary, plan cards with monthly/yearly, payment in three steps with copy buttons, checking status with a timeline, history with status chips (folded on phones); admin labels name the account holder and number
 
+## Feedback (2026-11-17)
+- [x] Owner feedback: Send feedback (sidebar, builder menu, after publish) with type, message, optional rating and screenshot, page/language/device captured; My feedback with status, reply and an unread badge; admin Feedback tab with filters, status and reply (audited), new feedback in Needs your attention; 10 per owner and 30 per network an hour
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
@@ -117,6 +120,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - e2e: `builder.spec.ts` "dark mode: chosen in the account menu…" on the phone project times out opening the account menu about one run in five, on `main` too (2026-11-16); passes on retry. Not yet traced.
 - e2e: `safety.spec.ts` (report a site, admin takes it down) fails about one full-suite run in five on the phone project and never on its own (12 of 12 passes alone). It looks like timing under load in the report form's focus step; not yet traced.
 - e2e: `credits.spec.ts` "discount code: an admin makes one…" failed once on desktop in a full run (2026-11-16) and then passed 32 of 32 (alone, repeated, and in a second full run); probably another admin test saving settings at the same moment. Watch for it.
+- e2e: `upgrade.spec.ts` "a Starter owner at 0 is offered 30 more changes first" timed out once on the phone project in a full run (2026-11-17) and passed 24 of 24 alone; watch for it under load.
 - Site dashboard v2 follow-ups (2026-11-16): a weekly Telegram summary (visitors, messages, waiting); holiday hours (dates closed ahead of time); per-message notes; the visits route reads the site row once per view (cache `publicSite` for a minute per instance if traffic grows); the Amharic of the new dashboard strings (`lib/i18n/messages/dashboard-am.ts`) and the day names sent to sites need the native-speaker review. Sites published before 2026-11-16 count visitors and show business info only after one more publish (the dashboard says so). On Cloudflare, the sites Worker could inject the info same-origin into the page (no extra request, no runtime re-render at all); the public site cache is per server instance (a shared Redis copy would make invalidation instant everywhere); Vercel-hosted sites still swap to the resting page after the runtime check.
 - The Answers tab still reads 200 full answers and each form one after another; a `formHeadings` query would make it and the overview lighter (performance review).
 - Every signed-in page shows its main content after about 3 s on a slow phone (budget 2.5 s): the largest shared script takes about 400 ms to start; not caused by one page (performance review).
@@ -136,6 +140,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Template ideas from the writers, not built: a "from" note on service prices, an action on services and menu sections, a focal point for cropped photos, an included/not-included list for tours.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 
+- Feedback (2026-11-17): no Telegram message to the founder for new feedback: there is no way yet to message admins on Telegram (payments reach admins by email only; Telegram links are per owner). Add an admin Telegram link (or reuse the payment email to `ADMIN_EMAILS`) and call it from `POST /api/feedback`. **The Amharic in `lib/i18n/messages/feedback-am.ts` needs the native-speaker review** (all owner and admin feedback strings, drafted by the build agent). Screenshots and thumbnails live in Postgres (verified owners only, 20 MB per owner, cleared after 90 days by the daily cron); move them and payment receipts to R2 behind `StorageProvider` when volume grows. Review fixes (security, performance, design) are done. The design, performance and security review agents could not be run from this session (no sub-agent tool); a self-review was done instead.
 
 ## Notes for deployment
 - **Live:** https://gojoline.afridea.et (until the founder's own domain; `gojoline.vercel.app` also works). Vercel project `gojoline`, functions in `fra1`, linked to GitHub on 2026-11-15 (pushes to `main` deploy to production). `gojoline.vercel.app` redirects (308) to `gojoline.afridea.et`; the Telegram webhook points at the new domain. Uptime: Sentry monitor on `/api/health` every 5 minutes.
@@ -150,6 +155,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Telegram: set `TELEGRAM_WEBHOOK_SECRET` (16+ random characters) in the app's env, then once per deployment URL run `APP_URL=https://<app> node --experimental-strip-types scripts/telegram-webhook.mts`. Until then the bot doesn't receive messages (linking, bot edits); answers still reach the dashboard.
 
 ## Blocked (needs the founder)
+- **Feedback in production:** apply migration 0017 (`feedback` table with its indexes, additive) before the merge deploys. Screenshot retention runs in the existing `/api/cron/visits` cron, which needs `CRON_SECRET` (already listed above).
 - **Site dashboard v2 in production:** set `CRON_SECRET` in Vercel (the daily visit rollup refuses without it; the dashboard's on-read top-up still keeps the last 3 days). Apply migration 0016 before the merge deploys. Redeploy the sites Worker (`scripts/cloudflare-setup.mjs`) so a resting site's pages show the resting page at the host too (until then the live site shows it itself, after loading).
 - **Agent evals after the template guide changes (2026-11-15 and 2026-11-16):** `TEMPLATE.md` now teaches the agent `image.art`, `faq`, `cta`, and since 2026-11-16 sample photos, site styles, picture cards, stats, steps, schedules and the section order per kind of business. The guide is about three times longer, so cost per site will have changed. The eval run costs real money and was not run in this session (not permitted). Run `EVAL_ONLY=en-cafe,am-clinic npm run evals` (about $0.30) or the full set, and record the result in `evals/RESULTS.md`.
 - **SMS sign-in:** needs a gateway for Ethiopian numbers (e.g. AfroMessage); until then phone users are asked to use email or Google.

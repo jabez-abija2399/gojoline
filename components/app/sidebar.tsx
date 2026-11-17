@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronsUpDown, CreditCard, Globe, LayoutGrid, LayoutTemplate, LogOut, Menu, Plus, Sparkles, X, Zap } from "lucide-react";
+import { ChevronsUpDown, CreditCard, Globe, LayoutGrid, LayoutTemplate, LogOut, Menu, MessageSquareHeart, Plus, Sparkles, X, Zap } from "lucide-react";
 import { InstallApp } from "@/components/pwa/install-app";
 import { LanguageSwitch } from "@/components/site/language-switch";
 import { signOut } from "@/lib/auth/actions";
@@ -38,6 +38,9 @@ export interface SidebarText {
   language: string;
   languageLabel: string;
   pwa: { install: string; iosTitle: string; iosSteps: string; close: string };
+  feedback: string;
+  /** Already worded for the number; empty when there is no unread reply. */
+  feedbackUnread: string;
 }
 
 interface Props {
@@ -52,6 +55,8 @@ interface Props {
   /** A bigger plan exists: the card says Upgrade. */
   canUpgrade: boolean;
   recent: { id: string; name: string; live: boolean }[];
+  /** Replies from the team the owner hasn't seen. */
+  feedbackUnread: number;
 }
 
 const item = "relative flex min-h-11 items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium text-ink lg:min-h-9 transition-colors hover:bg-white aria-[current=page]:bg-white aria-[current=page]:font-semibold aria-[current=page]:shadow-sm aria-[current=page]:ring-1 aria-[current=page]:ring-line aria-[current=page]:before:absolute aria-[current=page]:before:inset-y-2 aria-[current=page]:before:start-0 aria-[current=page]:before:w-[3px] aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-ink";
@@ -60,7 +65,7 @@ const item = "relative flex min-h-11 items-center gap-2.5 rounded-lg px-2.5 text
  * The signed-in area's navigation: a column beside the page on large screens, a drawer
  * behind a Menu button on phones. Everything the owner can go to is here, in one place.
  */
-export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recent, theme }: Props) {
+export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recent, theme, feedbackUnread }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname() ?? "";
   const asideRef = useRef<HTMLElement>(null);
@@ -69,6 +74,9 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
   const other: Locale = locale === "en" ? "am" : "en";
   const home = `/${locale}/build`;
   const billing = `/${locale}/billing`;
+  const feedbackPath = `/${locale}/feedback`;
+  // The page it was sent from goes along, so the team knows where it happened.
+  const feedbackHref = pathname && pathname !== feedbackPath ? `${feedbackPath}?from=${encodeURIComponent(pathname)}` : feedbackPath;
   const low = credits !== null && credits <= 3;
   const share = credits === null ? 0 : Math.max(0, Math.min(1, credits / Math.max(1, monthly)));
 
@@ -122,9 +130,15 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
     <>
       {/* Phones: one slim bar. The changes left are always in sight. */}
       <header ref={headerRef} className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-paper/95 px-2 py-1.5 backdrop-blur lg:hidden">
-        <button ref={menuRef} type="button" aria-expanded={open} aria-controls="app-sidebar" onClick={() => setOpen(true)} className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-ink hover:bg-sunken">
+        <button ref={menuRef} type="button" aria-expanded={open} aria-controls="app-sidebar" aria-describedby={feedbackUnread > 0 ? "menu-unread" : undefined} onClick={() => setOpen(true)} className="relative inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-ink hover:bg-sunken">
           <Menu aria-hidden="true" className="size-6" />
           <span className="sr-only">{text.menu}</span>
+          {feedbackUnread > 0 && (
+            <>
+              <span aria-hidden="true" className="absolute top-2 end-2 size-2.5 rounded-full bg-ink ring-2 ring-paper" />
+              <span id="menu-unread" hidden>{text.feedbackUnread}</span>
+            </>
+          )}
         </button>
         <Link href={home} aria-label={text.home} className="inline-flex min-h-11 items-center">
           <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={text.logoAlt} width={125} height={32} className="logo-light h-8 w-auto" priority />
@@ -204,6 +218,16 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
         )}
 
         <div className="mt-auto flex shrink-0 flex-col gap-2">
+          <Link href={feedbackHref} onClick={close} aria-current={pathname === feedbackPath ? "page" : undefined} className={item}>
+            <MessageSquareHeart aria-hidden="true" className="size-4 shrink-0" />
+            <span className="min-w-0 flex-1 truncate">{text.feedback}</span>
+            {feedbackUnread > 0 && (
+              <span className="shrink-0 rounded-full bg-ink px-2 py-0.5 text-xs font-bold text-white tabular-nums">
+                <span aria-hidden="true">{feedbackUnread}</span>
+                <span className="sr-only">{text.feedbackUnread}</span>
+              </span>
+            )}
+          </Link>
           {credits !== null && (
             // One compact card: what's left, how much of the month, and the way to more.
             <Link

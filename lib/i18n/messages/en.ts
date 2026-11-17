@@ -1,5 +1,6 @@
 import { dashboardEn } from "./dashboard-en";
 import { errorMessages } from "./errors";
+import { feedbackEn } from "./feedback-en";
 
 /**
  * English catalog: the source of truth for message keys.
@@ -848,7 +849,7 @@ export const en = {
     rejectConfirm: "Reject this payment? The customer will see it as not approved.",
     checkHint: "Before approving, check the amount, the transaction number and the payer's name or phone on the receipt match this customer.",
     working: "Saving...",
-    tabs: { overview: "Overview", payments: "Payments", reports: "Reports", sites: "Sites", users: "Owners", costs: "AI costs", discounts: "Discounts", settings: "Settings" },
+    tabs: { overview: "Overview", payments: "Payments", reports: "Reports", feedback: "Feedback", sites: "Sites", users: "Owners", costs: "AI costs", discounts: "Discounts", settings: "Settings" },
     brand: "Gojoline admin",
     backToApp: "Back to Gojoline",
     theme: "Theme",
@@ -867,6 +868,7 @@ export const en = {
     attention: "Needs your attention",
     attPayments: "{n} payments to check",
     attReports: "{n} reports to review",
+    attFeedback: "{n} new feedback messages",
     allClear: "All clear. Nothing is waiting for you.",
     chSignups: "New owners, 30 days",
     chRevenue: "Revenue, 30 days",
@@ -884,6 +886,8 @@ export const en = {
       site_taken_down: "Site taken down",
       site_restored: "Site allowed again",
       reports_dismissed: "Reports dismissed",
+      feedback_status: "Feedback status changed",
+      feedback_reply: "Feedback answered",
       settings_billing: "Prices or accounts changed",
       credits_granted: "Extra changes given",
       plan_set: "Plan changed by an admin",
@@ -1153,6 +1157,7 @@ export const en = {
     terms: "Terms",
     report: "Report a site",
   },
+  feedback: feedbackEn,
   errors: errorMessages.en,
 };
 

@@ -29,7 +29,8 @@ Ethiopian small businesses (cafés, restaurants, shops, salons, clinics, hotels,
 | Templates | Café/restaurant, hotel, clinic, school, shop, church/mosque, events, NGO, real estate, tour operator |
 | Billing | Plans and AI changes (credits) sized by request; manual Birr payment (Telebirr/CBE receipt upload, admin approval, audit log); discount codes and a launch offer |
 | Trust and safety | Content checks on prompts and pages, verification before publish, report-abuse link, rate limits |
-| Admin | Approve payments, review reports, take sites down, view costs per user |
+| Feedback | Owners send an Idea, Problem, Praise or Question (message 5–2000 characters, optional 1–5 "How easy is Gojoline?", optional screenshot up to 4 MB for owners with a confirmed email or phone) from the sidebar's **Send feedback**, the builder's More menu, or "How was it?" after publishing; the page they came from, their language and device type go along. **My feedback** on the same page lists each item's status and the team's reply, with a badge in the menu when a reply is new. "Thank you, we read every message." |
+| Admin | Approve payments, review reports, take sites down, view costs per user; a Feedback tab (count of new items, filters by status and type, owner with plan, page, rating and screenshot; change the status and reply, both audited); new feedback in Needs your attention |
 
 **Out of scope for Phase 1:** multi-role apps, marketplaces, full e-commerce (cart, inventory), visitor accounts, mobile apps, connect-your-own-Supabase, GitHub export.
 
