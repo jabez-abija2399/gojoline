@@ -217,6 +217,8 @@ export async function sendOwnerMessage(
       effort: latest ? "low" : "medium",
       // Spending follows what the owner pays: a cap per change charged (free first builds have their own).
       budgetNanoUsd: free ? firstBuildCapNano(pricing) : deps.credits ? cost * pricing.capCentsPerCredit * 10_000_000 : undefined,
+      // A free build is the one anyone can start: its cap holds even if the prompt cache missed.
+      strictBudget: free,
       maxTurns: MAX_TURNS_BY_SIZE[free || !latest ? "first_build" : size],
     });
 

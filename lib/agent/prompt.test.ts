@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { agentSystemPrompt, userTurn } from "./prompt";
-import { WRAP_UP_NOTE } from "./loop";
+import { WRAP_UP_NOTE, WRAP_UP_PREFIX } from "./loop";
 
 describe("userTurn", () => {
   it("passes the languages the owner chose, and nothing when not chosen", () => {
@@ -16,6 +16,6 @@ describe("agentSystemPrompt", () => {
     expect(rules).toContain("write the whole src/site.json in a single write_file");
     // The rules name the loop's signal word for word, so the model recognises it.
     expect(WRAP_UP_NOTE.startsWith("Budget low: finish now")).toBe(true);
-    expect(rules).toContain('"Budget low: finish now"');
+    expect(rules).toContain(`"${WRAP_UP_PREFIX}Budget low: finish now"`);
   });
 });

@@ -16,13 +16,17 @@ const CHARS_PER_TOKEN = 3;
 export const WRAP_UP_SHARE = 0.6;
 /**
  * Also wrap up when the next turn could write fewer output tokens than this: enough for a few
- * small edits and a build, not for another rewrite of the site.
+ * small edits and a build, not for another rewrite of the site. Scaled down for small budgets
+ * (at most WRAP_UP_BUDGET_SHARE of the budget), so a routine paid edit never gets the note.
  */
 export const WRAP_UP_TOKENS = 6000;
+export const WRAP_UP_BUDGET_SHARE = 0.3;
 /** Margin on the estimate of the next turn's input (cache reads plus the new part). */
 const INPUT_MARGIN = 1.2;
 export const WRAP_UP_NOTE =
-  "Budget low: finish now. Gojoline will stop this request soon. Keep what works. If a section the owner asked for is still missing, add a short version of it with search_replace (no full rewrites). Then call run_build and reply in one or two sentences. Never leave the site half-done.";
+  "Budget low: finish now. Gojoline will stop this request soon. Keep what works. If a section the owner asked for is still missing, add a short version of it with search_replace (no full rewrites). Call run_build only if you changed files since the last build, then reply in one or two sentences. Never leave the site half-done.";
+/** How the note is marked inside a tool result, so it can't be confused with the owner's words. */
+export const WRAP_UP_PREFIX = "[Gojoline budget] ";
 
 export type AgentEvent =
   | { type: "text"; delta: string }
@@ -34,7 +38,8 @@ export type AgentEvent =
   | { type: "section"; name: SectionType }
   /** The budget is nearly used: the model was told to finish now. */
   | { type: "wrap_up" }
-  | { type: "tool"; name: string; path?: string }
+  /** A tool call ran (no file path: the browser only needs the tool's name). */
+  | { type: "tool"; name: string }
   | { type: "build"; ok: boolean }
   | { type: "reverted" };
 
@@ -61,6 +66,13 @@ export interface AgentRunInput {
    * is undone (a site is never left half-written).
    */
   budgetNanoUsd?: number;
+  /**
+   * Decide whether another turn fits by pricing the cached prompt as if the cache missed
+   * (cache-write price), so the budget holds even then. For free first builds, whose budget
+   * fits that; a paid small edit's whole cap is about one missed prompt, so it uses the
+   * expected (cache-read) price and could otherwise never auto-fix or reply.
+   */
+  strictBudget?: boolean;
 }
 
 export interface AgentRunResult {
@@ -108,20 +120,32 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
    * sent is cached (automatic caching), so it is read at the cache price; only the new part
    * (the reply and tool results) is written at the cache-write price.
    */
-  const estimateInputCost = () => {
+  const estimateInputCost = (cacheMiss: boolean) => {
     const chars = JSON.stringify(messages).length;
     if (lastPromptTokens === 0) return Math.ceil(((chars + fixedChars) / CHARS_PER_TOKEN) * price.input);
     const fresh = Math.max(0, chars - lastChars) / CHARS_PER_TOKEN;
-    return Math.ceil((lastPromptTokens * price.cacheRead + fresh * price.cacheWrite) * INPUT_MARGIN);
+    const cached = cacheMiss ? Math.max(price.cacheRead, price.cacheWrite) : price.cacheRead;
+    return Math.ceil((lastPromptTokens * cached + fresh * price.cacheWrite) * INPUT_MARGIN);
   };
-  /** Adds the wrap-up note to the next user turn, once, and tells the owner's screen. */
+  const wrapUpTokens = Number.isFinite(budget) ? Math.min(WRAP_UP_TOKENS, Math.floor((WRAP_UP_BUDGET_SHARE * budget) / price.output)) : WRAP_UP_TOKENS;
+  /**
+   * Adds the wrap-up note, once, inside the newest tool result (never as owner-like text, so
+   * an owner's message can't pose as it), and tells the owner's screen. The note goes in the
+   * newest message, which isn't cached yet, so the cached prefix stays the same.
+   */
   const wrapUp = () => {
     if (warned) return;
-    warned = true;
     const last = messages.at(-1);
-    if (last?.role !== "user") return;
-    if (typeof last.content === "string") last.content = [{ type: "text", text: last.content }];
-    last.content.push({ type: "text", text: WRAP_UP_NOTE });
+    if (last?.role !== "user" || !Array.isArray(last.content)) return;
+    const result = last.content.findLast((b) => b.type === "tool_result");
+    const note = `${WRAP_UP_PREFIX}${WRAP_UP_NOTE}`;
+    if (result?.type === "tool_result") {
+      result.content = typeof result.content === "string" || result.content === undefined ? `${result.content ?? ""}\n\n${note}` : [...result.content, { type: "text", text: note }];
+    } else {
+      // The loop's own "does not build yet" message (never the owner's): the note goes with it.
+      last.content.push({ type: "text", text: note });
+    }
+    warned = true;
     emit({ type: "wrap_up" });
   };
   const spotter = new SectionSpotter();
@@ -132,13 +156,15 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
     // blow far past the cap (at most MIN_USEFUL_TOKENS over). Not enough left for its input: wrap up.
     let maxTokens = MAX_OUTPUT_TOKENS;
     if (Number.isFinite(budget)) {
-      const left = budget - cost - estimateInputCost();
+      // Strict: what is left if the cached prompt missed the cache; otherwise the expected cost.
+      const left = budget - cost - estimateInputCost(input.strictBudget === true);
       if (left < 0) {
         stoppedForBudget = true;
         break;
       }
-      // Nearly used: tell the model to finish a coherent site now, while it can still afford to.
-      if (turns > 0 && (cost >= budget * WRAP_UP_SHARE || left < WRAP_UP_TOKENS * price.output)) wrapUp();
+      // Nearly used (expected cost): tell the model to finish a coherent site now, while it can still afford to.
+      const expectedLeft = budget - cost - estimateInputCost(false);
+      if (turns > 0 && (cost >= budget * WRAP_UP_SHARE || expectedLeft < wrapUpTokens * price.output)) wrapUp();
       maxTokens = Math.max(MIN_USEFUL_TOKENS, Math.min(MAX_OUTPUT_TOKENS, Math.floor(left / price.output)));
     }
     turns += 1;
@@ -213,7 +239,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
     for (const block of toolUses) {
       if (block.type !== "tool_use") continue;
       const path = typeof (block.input as { path?: unknown })?.path === "string" ? (block.input as { path: string }).path : undefined;
-      emit({ type: "tool", name: block.name, path });
+      emit({ type: "tool", name: block.name });
       // Remember originals before the first change so a failed run can be undone.
       if ((block.name === "write_file" || block.name === "search_replace") && path) {
         const key = path.replace(/^\.\//, "");

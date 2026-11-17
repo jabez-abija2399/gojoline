@@ -3,7 +3,7 @@ import { ScriptedLLMProvider, textBlock, toolUseBlock } from "@/lib/providers/ll
 import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
 import { costNanoUsd } from "@/lib/providers/llm/pricing";
 import type { LLMProvider } from "@/lib/providers/llm/types";
-import { MAX_FIX_ATTEMPTS, runAgent, WRAP_UP_NOTE, WRAP_UP_SHARE, type AgentEvent } from "./loop";
+import { MAX_FIX_ATTEMPTS, runAgent, WRAP_UP_NOTE, WRAP_UP_PREFIX, WRAP_UP_SHARE, type AgentEvent } from "./loop";
 import { MemoryWorkspace } from "./workspace";
 
 const base = { system: [{ type: "text" as const, text: "rules" }], history: [], model: "claude-opus-5-5", context: { userId: "u1", projectId: "p1" } };
@@ -111,7 +111,7 @@ describe("runAgent cost budget", () => {
   // Each scripted turn costs 0.008 USD (8e6 nano-USD) on Opus 5.5.
   const turn = 8_000_000;
 
-  it("asks the model to wrap up near the budget, stops past it, and keeps finished work that builds", async () => {
+  it("stops past the budget and keeps finished work that builds", async () => {
     const ws = new MemoryWorkspace({ "src/site.json": "a" });
     const llm = new ScriptedLLMProvider([
       { content: [toolUseBlock("write_file", { path: "src/site.json", content: "b" })] },
@@ -125,9 +125,57 @@ describe("runAgent cost budget", () => {
     expect(ws.builds).toBe(1);
     expect(result.status).toBe("changed");
     expect(await ws.readFile("src/site.json")).toBe("c");
-    // The first turn had the whole budget; the second could not afford another rewrite, so it was told to finish.
-    expect(JSON.stringify(llm.requests[0]!.messages)).not.toContain("Budget low");
-    expect(JSON.stringify(llm.requests[1]!.messages.at(-1)!.content)).toContain("Budget low: finish now");
+  });
+
+  // Typical token counts of a paid small edit (warm cache): ~US$0.04 a turn against US$0.15.
+  const warmEdit = { inputTokens: 4, outputTokens: 600, cacheReadTokens: 28_608, cacheWriteTokens: 4_000 };
+  const reply = { inputTokens: 2, outputTokens: 150, cacheReadTokens: 32_600, cacheWriteTokens: 800 };
+
+  it("never tells a routine paid edit to wrap up, even with a fix round", async () => {
+    const ws = new MemoryWorkspace({ "src/site.json": "price 30" }, (f) => ({ ok: !f.get("src/site.json")!.includes("bad"), output: "bad" }));
+    const llm = new ScriptedLLMProvider([
+      { content: [toolUseBlock("search_replace", { path: "src/site.json", old_string: "30", new_string: "45 bad" }), toolUseBlock("run_build", {})], usage: warmEdit },
+      { content: [toolUseBlock("search_replace", { path: "src/site.json", old_string: " bad", new_string: "" }), toolUseBlock("run_build", {})], usage: warmEdit },
+      { content: [textBlock("Buna is now 45 Birr.")], usage: reply },
+    ]);
+    const events: string[] = [];
+    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: 15 * 10_000_000, onEvent: (e) => events.push(e.type) });
+    expect(JSON.stringify(llm.requests.map((r) => r.messages))).not.toContain("Budget low");
+    expect(events).not.toContain("wrap_up");
+    expect(result).toMatchObject({ status: "changed", reply: "Buna is now 45 Birr.", stoppedForBudget: false, turns: 3 });
+  });
+
+  it("tells a first build near its cap to wrap up, inside the tool result, not as owner text", async () => {
+    const ws = new MemoryWorkspace({ "src/site.json": "starter" });
+    const llm = new ScriptedLLMProvider([
+      { content: [toolUseBlock("write_file", { path: "src/site.json", content: "site" })], usage: { inputTokens: 4, outputTokens: 4576, cacheReadTokens: 0, cacheWriteTokens: 28_608 } },
+      // A long second write (12,000 tokens) takes it past 60% of US$0.75.
+      { content: [toolUseBlock("write_file", { path: "src/site.json", content: "bigger site" })], usage: { inputTokens: 4, outputTokens: 12_000, cacheReadTokens: 33_000, cacheWriteTokens: 5_000 } },
+      { content: [toolUseBlock("run_build", {})], usage: reply },
+      { content: [textBlock("Your site is ready.")], usage: reply },
+    ]);
+    const result = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "Selam Coffee", budgetNanoUsd: 75 * 10_000_000, strictBudget: true });
+    const newest = llm.requests[2]!.messages.at(-1)!;
+    expect(newest.role).toBe("user");
+    const blocks = newest.content as { type: string; content?: unknown }[];
+    expect(blocks.map((b) => b.type)).toEqual(["tool_result"]);
+    expect(String(blocks[0]!.content)).toContain(`${WRAP_UP_PREFIX}${WRAP_UP_NOTE}`);
+    expect(JSON.stringify(llm.requests[1]!.messages)).not.toContain("Budget low");
+    expect(result).toMatchObject({ status: "changed", reply: "Your site is ready.", stoppedForBudget: false });
+  });
+
+  it("with a strict budget, a prompt cache that misses every turn can't take a free build past its cap", async () => {
+    // Every turn misses the cache: 30,000 prompt tokens written (US$0.15) plus 4,000 out (US$0.08).
+    const miss = { inputTokens: 0, outputTokens: 4000, cacheReadTokens: 0, cacheWriteTokens: 30_000 };
+    const steps = Array.from({ length: 10 }, () => ({ content: [toolUseBlock("read_file", { path: "src/site.json" })], usage: miss }));
+    const run = (strictBudget: boolean) =>
+      runAgent({ ...base, llm: new ScriptedLLMProvider(structuredClone(steps)), workspace: new MemoryWorkspace({ "src/site.json": "a" }), usage: new MemoryUsageLogger(), userContent: "x", budgetNanoUsd: 75 * 10_000_000, strictBudget });
+    const strict = await run(true);
+    expect(strict.stoppedForBudget).toBe(true);
+    expect(strict.costNanoUsd).toBeLessThanOrEqual(75 * 10_000_000);
+    // Priced as cache reads, the same run goes one turn too far.
+    const loose = await run(false);
+    expect(loose.costNanoUsd).toBeGreaterThan(75 * 10_000_000);
   });
 
   it(`tells the model to finish now, once, past ${WRAP_UP_SHARE * 100}% of the budget`, async () => {
