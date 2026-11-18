@@ -38,7 +38,7 @@ export const am: Messages = {
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",
       build: "ድረ-ገጼን ሥራልኝ",
     },
-    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", darkMode: "ጨለማ ገጽታ", seeTemplates: "14ቱንም አብነቶች ይመልከቱ" },
+    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", darkMode: "ጨለማ ገጽታ", seeTemplates: "17ቱንም አብነቶች ይመልከቱ" },
     demo: {
       pick: "የንግድ ዓይነት ይምረጡ",
       prompts: {
@@ -60,7 +60,7 @@ export const am: Messages = {
     proof: [
       { value: "~40 ሰከንድ", label: "እስከ መጀመሪያው ድረ-ገጽ" },
       { value: "30 ከ30", label: "የሙከራ ድረ-ገጾች በመጀመሪያ ሙከራ በትክክል ተሠርተዋል" },
-      { value: "14", label: "ዝግጁ አብነቶች" },
+      { value: "17", label: "ዝግጁ አብነቶች" },
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
     eyebrows: { how: "እንዴት ይሠራል", features: "ባህሪያት", faq: "ማወቅ ያለብዎ", final: "ዛሬ ይጀምሩ" },
@@ -133,7 +133,7 @@ export const am: Messages = {
         events: "ሠርግና ዝግጅቶች",
         business: "ንግድና የግል",
       },
-      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ" },
+      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ" },
       features: { prices: "ዋጋ ወይም ምናሌ", booking: "የቀጠሮ ወይም የትዕዛዝ ቅጽ", gallery: "የፎቶ ማዕከል", team: "ቡድን ወይም ሠራተኞች", times: "የሥራ፣ የአገልግሎት ወይም የሶላት ሰዓት", reviews: "አስተያየቶች", map: "ካርታ" },
       about: {
         cafe: "ተወዳጅ ምግቦች፣ ሙሉ ምናሌና የጠረጴዛ ቀጠሮ",
@@ -150,6 +150,9 @@ export const am: Messages = {
         personal: "የተመረጡ ሥራዎች፣ አገልግሎቶች፣ ልምድና መገናኛ",
         business: "አገልግሎቶች፣ ፕሮጀክቶች፣ ቡድንና የዋጋ ጥያቄ",
         salon: "የዋጋ ዝርዝር፣ ባለሙያዎች፣ ስታይሎችና ቀጠሮ",
+        fashion: "ስብስብ ከመጠን ጋር፣ በልክ ማሰፋትና ከውጭ ማዘዝ",
+        construction: "የዛሬ ዋጋ በመለኪያ፣ የዋጋ ጥያቄና ማድረስ",
+        garage: "ቋሚ የአገልግሎት ዋጋ፣ ቀጠሮና መኪና ከሹፌር ጋር",
       },
     },
     templatePreview: {
@@ -454,6 +457,9 @@ export const am: Messages = {
       personal: "የግል ድረ-ገጽ ወይም ፖርትፎሊዮ",
       business: "ድርጅት ወይም አማካሪ",
       salon: "የውበት ሳሎን ወይም ጸጉር ቤት",
+      fashion: "ፋሽን ወይም ልብስ ሰፊ",
+      construction: "የግንባታ ዕቃ ወይም ሥራ ተቋራጭ",
+      garage: "ጋራዥ ወይም የመኪና ኪራይ",
     },
     empty: "እስካሁን ድረ-ገጽ የለዎትም። አንድ ይጀምሩ፤ ጥቂት ደቂቃዎች ብቻ ይወስዳል።",
     untitled: "አዲስ ድረ-ገጽ",

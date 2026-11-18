@@ -6,7 +6,7 @@ import { TEMPLATE_INFO, type TemplateCategory } from "./template-info";
 /** What a template's pages include, read from its sections (filters on the templates page). */
 export const TEMPLATE_FEATURES = ["prices", "booking", "gallery", "team", "times", "reviews", "map"] as const;
 export type TemplateFeature = (typeof TEMPLATE_FEATURES)[number];
-export const TEMPLATE_STYLES = ["editorial", "bold", "clean", "warm"] as const;
+export const TEMPLATE_STYLES = ["editorial", "bold", "clean", "warm", "luxe", "swiss", "bento"] as const;
 export type TemplateStyle = (typeof TEMPLATE_STYLES)[number];
 
 export interface CatalogItem {

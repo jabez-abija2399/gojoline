@@ -356,5 +356,71 @@
         "height": 933
       }
     }
+  },
+  "construction": {
+    "en": {
+      "src": "/showcase/construction-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/construction-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/construction-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/construction-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "fashion": {
+    "en": {
+      "src": "/showcase/fashion-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/fashion-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/fashion-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/fashion-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "garage": {
+    "en": {
+      "src": "/showcase/garage-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/garage-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/garage-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/garage-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }

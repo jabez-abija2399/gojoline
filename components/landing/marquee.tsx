@@ -1,8 +1,8 @@
-import { BedDouble, Briefcase, Church, Coffee, GraduationCap, HeartHandshake, House, MoonStar, Mountain, PartyPopper, Scissors, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
+import { BedDouble, Briefcase, Car, Church, Coffee, GraduationCap, HardHat, HeartHandshake, House, MoonStar, Mountain, PartyPopper, Scissors, Shirt, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { MarqueeToggle } from "./marquee-toggle";
 
-const ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound, business: Briefcase, salon: Scissors } as const;
+const ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound, business: Briefcase, salon: Scissors, fashion: Shirt, construction: HardHat, garage: Car } as const;
 
 /**
  * Every kind of business Gojoline has a template for, drifting by. CSS only: the list is drawn

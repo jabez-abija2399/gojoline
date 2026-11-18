@@ -121,9 +121,12 @@ export interface HeroSection {
   /**
    * split: text beside a photo. centered: statement, photo below. banner: text on a tinted photo.
    * immersive: a full-screen photo with the text over it (needs a photo). portrait: a person's
-   * name and statement beside a tall portrait.
+   * name and statement beside a tall portrait. poster: a full-width photo with the business name
+   * set very large across its lower edge, like a magazine cover (fashion, studios).
+   * bento: the first screen as a grid of tiles: the heading on the photo, then the facts, the
+   * hours and the two actions as their own tiles (garages, services, rentals).
    */
-  variant?: "split" | "centered" | "banner" | "immersive" | "portrait";
+  variant?: "split" | "centered" | "banner" | "immersive" | "portrait" | "poster" | "bento";
   eyebrow?: Text;
   heading: Text;
   subheading?: Text;
@@ -165,6 +168,8 @@ export interface MenuItem {
   tag?: Text;
   /** A small photo of the dish, for the few signature items. */
   image?: Image;
+  /** What the price is for: "per quintal", "per m²", "per day". */
+  unit?: Text;
 }
 
 export interface MenuSection {
@@ -173,6 +178,10 @@ export interface MenuSection {
   eyebrow?: Text;
   heading: Text;
   intro?: Text;
+  /** list (default): cards with dotted leaders (food, drinks). table: one price table with units and tags in columns (materials, parts, services). */
+  layout?: "list" | "table";
+  /** dark: the section sits on a dark band in the theme's accent colour. */
+  tone?: "dark";
   categories: { name: Text; items: MenuItem[] }[];
 }
 
@@ -241,6 +250,8 @@ export interface CardsSection {
   items: CardItem[];
   /** A link under the cards: "See all rooms". */
   action?: Link;
+  /** dark: the section sits on a dark band in the theme's accent colour. */
+  tone?: "dark";
 }
 
 /** A band of big numbers: years, guests, students, homes sold. Only real numbers. */
@@ -449,15 +460,25 @@ export interface Theme {
   background: string;
   /** Body text (hex). Needs 4.5:1 contrast with the background. */
   text: string;
-  font: "modern" | "classic" | "friendly" | "elegant" | "grotesk";
+  /**
+   * A bright fill (hex) for stripes, stickers, badges and marker swipes: safety yellow, Meskel
+   * yellow, tibeb gold. Never used for text; text on it is black or white, whichever reads.
+   */
+  highlight?: string;
+  /** condensed: tall narrow heavy headings (construction, garages, gyms). editorial: a light magazine serif (weddings, studios). */
+  font: "modern" | "classic" | "friendly" | "elegant" | "grotesk" | "condensed" | "editorial";
   radius: "none" | "small" | "medium" | "large";
   /**
    * The site's character. warm (default): soft cards, coloured accents. editorial: light serif
    * headlines, small capital labels, lots of air (hotels, weddings, fashion, property).
    * bold: very large heavy headlines, pill buttons (people, tours, causes, agencies).
    * clean: crisp and calm, soft shadows (clinics, schools, companies).
+   * luxe: high-fashion editorial: hairline rules, tracked capitals, no card boxes, a woven
+   * border under the hero (fashion, tailors). swiss: a strict grid, numbered sections, square
+   * corners, tabular figures and a hazard stripe (building materials, contractors, industry).
+   * bento: everything in rounded tiles, tight gaps, bold numbers (garages, rentals, services).
    */
-  style?: "warm" | "editorial" | "bold" | "clean";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento";
 }
 
 export interface Business {

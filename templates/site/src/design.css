@@ -33,6 +33,29 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212;
 }
 @font-face {
+  font-family: "Archivo";
+  src: url("/fonts/archivo-latin.woff2") format("woff2");
+  font-weight: 700 900;
+  font-stretch: 75% 100%;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212;
+}
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader-latin.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212;
+}
+/* Narrow heavy Ge'ez for headings of condensed sites only (font: condensed). */
+@font-face {
+  font-family: "Noto Sans Ethiopic Narrow";
+  src: url("/fonts/noto-sans-ethiopic-narrow.woff2") format("woff2");
+  font-weight: 700 900;
+  font-display: swap;
+  unicode-range: U+1200-137F;
+}
+@font-face {
   font-family: "Bricolage Grotesque";
   src: url("/fonts/bricolage-latin.woff2") format("woff2");
   font-weight: 600 800;
@@ -640,5 +663,323 @@
     border-color: transparent;
     background: var(--site-surface);
     box-shadow: 0 1px 2px color-mix(in oklab, var(--site-text) 10%, transparent);
+  }
+
+
+  /* ---- Hero: poster (a magazine cover) ---- */
+  .poster-photo {
+    height: min(124vw, 82svh, 52rem);
+  }
+  /* The photo fades into the page where the name crosses its edge. */
+  .poster-photo::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 28%;
+    background: linear-gradient(transparent, var(--site-background));
+    pointer-events: none;
+  }
+  .poster-side {
+    position: absolute;
+    inset-inline-end: 0.75rem;
+    top: 5.5rem;
+    writing-mode: vertical-rl;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 8px rgb(0 0 0 / 0.5);
+  }
+  /* Ge'ez is never set sideways or tracked: a short label at the top instead. */
+  :lang(am) .poster-side {
+    writing-mode: horizontal-tb;
+    inset-inline: 1rem auto;
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 0.9375rem;
+  }
+  .poster-name {
+    position: relative;
+    margin-top: -0.45em;
+    overflow: hidden;
+    font-family: var(--site-font-heading);
+    font-size: clamp(3.5rem, calc(190vw / var(--chars, 8)), 13rem);
+    font-weight: 600;
+    line-height: 0.85;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    color: var(--site-text);
+  }
+  :lang(am) .poster-name {
+    font-size: clamp(2.75rem, calc(110vw / var(--chars, 6)), 9rem);
+    letter-spacing: 0;
+    line-height: 1.1;
+  }
+
+  /* ---- Hero: bento (the first screen as tiles) ---- */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.625rem;
+  }
+  .bento-main {
+    grid-column: 1 / -1;
+    min-height: min(30rem, 70svh);
+  }
+  .bento-tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 7.5rem;
+    border-radius: var(--site-radius);
+    background: var(--site-surface);
+    padding: 1rem;
+    color: var(--site-text);
+  }
+  .bento-line {
+    font-family: var(--site-font-heading);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  :lang(am) .bento-line {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .bento-hours {
+    background: var(--site-highlight);
+    color: var(--site-on-highlight);
+  }
+  .bento-primary {
+    background: var(--site-primary);
+    color: var(--site-on-primary);
+  }
+  .bento-secondary {
+    background: var(--site-accent);
+    color: var(--site-on-accent);
+  }
+  a.bento-tile {
+    text-decoration: none;
+    transition: transform 200ms;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    a.bento-tile:hover {
+      transform: translateY(-3px);
+    }
+  }
+  @media (min-width: 768px) {
+    .bento-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.875rem;
+    }
+    .bento-main {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+  }
+
+  /* ---- Price table (menu layout "table"): materials, parts, services ---- */
+  .price-table {
+    max-width: 56rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .price-group {
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 0.5rem;
+    text-align: start;
+    font-family: var(--site-font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .price-row {
+    border-bottom: 1px solid var(--site-line);
+  }
+  .on-dark .price-row {
+    border-color: rgb(255 255 255 / 0.2);
+  }
+  .price-unit {
+    width: 1%;
+    white-space: nowrap;
+    opacity: 0.85;
+  }
+  .price-tag {
+    display: inline-block;
+    margin-top: 0.25rem;
+    border-radius: 999px;
+    background: var(--site-highlight);
+    color: var(--site-on-highlight);
+    padding: 0.125rem 0.625rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  /* ---- luxe: high-fashion editorial: hairlines, tracked capitals, no boxes, a woven band ---- */
+  [data-style="luxe"] .headline {
+    font-size: clamp(2.5rem, 1.6rem + 4vw, 4.75rem);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.02;
+  }
+  [data-style="luxe"] .section-title {
+    font-size: clamp(2rem, 1.5rem + 2.4vw, 3.5rem);
+    font-weight: 500;
+  }
+  [data-style="luxe"] :is(.section-title, .depth-frame, .eyebrow)::before {
+    display: none;
+  }
+  [data-style="luxe"] :is(.eyebrow, .hero-eyebrow, .btn, .wordmark, .badge, .small-label) {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.8125rem;
+  }
+  [data-style="luxe"] .eyebrow {
+    color: var(--site-primary);
+  }
+  [data-style="luxe"] :is(.on-dark, .bg-accent, .hero-immersive) .eyebrow {
+    color: inherit;
+  }
+  [data-style="luxe"] .btn {
+    border-radius: 0;
+    padding: 0.95rem 1.75rem;
+  }
+  [data-style="luxe"] .btn-outline {
+    border-width: 0 0 1.5px;
+    padding-inline: 0;
+  }
+  [data-style="luxe"] :is(.card, .pcard) {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  [data-style="luxe"] .pcard > div:last-child {
+    padding-inline: 0;
+  }
+  [data-style="luxe"] .brand-mark,
+  [data-style="luxe"] .hero-glow {
+    display: none;
+  }
+  [data-style="luxe"] main > section + section:not(.bg-accent) {
+    border-top: 1px solid var(--site-line);
+  }
+  /* The woven border (tibeb) under the first section, in the theme's own colours. */
+  [data-style="luxe"] main > section:first-child::after {
+    content: "";
+    display: block;
+    height: 14px;
+    background: repeating-linear-gradient(90deg, var(--site-highlight) 0 12px, var(--site-primary) 12px 16px, var(--site-text) 16px 20px, var(--site-primary) 20px 24px, var(--site-highlight) 24px 36px, var(--site-background) 36px 40px);
+  }
+  :lang(am) [data-style="luxe"] :is(.eyebrow, .hero-eyebrow, .btn, .wordmark, .badge, .small-label),
+  [data-style="luxe"]:lang(am) :is(.eyebrow, .hero-eyebrow, .btn, .wordmark, .badge, .small-label) {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.9375rem;
+  }
+
+  /* ---- swiss: strict grid, numbered sections, square corners, a hazard stripe ---- */
+  [data-style="swiss"] main {
+    counter-reset: site-section -1;
+  }
+  [data-style="swiss"] main > section {
+    counter-increment: site-section;
+  }
+  [data-style="swiss"] :is(.headline, .section-title, .item-title, .stat-value, .fact-value, .wordmark, .numeral, .price-group) {
+    font-stretch: 75%;
+    font-weight: 800;
+  }
+  [data-style="swiss"] :is(.headline, .section-title):not(:lang(am)) {
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+  [data-style="swiss"] .headline {
+    font-size: clamp(3rem, 1.6rem + 7vw, 6.5rem);
+    line-height: 0.9;
+  }
+  [data-style="swiss"] .section-title {
+    font-size: clamp(2.25rem, 1.6rem + 3vw, 4rem);
+    line-height: 0.95;
+  }
+  :lang(am) [data-style="swiss"] :is(.headline, .section-title) {
+    line-height: 1.25;
+  }
+  /* Each section is numbered 01, 02 ... in a mono label above its title. */
+  [data-style="swiss"] .section-title::before {
+    content: counter(site-section, decimal-leading-zero) " /";
+    display: block;
+    width: auto;
+    height: auto;
+    margin-bottom: 0.75rem;
+    background: none;
+    animation: none;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-stretch: 100%;
+    letter-spacing: 0.04em;
+    color: var(--site-primary);
+  }
+  .on-dark[data-style="swiss"] .section-title::before,
+  [data-style="swiss"] .on-dark .section-title::before {
+    color: inherit;
+  }
+  /* Monospace for Latin labels and figures only: Ge'ez in a monospace fallback falls apart. */
+  [data-style="swiss"] :is(.price-value, .price-unit, .small-label, .meta-item):not(:lang(am)) {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  [data-style="swiss"] :is(.card, .pcard, .btn, .bento-tile, .price-tag) {
+    border-radius: 0;
+  }
+  [data-style="swiss"] .card {
+    border: 1px solid var(--site-text);
+    box-shadow: none;
+  }
+  [data-style="swiss"] .hero-glow {
+    background: none;
+  }
+  /* A hazard stripe closes the first section. */
+  [data-style="swiss"] main > section:first-child::after {
+    content: "";
+    display: block;
+    height: 12px;
+    background: repeating-linear-gradient(-45deg, var(--site-highlight) 0 12px, var(--site-text) 12px 24px);
+    background-size: 34px 12px;
+  }
+
+  /* ---- bento: rounded tiles, tight gaps, bold numbers ---- */
+  [data-style="bento"] :is(.headline, .section-title, .item-title, .stat-value, .fact-value, .wordmark) {
+    font-stretch: 87.5%;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  :lang(am) [data-style="bento"] :is(.headline, .section-title, .item-title) {
+    letter-spacing: 0;
+  }
+  [data-style="bento"] :is(.section-title, .depth-frame)::before {
+    display: none;
+  }
+  [data-style="bento"] .section {
+    padding-block: 3rem;
+  }
+  @media (min-width: 768px) {
+    [data-style="bento"] .section {
+      padding-block: 4.5rem;
+    }
+  }
+  [data-style="bento"] :is(.card, .pcard) {
+    border: 0;
+    background: var(--site-surface);
+    box-shadow: none;
+  }
+  [data-style="bento"] .btn {
+    border-radius: var(--site-radius);
+    font-weight: 700;
+  }
+  [data-style="bento"] .hero-glow {
+    background: none;
   }
 }

@@ -37,7 +37,7 @@ export const en = {
       picked: "Showing {name}. An example description was added to the box below.",
       build: "Build my site",
     },
-    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", darkMode: "Dark mode", seeTemplates: "See all 14 templates" },
+    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", darkMode: "Dark mode", seeTemplates: "See all 17 templates" },
     demo: {
       pick: "Choose a kind of business",
       prompts: {
@@ -59,7 +59,7 @@ export const en = {
     proof: [
       { value: "~40 s", label: "to a first site" },
       { value: "30 of 30", label: "test sites built right the first time" },
-      { value: "14", label: "ready templates" },
+      { value: "17", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
     eyebrows: { how: "How it works", features: "Features", faq: "Good to know", final: "Start today" },
@@ -132,7 +132,7 @@ export const en = {
         events: "Weddings and events",
         business: "Business and personal",
       },
-      styles: { editorial: "Elegant", bold: "Bold", clean: "Clean", warm: "Warm" },
+      styles: { editorial: "Elegant", bold: "Bold", clean: "Clean", warm: "Warm", luxe: "Luxe", swiss: "Industrial", bento: "Tiles" },
       features: { prices: "Prices or menu", booking: "Booking or order form", gallery: "Photo gallery", team: "Team or staff", times: "Opening, service or prayer times", reviews: "Reviews", map: "Map" },
       about: {
         cafe: "Signature dishes, the full menu and table bookings",
@@ -149,6 +149,9 @@ export const en = {
         personal: "Selected work, services, experience and contact",
         business: "Services, projects, team and quote requests",
         salon: "Price list, stylists, looks and bookings",
+        fashion: "A collection with sizes, made-to-measure and orders from abroad",
+        construction: "Today's prices by the unit, quotes and delivery",
+        garage: "Fixed service prices, bookings and cars with a driver",
       },
     },
     templatePreview: {
@@ -454,6 +457,9 @@ export const en = {
       personal: "Personal website or portfolio",
       business: "Company or consulting",
       salon: "Salon or barber",
+      fashion: "Fashion or tailor",
+      construction: "Building materials or contractor",
+      garage: "Garage or car rental",
     },
     empty: "You have no sites yet. Start one: it takes a few minutes.",
     untitled: "New site",

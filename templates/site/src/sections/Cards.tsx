@@ -20,7 +20,7 @@ export function Cards({ section }: { section: CardsSection }) {
   const arch = section.imageShape === "arch" ? "arch" : "";
   const n = items.length;
   return (
-    <section id={section.id ?? "cards"} className={`section ${layout === "scroll" ? "overflow-hidden" : ""}`}>
+    <section id={section.id ?? "cards"} className={`section ${layout === "scroll" ? "overflow-hidden" : ""} ${section.tone === "dark" ? "bg-accent text-on-accent on-dark" : ""}`}>
       <div className="container-site flex flex-col gap-8 md:gap-12">
         <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
         {filterable && (

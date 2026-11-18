@@ -3,13 +3,14 @@ import { Picture } from "../components/Picture";
 import { SplitWords } from "../components/SplitWords";
 import { Stamp } from "../components/Stamp";
 import { useSite } from "../lib/context";
+import { uiText } from "../lib/i18n";
 import type { Fact, HeroSection } from "../lib/types";
 
 /** A hero photo on a phone: sized so that even a 3x screen takes the 800 px file. */
 const FULL = "(min-width: 768px) 100vw, 225px";
 
 export function Hero({ section, first }: { section: HeroSection; first: boolean }) {
-  const { site, page, text, href } = useSite();
+  const { site, page, text, href, lang } = useSite();
   // On the home page's hero: when they are open (or, without hours, the phone number).
   // Up to two lines, so a business open on other days at other times isn't made to look closed.
   const hours = (site.business.hours ?? []).slice(0, 2).map((h) => `${text(h.days)} · ${text(h.time)}`);
@@ -54,6 +55,84 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
         </div>
         {section.stamp && <Stamp text={text(section.stamp)} className="stamp-on-photo absolute end-4 top-24 md:end-10 md:top-28" />}
         {first && <span aria-hidden="true" className="scroll-cue" />}
+      </section>
+    );
+  }
+
+  if (variant === "poster") {
+    // A magazine cover: the photo full width, the business name set very large across its lower
+    // edge (decoration: the header already names the business), the eyebrow running up the side.
+    return (
+      <section id={section.id} className="hero-poster relative isolate">
+        <div className="poster-photo relative overflow-hidden bg-accent">
+          <div className="hero-parallax absolute inset-0">
+            <Picture image={section.image} priority={first} wide sizes={FULL} className="hero-photo size-full" />
+          </div>
+          {section.eyebrow && <p className="poster-side">{text(section.eyebrow)}</p>}
+        </div>
+        <p aria-hidden="true" className="poster-name container-site" style={{ "--chars": [...text(site.name)].length } as React.CSSProperties}>
+          {text(site.name)}
+        </p>
+        <div className="container-site flex flex-col gap-5 pb-14 md:pb-20">
+          <Heading className="headline split max-w-3xl">
+            <SplitWords text={text(section.heading)} />
+          </Heading>
+          {section.subheading && <p className="enter max-w-[56ch] text-lg text-muted" style={{ "--i": 2 } as React.CSSProperties}>{text(section.subheading)}</p>}
+          {actions()}
+          {facts && <Facts facts={facts} className="mt-2 border-t border-line pt-6" />}
+        </div>
+      </section>
+    );
+  }
+
+  if (variant === "bento") {
+    // The first screen as tiles: the heading on the photo, then hours, the two actions and the
+    // facts each in a tile of their own. Every tile is something a visitor came to check.
+    const hoursTile = chip ?? (hours.length ? hours : undefined);
+    return (
+      <section id={section.id} className="section hero-bento pt-6 md:pt-10">
+        <div className="container-site bento-grid">
+          <div className="bento-main enter relative isolate flex flex-col justify-end gap-4 overflow-hidden rounded-site bg-accent p-6 text-white md:p-10">
+            <Picture image={section.image} priority={first} wide sizes="(min-width: 768px) 60vw, 225px" className="hero-photo absolute inset-0 -z-10 size-full" />
+            <div aria-hidden="true" className="hero-shade absolute inset-0 -z-10" />
+            {section.eyebrow && <p className="eyebrow text-white!">{text(section.eyebrow)}</p>}
+            <Heading className="headline split max-w-2xl">
+              <SplitWords text={text(section.heading)} />
+            </Heading>
+            {section.subheading && <p className="max-w-[48ch] text-lg">{text(section.subheading)}</p>}
+          </div>
+          {hoursTile && (
+            <p className="bento-tile bento-hours enter" style={{ "--i": 2 } as React.CSSProperties}>
+              <span className="flex items-center gap-2 font-semibold">
+                <span aria-hidden="true" className="info-dot" />
+                {uiText("hours", lang)}
+              </span>
+              {hoursTile.map((line) => (
+                <span key={line} className="bento-line">
+                  {line}
+                </span>
+              ))}
+            </p>
+          )}
+          {section.primaryAction && (
+            <a href={href(section.primaryAction.href)} className="bento-tile bento-primary enter" style={{ "--i": 3 } as React.CSSProperties}>
+              <span className="fact-value arrow-link">{text(section.primaryAction.label)}</span>
+            </a>
+          )}
+          {section.secondaryAction && (
+            <a href={href(section.secondaryAction.href)} className="bento-tile bento-secondary enter" style={{ "--i": 4 } as React.CSSProperties}>
+              <span className="fact-value arrow-link">{text(section.secondaryAction.label)}</span>
+            </a>
+          )}
+          {facts?.map((f, i) => (
+            <div key={i} className="bento-tile enter flex flex-col-reverse justify-end" style={{ "--i": 5 + i } as React.CSSProperties}>
+              <span className="small-label">{text(f.label)}</span>
+              <span className="stat-value">
+                <CountUp value={text(f.value)} />
+              </span>
+            </div>
+          ))}
+        </div>
       </section>
     );
   }

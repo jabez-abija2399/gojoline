@@ -580,6 +580,17 @@
 }
 
 @media screen and (prefers-reduced-motion: no-preference) {
+  /* The woven band (luxe) and the hazard stripe (swiss) drift slowly sideways. */
+  [data-style="luxe"] main > section:first-child::after {
+    animation: site-band 9s linear infinite;
+  }
+  [data-style="swiss"] main > section:first-child::after {
+    animation: site-band-stripe 1.8s linear infinite;
+  }
+  /* The business name on a poster hero rises into place (movement only: it is never hidden). */
+  .poster-name {
+    animation: site-poster 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
   .headline.split .w {
     animation: site-word 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
     animation-delay: calc(80ms + var(--w, 0) * 70ms);
@@ -991,5 +1002,21 @@
 @keyframes late-in {
   from {
     transform: translateY(-100%);
+  }
+}
+
+@keyframes site-band {
+  to {
+    background-position: 40px 0;
+  }
+}
+@keyframes site-band-stripe {
+  to {
+    background-position: 34px 0;
+  }
+}
+@keyframes site-poster {
+  from {
+    transform: translateY(0.25em);
   }
 }

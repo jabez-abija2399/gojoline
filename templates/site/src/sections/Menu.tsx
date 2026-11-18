@@ -12,8 +12,10 @@ export function Menu({ section }: { section: MenuSection }) {
   const [active, setActive] = useState<number | null>(null);
   const tabs = section.categories.length >= 3;
   const shown = section.categories.map((cat, ci) => ({ cat, ci })).filter(({ ci }) => active === null || ci === active);
+  const dark = section.tone === "dark";
+  if (section.layout === "table") return <PriceTable section={section} dark={dark} />;
   return (
-    <section id={section.id ?? "menu"} className="section">
+    <section id={section.id ?? "menu"} className={`section ${dark ? "bg-accent text-on-accent on-dark" : ""}`}>
       <div className="container-site flex flex-col gap-8 md:gap-10">
         <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
         {tabs && (
@@ -42,7 +44,10 @@ export function Menu({ section }: { section: MenuSection }) {
                         {item.price && (
                           <>
                             <span aria-hidden="true" className="leader" />
-                            <p className="shrink-0 font-heading text-lg font-bold whitespace-nowrap">{formatPrice(item.price, lang)}</p>
+                            <p className="shrink-0 font-heading text-lg font-bold whitespace-nowrap">
+                              {formatPrice(item.price, lang)}
+                              {item.unit && <span className="ms-1 font-body text-sm font-normal opacity-80">/ {text(item.unit)}</span>}
+                            </p>
                           </>
                         )}
                       </div>
@@ -52,6 +57,41 @@ export function Menu({ section }: { section: MenuSection }) {
                 ))}
               </ul>
             </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * One price table: what it is, the unit it is sold by, the price, and a short tag ("In stock").
+ * Figures line up (tabular numbers) so a buyer can compare at a glance; each category is a group.
+ */
+function PriceTable({ section, dark }: { section: MenuSection; dark: boolean }) {
+  const { text, lang } = useSite();
+  return (
+    <section id={section.id ?? "prices"} className={`section ${dark ? "bg-accent text-on-accent on-dark" : ""}`}>
+      <div className="container-site flex flex-col gap-8 md:gap-10">
+        <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
+        <div className="price-table reveal">
+          {section.categories.map((cat, ci) => (
+            <table key={ci} className="w-full border-collapse">
+              <caption className="price-group">{text(cat.name)}</caption>
+              <tbody>
+                {cat.items.map((item, ii) => (
+                  <tr key={ii} className="price-row">
+                    <th scope="row" className="py-3 pe-3 text-start font-normal">
+                      <span className="font-semibold">{text(item.name)}</span>
+                      {item.description && <span className="block text-sm opacity-80">{text(item.description)}</span>}
+                      {item.tag && <span className="price-tag">{text(item.tag)}</span>}
+                    </th>
+                    <td className="price-unit py-3 pe-3 text-sm">{item.unit ? text(item.unit) : ""}</td>
+                    <td className="price-value py-3 text-end font-heading text-lg font-bold whitespace-nowrap">{item.price ? formatPrice(item.price, lang) : ""}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           ))}
         </div>
       </div>

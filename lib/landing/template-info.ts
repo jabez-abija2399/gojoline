@@ -263,6 +263,51 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  fashion: {
+    category: "shops",
+    designedFor: {
+      en: ["Habesha dress makers and boutiques", "Tailors and made-to-measure", "Small clothing brands", "Weavers and netela sellers"],
+      am: ["የሀበሻ ቀሚስ ሰፊዎችና ቡቲኮች", "ልብስ ሰፊዎችና በልክ ሰፊዎች", "አነስተኛ የልብስ ብራንዶች", "ሸማኔዎችና ነጠላ ሻጮች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Collection with prices", am: "ስብስብ ከዋጋ ጋር" } },
+      { key: "order", label: { en: "Made-to-measure orders", am: "በልክ የማሰፊያ ትዕዛዝ" } },
+      { key: "steps", label: { en: "Ordering from abroad", am: "ከውጭ ማዘዝ" } },
+      "gallery",
+      "reviews",
+      "languages",
+    ],
+  },
+  construction: {
+    category: "business",
+    designedFor: {
+      en: ["Building materials suppliers", "Hardware and finishing shops", "Aluminium and steel workshops", "Small contractors"],
+      am: ["የግንባታ ዕቃ አቅራቢዎች", "የሃርድዌርና የማጠናቀቂያ ሱቆች", "የአሉሚኒየምና የብረት ወርክሾፖች", "አነስተኛ የሥራ ተቋራጮች"],
+    },
+    highlights: [
+      { key: "menu", label: { en: "Today's prices with units", am: "የዛሬ ዋጋ ከመለኪያ ጋር" } },
+      { key: "order", label: { en: "Quote requests", am: "የዋጋ ጥያቄ" } },
+      "numbers",
+      "steps",
+      "map",
+      "languages",
+    ],
+  },
+  garage: {
+    category: "business",
+    designedFor: {
+      en: ["Garages and car service", "Car rental with driver", "Tyre and alignment shops", "Car wash and detailing"],
+      am: ["ጋራዦችና የመኪና አገልግሎት", "የመኪና ኪራይ ከሹፌር ጋር", "የጎማና የአላይንመንት ሱቆች", "የመኪና እጥበት"],
+    },
+    highlights: [
+      { key: "menu", label: { en: "Fixed service prices", am: "ቋሚ የአገልግሎት ዋጋ" } },
+      { key: "booking", label: { en: "Service and rental booking", am: "የአገልግሎትና የኪራይ ቀጠሮ" } },
+      { key: "cards", label: { en: "Fleet with day rates", am: "መኪኖች ከቀን ዋጋ ጋር" } },
+      "hours",
+      "faq",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

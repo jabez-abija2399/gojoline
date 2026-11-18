@@ -1,7 +1,7 @@
 import { contrast, readableOn, tint } from "./color";
 import type { Lang, Theme } from "./types";
 
-const fonts: Record<Theme["font"], { heading: string; body: string }> = {
+const fonts: Record<Theme["font"], { heading: string; body: string; amHeading?: string }> = {
   // Headings use one small bundled font (public/fonts); body text stays on system fonts, so
   // there is little to download on slow networks. Ge'ez uses the bundled Noto subset.
   modern: {
@@ -24,6 +24,17 @@ const fonts: Record<Theme["font"], { heading: string; body: string }> = {
     heading: '"Bricolage Grotesque", system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
+  // Tall, narrow and heavy. Amharic headings get a narrow cut of Noto Sans Ethiopic (one small
+  // file, headings only) so both languages share the look; Ge'ez is never upper-cased.
+  condensed: {
+    heading: '"Archivo", "Arial Narrow", system-ui, "Noto Sans Ethiopic", sans-serif',
+    body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
+    amHeading: '"Noto Sans Ethiopic Narrow", "Noto Sans Ethiopic", system-ui, sans-serif',
+  },
+  editorial: {
+    heading: '"Newsreader", "Iowan Old Style", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
+    body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
+  },
 };
 
 const radii: Record<Theme["radius"], string> = { none: "0", small: "6px", medium: "12px", large: "20px" };
@@ -38,6 +49,8 @@ export function themeVariables(theme: Theme, lang: Lang): Record<string, string>
     "--site-primary-soft": tint(theme.primary, 0.88),
     "--site-accent": theme.accent,
     "--site-on-accent": readableOn(theme.accent),
+    "--site-highlight": theme.highlight ?? tint(theme.primary, 0.75),
+    "--site-on-highlight": readableOn(theme.highlight ?? tint(theme.primary, 0.75)),
     "--site-background": theme.background,
     "--site-surface": "#ffffff",
     "--site-text": theme.text,
@@ -47,7 +60,7 @@ export function themeVariables(theme: Theme, lang: Lang): Record<string, string>
     "--site-radius": radii[theme.radius],
     // Amharic pages skip the Latin display font: a heading's spaces alone would make the
     // browser download it, and its arrival would shift the page.
-    "--site-font-heading": lang === "am" ? amharicFirst + fonts[theme.font].body : fonts[theme.font].heading,
+    "--site-font-heading": lang === "am" ? (fonts[theme.font].amHeading ?? amharicFirst + fonts[theme.font].body) : fonts[theme.font].heading,
     "--site-font-body": amharicFirst + fonts[theme.font].body,
   };
 }
@@ -68,7 +81,10 @@ function mixToward(text: string, bg: string): string {
 }
 
 /** The bundled heading font file for a theme (for a preload on Latin-script pages). */
-export const headingFontFile: Record<Theme["font"], string> = { modern: "outfit-latin.woff2", classic: "fraunces-latin.woff2", friendly: "nunito-latin.woff2", elegant: "cormorant-latin.woff2", grotesk: "bricolage-latin.woff2" };
+export const headingFontFile: Record<Theme["font"], string> = { modern: "outfit-latin.woff2", classic: "fraunces-latin.woff2", friendly: "nunito-latin.woff2", elegant: "cormorant-latin.woff2", grotesk: "bricolage-latin.woff2", condensed: "archivo-latin.woff2", editorial: "newsreader-latin.woff2" };
+
+/** The extra heading font file for Amharic pages, when the theme has one. */
+export const amharicHeadingFontFile: Partial<Record<Theme["font"], string>> = { condensed: "noto-sans-ethiopic-narrow.woff2" };
 
 export function styleString(vars: Record<string, string>): string {
   return Object.entries(vars)

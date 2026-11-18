@@ -3,7 +3,7 @@
 // opens it at phone width in English and Amharic, and saves the whole page as WebP in
 // public/showcase/ (with a small top-of-page crop for the gallery), plus lib/landing/showcase-shots.json (sizes, for layout without shift).
 //
-//   node scripts/showcase-shots.mjs            (copies the template to a temp folder, installs, builds)
+//   node scripts/showcase-shots.mjs [id ...]   (copies the template to a temp folder, installs, builds)
 //   SHOWCASE_WORKDIR=/path/with/node_modules node scripts/showcase-shots.mjs   (reuse an installed copy)
 import { execFileSync } from "node:child_process";
 import { cpSync, createReadStream, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
@@ -45,8 +45,12 @@ function serve(dir) {
 
 mkdirSync(outDir, { recursive: true });
 const browser = await chromium.launch();
-const manifest = {};
-const presets = readdirSync(join(root, "templates", "site", "presets")).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)).sort();
+// Keeps the pictures of templates not rebuilt this time.
+const manifestFile = join(root, "lib", "landing", "showcase-shots.json");
+const manifest = existsSync(manifestFile) ? JSON.parse(readFileSync(manifestFile, "utf8")) : {};
+// Ids on the command line rebuild only those templates; the others keep their pictures.
+const only = process.argv.slice(2);
+const presets = readdirSync(join(root, "templates", "site", "presets")).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)).filter((id) => !only.length || only.includes(id)).sort();
 // The landing page shows a few of these sites dressed in Gojoline's own colours, so the page
 // stays within the brand palette. Same content, only the theme differs.
 const BRAND_THEME = { primary: "#FF5B35", accent: "#121212", background: "#FBF9F6", text: "#121212" };
