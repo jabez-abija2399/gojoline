@@ -21,12 +21,14 @@ interface Props {
  */
 export function BuildPlaceholder({ t, device, timeline, fading }: Props) {
   const startedAt = timeline?.startedAt ?? null;
+  // The clock stops when the request ends (the site may still be loading underneath).
+  const running = !fading && !!timeline?.steps.some((s) => !s.done);
   const [now, setNow] = useState(() => startedAt ?? 0);
   useEffect(() => {
-    if (startedAt === null || fading) return;
+    if (startedAt === null || !running) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, [startedAt, fading]);
+  }, [startedAt, running]);
   const seconds = startedAt === null ? 0 : Math.max(0, Math.round((now - startedAt) / 1000));
   const step = timeline && currentStep(timeline);
   const label = timeline && step ? stepLabels(t, timeline)[step] : t.tlUnderstand;

@@ -133,5 +133,7 @@ export function nextTimeline(tl: Timeline, event: ProgressEvent): Timeline {
       if (edits > 0) steps.push({ key: "ready", done: true });
       break;
   }
-  return { ...tl, steps, edits, sections };
+  // Nothing visible changed (most streamed text): the same object, so memoized views skip a render.
+  const same = edits === tl.edits && sections === tl.sections && steps.length === tl.steps.length && steps.every((s, i) => s.key === tl.steps[i]!.key && s.done === tl.steps[i]!.done);
+  return same ? tl : { ...tl, steps, edits, sections };
 }

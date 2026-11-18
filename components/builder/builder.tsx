@@ -159,6 +159,8 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const lastBuildFailed = useRef(false);
   // The latest first build ended without a site: the preview says so (never the starter template).
   const [firstBuildFailed, setFirstBuildFailed] = useState(false);
+  // A first build's site built cleanly: its preview loads under the placeholder before it is saved.
+  const [firstBuildWarm, setFirstBuildWarm] = useState(false);
 
   // Wake the sandbox for an existing site so the preview shows straight away.
   useEffect(() => {
@@ -190,6 +192,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       setTimeline(startTimeline(Date.now()));
       setStreamText("");
       setFirstBuildFailed(false);
+      setFirstBuildWarm(false);
       lastBuildFailed.current = false;
       // Anything but an answer, a question about cost or a refusal is a failed run.
       let failed = true;
@@ -238,6 +241,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 lastBuildFailed.current = !event.ok;
                 if (event.ok) setReloadKey((k) => k + 1);
+                if (versionsRef.current === 0) setFirstBuildWarm(!!event.ok);
                 break;
               case "needs_confirm":
                 // Nothing ran: the owner sees the cost and decides.
@@ -261,12 +265,15 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 if (m.versionNumber) {
                   // The first site made: a good moment to offer the app.
                   markInstallMoment();
-                  if (versionsRef.current === 0) setCelebrate(true);
+                  const first = versionsRef.current === 0;
+                  if (first) setCelebrate(true);
                   setPreviewFresh(true);
                   versionsRef.current += 1;
                   setVersions((v) => [{ number: m.versionNumber, summary: text.slice(0, 140), createdAt: new Date().toISOString() }, ...v]);
                   setCurrent(m.versionNumber);
-                  setReloadKey((k) => k + 1);
+                  // A first build's frame already loaded its last good build under the placeholder:
+                  // keep it, so the reveal is instant.
+                  if (!first || lastBuildFailed.current) setReloadKey((k) => k + 1);
                 }
                 break;
               }
@@ -433,6 +440,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       onRetry={retryPreview}
       onBackToChat={backToChat}
       reloadKey={reloadKey}
+      warm={firstBuildWarm}
     />
   );
   const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working} onRestore={restore} />;

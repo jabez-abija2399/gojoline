@@ -81,6 +81,8 @@ interface Props {
   onBackToChat: () => void;
   reloadKey: number;
   device: Device;
+  /** A first build has built successfully: load the frame now, under the placeholder, so the reveal is instant. */
+  warm: boolean;
 }
 
 type Reveal = "none" | "hold" | "fade";
@@ -88,14 +90,17 @@ type Reveal = "none" | "hold" | "fade";
 const HOLD_MAX_MS = 10_000;
 const FADE_MS = 500;
 
-export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, working, timeline, onRetry, onReload, onBackToChat, reloadKey, device }: Props) {
+export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, working, timeline, onRetry, onReload, onBackToChat, reloadKey, device, warm }: Props) {
   // The first build just saved: the frame loads the new site under the placeholder, which fades
   // out once it has loaded, so the starter template never flashes on screen.
+  const frameKey = `${url}-${reloadKey}`;
+  // The frame that last finished loading (it may have loaded under the placeholder already).
+  const [loadedKey, setLoadedKey] = useState<string | null>(null);
   const [prevView, setPrevView] = useState(view);
   const [reveal, setReveal] = useState<Reveal>("none");
   if (view !== prevView) {
     setPrevView(view);
-    setReveal(prevView === "building" && view === "live" ? "hold" : "none");
+    setReveal(prevView === "building" && view === "live" ? (loadedKey === frameKey ? "fade" : "hold") : "none");
   }
   // The request's last progress, still shown while the finished site loads underneath.
   const [lastTimeline, setLastTimeline] = useState(timeline);
@@ -105,7 +110,10 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
     const id = setTimeout(() => setReveal(reveal === "hold" ? "fade" : "none"), reveal === "hold" ? HOLD_MAX_MS : FADE_MS);
     return () => clearTimeout(id);
   }, [reveal]);
-  const loaded = useCallback(() => setReveal((r) => (r === "hold" ? "fade" : r)), []);
+  const loaded = useCallback(() => {
+    setLoadedKey(frameKey);
+    setReveal((r) => (r === "hold" ? "fade" : r));
+  }, [frameKey]);
   // A page that loads at once (same-origin, e.g. about:blank in tests) can finish before React
   // listens: check on mount too. Cross-origin frames throw or are still on their first blank page.
   const frameRef = useCallback(
@@ -130,6 +138,9 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
       ? "phone-frame h-full w-[390px] max-w-full rounded-xl border border-line lg:my-auto lg:max-h-[844px] lg:rounded-[2.25rem] lg:border-[10px] lg:border-device lg:shadow-2xl"
       : "h-full w-full rounded-xl border border-line shadow-lg";
   const live = view === "live" && url;
+  const frame = url && (live || (view === "building" && warm));
+  // Under the placeholder: loading, but out of reach of taps, keyboards and screen readers.
+  const hidden = !live || reveal === "hold";
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-paper">
       <PreviewControls t={t} url={live ? url : null} liveUrl={liveUrl} onReload={onReload} className="border-b border-line bg-white px-2 py-1 lg:hidden" />
@@ -139,7 +150,20 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
       <div className="flex min-h-0 flex-1 items-stretch justify-center overflow-auto bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] p-3 lg:p-6">
         {live || view === "building" ? (
           <div className={`relative flex min-h-[480px] flex-col overflow-hidden bg-white ${shell}`}>
-            {live && <iframe ref={frameRef} key={`${url}-${reloadKey}`} src={url} title={t.previewTitle} onLoad={loaded} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" className="min-h-0 w-full flex-1 bg-white" />}
+            {frame && (
+              <iframe
+                ref={frameRef}
+                key={frameKey}
+                src={url}
+                title={t.previewTitle}
+                onLoad={loaded}
+                inert={hidden}
+                aria-hidden={hidden || undefined}
+                tabIndex={hidden ? -1 : undefined}
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                className="min-h-0 w-full flex-1 bg-white"
+              />
+            )}
             {live && working && reveal === "none" && (
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex flex-col justify-between">
                 <span className="block h-1 overflow-hidden bg-sunken">

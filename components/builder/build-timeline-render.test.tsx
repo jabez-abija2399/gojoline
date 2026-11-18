@@ -9,8 +9,8 @@ const writing = ["menu", "gallery", "form", "contact"].reduce((tl, name) => next
 
 describe("build timeline labels", () => {
   it("names the sections being written, newest three, in English and Amharic", () => {
-    expect(renderToStaticMarkup(<BuildTimeline t={en.builder} timeline={writing} streamText="" />)).toContain("Writing your gallery, form, contact and 1 more sections");
-    expect(renderToStaticMarkup(<BuildTimeline t={am.builder} timeline={writing} streamText="" />)).toContain("የፎቶ ማዕከል፣ ቅጽ፣ ያግኙን እና 1 ተጨማሪ ክፍሎችን በመጻፍ ላይ");
+    expect(renderToStaticMarkup(<BuildTimeline t={en.builder} timeline={writing} streamText="" />)).toContain("Writing your gallery, form and contact sections and one more");
+    expect(renderToStaticMarkup(<BuildTimeline t={am.builder} timeline={writing} streamText="" />)).toContain("«የፎቶ ማዕከል»፣ «ቅጽ»፣ «አድራሻ» እና አንድ ተጨማሪ ክፍሎችን በመጻፍ ላይ");
   });
 
   it("announces only the current step, without the changing section names", () => {

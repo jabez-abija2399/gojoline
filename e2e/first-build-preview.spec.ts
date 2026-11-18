@@ -36,8 +36,9 @@ for (const lang of ["en", "am"] as const) {
     const placeholder = panel.getByRole("group", { name: text[lang].building });
     await expect(placeholder).toBeVisible();
     await expect(placeholder).toContainText(text[lang].usually);
-    // The sandbox is already running the starter template: it is not shown.
-    await expect(panel.locator("iframe")).toHaveCount(0);
+    // The sandbox is already running the starter template: it is not shown (a frame may load
+    // the built site underneath, out of reach, once the build succeeded).
+    await expect(panel.locator("iframe:not([inert])")).toHaveCount(0);
     await expect(panel.getByText(text[lang].template)).toHaveCount(0);
     await expectNoHorizontalScroll(page);
     await expectNoSeriousA11yIssues(page);
@@ -51,7 +52,7 @@ for (const lang of ["en", "am"] as const) {
 
     // Saved: the real preview takes its place once it has loaded.
     await expect(page.getByText(text[lang].saved).first()).toBeAttached({ timeout: 20_000 });
-    await expect(panel.locator(`iframe[title]`)).toBeVisible();
+    await expect(panel.locator(`iframe[title]:not([inert])`)).toBeVisible();
     await expect(placeholder).toHaveCount(0, { timeout: 15_000 });
     await expectNoHorizontalScroll(page);
   });
@@ -88,7 +89,7 @@ test("a first build that fails shows the recovery message, not the template", as
   await expect(page.getByText("I couldn't finish this change").first()).toBeAttached();
   await showPreview(page, "en", mobile);
   const panel = page.locator("#panel-preview");
-  await expect(panel.getByRole("paragraph").filter({ hasText: "Your site wasn't built this time" })).toBeVisible();
+  await expect(panel.getByRole("paragraph").filter({ hasText: "We couldn't build your site this time" })).toBeVisible();
   await expect(panel.locator("iframe")).toHaveCount(0);
   await expectNoSeriousA11yIssues(page);
   await panel.getByRole("button", { name: "Back to the chat" }).click();

@@ -1,31 +1,39 @@
 import { describe, expect, it } from "vitest";
 import { en } from "@/lib/i18n/messages/en";
 import { am } from "@/lib/i18n/messages/am";
-import type { SectionType } from "@/lib/agent/progress";
+import { SECTION_TYPES, type SectionType } from "@/lib/agent/progress";
 import { announcedStep, listOf, writingLabel } from "./timeline-label";
 import { nextTimeline, startTimeline } from "./build-timeline";
 
 const write = (t: typeof en.builder, ...s: SectionType[]) => writingLabel(t, s);
 
 describe("section list labels", () => {
-  it("joins names the English way, lower-cased inside the sentence", () => {
+  it("joins names the English way, first letter lower-cased inside the sentence", () => {
     expect(write(en.builder)).toBe("Writing your site");
     expect(write(en.builder, "about")).toBe("Writing your about section");
-    expect(write(en.builder, "menu", "gallery")).toBe("Writing your menu and gallery sections");
+    expect(write(en.builder, "hero", "gallery")).toBe("Writing your top banner and gallery sections");
     expect(write(en.builder, "about", "gallery", "form")).toBe("Writing your about, gallery and form sections");
   });
 
-  it("shows the newest three and counts the rest, never starting with an ellipsis", () => {
+  it("shows the newest three and counts the rest, never '1 more sections' or a leading ellipsis", () => {
+    expect(write(en.builder, "hero", "about", "gallery", "form")).toBe("Writing your about, gallery and form sections and one more");
     const label = write(en.builder, "hero", "menu", "about", "gallery", "form");
-    expect(label).toBe("Writing your about, gallery, form and 2 more sections");
+    expect(label).toBe("Writing your about, gallery and form sections and 2 more");
     expect(label).not.toContain("…");
   });
 
-  it("joins names the Amharic way", () => {
-    expect(write(am.builder, "about")).toBe("ስለ እኛ ክፍልን በመጻፍ ላይ");
-    expect(write(am.builder, "menu", "gallery")).toBe("ምናሌ እና የፎቶ ማዕከል ክፍሎችን በመጻፍ ላይ");
-    expect(write(am.builder, "about", "gallery", "form")).toBe("ስለ እኛ፣ የፎቶ ማዕከል እና ቅጽ ክፍሎችን በመጻፍ ላይ");
-    expect(write(am.builder, "hero", "about", "gallery", "form")).toBe("ስለ እኛ፣ የፎቶ ማዕከል፣ ቅጽ እና 1 ተጨማሪ ክፍሎችን በመጻፍ ላይ");
+  it("every English section name reads as a noun in the sentence", () => {
+    for (const s of SECTION_TYPES) expect(write(en.builder, s)).toMatch(/^Writing your [a-z][a-z -]* section$/);
+    expect(write(en.builder, "tabs")).toBe("Writing your details section");
+    expect(write(en.builder, "timeline")).toBe("Writing your story section");
+  });
+
+  it("joins quoted names the Amharic way", () => {
+    expect(write(am.builder, "about")).toBe("«መግቢያ» ክፍልን በመጻፍ ላይ");
+    expect(write(am.builder, "menu", "contact")).toBe("«ምናሌ» እና «አድራሻ» ክፍሎችን በመጻፍ ላይ");
+    expect(write(am.builder, "about", "gallery", "form")).toBe("«መግቢያ»፣ «የፎቶ ማዕከል» እና «ቅጽ» ክፍሎችን በመጻፍ ላይ");
+    expect(write(am.builder, "hero", "about", "gallery", "form")).toBe("«መግቢያ»፣ «የፎቶ ማዕከል»፣ «ቅጽ» እና አንድ ተጨማሪ ክፍሎችን በመጻፍ ላይ");
+    expect(write(am.builder, "hero", "menu", "about", "gallery", "form")).toBe("«መግቢያ»፣ «የፎቶ ማዕከል»፣ «ቅጽ» እና 2 ተጨማሪ ክፍሎችን በመጻፍ ላይ");
   });
 
   it("lists one, two and many items", () => {

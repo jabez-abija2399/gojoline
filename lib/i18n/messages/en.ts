@@ -397,14 +397,17 @@ export const en = {
     tlUnderstand: "Understanding your request",
     tlWriting: "Writing your site",
     tlPlan: "Planning your pages",
-    /** {sections} is a list of the newest section names, e.g. "about, gallery and form". */
-    tlWritingSections: "Writing your {sections} sections",
-    tlWritingSection: "Writing your {sections} section",
+    /** {names}: the newest section names as a list ("about, gallery and form"). */
+    tlWritingSections: "Writing your {names} sections",
+    tlWritingSection: "Writing your {names} section",
+    /** More were written earlier. {names}: the newest three; {all}: them plus {more}; {more}: tlMore*. */
+    tlWritingSectionsMore: "Writing your {names} sections and {more}",
     tlListSep: ", ",
     tlListAnd: " and ",
-    /** Ends the list when more sections were written earlier: "gallery, form, contact and 2 more". */
+    tlMoreSection: "one more",
     tlMoreSections: "{n} more",
-    /** Section names sit inside a sentence: lower-case them (English). */
+    /** How a section name sits inside the sentence: "{name}" with its first letter lower-cased (English). */
+    tlSectionName: "{name}",
     tlSectionLower: true,
     tlFinish: "Finishing your site",
     tlSave: "Saving your site",
@@ -418,7 +421,7 @@ export const en = {
       stats: "Numbers",
       steps: "Steps",
       schedule: "Schedule",
-      tabs: "More details",
+      tabs: "Details",
       give: "Donations",
       marquee: "Moving banner",
       quote: "Quote",
@@ -426,7 +429,7 @@ export const en = {
       map: "Map",
       testimonials: "Reviews",
       form: "Form",
-      timeline: "Our story",
+      timeline: "Story",
       faq: "Questions",
       cta: "Call to action",
     },
@@ -618,7 +621,7 @@ export const en = {
     previewReload: "Reload the preview",
     previewPrivate: "Only you can see this",
     previewUsually: "Usually about a minute",
-    previewFirstFailed: "Your site wasn't built this time, and nothing was saved. Try again in the chat, or describe it another way.",
+    previewFirstFailed: "We couldn't build your site this time. Nothing was saved. Send your message again.",
     previewBackToChat: "Back to the chat",
     tabNew: "updated",
     menuMore: "More",

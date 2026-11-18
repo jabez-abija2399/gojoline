@@ -14,13 +14,20 @@ export function listOf(t: T, items: string[]): string {
   return `${items.slice(0, -1).join(t.tlListSep)}${t.tlListAnd}${items.at(-1)}`;
 }
 
+/** A section's name as it sits in the sentence ("top banner", «ዋና ባነር»). */
+function sectionName(t: T, s: SectionType): string {
+  const name = t.tlSection[s];
+  return format(t.tlSectionName, { name: t.tlSectionLower ? name.charAt(0).toLowerCase() + name.slice(1) : name });
+}
+
 /** "Writing your about, gallery and form sections" (newest three, then "and 2 more"). */
 export function writingLabel(t: T, sections: SectionType[]): string {
   if (sections.length === 0) return t.tlWriting;
-  const names = sections.slice(-SHOWN_SECTIONS).map((s) => (t.tlSectionLower ? t.tlSection[s].toLowerCase() : t.tlSection[s]));
-  const more = sections.length - names.length;
-  const items = more > 0 ? [...names, format(t.tlMoreSections, { n: more })] : names;
-  return format(items.length === 1 ? t.tlWritingSection : t.tlWritingSections, { sections: listOf(t, items) });
+  const names = sections.slice(-SHOWN_SECTIONS).map((s) => sectionName(t, s));
+  const extra = sections.length - names.length;
+  if (extra === 0) return format(names.length === 1 ? t.tlWritingSection : t.tlWritingSections, { names: listOf(t, names) });
+  const more = extra === 1 ? t.tlMoreSection : format(t.tlMoreSections, { n: extra });
+  return format(t.tlWritingSectionsMore, { names: listOf(t, names), all: listOf(t, [...names, more]), more });
 }
 
 /** What each step is called on screen (the writing step names its sections). */

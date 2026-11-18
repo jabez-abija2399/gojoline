@@ -123,6 +123,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## First-build preview (2026-11-18)
 - [x] No starter template during a first build: a building placeholder in the device frame (site outline, current step, elapsed time, “Usually about a minute”; still under reduced motion; en, am, dark, 360 px), the site fades in once its frame has loaded, a failed first build shows the recovery message; later edits and template starts unchanged; progress label lists the newest three sections cleanly (“and 2 more”)
+- [x] Review fixes: the built site loads under the placeholder (inert) for an instant reveal, no preview re-render on streamed text, clock stops when the request ends, no frozen progress bars under reduced motion, clearer failure copy, section names as nouns (en) and quoted (am), ሰከንድ in full
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
