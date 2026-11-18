@@ -21,6 +21,7 @@ export function SiteFooter({ locale, t }: { locale: Locale; t: Messages }) {
       links: [
         { href: `/${locale}/templates`, label: t.landing.nav.templates },
         { href: `/${locale}/pricing`, label: t.landing.nav.prices },
+        { href: `/${locale}/showcase`, label: t.growth.showcase.eyebrow },
         { href: `/${locale}#how`, label: t.landing.nav.how },
       ],
     },

@@ -1,6 +1,7 @@
 import { dashboardEn } from "./dashboard-en";
 import { errorMessages } from "./errors";
 import { feedbackEn } from "./feedback-en";
+import { growthEn } from "./growth-en";
 
 /**
  * English catalog: the source of truth for message keys.
@@ -399,8 +400,18 @@ export const en = {
     tlUnderstand: "Understanding your request",
     tlWriting: "Writing your site",
     tlPlan: "Planning your pages",
-    tlWritingSections: "Writing your site: {sections}",
+    /** {names}: the newest section names as a list ("about, gallery and form"). */
+    tlWritingSections: "Writing your {names} sections",
+    tlWritingSection: "Writing your {names} section",
+    /** More were written earlier. {names}: the newest three; {all}: them plus {more}; {more}: tlMore*. */
+    tlWritingSectionsMore: "Writing your {names} sections and {more}",
     tlListSep: ", ",
+    tlListAnd: " and ",
+    tlMoreSection: "one more",
+    tlMoreSections: "{n} more",
+    /** How a section name sits inside the sentence: "{name}" with its first letter lower-cased (English). */
+    tlSectionName: "{name}",
+    tlSectionLower: true,
     tlFinish: "Finishing your site",
     tlSave: "Saving your site",
     tlSection: {
@@ -413,7 +424,7 @@ export const en = {
       stats: "Numbers",
       steps: "Steps",
       schedule: "Schedule",
-      tabs: "More details",
+      tabs: "Details",
       give: "Donations",
       marquee: "Moving banner",
       quote: "Quote",
@@ -421,7 +432,7 @@ export const en = {
       map: "Map",
       testimonials: "Reviews",
       form: "Form",
-      timeline: "Our story",
+      timeline: "Story",
       faq: "Questions",
       cta: "Call to action",
     },
@@ -615,7 +626,9 @@ export const en = {
     previewUpdating: "Updating your site...",
     previewReload: "Reload the preview",
     previewPrivate: "Only you can see this",
-    previewBuilding: "Your site is being built. It appears here in about a minute.",
+    previewUsually: "Usually about a minute",
+    previewFirstFailed: "We couldn't build your site this time. Nothing was saved. Send your message again.",
+    previewBackToChat: "Back to the chat",
     tabNew: "updated",
     menuMore: "More",
     versionsHint: "Every change is saved here. You can always go back.",
@@ -792,7 +805,7 @@ export const en = {
     ledgerTitle: "History of your changes",
     ledgerEmpty: "Nothing yet.",
     ledgerLabel: "Changes added and used",
-    ledger: { monthly_grant: "Monthly changes", topup: "Extra changes bought", ai_edit: "Change to your site", refund: "Given back: the change didn't work", admin: "Gift from Gojoline", first_build: "First build of a site (free)" },
+    ledger: { monthly_grant: "Monthly changes", topup: "Extra changes bought", ai_edit: "Change to your site", refund: "Given back: the change didn't work", admin: "Gift from Gojoline", first_build: "First build of a site (free)", referral: "Thank-you for an invite" },
     sizeNames: { small: "small", medium: "medium", large: "large" },
     ledgerAi: "Change to your site, {size}",
     newer: "Newer",
@@ -883,7 +896,7 @@ export const en = {
     rejectConfirm: "Reject this payment? The customer will see it as not approved.",
     checkHint: "Before approving, check the amount, the transaction number and the payer's name or phone on the receipt match this customer.",
     working: "Saving...",
-    tabs: { overview: "Overview", payments: "Payments", reports: "Reports", feedback: "Feedback", sites: "Sites", users: "Owners", costs: "AI costs", discounts: "Discounts", settings: "Settings" },
+    tabs: { overview: "Overview", payments: "Payments", reports: "Reports", feedback: "Feedback", sites: "Sites", users: "Owners", growth: "Growth", costs: "AI costs", discounts: "Discounts", settings: "Settings" },
     brand: "Gojoline admin",
     backToApp: "Back to Gojoline",
     theme: "Theme",
@@ -932,6 +945,11 @@ export const en = {
       discount_created: "Discount code made",
       discount_deactivated: "Discount code switched off",
       discount_activated: "Discount code switched on",
+      referral_linked: "A new owner joined through an invite",
+      referral_blocked: "An invite was blocked (same owner)",
+      referral_rewarded: "Invite thank-you given",
+      showcase_hidden: "Showcase entry hidden",
+      showcase_shown: "Showcase entry shown again",
     },
     planFilter: "Filter by plan",
     planAll: "All",
@@ -1196,6 +1214,7 @@ export const en = {
     report: "Report a site",
   },
   feedback: feedbackEn,
+  growth: growthEn,
   errors: errorMessages.en,
 };
 

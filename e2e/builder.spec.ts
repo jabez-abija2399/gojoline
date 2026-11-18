@@ -59,7 +59,8 @@ test("the progress card follows the AI's real steps, and replies show bold and l
   // "slowly" makes the demo AI pause after it starts writing and building.
   await chat(page).fill("Selam Coffee slowly");
   await chat(page).press("Enter");
-  const card = page.getByRole("group", { name: "Building your site" });
+  // The chat's card (the preview's first-build placeholder has the same name).
+  const card = page.getByRole("tabpanel", { name: "Chat" }).getByRole("group", { name: "Building your site" });
   await expect(card).toContainText("Understanding your request (done)");
   await expect(card).toContainText("Writing your site (done)");
   await expect(card).toContainText("Checking everything works (in progress)");
@@ -81,7 +82,7 @@ test("the progress card speaks Amharic", async ({ page }) => {
   await newSite(page, "am");
   await chat(page).fill("ሰላም ቡና slowly");
   await chat(page).press("Enter");
-  const card = page.getByRole("group", { name: "ድረ-ገጽዎ እየተሠራ ነው" });
+  const card = page.getByRole("tabpanel", { name: "ውይይት" }).getByRole("group", { name: "ድረ-ገጽዎ እየተሠራ ነው" });
   await expect(card).toContainText("ጥያቄዎን በመረዳት ላይ (ተጠናቋል)");
   await expect(card).toContainText("ሁሉም ነገር መሥራቱን በማረጋገጥ ላይ (በሂደት ላይ)");
   await expectNoHorizontalScroll(page);

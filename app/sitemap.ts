@@ -1,12 +1,15 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n/config";
+import { SECTORS } from "@/lib/landing/sectors";
 
 const PAGES = [
   { path: "", priority: 1, changeFrequency: "weekly" as const },
   { path: "/templates", priority: 0.8, changeFrequency: "monthly" as const },
   { path: "/pricing", priority: 0.8, changeFrequency: "monthly" as const },
+  { path: "/showcase", priority: 0.6, changeFrequency: "weekly" as const },
   { path: "/privacy", priority: 0.3, changeFrequency: "yearly" as const },
   { path: "/terms", priority: 0.3, changeFrequency: "yearly" as const },
+  ...SECTORS.map((s) => ({ path: `/website-for/${s}`, priority: 0.7, changeFrequency: "monthly" as const })),
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

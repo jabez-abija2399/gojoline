@@ -14,7 +14,7 @@ export interface Subscription {
 }
 
 /** "first_build" rows have delta 0: they only count free first builds. */
-export type LedgerReason = "monthly_grant" | "topup" | "ai_edit" | "refund" | "admin" | "first_build";
+export type LedgerReason = "monthly_grant" | "topup" | "ai_edit" | "refund" | "admin" | "first_build" | "referral";
 export type PaymentMethod = "telebirr" | "cbe" | "other";
 
 /** Shown in the owner's history: how big an AI change was and what it was about. */

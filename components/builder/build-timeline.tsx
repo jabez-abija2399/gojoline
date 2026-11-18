@@ -4,8 +4,8 @@ import { useDeferredValue, useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { ChatMarkdown } from "@/components/chat/markdown";
 import type { Messages } from "@/lib/i18n";
-import { format } from "@/lib/i18n/format";
 import type { SectionType } from "@/lib/agent/progress";
+import { announcedStep, stepLabels } from "./timeline-label";
 
 export type TimelineKey = "understand" | "plan" | "write" | "check" | "fix" | "finish" | "save" | "ready";
 export interface Timeline {
@@ -19,9 +19,6 @@ export interface Timeline {
 /** A fresh timeline for a request sent now. */
 export const startTimeline = (now: number): Timeline => ({ steps: [{ key: "understand", done: false }], edits: 0, sections: [], startedAt: now });
 
-/** How many section names the writing step shows (the newest; earlier ones are summed up as "…"). */
-const SHOWN_SECTIONS = 3;
-
 /** What the AI is doing right now, step by step, with a running clock. */
 export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builder"]; timeline: Timeline; streamText: string }) {
   const [now, setNow] = useState(() => timeline.startedAt);
@@ -30,14 +27,9 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
     return () => clearInterval(id);
   }, []);
   const seconds = Math.max(0, Math.round((now - timeline.startedAt) / 1000));
-  const sections = timeline.sections.slice(-SHOWN_SECTIONS).map((s) => t.tlSection[s]);
-  const writing = sections.length
-    ? format(t.tlWritingSections, { sections: [...(timeline.sections.length > SHOWN_SECTIONS ? ["…"] : []), ...sections].join(t.tlListSep) })
-    : t.tlWriting;
-  const label: Record<TimelineKey, string> = { understand: t.tlUnderstand, plan: t.tlPlan, write: writing, check: t.tlChecking, fix: t.tlFixing, finish: t.tlFinish, save: t.tlSave, ready: t.tlReady };
+  const label = stepLabels(t, timeline);
   // Screen readers hear only the step, once when it changes (not section names or streamed text).
-  const current = timeline.steps.findLast((s) => !s.done) ?? timeline.steps.at(-1);
-  const announced = current ? (current.key === "write" ? t.tlWriting : label[current.key]) : "";
+  const announced = announcedStep(t, timeline);
   // Streamed text arrives in many small pieces: parse it at a lower priority than typing.
   const deferredText = useDeferredValue(streamText);
 
@@ -141,5 +133,7 @@ export function nextTimeline(tl: Timeline, event: ProgressEvent): Timeline {
       if (edits > 0) steps.push({ key: "ready", done: true });
       break;
   }
-  return { ...tl, steps, edits, sections };
+  // Nothing visible changed (most streamed text): the same object, so memoized views skip a render.
+  const same = edits === tl.edits && sections === tl.sections && steps.length === tl.steps.length && steps.every((s, i) => s.key === tl.steps[i]!.key && s.done === tl.steps[i]!.done);
+  return same ? tl : { ...tl, steps, edits, sections };
 }

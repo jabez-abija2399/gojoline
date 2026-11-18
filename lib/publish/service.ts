@@ -19,6 +19,8 @@ import { publicPatch } from "@/lib/site-info/business";
 import { infoLabels } from "@/lib/site-info/labels";
 import { takenDownPage } from "@/lib/safety/takedown";
 import { publishedSiteHeaders, scanBuiltSite, type ScanIssue } from "./scan";
+import { addBadge, badgeIssues } from "@/lib/growth/badge";
+import { makeThumb, publishedCardSource, type ShowcaseStore } from "@/lib/growth/showcase";
 
 /** Extra checks before a site goes public (content safety is added in Slice 7). */
 export interface PublishGuard {
@@ -50,6 +52,10 @@ export interface PublishDeps {
   entitlements?: EntitlementsResolver;
   /** The owner's Google and share preview (applied at publish). */
   settings?: SiteSettingsStore;
+  /** Keeps the published name and hero photo for the public showcase card. */
+  showcase?: Pick<ShowcaseStore, "savePublished">;
+  /** Called after anything the showcase lists may have changed (clears its cache). */
+  showcaseChanged?: () => void;
 }
 
 /**
@@ -145,6 +151,7 @@ async function deployLocked(
   if (!token) return { ok: false, error: "busy" };
   try {
     const reserved = existing ?? (await deps.sites.getByProject(user.id, projectId));
+    const badgeOn = !plan || plan.badge;
     const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
     const url = deps.publisher.urlFor(slug);
     const sandbox = await deps.sandboxes.open(projectId, latest.files);
@@ -160,7 +167,6 @@ async function deployLocked(
       VITE_SITE_ID: projectId,
       VITE_REPORT_URL: `${deps.appUrl.replace(/\/$/, "")}/${project.locale}/report?site=${encodeURIComponent(slug)}`,
       VITE_DATA_API_URL: apiOrigin,
-      VITE_BADGE: plan && !plan.badge ? "0" : "1",
       ...(reserved?.siteKey ? { VITE_SITE_KEY: reserved.siteKey } : {}),
       ...(seo ? { VITE_SEO: seo } : {}),
       ...(Object.keys(baked).length ? { VITE_LIVE: JSON.stringify(baked) } : {}),
@@ -179,7 +185,7 @@ async function deployLocked(
       const data = name ? libraryPhoto(name) : null;
       return data ? [{ path: f.path, data }] : [];
     });
-    const issues = scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] });
+    const issues = [...scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] }), ...(badgeOn ? badgeIssues(latest.files["src/styles.css"]) : [])];
     if (issues.length) return { ok: false, error: "blocked", issues };
     for (const guard of deps.guards ?? []) {
       const verdict = await guard.check({ files: build.files, source: latest.files, projectId, ownerId: user.id });
@@ -189,6 +195,9 @@ async function deployLocked(
       }
     }
 
+    // The plan alone decides (Free: shown); nothing the AI writes can change it. Added after the
+    // checks, outside the site's app, where the site's CSS can't hide it.
+    if (badgeOn) build.files = addBadge(build.files, deps.appUrl, slug);
     // An admin may have taken the site down while this build ran.
     if ((await deps.sites.getByProject(user.id, projectId))?.status === "taken_down") return { ok: false, error: "taken_down" };
     const result = await deps.publisher.publish({
@@ -226,6 +235,7 @@ async function deployLocked(
         reportError("old host forward failed", e, { projectId });
       }
     }
+    await saveShowcaseCard(deps, user.id, projectId, project.locale, latest.files["src/site.json"], build.files).catch((e: unknown) => reportError("showcase card failed", e, { projectId }));
     // Forms on the live site accept answers only in the shape published here.
     await deps.cloud?.saveForms(site.id, extractForms(latest.files["src/site.json"] ?? ""));
     return { ok: true, site };
@@ -255,6 +265,15 @@ async function deployLocked(
   } finally {
     await deps.lock.release(`project:${projectId}`, token);
   }
+}
+
+/** The showcase card from what was just published (the checked version and its built photo). */
+async function saveShowcaseCard(deps: PublishDeps, ownerId: string, projectId: string, locale: "en" | "am", siteJson: string | undefined, files: PublishFile[]) {
+  if (!deps.showcase) return;
+  const src = publishedCardSource(siteJson, locale);
+  if (!src) return;
+  await deps.showcase.savePublished(ownerId, projectId, { name: src.name, thumb: await makeThumb(files, src.hero) });
+  deps.showcaseChanged?.();
 }
 
 /** Telegram names the starter templates use as examples. Anyone could register them and receive a site's customers. */
