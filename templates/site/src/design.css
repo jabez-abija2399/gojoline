@@ -47,11 +47,20 @@
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212;
 }
-/* Narrow heavy Ge'ez for headings of condensed sites only (font: condensed). */
+/* Narrow heavy Ge'ez for headings of condensed sites only (font: condensed). Not preloaded (one
+   Ge'ez preload per page is enough for the 2 s budget); its fallback below holds the layout. */
 @font-face {
   font-family: "Noto Sans Ethiopic Narrow";
   src: url("/fonts/noto-sans-ethiopic-narrow.woff2") format("woff2");
   font-weight: 700 900;
+  font-display: swap;
+  unicode-range: U+1200-137F;
+}
+@font-face {
+  font-family: "Noto Sans Ethiopic Narrow Fallback";
+  src: url("/fonts/noto-sans-ethiopic-core.woff2") format("woff2");
+  font-weight: 400 700;
+  size-adjust: 80%;
   font-display: swap;
   unicode-range: U+1200-137F;
 }
@@ -894,10 +903,16 @@
   [data-style="luxe"] main > section + section:not(.bg-accent) {
     border-top: 1px solid var(--site-line);
   }
+  [data-style="luxe"] main > section:first-child,
+  [data-style="swiss"] main > section:first-child {
+    overflow-x: clip;
+  }
   /* The woven border (tibeb) under the first section, in the theme's own colours. */
   [data-style="luxe"] main > section:first-child::after {
     content: "";
     display: block;
+    width: calc(100% + 40px);
+    margin-inline-start: -40px;
     height: 14px;
     background: repeating-linear-gradient(90deg, var(--site-highlight) 0 12px, var(--site-primary) 12px 16px, var(--site-text) 16px 20px, var(--site-primary) 20px 24px, var(--site-highlight) 24px 36px, var(--site-background) 36px 40px);
   }
@@ -976,6 +991,8 @@
   [data-style="swiss"] main > section:first-child::after {
     content: "";
     display: block;
+    width: calc(100% + 34px);
+    margin-inline-start: -34px;
     height: 12px;
     margin-top: 2.5rem;
     background: repeating-linear-gradient(-45deg, var(--site-highlight) 0 12px, var(--site-text) 12px 24px);

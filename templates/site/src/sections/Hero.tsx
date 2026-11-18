@@ -98,7 +98,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
       <section id={section.id} className="section hero-bento pt-6 md:pt-10">
         <div className={`container-site bento-grid ${small % 2 ? "bento-odd" : ""}`} style={{ "--rows": Math.max(1, Math.ceil(small / 2)) } as React.CSSProperties}>
           <div className="bento-main enter relative isolate flex flex-col justify-end gap-4 overflow-hidden rounded-site bg-accent p-6 text-white md:p-10">
-            <Picture image={section.image} priority={first} wide sizes="(min-width: 768px) 60vw, 225px" className="hero-photo absolute inset-0 -z-10 size-full" />
+            <Picture image={section.image} priority={first} wide sizes="(min-width: 1152px) 545px, (min-width: 768px) 47vw, 225px" className="hero-photo absolute inset-0 -z-10 size-full" />
             <div aria-hidden="true" className="hero-shade absolute inset-0 -z-10" />
             {section.eyebrow && <p className="eyebrow text-white!">{text(section.eyebrow)}</p>}
             <Heading className="headline split max-w-2xl">

@@ -1005,14 +1005,15 @@
   }
 }
 
+/* Moved, not repainted: the band is one pattern-width wider and slides by that width. */
 @keyframes site-band {
   to {
-    background-position: 40px 0;
+    transform: translateX(40px);
   }
 }
 @keyframes site-band-stripe {
   to {
-    background-position: 34px 0;
+    transform: translateX(34px);
   }
 }
 @keyframes site-poster {

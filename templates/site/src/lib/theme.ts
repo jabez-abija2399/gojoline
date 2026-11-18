@@ -29,7 +29,9 @@ const fonts: Record<Theme["font"], { heading: string; body: string; amHeading?: 
   condensed: {
     heading: '"Archivo", "Arial Narrow", system-ui, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
-    amHeading: '"Noto Sans Ethiopic Narrow", "Noto Sans Ethiopic", system-ui, sans-serif',
+    // Until the narrow cut arrives, the already-loaded Ge'ez font scaled to the same width stands
+    // in, so the heading keeps its line breaks and nothing moves when it swaps.
+    amHeading: '"Noto Sans Ethiopic Narrow", "Noto Sans Ethiopic Narrow Fallback", "Noto Sans Ethiopic", system-ui, sans-serif',
   },
   editorial: {
     heading: '"Newsreader", "Iowan Old Style", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
@@ -82,9 +84,6 @@ function mixToward(text: string, bg: string): string {
 
 /** The bundled heading font file for a theme (for a preload on Latin-script pages). */
 export const headingFontFile: Record<Theme["font"], string> = { modern: "outfit-latin.woff2", classic: "fraunces-latin.woff2", friendly: "nunito-latin.woff2", elegant: "cormorant-latin.woff2", grotesk: "bricolage-latin.woff2", condensed: "archivo-latin.woff2", editorial: "newsreader-latin.woff2" };
-
-/** The extra heading font file for Amharic pages, when the theme has one. */
-export const amharicHeadingFontFile: Partial<Record<Theme["font"], string>> = { condensed: "noto-sans-ethiopic-narrow.woff2" };
 
 export function styleString(vars: Record<string, string>): string {
   return Object.entries(vars)
