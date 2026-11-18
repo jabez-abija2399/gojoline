@@ -1,9 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { memo } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { ExternalLink, Globe, Lock, Monitor, RotateCw, Smartphone } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
+import { BuildPlaceholder } from "./build-placeholder";
+import type { Timeline } from "./build-timeline";
+import type { PreviewView } from "./preview-view";
+import { announcedStep } from "./timeline-label";
 
 export type Device = "phone" | "desktop";
 
@@ -63,32 +67,68 @@ export function PreviewControls({ t, url, liveUrl, onReload, device, className =
 
 interface Props {
   t: Messages["builder"];
+  /** What to show: see previewView(). */
+  view: PreviewView;
   url: string | null;
   liveUrl: string | null;
-  loading: boolean;
-  /** The AI is working: a first build (no preview yet) or a change to the site on screen. */
+  /** The AI is changing the site on screen ("Updating your site..." over the live preview). */
   working: boolean;
-  error: boolean;
+  /** The running request's progress, for the first-build placeholder. */
+  timeline: Timeline | null;
   onRetry: () => void;
   onReload: () => void;
+  /** From a failed first build: back to the message box. */
+  onBackToChat: () => void;
   reloadKey: number;
   device: Device;
 }
 
-export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loading, working, error, onRetry, onReload, reloadKey, device }: Props) {
+type Reveal = "none" | "hold" | "fade";
+/** Most previews load in a second or two; past this the site is shown anyway. */
+const HOLD_MAX_MS = 10_000;
+const FADE_MS = 500;
+
+export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, working, timeline, onRetry, onReload, onBackToChat, reloadKey, device }: Props) {
+  // The first build just saved: the frame loads the new site under the placeholder, which fades
+  // out once it has loaded, so the starter template never flashes on screen.
+  const [prevView, setPrevView] = useState(view);
+  const [reveal, setReveal] = useState<Reveal>("none");
+  if (view !== prevView) {
+    setPrevView(view);
+    setReveal(prevView === "building" && view === "live" ? "hold" : "none");
+  }
+  // The request's last progress, still shown while the finished site loads underneath.
+  const [lastTimeline, setLastTimeline] = useState(timeline);
+  if (timeline && timeline !== lastTimeline) setLastTimeline(timeline);
+  useEffect(() => {
+    if (reveal === "none") return;
+    const id = setTimeout(() => setReveal(reveal === "hold" ? "fade" : "none"), reveal === "hold" ? HOLD_MAX_MS : FADE_MS);
+    return () => clearTimeout(id);
+  }, [reveal]);
+  const loaded = useCallback(() => setReveal((r) => (r === "hold" ? "fade" : r)), []);
+
+  // Phones only (on large screens the chat's progress card has the one status line): the step,
+  // or what went wrong, said once when it changes.
+  const shownTimeline = timeline ?? lastTimeline;
+  const announce = view === "building" && shownTimeline ? announcedStep(t, shownTimeline) : view === "failed" ? t.previewFirstFailed : reveal !== "none" ? t.tlReady : "";
+
   // A phone-shaped frame on big screens; on a phone the preview simply fills the screen.
   const shell =
     device === "phone"
       ? "phone-frame h-full w-[390px] max-w-full rounded-xl border border-line lg:my-auto lg:max-h-[844px] lg:rounded-[2.25rem] lg:border-[10px] lg:border-device lg:shadow-2xl"
       : "h-full w-full rounded-xl border border-line shadow-lg";
+  const live = view === "live" && url;
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-paper">
-      <PreviewControls t={t} url={url} liveUrl={liveUrl} onReload={onReload} className="border-b border-line bg-white px-2 py-1 lg:hidden" />
+      <PreviewControls t={t} url={live ? url : null} liveUrl={liveUrl} onReload={onReload} className="border-b border-line bg-white px-2 py-1 lg:hidden" />
+      <p role="status" className="sr-only lg:hidden">
+        {announce}
+      </p>
       <div className="flex min-h-0 flex-1 items-stretch justify-center overflow-auto bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] p-3 lg:p-6">
-        {url ? (
+        {live || view === "building" ? (
           <div className={`relative flex min-h-[480px] flex-col overflow-hidden bg-white ${shell}`}>
-            <iframe key={`${url}-${reloadKey}`} src={url} title={t.previewTitle} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" className="min-h-0 w-full flex-1 bg-white" />
-            {working && (
+            {live && <iframe key={`${url}-${reloadKey}`} src={url} title={t.previewTitle} onLoad={loaded} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" className="min-h-0 w-full flex-1 bg-white" />}
+            {live && working && reveal === "none" && (
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex flex-col justify-between">
                 <span className="block h-1 overflow-hidden bg-sunken">
                   <span className="progress-slide block h-full w-1/3 rounded-full bg-ink" />
@@ -96,17 +136,18 @@ export const PreviewPanel = memo(function PreviewPanel({ t, url, liveUrl, loadin
                 <span className="mb-4 self-center rounded-full bg-ink px-4 py-2 text-sm font-medium text-white shadow-lg">{t.previewUpdating}</span>
               </div>
             )}
+            {(view === "building" || reveal !== "none") && <BuildPlaceholder t={t} device={device} timeline={shownTimeline} fading={reveal === "fade"} />}
           </div>
-        ) : loading ? (
+        ) : view === "loading" ? (
           <div role="status" className="flex w-full max-w-[390px] flex-col items-center gap-4 self-center">
             <SiteSkeleton />
-            <p className="text-center text-ink-muted">{working ? t.previewBuilding : t.previewLoading}</p>
+            <p className="text-center text-ink-muted">{t.previewLoading}</p>
           </div>
-        ) : error ? (
-          <div role="alert" className="flex max-w-md flex-col items-center gap-3 self-center rounded-2xl border border-line bg-white p-6 text-center text-ink-muted">
-            <p>{t.previewError}</p>
-            <button type="button" onClick={onRetry} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint text-sm lg:min-h-9">
-              {t.retry}
+        ) : view === "error" || view === "failed" ? (
+          <div className="flex max-w-md flex-col items-center gap-3 self-center rounded-2xl border border-line bg-white p-6 text-center text-ink-muted" role={view === "error" ? "alert" : undefined}>
+            <p>{view === "error" ? t.previewError : t.previewFirstFailed}</p>
+            <button type="button" onClick={view === "error" ? onRetry : onBackToChat} className="min-h-11 rounded-lg border border-line bg-white px-4 font-medium text-ink hover:border-faint text-sm lg:min-h-9">
+              {view === "error" ? t.retry : t.previewBackToChat}
             </button>
           </div>
         ) : (

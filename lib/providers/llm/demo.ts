@@ -5,7 +5,8 @@ import type { LLMProvider, LLMRequest, LLMResponse } from "./types";
 /**
  * Deterministic stand-in used by e2e tests (E2E=1). Renames the site to the owner's message,
  * or writes a broken file when the message contains "break it", answers with markdown for
- * "telegram", and takes 1.5 s for "slowly", so UI paths can be tested without spending money.
+ * "telegram", and takes 1.5 s for "slowly" (6 s for "take your time"), so UI paths can be tested
+ * without spending money.
  */
 export class DemoLLMProvider implements LLMProvider {
   async complete(req: LLMRequest): Promise<LLMResponse> {
@@ -43,7 +44,9 @@ export class DemoLLMProvider implements LLMProvider {
       }
     }
     // "slowly" holds the tool turn for a moment, so e2e can see the progress card move.
-    if (/\bslowly\b/i.test(owner) && !isToolResult) await new Promise((r) => setTimeout(r, 1500));
+    // "take your time" holds it long enough to check the first-build placeholder (axe, layout).
+    const pause = /take your time/i.test(owner) ? 6000 : /\bslowly\b/i.test(owner) ? 1500 : 0;
+    if (pause && !isToolResult) await new Promise((r) => setTimeout(r, pause));
     const usage = { inputTokens: 100, outputTokens: 20, cacheReadTokens: 0, cacheWriteTokens: 0 };
     return {
       content,
