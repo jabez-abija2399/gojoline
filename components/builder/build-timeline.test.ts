@@ -50,6 +50,12 @@ describe("build timeline", () => {
     expect(keys(tl)).toEqual(["understand", "plan", "write", "check", "ready"]);
   });
 
+  it("returns the same timeline when nothing visible changed (streamed text)", () => {
+    const tl = run([{ type: "plan" }, { type: "text" }]);
+    expect(nextTimeline(tl, { type: "text" })).toBe(tl);
+    expect(nextTimeline(tl, { type: "section", name: "menu" })).not.toBe(tl);
+  });
+
   it("a plain answer shows no 'preview ready'", () => {
     const tl = run([{ type: "plan" }, { type: "text" }, { type: "done" }]);
     expect(keys(tl)).toEqual(["understand", "plan"]);

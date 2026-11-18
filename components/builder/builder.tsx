@@ -11,6 +11,7 @@ import type { SiteLanguages } from "./language-choice";
 import type { PhotoText } from "./photos-panel";
 import { PreviewControls, PreviewPanel, type Device } from "./preview-panel";
 import { PublishBar } from "./publish-bar";
+import { previewView } from "./preview-view";
 import { takeStartPrompt } from "./start-prompt";
 import { TabList } from "./tab-list";
 import { TopBar, type TopBarText } from "./top-bar";
@@ -156,6 +157,10 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const [draft, setDraft] = useState("");
   const [focusChat, setFocusChat] = useState(0);
   const lastBuildFailed = useRef(false);
+  // The latest first build ended without a site: the preview says so (never the starter template).
+  const [firstBuildFailed, setFirstBuildFailed] = useState(false);
+  // A first build's site built cleanly: its preview loads under the placeholder before it is saved.
+  const [firstBuildWarm, setFirstBuildWarm] = useState(false);
 
   // Wake the sandbox for an existing site so the preview shows straight away.
   useEffect(() => {
@@ -186,7 +191,11 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       setWorking(true);
       setTimeline(startTimeline(Date.now()));
       setStreamText("");
+      setFirstBuildFailed(false);
+      setFirstBuildWarm(false);
       lastBuildFailed.current = false;
+      // Anything but an answer, a question about cost or a refusal is a failed run.
+      let failed = true;
       try {
         const res = await fetch(`/api/projects/${projectId}/messages`, {
           method: "POST",
@@ -232,10 +241,12 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 lastBuildFailed.current = !event.ok;
                 if (event.ok) setReloadKey((k) => k + 1);
+                if (versionsRef.current === 0) setFirstBuildWarm(!!event.ok);
                 break;
               case "needs_confirm":
                 // Nothing ran: the owner sees the cost and decides.
                 finished = true;
+                failed = false;
                 if (typeof event.credits === "number") setCredits(event.credits);
                 setConfirm({ text, languages, size: event.size, cost: event.cost, left: event.credits });
                 break;
@@ -245,6 +256,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 if (typeof event.credits === "number") setCredits(event.credits);
                 setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
                 const m = event.message;
+                failed = m.status === "failed";
                 const usage = typeof event.charged === "number" && typeof event.credits === "number" ? usageNote(t, event.charged, event.credits, versionsRef.current === 0 && m.status === "changed") : undefined;
                 if (m.status === "failed") addAssistant(event.tooBig ? t.tooBigFailed : t.reverted, { tone: "error", usage });
                 else addAssistant(event.tooBig ? [m.text, t.tooBigPartial].filter(Boolean).join("\n\n") : m.text, { versionNumber: m.versionNumber, usage });
@@ -253,18 +265,22 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 if (m.versionNumber) {
                   // The first site made: a good moment to offer the app.
                   markInstallMoment();
-                  if (versionsRef.current === 0) setCelebrate(true);
+                  const first = versionsRef.current === 0;
+                  if (first) setCelebrate(true);
                   setPreviewFresh(true);
                   versionsRef.current += 1;
                   setVersions((v) => [{ number: m.versionNumber, summary: text.slice(0, 140), createdAt: new Date().toISOString() }, ...v]);
                   setCurrent(m.versionNumber);
-                  setReloadKey((k) => k + 1);
+                  // A first build's frame already loaded its last good build under the placeholder:
+                  // keep it, so the reveal is instant.
+                  if (!first || lastBuildFailed.current) setReloadKey((k) => k + 1);
                 }
                 break;
               }
               case "error":
                 finished = true;
                 if (typeof event.credits === "number") setCredits(event.credits);
+                failed = event.code !== "no_credits" && event.code !== "blocked";
                 if (event.code === "no_credits") {
                   // Not enough for this request (but some left): say what it needs; none left: say so.
                   const some = typeof event.cost === "number" && (event.credits ?? 0) > 0;
@@ -282,6 +298,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       } catch {
         addAssistant(t.failed, { tone: "error" });
       } finally {
+        if (failed && versionsRef.current === 0) setFirstBuildFailed(true);
         setWorking(false);
         setTimeline(null);
         setStreamText("");
@@ -404,18 +421,26 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       languages={versions.length === 0 && !working ? { value: siteLanguages, onChange: setSiteLanguages } : undefined}
     />
   );
+  const view = previewView({ hasVersion: versions.length > 0, working, firstBuildFailed, url: previewUrl, loading: previewLoading, error: previewError });
+  const backToChat = useCallback(() => {
+    setMobileTab("chat");
+    setFocusChat((k) => k + 1);
+  }, []);
   const preview = (
     <PreviewPanel
       t={t}
+      view={view}
       url={previewUrl}
       liveUrl={liveUrl}
       working={working}
+      // Only the placeholder uses it: later edits don't re-render the frame on every streamed piece.
+      timeline={view === "building" ? timeline : null}
       device={device}
       onReload={reload}
-      loading={previewLoading || (working && !previewUrl)}
-      error={previewError && !previewUrl}
       onRetry={retryPreview}
+      onBackToChat={backToChat}
       reloadKey={reloadKey}
+      warm={firstBuildWarm}
     />
   );
   const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working} onRestore={restore} />;
@@ -459,7 +484,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         <div className="flex min-h-0 min-w-0 flex-1 flex-col max-lg:contents">
           <div className="hidden min-w-0 items-center gap-3 border-b border-line bg-white px-2 py-1.5 lg:flex">
             <TabList tabs={SIDE_TABS} labels={tabLabels} icons={TAB_ICONS} active={deskTab} onChange={showDesk} label={t.viewsLabel} idPrefix="tab-d" className="flex shrink-0" />
-            {deskTab === "preview" && <PreviewControls t={t} url={previewUrl} liveUrl={liveUrl} onReload={reload} device={{ value: device, onChange: setDevice }} className="flex-1 justify-end" />}
+            {deskTab === "preview" && <PreviewControls t={t} url={view === "live" ? previewUrl : null} liveUrl={liveUrl} onReload={reload} device={{ value: device, onChange: setDevice }} className="flex-1 justify-end" />}
           </div>
           {SIDE_TABS.map((tab) => (
             <section key={tab} id={`panel-${tab}`} role="tabpanel" aria-label={tabLabels[tab]} className={panelClass(tab)}>
