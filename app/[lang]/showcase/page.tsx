@@ -9,7 +9,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { TEMPLATE_INFO } from "@/lib/landing/template-info";
 import { reportError } from "@/lib/observability/report";
-import { services } from "@/lib/server/services";
+import { showcaseList } from "@/lib/growth/showcase-cache";
 import type { ShowcaseEntry } from "@/lib/growth/showcase";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/showcase">): Promise<Metadata> {
@@ -19,15 +19,19 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/showcase">
   return { title: t.metaTitle, description: t.metaDescription, alternates: { canonical: `/${lang}/showcase`, languages: { en: "/en/showcase", am: "/am/showcase" } } };
 }
 
-const LIMIT = 60;
-
 /** Live sites whose owners chose to be shown (Settings → Gojoline showcase). */
 export default async function ShowcasePage({ params }: PageProps<"/[lang]/showcase">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = getMessages(lang);
   const s = t.growth.showcase;
-  const entries: ShowcaseEntry[] = (await services().growth.showcase?.list(LIMIT).catch((e: unknown) => (reportError("showcase list failed", e), []))) ?? [];
+  let entries: ShowcaseEntry[] | null;
+  try {
+    entries = await showcaseList();
+  } catch (e) {
+    reportError("showcase list failed", e);
+    entries = null;
+  }
   const sector = (e: ShowcaseEntry) => {
     const info = e.templateId ? (TEMPLATE_INFO as Record<string, { category: keyof typeof t.landing.gallery.categories }>)[e.templateId] : undefined;
     return info ? t.landing.gallery.categories[info.category] : s.otherSector;
@@ -42,17 +46,30 @@ export default async function ShowcasePage({ params }: PageProps<"/[lang]/showca
           <h1 className="font-display text-3xl font-bold tracking-tight text-balance sm:text-4xl">{s.title}</h1>
           <p className="text-lg text-ink-muted">{s.intro}</p>
         </header>
-        {entries.length === 0 ? (
+        {entries === null ? (
+          <p role="alert" className="rounded-2xl bg-coral-soft p-6 font-medium text-destructive">{s.loadError}</p>
+        ) : entries.length === 0 ? (
           <p className="rounded-2xl border border-line bg-white p-6 text-ink-muted">{s.empty}</p>
         ) : (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {entries.map((e) => (
+            {entries.map((e, i) => (
               <li key={e.siteId}>
                 <a href={e.url} target="_blank" rel="noopener ugc" className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:border-faint hover:shadow-sm">
-                  <span className="relative block aspect-[16/10] bg-sunken">
-                    {e.image && (
-                      // eslint-disable-next-line @next/next/no-img-element -- served by our own route, already WebP.
-                      <img src={`/api/showcase/${e.siteId}/image`} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover" />
+                  <span className="relative flex aspect-[16/10] items-center justify-center bg-sunken">
+                    {e.thumb ? (
+                      // eslint-disable-next-line @next/next/no-img-element -- our own ~640 px WebP, already sized; next/image would only re-encode it.
+                      <img
+                        src={`/api/showcase/image/${e.thumb.key}`}
+                        alt=""
+                        width={e.thumb.width}
+                        height={e.thumb.height}
+                        loading={i < 2 ? "eager" : "lazy"}
+                        fetchPriority={i < 2 ? "high" : undefined}
+                        decoding="async"
+                        className="absolute inset-0 size-full object-cover"
+                      />
+                    ) : (
+                      <span aria-hidden="true" className="font-display text-5xl font-bold text-ink-muted">{[...e.name][0]?.toLocaleUpperCase(lang)}</span>
                     )}
                   </span>
                   <span className="flex flex-1 flex-col gap-1 p-4">
@@ -62,6 +79,7 @@ export default async function ShowcasePage({ params }: PageProps<"/[lang]/showca
                       <ExternalLink aria-hidden="true" className="size-4 shrink-0" />
                       <span className="truncate">{host(e.url)}</span>
                     </span>
+                    <span className="sr-only"> {s.newTab}</span>
                   </span>
                 </a>
               </li>

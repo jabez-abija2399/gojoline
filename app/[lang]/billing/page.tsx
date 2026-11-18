@@ -129,15 +129,12 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
         />
         <Link href={`/${lang}/pricing#compare`} className="-mt-4 inline-flex min-h-11 w-fit items-center font-medium text-ink underline underline-offset-4 lg:min-h-9">{t.plans.compareLink}</Link>
 
-        {invite && (
-          <InviteCard
-            t={t.growth.invite}
-            link={referralLink(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000", lang, invite[0])}
-            credits={credits.monthly.starter}
-            cap={REFERRAL_MONTHLY_CAP}
-            stats={invite[1]}
-          />
-        )}
+        <InviteCard
+          t={t.growth.invite}
+          invite={invite ? { link: referralLink(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000", lang, invite[0]), stats: invite[1] } : null}
+          credits={credits.monthly.starter}
+          cap={REFERRAL_MONTHLY_CAP}
+        />
 
         <section aria-labelledby="sizes-title" className="flex flex-col gap-3">
           <h2 id="sizes-title" className="text-lg font-semibold">{b.sizesTitle}</h2>

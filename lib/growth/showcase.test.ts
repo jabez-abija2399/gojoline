@@ -5,19 +5,28 @@ import { DbProjectStore } from "@/lib/projects/db-store";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemoryProjectStore } from "@/lib/projects/memory-store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
-import { DbShowcaseStore, heroImageOf, MemoryShowcaseStore, type ShowcaseStore } from "./showcase";
+import sharp from "sharp";
+import { DbShowcaseStore, makeThumb, MemoryShowcaseStore, publishedCardSource, type ShowcaseStore } from "./showcase";
 import type { ProjectStore } from "@/lib/projects/types";
 import type { SiteAdminStore, SiteStore } from "@/lib/sites/types";
 
-describe("heroImageOf", () => {
-  it("takes the home page's hero photo when it is a site or library photo", () => {
-    const site = (src: string) => JSON.stringify({ pages: [{ path: "/", sections: [{ type: "about" }, { type: "hero", image: { src } }] }] });
-    expect(heroImageOf(site("/images/front-door.webp"))).toBe("/images/front-door.webp");
-    expect(heroImageOf(site("/stock/cafe-hero.webp"))).toBe("/stock/cafe-hero.webp");
-    expect(heroImageOf(site("https://evil.example/x.webp"))).toBeNull();
-    expect(heroImageOf(site("/images/../secret.webp"))).toBeNull();
-    expect(heroImageOf("not json")).toBeNull();
-    expect(heroImageOf(undefined)).toBeNull();
+describe("published card", () => {
+  const site = (src: string, name: unknown = { en: "Selam Coffee", am: "ሰላም ቡና" }) => JSON.stringify({ name, pages: [{ path: "/", sections: [{ type: "about" }, { type: "hero", image: { src } }] }] });
+  it("takes the published name in the site's language and the home hero photo, if it's a site photo", () => {
+    expect(publishedCardSource(site("/images/front-door.webp"), "am")).toEqual({ name: "ሰላም ቡና", hero: "/images/front-door.webp" });
+    expect(publishedCardSource(site("/stock/cafe-hero.webp"), "en")).toEqual({ name: "Selam Coffee", hero: "/stock/cafe-hero.webp" });
+    expect(publishedCardSource(site("https://evil.example/x.webp"), "en")?.hero).toBeNull();
+    expect(publishedCardSource(site("/images/../secret.webp"), "en")?.hero).toBeNull();
+    expect(publishedCardSource(site("/stock/x.webp", ""), "en")).toBeNull();
+    expect(publishedCardSource("not json", "en")).toBeNull();
+  });
+  it("makes a ~640 px WebP thumbnail from the built photo, keyed by its hash", async () => {
+    const photo = await sharp({ create: { width: 1600, height: 1000, channels: 3, background: "#884422" } }).webp().toBuffer();
+    const t = await makeThumb([{ path: "images/front.webp", data: photo }], "/images/front.webp");
+    expect(t).toMatchObject({ width: 640, height: 400, key: expect.stringMatching(/^[0-9a-f]{32}$/) });
+    expect((await sharp(t!.data).metadata()).format).toBe("webp");
+    expect(await makeThumb([], "/images/front.webp")).toBeNull();
+    expect(await makeThumb([{ path: "images/front.webp", data: photo }], null)).toBeNull();
   });
 });
 
@@ -39,17 +48,23 @@ async function scenario(store: ShowcaseStore, sites: SiteStore & SiteAdminStore,
   expect(await store.setOptIn("bob", live.id, true)).toBe(false);
   expect(await store.setOptIn("alice", live.id, true)).toBe(true);
   expect(await store.setOptIn("alice", draft.id, true)).toBe(true);
-  await store.saveImage("alice", live.id, "/stock/cafe-hero.webp");
+  // Not listed until a publish saved its card (the name and photo that passed the checks).
+  expect(await store.list(10)).toEqual([]);
+  const data = Buffer.from("thumb");
+  await store.savePublished("alice", live.id, { name: "Selam Coffee (published)", thumb: { data, width: 640, height: 400, key: "a".repeat(32) } });
+  await store.savePublished("alice", draft.id, { name: "Draft", thumb: null });
   const list = await store.list(10);
-  // The draft isn't live: not listed.
-  expect(list).toEqual([expect.objectContaining({ siteId: site.id, name: "Selam Coffee", url: "https://selam.sites.example", templateId: "cafe", image: "/stock/cafe-hero.webp" })]);
-  expect((await store.entry(site.id))?.ownerId).toBe("alice");
+  // The draft isn't live: not listed. The name is the published one, never the project's.
+  expect(list).toEqual([expect.objectContaining({ siteId: site.id, name: "Selam Coffee (published)", url: "https://selam.sites.example", templateId: "cafe", thumb: { key: "a".repeat(32), width: 640, height: 400 } })]);
+  expect(typeof list[0]!.publishedAt).toBe("string");
+  expect(Buffer.from((await store.thumb("a".repeat(32)))!)).toEqual(data);
+  expect(await store.thumb("b".repeat(32))).toBeNull();
 
   // An admin hides it; it stays in the admin list.
   expect(await store.setHidden(site.id, true)).toBe(true);
   expect(await store.list(10)).toEqual([]);
-  expect(await store.entry(site.id)).toBeNull();
-  expect((await store.adminList(10)).map((e) => [e.name, e.hidden])).toEqual([["Selam Coffee", true]]);
+  expect(await store.thumb("a".repeat(32))).toBeNull();
+  expect((await store.adminList(10)).map((e) => [e.name, e.hidden])).toEqual([["Selam Coffee (published)", true]]);
   await store.setHidden(site.id, false);
 
   // Resting or taken down: not listed.

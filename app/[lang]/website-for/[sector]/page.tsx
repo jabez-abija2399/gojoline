@@ -50,8 +50,10 @@ export default async function SectorPage({ params }: PageProps<"/[lang]/website-
   const templateName = t.builder.templates[page.template];
   const shot = showcaseSites(lang).find((s) => s.id === page.template);
   const signedIn = await looksSignedIn();
-  const cta = "inline-flex min-h-12 w-fit items-center justify-center gap-2 rounded-full bg-coral px-6 font-semibold text-on-coral transition hover:bg-coral-hover";
-  const start = signedIn ? (
+  // One coral button per page (the first); the one after the questions is ink.
+  const coral = "inline-flex min-h-12 w-fit items-center justify-center gap-2 rounded-full bg-coral px-6 font-semibold text-on-coral transition hover:bg-coral-hover";
+  const ink = "inline-flex min-h-12 w-fit items-center justify-center gap-2 rounded-full bg-ink px-6 font-semibold text-white transition hover:opacity-90";
+  const startButton = (cta: string) => signedIn ? (
     <form action={createProject}>
       <input type="hidden" name="lang" value={lang} />
       <input type="hidden" name="preset" value={page.template} />
@@ -66,6 +68,7 @@ export default async function SectorPage({ params }: PageProps<"/[lang]/website-
       <ArrowRight aria-hidden="true" className="size-4" />
     </StartFromLink>
   );
+  const start = startButton(coral);
   const ld = sectorJsonLd({ url: `${siteUrl.replace(/\/$/, "")}/${lang}/website-for/${sector}`, lang, headline: c.headline, description: c.intro, faq: c.faq });
 
   return (
@@ -76,7 +79,7 @@ export default async function SectorPage({ params }: PageProps<"/[lang]/website-
         <section aria-labelledby="sector-title" className="mx-auto grid max-w-6xl gap-10 px-4 py-10 sm:px-6 md:grid-cols-[1.1fr_1fr] md:items-center md:py-16">
           <div className="flex min-w-0 flex-col gap-5">
             <p className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-              {g.eyebrow} {c.short}
+              {format(g.eyebrow, { sector: c.short })}
             </p>
             <h1 id="sector-title" className="font-display text-3xl font-bold tracking-tight text-balance sm:text-5xl">{c.headline}</h1>
             <p className="max-w-[60ch] text-lg text-ink-muted">{c.intro}</p>
@@ -126,7 +129,7 @@ export default async function SectorPage({ params }: PageProps<"/[lang]/website-
               <p className="px-5 pb-5 text-ink-muted">{item.a}</p>
             </details>
           ))}
-          <div className="mt-4 flex flex-col gap-2">{start}</div>
+          <div className="mt-4 flex flex-col gap-2">{startButton(ink)}</div>
         </section>
 
         <nav aria-labelledby="others-title" className="mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-14 sm:px-6">
