@@ -70,7 +70,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           </div>
           {section.eyebrow && <p className="poster-side">{text(section.eyebrow)}</p>}
         </div>
-        <p aria-hidden="true" className="poster-name container-site" style={{ "--chars": [...text(site.name)].length } as React.CSSProperties}>
+        <p aria-hidden="true" className="poster-name container-site" style={{ "--chars": Math.max(...text(site.name).split(/\s+/).map((w) => [...w].length), 4) } as React.CSSProperties}>
           {text(site.name)}
         </p>
         <div className="container-site flex flex-col gap-5 pb-14 md:pb-20">
@@ -89,9 +89,14 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
     // The first screen as tiles: the heading on the photo, then hours, the two actions and the
     // facts each in a tile of their own. Every tile is something a visitor came to check.
     const hoursTile = chip ?? (hours.length ? hours : undefined);
+    // Up to four small tiles fill the 2×2 beside the photo on wide screens; an odd last tile
+    // spans the row so there is never a hole.
+    const fixed = (hoursTile ? 1 : 0) + (section.primaryAction ? 1 : 0) + (section.secondaryAction ? 1 : 0);
+    const bentoFacts = (facts ?? []).slice(0, Math.max(0, 4 - fixed));
+    const small = fixed + bentoFacts.length;
     return (
       <section id={section.id} className="section hero-bento pt-6 md:pt-10">
-        <div className="container-site bento-grid">
+        <div className={`container-site bento-grid ${small % 2 ? "bento-odd" : ""}`} style={{ "--rows": Math.max(1, Math.ceil(small / 2)) } as React.CSSProperties}>
           <div className="bento-main enter relative isolate flex flex-col justify-end gap-4 overflow-hidden rounded-site bg-accent p-6 text-white md:p-10">
             <Picture image={section.image} priority={first} wide sizes="(min-width: 768px) 60vw, 225px" className="hero-photo absolute inset-0 -z-10 size-full" />
             <div aria-hidden="true" className="hero-shade absolute inset-0 -z-10" />
@@ -103,10 +108,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           </div>
           {hoursTile && (
             <p className="bento-tile bento-hours enter" style={{ "--i": 2 } as React.CSSProperties}>
-              <span className="flex items-center gap-2 font-semibold">
-                <span aria-hidden="true" className="info-dot" />
-                {uiText("hours", lang)}
-              </span>
+              <span className="font-semibold">{uiText("hours", lang)}</span>
               {hoursTile.map((line) => (
                 <span key={line} className="bento-line">
                   {line}
@@ -124,7 +126,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
               <span className="fact-value arrow-link">{text(section.secondaryAction.label)}</span>
             </a>
           )}
-          {facts?.map((f, i) => (
+          {bentoFacts.map((f, i) => (
             <div key={i} className="bento-tile enter flex flex-col-reverse justify-end" style={{ "--i": 5 + i } as React.CSSProperties}>
               <span className="small-label">{text(f.label)}</span>
               <span className="stat-value">

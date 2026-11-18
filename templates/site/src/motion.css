@@ -582,10 +582,10 @@
 @media screen and (prefers-reduced-motion: no-preference) {
   /* The woven band (luxe) and the hazard stripe (swiss) drift slowly sideways. */
   [data-style="luxe"] main > section:first-child::after {
-    animation: site-band 9s linear infinite;
+    animation: site-band 9s linear 2;
   }
   [data-style="swiss"] main > section:first-child::after {
-    animation: site-band-stripe 1.8s linear infinite;
+    animation: site-band-stripe 1.8s linear 3;
   }
   /* The business name on a poster hero rises into place (movement only: it is never hidden). */
   .poster-name {

@@ -40,9 +40,9 @@ const tyresCat = {
   ],
 };
 const fleet = [
-  { image: P.suv, badge: t("7 seats", "7 መቀመጫ"), title: t("Seven-seat SUV", "ባለ 7 መቀመጫ"), subtitle: t("Automatic · four-wheel drive", "አውቶማቲክ · ፎር ዊል"), meta: [t("With driver", "ከሹፌር ጋር"), t("Airport pickup", "ከኤርፖርት መቀበል"), t("Out of town", "ከከተማ ውጭ")], price: birr(9500), priceNote: t("per day", "በቀን"), action: link("Book this car", "ይህን መኪና ይያዙ", "/rental#rent") },
-  { image: P.minibus, badge: t("14 seats", "14 መቀመጫ"), title: t("Minibus", "ሚኒባስ"), subtitle: t("For weddings, groups and airport runs", "ለሠርግ፣ ለቡድንና ለኤርፖርት"), meta: [t("With driver", "ከሹፌር ጋር"), t("Airport pickup", "ከኤርፖርት መቀበል")], price: birr(8000), priceNote: t("per day", "በቀን"), action: link("Book this car", "ይህን መኪና ይያዙ", "/rental#rent") },
-  { image: P.saloon, badge: t("4 seats", "4 መቀመጫ"), title: t("Saloon car", "ሴዳን መኪና"), subtitle: t("Comfortable for the city", "ለከተማ ምቹ"), meta: [t("With driver", "ከሹፌር ጋር"), t("Automatic", "አውቶማቲክ")], price: birr(5500), priceNote: t("per day", "በቀን"), action: link("Book this car", "ይህን መኪና ይያዙ", "/rental#rent") },
+  { image: P.suv, title: t("Seven-seat SUV", "ባለ 7 መቀመጫ"), subtitle: t("Automatic · four-wheel drive", "አውቶማቲክ · ፎር ዊል"), meta: [t("7 seats", "7 መቀመጫ"), t("With driver", "ከሹፌር ጋር"), t("Airport pickup", "ከኤርፖርት መቀበል"), t("Out of town", "ከከተማ ውጭ")], price: birr(9500), priceNote: t("per day", "በቀን"), action: link("Book this car", "ይህን መኪና ይያዙ", "/rental#rent") },
+  { image: P.minibus, title: t("Minibus", "ሚኒባስ"), subtitle: t("For weddings, groups and airport runs", "ለሠርግ፣ ለቡድንና ለኤርፖርት"), meta: [t("14 seats", "14 መቀመጫ"), t("With driver", "ከሹፌር ጋር"), t("Airport pickup", "ከኤርፖርት መቀበል")], price: birr(8000), priceNote: t("per day", "በቀን"), action: link("Book this car", "ይህን መኪና ይያዙ", "/rental#rent") },
+  { image: P.saloon, title: t("Saloon car", "ሴዳን መኪና"), subtitle: t("Comfortable for the city", "ለከተማ ምቹ"), meta: [t("4 seats", "4 መቀመጫ"), t("With driver", "ከሹፌር ጋር"), t("Automatic", "አውቶማቲክ")], price: birr(5500), priceNote: t("per day", "በቀን"), action: link("Book this car", "ይህን መኪና ይያዙ", "/rental#rent") },
 ];
 
 const bookingForm = {
@@ -146,16 +146,16 @@ save("garage", {
           action: rent,
         },
         {
-          type: "cards",
+          type: "services",
           id: "work",
-          layout: "grid",
+          variant: "bento",
           eyebrow: t("In the workshop", "በጥገና ክፍሉ"),
           heading: t("What we fix every day", "በየቀኑ የምንጠግነው"),
           items: [
-            { image: P.oil, title: t("Service and oil", "ሰርቪስና ዘይት"), description: t("Done while you wait, about an hour.", "እየጠበቁ ይሠራል፣ አንድ ሰዓት ያህል።") },
-            { image: P.brakes, title: t("Brakes and suspension", "ፍሬንና ሞሞርታይዘር"), description: t("Pads, discs and shocks, checked on every visit.", "ሸራ፣ ዲስክና ሞሞርታይዘር፣ በየጉብኝቱ ይፈተሻሉ።") },
-            { image: P.diag, title: t("Engine and electrics", "ሞተርና ኤሌክትሪክ"), description: t("Warning lights read by computer, with a written report.", "የማስጠንቀቂያ መብራቶች በኮምፒውተር ይነበባሉ፣ ከጽሑፍ ሪፖርት ጋር።") },
-            { image: P.tyres, title: t("Tyres and alignment", "ጎማና አላይንመንት"), description: t("New and used tyres, balancing and alignment.", "አዲስና ያገለገሉ ጎማዎች፣ ሚዛንና አላይንመንት።") },
+            { icon: "wrench", title: t("Service and oil", "ሰርቪስና ዘይት"), description: t("Done while you wait, about an hour. Oil, filters and a 30-point check.", "እየጠበቁ ይሠራል፣ አንድ ሰዓት ያህል። ዘይት፣ ማጣሪያዎችና 30 ነጥብ ፍተሻ።") },
+            { icon: "shield", title: t("Brakes and suspension", "ፍሬንና ሞሞርታይዘር"), description: t("Pads, discs and shocks, checked on every visit.", "ሸራ፣ ዲስክና ሞሞርታይዘር፣ በየጉብኝቱ ይፈተሻሉ።") },
+            { icon: "chart", title: t("Engine and electrics", "ሞተርና ኤሌክትሪክ"), description: t("Warning lights read by computer, with a written report.", "የማስጠንቀቂያ መብራቶች በኮምፒውተር ይነበባሉ፣ ከጽሑፍ ሪፖርት ጋር።") },
+            { icon: "car", title: t("Tyres and alignment", "ጎማና አላይንመንት"), description: t("New and used tyres, balancing and alignment.", "አዲስና ያገለገሉ ጎማዎች፣ ሚዛንና አላይንመንት።") },
           ],
         },
         {

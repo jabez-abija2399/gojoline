@@ -151,10 +151,10 @@
                 "src": "/stock/garage-card-fleet-suv-side.webp",
                 "alt": { "en": "A silver seven-seat SUV seen from the side", "am": "ከጎን የሚታይ ብር ቀለም ያለው ባለ ሰባት መቀመጫ መኪና" }
               },
-              "badge": { "en": "7 seats", "am": "7 መቀመጫ" },
               "title": { "en": "Seven-seat SUV", "am": "ባለ 7 መቀመጫ" },
               "subtitle": { "en": "Automatic · four-wheel drive", "am": "አውቶማቲክ · ፎር ዊል" },
               "meta": [
+                { "en": "7 seats", "am": "7 መቀመጫ" },
                 { "en": "With driver", "am": "ከሹፌር ጋር" },
                 { "en": "Airport pickup", "am": "ከኤርፖርት መቀበል" },
                 { "en": "Out of town", "am": "ከከተማ ውጭ" }
@@ -171,10 +171,10 @@
                 "src": "/stock/garage-card-fleet-minibus-side.webp",
                 "alt": { "en": "A white minibus parked at an airport drop-off", "am": "በአውሮፕላን ማረፊያ መውረጃ ላይ የቆመ ነጭ ሚኒባስ" }
               },
-              "badge": { "en": "14 seats", "am": "14 መቀመጫ" },
               "title": { "en": "Minibus", "am": "ሚኒባስ" },
               "subtitle": { "en": "For weddings, groups and airport runs", "am": "ለሠርግ፣ ለቡድንና ለኤርፖርት" },
               "meta": [
+                { "en": "14 seats", "am": "14 መቀመጫ" },
                 { "en": "With driver", "am": "ከሹፌር ጋር" },
                 { "en": "Airport pickup", "am": "ከኤርፖርት መቀበል" }
               ],
@@ -190,10 +190,10 @@
                 "src": "/stock/garage-card-fleet-saloon-side.webp",
                 "alt": { "en": "A silver saloon car parked beside a brick building", "am": "ከጡብ ሕንፃ አጠገብ የቆመ ብር ቀለም ያለው መኪና" }
               },
-              "badge": { "en": "4 seats", "am": "4 መቀመጫ" },
               "title": { "en": "Saloon car", "am": "ሴዳን መኪና" },
               "subtitle": { "en": "Comfortable for the city", "am": "ለከተማ ምቹ" },
               "meta": [
+                { "en": "4 seats", "am": "4 መቀመጫ" },
                 { "en": "With driver", "am": "ከሹፌር ጋር" },
                 { "en": "Automatic", "am": "አውቶማቲክ" }
               ],
@@ -211,41 +211,29 @@
           }
         },
         {
-          "type": "cards",
+          "type": "services",
           "id": "work",
-          "layout": "grid",
+          "variant": "bento",
           "eyebrow": { "en": "In the workshop", "am": "በጥገና ክፍሉ" },
           "heading": { "en": "What we fix every day", "am": "በየቀኑ የምንጠግነው" },
           "items": [
             {
-              "image": {
-                "src": "/stock/garage-card-oil-check-dipstick.webp",
-                "alt": { "en": "A mechanic checking the engine oil with the dipstick", "am": "መካኒክ የሞተሩን ዘይት በመለኪያው ሲያይ" }
-              },
+              "icon": "wrench",
               "title": { "en": "Service and oil", "am": "ሰርቪስና ዘይት" },
-              "description": { "en": "Done while you wait, about an hour.", "am": "እየጠበቁ ይሠራል፣ አንድ ሰዓት ያህል።" }
+              "description": { "en": "Done while you wait, about an hour. Oil, filters and a 30-point check.", "am": "እየጠበቁ ይሠራል፣ አንድ ሰዓት ያህል። ዘይት፣ ማጣሪያዎችና 30 ነጥብ ፍተሻ።" }
             },
             {
-              "image": {
-                "src": "/stock/garage-card-brake-repair.webp",
-                "alt": { "en": "A mechanic repairing the brakes behind a front wheel", "am": "መካኒክ ከፊት ጎማ ጀርባ ያለውን ፍሬን ሲጠግን" }
-              },
+              "icon": "shield",
               "title": { "en": "Brakes and suspension", "am": "ፍሬንና ሞሞርታይዘር" },
               "description": { "en": "Pads, discs and shocks, checked on every visit.", "am": "ሸራ፣ ዲስክና ሞሞርታይዘር፣ በየጉብኝቱ ይፈተሻሉ።" }
             },
             {
-              "image": {
-                "src": "/stock/garage-card-engine-diagnostics.webp",
-                "alt": { "en": "A technician reading engine data on a diagnostic tablet", "am": "ባለሙያ የሞተሩን መረጃ በመመርመሪያ ታብሌት ሲያነብ" }
-              },
+              "icon": "chart",
               "title": { "en": "Engine and electrics", "am": "ሞተርና ኤሌክትሪክ" },
               "description": { "en": "Warning lights read by computer, with a written report.", "am": "የማስጠንቀቂያ መብራቶች በኮምፒውተር ይነበባሉ፣ ከጽሑፍ ሪፖርት ጋር።" }
             },
             {
-              "image": {
-                "src": "/stock/garage-card-tyre-wheel-service.webp",
-                "alt": { "en": "Two mechanics changing tyres on the workshop floor", "am": "ሁለት መካኒኮች በጥገና ክፍሉ ወለል ላይ ጎማ ሲቀይሩ" }
-              },
+              "icon": "car",
               "title": { "en": "Tyres and alignment", "am": "ጎማና አላይንመንት" },
               "description": { "en": "New and used tyres, balancing and alignment.", "am": "አዲስና ያገለገሉ ጎማዎች፣ ሚዛንና አላይንመንት።" }
             }
@@ -476,10 +464,10 @@
                 "src": "/stock/garage-card-fleet-suv-side.webp",
                 "alt": { "en": "A silver seven-seat SUV seen from the side", "am": "ከጎን የሚታይ ብር ቀለም ያለው ባለ ሰባት መቀመጫ መኪና" }
               },
-              "badge": { "en": "7 seats", "am": "7 መቀመጫ" },
               "title": { "en": "Seven-seat SUV", "am": "ባለ 7 መቀመጫ" },
               "subtitle": { "en": "Automatic · four-wheel drive", "am": "አውቶማቲክ · ፎር ዊል" },
               "meta": [
+                { "en": "7 seats", "am": "7 መቀመጫ" },
                 { "en": "With driver", "am": "ከሹፌር ጋር" },
                 { "en": "Airport pickup", "am": "ከኤርፖርት መቀበል" },
                 { "en": "Out of town", "am": "ከከተማ ውጭ" }
@@ -496,10 +484,10 @@
                 "src": "/stock/garage-card-fleet-minibus-side.webp",
                 "alt": { "en": "A white minibus parked at an airport drop-off", "am": "በአውሮፕላን ማረፊያ መውረጃ ላይ የቆመ ነጭ ሚኒባስ" }
               },
-              "badge": { "en": "14 seats", "am": "14 መቀመጫ" },
               "title": { "en": "Minibus", "am": "ሚኒባስ" },
               "subtitle": { "en": "For weddings, groups and airport runs", "am": "ለሠርግ፣ ለቡድንና ለኤርፖርት" },
               "meta": [
+                { "en": "14 seats", "am": "14 መቀመጫ" },
                 { "en": "With driver", "am": "ከሹፌር ጋር" },
                 { "en": "Airport pickup", "am": "ከኤርፖርት መቀበል" }
               ],
@@ -515,10 +503,10 @@
                 "src": "/stock/garage-card-fleet-saloon-side.webp",
                 "alt": { "en": "A silver saloon car parked beside a brick building", "am": "ከጡብ ሕንፃ አጠገብ የቆመ ብር ቀለም ያለው መኪና" }
               },
-              "badge": { "en": "4 seats", "am": "4 መቀመጫ" },
               "title": { "en": "Saloon car", "am": "ሴዳን መኪና" },
               "subtitle": { "en": "Comfortable for the city", "am": "ለከተማ ምቹ" },
               "meta": [
+                { "en": "4 seats", "am": "4 መቀመጫ" },
                 { "en": "With driver", "am": "ከሹፌር ጋር" },
                 { "en": "Automatic", "am": "አውቶማቲክ" }
               ],

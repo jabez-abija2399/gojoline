@@ -154,7 +154,7 @@ export const siteSchema = z
   });
 
 /** Contrast problems a visitor would notice. Returned as readable messages for the agent. */
-export function themeWarnings(theme: { primary: string; accent: string; background: string; text: string }): string[] {
+export function themeWarnings(theme: { primary: string; accent: string; background: string; text: string; highlight?: string; style?: string }): string[] {
   const out: string[] = [];
   const check = (a: string, b: string, label: string, min = 4.5) => {
     const ratio = contrast(a, b);
@@ -166,5 +166,12 @@ export function themeWarnings(theme: { primary: string; accent: string; backgrou
   check(theme.primary, theme.background, "theme.primary (links, icons) on theme.background", 3);
   // The accent fills the footer and banners; their text is white or near-black, whichever reads best.
   check(readableOn(theme.accent), theme.accent, "text on theme.accent (footer, banners)");
+  // The highlight fills tags and tiles that carry text.
+  if (theme.highlight) check(readableOn(theme.highlight), theme.highlight, "text on theme.highlight (tags, tiles)");
+  // luxe and swiss set small labels and section numbers in the primary colour: it must read as text.
+  if (theme.style === "luxe" || theme.style === "swiss") {
+    check(theme.primary, theme.background, `theme.primary as small text on theme.background (${theme.style})`);
+    check(theme.primary, "#ffffff", `theme.primary as small text on white (${theme.style})`);
+  }
   return out;
 }

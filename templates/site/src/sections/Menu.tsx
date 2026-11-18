@@ -74,26 +74,35 @@ function PriceTable({ section, dark }: { section: MenuSection; dark: boolean }) 
     <section id={section.id ?? "prices"} className={`section ${dark ? "bg-accent text-on-accent on-dark" : ""}`}>
       <div className="container-site flex flex-col gap-8 md:gap-10">
         <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
-        <div className="price-table reveal">
+        <table className="price-table reveal w-full border-collapse">
+          <thead className="sr-only">
+            <tr>
+              <th scope="col">{uiText("item", lang)}</th>
+              <th scope="col">{uiText("unit", lang)}</th>
+              <th scope="col">{uiText("price", lang)}</th>
+            </tr>
+          </thead>
           {section.categories.map((cat, ci) => (
-            <table key={ci} className="w-full border-collapse">
-              <caption className="price-group">{text(cat.name)}</caption>
-              <tbody>
-                {cat.items.map((item, ii) => (
-                  <tr key={ii} className="price-row">
-                    <th scope="row" className="py-3 pe-3 text-start font-normal">
-                      <span className="font-semibold">{text(item.name)}</span>
-                      {item.description && <span className="block text-sm opacity-80">{text(item.description)}</span>}
-                      {item.tag && <span className="price-tag">{text(item.tag)}</span>}
-                    </th>
-                    <td className="price-unit py-3 pe-3 text-sm">{item.unit ? text(item.unit) : ""}</td>
-                    <td className="price-value py-3 text-end font-heading text-lg font-bold whitespace-nowrap">{item.price ? formatPrice(item.price, lang) : ""}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <tbody key={ci}>
+              <tr>
+                <th colSpan={3} scope="rowgroup" className="price-group">
+                  {text(cat.name)}
+                </th>
+              </tr>
+              {cat.items.map((item, ii) => (
+                <tr key={ii} className="price-row">
+                  <th scope="row" className="py-3 pe-3 text-start font-normal">
+                    <span className="font-semibold">{text(item.name)}</span>
+                    {item.description && <span className="block text-sm opacity-80">{text(item.description)}</span>}
+                    {item.tag && <span className="price-tag">{text(item.tag)}</span>}
+                  </th>
+                  <td className="price-unit py-3 pe-3 text-sm">{item.unit ? text(item.unit) : ""}</td>
+                  <td className="price-value py-3 text-end font-heading text-lg font-bold whitespace-nowrap">{item.price ? formatPrice(item.price, lang) : ""}</td>
+                </tr>
+              ))}
+            </tbody>
           ))}
-        </div>
+        </table>
       </div>
     </section>
   );

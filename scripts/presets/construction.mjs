@@ -114,6 +114,18 @@ save("construction", {
           ],
         },
         {
+          type: "stats",
+          id: "numbers",
+          tone: "dark",
+          heading: t("A yard you can count on", "የሚታመን ግቢ"),
+          items: [
+            { value: t("14", "14"), label: t("years in Merkato", "ዓመት በመርካቶ") },
+            { value: t("340+", "340+"), label: t("buildings supplied", "ዕቃ ያቀረብንላቸው ሕንፃዎች") },
+            { value: t("3", "3"), label: t("trucks of our own", "የራሳችን መኪኖች") },
+            { value: t("6", "6"), label: t("sub-cities we deliver to daily", "በየቀኑ የምናደርስባቸው ክፍለ ከተሞች") },
+          ],
+        },
+        {
           type: "menu",
           id: "prices",
           layout: "table",
@@ -129,18 +141,6 @@ save("construction", {
           eyebrow: t("What we supply", "የምናቀርበው"),
           heading: t("Everything from the slab to the paint", "ከሶሌታ እስከ ቀለም"),
           items: supply,
-        },
-        {
-          type: "stats",
-          id: "numbers",
-          tone: "dark",
-          heading: t("A yard you can count on", "የሚታመን ግቢ"),
-          items: [
-            { value: t("14", "14"), label: t("years in Merkato", "ዓመት በመርካቶ") },
-            { value: t("340+", "340+"), label: t("buildings supplied", "ዕቃ ያቀረብንላቸው ሕንፃዎች") },
-            { value: t("3", "3"), label: t("trucks of our own", "የራሳችን መኪኖች") },
-            { value: t("6", "6"), label: t("sub-cities we deliver to daily", "በየቀኑ የምናደርስባቸው ክፍለ ከተሞች") },
-          ],
         },
         {
           type: "steps",

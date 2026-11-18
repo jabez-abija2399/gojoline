@@ -59,6 +59,30 @@
           ]
         },
         {
+          "type": "stats",
+          "id": "numbers",
+          "tone": "dark",
+          "heading": { "en": "A yard you can count on", "am": "የሚታመን ግቢ" },
+          "items": [
+            {
+              "value": { "en": "14", "am": "14" },
+              "label": { "en": "years in Merkato", "am": "ዓመት በመርካቶ" }
+            },
+            {
+              "value": { "en": "340+", "am": "340+" },
+              "label": { "en": "buildings supplied", "am": "ዕቃ ያቀረብንላቸው ሕንፃዎች" }
+            },
+            {
+              "value": { "en": "3", "am": "3" },
+              "label": { "en": "trucks of our own", "am": "የራሳችን መኪኖች" }
+            },
+            {
+              "value": { "en": "6", "am": "6" },
+              "label": { "en": "sub-cities we deliver to daily", "am": "በየቀኑ የምናደርስባቸው ክፍለ ከተሞች" }
+            }
+          ]
+        },
+        {
           "type": "menu",
           "id": "prices",
           "layout": "table",
@@ -187,30 +211,6 @@
                 "label": { "en": "Today's prices", "am": "የዛሬ ዋጋ" },
                 "href": "/prices"
               }
-            }
-          ]
-        },
-        {
-          "type": "stats",
-          "id": "numbers",
-          "tone": "dark",
-          "heading": { "en": "A yard you can count on", "am": "የሚታመን ግቢ" },
-          "items": [
-            {
-              "value": { "en": "14", "am": "14" },
-              "label": { "en": "years in Merkato", "am": "ዓመት በመርካቶ" }
-            },
-            {
-              "value": { "en": "340+", "am": "340+" },
-              "label": { "en": "buildings supplied", "am": "ዕቃ ያቀረብንላቸው ሕንፃዎች" }
-            },
-            {
-              "value": { "en": "3", "am": "3" },
-              "label": { "en": "trucks of our own", "am": "የራሳችን መኪኖች" }
-            },
-            {
-              "value": { "en": "6", "am": "6" },
-              "label": { "en": "sub-cities we deliver to daily", "am": "በየቀኑ የምናደርስባቸው ክፍለ ከተሞች" }
             }
           ]
         },

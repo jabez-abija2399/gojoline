@@ -34,13 +34,14 @@ describe("art directions (luxe, swiss, bento)", () => {
   it("a price table shows each unit beside its price, in a real table", () => {
     const out = html(preset("construction"));
     expect(out).toContain("<table");
-    expect(out).toMatch(/<caption[^>]*>Cement<\/caption>/);
+    expect(out).toMatch(/<th colSpan="3" scope="rowgroup" class="price-group">Cement<\/th>/);
+    expect(out).toContain('<thead class="sr-only">');
     expect(text(out)).toMatch(/OPC 42\.5.*quintal.*1,850/);
   });
 
   it("the poster hero sets the business name large but hidden from screen readers, with one h1", () => {
     const out = html(preset("fashion"));
-    expect(out).toMatch(/<p aria-hidden="true" class="poster-name[^"]*" style="--chars:11">Tsion Kemis<\/p>/);
+    expect(out).toMatch(/<p aria-hidden="true" class="poster-name[^"]*" style="--chars:5">Tsion Kemis<\/p>/);
     expect(out.match(/<h1/g)).toHaveLength(1);
   });
 
