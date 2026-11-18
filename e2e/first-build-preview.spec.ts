@@ -88,7 +88,7 @@ test("a first build that fails shows the recovery message, not the template", as
   await expect(page.getByText("I couldn't finish this change").first()).toBeAttached();
   await showPreview(page, "en", mobile);
   const panel = page.locator("#panel-preview");
-  await expect(panel.getByText("Your site wasn't built this time")).toBeVisible();
+  await expect(panel.getByRole("paragraph").filter({ hasText: "Your site wasn't built this time" })).toBeVisible();
   await expect(panel.locator("iframe")).toHaveCount(0);
   await expectNoSeriousA11yIssues(page);
   await panel.getByRole("button", { name: "Back to the chat" }).click();

@@ -106,6 +106,18 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
     return () => clearTimeout(id);
   }, [reveal]);
   const loaded = useCallback(() => setReveal((r) => (r === "hold" ? "fade" : r)), []);
+  // A page that loads at once (same-origin, e.g. about:blank in tests) can finish before React
+  // listens: check on mount too. Cross-origin frames throw or are still on their first blank page.
+  const frameRef = useCallback(
+    (f: HTMLIFrameElement | null) => {
+      try {
+        if (f?.contentDocument?.readyState === "complete" && f.contentWindow?.location.href === f.src) loaded();
+      } catch {
+        // Cross-origin: onLoad will say.
+      }
+    },
+    [loaded],
+  );
 
   // Phones only (on large screens the chat's progress card has the one status line): the step,
   // or what went wrong, said once when it changes.
@@ -127,7 +139,7 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
       <div className="flex min-h-0 flex-1 items-stretch justify-center overflow-auto bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] p-3 lg:p-6">
         {live || view === "building" ? (
           <div className={`relative flex min-h-[480px] flex-col overflow-hidden bg-white ${shell}`}>
-            {live && <iframe key={`${url}-${reloadKey}`} src={url} title={t.previewTitle} onLoad={loaded} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" className="min-h-0 w-full flex-1 bg-white" />}
+            {live && <iframe ref={frameRef} key={`${url}-${reloadKey}`} src={url} title={t.previewTitle} onLoad={loaded} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" className="min-h-0 w-full flex-1 bg-white" />}
             {live && working && reveal === "none" && (
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex flex-col justify-between">
                 <span className="block h-1 overflow-hidden bg-sunken">
