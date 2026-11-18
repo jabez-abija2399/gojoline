@@ -180,3 +180,45 @@ describe("Made with Gojoline badge", () => {
     expect(badgeHref("am", "https://app.example/{lang}?ref=site_bole&utm_source=gojoline_badge")).toBe("https://app.example/am?ref=site_bole&utm_source=gojoline_badge");
   });
 });
+
+describe("share preview (Telegram, Facebook)", () => {
+  it("has title, description, site name, locale and the hero photo as image", () => {
+    const original = site.meta;
+    site.meta = { ...(original ?? {}), url: "https://bole.example" };
+    try {
+      const am = render("/am")!.head;
+      expect(am).toContain('<meta property="og:locale" content="am_ET">');
+      expect(am).toContain('<meta property="og:locale:alternate" content="en_US">');
+      expect(am).toContain('<meta property="og:site_name" content="ቦሌ ቡና ቤት">');
+      expect(am).toContain('<meta property="og:url" content="https://bole.example/am">');
+      const en = render("/")!.head;
+      expect(en).toMatch(/<meta property="og:title" content="[^"]+">/);
+      expect(en).toMatch(/<meta property="og:description" content="[^"]+">/);
+      const hero = site.pages[0]!.sections.find((s) => s.type === "hero");
+      const src = hero?.type === "hero" ? hero.image?.src : undefined;
+      if (src) {
+        expect(en).toContain(`<meta property="og:image" content="https://bole.example${src}">`);
+        expect(en).toContain('<meta name="twitter:card" content="summary_large_image">');
+      } else {
+        expect(en).toContain('<meta name="twitter:card" content="summary">');
+      }
+    } finally {
+      site.meta = original;
+    }
+  });
+  it("prefers the owner's chosen picture, and ignores anything that isn't a site photo", async () => {
+    const { shareImage } = await import("../src/entry-server");
+    const page = site.pages[0]!;
+    expect(shareImage(page, "en", "/images/front.webp")).toEqual({ src: "/images/front.webp", alt: "" });
+    const hero = page.sections.find((s) => s.type === "hero");
+    if (hero?.type === "hero") {
+      const before = hero.image;
+      hero.image = { src: "https://evil.example/x.png", alt: { en: "x" } };
+      try {
+        expect(shareImage({ ...page }, "en")).toBeNull();
+      } finally {
+        hero.image = before;
+      }
+    }
+  });
+});

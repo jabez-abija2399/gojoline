@@ -2,7 +2,7 @@ import { renderToString } from "react-dom/server";
 import { App, findPage } from "./App";
 import { localePath, parsePath, t } from "./lib/i18n";
 import { headingFontFile, styleString, themeVariables } from "./lib/theme";
-import type { Lang, Site } from "./lib/types";
+import type { Lang, Page, Site } from "./lib/types";
 import { publishMeta, seoMeta } from "./lib/meta";
 import { withBase } from "./lib/base";
 import { site } from "./site";
@@ -35,7 +35,10 @@ export function render(url: string): RenderedPage | null {
   const title = (home && t(seo.title, lang, site)) || (home ? t(site.name, lang, site) : `${t(page.title, lang, site)} · ${t(site.name, lang, site)}`);
   const description = (home && t(seo.description, lang, site)) || t(page.description ?? site.tagline, lang, site);
   const base = siteUrl();
-  const image = seo.image && base ? `${base}${withBase(seo.image)}` : "";
+  // The owner's share picture, else this page's (or the home page's) hero photo: what Telegram shows.
+  const picture = shareImage(page, lang, seo.image);
+  const image = picture && base ? `${base}${withBase(picture.src)}` : "";
+  const canonical = base ? `${base}${localePath(page.path, lang, site)}` : "";
   const alternates = site.languages
     .map((l) => (base ? `<link rel="alternate" hreflang="${l}" href="${base}${localePath(page.path, l, site)}">` : ""))
     .join("");
@@ -45,9 +48,18 @@ export function render(url: string): RenderedPage | null {
     `<meta property="og:title" content="${escapeHtml(title)}">`,
     description ? `<meta property="og:description" content="${escapeHtml(description)}">` : "",
     `<meta property="og:type" content="website">`,
-    image ? `<meta property="og:image" content="${escapeHtml(image)}"><meta name="twitter:card" content="summary_large_image">` : "",
+    `<meta property="og:site_name" content="${escapeHtml(t(site.name, lang, site))}">`,
+    `<meta property="og:locale" content="${OG_LOCALE[lang]}">`,
+    ...site.languages.filter((l) => l !== lang).map((l) => `<meta property="og:locale:alternate" content="${OG_LOCALE[l]}">`),
+    canonical ? `<meta property="og:url" content="${escapeHtml(canonical)}">` : "",
+    image ? `<meta property="og:image" content="${escapeHtml(image)}">` : "",
+    image && picture?.alt ? `<meta property="og:image:alt" content="${escapeHtml(picture.alt)}">` : "",
+    `<meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">`,
+    `<meta name="twitter:title" content="${escapeHtml(title)}">`,
+    description ? `<meta name="twitter:description" content="${escapeHtml(description)}">` : "",
+    image ? `<meta name="twitter:image" content="${escapeHtml(image)}">` : "",
     seo.icon ? `<link rel="icon" href="${escapeHtml(withBase(seo.icon))}">` : "",
-    base ? `<link rel="canonical" href="${base}${localePath(page.path, lang, site)}">` : "",
+    canonical ? `<link rel="canonical" href="${canonical}">` : "",
     alternates,
     `<meta name="theme-color" content="${escapeHtml(site.theme.primary)}">`,
     page.path === "/" ? `<script type="application/ld+json">${jsonLd(lang, base)}</script>` : "",
@@ -68,6 +80,20 @@ export function render(url: string): RenderedPage | null {
     head,
     htmlAttrs: { lang, style: styleString(themeVariables(site.theme, lang)) },
   };
+}
+
+const OG_LOCALE: Record<Lang, string> = { en: "en_US", am: "am_ET" };
+
+/** A photo for link previews: the owner's choice, else the first hero photo of this page or the home page. */
+export function shareImage(page: Page, lang: Lang, chosen?: string): { src: string; alt: string } | null {
+  if (chosen) return { src: chosen, alt: "" };
+  const home = site.pages.find((p) => p.path === "/");
+  for (const p of [page, home]) {
+    const hero = p?.sections.find((s) => s.type === "hero");
+    const img = hero?.type === "hero" ? hero.image : undefined;
+    if (img?.src && /^\/(images|stock)\/[\w.-]+$/.test(img.src)) return { src: img.src, alt: t(img.alt, lang, site) };
+  }
+  return null;
 }
 
 /** schema.org LocalBusiness data for search engines (only facts the owner gave). */
