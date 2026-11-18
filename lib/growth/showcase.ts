@@ -154,7 +154,7 @@ export class MemoryShowcaseStore implements ShowcaseStore {
     return e ? { siteId: e.siteId, name: e.name, url: e.url, templateId: e.templateId, image: e.image, publishedAt: e.publishedAt, ownerId: e.ownerId, projectId: e.projectId } : null;
   }
   async adminList(limit: number) {
-    return (await this.entries()).slice(0, limit).map(({ site: _site, projectId: _p, ...e }) => e);
+    return (await this.entries()).slice(0, limit).map(({ siteId, name, url, templateId, image, publishedAt, hidden, ownerId }) => ({ siteId, name, url, templateId, image, publishedAt, hidden, ownerId }));
   }
   async setHidden(siteId: string, hidden: boolean) {
     if (!(await this.sites.byId(siteId))) return false;
