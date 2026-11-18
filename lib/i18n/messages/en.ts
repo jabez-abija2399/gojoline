@@ -397,8 +397,15 @@ export const en = {
     tlUnderstand: "Understanding your request",
     tlWriting: "Writing your site",
     tlPlan: "Planning your pages",
-    tlWritingSections: "Writing your site: {sections}",
+    /** {sections} is a list of the newest section names, e.g. "about, gallery and form". */
+    tlWritingSections: "Writing your {sections} sections",
+    tlWritingSection: "Writing your {sections} section",
     tlListSep: ", ",
+    tlListAnd: " and ",
+    /** Ends the list when more sections were written earlier: "gallery, form, contact and 2 more". */
+    tlMoreSections: "{n} more",
+    /** Section names sit inside a sentence: lower-case them (English). */
+    tlSectionLower: true,
     tlFinish: "Finishing your site",
     tlSave: "Saving your site",
     tlSection: {
@@ -610,7 +617,9 @@ export const en = {
     previewUpdating: "Updating your site...",
     previewReload: "Reload the preview",
     previewPrivate: "Only you can see this",
-    previewBuilding: "Your site is being built. It appears here in about a minute.",
+    previewUsually: "Usually about a minute",
+    previewFirstFailed: "Your site wasn't built this time, and nothing was saved. Try again in the chat, or describe it another way.",
+    previewBackToChat: "Back to the chat",
     tabNew: "updated",
     menuMore: "More",
     versionsHint: "Every change is saved here. You can always go back.",
