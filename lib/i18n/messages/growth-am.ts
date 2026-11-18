@@ -77,4 +77,16 @@ export const growthAm: Shape<typeof growthEn> = {
     hidden: "ተደብቋል",
     shown: "ይታያል",
   },
+  sectors: {
+    eyebrow: "ድረ-ገጽ ለ",
+    start: "በዚህ ቅጽ ይጀምሩ",
+    startNote: "በነጻ ይጀምሩ። በአማርኛና በእንግሊዝኛ፣ በብር ይከፈላል።",
+    benefitsTitle: "ድረ-ገጽዎ የሚሠራልዎ",
+    exampleTitle: "ለመጀመር የሚሆን ምሳሌ",
+    exampleBody: "የ“{template}” ቅጽ፦ ቃላቱን፣ ፎቶዎቹንና ዋጋዎቹን በውይይት ይቀይሩ፤ የእርስዎ ይሆናል።",
+    exampleAlt: "የ“{template}” ቅጽ የመነሻ ገጽ የላይኛው ክፍል",
+    seeExample: "ሙሉውን ምሳሌ ይመልከቱ",
+    faqTitle: "ጥያቄዎች",
+    othersTitle: "ለሌሎች ንግዶች ድረ-ገጾች",
+  },
 };

@@ -95,8 +95,11 @@ test("a business joins through an invite link; when the admin approves its first
   // Both see the thank-you in their history of changes.
   for (const p of [page, invited.page]) {
     await p.goto("/en/billing");
-    await unfold(p, /History of your changes/);
-    await expect(p.getByText("Thank-you for an invite")).toBeVisible();
+    // Folded on phones; unfold again if a late render folded it back.
+    await expect(async () => {
+      await unfold(p, /History of your changes/);
+      await expect(p.getByText("Thank-you for an invite")).toBeVisible({ timeout: 1000 });
+    }).toPass();
   }
   await expect(page.getByText(/1 invited · 1 thanked so far/)).toBeVisible();
   await invited.close();
@@ -132,4 +135,29 @@ test("an owner opts in to the showcase, the site appears on /showcase, and an ad
   await admin.close();
   await page.reload();
   await expect(page.getByRole("link", { name: new RegExp(name) })).toHaveCount(0);
+});
+
+test("sector pages render in English and Amharic, accessible and without sideways scroll", async ({ page }) => {
+  await page.goto("/en/website-for/church");
+  await expect(page.getByRole("heading", { level: 1, name: "A website for your church in Ethiopia" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What your site does for you" })).toBeVisible();
+  await expect(page.locator("main details")).toHaveCount(3);
+  await expect(page.getByRole("link", { name: "Start with this template" }).first()).toHaveAttribute("href", "/en/sign-in?next=/en/build");
+  await expect(page.getByRole("link", { name: /See the whole example/ })).toHaveAttribute("href", "/en/templates/worship");
+  const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').first().textContent()) ?? "{}") as { "@graph": { "@type": string }[] };
+  expect(ld["@graph"].map((x) => x["@type"])).toEqual(["WebPage", "FAQPage"]);
+  await expectNoHorizontalScroll(page);
+  await expectNoSeriousA11yIssues(page);
+
+  await page.goto("/am/website-for/church");
+  await expect(page.locator("html")).toHaveAttribute("lang", "am");
+  await expect(page.getByRole("heading", { level: 1, name: "በኢትዮጵያ ላለች ቤተ ክርስቲያንዎ ድረ-ገጽ" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "በዚህ ቅጽ ይጀምሩ" }).first()).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  await expectNoSeriousA11yIssues(page);
+
+  // Other sectors are a tap away; unknown ones are 404.
+  await page.getByRole("link", { name: "ካፌዎች" }).click();
+  await expect(page).toHaveURL(/\/am\/website-for\/cafe$/);
+  expect((await page.goto("/en/website-for/casino"))?.status()).toBe(404);
 });

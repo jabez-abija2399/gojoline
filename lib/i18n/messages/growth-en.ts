@@ -73,4 +73,16 @@ export const growthEn = {
     hidden: "Hidden",
     shown: "Shown",
   },
+  sectors: {
+    eyebrow: "Websites for",
+    start: "Start with this template",
+    startNote: "Free to start. In Amharic and English, paid in Birr.",
+    benefitsTitle: "What your site does for you",
+    exampleTitle: "An example to start from",
+    exampleBody: "The “{template}” template: change the words, photos and prices by chatting, and it becomes yours.",
+    exampleAlt: "The top of the “{template}” template's home page",
+    seeExample: "See the whole example",
+    faqTitle: "Questions",
+    othersTitle: "Websites for other businesses",
+  },
 };
