@@ -1,6 +1,7 @@
 import { dashboardEn } from "./dashboard-en";
 import { errorMessages } from "./errors";
 import { feedbackEn } from "./feedback-en";
+import { growthEn } from "./growth-en";
 
 /**
  * English catalog: the source of truth for message keys.
@@ -1190,6 +1191,7 @@ export const en = {
     report: "Report a site",
   },
   feedback: feedbackEn,
+  growth: growthEn,
   errors: errorMessages.en,
 };
 

@@ -29,6 +29,8 @@ import { OwnerActions } from "@/components/admin/owner-actions";
 import { PlanComparison } from "@/components/pricing/plan-comparison";
 import { monthlyRevenueMinor, type PlanFilter } from "@/lib/admin/stats";
 import { PLAN_IDS, productName } from "@/lib/billing/plans";
+import { SOURCES } from "@/lib/growth/attribution";
+import { emptySourceCounts } from "@/lib/growth/sources";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): Promise<Metadata> {
   const { lang } = await params;
@@ -179,6 +181,8 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
       ...(fbCounts.new ? [{ href: `/${lang}/admin?tab=feedback&status=new`, text: format(t.admin.attFeedback, { n: fbCounts.new }), Icon: MessageSquareHeart }] : []),
     ];
     const actionName = (a: string) => (t.admin.actions as Record<string, string>)[a.replace(".", "_")] ?? a;
+    // A breakdown, not the page: without it the overview still opens.
+    const sources = await svc.growth.sources.breakdown().catch((e: unknown) => (reportError("sign-up sources failed", e), { d7: emptySourceCounts(), d30: emptySourceCounts() }));
     return (
       <div className="flex flex-col gap-4">
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
@@ -220,6 +224,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             })}
           </ul>
         </section>
+        <SignupSources counts={sources} />
         <section aria-labelledby="att-title" className="rounded-xl border border-line bg-white p-4">
           <h2 id="att-title" className="text-base font-semibold">{t.admin.attention}</h2>
           {attention.length === 0 ? (
@@ -258,6 +263,50 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           )}
         </section>
       </div>
+    );
+  }
+
+  function SignupSources({ counts }: { counts: { d7: Record<(typeof SOURCES)[number], number>; d30: Record<(typeof SOURCES)[number], number> } }) {
+    const g = t.growth.sources;
+    const sum = (c: Record<string, number>) => Object.values(c).reduce((a, b) => a + b, 0);
+    const total30 = sum(counts.d30);
+    return (
+      <section aria-labelledby="src-title" className="rounded-xl border border-line bg-white p-4">
+        <h2 id="src-title" className="text-base font-semibold">{g.title}</h2>
+        <p className="mt-1 text-xs text-ink-muted">{g.intro}</p>
+        <table className="mt-3 w-full border-collapse text-sm">
+          <thead>
+            <tr className="text-start text-xs text-ink-muted">
+              <th scope="col" className="py-1 text-start font-medium">{g.source}</th>
+              <th scope="col" className="w-16 py-1 text-end font-medium">{g.days7}</th>
+              <th scope="col" className="w-16 py-1 text-end font-medium">{g.days30}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SOURCES.map((s) => (
+              <tr key={s} className="border-t border-line">
+                <th scope="row" className="py-2 pe-2 text-start font-medium">
+                  <span className="flex flex-col gap-1">
+                    {g.names[s]}
+                    <span aria-hidden="true" className="block h-1.5 overflow-hidden rounded-full bg-sunken">
+                      <span className="block h-full rounded-full bg-ink" style={{ width: `${total30 ? Math.round((counts.d30[s] / total30) * 100) : 0}%` }} />
+                    </span>
+                  </span>
+                </th>
+                <td className="py-2 text-end tabular-nums">{counts.d7[s]}</td>
+                <td className="py-2 text-end tabular-nums">{counts.d30[s]}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="border-t border-ink font-semibold">
+              <th scope="row" className="py-2 text-start">{g.total}</th>
+              <td className="py-2 text-end tabular-nums">{sum(counts.d7)}</td>
+              <td className="py-2 text-end tabular-nums">{total30}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
     );
   }
 

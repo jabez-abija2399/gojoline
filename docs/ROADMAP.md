@@ -114,6 +114,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Growth loops (2026-11-18)
 - [x] Badge fix: “Made with Gojoline” is a small footer pill linking to the app's own address (`/{lang}?ref=site_<slug>` plus utm tags, set at publish as `VITE_BADGE_URL`), never gojoline.com; only the plan decides (`site.json` `meta.badge` is ignored), and publish refuses a Free site whose pages lack the badge or whose styles target it
+- [x] Sign-up sources: first touch (`?ref=`, `utm_source/medium/campaign`, or the referring host) kept in the first-party `gojo_src` cookie by the proxy (never replaced, 90 days, httpOnly), saved once per new account in `signup_sources` (migration 0018); Admin → Overview shows “Where sign-ups came from” (badge, referral, Telegram, TikTok, Facebook, LinkedIn, QR, other, direct) for 7 and 30 days
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates

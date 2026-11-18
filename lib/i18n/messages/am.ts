@@ -2,6 +2,7 @@ import { dashboardAm } from "./dashboard-am";
 import type { Messages } from "./en";
 import { errorMessages } from "./errors";
 import { feedbackAm } from "./feedback-am";
+import { growthAm } from "./growth-am";
 
 /**
  * Amharic catalog. Drafted by the build agent; must be reviewed by a native speaker
@@ -1190,5 +1191,6 @@ export const am: Messages = {
     report: "ድረ-ገጽ ሪፖርት ያድርጉ",
   },
   feedback: feedbackAm,
+  growth: growthAm,
   errors: errorMessages.am,
 };

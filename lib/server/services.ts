@@ -52,6 +52,7 @@ import { TelegramNotifier } from "@/lib/telegram/notifier";
 import { DbTelegramStore, MemoryTelegramStore, type TelegramStore } from "@/lib/telegram/store";
 import { DbFeedbackStore, MemoryFeedbackStore } from "@/lib/feedback/store";
 import type { FeedbackStore } from "@/lib/feedback/types";
+import { DbSignupSourceStore, MemorySignupSourceStore, type SignupSourceStore } from "@/lib/growth/sources";
 
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
@@ -180,6 +181,8 @@ interface Services {
   publicSites: PublicSiteCache;
   /** Owner feedback and the team's replies. */
   feedback: FeedbackStore;
+  /** Growth loops: sign-up sources (first touch). */
+  growth: { sources: SignupSourceStore };
 }
 
 /** `ownerOf` serves the memory store only (the database joins projects instead). */
@@ -213,6 +216,7 @@ export function services(): Services {
       visits: { counter: new MemoryVisitCounter(), daily: new MemoryVisitsDailyStore(async () => null) },
       checkText: (texts, ctx) => checkOwnerText(texts, null, ctx),
       publicSites: new PublicSiteCache(async () => null),
+      growth: { sources: db ? new DbSignupSourceStore(db) : new MemorySignupSourceStore() },
       feedback: db
         ? new DbFeedbackStore(db)
         : new MemoryFeedbackStore(

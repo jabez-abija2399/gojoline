@@ -1,6 +1,26 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { LOCALE_COOKIE, isLocale, localeFromAcceptLanguage } from "@/lib/i18n/config";
 import { createNonce, cspFromEnv } from "@/lib/security/csp";
+import { ATTRIBUTION_COOKIE, ATTRIBUTION_MAX_AGE, attributionFromRequest, encodeAttribution } from "@/lib/growth/attribution";
+
+/**
+ * First touch: where a visitor first came from (?ref=, utm tags or the referring site), in a
+ * first-party cookie read once at sign-up. Never replaced once set.
+ */
+function rememberFirstTouch(request: NextRequest, response: NextResponse) {
+  if (request.cookies.has(ATTRIBUTION_COOKIE)) return response;
+  const a = attributionFromRequest(request.nextUrl.searchParams, request.headers.get("referer"), request.nextUrl.hostname);
+  if (a) {
+    response.cookies.set(ATTRIBUTION_COOKIE, encodeAttribution(a), {
+      path: "/",
+      maxAge: ATTRIBUTION_MAX_AGE,
+      sameSite: "lax",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+  }
+  return response;
+}
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -13,7 +33,7 @@ export function proxy(request: NextRequest) {
       : localeFromAcceptLanguage(request.headers.get("accept-language"));
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
-    return NextResponse.redirect(url);
+    return rememberFirstTouch(request, NextResponse.redirect(url));
   }
 
   const nonce = createNonce();
@@ -33,7 +53,7 @@ export function proxy(request: NextRequest) {
       secure: process.env.NODE_ENV === "production",
     });
   }
-  return response;
+  return rememberFirstTouch(request, response);
 }
 
 export const config = {

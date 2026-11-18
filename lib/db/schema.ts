@@ -502,3 +502,24 @@ export const feedback = pgTable(
     index("feedback_unread_idx").on(t.ownerId).where(sql`${t.reply} is not null and ${t.replyReadAt} is null`),
   ],
 );
+
+/** Where each owner first came from (first touch, recorded at sign-up; 2026-11-18). */
+export const signupSources = pgTable(
+  "signup_sources",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+    /** The overview's bucket: badge, referral, telegram, tiktok, facebook, linkedin, qr, other, direct. */
+    source: text("source", { enum: ["badge", "referral", "telegram", "tiktok", "facebook", "linkedin", "qr", "other", "direct"] }).notNull(),
+    ref: text("ref"),
+    utmSource: text("utm_source"),
+    utmMedium: text("utm_medium"),
+    utmCampaign: text("utm_campaign"),
+    referrerHost: text("referrer_host"),
+    /** When the visitor first arrived with it (from the cookie). */
+    firstSeenAt: timestamp("first_seen_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("signup_sources_time_idx").on(t.createdAt)],
+);
