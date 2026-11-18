@@ -127,27 +127,6 @@
       "when": 1794881979411,
       "tag": "0017_feedback",
       "breakpoints": true
-    },
-    {
-      "idx": 18,
-      "version": "7",
-      "when": 1794995753432,
-      "tag": "0018_signup_sources",
-      "breakpoints": true
-    },
-    {
-      "idx": 19,
-      "version": "7",
-      "when": 1794995924024,
-      "tag": "0019_referrals",
-      "breakpoints": true
-    },
-    {
-      "idx": 20,
-      "version": "7",
-      "when": 1794996650872,
-      "tag": "0020_showcase",
-      "breakpoints": true
     }
   ]
 }

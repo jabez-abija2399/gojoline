@@ -11,10 +11,6 @@ export const publishMeta = {
   reportUrl: (env.VITE_REPORT_URL as string | undefined) || "/report",
   dataApiUrl: (env.VITE_DATA_API_URL as string | undefined) || undefined,
   siteKey: (env.VITE_SITE_KEY as string | undefined) || undefined,
-  /** From the owner's plan at publish time; nothing in site.json can switch it off. */
-  badge: env.VITE_BADGE !== "0",
-  /** Gojoline's own address with "{lang}" for the page's language, plus ?ref=site_<slug> and utm tags. */
-  badgeUrl: (env.VITE_BADGE_URL as string | undefined) || "/{lang}",
   /** The host answers with its own resting page when the owner takes the site offline (Cloudflare). */
   restAtHost: env.VITE_REST_AT_HOST === "1",
 };
@@ -37,9 +33,4 @@ export function seoMeta(raw: string | undefined = env.VITE_SEO as string | undef
   } catch {
     return {};
   }
-}
-
-/** The "Made with Gojoline" link for a page in `lang` (the URL's "{lang}" becomes en or am). */
-export function badgeHref(lang: "en" | "am", template: string = publishMeta.badgeUrl): string {
-  return template.replace("{lang}", lang);
 }

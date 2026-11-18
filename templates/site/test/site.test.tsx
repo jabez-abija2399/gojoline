@@ -158,26 +158,8 @@ describe("niche sections", () => {
 });
 
 describe("Made with Gojoline badge", () => {
-  it("shows a pill linking to Gojoline in the page's language", () => {
-    const en = render("/")!.html;
-    expect(en).toMatch(/<a href="\/en"[^>]*data-gojoline-badge/);
-    expect(en).toContain("Made with Gojoline");
-    const am = render("/am")!.html;
-    expect(am).toMatch(/<a href="\/am"[^>]*data-gojoline-badge/);
-    expect(am).toContain("በጎጆላይን የተሠራ");
-  });
-  it("can't be switched off from site.json (the plan decides at publish)", () => {
-    const before = site.meta;
-    site.meta = { ...(before ?? {}), badge: false };
-    try {
-      expect(render("/")!.html).toContain("data-gojoline-badge");
-    } finally {
-      site.meta = before;
-    }
-  });
-  it("fills the page language into the published link", async () => {
-    const { badgeHref } = await import("../src/lib/meta");
-    expect(badgeHref("am", "https://app.example/{lang}?ref=site_bole&utm_source=gojoline_badge")).toBe("https://app.example/am?ref=site_bole&utm_source=gojoline_badge");
+  it("isn't part of the site's own code (Gojoline adds it at publish, outside the app)", () => {
+    expect(render("/")!.html).not.toContain("gojoline-badge");
   });
 });
 

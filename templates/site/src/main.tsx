@@ -83,7 +83,8 @@ if (container.firstElementChild && data) {
   start(JSON.parse(data) as Site, true);
   if (document.readyState === "complete") countVisit();
   else addEventListener("load", countVisit, { once: true });
-} else {
-  // Live preview: the whole site, loaded separately so published pages never download it.
+} else if (import.meta.env.DEV) {
+  // Live preview (the dev server only): the whole site. Published builds leave this chunk out,
+  // since every published page is prerendered with its own content.
   void import("./site").then(({ site }) => start(site, false));
 }

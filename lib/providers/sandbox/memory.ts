@@ -47,7 +47,7 @@ class MemorySiteSandbox extends MemoryWorkspace implements SiteSandbox {
     const build = await this.runBuild();
     if (!build.ok) return { ...build, files: [] };
     const name = /"en": "([^"]*)"/.exec(this.files.get("src/site.json") ?? "")?.[1] ?? "Site";
-    const html = `<!doctype html><html lang="en"><head><title>${name.replace(/[<>&"]/g, "")}</title><script type="module" src="/assets/index-test.js"></script></head><body><h1>${name.replace(/[<>&"]/g, "")}</h1><footer>${env.VITE_BADGE !== "0" ? `<a href="${(env.VITE_BADGE_URL ?? "/{lang}").replace("{lang}", "en")}" data-gojoline-badge="">Made with Gojoline</a>` : ""}<a href="${env.VITE_REPORT_URL ?? ""}">Report</a></footer></body></html>`;
+    const html = `<!doctype html><html lang="en"><head><title>${name.replace(/[<>&"]/g, "")}</title><script type="module" src="/assets/index-test.js"></script></head><body><h1>${name.replace(/[<>&"]/g, "")}</h1><footer><a href="${env.VITE_REPORT_URL ?? ""}">Report</a></footer></body></html>`;
     return { ...build, files: [{ path: "index.html", data: Buffer.from(html) }, { path: "assets/index-test.js", data: Buffer.from("console.log(1)") }] };
   }
 }

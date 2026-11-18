@@ -154,27 +154,21 @@ describe("publishSite", () => {
     const p = await projectWithVersion();
     expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
     const html = publisher.published.get("selam-coffee")![0]!.data.toString();
-    expect(html).toContain('href="https://gojoline.afridea.et/en?ref=site_selam-coffee&utm_source=gojoline_badge&utm_medium=referral&utm_campaign=made_with" data-gojoline-badge');
+    expect(html).toContain('<a href="https://gojoline.afridea.et/en?ref=site_selam-coffee&amp;utm_source=gojoline_badge&amp;utm_medium=referral&amp;utm_campaign=made_with" lang="en">');
+    expect(html.indexOf("<gojoline-badge")).toBeGreaterThan(html.indexOf("<footer>"));
     expect(html).not.toContain("https://gojoline.com");
     deps.entitlements = async () => ({ ...free, plan: "starter", badge: false });
     expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
-    expect(publisher.published.get("selam-coffee")![0]!.data.toString()).not.toContain("data-gojoline-badge");
+    expect(publisher.published.get("selam-coffee")![0]!.data.toString()).not.toContain("gojoline-badge");
   });
 
-  it("a Free site can't lose the badge: the AI's styles may not target it, and built pages must show it", async () => {
-    const p = await projectWithVersion("alice", { "src/site.ts": siteTs, "src/styles.css": "[data-gojoline-badge]{display:none}" });
+  it("a Free site's styles may not name the badge", async () => {
+    const p = await projectWithVersion("alice", { "src/site.ts": siteTs, "src/styles.css": "gojoline-badge{display:none}" });
     expect(await publishSite(deps, alice, p.id, "selam-coffee")).toMatchObject({ ok: false, error: "blocked", issues: [{ rule: "badge-hidden" }] });
-    const q = await projectWithVersion();
-    const sandboxes = deps.sandboxes as MemorySandboxProvider;
-    const open = sandboxes.open.bind(sandboxes);
-    sandboxes.open = async (id, files) => {
-      const sb = await open(id, files);
-      const build = sb.buildForPublish.bind(sb);
-      sb.buildForPublish = async (env) => build({ ...env, VITE_BADGE: "0" });
-      return sb;
-    };
-    expect(await publishSite(deps, alice, q.id, "selam-two")).toMatchObject({ ok: false, error: "blocked", issues: [{ rule: "badge-missing" }] });
     expect(publisher.published.size).toBe(0);
+    // A paid plan has no badge to protect.
+    deps.entitlements = async () => ({ plan: "starter", customDomain: true, maxSites: 1, badge: false, telegramNotify: true, telegramEdits: false, answersPerMonth: 100, storageBytes: 1 });
+    expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
   });
 
   it("won't publish template placeholders", async () => {

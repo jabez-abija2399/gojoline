@@ -4,9 +4,6 @@ interface ImportMetaEnv {
   readonly VITE_SITE_ID?: string;
   readonly VITE_REPORT_URL?: string;
   readonly VITE_DATA_API_URL?: string;
-  readonly VITE_BADGE?: string;
-  /** The badge's link with "{lang}" in place of the page's language (set at publish time). */
-  readonly VITE_BADGE_URL?: string;
   readonly VITE_SITE_KEY?: string;
   /** JSON from the owner's Google and share preview: { title?, description?, image?, icon? }. */
   readonly VITE_SEO?: string;
