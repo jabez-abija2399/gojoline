@@ -1,6 +1,7 @@
 import { dashboardEn } from "./dashboard-en";
 import { errorMessages } from "./errors";
 import { feedbackEn } from "./feedback-en";
+import { growthEn } from "./growth-en";
 
 /**
  * English catalog: the source of truth for message keys.
@@ -786,7 +787,7 @@ export const en = {
     ledgerTitle: "History of your changes",
     ledgerEmpty: "Nothing yet.",
     ledgerLabel: "Changes added and used",
-    ledger: { monthly_grant: "Monthly changes", topup: "Extra changes bought", ai_edit: "Change to your site", refund: "Given back: the change didn't work", admin: "Gift from Gojoline", first_build: "First build of a site (free)" },
+    ledger: { monthly_grant: "Monthly changes", topup: "Extra changes bought", ai_edit: "Change to your site", refund: "Given back: the change didn't work", admin: "Gift from Gojoline", first_build: "First build of a site (free)", referral: "Thank-you for an invite" },
     sizeNames: { small: "small", medium: "medium", large: "large" },
     ledgerAi: "Change to your site, {size}",
     newer: "Newer",
@@ -877,7 +878,7 @@ export const en = {
     rejectConfirm: "Reject this payment? The customer will see it as not approved.",
     checkHint: "Before approving, check the amount, the transaction number and the payer's name or phone on the receipt match this customer.",
     working: "Saving...",
-    tabs: { overview: "Overview", payments: "Payments", reports: "Reports", feedback: "Feedback", sites: "Sites", users: "Owners", costs: "AI costs", discounts: "Discounts", settings: "Settings" },
+    tabs: { overview: "Overview", payments: "Payments", reports: "Reports", feedback: "Feedback", sites: "Sites", users: "Owners", growth: "Growth", costs: "AI costs", discounts: "Discounts", settings: "Settings" },
     brand: "Gojoline admin",
     backToApp: "Back to Gojoline",
     theme: "Theme",
@@ -926,6 +927,11 @@ export const en = {
       discount_created: "Discount code made",
       discount_deactivated: "Discount code switched off",
       discount_activated: "Discount code switched on",
+      referral_linked: "A new owner joined through an invite",
+      referral_blocked: "An invite was blocked (same owner)",
+      referral_rewarded: "Invite thank-you given",
+      showcase_hidden: "Showcase entry hidden",
+      showcase_shown: "Showcase entry shown again",
     },
     planFilter: "Filter by plan",
     planAll: "All",
@@ -1190,6 +1196,7 @@ export const en = {
     report: "Report a site",
   },
   feedback: feedbackEn,
+  growth: growthEn,
   errors: errorMessages.en,
 };
 

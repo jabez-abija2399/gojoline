@@ -17,6 +17,7 @@ import { after } from "next/server";
 import { noticeDecision } from "@/lib/billing/notify";
 import { adminStats, paymentNotices, services } from "@/lib/server/services";
 import { adminFeedbackInput } from "@/lib/feedback/schema";
+import { invalidateShowcase } from "@/lib/growth/showcase-cache";
 import { FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
@@ -357,4 +358,26 @@ export async function saveFeedback(_prev: FeedbackState, form: FormData): Promis
   params.set("item", id);
   const stillListed = !back.fStatus || back.fStatus === result.to;
   redirect(`/${lang}/admin?${params.toString()}${stillListed ? `#fb-${id}` : ""}`);
+}
+
+/** Hides a site from the public showcase, or shows it again (audited). */
+export async function setShowcaseHidden(form: FormData) {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) redirect("/");
+  const lang = form.get("lang") === "am" ? "am" : "en";
+  const id = z.uuid().safeParse(form.get("id"));
+  const hidden = form.get("hidden") === "true";
+  let done: "ok" | "failed" | "not_found" = "failed";
+  const showcase = services().growth.showcase;
+  if (id.success && showcase) {
+    try {
+      done = (await showcase.setHidden(id.data, hidden)) ? "ok" : "not_found";
+      if (done === "ok") await services().billing.store().audit({ actorId: me.id, action: hidden ? "showcase.hidden" : "showcase.shown", targetType: "site", targetId: id.data });
+    } catch (error) {
+      reportError("showcase hide failed", error);
+    }
+  }
+  invalidateShowcase();
+  revalidatePath(`/${lang}/admin`);
+  redirect(`/${lang}/admin?tab=growth&done=${done}#showcase-title`);
 }

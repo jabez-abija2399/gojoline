@@ -147,6 +147,30 @@ describe("publishSite", () => {
     expect((await publishSite(deps, alice, a.id, "site-one")).ok).toBe(true);
   });
 
+  it("Free sites carry the badge linking to Gojoline's own address; paid plans don't", async () => {
+    const free = { plan: "free" as const, customDomain: false, maxSites: 3, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 1 };
+    deps.appUrl = "https://gojoline.afridea.et";
+    deps.entitlements = async () => free;
+    const p = await projectWithVersion();
+    expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
+    const html = publisher.published.get("selam-coffee")![0]!.data.toString();
+    expect(html).toContain('<a href="https://gojoline.afridea.et/en?ref=site_selam-coffee&amp;utm_source=gojoline_badge&amp;utm_medium=referral&amp;utm_campaign=made_with" lang="en">');
+    expect(html.indexOf("<gojoline-badge")).toBeGreaterThan(html.indexOf("<footer>"));
+    expect(html).not.toContain("https://gojoline.com");
+    deps.entitlements = async () => ({ ...free, plan: "starter", badge: false });
+    expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
+    expect(publisher.published.get("selam-coffee")![0]!.data.toString()).not.toContain("gojoline-badge");
+  });
+
+  it("a Free site's styles may not name the badge", async () => {
+    const p = await projectWithVersion("alice", { "src/site.ts": siteTs, "src/styles.css": "gojoline-badge{display:none}" });
+    expect(await publishSite(deps, alice, p.id, "selam-coffee")).toMatchObject({ ok: false, error: "blocked", issues: [{ rule: "badge-hidden" }] });
+    expect(publisher.published.size).toBe(0);
+    // A paid plan has no badge to protect.
+    deps.entitlements = async () => ({ plan: "starter", customDomain: true, maxSites: 1, badge: false, telegramNotify: true, telegramEdits: false, answersPerMonth: 100, storageBytes: 1 });
+    expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
+  });
+
   it("won't publish template placeholders", async () => {
     const p = await projectWithVersion("alice", { "src/site.json": JSON.stringify({ name: { en: "A" }, business: { phone: "+251 911 000 000" } }) });
     expect(await publishSite(deps, alice, p.id, "example-site")).toEqual({ ok: false, error: "unfinished" });

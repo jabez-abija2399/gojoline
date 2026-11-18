@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n/config";
 import type { LedgerEntry } from "@/lib/billing/store";
 import { Collapsible } from "./collapsible";
 
-const ICONS = { monthly_grant: Plus, topup: Plus, ai_edit: Minus, refund: RotateCcw, admin: Gift, first_build: Sparkles } as const;
+const ICONS = { monthly_grant: Plus, topup: Plus, ai_edit: Minus, refund: RotateCcw, admin: Gift, first_build: Sparkles, referral: Gift } as const;
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[ሀ-፿]/.test(s) ? "am" : "en");
 

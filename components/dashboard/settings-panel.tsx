@@ -11,6 +11,7 @@ import { Address } from "./address";
 import { CopyLink } from "./copy-link";
 import { Confirm } from "./dialog";
 import { TelegramPanel } from "./telegram-panel";
+import { ShowcaseSection } from "./showcase-section";
 
 type T = Messages["dashboard"];
 type Lang = "en" | "am";
@@ -29,7 +30,7 @@ const outline = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border
 const input = "min-h-11 w-full rounded-lg border border-input bg-white px-3 text-base";
 
 /** Settings: Telegram alerts, address and own domain, the offline switch, the share preview, earlier versions. */
-export function SettingsPanel({ t, tb, locale, projectId, bot, s }: { t: T; tb: Messages["builder"]; locale: Locale; projectId: string; bot: string; s: SettingsState }) {
+export function SettingsPanel({ t, tb, locale, projectId, bot, s, showcase }: { t: T; tb: Messages["builder"]; locale: Locale; projectId: string; bot: string; s: SettingsState; showcase?: { t: Messages["growth"]["showcase"]; on: boolean | null } }) {
   return (
     <div className="flex flex-col gap-4">
       <div id="telegram" className="scroll-mt-4">
@@ -49,6 +50,7 @@ export function SettingsPanel({ t, tb, locale, projectId, bot, s }: { t: T; tb: 
       </section>
       <OfflineSection t={t} projectId={projectId} status={s.status} bot={bot} />
       <SeoSection t={t} projectId={projectId} s={s} />
+      {showcase && <ShowcaseSection t={showcase.t} locale={locale} projectId={projectId} on={s.status === "live" || s.status === "resting" ? showcase.on : null} />}
       <VersionsSection t={t} locale={locale} projectId={projectId} s={s} />
     </div>
   );

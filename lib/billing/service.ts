@@ -4,7 +4,8 @@ import { CODE_PATTERN, codeProblem, publicCodeProblem, normalizeCode, quote, typ
 import { entitlementsOf, PLAN_FEATURES, PRODUCTS, type Product } from "./plans";
 import { loadBillingSettings, loadCreditSettings, loadLaunchOffer, MemorySettingsStore, type BillingSettings, type SettingsStore } from "./settings";
 import { randomUUID } from "node:crypto";
-import { canonicalReference, type BillingStore, type LedgerMeta, type Payment, type PaymentMethod, type Subscription } from "./store";
+import { reportError } from "@/lib/observability/report";
+import { canonicalReference, type BillingStore, type LedgerMeta, type LedgerReason, type Payment, type PaymentMethod, type Subscription } from "./store";
 
 /**
  * Changes given back per owner per day when AI changes fail on our side (counted in changes,
@@ -20,6 +21,9 @@ const CREDIT_SETTINGS_TTL_MS = 10_000;
  */
 export const freeFirstBuildsPerMonth = (plan: Entitlements["plan"]) => PLAN_FEATURES[plan].maxSites;
 
+/** Bought or gifted changes: kept on top of the monthly rollover cap. */
+const GIFTED: LedgerReason[] = ["topup", "admin", "referral"];
+
 const monthRef = (d: Date) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 
 export class Billing {
@@ -28,6 +32,12 @@ export class Billing {
     private now: () => Date = () => new Date(),
     private readonly settingsStore: SettingsStore = new MemorySettingsStore(),
   ) {}
+
+  /**
+   * Runs after a payment is approved and applied (the referral reward). Its failure is reported,
+   * never undoes the approval.
+   */
+  onApproved: ((payment: Payment, adminId: string) => Promise<void>) | null = null;
 
   /** Current prices and payment accounts (admin-editable, with safe defaults). */
   settings(): Promise<BillingSettings> {
@@ -141,7 +151,7 @@ export class Billing {
     const allowance = cs.monthly[plan];
     const rolloverMonths = cs.rollover[plan];
     const yearAgo = new Date(this.now().getTime() - 365 * 86_400_000);
-    const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, ["topup", "admin"], yearAgo)]);
+    const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, GIFTED, yearAgo)]);
     // Bought or gifted changes never eat into the rollover cap: only unused monthly changes are capped.
     const kept = allowance * rolloverMonths + Math.min(balance, bought);
     const grant = Math.max(0, Math.min(allowance, kept - balance));
@@ -188,7 +198,7 @@ export class Billing {
   /** Bought or gifted changes (last 12 months) still in the balance: the rollover cap never takes them. */
   async boughtLeft(userId: string): Promise<number> {
     const yearAgo = new Date(this.now().getTime() - 365 * 86_400_000);
-    const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, ["topup", "admin"], yearAgo)]);
+    const [balance, bought] = await Promise.all([this.db.balance(userId), this.db.sumSince(userId, GIFTED, yearAgo)]);
     return Math.max(0, Math.min(balance, bought));
   }
 
@@ -321,6 +331,9 @@ export class Billing {
       targetId: paymentId,
       data: { userId: payment.userId, product: payment.product, amountMinor: payment.amountMinor, discountCode: payment.discountCode, discountMinor: payment.discountMinor, note },
     });
+    if (decision === "approve" && this.onApproved) {
+      await this.onApproved(payment, adminId).catch((error: unknown) => reportError("after-approval hook failed", error, { paymentId }));
+    }
     return "ok";
   }
 }

@@ -12,14 +12,14 @@ import { format, getMessages } from "@/lib/i18n";
 import { adminStats, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
 import { FeedbackReplyForm } from "@/components/admin/feedback-reply-form";
 import { TYPE_ICONS } from "@/components/feedback/type-icons";
 import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
 import { shortAgent } from "@/lib/feedback/agent";
 import { reportError } from "@/lib/observability/report";
 import { BarChart } from "@/components/admin/bar-chart";
-import { setAdminTheme, toggleDiscountCode } from "./actions";
+import { setAdminTheme, setShowcaseHidden, toggleDiscountCode } from "./actions";
 import { offerEndsAt, offerUntilLabel } from "@/lib/billing/discounts";
 import { offerProductsText } from "@/lib/billing/offer-text";
 import { CreditsForm } from "@/components/admin/credits-form";
@@ -28,7 +28,9 @@ import { planFeaturesWith } from "@/lib/billing/credits";
 import { OwnerActions } from "@/components/admin/owner-actions";
 import { PlanComparison } from "@/components/pricing/plan-comparison";
 import { monthlyRevenueMinor, type PlanFilter } from "@/lib/admin/stats";
-import { PLAN_IDS, productName } from "@/lib/billing/plans";
+import { PLAN_IDS, PRODUCTS, productName } from "@/lib/billing/plans";
+import { SOURCES } from "@/lib/growth/attribution";
+import { emptySourceCounts } from "@/lib/growth/sources";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): Promise<Metadata> {
   const { lang } = await params;
@@ -42,7 +44,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["overview", "payments", "reports", "feedback", "sites", "users", "costs", "discounts", "settings"] as const;
+const TABS = ["overview", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 type AdminUserPlan = (typeof PLAN_IDS)[number];
 
@@ -70,7 +72,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     svc.feedback.countByStatus().catch((e: unknown) => (reportError("feedback count failed", e), emptyCounts())),
   ]);
   const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports, feedback: fbCounts.new };
-  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
   const navItem = (x: Tab, compact: boolean) => {
     const Icon = icons[x];
     return (
@@ -128,6 +130,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           {tab === "feedback" && <FeedbackTab />}
           {tab === "sites" && <Sites />}
           {tab === "users" && <UsersTab />}
+          {tab === "growth" && <GrowthTab />}
           {tab === "costs" && <Costs />}
           {tab === "discounts" && <Discounts />}
           {tab === "settings" && <Settings />}
@@ -179,6 +182,8 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
       ...(fbCounts.new ? [{ href: `/${lang}/admin?tab=feedback&status=new`, text: format(t.admin.attFeedback, { n: fbCounts.new }), Icon: MessageSquareHeart }] : []),
     ];
     const actionName = (a: string) => (t.admin.actions as Record<string, string>)[a.replace(".", "_")] ?? a;
+    // A breakdown, not the page: without it the overview still opens.
+    const sources = await svc.growth.sources.breakdown().catch((e: unknown) => (reportError("sign-up sources failed", e), { d7: emptySourceCounts(), d30: emptySourceCounts() }));
     return (
       <div className="flex flex-col gap-4">
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
@@ -220,6 +225,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             })}
           </ul>
         </section>
+        <SignupSources counts={sources} />
         <section aria-labelledby="att-title" className="rounded-xl border border-line bg-white p-4">
           <h2 id="att-title" className="text-base font-semibold">{t.admin.attention}</h2>
           {attention.length === 0 ? (
@@ -255,6 +261,126 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 </li>
               ))}
             </ol>
+          )}
+        </section>
+      </div>
+    );
+  }
+
+  function SignupSources({ counts }: { counts: { d7: Record<(typeof SOURCES)[number], number>; d30: Record<(typeof SOURCES)[number], number> } }) {
+    const g = t.growth.sources;
+    const sum = (c: Record<string, number>) => Object.values(c).reduce((a, b) => a + b, 0);
+    const total30 = sum(counts.d30);
+    return (
+      <section aria-labelledby="src-title" className="rounded-xl border border-line bg-white p-4">
+        <h2 id="src-title" className="text-base font-semibold">{g.title}</h2>
+        <p className="mt-1 text-xs text-ink-muted">{g.intro}</p>
+        <table className="mt-3 w-full border-collapse text-sm">
+          <thead>
+            <tr className="text-start text-xs text-ink-muted">
+              <th scope="col" className="py-1 text-start font-medium">{g.source}</th>
+              <th scope="col" className="w-16 py-1 text-end font-medium">{g.days7}</th>
+              <th scope="col" className="w-16 py-1 text-end font-medium">{g.days30}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SOURCES.map((s) => (
+              <tr key={s} className="border-t border-line">
+                <th scope="row" className="py-2 pe-2 text-start font-medium">
+                  <span className="flex flex-col gap-1">
+                    {g.names[s]}
+                    <span aria-hidden="true" className="block h-1.5 overflow-hidden rounded-full bg-sunken">
+                      <span className="block h-full rounded-full bg-ink" style={{ width: `${total30 ? Math.round((counts.d30[s] / total30) * 100) : 0}%` }} />
+                    </span>
+                  </span>
+                </th>
+                <td className="py-2 text-end tabular-nums">{counts.d7[s]}</td>
+                <td className="py-2 text-end tabular-nums">{counts.d30[s]}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="border-t border-ink font-semibold">
+              <th scope="row" className="py-2 text-start">{g.total}</th>
+              <td className="py-2 text-end tabular-nums">{sum(counts.d7)}</td>
+              <td className="py-2 text-end tabular-nums">{total30}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+    );
+  }
+
+  async function GrowthTab() {
+    const g = t.growth.referralsAdmin;
+    const [list, show] = await Promise.all([svc.growth.referrals.store.recent(100), svc.growth.showcase?.adminList(200) ?? []]);
+    const sc = t.growth.showcase;
+    const joinedFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
+    const who = (p: { name: string; contact: string }) => (
+      <span className="flex min-w-0 flex-col">
+        <span className="font-medium [overflow-wrap:anywhere]">{p.name || p.contact || "—"}</span>
+        {p.name && <span className="text-xs text-ink-muted [overflow-wrap:anywhere]">{p.contact}</span>}
+      </span>
+    );
+    return (
+      <div className="flex flex-col gap-4">
+        <section aria-labelledby="ref-title" className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
+          <h2 id="ref-title" className="text-base font-semibold">{g.title}</h2>
+          <p className="text-xs text-ink-muted">{g.intro}</p>
+          {list.length === 0 ? (
+            <p className="text-ink-muted">{g.empty}</p>
+          ) : (
+            <ul aria-labelledby="ref-title" className="flex flex-col">
+              {list.map((r) => (
+                <li key={r.referredId} className="grid gap-2 border-t border-line py-3 first:border-0 sm:grid-cols-[1fr_1fr_auto] sm:items-center">
+                  <span className="flex flex-col gap-0.5">
+                    <span className="text-xs text-ink-muted">{g.invited}</span>
+                    {who(r.referred)}
+                  </span>
+                  <span className="flex flex-col gap-0.5">
+                    <span className="text-xs text-ink-muted">{g.inviter}</span>
+                    {who(r.referrer)}
+                  </span>
+                  <span className="flex flex-col gap-0.5 sm:items-end">
+                    <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${r.status === "rewarded" ? "border border-lagoon bg-white text-lagoon" : r.status === "blocked" ? "bg-coral-soft text-destructive" : "border border-line bg-paper text-ink"}`}>
+                      {g.statuses[r.status]}
+                      {r.status === "blocked" && r.blockReason ? ` · ${(g.reasons as Record<string, string>)[r.blockReason] ?? r.blockReason}` : ""}
+                    </span>
+                    <span className="text-xs text-ink-muted tabular-nums">
+                      {joinedFmt.format(r.createdAt)}
+                      {r.status === "rewarded" ? ` · ${format(r.referrerCredits > 0 ? g.rewardBoth : g.rewardCapped, { n: r.referredCredits })}` : ""}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <section aria-labelledby="showcase-title" className="flex scroll-mt-28 flex-col gap-3 rounded-xl border border-line bg-white p-4">
+          <h2 id="showcase-title" className="text-base font-semibold">{sc.adminTitle}</h2>
+          <p className="text-xs text-ink-muted">{sc.adminIntro} <Link href={`/${lang}/showcase`} className="font-medium text-ink underline underline-offset-4">{sc.view}</Link></p>
+          {show.length === 0 ? (
+            <p className="text-ink-muted">{sc.adminEmpty}</p>
+          ) : (
+            <ul aria-labelledby="showcase-title" className="flex flex-col">
+              {show.map((e) => (
+                <li key={e.siteId} className="flex flex-wrap items-center gap-3 border-t border-line py-3 first:border-0">
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="font-medium [overflow-wrap:anywhere]">{e.name}</span>
+                    <a href={e.url} target="_blank" rel="noopener noreferrer" className="text-xs text-ink-muted underline underline-offset-2 [overflow-wrap:anywhere]">{e.url}<span className="sr-only"> {sc.newTab}</span></a>
+                  </span>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${e.hidden ? "bg-coral-soft text-destructive" : "border border-lagoon bg-white text-lagoon"}`}>{e.hidden ? sc.hidden : sc.shown}</span>
+                  <form action={setShowcaseHidden}>
+                    <input type="hidden" name="lang" value={lang} />
+                    <input type="hidden" name="id" value={e.siteId} />
+                    <input type="hidden" name="hidden" value={e.hidden ? "false" : "true"} />
+                    <button aria-label={`${e.hidden ? sc.show : sc.hide}: ${e.name}`} className="min-h-11 rounded-lg border border-line bg-white px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9">
+                      {e.hidden ? sc.show : sc.hide}
+                    </button>
+                  </form>
+                </li>
+              ))}
+            </ul>
           )}
         </section>
       </div>
@@ -419,6 +545,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
 
   async function Payments() {
     const pending = await svc.billing.store().pendingForAdmin();
+    // Who invited each payer: the admin judges an invite before approving its reward.
+    const invites = await svc.growth.referrals.notes(pending.map((p) => p.userId)).catch((e: unknown) => (reportError("invite notes failed", e), new Map()));
+    const g = t.growth.referralsAdmin;
     return (
         <section aria-labelledby="pay-title" className="flex flex-col gap-3">
           <h2 id="pay-title" className="text-base font-semibold">{t.admin.paymentsTitle}</h2>
@@ -443,6 +572,19 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                     <p>{t.billing.methods[p.method]}: <span className="font-mono">{p.reference}</span></p>
                     <p className="break-all">{t.admin.user}: {p.contact ?? p.userId.slice(0, 8)}</p>
                     <p className="text-ink-muted">{dateFmt.format(p.createdAt)}</p>
+                    {invites.get(p.userId) && (() => {
+                      const inv = invites.get(p.userId)!;
+                      const plan = Boolean(PRODUCTS[p.product]?.plan);
+                      return (
+                        <p className="break-all sm:col-span-2">
+                          {format(g.invitedBy, { who: inv.name || inv.contact || "—" })}
+                          {inv.name && inv.contact ? ` (${inv.contact})` : ""}
+                          {" · "}
+                          {inv.status === "blocked" ? `${g.statuses.blocked}: ${(g.reasons as Record<string, string>)[inv.blockReason ?? ""] ?? inv.blockReason}` : inv.status === "rewarded" ? g.statuses.rewarded : plan ? g.rewardOnApprove : g.noRewardTopup}
+                          {inv.sameNetwork && <span className="ms-2 rounded-full bg-coral-soft px-2 py-0.5 text-xs font-semibold text-destructive">{g.sameNetwork}</span>}
+                        </p>
+                      );
+                    })()}
                   </div>
                   {p.hasReceipt ? (
                     <a href={`/api/admin/payments/${p.id}/receipt`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 pointer-fine:min-h-9 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.viewReceipt}</a>

@@ -3,6 +3,7 @@ import { json } from "@/lib/api/guard";
 import { ownerRoute } from "@/lib/api/owner";
 import { setSiteOffline } from "@/lib/publish/offline";
 import { services } from "@/lib/server/services";
+import { invalidateShowcase } from "@/lib/growth/showcase-cache";
 
 const body = z.object({ offline: z.boolean() }).strict();
 
@@ -17,6 +18,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/projects/[i
   if (!deps) return json(503, { error: "unavailable" });
   const out = await setSiteOffline(deps, r.user.id, id, parsed.data.offline);
   services().publicSites.invalidate(id);
+  invalidateShowcase();
   if (!out.ok) return json(out.error === "not_found" ? 404 : 409, { error: out.error });
   return json(200, { offline: Boolean(out.site.offlineAt) });
 }

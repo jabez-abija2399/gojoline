@@ -75,11 +75,7 @@ export function Footer() {
             © {year} {text(site.name)}
           </p>
           <div className="flex flex-wrap gap-x-6">
-            {publishMeta.badge && site.meta?.badge !== false && (
-              <a href="https://gojoline.com" className={link}>
-                {uiText("madeWith", lang)}
-              </a>
-            )}
+            {/* "Made with Gojoline" on Free sites is added by Gojoline at publish, outside the app (it can't be styled away). */}
             {/* Always present (Phase 1 trust rule); Gojoline fills the exact URL at publish time. */}
             <a href={publishMeta.reportUrl} rel="nofollow" className={link}>
               {uiText("report", lang)}
@@ -93,3 +89,4 @@ export function Footer() {
     </footer>
   );
 }
+

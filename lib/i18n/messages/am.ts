@@ -2,6 +2,7 @@ import { dashboardAm } from "./dashboard-am";
 import type { Messages } from "./en";
 import { errorMessages } from "./errors";
 import { feedbackAm } from "./feedback-am";
+import { growthAm } from "./growth-am";
 
 /**
  * Amharic catalog. Drafted by the build agent; must be reviewed by a native speaker
@@ -786,7 +787,7 @@ export const am: Messages = {
     ledgerTitle: "የለውጦችዎ ታሪክ",
     ledgerEmpty: "እስካሁን ምንም የለም።",
     ledgerLabel: "የተጨመሩ እና ጥቅም ላይ የዋሉ ለውጦች",
-    ledger: { monthly_grant: "ወርሃዊ ለውጦች", topup: "የተገዙ ተጨማሪ ለውጦች", ai_edit: "የድረ-ገጽ ለውጥ", refund: "ተመልሷል፤ ለውጡ አልሠራም", admin: "ከጎጆላይን የተሰጠ ስጦታ", first_build: "የድረ-ገጽ የመጀመሪያ ግንባታ (ነጻ)" },
+    ledger: { monthly_grant: "ወርሃዊ ለውጦች", topup: "የተገዙ ተጨማሪ ለውጦች", ai_edit: "የድረ-ገጽ ለውጥ", refund: "ተመልሷል፤ ለውጡ አልሠራም", admin: "ከጎጆላይን የተሰጠ ስጦታ", first_build: "የድረ-ገጽ የመጀመሪያ ግንባታ (ነጻ)", referral: "ለግብዣ የተሰጠ ምስጋና" },
     sizeNames: { small: "ትንሽ", medium: "መካከለኛ", large: "ትልቅ" },
     ledgerAi: "የድረ-ገጽ ለውጥ፣ {size}",
     newer: "አዳዲሶቹ",
@@ -877,7 +878,7 @@ export const am: Messages = {
     rejectConfirm: "ይህን ክፍያ ውድቅ ያደርጋሉ? ደንበኛው «አልጸደቀም» ብሎ ያየዋል።",
     checkHint: "ከማጽደቅዎ በፊት በደረሰኙ ላይ ያለው መጠን፣ የግብይት ቁጥር እና የከፋዩ ስም ወይም ስልክ ከዚህ ደንበኛ ጋር መመሳሰሉን ያረጋግጡ።",
     working: "በማስቀመጥ ላይ...",
-    tabs: { overview: "አጠቃላይ", payments: "ክፍያዎች", reports: "ሪፖርቶች", feedback: "አስተያየቶች", sites: "ድረ-ገጾች", users: "ባለቤቶች", costs: "የAI ወጪ", discounts: "ቅናሾች", settings: "ቅንብሮች" },
+    tabs: { overview: "አጠቃላይ", payments: "ክፍያዎች", reports: "ሪፖርቶች", feedback: "አስተያየቶች", sites: "ድረ-ገጾች", users: "ባለቤቶች", growth: "እድገት", costs: "የAI ወጪ", discounts: "ቅናሾች", settings: "ቅንብሮች" },
     brand: "የጎጆላይን አስተዳደር",
     backToApp: "ወደ ጎጆላይን ይመለሱ",
     theme: "ገጽታ",
@@ -926,6 +927,11 @@ export const am: Messages = {
       discount_created: "የቅናሽ ኮድ ተፈጥሯል",
       discount_deactivated: "የቅናሽ ኮድ ጠፍቷል",
       discount_activated: "የቅናሽ ኮድ በርቷል",
+      referral_linked: "አዲስ ባለቤት በግብዣ ተቀላቀለ",
+      referral_blocked: "ግብዣ ታገደ (ተመሳሳይ ባለቤት)",
+      referral_rewarded: "የግብዣ ምስጋና ተሰጠ",
+      showcase_hidden: "የማሳያ ገጽ ግቤት ተደበቀ",
+      showcase_shown: "የማሳያ ገጽ ግቤት እንደገና ታየ",
     },
     planFilter: "በዕቅድ ይለዩ",
     planAll: "ሁሉም",
@@ -1190,5 +1196,6 @@ export const am: Messages = {
     report: "ድረ-ገጽ ሪፖርት ያድርጉ",
   },
   feedback: feedbackAm,
+  growth: growthAm,
   errors: errorMessages.am,
 };

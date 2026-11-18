@@ -44,6 +44,8 @@ export interface AuthConfig {
   /** Google OAuth client (redirect URI: <baseURL>/api/auth/callback/google). */
   google?: { clientId: string; clientSecret: string } | null;
   extraPlugins?: BetterAuthPlugin[];
+  /** Runs once when an account is created (sign-up source, referral); never blocks sign-up. */
+  onUserCreated?: (user: { id: string; email: string; phoneNumber?: string | null }, headers: Headers | null) => Promise<void>;
 }
 
 /** Passwordless sign-in with a 6-digit code by email or Ethiopian mobile number. */
@@ -64,6 +66,20 @@ export function createAuth(c: AuthConfig) {
     // Codes are only sent and checked through our server actions (shared Upstash rate limits);
     // the matching public HTTP routes are switched off. Server-side auth.api calls still work.
     disabledPaths: OTP_HTTP_PATHS,
+    databaseHooks: {
+      user: {
+        create: {
+          async after(user, ctx) {
+            if (!c.onUserCreated) return;
+            try {
+              await c.onUserCreated({ id: user.id, email: user.email, phoneNumber: typeof user.phoneNumber === "string" ? user.phoneNumber : null }, ctx?.headers ?? ctx?.request?.headers ?? null);
+            } catch (error) {
+              console.error("sign-up hook failed", error instanceof Error ? error.message : "unknown");
+            }
+          },
+        },
+      },
+    },
     plugins: [
       emailOTP({
         otpLength: 6,

@@ -7,10 +7,10 @@ const env = import.meta.env;
 export const publishMeta = {
   url: (env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, "") || undefined,
   siteId: (env.VITE_SITE_ID as string | undefined) || undefined,
-  reportUrl: (env.VITE_REPORT_URL as string | undefined) || "https://gojoline.com/report",
+  // Relative fallback (template demos are served from Gojoline itself); publish always sets the full URL.
+  reportUrl: (env.VITE_REPORT_URL as string | undefined) || "/report",
   dataApiUrl: (env.VITE_DATA_API_URL as string | undefined) || undefined,
   siteKey: (env.VITE_SITE_KEY as string | undefined) || undefined,
-  badge: env.VITE_BADGE !== "0",
   /** The host answers with its own resting page when the owner takes the site offline (Cloudflare). */
   restAtHost: env.VITE_REST_AT_HOST === "1",
 };

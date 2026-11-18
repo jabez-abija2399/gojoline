@@ -1,4 +1,4 @@
-import { bigint, boolean, customType, date, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { bigint, boolean, customType, date, index, integer, jsonb, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
@@ -9,17 +9,21 @@ const updatedAt = () => timestamp("updated_at", { withTimezone: true }).notNull(
 // ---------------------------------------------------------------------------
 // Better Auth tables (field names must match Better Auth's model; columns are snake_case).
 // ---------------------------------------------------------------------------
-export const user = pgTable("users", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").notNull().default(false),
-  image: text("image"),
-  phoneNumber: text("phone_number").unique(),
-  phoneNumberVerified: boolean("phone_number_verified").default(false),
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
-});
+export const user = pgTable(
+  "users",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").notNull().default(false),
+    image: text("image"),
+    phoneNumber: text("phone_number").unique(),
+    phoneNumberVerified: boolean("phone_number_verified").default(false),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("users_created_idx").on(t.createdAt)],
+);
 
 export const session = pgTable(
   "sessions",
@@ -195,10 +199,18 @@ export const sites = pgTable(
     offlineAt: timestamp("offline_at", { withTimezone: true }),
     /** Which live-site features the published files have (1: reads business info, counts visits); null = published before them. */
     runtimeVersion: integer("runtime_version"),
+    /** The owner chose “Show my site in the Gojoline showcase” (off by default). */
+    showcase: boolean("showcase").notNull().default(false),
+    /** An admin hid it from the showcase (null = not hidden). */
+    showcaseHiddenAt: timestamp("showcase_hidden_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index("sites_owner_idx").on(t.ownerId), index("sites_updated_idx").on(t.updatedAt)],
+  (t) => [
+    index("sites_owner_idx").on(t.ownerId),
+    index("sites_updated_idx").on(t.updatedAt),
+    index("sites_showcase_idx").on(t.publishedAt).where(sql`${t.showcase} and ${t.status} = 'published'`),
+  ],
 );
 
 /** Form definitions captured from site.json at publish time; submissions are checked against them. */
@@ -341,7 +353,7 @@ export const creditLedger = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     delta: integer("delta").notNull(),
-    reason: text("reason", { enum: ["monthly_grant", "topup", "ai_edit", "refund", "admin", "first_build"] }).notNull(),
+    reason: text("reason", { enum: ["monthly_grant", "topup", "ai_edit", "refund", "admin", "first_build", "referral"] }).notNull(),
     ref: text("ref").notNull(),
     /** AI changes: how big the request was (small, medium, large), for the owner's history. */
     size: text("size", { enum: ["small", "medium", "large"] }),
@@ -501,4 +513,100 @@ export const feedback = pgTable(
     // The menu badge on every signed-in page: unread replies per owner.
     index("feedback_unread_idx").on(t.ownerId).where(sql`${t.reply} is not null and ${t.replyReadAt} is null`),
   ],
+);
+
+/** Where each owner first came from (first touch, recorded at sign-up; 2026-11-18). */
+export const signupSources = pgTable(
+  "signup_sources",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+    /** The overview's bucket: badge, referral, telegram, tiktok, facebook, linkedin, qr, other, direct. */
+    source: text("source", { enum: ["badge", "referral", "telegram", "tiktok", "facebook", "linkedin", "qr", "other", "direct"] }).notNull(),
+    ref: text("ref"),
+    utmSource: text("utm_source"),
+    utmMedium: text("utm_medium"),
+    utmCampaign: text("utm_campaign"),
+    referrerHost: text("referrer_host"),
+    /** When the visitor first arrived with it (from the cookie). */
+    firstSeenAt: timestamp("first_seen_at", { withTimezone: true }),
+    /** Keyed hash of the sign-up network (IPv4, or the IPv6 /64); never the address itself. */
+    ipHash: text("ip_hash"),
+    /** Keyed hash of the browser's user agent: a device hint. */
+    deviceHash: text("device_hash"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("signup_sources_ip_idx").on(t.ipHash)],
+);
+
+/** Each owner's invite code (/?ref=u_<code>), made the first time they see their link. */
+export const referralCodes = pgTable("referral_codes", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  code: text("code").notNull().unique(),
+  createdAt: createdAt(),
+});
+
+/**
+ * Who invited whom: one row per invited owner (so one reward at most). Rewards are given when the
+ * invited owner's first real payment is approved; blocked rows record why no reward can come.
+ */
+export const referrals = pgTable(
+  "referrals",
+  {
+    referredId: text("referred_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+    referrerId: text("referrer_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    code: text("code").notNull(),
+    status: text("status", { enum: ["pending", "rewarded", "blocked"] }).notNull(),
+    /** same_user, same_email, same_domain, same_phone, same_device. */
+    blockReason: text("block_reason"),
+    paymentId: uuid("payment_id"),
+    /** Changes given to each side (the inviter's is 0 past the monthly cap). */
+    referrerCredits: integer("referrer_credits").notNull().default(0),
+    referredCredits: integer("referred_credits").notNull().default(0),
+    rewardedAt: timestamp("rewarded_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("referrals_referrer_idx").on(t.referrerId, t.rewardedAt), index("referrals_time_idx").on(t.createdAt)],
+);
+
+/** Inviter rewards per calendar month (UTC): the cap is checked on this row, under its lock. */
+export const referralRewardsMonthly = pgTable(
+  "referral_rewards_monthly",
+  {
+    referrerId: text("referrer_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    /** YYYY-MM (UTC). */
+    month: text("month").notNull(),
+    rewards: integer("rewards").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.referrerId, t.month] })],
+);
+
+/**
+ * What the showcase shows for a site, saved at each publish from the published version only
+ * (content that passed the publish checks): its name and a ~640 px WebP of its hero photo.
+ */
+export const siteShowcase = pgTable(
+  "site_showcase",
+  {
+    siteId: uuid("site_id")
+      .primaryKey()
+      .references(() => sites.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    thumb: bytea("thumb"),
+    /** Content hash of the thumbnail: its address, so it can be cached for a long time (two sites may share one). */
+    thumbKey: text("thumb_key"),
+    thumbWidth: integer("thumb_width"),
+    thumbHeight: integer("thumb_height"),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("site_showcase_thumb_idx").on(t.thumbKey)],
 );

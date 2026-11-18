@@ -51,6 +51,8 @@ export function getAuth(): Auth | null {
     sender: otpSender,
     google: googleAuth,
     extraPlugins: [nextCookies()],
+    // Loaded when needed: services() is heavy and imports more than sign-in pages use.
+    onUserCreated: async (user, headers) => (await import("@/lib/growth/signup")).onSignup(user, headers),
   });
   return g.gojoAuth;
 }
