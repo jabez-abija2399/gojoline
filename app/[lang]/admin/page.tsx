@@ -12,7 +12,7 @@ import { format, getMessages } from "@/lib/i18n";
 import { adminStats, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
 import { FeedbackReplyForm } from "@/components/admin/feedback-reply-form";
 import { TYPE_ICONS } from "@/components/feedback/type-icons";
 import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
@@ -44,7 +44,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["overview", "payments", "reports", "feedback", "sites", "users", "costs", "discounts", "settings"] as const;
+const TABS = ["overview", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 type AdminUserPlan = (typeof PLAN_IDS)[number];
 
@@ -72,7 +72,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     svc.feedback.countByStatus().catch((e: unknown) => (reportError("feedback count failed", e), emptyCounts())),
   ]);
   const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports, feedback: fbCounts.new };
-  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
   const navItem = (x: Tab, compact: boolean) => {
     const Icon = icons[x];
     return (
@@ -130,6 +130,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           {tab === "feedback" && <FeedbackTab />}
           {tab === "sites" && <Sites />}
           {tab === "users" && <UsersTab />}
+          {tab === "growth" && <GrowthTab />}
           {tab === "costs" && <Costs />}
           {tab === "discounts" && <Discounts />}
           {tab === "settings" && <Settings />}
@@ -307,6 +308,54 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           </tfoot>
         </table>
       </section>
+    );
+  }
+
+  async function GrowthTab() {
+    const g = t.growth.referralsAdmin;
+    const list = await svc.growth.referrals.store.recent(100);
+    const joinedFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
+    const who = (p: { name: string; contact: string }) => (
+      <span className="flex min-w-0 flex-col">
+        <span className="font-medium [overflow-wrap:anywhere]">{p.name || p.contact || "—"}</span>
+        {p.name && <span className="text-xs text-ink-muted [overflow-wrap:anywhere]">{p.contact}</span>}
+      </span>
+    );
+    return (
+      <div className="flex flex-col gap-4">
+        <section aria-labelledby="ref-title" className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
+          <h2 id="ref-title" className="text-base font-semibold">{g.title}</h2>
+          <p className="text-xs text-ink-muted">{g.intro}</p>
+          {list.length === 0 ? (
+            <p className="text-ink-muted">{g.empty}</p>
+          ) : (
+            <ul aria-labelledby="ref-title" className="flex flex-col">
+              {list.map((r) => (
+                <li key={r.referredId} className="grid gap-2 border-t border-line py-3 first:border-0 sm:grid-cols-[1fr_1fr_auto] sm:items-center">
+                  <span className="flex flex-col gap-0.5">
+                    <span className="text-xs text-ink-muted">{g.invited}</span>
+                    {who(r.referred)}
+                  </span>
+                  <span className="flex flex-col gap-0.5">
+                    <span className="text-xs text-ink-muted">{g.inviter}</span>
+                    {who(r.referrer)}
+                  </span>
+                  <span className="flex flex-col gap-0.5 sm:items-end">
+                    <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${r.status === "rewarded" ? "border border-lagoon bg-white text-lagoon" : r.status === "blocked" ? "bg-coral-soft text-destructive" : "border border-line bg-paper text-ink"}`}>
+                      {g.statuses[r.status]}
+                      {r.status === "blocked" && r.blockReason ? ` · ${(g.reasons as Record<string, string>)[r.blockReason] ?? r.blockReason}` : ""}
+                    </span>
+                    <span className="text-xs text-ink-muted tabular-nums">
+                      {joinedFmt.format(r.createdAt)}
+                      {r.status === "rewarded" ? ` · ${format(r.referrerCredits > 0 ? g.rewardBoth : g.rewardCapped, { n: r.referredCredits })}` : ""}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
     );
   }
 

@@ -53,6 +53,8 @@ import { DbTelegramStore, MemoryTelegramStore, type TelegramStore } from "@/lib/
 import { DbFeedbackStore, MemoryFeedbackStore } from "@/lib/feedback/store";
 import type { FeedbackStore } from "@/lib/feedback/types";
 import { DbSignupSourceStore, MemorySignupSourceStore, type SignupSourceStore } from "@/lib/growth/sources";
+import { DbReferralStore, MemoryReferralStore } from "@/lib/growth/referral-store";
+import { Referrals } from "@/lib/growth/referrals";
 
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
@@ -182,7 +184,7 @@ interface Services {
   /** Owner feedback and the team's replies. */
   feedback: FeedbackStore;
   /** Growth loops: sign-up sources (first touch). */
-  growth: { sources: SignupSourceStore };
+  growth: { sources: SignupSourceStore; referrals: Referrals };
 }
 
 /** `ownerOf` serves the memory store only (the database joins projects instead). */
@@ -216,7 +218,10 @@ export function services(): Services {
       visits: { counter: new MemoryVisitCounter(), daily: new MemoryVisitsDailyStore(async () => null) },
       checkText: (texts, ctx) => checkOwnerText(texts, null, ctx),
       publicSites: new PublicSiteCache(async () => null),
-      growth: { sources: db ? new DbSignupSourceStore(db) : new MemorySignupSourceStore() },
+      growth: {
+        sources: db ? new DbSignupSourceStore(db) : new MemorySignupSourceStore(),
+        referrals: new Referrals(db ? new DbReferralStore(db) : new MemoryReferralStore((id) => memoryAccounts().find((u) => u.id === id) ?? null), billing),
+      },
       feedback: db
         ? new DbFeedbackStore(db)
         : new MemoryFeedbackStore(
@@ -228,6 +233,7 @@ export function services(): Services {
           ),
     };
     const svc = globalForServices.gojoServices;
+    billing.onApproved = (payment, adminId) => svc.growth.referrals.onPaymentApproved(payment, adminId);
     if (svc.builder) {
       svc.builder.credits = {
         consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
@@ -288,6 +294,11 @@ export function paymentNotices(): PaymentNoticeDeps {
     store: svc.billing.store(),
     telegram: svc.telegram,
   };
+}
+
+/** Accounts in the in-memory auth store (development and e2e only). */
+function memoryAccounts(): { id: string; name: string; email: string; phoneNumber?: string | null; createdAt: Date }[] {
+  return (globalThis as unknown as { gojoAuthMemory?: { user?: { id: string; name: string; email: string; phoneNumber?: string | null; createdAt: Date }[] } }).gojoAuthMemory?.user ?? [];
 }
 
 /** Admin overview numbers and user list (database when available). */

@@ -18,6 +18,9 @@ import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
 import { creditSettings, launchOffer, ownerAllowance, planFeatures } from "@/lib/app/shell-data";
+import { InviteCard } from "@/components/billing/invite-card";
+import { REFERRAL_MONTHLY_CAP, referralLink } from "@/lib/growth/referral-rules";
+import { reportError } from "@/lib/observability/report";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/billing">): Promise<Metadata> {
   const { lang } = await params;
@@ -42,9 +45,11 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
   if (!user) redirect(`/${lang}/sign-in?next=/${lang}/billing`);
   const t = getMessages(lang);
   const b = t.billing;
-  const billing = services().billing;
+  const svc = services();
+  const billing = svc.billing;
+  const referrals = svc.growth.referrals.store;
   // Shared with the sidebar's meter (one read per request).
-  const [allowance, history, settings, credits, features, offer, bought, ledger] = await Promise.all([
+  const [allowance, history, settings, credits, features, offer, bought, ledger, invite] = await Promise.all([
     ownerAllowance(user.id),
     billing.store().paymentsFor(user.id),
     billing.settings(),
@@ -54,6 +59,8 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
     billing.boughtLeft(user.id).catch(() => 0),
     // One row more than a page tells whether there is an older page.
     billing.store().ledger(user.id, HISTORY_PAGE + 1, (historyPage - 1) * HISTORY_PAGE).catch(() => []),
+    // The invite card is extra: without it the Plan page still opens.
+    Promise.all([referrals.codeFor(user.id), referrals.summary(user.id)]).catch((e: unknown) => (reportError("invite link failed", e), null)),
   ]);
   const plan = allowance?.plan ?? "free";
   const left = allowance?.credits ?? 0;
@@ -121,6 +128,16 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
           supportUrl={CONTACT_URL}
         />
         <Link href={`/${lang}/pricing#compare`} className="-mt-4 inline-flex min-h-11 w-fit items-center font-medium text-ink underline underline-offset-4 lg:min-h-9">{t.plans.compareLink}</Link>
+
+        {invite && (
+          <InviteCard
+            t={t.growth.invite}
+            link={referralLink(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000", lang, invite[0])}
+            credits={credits.monthly.starter}
+            cap={REFERRAL_MONTHLY_CAP}
+            stats={invite[1]}
+          />
+        )}
 
         <section aria-labelledby="sizes-title" className="flex flex-col gap-3">
           <h2 id="sizes-title" className="text-lg font-semibold">{b.sizesTitle}</h2>

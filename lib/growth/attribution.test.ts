@@ -21,7 +21,7 @@ describe("attributionFromRequest", () => {
 describe("cookie", () => {
   it("round-trips and rejects anything else", () => {
     const a: Attribution = { r: "u_abc12345", s: "telegram", t: 5 };
-    expect(decodeAttribution(encodeAttribution(a))).toEqual(a);
+    expect(decodeAttribution(encodeURIComponent(encodeAttribution(a)))).toEqual(a);
     expect(decodeAttribution("%7B%22x%22%3A1%7D")).toBeNull();
     expect(decodeAttribution("%%%")).toBeNull();
     expect(decodeAttribution(undefined)).toBeNull();

@@ -341,7 +341,7 @@ export const creditLedger = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     delta: integer("delta").notNull(),
-    reason: text("reason", { enum: ["monthly_grant", "topup", "ai_edit", "refund", "admin", "first_build"] }).notNull(),
+    reason: text("reason", { enum: ["monthly_grant", "topup", "ai_edit", "refund", "admin", "first_build", "referral"] }).notNull(),
     ref: text("ref").notNull(),
     /** AI changes: how big the request was (small, medium, large), for the owner's history. */
     size: text("size", { enum: ["small", "medium", "large"] }),
@@ -522,4 +522,40 @@ export const signupSources = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("signup_sources_time_idx").on(t.createdAt)],
+);
+
+/** Each owner's invite code (/?ref=u_<code>), made the first time they see their link. */
+export const referralCodes = pgTable("referral_codes", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  code: text("code").notNull().unique(),
+  createdAt: createdAt(),
+});
+
+/**
+ * Who invited whom: one row per invited owner (so one reward at most). Rewards are given when the
+ * invited owner's first real payment is approved; blocked rows record why no reward can come.
+ */
+export const referrals = pgTable(
+  "referrals",
+  {
+    referredId: text("referred_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+    referrerId: text("referrer_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    code: text("code").notNull(),
+    status: text("status", { enum: ["pending", "rewarded", "blocked"] }).notNull(),
+    /** same_user, same_email, same_domain, same_phone. */
+    blockReason: text("block_reason"),
+    paymentId: uuid("payment_id"),
+    /** Changes given to each side (the inviter's is 0 past the monthly cap). */
+    referrerCredits: integer("referrer_credits").notNull().default(0),
+    referredCredits: integer("referred_credits").notNull().default(0),
+    rewardedAt: timestamp("rewarded_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("referrals_referrer_idx").on(t.referrerId, t.rewardedAt), index("referrals_time_idx").on(t.createdAt)],
 );

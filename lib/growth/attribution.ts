@@ -61,11 +61,12 @@ function dropEmpty(a: Attribution): Attribution {
   return Object.fromEntries(Object.entries(a).filter(([, v]) => v !== undefined)) as Attribution;
 }
 
+/** The cookie's value before the cookie API percent-encodes it. */
 export function encodeAttribution(a: Attribution): string {
-  return encodeURIComponent(JSON.stringify(a));
+  return JSON.stringify(a);
 }
 
-/** The cookie's value, or null when it is missing or not ours (it is untrusted input). */
+/** The cookie's raw (percent-encoded) value from a Cookie header, or null when it is missing or not ours (untrusted input). */
 export function decodeAttribution(raw: string | undefined | null): Attribution | null {
   if (!raw || raw.length > 600) return null;
   try {

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronsUpDown, CreditCard, Globe, LayoutGrid, LayoutTemplate, LogOut, Menu, MessageSquareHeart, Plus, Sparkles, X, Zap } from "lucide-react";
+import { ChevronsUpDown, CreditCard, Globe, LayoutGrid, LayoutTemplate, LogOut, Menu, MessageSquareHeart, Plus, Sparkles, X, Zap, UserPlus } from "lucide-react";
 import { InstallApp } from "@/components/pwa/install-app";
 import { LanguageSwitch } from "@/components/site/language-switch";
 import { signOut } from "@/lib/auth/actions";
@@ -39,6 +39,8 @@ export interface SidebarText {
   languageLabel: string;
   pwa: { install: string; iosTitle: string; iosSteps: string; close: string };
   feedback: string;
+  /** "Invite a business": the owner's invite link on the Plan page. */
+  invite: string;
   /** Already worded for the number; empty when there is no unread reply. */
   feedbackUnread: string;
 }
@@ -218,6 +220,10 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
         )}
 
         <div className="mt-auto flex shrink-0 flex-col gap-2">
+          <Link href={`${billing}#invite-title`} onClick={close} className={item}>
+            <UserPlus aria-hidden="true" className="size-4 shrink-0" />
+            <span className="min-w-0 flex-1 truncate">{text.invite}</span>
+          </Link>
           <Link href={feedbackHref} onClick={close} aria-current={pathname === feedbackPath ? "page" : undefined} className={item}>
             <MessageSquareHeart aria-hidden="true" className="size-4 shrink-0" />
             <span className="min-w-0 flex-1 truncate">{text.feedback}</span>
