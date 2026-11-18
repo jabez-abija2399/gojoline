@@ -19,6 +19,7 @@ import { publicPatch } from "@/lib/site-info/business";
 import { infoLabels } from "@/lib/site-info/labels";
 import { takenDownPage } from "@/lib/safety/takedown";
 import { publishedSiteHeaders, scanBuiltSite, type ScanIssue } from "./scan";
+import { badgeIssues, badgeUrl } from "@/lib/growth/badge";
 
 /** Extra checks before a site goes public (content safety is added in Slice 7). */
 export interface PublishGuard {
@@ -145,6 +146,7 @@ async function deployLocked(
   if (!token) return { ok: false, error: "busy" };
   try {
     const reserved = existing ?? (await deps.sites.getByProject(user.id, projectId));
+    const badgeOn = !plan || plan.badge;
     const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
     const url = deps.publisher.urlFor(slug);
     const sandbox = await deps.sandboxes.open(projectId, latest.files);
@@ -160,7 +162,9 @@ async function deployLocked(
       VITE_SITE_ID: projectId,
       VITE_REPORT_URL: `${deps.appUrl.replace(/\/$/, "")}/${project.locale}/report?site=${encodeURIComponent(slug)}`,
       VITE_DATA_API_URL: apiOrigin,
-      VITE_BADGE: plan && !plan.badge ? "0" : "1",
+      // The plan alone decides (Free: shown); nothing the AI writes in site.json can change it.
+      VITE_BADGE: badgeOn ? "1" : "0",
+      VITE_BADGE_URL: badgeUrl(deps.appUrl, slug),
       ...(reserved?.siteKey ? { VITE_SITE_KEY: reserved.siteKey } : {}),
       ...(seo ? { VITE_SEO: seo } : {}),
       ...(Object.keys(baked).length ? { VITE_LIVE: JSON.stringify(baked) } : {}),
@@ -179,7 +183,7 @@ async function deployLocked(
       const data = name ? libraryPhoto(name) : null;
       return data ? [{ path: f.path, data }] : [];
     });
-    const issues = scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] });
+    const issues = [...scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] }), ...(badgeOn ? badgeIssues(build.files, latest.files["src/styles.css"]) : [])];
     if (issues.length) return { ok: false, error: "blocked", issues };
     for (const guard of deps.guards ?? []) {
       const verdict = await guard.check({ files: build.files, source: latest.files, projectId, ownerId: user.id });

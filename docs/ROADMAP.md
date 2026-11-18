@@ -112,6 +112,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Progress card follows real agent steps: understanding, planning, writing (with the sections being written), checking, fixing, finishing up, saving, ready (en, am)
 - [x] Review fixes (design, performance, security): wrap-up threshold scaled to the budget, strict budget for free builds, budget note inside tool results, no file paths sent to the browser, one quiet status line on the progress card, deferred markdown parse, no Ethiopic italics, admin form keeps typed values, cap-specific errors
 
+## Growth loops (2026-11-18)
+- [x] Badge fix: “Made with Gojoline” is a small footer pill linking to the app's own address (`/{lang}?ref=site_<slug>` plus utm tags, set at publish as `VITE_BADGE_URL`), never gojoline.com; only the plan decides (`site.json` `meta.badge` is ignored), and publish refuses a Free site whose pages lack the badge or whose styles target it
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
