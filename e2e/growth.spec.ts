@@ -101,3 +101,35 @@ test("a business joins through an invite link; when the admin approves its first
   await expect(page.getByText(/1 invited · 1 thanked so far/)).toBeVisible();
   await invited.close();
 });
+
+test("an owner opts in to the showcase, the site appears on /showcase, and an admin can hide it", async ({ page, browser }) => {
+  await signIn(page);
+  const name = `Showcase Cafe ${Date.now().toString(36)}`;
+  const projectId = await publishNewSite(page, name);
+  await page.goto(`/en/showcase`);
+  await expect(page.getByRole("link", { name: new RegExp(name) })).toHaveCount(0);
+
+  await page.goto(`/en/dashboard/${projectId}?tab=settings`);
+  const optIn = page.getByRole("checkbox", { name: "Show my site in the Gojoline showcase" });
+  await expect(optIn).not.toBeChecked();
+  await optIn.check();
+  await expect(page.getByRole("status").filter({ hasText: "Saved." })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+
+  await page.goto("/en/showcase");
+  await expect(page.getByRole("heading", { level: 1, name: "Sites made with Gojoline" })).toBeVisible();
+  const card = page.getByRole("link", { name: new RegExp(name) });
+  await expect(card).toBeVisible();
+  await expect(card).toHaveAttribute("href", /^https:\/\/.+\.sites\.example$/);
+  await expectNoHorizontalScroll(page);
+  await expectNoSeriousA11yIssues(page);
+
+  const admin = await newPage(browser);
+  await signIn(admin.page, { contact: `admin-e2e-show-${test.info().project.name}@example.com` });
+  await admin.page.goto("/en/admin?tab=growth");
+  await admin.page.getByRole("button", { name: `Hide: ${name}` }).click();
+  await expect(admin.page.getByRole("button", { name: `Show again: ${name}` })).toBeVisible();
+  await admin.close();
+  await page.reload();
+  await expect(page.getByRole("link", { name: new RegExp(name) })).toHaveCount(0);
+});

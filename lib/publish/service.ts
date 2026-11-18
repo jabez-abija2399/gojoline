@@ -20,6 +20,7 @@ import { infoLabels } from "@/lib/site-info/labels";
 import { takenDownPage } from "@/lib/safety/takedown";
 import { publishedSiteHeaders, scanBuiltSite, type ScanIssue } from "./scan";
 import { badgeIssues, badgeUrl } from "@/lib/growth/badge";
+import { heroImageOf, type ShowcaseStore } from "@/lib/growth/showcase";
 
 /** Extra checks before a site goes public (content safety is added in Slice 7). */
 export interface PublishGuard {
@@ -51,6 +52,8 @@ export interface PublishDeps {
   entitlements?: EntitlementsResolver;
   /** The owner's Google and share preview (applied at publish). */
   settings?: SiteSettingsStore;
+  /** Keeps the hero photo for the public showcase card. */
+  showcase?: Pick<ShowcaseStore, "saveImage">;
 }
 
 /**
@@ -230,6 +233,7 @@ async function deployLocked(
         reportError("old host forward failed", e, { projectId });
       }
     }
+    await deps.showcase?.saveImage(user.id, projectId, heroImageOf(latest.files["src/site.json"])).catch((e: unknown) => reportError("showcase picture failed", e, { projectId }));
     // Forms on the live site accept answers only in the shape published here.
     await deps.cloud?.saveForms(site.id, extractForms(latest.files["src/site.json"] ?? ""));
     return { ok: true, site };

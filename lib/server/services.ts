@@ -55,6 +55,7 @@ import type { FeedbackStore } from "@/lib/feedback/types";
 import { DbSignupSourceStore, MemorySignupSourceStore, type SignupSourceStore } from "@/lib/growth/sources";
 import { DbReferralStore, MemoryReferralStore } from "@/lib/growth/referral-store";
 import { Referrals } from "@/lib/growth/referrals";
+import { DbShowcaseStore, MemoryShowcaseStore, type ShowcaseStore } from "@/lib/growth/showcase";
 
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
@@ -184,7 +185,8 @@ interface Services {
   /** Owner feedback and the team's replies. */
   feedback: FeedbackStore;
   /** Growth loops: sign-up sources (first touch). */
-  growth: { sources: SignupSourceStore; referrals: Referrals };
+  /** Growth loops: sign-up sources, referrals, and the public showcase (null without publishing or a database). */
+  growth: { sources: SignupSourceStore; referrals: Referrals; showcase: ShowcaseStore | null };
 }
 
 /** `ownerOf` serves the memory store only (the database joins projects instead). */
@@ -221,6 +223,7 @@ export function services(): Services {
       growth: {
         sources: db ? new DbSignupSourceStore(db) : new MemorySignupSourceStore(),
         referrals: new Referrals(db ? new DbReferralStore(db) : new MemoryReferralStore((id) => memoryAccounts().find((u) => u.id === id) ?? null), billing),
+        showcase: db ? new DbShowcaseStore(db) : null,
       },
       feedback: db
         ? new DbFeedbackStore(db)
@@ -250,6 +253,8 @@ export function services(): Services {
       svc.builder.sizer = key && !isE2E(process.env) ? new LLMRequestSizer(new AnthropicLLMProvider(key), usage, process.env.SIZE_MODEL || "claude-haiku-5-5") : new HeuristicSizer();
     }
     svc.publish = pickPublish(process.env, svc.builder);
+    if (!db && svc.publish && svc.builder) svc.growth.showcase = new MemoryShowcaseStore(svc.publish.sites as MemorySiteStore, svc.builder.store);
+    if (svc.publish && svc.growth.showcase) svc.publish.showcase = svc.growth.showcase;
     const settingsDb = svc.siteSettings instanceof DbSiteSettingsStore ? svc.siteSettings : null;
     svc.publicSites = new PublicSiteCache(async (id) => {
       if (settingsDb) return settingsDb.publicEntry(id);

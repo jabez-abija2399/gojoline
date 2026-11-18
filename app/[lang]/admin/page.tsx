@@ -19,7 +19,7 @@ import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/t
 import { shortAgent } from "@/lib/feedback/agent";
 import { reportError } from "@/lib/observability/report";
 import { BarChart } from "@/components/admin/bar-chart";
-import { setAdminTheme, toggleDiscountCode } from "./actions";
+import { setAdminTheme, setShowcaseHidden, toggleDiscountCode } from "./actions";
 import { offerEndsAt, offerUntilLabel } from "@/lib/billing/discounts";
 import { offerProductsText } from "@/lib/billing/offer-text";
 import { CreditsForm } from "@/components/admin/credits-form";
@@ -313,7 +313,8 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
 
   async function GrowthTab() {
     const g = t.growth.referralsAdmin;
-    const list = await svc.growth.referrals.store.recent(100);
+    const [list, show] = await Promise.all([svc.growth.referrals.store.recent(100), svc.growth.showcase?.adminList(200) ?? []]);
+    const sc = t.growth.showcase;
     const joinedFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
     const who = (p: { name: string; contact: string }) => (
       <span className="flex min-w-0 flex-col">
@@ -350,6 +351,33 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                       {r.status === "rewarded" ? ` · ${format(r.referrerCredits > 0 ? g.rewardBoth : g.rewardCapped, { n: r.referredCredits })}` : ""}
                     </span>
                   </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <section aria-labelledby="showcase-title" className="flex scroll-mt-28 flex-col gap-3 rounded-xl border border-line bg-white p-4">
+          <h2 id="showcase-title" className="text-base font-semibold">{sc.adminTitle}</h2>
+          <p className="text-xs text-ink-muted">{sc.adminIntro} <Link href={`/${lang}/showcase`} className="font-medium text-ink underline underline-offset-4">{sc.view}</Link></p>
+          {show.length === 0 ? (
+            <p className="text-ink-muted">{sc.adminEmpty}</p>
+          ) : (
+            <ul aria-labelledby="showcase-title" className="flex flex-col">
+              {show.map((e) => (
+                <li key={e.siteId} className="flex flex-wrap items-center gap-3 border-t border-line py-3 first:border-0">
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="font-medium [overflow-wrap:anywhere]">{e.name}</span>
+                    <a href={e.url} target="_blank" rel="noopener noreferrer" className="text-xs text-ink-muted underline underline-offset-2 [overflow-wrap:anywhere]">{e.url}</a>
+                  </span>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${e.hidden ? "bg-coral-soft text-destructive" : "border border-lagoon bg-white text-lagoon"}`}>{e.hidden ? sc.hidden : sc.shown}</span>
+                  <form action={setShowcaseHidden}>
+                    <input type="hidden" name="lang" value={lang} />
+                    <input type="hidden" name="id" value={e.siteId} />
+                    <input type="hidden" name="hidden" value={e.hidden ? "false" : "true"} />
+                    <button aria-label={`${e.hidden ? sc.show : sc.hide}: ${e.name}`} className="min-h-11 rounded-lg border border-line bg-white px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9">
+                      {e.hidden ? sc.show : sc.hide}
+                    </button>
+                  </form>
                 </li>
               ))}
             </ul>

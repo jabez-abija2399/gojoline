@@ -47,10 +47,12 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
   const project = header.project ?? (await builder.store.getProject(user.id, id));
   if (!project) notFound();
   // Only the open section's data is read (every read is scoped to this owner).
-  const [home, versions, latest] = await Promise.all([
+  const showcaseStore = services().growth.showcase;
+  const [home, versions, latest, showcaseOn] = await Promise.all([
     tab === "home" ? loadHome(user.id, id, lang) : null,
     tab === "settings" ? builder.store.listVersions(user.id, id).catch(() => []) : null,
     tab === "settings" ? builder.store.latestVersion(user.id, id).catch(() => null) : null,
+    tab === "settings" && showcaseStore ? showcaseStore.optedIn(user.id, id).catch(() => null) : null,
   ]);
   const t = getMessages(lang);
   const d = t.dashboard;
@@ -133,6 +135,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
                 languages: (latest?.files["src/site.json"] ? readLists(latest.files["src/site.json"])?.languages : null) ?? [lang],
                 siteName: name,
               }}
+              showcase={showcaseStore ? { t: t.growth.showcase, on: showcaseOn } : undefined}
             />
           </div>
         )}

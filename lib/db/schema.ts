@@ -195,10 +195,20 @@ export const sites = pgTable(
     offlineAt: timestamp("offline_at", { withTimezone: true }),
     /** Which live-site features the published files have (1: reads business info, counts visits); null = published before them. */
     runtimeVersion: integer("runtime_version"),
+    /** The owner chose “Show my site in the Gojoline showcase” (off by default). */
+    showcase: boolean("showcase").notNull().default(false),
+    /** An admin hid it from the showcase (null = not hidden). */
+    showcaseHiddenAt: timestamp("showcase_hidden_at", { withTimezone: true }),
+    /** The hero photo at the last publish ("/images/…" or "/stock/…"), for the showcase card. */
+    showcaseImage: text("showcase_image"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index("sites_owner_idx").on(t.ownerId), index("sites_updated_idx").on(t.updatedAt)],
+  (t) => [
+    index("sites_owner_idx").on(t.ownerId),
+    index("sites_updated_idx").on(t.updatedAt),
+    index("sites_showcase_idx").on(t.publishedAt).where(sql`${t.showcase} and ${t.status} = 'published'`),
+  ],
 );
 
 /** Form definitions captured from site.json at publish time; submissions are checked against them. */
