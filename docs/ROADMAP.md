@@ -121,10 +121,14 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Public showcase: owners opt in from dashboard Settings (“Show my site in the Gojoline showcase”, off by default); `/{lang}/showcase` lists opted-in live sites (not resting, taken down or hidden) with the hero photo (served by our own route), name, sector and link; admins hide or show entries from Admin → Growth (audited); in the footer and sitemap (migration 0020)
 - [x] Sector pages for search: `/{lang}/website-for/<sector>` for café, restaurant, church, mosque, school, salon, shop, hotel, clinic, wedding, NGO and portfolio, each with its own headline, intro, 3 benefits, 3 questions, the matching template's preview and a start button with that template chosen, WebPage + FAQPage JSON-LD, links to the other sectors, in the sitemap
 
+## First-build preview (2026-11-18)
+- [x] No starter template during a first build: a building placeholder in the device frame (site outline, current step, elapsed time, “Usually about a minute”; still under reduced motion; en, am, dark, 360 px), the site fades in once its frame has loaded, a failed first build shows the recovery message; later edits and template starts unchanged; progress label lists the newest three sections cleanly (“and 2 more”)
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- First-build preview (2026-11-18): e2e runs on the in-memory sandbox, whose preview is `about:blank`, so the reveal is checked on that frame; check the fade on a real Vercel Sandbox preview after deploy. The Amharic placeholder strings need the native-speaker review.
 - Growth (2026-11-18): claw back an invite thank-you when refunds or payment reversals are built (the reward is a `referral` ledger row per owner, ref `referral:<invited id>`, easy to reverse).
 - Growth (2026-11-18): the Amharic sector page copy (`lib/landing/sectors.ts`) and the growth strings need a native-speaker review before launch.
 - Growth (2026-11-18): the slice's design, performance and security reviews were done by the coordinator's reviewers (findings fixed); this session could not start the `.claude/agents` reviewers itself.

@@ -426,7 +426,8 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       url={previewUrl}
       liveUrl={liveUrl}
       working={working}
-      timeline={timeline}
+      // Only the placeholder uses it: later edits don't re-render the frame on every streamed piece.
+      timeline={view === "building" ? timeline : null}
       device={device}
       onReload={reload}
       onRetry={retryPreview}
