@@ -264,9 +264,83 @@ that means: Ge'ez body text at 17 px or more with line height 1.6, no letter spa
 These are folded into the system additions: items 4–6 and 8–10 above become part of the locked
 `motion.css` and `design.css`, available to every template, old and new.
 
+## 8. Art direction, not just colour (founder's review, 2026-11-18)
+
+The first board gave the eight templates their own colours and fonts but mostly the same stacked
+phone layout. The founder's point: a luxury hotel and a luxury fashion site may share a palette, but
+their compositions should be completely different. So each template now has a design style, a
+composition, a typography technique and its own motion. In the template this becomes new
+`theme.style` values (today: warm, editorial, bold, clean): each one changes the header, the hero
+composition, section titles, cards and rhythm in the locked `design.css`, not only colours.
+
+| Template | Style | Composition | Typography | Signature motion |
+| --- | --- | --- | --- | --- |
+| Fashion | High-fashion editorial (luxury editorial, magazine layout) | Full-bleed photo; oversized name layered over its edge; vertical text; asymmetric magazine grid numbered No. 01–03; big pull quote; Roman-numeral steps | Large italic serif with tiny tracked labels (Latin only) | Clip-path photo reveal, staggered word rise, sliding tibeb band, image hover zoom |
+| Bakery | Organic playful (organic design, floating elements) | Centred arch photo; floating round photos; hand-drawn circle around one word; wavy section edge; swipeable cake cards; steps as chat bubbles | Soft serif, rounded | Rotating sticker, floating bob, SVG line drawing, staggered pop |
+| Construction | Swiss industrial (Swiss grid, modular grid) | Strict grid with numbered sections 00–03 in a left column; data in monospace; price table with units; hairline rules; tiles as buttons | Condensed uppercase plus monospace figures | Count-up figures, moving hazard stripe, table rows filling in, rule drawing |
+| Garage and rental | Bento workshop (bento grid, modern corporate) | First screen is a tile grid: headline, open-now, call, warranty, book; services as bento; fleet scrolls sideways | Condensed sans | Tiles popping in, pulsing open dot, cars sliding in, horizontal scroll with snap |
+| Wedding studio | Cinematic immersive (full-bleed storytelling) | Full-screen hero; the page told in chapters; sideways film strip; dropped prints; packages as an editorial list | Light serif, couple names large | Slow zoom on the hero photo, names fading in, prints dropping, film strip drift |
+| Training centre | Soft neo-brutalism (thick borders, bold shadows) | Bordered blocks with hard offset shadows; ticket-shaped course cards with a perforated date stub; route as linked pills; sticker date | Heavy grotesk | Highlighter drawing in, buttons that press, wobbling sticker, cards dropping |
+| Pharmacy | Calm minimal (soft minimalism) | One column, generous space; the live "Open now · until 22:00" sign is the hero; numbered service list; prescription card as a pharmacy label | Quiet geometric sans | A breathing status dot and gentle fades; restraint is the design |
+| Gym | Kinetic dark (kinetic type, condensed, outline type) | Giant stacked words, one line outlined (Latin only); tilted red band; huge numbered classes; dark hero, light timetable | Condensed black weight, uppercase in Latin | Words sliding in from both sides, running marquee, flashing "Best value" badge |
+
+### Motion map: what we use, and why
+
+From the founder's list of techniques. Everything we use is CSS only (no animation libraries), plays
+once on a real site, animates only transform, opacity and clip-path, and stops under
+`prefers-reduced-motion`. Most of it already exists in the template's locked `motion.css`.
+
+| Technique | Decision | Notes |
+| --- | --- | --- |
+| Page load animation | Use, hero only | Already there (`site-enter`); the hero heading is never hidden, so the largest paint isn't delayed |
+| Scroll-triggered text reveal, staggered reveal | Use | Already there (`.reveal`, `animation-timeline: view()`); where unsupported, content simply shows |
+| Clip-path reveal, mask reveal, image wipe | Use | Already there (`.wipe`); used most in fashion and studio |
+| View transitions between pages | Use | Already there (`@view-transition`) |
+| Count-up animation | Use | Already there (`CountUp`); construction, gym, training |
+| Infinite marquee | Use | Already there; pauses on hover and focus |
+| Sticky navigation, pinned sections, sticky stacking | Use | Already there (sticky header, stacked steps) |
+| Parallax scrolling | Light only | Already there on the hero (`.hero-parallax`); decorative layers only, never text |
+| Horizontal scroll | Use with native scroll snap | For galleries, fleets and cakes; never scroll hijacking |
+| Kinetic typography | Hero only | Gym and fashion; the text is readable before and after |
+| 3D tilt cards, image hover zoom, interactive hover states | Hover devices only | Already there (`.tilt` under `hover: hover`); phones never see it |
+| Grain texture, noise overlay | Use, tiny | An inline SVG under 1 KB for bakery and studio |
+| Cursor tracking, custom cursor, magnetic buttons, cursor-following elements | Avoid | Phones have no cursor, and most of our visitors are on phones |
+| Scroll hijacking, Lenis smooth scroll | Avoid | Fights the phone's own scrolling |
+| GSAP ScrollTrigger | Avoid | CSS scroll timelines do the same without about 70 KB of script |
+| WebGL / Three.js, immersive 3D, image distortion, chromatic aberration | Avoid | GPU and battery cost on cheap phones; breaks the 100 KB budget |
+| Glassmorphism, blur | Avoid on content | Blur is slow on cheap phones and text on glass fails contrast; at most a header |
+| Neumorphism | Avoid | Soft shadows on soft backgrounds fail contrast for buttons and fields |
+| Gradient mesh, glowing light effects | Avoid | Repaint cost; reads as generic AI style |
+
+### Styles from the founder's list, mapped
+
+Used: luxury editorial (fashion), organic (bakery), Swiss (construction), bento (garage), cinematic
+immersive (studio), neo-brutalism in a soft, readable form (training), soft or Japanese minimalism
+(pharmacy), futuristic-lite and kinetic (gym). Kept for later templates: retro digital, maximalism,
+modern corporate, art direction/experimental (for a creative-studio template). Not used: immersive
+3D, glassmorphism and neumorphism (performance and contrast).
+
+### Design review score
+
+Each new template is scored before it ships, adapting the founder's rubric (100 points):
+visual design 20, UI and UX 15, responsive at 360 px 15, animation and interaction 15, code
+quality 15, accessibility 10, performance 10. A template ships at 85 or more, with accessibility
+and performance at full marks (WCAG AA contrast, 44 px targets, Lighthouse mobile 95 or more,
+JavaScript under the budget) and both languages checked.
+
+### More references read
+
+eleken.co (50 best website designs): oversized headings with one highlighted or hand-circled word
+(HeyFriends), a filled button beside an outline one, real premises and product photos (B-Egg,
+Artbruno, Gemnote), chat-bubble testimonials (Mode, Hydra), a two-option language toggle styled like
+Rebellion's. siteofsites.co is a directory of portfolio sites (tags such as Big Type, Grid,
+Type-Based, Scrollytelling), not small businesses. To study further: Godly, Land-book, SiteInspire,
+Minimal Gallery, Httpster, Lapa Ninja, Hoverstat.es.
+
 ## Visual board
 
-Phone mock-ups of all eight home pages, with colours and type: a private Design canvas in the
+Phone mock-ups of all eight home pages, each in its own art direction and with its motion running
+(looped on the board so it can be seen): a private Design canvas in the
 founder's claude.ai account (link in the conversation). Photos there are labelled placeholders that
 say what each photo must show.
 
