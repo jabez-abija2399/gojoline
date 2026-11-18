@@ -12,7 +12,7 @@ import { LazySiteSandbox } from "@/lib/providers/sandbox/lazy";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
 import { templateFiles } from "@/lib/template/files";
 import type { ChatMessage, ProjectStore } from "@/lib/projects/types";
-import { biggerSize, FIRST_BUILD_CAP_CENTS, MAX_TURNS_BY_SIZE, sizeRank, type RequestSize } from "@/lib/billing/credits";
+import { biggerSize, DEFAULT_CAP_CENTS_PER_CREDIT, DEFAULT_FIRST_BUILD_CAP_CENTS, firstBuildCapNano, MAX_TURNS_BY_SIZE, sizeRank, type RequestSize } from "@/lib/billing/credits";
 import type { LedgerMeta } from "@/lib/billing/store";
 import type { RequestSizer } from "@/lib/agent/size";
 
@@ -21,6 +21,8 @@ export interface SizePricing {
   sizeCredits: Record<RequestSize, number>;
   /** AI cost allowed per change charged, in US cents. */
   capCentsPerCredit: number;
+  /** AI cost allowed for a free first build, in US cents (capped by MAX_FIRST_BUILD_CAP_CENTS). */
+  firstBuildCapCents: number;
 }
 
 export interface BuilderDeps {
@@ -49,11 +51,13 @@ export interface BuilderDeps {
 }
 
 /** Without admin settings: one change per request, no confirmation, the default cap. */
-const ONE_CHANGE: SizePricing = { sizeCredits: { small: 1, medium: 1, large: 1 }, capCentsPerCredit: 15 };
+const ONE_CHANGE: SizePricing = { sizeCredits: { small: 1, medium: 1, large: 1 }, capCentsPerCredit: DEFAULT_CAP_CENTS_PER_CREDIT, firstBuildCapCents: DEFAULT_FIRST_BUILD_CAP_CENTS };
 
 export type BuilderEvent =
   | AgentEvent
   | { type: "preview"; url: string }
+  /** The site built and its new version is being saved (progress). */
+  | { type: "saving" }
   /** A medium or large request waits for the owner's OK; nothing was charged or saved. */
   | { type: "needs_confirm"; size: RequestSize; cost: number; credits: number }
   | {
@@ -212,7 +216,9 @@ export async function sendOwnerMessage(
       // Changing an existing site is usually small: less thinking costs less (measured in evals).
       effort: latest ? "low" : "medium",
       // Spending follows what the owner pays: a cap per change charged (free first builds have their own).
-      budgetNanoUsd: free ? FIRST_BUILD_CAP_CENTS * 10_000_000 : deps.credits ? cost * pricing.capCentsPerCredit * 10_000_000 : undefined,
+      budgetNanoUsd: free ? firstBuildCapNano(pricing) : deps.credits ? cost * pricing.capCentsPerCredit * 10_000_000 : undefined,
+      // A free build is the one anyone can start: its cap holds even if the prompt cache missed.
+      strictBudget: free,
       maxTurns: MAX_TURNS_BY_SIZE[free || !latest ? "first_build" : size],
     });
 
@@ -221,6 +227,7 @@ export async function sendOwnerMessage(
     // Sent back so the builder can show the site's new name straight away.
     let siteNameNow: string | undefined;
     if (result.status === "changed") {
+      input.onEvent({ type: "saving" });
       const version = await store.addVersion(input.ownerId, {
         projectId: project.id,
         summary: input.text.slice(0, 140),

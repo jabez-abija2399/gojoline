@@ -41,7 +41,16 @@ export class AnthropicLLMProvider implements LLMProvider {
       req.onText?.(delta);
     });
     stream.on("streamEvent", (event) => {
-      if (event.type === "content_block_delta") firstTokenAt ??= Date.now();
+      if (event.type === "content_block_delta") {
+        firstTokenAt ??= Date.now();
+        if (event.delta.type === "input_json_delta") req.onToolInput?.(event.delta.partial_json);
+      }
+      if (event.type === "content_block_start") {
+        const b = event.content_block;
+        if (b.type === "tool_use") req.onBlockStart?.({ type: "tool_use", name: b.name });
+        else if (b.type === "thinking" || b.type === "redacted_thinking") req.onBlockStart?.({ type: "thinking" });
+        else if (b.type === "text") req.onBlockStart?.({ type: "text" });
+      }
     });
 
     const message = await stream.finalMessage();

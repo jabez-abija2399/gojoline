@@ -7,7 +7,7 @@ import { X } from "lucide-react";
  * A native modal dialog: focus moves in and back, Escape closes it, the page behind is inert.
  * Bottom sheet on phones, centred card on larger screens.
  */
-export function Modal({ open, onClose, title, closeLabel, children, labelId }: { open: boolean; onClose: () => void; title: string; closeLabel: string; children: ReactNode; labelId: string }) {
+export function Modal({ open, onClose, title, closeLabel, children, labelId, wide = false }: { open: boolean; onClose: () => void; title: string; closeLabel: string; children: ReactNode; labelId: string; wide?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const d = ref.current;
@@ -24,7 +24,7 @@ export function Modal({ open, onClose, title, closeLabel, children, labelId }: {
         // A tap on the dimmed backdrop closes it.
         if (e.target === ref.current) onClose();
       }}
-      className="m-0 mt-auto max-h-[92dvh] w-full max-w-none overflow-y-auto rounded-t-2xl border border-line bg-white p-0 text-ink shadow-xl backdrop:bg-ink/50 sm:m-auto sm:max-w-md sm:rounded-2xl"
+      className={`m-0 mt-auto max-h-[92dvh] w-full max-w-none overflow-y-auto rounded-t-2xl border border-line bg-white p-0 text-ink shadow-xl backdrop:bg-ink/50 sm:m-auto sm:rounded-2xl ${wide ? "sm:max-w-xl" : "sm:max-w-md"}`}
     >
       {open && (
         <div className="flex flex-col gap-4 p-5">

@@ -16,6 +16,8 @@ import { refreshTemplateUsage } from "@/lib/landing/template-usage";
 import { after } from "next/server";
 import { noticeDecision } from "@/lib/billing/notify";
 import { adminStats, paymentNotices, services } from "@/lib/server/services";
+import { adminFeedbackInput } from "@/lib/feedback/schema";
+import { FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
 
@@ -111,7 +113,10 @@ export async function saveBillingSettings(_prev: SettingsState, form: FormData):
   return { status: "ok" };
 }
 
-export type CreditsState = { status: "idle" | "ok" | "invalid" | "forbidden" | "failed"; field?: string };
+/** On "invalid", `values` holds what the admin typed, so the form shows it again (React resets forms after an action). */
+export type CreditsState = { status: "idle" | "ok" | "invalid" | "forbidden" | "failed"; field?: string; values?: Record<string, string> };
+
+const CREDIT_FIELDS = ["monthly_free", "monthly_starter", "monthly_business", "rollover_free", "rollover_starter", "rollover_business", "topupCredits", "size_small", "size_medium", "size_large", "capUsd", "firstCapUsd"] as const;
 
 /** A whole number typed in a form field, or NaN (so validation names the field). */
 const whole = (v: FormDataEntryValue | null) => (typeof v === "string" && /^\s*\d{1,6}\s*$/.test(v) ? Number(v) : NaN);
@@ -120,8 +125,11 @@ const whole = (v: FormDataEntryValue | null) => (typeof v === "string" && /^\s*\
 export async function saveCreditSettings(_prev: CreditsState, form: FormData): Promise<CreditsState> {
   const user = await currentUser();
   if (!user || !isAdmin(user)) return { status: "forbidden" };
-  const cap = usdToCents(String(form.get("capUsd") ?? ""));
-  if (cap === null) return { status: "invalid", field: "capUsd" };
+  const values = Object.fromEntries(CREDIT_FIELDS.map((f) => [f, String(form.get(f) ?? "").slice(0, 12)]));
+  const cap = usdToCents(values.capUsd!);
+  if (cap === null) return { status: "invalid", field: "capUsd", values };
+  const firstCap = usdToCents(values.firstCapUsd!);
+  if (firstCap === null) return { status: "invalid", field: "firstCapUsd", values };
   const plans = ["free", "starter", "business"] as const;
   const sizes = ["small", "medium", "large"] as const;
   const parsed = creditSettingsSchema.safeParse({
@@ -130,11 +138,12 @@ export async function saveCreditSettings(_prev: CreditsState, form: FormData): P
     topupCredits: whole(form.get("topupCredits")),
     sizeCredits: Object.fromEntries(sizes.map((x) => [x, whole(form.get(`size_${x}`))])),
     capCentsPerCredit: cap,
+    firstBuildCapCents: firstCap,
   });
   if (!parsed.success) {
     const path = parsed.error.issues[0]?.path ?? [];
-    const field = path[0] === "monthly" ? `monthly_${String(path[1])}` : path[0] === "rollover" ? `rollover_${String(path[1])}` : path[0] === "sizeCredits" ? `size_${String(path[1])}` : path[0] === "capCentsPerCredit" ? "capUsd" : String(path[0] ?? "");
-    return { status: "invalid", field };
+    const field = path[0] === "monthly" ? `monthly_${String(path[1])}` : path[0] === "rollover" ? `rollover_${String(path[1])}` : path[0] === "sizeCredits" ? `size_${String(path[1])}` : path[0] === "capCentsPerCredit" ? "capUsd" : path[0] === "firstBuildCapCents" ? "firstCapUsd" : String(path[0] ?? "");
+    return { status: "invalid", field, values };
   }
   try {
     await services().billing.saveCreditSettings(user.id, parsed.data);
@@ -314,4 +323,38 @@ export async function setAdminTheme(form: FormData) {
     (await cookies()).set("gojo_admin_theme", theme, { path: `/`, maxAge: 60 * 60 * 24 * 365, sameSite: "lax", httpOnly: true, secure: process.env.NODE_ENV === "production" });
   }
   redirect(`/${lang}/admin?tab=${tab}`);
+}
+
+export type FeedbackState = { status: "idle" | "invalid" | "forbidden" | "not_found" | "failed" };
+
+const fbFilters = z.object({ fStatus: z.enum(FEEDBACK_STATUSES).optional().catch(undefined), fType: z.enum(FEEDBACK_TYPES).optional().catch(undefined) });
+
+/**
+ * The admin's save on one feedback card: status and/or reply in one atomic, audited change. Back to
+ * the same filters; at the card (#fb-<id>, its status line focused) when it is still in the list,
+ * otherwise with the outcome at the top.
+ */
+export async function saveFeedback(_prev: FeedbackState, form: FormData): Promise<FeedbackState> {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) return { status: "forbidden" };
+  const parsed = adminFeedbackInput.safeParse({ id: form.get("id"), status: form.get("status"), reply: form.get("reply") ?? "", lang: form.get("lang") });
+  if (!parsed.success) return { status: "invalid" };
+  const { id, status, reply, lang } = parsed.data;
+  let result: Awaited<ReturnType<ReturnType<typeof services>["feedback"]["update"]>>;
+  try {
+    result = await services().feedback.update(id, me.id, { status, reply });
+  } catch (error) {
+    reportError("feedback update failed", error);
+    return { status: "failed" };
+  }
+  if (result.outcome === "not_found") return { status: "not_found" };
+  revalidatePath(`/${lang}/admin`);
+  const back = fbFilters.parse({ fStatus: form.get("fStatus") || undefined, fType: form.get("fType") || undefined });
+  const params = new URLSearchParams({ tab: "feedback" });
+  if (back.fStatus) params.set("status", back.fStatus);
+  if (back.fType) params.set("type", back.fType);
+  params.set("fb", result.outcome === "ok" ? "saved" : "unchanged");
+  params.set("item", id);
+  const stillListed = !back.fStatus || back.fStatus === result.to;
+  redirect(`/${lang}/admin?${params.toString()}${stillListed ? `#fb-${id}` : ""}`);
 }

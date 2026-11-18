@@ -1,15 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
+import { ChatMarkdown } from "@/components/chat/markdown";
 import type { Messages } from "@/lib/i18n";
+import { format } from "@/lib/i18n/format";
+import type { SectionType } from "@/lib/agent/progress";
 
-export type TimelineKey = "understand" | "write" | "check" | "fix" | "ready";
+export type TimelineKey = "understand" | "plan" | "write" | "check" | "fix" | "finish" | "save" | "ready";
 export interface Timeline {
   steps: { key: TimelineKey; done: boolean }[];
   edits: number;
+  /** Site sections the AI is writing, in order (from the streamed tool input). */
+  sections: SectionType[];
   startedAt: number;
 }
+
+/** A fresh timeline for a request sent now. */
+export const startTimeline = (now: number): Timeline => ({ steps: [{ key: "understand", done: false }], edits: 0, sections: [], startedAt: now });
+
+/** How many section names the writing step shows (the newest; earlier ones are summed up as "…"). */
+const SHOWN_SECTIONS = 3;
 
 /** What the AI is doing right now, step by step, with a running clock. */
 export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builder"]; timeline: Timeline; streamText: string }) {
@@ -19,10 +30,19 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
     return () => clearInterval(id);
   }, []);
   const seconds = Math.max(0, Math.round((now - timeline.startedAt) / 1000));
-  const label: Record<TimelineKey, string> = { understand: t.tlUnderstand, write: t.tlWriting, check: t.tlChecking, fix: t.tlFixing, ready: t.tlReady };
+  const sections = timeline.sections.slice(-SHOWN_SECTIONS).map((s) => t.tlSection[s]);
+  const writing = sections.length
+    ? format(t.tlWritingSections, { sections: [...(timeline.sections.length > SHOWN_SECTIONS ? ["…"] : []), ...sections].join(t.tlListSep) })
+    : t.tlWriting;
+  const label: Record<TimelineKey, string> = { understand: t.tlUnderstand, plan: t.tlPlan, write: writing, check: t.tlChecking, fix: t.tlFixing, finish: t.tlFinish, save: t.tlSave, ready: t.tlReady };
+  // Screen readers hear only the step, once when it changes (not section names or streamed text).
+  const current = timeline.steps.findLast((s) => !s.done) ?? timeline.steps.at(-1);
+  const announced = current ? (current.key === "write" ? t.tlWriting : label[current.key]) : "";
+  // Streamed text arrives in many small pieces: parse it at a lower priority than typing.
+  const deferredText = useDeferredValue(streamText);
 
   return (
-    <div role="status" className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-line bg-white px-4 pt-4 pb-3 shadow-sm">
+    <div role="group" aria-label={t.tlTitle} className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-line bg-white px-4 pt-4 pb-3 shadow-sm">
       <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 overflow-hidden bg-sunken">
         <span className="progress-slide block h-full w-1/3 rounded-full bg-ink" />
       </span>
@@ -30,9 +50,12 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
         <p className="font-semibold">{t.tlTitle}</p>
         <span className="text-sm tabular-nums text-ink-muted" aria-hidden="true">{t.tlElapsed.replace("{s}", String(seconds))}</span>
       </div>
-      <ol className="flex flex-col gap-2">
-        {timeline.steps.map((s) => (
-          <li key={s.key} className="flex items-center gap-3">
+      <p role="status" className="sr-only">
+        {announced}
+      </p>
+      <ol aria-live="off" className="flex flex-col gap-2">
+        {timeline.steps.map((s, i) => (
+          <li key={`${s.key}-${i}`} className="flex items-center gap-3">
             <span aria-hidden="true" className={`flex size-6 shrink-0 items-center justify-center rounded-full ${s.done ? "bg-ink text-white" : "bg-sunken text-ink"}`}>
               {s.done ? <Check className="size-4" /> : <Loader2 className="size-4 animate-spin" />}
             </span>
@@ -44,38 +67,79 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
           </li>
         ))}
       </ol>
-      {streamText && <p className="whitespace-pre-wrap border-t border-line pt-3 text-ink">{streamText}</p>}
+      {deferredText && (
+        <div aria-live="off" className="border-t border-line pt-3 text-ink">
+          <ChatMarkdown text={deferredText} />
+        </div>
+      )}
     </div>
   );
 }
 
-/** Advances the timeline from the agent's progress events. */
-export function nextTimeline(tl: Timeline, event: { type: string; name?: string; ok?: boolean }): Timeline {
+type ProgressEvent = { type: string; name?: string; ok?: boolean };
+const isEdit = (name?: string) => name === "write_file" || name === "search_replace";
+
+/**
+ * Advances the timeline from the agent's real progress events (no timers): understanding until
+ * the model starts, planning while it thinks or writes text first, writing (with the sections
+ * it is writing) from the moment a file edit starts streaming, checking while the site builds,
+ * fixing after a failed build, finishing up when the budget is nearly used, saving, ready.
+ */
+export function nextTimeline(tl: Timeline, event: ProgressEvent): Timeline {
   const steps = tl.steps.map((s) => ({ ...s }));
-  const finish = (key: TimelineKey) => steps.forEach((s) => s.key === key && (s.done = true));
+  const has = (key: TimelineKey) => steps.some((s) => s.key === key);
+  const open = (key: TimelineKey) => steps.some((s) => s.key === key && !s.done);
+  const finish = (...keys: TimelineKey[]) => steps.forEach((s) => keys.includes(s.key) && (s.done = true));
   const start = (key: TimelineKey) => {
-    if (!steps.some((s) => s.key === key && !s.done)) steps.push({ key, done: false });
+    if (!open(key)) steps.push({ key, done: false });
   };
-  let edits = tl.edits;
-  if (event.type === "text") finish("understand");
-  if (event.type === "tool") {
-    finish("understand");
-    if (event.name === "run_build") {
-      finish("write");
-      finish("fix");
-      start("check");
-    } else if (event.name === "write_file" || event.name === "search_replace") {
-      edits += 1;
-      if (!steps.some((s) => s.key === "fix" && !s.done)) start("write");
-    }
+  let { edits, sections } = tl;
+  switch (event.type) {
+    case "text":
+    case "plan":
+      finish("understand");
+      // Only before any work: the closing reply is not planning.
+      if (!has("write") && !has("check")) start("plan");
+      break;
+    case "tool_start":
+      finish("understand", "plan");
+      if (event.name === "run_build") {
+        finish("write", "fix");
+        start("check");
+      } else if (isEdit(event.name) && !open("fix") && !open("finish") && !open("check")) start("write");
+      break;
+    case "section":
+      finish("understand", "plan");
+      if (event.name && !sections.includes(event.name as SectionType)) sections = [...sections, event.name as SectionType];
+      if (!open("fix") && !open("finish") && !open("check")) start("write");
+      break;
+    case "tool":
+      // The call already ran; its step started when it began streaming.
+      finish("understand", "plan");
+      if (isEdit(event.name)) {
+        edits += 1;
+        if (!has("write")) start("write");
+      } else if (event.name === "run_build" && !open("check")) {
+        finish("write", "fix");
+        start("check");
+      }
+      break;
+    case "build":
+      finish("check");
+      if (!event.ok) start("fix");
+      break;
+    case "wrap_up":
+      finish("understand", "plan", "write");
+      start("finish");
+      break;
+    case "saving":
+      steps.forEach((s) => (s.done = true));
+      start("save");
+      break;
+    case "done":
+      steps.forEach((s) => (s.done = true));
+      if (edits > 0) steps.push({ key: "ready", done: true });
+      break;
   }
-  if (event.type === "build") {
-    finish("check");
-    if (!event.ok) start("fix");
-  }
-  if (event.type === "done") {
-    steps.forEach((s) => (s.done = true));
-    if (edits > 0) steps.push({ key: "ready", done: true });
-  }
-  return { ...tl, steps, edits };
+  return { ...tl, steps, edits, sections };
 }

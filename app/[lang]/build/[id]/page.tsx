@@ -8,6 +8,9 @@ import { getMessages } from "@/lib/i18n";
 import { services } from "@/lib/server/services";
 import { readTheme } from "@/lib/app/theme";
 import { nextMonthlyGrant } from "@/lib/billing/credits";
+import { creditSettings, launchOffer, ownerAllowance, planFeatures } from "@/lib/app/shell-data";
+import { upgradeChoices, upgradeHref, upgradeMonth } from "@/lib/billing/upgrade";
+import { offerBadgeText } from "@/lib/billing/offer-text";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -22,7 +25,22 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
   const project = await builder.store.getProject(owner, id);
   if (!project) notFound();
   const t = getMessages(lang);
-  const [messages, versions, credits, theme] = await Promise.all([builder.store.listMessages(owner, id), builder.store.listVersions(owner, id), services().billing.creditsLeft(owner), readTheme()]);
+  const [messages, versions, credits, theme, allowance, settings, cs, features, offer] = await Promise.all([
+    builder.store.listMessages(owner, id),
+    builder.store.listVersions(owner, id),
+    services().billing.creditsLeft(owner),
+    readTheme(),
+    ownerAllowance(owner),
+    services().billing.settings(),
+    creditSettings(),
+    planFeatures(),
+    launchOffer(),
+  ]);
+  const now = new Date();
+  const plan = allowance?.plan ?? "free";
+  // Addis Ababa time: the grant lands at 03:00 there on the 1st.
+  const nextGrant = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { day: "numeric", month: "long", timeZone: "Africa/Addis_Ababa" }).format(nextMonthlyGrant(now));
+  const choices = upgradeChoices(plan, { prices: settings.prices, offer, now, features, topupCredits: cs.topupCredits });
 
   const who = user.name || user.phone || user.email || "";
 
@@ -46,6 +64,8 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
             language: t.common.languageSwitch,
             languageLabel: t.common.languageSwitchLabel,
             more: t.builder.menuMore,
+            feedback: t.feedback.navLabel,
+            feedbackAfterPublish: t.feedback.afterPublish,
             theme: t.app.theme,
             themes: t.app.themes,
             themeValue: theme,
@@ -60,7 +80,19 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
             loading: t.dashboard.loading,
           }}
           initialCredits={credits}
-          nextGrant={new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { day: "numeric", month: "long" }).format(nextMonthlyGrant(new Date()))}
+          nextGrant={nextGrant}
+          upgrade={{
+            plan,
+            monthly: allowance?.monthly ?? features[plan].monthlyEdits,
+            nextGrant,
+            choices: choices.map((c) => ({ ...c, href: upgradeHref(lang, c.product) })),
+            offerText: offer && choices.some((c) => c.wasMinor !== null) ? offerBadgeText(offer, lang, t.billing) : null,
+            storageKey: `gojo.upgrade.${owner}`,
+            month: upgradeMonth(now),
+            planNames: t.billing.plans,
+          }}
+          upgradeText={t.upgrade}
+          installText={t.pwa}
           noCredits={{ text: t.billing.noCredits, action: t.billing.getMore }}
           initialMessages={messages.map((m) => ({
             id: m.id,

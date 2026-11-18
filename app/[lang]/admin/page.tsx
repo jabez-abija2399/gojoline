@@ -12,7 +12,12 @@ import { format, getMessages } from "@/lib/i18n";
 import { adminStats, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { FeedbackReplyForm } from "@/components/admin/feedback-reply-form";
+import { TYPE_ICONS } from "@/components/feedback/type-icons";
+import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
+import { shortAgent } from "@/lib/feedback/agent";
+import { reportError } from "@/lib/observability/report";
 import { BarChart } from "@/components/admin/bar-chart";
 import { setAdminTheme, toggleDiscountCode } from "./actions";
 import { offerEndsAt, offerUntilLabel } from "@/lib/billing/discounts";
@@ -37,7 +42,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["overview", "payments", "reports", "sites", "users", "costs", "discounts", "settings"] as const;
+const TABS = ["overview", "payments", "reports", "feedback", "sites", "users", "costs", "discounts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 type AdminUserPlan = (typeof PLAN_IDS)[number];
 
@@ -59,9 +64,13 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
 
   const savedTheme = (await cookies()).get("gojo_admin_theme")?.value;
   const theme = (["light", "dark", "system"] as const).find((x) => x === savedTheme) ?? "system";
-  const counts = await adminStats().overview();
-  const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports };
-  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, sites: Globe, users: Users, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
+  const [counts, fbCounts] = await Promise.all([
+    adminStats().overview(),
+    // A count, not the page: without it the admin still opens.
+    svc.feedback.countByStatus().catch((e: unknown) => (reportError("feedback count failed", e), emptyCounts())),
+  ]);
+  const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports, feedback: fbCounts.new };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
   const navItem = (x: Tab, compact: boolean) => {
     const Icon = icons[x];
     return (
@@ -116,6 +125,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           {tab === "overview" && <Overview />}
           {tab === "payments" && <Payments />}
           {tab === "reports" && <Reports />}
+          {tab === "feedback" && <FeedbackTab />}
           {tab === "sites" && <Sites />}
           {tab === "users" && <UsersTab />}
           {tab === "costs" && <Costs />}
@@ -166,6 +176,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     const attention = [
       ...(o.pendingPayments ? [{ href: `/${lang}/admin?tab=payments`, text: format(t.admin.attPayments, { n: o.pendingPayments }), Icon: Wallet }] : []),
       ...(o.openReports ? [{ href: `/${lang}/admin?tab=reports`, text: format(t.admin.attReports, { n: o.openReports }), Icon: Flag }] : []),
+      ...(fbCounts.new ? [{ href: `/${lang}/admin?tab=feedback&status=new`, text: format(t.admin.attFeedback, { n: fbCounts.new }), Icon: MessageSquareHeart }] : []),
     ];
     const actionName = (a: string) => (t.admin.actions as Record<string, string>)[a.replace(".", "_")] ?? a;
     return (
@@ -477,6 +488,129 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 <ModerateForm t={t.admin} siteId={g.siteId} lang={lang} tab="reports" ops={g.siteStatus === "taken_down" ? ["dismiss"] : ["take_down", "dismiss"]} />
               </li>
             ))}
+          </ul>
+        )}
+      </section>
+    );
+  }
+
+  async function FeedbackTab() {
+    const f = t.feedback.admin;
+    const status = FEEDBACK_STATUSES.find((x) => x === sp.status);
+    const type = FEEDBACK_TYPES.find((x) => x === sp.type);
+    const items = await svc.feedback.adminList({ status, type }, 100);
+    const fbDone = sp.fb === "saved" || sp.fb === "unchanged" ? sp.fb : null;
+    const savedId = fbDone && typeof sp.item === "string" ? sp.item : null;
+    const savedHere = savedId && items.some((x) => x.id === savedId) ? savedId : null;
+    const total = FEEDBACK_STATUSES.reduce((n, x) => n + fbCounts[x], 0);
+    const link = (next: { status?: string | null; type?: string | null }) => {
+      const params = new URLSearchParams({ tab: "feedback" });
+      const st = next.status === undefined ? status : next.status;
+      const ty = next.type === undefined ? type : next.type;
+      if (st) params.set("status", st);
+      if (ty) params.set("type", ty);
+      return `/${lang}/admin?${params.toString()}`;
+    };
+    const chip = "inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line bg-white px-3 text-sm font-medium text-ink-muted hover:text-ink aria-[current=true]:border-ink aria-[current=true]:bg-ink aria-[current=true]:text-white pointer-fine:min-h-9";
+    const statusChips = [{ v: null, label: f.all, n: total }, ...FEEDBACK_STATUSES.map((x) => ({ v: x, label: f.status[x], n: fbCounts[x] }))];
+    const typeChips = [{ v: null, label: f.allTypes }, ...FEEDBACK_TYPES.map((x) => ({ v: x, label: t.feedback.types[x] }))];
+    return (
+      <section aria-labelledby="fb-admin-title" className="flex flex-col gap-3">
+        <h2 id="fb-admin-title" className="sr-only">{f.title}</h2>
+        {fbDone && savedId && !savedHere && (
+          <FocusOnMount>
+            <p role="status" className="rounded-lg border border-lagoon bg-white px-4 py-2 font-medium text-lagoon">
+              {fbDone === "saved" ? f.saved : f.unchanged}
+            </p>
+          </FocusOnMount>
+        )}
+        <div className="flex flex-col gap-2 xl:flex-row xl:flex-wrap xl:items-center xl:gap-x-4">
+        <nav aria-label={f.statusFilter}>
+          <ul className="flex flex-wrap gap-1.5">
+            {statusChips.map((c) => (
+              <li key={c.v ?? "all"}>
+                <Link href={link({ status: c.v })} aria-current={(c.v ?? undefined) === status ? "true" : undefined} className={chip}>
+                  {c.label}
+                  <span className="tabular-nums">{c.n}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-label={f.typeFilter}>
+          <ul className="flex flex-wrap gap-1.5">
+            {typeChips.map((c) => (
+              <li key={c.v ?? "all"}>
+                <Link href={link({ type: c.v })} aria-current={(c.v ?? undefined) === type ? "true" : undefined} className={chip}>
+                  {c.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        </div>
+        {items.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-line px-4 py-6 text-ink-muted">{f.empty}</p>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {items.map((x) => {
+              const Icon = TYPE_ICONS[x.type];
+              const agent = shortAgent(x.userAgent);
+              return (
+                <li key={x.id} id={`fb-${x.id}`} className="scroll-mt-44 rounded-xl border border-line bg-white px-3 py-2 lg:scroll-mt-28">
+                  <FeedbackReplyForm
+                    key={`${x.id}-${x.status}-${x.reply ?? ""}`}
+                    t={f}
+                    id={x.id}
+                    lang={lang}
+                    status={x.status}
+                    reply={x.reply}
+                    replyRead={!!x.replyReadAt}
+                    filters={{ status, type }}
+                    date={dateFmt.format(x.createdAt)}
+                    justSaved={savedHere === x.id ? fbDone : null}
+                    heading={
+                      <h3 className="inline-flex items-center gap-1.5 font-semibold">
+                        <Icon aria-hidden="true" className="size-4" /> {t.feedback.types[x.type]}
+                      </h3>
+                    }
+                  >
+                    <div className="flex gap-3">
+                      <div className="flex min-w-0 flex-1 flex-col gap-1">
+                        <p lang={langOf(x.message)} className="whitespace-pre-wrap break-words text-base pointer-fine:text-sm">{x.message}</p>
+                        <p className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-ink-muted">
+                          <span className="min-w-0 [overflow-wrap:anywhere]">
+                            {x.owner ? (
+                              <Link href={`/${lang}/admin?tab=users&user=${encodeURIComponent(x.ownerId)}`} className="font-medium text-ink underline underline-offset-4">
+                                {x.owner.name || x.owner.contact}
+                              </Link>
+                            ) : (
+                              f.unknownOwner
+                            )}
+                            {x.owner?.name && x.owner.contact && x.owner.contact !== x.owner.name && <> · {x.owner.contact}</>}
+                            {x.owner && <> · {t.billing.plans[x.owner.plan]}</>}
+                          </span>
+                          <span className="min-w-0 [overflow-wrap:anywhere]">
+                            {f.page}: <span className="font-mono">{x.page ?? f.noPage}</span>
+                          </span>
+                          <span className="font-medium text-ink">{x.rating ? format(f.rating, { n: x.rating }) : f.noRating}</span>
+                          <span title={x.userAgent ?? undefined}>
+                            {f.languages[x.locale]} · {f.devices[x.device]}
+                            {agent && <> · {agent}</>}
+                          </span>
+                        </p>
+                      </div>
+                      {x.hasScreenshot && (
+                        <a href={`/api/feedback/${x.id}/screenshot`} target="_blank" rel="noopener noreferrer" title={f.openScreenshot} className="shrink-0 self-start rounded-lg">
+                          {/* eslint-disable-next-line @next/next/no-img-element -- private picture (cached per browser only): next/image would share it */}
+                          <img src={`/api/feedback/${x.id}/screenshot?size=thumb`} alt={f.screenshotAlt} loading="lazy" width={72} height={48} className="h-12 w-18 rounded-lg border border-line bg-paper object-cover" />
+                        </a>
+                      )}
+                    </div>
+                  </FeedbackReplyForm>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

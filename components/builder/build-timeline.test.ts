@@ -1,28 +1,57 @@
 import { describe, expect, it } from "vitest";
-import { nextTimeline, type Timeline } from "./build-timeline";
+import { nextTimeline, startTimeline, type Timeline } from "./build-timeline";
+
+const run = (events: { type: string; name?: string; ok?: boolean }[], tl: Timeline = startTimeline(0)) => events.reduce(nextTimeline, tl);
+const keys = (tl: Timeline) => tl.steps.map((s) => `${s.key}${s.done ? "" : "*"}`);
 
 describe("build timeline", () => {
-  it("follows the agent: understand, write, check, fix, check, ready", () => {
-    let tl: Timeline = { steps: [{ key: "understand", done: false }], edits: 0, startedAt: 0 };
-    for (const e of [
-      { type: "text" },
-      { type: "tool", name: "write_file" },
+  it("advances with the agent's real events of a first build, in the order the loop sends them", () => {
+    let tl = startTimeline(0);
+    tl = nextTimeline(tl, { type: "plan" });
+    expect(keys(tl)).toEqual(["understand", "plan*"]);
+    tl = run([{ type: "tool_start", name: "write_file" }, { type: "section", name: "hero" }, { type: "section", name: "menu" }, { type: "section", name: "gallery" }], tl);
+    expect(keys(tl)).toEqual(["understand", "plan", "write*"]);
+    expect(tl.sections).toEqual(["hero", "menu", "gallery"]);
+    // The build call starts streaming before the write has run: checking starts, writing is done.
+    tl = run([{ type: "tool_start", name: "run_build" }, { type: "tool", name: "write_file" }, { type: "tool", name: "run_build" }], tl);
+    expect(keys(tl)).toEqual(["understand", "plan", "write", "check*"]);
+    expect(tl.edits).toBe(1);
+    tl = run([{ type: "build", ok: true }, { type: "plan" }, { type: "text" }, { type: "saving" }], tl);
+    expect(keys(tl)).toEqual(["understand", "plan", "write", "check", "save*"]);
+    tl = nextTimeline(tl, { type: "done" });
+    expect(keys(tl)).toEqual(["understand", "plan", "write", "check", "save", "ready"]);
+  });
+
+  it("goes straight to writing when the model starts with a tool, and through a fix", () => {
+    const tl = run([
+      { type: "tool_start", name: "search_replace" },
+      { type: "tool_start", name: "run_build" },
       { type: "tool", name: "search_replace" },
       { type: "tool", name: "run_build" },
       { type: "build", ok: false },
+      { type: "tool_start", name: "search_replace" },
+      { type: "tool_start", name: "run_build" },
       { type: "tool", name: "search_replace" },
       { type: "tool", name: "run_build" },
       { type: "build", ok: true },
       { type: "done" },
-    ])
-      tl = nextTimeline(tl, e);
-    expect(tl.steps.map((s) => s.key)).toEqual(["understand", "write", "check", "fix", "check", "ready"]);
-    expect(tl.steps.every((s) => s.done)).toBe(true);
-    expect(tl.edits).toBe(3);
+    ]);
+    expect(keys(tl)).toEqual(["understand", "write", "check", "fix", "check", "ready"]);
+    expect(tl.edits).toBe(2);
+  });
+
+  it("shows finishing up when the budget is nearly used", () => {
+    const tl = run([{ type: "tool_start", name: "write_file" }, { type: "tool", name: "write_file" }, { type: "wrap_up" }, { type: "tool_start", name: "search_replace" }]);
+    expect(keys(tl)).toEqual(["understand", "write", "finish*"]);
+  });
+
+  it("still works with only executed-tool events (older servers)", () => {
+    const tl = run([{ type: "text" }, { type: "tool", name: "write_file" }, { type: "tool", name: "run_build" }, { type: "build", ok: true }, { type: "done" }]);
+    expect(keys(tl)).toEqual(["understand", "plan", "write", "check", "ready"]);
   });
 
   it("a plain answer shows no 'preview ready'", () => {
-    const tl = nextTimeline(nextTimeline({ steps: [{ key: "understand", done: false }], edits: 0, startedAt: 0 }, { type: "text" }), { type: "done" });
-    expect(tl.steps.map((s) => s.key)).toEqual(["understand"]);
+    const tl = run([{ type: "plan" }, { type: "text" }, { type: "done" }]);
+    expect(keys(tl)).toEqual(["understand", "plan"]);
   });
 });

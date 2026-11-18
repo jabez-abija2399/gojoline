@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, CreditCard, LayoutDashboard, LogOut, MoreVertical } from "lucide-react";
+import { ArrowLeft, CreditCard, LayoutDashboard, LogOut, MessageSquareHeart, MoreVertical } from "lucide-react";
 import { LanguageSwitch } from "@/components/site/language-switch";
 import { signOut } from "@/lib/auth/actions";
 import type { Locale } from "@/lib/i18n/config";
@@ -22,6 +22,9 @@ export interface TopBarText {
   language: string;
   languageLabel: string;
   more: string;
+  feedback: string;
+  /** Under "Your site is live!" (the publish dialog). */
+  feedbackAfterPublish: string;
   theme: string;
   themes: Record<Theme, string>;
   themeValue: Theme;
@@ -78,6 +81,10 @@ export function TopBar({ locale, projectId, text, siteName, status, publish }: P
         <Link href={`/${locale}/billing`} className={`${quiet} justify-start px-3 text-ink`}>
           <CreditCard aria-hidden="true" className="size-5 shrink-0 text-ink" />
           {text.plan}
+        </Link>
+        <Link href={`/${locale}/feedback?from=${encodeURIComponent(`/${locale}/build/${projectId}`)}`} className={`${quiet} justify-start px-3 text-ink`}>
+          <MessageSquareHeart aria-hidden="true" className="size-5 shrink-0 text-ink" />
+          {text.feedback}
         </Link>
         {signOutForm(`${quiet} w-full justify-start px-3 text-ink`, true)}
         <div className="border-t border-line pt-1">

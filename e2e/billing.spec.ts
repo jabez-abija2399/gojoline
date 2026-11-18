@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn, unfold } from "./helpers";
 
 test("an owner sends a payment and an admin approves it", async ({ page, browser }) => {
   await signIn(page);
@@ -10,7 +10,11 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   await expect(page.getByRole("heading", { name: "Plan and payments", level: 1 })).toBeVisible();
   await expect(page.getByText("Your plan: Free")).toBeVisible();
   await expect(page.locator('li[aria-current="true"]')).toContainText("Your plan");
-  await expect(page.getByText("Telebirr: 0911000000")).toBeVisible();
+  // Payment in three steps; Telebirr and CBE come from the admin's settings.
+  for (const n of [1, 2, 3]) await expect(page.getByRole("heading", { name: new RegExp(`^Step ${n}:`) })).toBeVisible();
+  await expect(page.getByText("Telebirr number").first()).toBeVisible();
+  await expect(page.getByText("0911000000", { exact: true })).toBeVisible();
+  await expect(page.getByText("Account holder name")).toBeVisible();
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
 
@@ -26,9 +30,15 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
   await expect(page.getByText("photo.jpg selected")).toBeVisible();
   await page.getByRole("button", { name: "Send for checking" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Thank you" })).toBeFocused();
+  const status = page.getByRole("status").filter({ hasText: "Thank you" });
+  await expect(status).toBeFocused();
+  await expect(status.getByRole("list", { name: "Payment progress" })).toContainText("Checking");
+  await expect(status.getByRole("link", { name: "Questions? Message us on Telegram" })).toHaveAttribute("href", "https://t.me/gojoline_bot");
+  await expectNoSeriousA11yIssues(page);
 
   // The same transaction number cannot be used twice, even typed differently.
+  await page.getByRole("button", { name: "Send another payment" }).click();
+  await page.getByLabel("What are you paying for?").selectOption("starter_month");
   await page.getByLabel("Transaction number").fill(reference.toLowerCase().replace("E2E", "e2e-"));
   await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
   await page.getByRole("button", { name: "Send for checking" }).click();
@@ -51,7 +61,59 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
 
   await page.goto("/en/billing");
   await expect(page.getByText("Your plan: Starter")).toBeVisible();
-  await expect(page.getByText("Approved")).toBeVisible();
+  // Phones fold the payment list away.
+  await unfold(page, /Your payments/);
+  await expect(page.getByText("Approved", { exact: true })).toBeVisible();
+});
+
+test("payment steps: plan cards choose the product, Telebirr or CBE, copy buttons, a code behind 'Have a code?'", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await signIn(page);
+  await page.goto("/en/billing");
+  // Monthly or yearly, and one action per plan card.
+  const plans = page.getByRole("group", { name: "How often you pay" });
+  await expect(plans.getByRole("button", { name: /Monthly/ })).toHaveAttribute("aria-pressed", "true");
+  await plans.getByRole("button", { name: /Yearly/ }).click();
+  const business = page.locator("li").filter({ has: page.getByRole("heading", { name: "Business", level: 3 }) });
+  await expect(business).toContainText("a year");
+  await expect(business).toContainText(/You save [\d,.]+ Birr a year/);
+  await business.getByRole("link", { name: "Choose Business" }).click();
+  await expect(page.getByLabel("What are you paying for?")).toHaveValue("business_year");
+  await expect(page).toHaveURL(/product=business_year/);
+  await page.getByRole("link", { name: "Buy 30 changes" }).click();
+  await expect(page.getByLabel("What are you paying for?")).toHaveValue("topup");
+
+  // The exact amount and the account number, ready to paste into Telebirr or the bank app.
+  await page.getByRole("button", { name: "Copy Telebirr number" }).click();
+  await expect(page.getByRole("button", { name: "Copied Telebirr number" })).toBeVisible();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("0911000000");
+  await page.getByRole("button", { name: "Copy Amount to send" }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/^\d+(\.\d+)?$/);
+  await page.getByText("Bank transfer (CBE)").click();
+  await expect(page.getByText("Account number", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("1000123456789")).toBeVisible();
+
+  // The code field is folded away until asked for.
+  await expect(page.getByLabel("Discount code (optional)")).toBeHidden();
+  await page.getByRole("button", { name: "Have a code?" }).click();
+  await expect(page.getByLabel("Discount code (optional)")).toBeFocused();
+  // A receipt photo shows a preview.
+  await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
+  await expect(page.getByRole("img", { name: "Your receipt photo" })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+});
+
+test("Amharic Plan page at phone width, and dark mode", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await signIn(page, { lang: "am" });
+  await page.goto("/am/billing");
+  await expect(page.getByRole("heading", { name: /ደረጃ 1/ })).toBeVisible();
+  await expect(page.getByText("የቴሌብር ቁጥር").first()).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expectNoSeriousA11yIssues(page);
 });
 
 test("an admin changes a price and the Plan page shows it", async ({ page }) => {
@@ -72,7 +134,8 @@ test("an admin changes a price and the Plan page shows it", async ({ page }) => 
   await page.getByRole("button", { name: "Save settings" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Saved." })).toBeVisible();
   await page.goto("/en/billing");
-  await expect(page.getByText(/or (9,500|9,600\.5) Birr a year/)).toBeVisible();
+  await page.getByRole("group", { name: "How often you pay" }).getByRole("button", { name: /Yearly/ }).click();
+  await expect(page.locator("li").filter({ has: page.getByRole("heading", { name: "Business", level: 3 }) })).toContainText(/(9,500|9,600\.5) Birr/);
 });
 
 test("admin dashboard: overview, owners, and dark mode", async ({ page }) => {

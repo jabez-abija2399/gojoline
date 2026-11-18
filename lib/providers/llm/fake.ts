@@ -1,7 +1,8 @@
 import { costNanoUsd } from "./pricing";
-import type { ContentBlock, LLMProvider, LLMRequest, LLMResponse } from "./types";
+import type { ContentBlock, LLMProvider, LLMRequest, LLMResponse, TokenUsage } from "./types";
 
-type Step = { content: ContentBlock[]; stopReason?: string } | ((req: LLMRequest) => { content: ContentBlock[]; stopReason?: string });
+type Scripted = { content: ContentBlock[]; stopReason?: string; usage?: TokenUsage };
+type Step = Scripted | ((req: LLMRequest) => Scripted);
 
 /** Deterministic provider for tests: replays scripted turns and records every request. */
 export class ScriptedLLMProvider implements LLMProvider {
@@ -9,12 +10,21 @@ export class ScriptedLLMProvider implements LLMProvider {
   constructor(private steps: Step[]) {}
 
   async complete(req: LLMRequest): Promise<LLMResponse> {
-    this.requests.push(structuredClone({ ...req, onText: undefined, signal: undefined }));
+    this.requests.push(structuredClone({ ...req, onText: undefined, onBlockStart: undefined, onToolInput: undefined, signal: undefined }));
     const step = this.steps.shift();
     if (!step) throw new Error("ScriptedLLMProvider: no more scripted turns");
-    const { content, stopReason } = typeof step === "function" ? step(req) : step;
-    for (const block of content) if (block.type === "text") req.onText?.(block.text);
-    const usage = { inputTokens: 1000, outputTokens: 200, cacheReadTokens: 0, cacheWriteTokens: 0 };
+    const { content, stopReason, usage: scriptedUsage } = typeof step === "function" ? step(req) : step;
+    for (const block of content) {
+      if (block.type === "text") {
+        req.onBlockStart?.({ type: "text" });
+        req.onText?.(block.text);
+      }
+      if (block.type === "tool_use") {
+        req.onBlockStart?.({ type: "tool_use", name: block.name });
+        req.onToolInput?.(JSON.stringify(block.input));
+      }
+    }
+    const usage = scriptedUsage ?? { inputTokens: 1000, outputTokens: 200, cacheReadTokens: 0, cacheWriteTokens: 0 };
     return {
       content,
       stopReason: stopReason ?? (content.some((b) => b.type === "tool_use") ? "tool_use" : "end_turn"),

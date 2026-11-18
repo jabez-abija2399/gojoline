@@ -28,7 +28,7 @@ e2e/                 Playwright tests
 
 ## Components
 
-- **Agent loop** (`lib/agent`): plan, then edit files with tools (`read_file`, `write_file`, `search_replace`, `list_files`, `run_build`, `read_errors`). Auto-fixes build errors up to 3 times. Only relevant files go into context; system prompt and template docs are cached. Streams progress to the UI. Logs tokens and cost per request.
+- **Agent loop** (`lib/agent`): plan, then edit files with tools (`read_file`, `write_file`, `search_replace`, `list_files`, `run_build`, `read_errors`). Auto-fixes build errors up to 3 times. Only relevant files go into context; system prompt and template docs are cached. Streams progress to the UI from real agent events (the model starting to think, a tool call starting, the site sections named in a streaming `site.json` write, builds, the budget wrap-up, saving), which drive the builder's progress card; no timers. Logs tokens and cost per request.
 - **Sandbox** (`SandboxProvider`, Vercel Sandbox first): a snapshot with the template's dependencies pre-installed so preview starts in seconds. The preview URL loads in an iframe.
 - **Versioning**: each AI change creates a snapshot (files to R2, row in Postgres) that can be restored.
 - **Gojoline Cloud**: one Postgres with rows scoped by `project_id` and checked on every query. Generated sites call a small public Data API (`/api/sites/:siteId/forms`, `/lists`, `/uploads`, owner login) with per-site keys and rate limits.
@@ -46,7 +46,7 @@ e2e/                 Playwright tests
 
 ## Data model (initial)
 
-`users`, `sessions`, `projects` (with the `template_id` it started from, if any), `project_versions`, `messages`, `ai_usage` (tokens, cost), `sites` (subdomain, domain, status), `form_submissions`, `list_items`, `uploads`, `telegram_links`, `plans`, `subscriptions`, `credit_ledger`, `payments` (method, amount_minor, currency, receipt_url, status, reviewed_by), `abuse_reports`, `audit_log`, `site_settings` (business info and share preview per project), `site_visits_daily` (views, people, sources, devices per project per day).
+`users`, `sessions`, `projects` (with the `template_id` it started from, if any), `project_versions`, `messages`, `ai_usage` (tokens, cost), `sites` (subdomain, domain, status), `form_submissions`, `list_items`, `uploads`, `telegram_links`, `plans`, `subscriptions`, `credit_ledger`, `payments` (method, amount_minor, currency, receipt_url, status, reviewed_by), `abuse_reports`, `audit_log`, `site_settings` (business info and share preview per project), `site_visits_daily` (views, people, sources, devices per project per day), `feedback` (owner_id, type idea/problem/praise/question, message, rating 1–5, page path, locale, device, user_agent ≤ 200, screenshot (WebP ≤ 1600 px) and thumbnail (~480 px) as bytea, screenshot_bytes for the per-owner caps, status new/seen/planned/done/wont_do, reply, replied_by/at, reply_read_at; migration 0017 with a partial index for unread replies; owner reads always filter by owner_id, pictures are read only by their route for the owner or an admin and cleared after 90 days by the daily cron; the admin save is one statement with its audit rows; `FeedbackStore` in `lib/feedback/`, memory store for dev and e2e).
 
 ## Environment variables
 

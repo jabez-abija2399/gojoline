@@ -4,6 +4,7 @@ import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import type { Locale } from "@/lib/i18n/config";
 import type { LedgerEntry } from "@/lib/billing/store";
+import { Collapsible } from "./collapsible";
 
 const ICONS = { monthly_grant: Plus, topup: Plus, ai_edit: Minus, refund: RotateCcw, admin: Gift, first_build: Sparkles } as const;
 /** Text people typed may be in either language; screen readers need to know which. */
@@ -14,12 +15,13 @@ export function CreditHistory({ t, locale, rows, page, hasOlder }: { t: Messages
   const when = new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
   const href = (p: number) => `/${locale}/billing?history=${p}#ledger-title`;
   return (
-    <section aria-labelledby="ledger-title" className="flex scroll-mt-6 flex-col gap-3">
-      <h2 id="ledger-title" className="scroll-mt-6 text-lg font-semibold">{t.ledgerTitle}</h2>
+    // Folded on phones, except when the owner is paging through it.
+    <Collapsible title={t.ledgerTitle} titleId="ledger-title" defaultOpen={page > 1}>
+      <div className="flex flex-col gap-3">
       {rows.length === 0 ? (
         <p className="text-ink-muted">{t.ledgerEmpty}</p>
       ) : (
-        <ul aria-label={t.ledgerLabel} className="flex flex-col rounded-xl border border-line bg-white">
+        <ul aria-label={t.ledgerLabel} className="flex flex-col rounded-2xl border border-line bg-white">
           {rows.map((r, i) => {
             const Icon = ICONS[r.reason] ?? Plus;
             const title = r.reason === "ai_edit" && r.size ? format(t.ledgerAi, { size: t.sizeNames[r.size] }) : t.ledger[r.reason];
@@ -56,6 +58,7 @@ export function CreditHistory({ t, locale, rows, page, hasOlder }: { t: Messages
           )}
         </nav>
       )}
-    </section>
+      </div>
+    </Collapsible>
   );
 }

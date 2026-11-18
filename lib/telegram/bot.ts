@@ -6,6 +6,7 @@ import { assetName, MAX_UPLOAD_BYTES, processImage } from "@/lib/cloud/images";
 import type { RateLimiter } from "@/lib/rate-limit";
 import { publishSite, type PublishDeps } from "@/lib/publish/service";
 import { escapeHtml, type TelegramClient } from "./client";
+import { toTelegramHtml } from "@/lib/chat/markdown";
 import { botText, fill } from "./messages";
 import type { PendingEdit, TelegramLink, TelegramStore } from "./store";
 
@@ -169,7 +170,8 @@ async function runEdit(deps: BotDeps, link: TelegramLink, projectId: string, req
   if (outcome.error || outcome.status === "failed") return say(t.failed);
   // Bigger changes say what they used, so the cost is never a surprise.
   const used = (outcome.charged ?? 0) > 1 && typeof outcome.credits === "number" ? `\n${fill(t.used, { n: String(outcome.charged), left: String(outcome.credits) })}` : "";
-  const reply = escapeHtml(outcome.reply ?? "") + used;
+  // The AI may answer with a little markdown: sent as Telegram HTML (escaped, no stray asterisks).
+  const reply = toTelegramHtml(outcome.reply ?? "") + used;
   if (outcome.status === "changed" && deps.publish) {
     const site = await deps.publish.sites.getByProject(link.userId, projectId);
     if (site?.status === "published" && (await deps.limiter.hit(`publish:o:${link.userId}`, Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR) || 20, 3_600_000)).allowed) {

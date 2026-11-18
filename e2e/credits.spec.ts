@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn, unfold } from "./helpers";
 
 // Runs against the deterministic demo AI (E2E=1); request sizes come from the word list there.
 async function newSite(page: Page, lang: "en" | "am" = "en") {
@@ -67,6 +67,11 @@ test("a bigger request asks first, then uses its changes; low and zero changes a
     await say(page, name);
     await expect(log(page).getByText(`Used 1 change · ${left} left`)).toBeVisible();
   }
+  // The run that used the last change offers more, once.
+  const upgrade = page.getByRole("dialog", { name: "You've used all your AI changes" });
+  await expect(upgrade).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(upgrade).toBeHidden();
   await expect(page.getByText(/No changes left\. Buy more, or wait until \d+ \w+ for your monthly changes\./)).toBeVisible();
   await expect(page.getByRole("link", { name: "Buy more changes" })).toHaveAttribute("href", "/en/billing");
   // With nothing left, the suggestions make way for the note.
@@ -75,6 +80,8 @@ test("a bigger request asks first, then uses its changes; low and zero changes a
 
   // The Plan page lists every movement, newest first.
   await page.goto("/en/billing");
+  // Phones fold the history away.
+  await unfold(page, /History of your changes/);
   const history = page.getByRole("list", { name: "Changes added and used" });
   await expect(history.getByRole("listitem").first()).toContainText("Change to your site, small");
   await expect(history.getByRole("listitem").filter({ hasText: "Change to your site, large" })).toContainText("Redesign the whole website");
@@ -114,8 +121,20 @@ test("an admin changes Business's monthly changes and the pricing and Plan pages
   await form.getByRole("button", { name: "Save changes settings" }).click();
   await expect(form.getByRole("alert")).toContainText("check the highlighted field");
   await expect(business).toHaveAttribute("aria-invalid", "true");
-  // Both test projects save the same numbers, so they can run side by side.
+  // The free first build's cost cap is a setting too, with a hard upper limit of US$2.
+  const firstCap = form.getByLabel("AI cost cap for a free first build (US$)");
+  await expect(firstCap).toHaveValue("0.75");
+  // What was typed stays after an invalid save.
+  await expect(business).toHaveValue("lots");
   await business.fill("175");
+  await firstCap.fill("5");
+  await form.getByRole("button", { name: "Save changes settings" }).click();
+  await expect(firstCap).toHaveAttribute("aria-invalid", "true");
+  await expect(form.getByText("Enter an amount from US$0.10 to US$2.00.").first()).toBeVisible();
+  await expect(firstCap).toHaveValue("5");
+  await expect(business).toHaveValue("175");
+  // Both test projects save the same numbers, so they can run side by side.
+  await firstCap.fill("0.75");
   await form.getByRole("button", { name: "Save changes settings" }).click();
   await expect(form.getByRole("status")).toHaveText("Saved.");
 
@@ -151,6 +170,7 @@ test("discount code: an admin makes one, the owner sees the price before sending
   await signIn(owner);
   await owner.goto("/en/billing");
   await owner.getByLabel("What are you paying for?").selectOption("starter_month");
+  await owner.getByRole("button", { name: "Have a code?" }).click();
   const box = owner.getByLabel("Discount code (optional)");
   await box.fill("NOSUCHCODE1");
   await owner.getByRole("button", { name: "Apply" }).click();
@@ -158,7 +178,8 @@ test("discount code: an admin makes one, the owner sees the price before sending
   await box.fill(code.toLowerCase());
   await owner.getByRole("button", { name: "Apply" }).click();
   await expect(owner.getByText("You pay 449 Birr")).toBeVisible();
-  await expect(owner.getByText("instead of 499 Birr")).toBeVisible();
+  // The breakdown: price, discount, to pay.
+  await expect(owner.getByText("−50 Birr")).toBeVisible();
   await expect(owner.getByText(`Code ${code}: 50 Birr off.`)).toBeVisible();
   await expectNoSeriousA11yIssues(owner);
   const reference = `D${Date.now().toString(36).toUpperCase()}${test.info().project.name.length}`;
@@ -188,7 +209,7 @@ test("discount code: an admin makes one, the owner sees the price before sending
   await expectNoHorizontalScroll(page);
 });
 
-test("launch offer: switched on in one click, struck-through prices, then no end date and a new name", async ({ page }) => {
+test("launch offer: switched on in one click, struck-through prices, then no end date and a new name", async ({ page, browser }) => {
   // The offer is one site-wide setting: both test projects changing it at once would race, so the
   // whole flow runs once, and checks the phone width itself.
   test.skip(test.info().project.name !== "desktop", "one site-wide setting: runs once (checks 360 px inside)");
@@ -223,10 +244,31 @@ test("launch offer: switched on in one click, struck-through prices, then no end
   await expectNoHorizontalScroll(page);
   await page.goto("/en/billing");
   const plan = page.locator("li").filter({ has: page.getByRole("heading", { name: "Business", level: 3 }) });
-  await expect(plan.getByText("20% off until 31 Dec")).toBeVisible();
-  await expect(plan).toContainText("1,039 Birr a month");
+  await expect(page.getByText("Launch offer: 20% off until 31 Dec")).toBeVisible();
+  await expect(plan).toContainText("1,039 Birr");
+  await expect(plan.locator("s")).toContainText("was 1,299 Birr");
   await page.getByLabel("What are you paying for?").selectOption("business_month");
   await expect(page.getByText("You pay 1,039 Birr")).toBeVisible();
+  await expect(page.getByText("Amount to send").first().locator("..")).toContainText("1,039 Birr");
+
+  // An owner who runs out sees the offer price in the upgrade dialog.
+  const ctx = await newContext(browser);
+  const owner = await ctx.newPage();
+  await newSite(owner);
+  await say(owner, "Selam Coffee");
+  await expect(log(owner).getByText("Free first build · 10 changes left")).toBeVisible();
+  await owner.request.post("/api/test/credits", { data: { left: 0 } });
+  await owner.reload();
+  await say(owner, "Make the title bigger");
+  const dialog = owner.getByRole("dialog", { name: "You've used all your AI changes" });
+  await expect(dialog).toContainText("Launch offer: 20% off until 31 Dec");
+  const biz = dialog.getByRole("listitem").filter({ has: owner.getByRole("heading", { name: "Business" }) });
+  await expect(biz).toContainText("1,039 Birr");
+  await expect(biz.locator("s")).toContainText("was 1,299 Birr");
+  await biz.getByRole("link", { name: "Choose Business" }).click();
+  await expect(owner).toHaveURL(/\/en\/billing\?product=business_month#pay-title$/);
+  await expect(owner.getByLabel("What are you paying for?")).toHaveValue("business_month");
+  await ctx.close();
 
   // No last day: on until switched off, and the public pages name no date. A new name too.
   await page.goto("/en/admin?tab=discounts");

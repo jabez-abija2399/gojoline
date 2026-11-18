@@ -50,6 +50,8 @@ import type { VisitDeps } from "@/lib/visits/stats";
 import { PublicSiteCache } from "@/lib/cloud/site-cache";
 import { TelegramNotifier } from "@/lib/telegram/notifier";
 import { DbTelegramStore, MemoryTelegramStore, type TelegramStore } from "@/lib/telegram/store";
+import { DbFeedbackStore, MemoryFeedbackStore } from "@/lib/feedback/store";
+import type { FeedbackStore } from "@/lib/feedback/types";
 
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
@@ -176,6 +178,8 @@ interface Services {
   checkText: (texts: string[], ctx: { userId: string; projectId: string }) => ReturnType<typeof checkOwnerText>;
   /** Sites as the public Data API sees them, cached a minute per server (info and visits routes). */
   publicSites: PublicSiteCache;
+  /** Owner feedback and the team's replies. */
+  feedback: FeedbackStore;
 }
 
 /** `ownerOf` serves the memory store only (the database joins projects instead). */
@@ -209,6 +213,15 @@ export function services(): Services {
       visits: { counter: new MemoryVisitCounter(), daily: new MemoryVisitsDailyStore(async () => null) },
       checkText: (texts, ctx) => checkOwnerText(texts, null, ctx),
       publicSites: new PublicSiteCache(async () => null),
+      feedback: db
+        ? new DbFeedbackStore(db)
+        : new MemoryFeedbackStore(
+            async (id) => {
+              const u = await adminStats().user(id);
+              return u ? { name: u.name, contact: u.contact, plan: u.plan } : null;
+            },
+            (e) => billing.store().audit(e),
+          ),
     };
     const svc = globalForServices.gojoServices;
     if (svc.builder) {
@@ -219,7 +232,7 @@ export function services(): Services {
         freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
         pricing: async () => {
           const cs = await billing.credits();
-          return { sizeCredits: cs.sizeCredits, capCentsPerCredit: cs.capCentsPerCredit };
+          return { sizeCredits: cs.sizeCredits, capCentsPerCredit: cs.capCentsPerCredit, firstBuildCapCents: cs.firstBuildCapCents };
         },
       };
       // Claude Haiku sizes requests when an API key is set (never in e2e: the word list does).
