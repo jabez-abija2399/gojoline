@@ -1,4 +1,4 @@
-import { bigint, boolean, customType, date, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { bigint, boolean, customType, date, index, integer, jsonb, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
@@ -9,17 +9,21 @@ const updatedAt = () => timestamp("updated_at", { withTimezone: true }).notNull(
 // ---------------------------------------------------------------------------
 // Better Auth tables (field names must match Better Auth's model; columns are snake_case).
 // ---------------------------------------------------------------------------
-export const user = pgTable("users", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").notNull().default(false),
-  image: text("image"),
-  phoneNumber: text("phone_number").unique(),
-  phoneNumberVerified: boolean("phone_number_verified").default(false),
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
-});
+export const user = pgTable(
+  "users",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").notNull().default(false),
+    image: text("image"),
+    phoneNumber: text("phone_number").unique(),
+    phoneNumberVerified: boolean("phone_number_verified").default(false),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("users_created_idx").on(t.createdAt)],
+);
 
 export const session = pgTable(
   "sessions",
@@ -199,8 +203,6 @@ export const sites = pgTable(
     showcase: boolean("showcase").notNull().default(false),
     /** An admin hid it from the showcase (null = not hidden). */
     showcaseHiddenAt: timestamp("showcase_hidden_at", { withTimezone: true }),
-    /** The hero photo at the last publish ("/images/…" or "/stock/…"), for the showcase card. */
-    showcaseImage: text("showcase_image"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -529,9 +531,13 @@ export const signupSources = pgTable(
     referrerHost: text("referrer_host"),
     /** When the visitor first arrived with it (from the cookie). */
     firstSeenAt: timestamp("first_seen_at", { withTimezone: true }),
+    /** Keyed hash of the sign-up network (IPv4, or the IPv6 /64); never the address itself. */
+    ipHash: text("ip_hash"),
+    /** Keyed hash of the browser's user agent: a device hint. */
+    deviceHash: text("device_hash"),
     createdAt: createdAt(),
   },
-  (t) => [index("signup_sources_time_idx").on(t.createdAt)],
+  (t) => [index("signup_sources_ip_idx").on(t.ipHash)],
 );
 
 /** Each owner's invite code (/?ref=u_<code>), made the first time they see their link. */
@@ -558,7 +564,7 @@ export const referrals = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     code: text("code").notNull(),
     status: text("status", { enum: ["pending", "rewarded", "blocked"] }).notNull(),
-    /** same_user, same_email, same_domain, same_phone. */
+    /** same_user, same_email, same_domain, same_phone, same_device. */
     blockReason: text("block_reason"),
     paymentId: uuid("payment_id"),
     /** Changes given to each side (the inviter's is 0 past the monthly cap). */
@@ -568,4 +574,39 @@ export const referrals = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("referrals_referrer_idx").on(t.referrerId, t.rewardedAt), index("referrals_time_idx").on(t.createdAt)],
+);
+
+/** Inviter rewards per calendar month (UTC): the cap is checked on this row, under its lock. */
+export const referralRewardsMonthly = pgTable(
+  "referral_rewards_monthly",
+  {
+    referrerId: text("referrer_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    /** YYYY-MM (UTC). */
+    month: text("month").notNull(),
+    rewards: integer("rewards").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.referrerId, t.month] })],
+);
+
+/**
+ * What the showcase shows for a site, saved at each publish from the published version only
+ * (content that passed the publish checks): its name and a ~640 px WebP of its hero photo.
+ */
+export const siteShowcase = pgTable(
+  "site_showcase",
+  {
+    siteId: uuid("site_id")
+      .primaryKey()
+      .references(() => sites.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    thumb: bytea("thumb"),
+    /** Content hash of the thumbnail: its address, so it can be cached for a long time (two sites may share one). */
+    thumbKey: text("thumb_key"),
+    thumbWidth: integer("thumb_width"),
+    thumbHeight: integer("thumb_height"),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("site_showcase_thumb_idx").on(t.thumbKey)],
 );

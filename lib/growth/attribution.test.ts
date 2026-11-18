@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { attributionFromRequest, classifySource, cookieValue, decodeAttribution, encodeAttribution, referralCodeOf, type Attribution } from "./attribution";
+import { attributionFromRequest, classifySource, keepFirstTouch, cookieValue, decodeAttribution, encodeAttribution, referralCodeOf, type Attribution } from "./attribution";
 
 const from = (query: string, referrer: string | null = null) => attributionFromRequest(new URLSearchParams(query), referrer, "gojoline.afridea.et", 1000);
 
@@ -56,5 +56,17 @@ describe("classifySource", () => {
     expect(referralCodeOf({ r: "u_a", t: 0 })).toBeNull();
     expect(referralCodeOf({ r: "site_x", t: 0 })).toBeNull();
     expect(referralCodeOf(null)).toBeNull();
+  });
+});
+
+describe("keepFirstTouch", () => {
+  it("keeps the first source, but an invite link replaces a non-invite one", () => {
+    const tiktok = { s: "tiktok", t: 1 };
+    const invite = { r: "u_abc12345", t: 2 };
+    const other = { r: "u_zzzzzzzz", t: 3 };
+    expect(keepFirstTouch(null, tiktok)).toBe(tiktok);
+    expect(keepFirstTouch(tiktok, { s: "fb", t: 2 })).toBe(tiktok);
+    expect(keepFirstTouch(tiktok, invite)).toBe(invite);
+    expect(keepFirstTouch(invite, other)).toBe(invite);
   });
 });

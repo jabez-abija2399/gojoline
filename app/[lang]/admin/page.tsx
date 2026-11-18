@@ -28,7 +28,7 @@ import { planFeaturesWith } from "@/lib/billing/credits";
 import { OwnerActions } from "@/components/admin/owner-actions";
 import { PlanComparison } from "@/components/pricing/plan-comparison";
 import { monthlyRevenueMinor, type PlanFilter } from "@/lib/admin/stats";
-import { PLAN_IDS, productName } from "@/lib/billing/plans";
+import { PLAN_IDS, PRODUCTS, productName } from "@/lib/billing/plans";
 import { SOURCES } from "@/lib/growth/attribution";
 import { emptySourceCounts } from "@/lib/growth/sources";
 
@@ -367,7 +367,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 <li key={e.siteId} className="flex flex-wrap items-center gap-3 border-t border-line py-3 first:border-0">
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="font-medium [overflow-wrap:anywhere]">{e.name}</span>
-                    <a href={e.url} target="_blank" rel="noopener noreferrer" className="text-xs text-ink-muted underline underline-offset-2 [overflow-wrap:anywhere]">{e.url}</a>
+                    <a href={e.url} target="_blank" rel="noopener noreferrer" className="text-xs text-ink-muted underline underline-offset-2 [overflow-wrap:anywhere]">{e.url}<span className="sr-only"> {sc.newTab}</span></a>
                   </span>
                   <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${e.hidden ? "bg-coral-soft text-destructive" : "border border-lagoon bg-white text-lagoon"}`}>{e.hidden ? sc.hidden : sc.shown}</span>
                   <form action={setShowcaseHidden}>
@@ -545,6 +545,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
 
   async function Payments() {
     const pending = await svc.billing.store().pendingForAdmin();
+    // Who invited each payer: the admin judges an invite before approving its reward.
+    const invites = await svc.growth.referrals.notes(pending.map((p) => p.userId)).catch((e: unknown) => (reportError("invite notes failed", e), new Map()));
+    const g = t.growth.referralsAdmin;
     return (
         <section aria-labelledby="pay-title" className="flex flex-col gap-3">
           <h2 id="pay-title" className="text-base font-semibold">{t.admin.paymentsTitle}</h2>
@@ -569,6 +572,19 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                     <p>{t.billing.methods[p.method]}: <span className="font-mono">{p.reference}</span></p>
                     <p className="break-all">{t.admin.user}: {p.contact ?? p.userId.slice(0, 8)}</p>
                     <p className="text-ink-muted">{dateFmt.format(p.createdAt)}</p>
+                    {invites.get(p.userId) && (() => {
+                      const inv = invites.get(p.userId)!;
+                      const plan = Boolean(PRODUCTS[p.product]?.plan);
+                      return (
+                        <p className="break-all sm:col-span-2">
+                          {format(g.invitedBy, { who: inv.name || inv.contact || "—" })}
+                          {inv.name && inv.contact ? ` (${inv.contact})` : ""}
+                          {" · "}
+                          {inv.status === "blocked" ? `${g.statuses.blocked}: ${(g.reasons as Record<string, string>)[inv.blockReason ?? ""] ?? inv.blockReason}` : inv.status === "rewarded" ? g.statuses.rewarded : plan ? g.rewardOnApprove : g.noRewardTopup}
+                          {inv.sameNetwork && <span className="ms-2 rounded-full bg-coral-soft px-2 py-0.5 text-xs font-semibold text-destructive">{g.sameNetwork}</span>}
+                        </p>
+                      );
+                    })()}
                   </div>
                   {p.hasReceipt ? (
                     <a href={`/api/admin/payments/${p.id}/receipt`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 pointer-fine:min-h-9 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.viewReceipt}</a>

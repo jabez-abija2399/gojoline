@@ -7,8 +7,11 @@ CREATE TABLE "signup_sources" (
 	"utm_campaign" text,
 	"referrer_host" text,
 	"first_seen_at" timestamp with time zone,
+	"ip_hash" text,
+	"device_hash" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 ALTER TABLE "signup_sources" ADD CONSTRAINT "signup_sources_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "signup_sources_time_idx" ON "signup_sources" USING btree ("created_at");
+CREATE INDEX "signup_sources_ip_idx" ON "signup_sources" USING btree ("ip_hash");--> statement-breakpoint
+CREATE INDEX "users_created_idx" ON "users" USING btree ("created_at");

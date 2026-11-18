@@ -1,5 +1,5 @@
 {
-  "id": "d4ebaeed-8788-4474-91ea-da9cd4c0bde0",
+  "id": "00288ae1-ee7f-4564-86af-c6c5121e586e",
   "prevId": "73d79ba2-0965-46c8-bc86-e17693e9d42c",
   "version": "7",
   "dialect": "postgresql",
@@ -1931,6 +1931,18 @@
           "primaryKey": false,
           "notNull": false
         },
+        "ip_hash": {
+          "name": "ip_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "device_hash": {
+          "name": "device_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -1940,11 +1952,11 @@
         }
       },
       "indexes": {
-        "signup_sources_time_idx": {
-          "name": "signup_sources_time_idx",
+        "signup_sources_ip_idx": {
+          "name": "signup_sources_ip_idx",
           "columns": [
             {
-              "expression": "created_at",
+              "expression": "ip_hash",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2715,7 +2727,23 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "users_created_idx": {
+          "name": "users_created_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {

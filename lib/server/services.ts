@@ -184,7 +184,6 @@ interface Services {
   publicSites: PublicSiteCache;
   /** Owner feedback and the team's replies. */
   feedback: FeedbackStore;
-  /** Growth loops: sign-up sources (first touch). */
   /** Growth loops: sign-up sources, referrals, and the public showcase (null without publishing or a database). */
   growth: { sources: SignupSourceStore; referrals: Referrals; showcase: ShowcaseStore | null };
 }
@@ -203,6 +202,7 @@ export function services(): Services {
     const db = getDb(process.env);
     const usage = db ? new DbUsageLogger(db) : new MemoryUsageLogger();
     const billing = new Billing(db ? new DbBillingStore(db) : new MemoryBillingStore(), undefined, db ? new DbSettingsStore(db) : new MemorySettingsStore());
+    const sources = db ? new DbSignupSourceStore(db) : new MemorySignupSourceStore();
     globalForServices.gojoServices = {
       waitlist: db ? new DbWaitlistStore(db) : new MemoryWaitlistStore(),
       rateLimiter: pickRateLimiter(process.env),
@@ -221,8 +221,12 @@ export function services(): Services {
       checkText: (texts, ctx) => checkOwnerText(texts, null, ctx),
       publicSites: new PublicSiteCache(async () => null),
       growth: {
-        sources: db ? new DbSignupSourceStore(db) : new MemorySignupSourceStore(),
-        referrals: new Referrals(db ? new DbReferralStore(db) : new MemoryReferralStore((id) => memoryAccounts().find((u) => u.id === id) ?? null), billing),
+        sources,
+        referrals: new Referrals(
+          db ? new DbReferralStore(db) : new MemoryReferralStore((id) => memoryAccounts().find((u) => u.id === id) ?? null, (u, n, ref) => billing.store().addCredits(u, n, "referral", ref)),
+          billing,
+          sources,
+        ),
         showcase: db ? new DbShowcaseStore(db) : null,
       },
       feedback: db
@@ -254,7 +258,10 @@ export function services(): Services {
     }
     svc.publish = pickPublish(process.env, svc.builder);
     if (!db && svc.publish && svc.builder) svc.growth.showcase = new MemoryShowcaseStore(svc.publish.sites as MemorySiteStore, svc.builder.store);
-    if (svc.publish && svc.growth.showcase) svc.publish.showcase = svc.growth.showcase;
+    if (svc.publish && svc.growth.showcase) {
+      svc.publish.showcase = svc.growth.showcase;
+      svc.publish.showcaseChanged = showcaseChanged;
+    }
     const settingsDb = svc.siteSettings instanceof DbSiteSettingsStore ? svc.siteSettings : null;
     svc.publicSites = new PublicSiteCache(async (id) => {
       if (settingsDb) return settingsDb.publicEntry(id);
@@ -280,7 +287,11 @@ export function services(): Services {
             const s = await siteAdmin.byId(id);
             return s ? { slug: s.slug, url: s.url, status: s.status } : null;
           });
-      svc.moderation = { sites: siteAdmin, reports, publisher: svc.publish?.publisher ?? null, legacy: svc.publish?.legacy ?? null, lock: svc.publish?.lock, audit: (e) => billing.store().audit(e), invalidate: (id) => globalForServices.gojoServices?.publicSites.invalidate(id) };
+      svc.moderation = { sites: siteAdmin, reports, publisher: svc.publish?.publisher ?? null, legacy: svc.publish?.legacy ?? null, lock: svc.publish?.lock, audit: (e) => billing.store().audit(e), invalidate: (id) => {
+          globalForServices.gojoServices?.publicSites.invalidate(id);
+          showcaseChanged();
+        },
+      };
     }
     svc.telegram = pickTelegram(process.env);
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);
@@ -299,6 +310,11 @@ export function paymentNotices(): PaymentNoticeDeps {
     store: svc.billing.store(),
     telegram: svc.telegram,
   };
+}
+
+/** Clears the public showcase's cache (loaded lazily: the cache module reads services()). */
+function showcaseChanged(): void {
+  void import("@/lib/growth/showcase-cache").then((m) => m.invalidateShowcase()).catch(() => undefined);
 }
 
 /** Accounts in the in-memory auth store (development and e2e only). */

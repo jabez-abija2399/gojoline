@@ -17,6 +17,7 @@ import { after } from "next/server";
 import { noticeDecision } from "@/lib/billing/notify";
 import { adminStats, paymentNotices, services } from "@/lib/server/services";
 import { adminFeedbackInput } from "@/lib/feedback/schema";
+import { invalidateShowcase } from "@/lib/growth/showcase-cache";
 import { FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
@@ -376,7 +377,7 @@ export async function setShowcaseHidden(form: FormData) {
       reportError("showcase hide failed", error);
     }
   }
+  invalidateShowcase();
   revalidatePath(`/${lang}/admin`);
-  revalidatePath(`/${lang}/showcase`);
   redirect(`/${lang}/admin?tab=growth&done=${done}#showcase-title`);
 }

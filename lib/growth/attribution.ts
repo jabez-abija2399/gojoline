@@ -103,6 +103,15 @@ export function classifySource(a: Attribution | null): Source {
   return words || m || a.c ? "other" : "direct";
 }
 
+/**
+ * Which attribution to keep: the first one, except that an owner's invite link (?ref=u_…)
+ * replaces any earlier source that wasn't an invite.
+ */
+export function keepFirstTouch(kept: Attribution | null, incoming: Attribution): Attribution {
+  if (!kept) return incoming;
+  return referralCodeOf(incoming) && !referralCodeOf(kept) ? incoming : kept;
+}
+
 /** The referral code in ?ref=u_<code>, if any. */
 export function referralCodeOf(a: Attribution | null): string | null {
   const m = /^u_([a-z0-9]{6,16})$/.exec(a?.r ?? "");

@@ -45,7 +45,7 @@ export function mailbox(email: string): string {
 
 const digits = (p: string | null) => (p ?? "").replace(/\D/g, "").replace(/^251/, "0");
 
-export type SelfReferral = "same_user" | "same_email" | "same_domain" | "same_phone";
+export type SelfReferral = "same_user" | "same_email" | "same_domain" | "same_phone" | "same_device";
 
 /** Why an invite is the inviter inviting themselves, or null when it looks like a real other owner. */
 export function selfReferral(referrer: Person, referred: Person): SelfReferral | null {
@@ -62,4 +62,15 @@ export function selfReferral(referrer: Person, referred: Person): SelfReferral |
   return null;
 }
 
-export const monthStart = (d: Date) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
+/** The calendar month (UTC) a reward counts in: YYYY-MM. */
+export const monthKey = (d: Date) => d.toISOString().slice(0, 7);
+
+/**
+ * Where two accounts were made. The same network and the same browser: the same device, blocked.
+ * The same network only is common (shared Wi-Fi, mobile carriers' shared addresses): shown to
+ * the admin, not blocked.
+ */
+export function deviceMatch(a: { ipHash: string | null; deviceHash: string | null } | null, b: { ipHash: string | null; deviceHash: string | null } | null): "same_device" | "same_network" | null {
+  if (!a?.ipHash || a.ipHash !== b?.ipHash) return null;
+  return a.deviceHash && a.deviceHash === b.deviceHash ? "same_device" : "same_network";
+}

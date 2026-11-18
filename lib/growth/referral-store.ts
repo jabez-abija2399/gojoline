@@ -1,4 +1,4 @@
-import { and, count, desc, eq, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Database } from "@/lib/db/client";
 import { referralCodes, referrals, user } from "@/lib/db/schema";
@@ -40,10 +40,14 @@ export interface ReferralStore {
   link(r: Pick<Referral, "referredId" | "referrerId" | "code" | "status" | "blockReason">): Promise<boolean>;
   get(referredId: string): Promise<Referral | null>;
   /**
-   * Pending → rewarded, once (atomic on the row): the invited owner gets `credits`, the inviter
-   * too unless they already earned `cap` rewards since `since`. Null when not pending.
+   * Pending → rewarded and both credit grants, in one transaction: the invited owner gets
+   * `credits`, the inviter too unless `cap` rewards in `month` (YYYY-MM) are already counted on
+   * their monthly row (counted under its lock, so parallel approvals can't pass the cap). The
+   * grants use ledger reason `referral`, ref `referral:<invited id>`. Null when not pending.
    */
-  claim(referredId: string, paymentId: string, credits: number, cap: number, since: Date, now: Date): Promise<Claimed | null>;
+  claim(referredId: string, paymentId: string, credits: number, cap: number, month: string, now: Date): Promise<Claimed | null>;
+  /** Who invited these owners (for the admin's payment review). */
+  inviters(referredIds: string[]): Promise<Map<string, { referrerId: string; name: string; contact: string; status: ReferralStatus; blockReason: string | null }>>;
   summary(referrerId: string): Promise<{ invited: number; rewarded: number; credits: number }>;
   recent(limit: number): Promise<AdminReferral[]>;
 }
@@ -83,20 +87,55 @@ export class DbReferralStore implements ReferralStore {
     return row ?? null;
   }
 
-  async claim(referredId: string, paymentId: string, credits: number, cap: number, since: Date, now: Date): Promise<Claimed | null> {
-    // One statement: the row moves out of pending once, and the inviter's rewards this month are counted in it.
+  async claim(referredId: string, paymentId: string, credits: number, cap: number, month: string, now: Date): Promise<Claimed | null> {
+    const ref = `referral:${referredId}`;
+    // One statement, so one transaction. The monthly row is locked by the upsert: a second
+    // approval for the same inviter waits, then sees the new count.
+    const result = await this.db.execute(sql`
+      with target as (
+        select referrer_id from referrals where referred_id = ${referredId} and status = 'pending'
+      ),
+      counted as (
+        insert into referral_rewards_monthly (referrer_id, month, rewards)
+        select referrer_id, ${month}, 1 from target
+        on conflict (referrer_id, month) do update set rewards = referral_rewards_monthly.rewards + 1
+        where referral_rewards_monthly.rewards < ${cap}
+        returning referrer_id
+      ),
+      claimed as (
+        update referrals set status = 'rewarded', payment_id = ${paymentId}, rewarded_at = ${now.toISOString()},
+          referred_credits = ${credits}, referrer_credits = case when exists (select 1 from counted) then ${credits}::int else 0 end
+        where referred_id = ${referredId} and status = 'pending'
+        returning referrer_id, referrer_credits, referred_credits
+      ),
+      grants as (
+        insert into credit_ledger (user_id, delta, reason, ref)
+        select ${referredId}, referred_credits, 'referral', ${ref} from claimed
+        union all
+        select referrer_id, referrer_credits, 'referral', ${ref} from claimed where referrer_credits > 0
+        on conflict do nothing
+        returning user_id, delta
+      ),
+      balances as (
+        insert into credit_balances (user_id, balance) select user_id, delta from grants
+        on conflict (user_id) do update set balance = credit_balances.balance + excluded.balance
+        returning user_id
+      )
+      select referrer_id as "referrerId", referrer_credits as "referrerCredits", referred_credits as "referredCredits", (select count(*) from balances)::int as granted from claimed`);
+    const row = (Array.isArray(result) ? result : ((result as { rows?: unknown[] }).rows ?? []))[0] as (Claimed & { granted: number }) | undefined;
+    return row ? { referrerId: row.referrerId, referrerCredits: Number(row.referrerCredits), referredCredits: Number(row.referredCredits) } : null;
+  }
+
+  async inviters(referredIds: string[]) {
+    const out = new Map<string, { referrerId: string; name: string; contact: string; status: ReferralStatus; blockReason: string | null }>();
+    if (referredIds.length === 0) return out;
     const rows = await this.db
-      .update(referrals)
-      .set({
-        status: "rewarded",
-        paymentId,
-        rewardedAt: now,
-        referredCredits: credits,
-        referrerCredits: sql`case when (select count(*) from ${referrals} as earned where earned.referrer_id = ${referrals.referrerId} and earned.rewarded_at >= ${since} and earned.referrer_credits > 0) < ${cap} then ${credits} else 0 end`,
-      })
-      .where(and(eq(referrals.referredId, referredId), eq(referrals.status, "pending")))
-      .returning({ referrerId: referrals.referrerId, referrerCredits: referrals.referrerCredits, referredCredits: referrals.referredCredits });
-    return rows[0] ?? null;
+      .select({ referredId: referrals.referredId, referrerId: referrals.referrerId, status: referrals.status, blockReason: referrals.blockReason, name: user.name, email: user.email, phone: user.phoneNumber })
+      .from(referrals)
+      .innerJoin(user, eq(user.id, referrals.referrerId))
+      .where(inArray(referrals.referredId, referredIds));
+    for (const r of rows) out.set(r.referredId, { referrerId: r.referrerId, name: r.name, contact: contactOf(r.email, r.phone), status: r.status, blockReason: r.blockReason });
+    return out;
   }
 
   async summary(referrerId: string) {
@@ -139,7 +178,12 @@ type MemoryPerson = { id: string; name: string; email: string; phoneNumber?: str
 export class MemoryReferralStore implements ReferralStore {
   private codes = new Map<string, string>();
   private rows = new Map<string, Referral>();
-  constructor(private people: (id: string) => MemoryPerson | null = () => null) {}
+  private monthly = new Map<string, number>();
+  constructor(
+    private people: (id: string) => MemoryPerson | null = () => null,
+    /** The billing store's grant (idempotent per owner, reason and ref). */
+    private grant: (userId: string, n: number, ref: string) => Promise<unknown> = async () => undefined,
+  ) {}
 
   async codeFor(userId: string) {
     let code = this.codes.get(userId);
@@ -162,12 +206,28 @@ export class MemoryReferralStore implements ReferralStore {
   async get(referredId: string) {
     return this.rows.get(referredId) ?? null;
   }
-  async claim(referredId: string, paymentId: string, credits: number, cap: number, since: Date, now: Date) {
+  async claim(referredId: string, paymentId: string, credits: number, cap: number, month: string, now: Date) {
     const r = this.rows.get(referredId);
     if (!r || r.status !== "pending") return null;
-    const earned = [...this.rows.values()].filter((x) => x.referrerId === r.referrerId && x.rewardedAt && x.rewardedAt >= since && x.referrerCredits > 0).length;
-    Object.assign(r, { status: "rewarded", paymentId, rewardedAt: now, referredCredits: credits, referrerCredits: earned < cap ? credits : 0 });
+    // Synchronous up to the grants: nothing else runs in between on one event loop.
+    const key = `${r.referrerId}:${month}`;
+    const used = this.monthly.get(key) ?? 0;
+    const counted = used < cap;
+    if (counted) this.monthly.set(key, used + 1);
+    Object.assign(r, { status: "rewarded", paymentId, rewardedAt: now, referredCredits: credits, referrerCredits: counted ? credits : 0 });
+    await this.grant(referredId, credits, `referral:${referredId}`);
+    if (counted) await this.grant(r.referrerId, credits, `referral:${referredId}`);
     return { referrerId: r.referrerId, referrerCredits: r.referrerCredits, referredCredits: r.referredCredits };
+  }
+  async inviters(referredIds: string[]) {
+    const out = new Map<string, { referrerId: string; name: string; contact: string; status: ReferralStatus; blockReason: string | null }>();
+    for (const id of referredIds) {
+      const r = this.rows.get(id);
+      if (!r) continue;
+      const p = this.people(r.referrerId);
+      out.set(id, { referrerId: r.referrerId, name: p?.name ?? "", contact: p ? contactOf(p.email, p.phoneNumber ?? null) : "", status: r.status, blockReason: r.blockReason });
+    }
+    return out;
   }
   async summary(referrerId: string) {
     const mine = [...this.rows.values()].filter((r) => r.referrerId === referrerId && r.status !== "blocked");

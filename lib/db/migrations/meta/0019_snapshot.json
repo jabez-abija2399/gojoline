@@ -1,6 +1,6 @@
 {
-  "id": "1a146a10-79a0-4ed1-a911-fa64da839aa8",
-  "prevId": "d4ebaeed-8788-4474-91ea-da9cd4c0bde0",
+  "id": "0e790f2b-ed40-4a78-bd89-db400b870223",
+  "prevId": "00288ae1-ee7f-4564-86af-c6c5121e586e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1832,6 +1832,60 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.referral_rewards_monthly": {
+      "name": "referral_rewards_monthly",
+      "schema": "",
+      "columns": {
+        "referrer_id": {
+          "name": "referrer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "month": {
+          "name": "month",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rewards": {
+          "name": "rewards",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "referral_rewards_monthly_referrer_id_users_id_fk": {
+          "name": "referral_rewards_monthly_referrer_id_users_id_fk",
+          "tableFrom": "referral_rewards_monthly",
+          "tableTo": "users",
+          "columnsFrom": [
+            "referrer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "referral_rewards_monthly_referrer_id_month_pk": {
+          "name": "referral_rewards_monthly_referrer_id_month_pk",
+          "columns": [
+            "referrer_id",
+            "month"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.referrals": {
       "name": "referrals",
       "schema": "",
@@ -2125,6 +2179,18 @@
           "primaryKey": false,
           "notNull": false
         },
+        "ip_hash": {
+          "name": "ip_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "device_hash": {
+          "name": "device_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -2134,11 +2200,11 @@
         }
       },
       "indexes": {
-        "signup_sources_time_idx": {
-          "name": "signup_sources_time_idx",
+        "signup_sources_ip_idx": {
+          "name": "signup_sources_ip_idx",
           "columns": [
             {
-              "expression": "created_at",
+              "expression": "ip_hash",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2909,7 +2975,23 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "users_created_idx": {
+          "name": "users_created_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {

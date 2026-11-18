@@ -1,16 +1,19 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { LOCALE_COOKIE, isLocale, localeFromAcceptLanguage } from "@/lib/i18n/config";
 import { createNonce, cspFromEnv } from "@/lib/security/csp";
-import { ATTRIBUTION_COOKIE, ATTRIBUTION_MAX_AGE, attributionFromRequest, encodeAttribution } from "@/lib/growth/attribution";
+import { ATTRIBUTION_COOKIE, ATTRIBUTION_MAX_AGE, attributionFromRequest, decodeAttribution, encodeAttribution, keepFirstTouch } from "@/lib/growth/attribution";
 
 /**
  * First touch: where a visitor first came from (?ref=, utm tags or the referring site), in a
- * first-party cookie read once at sign-up. Never replaced once set.
+ * first-party cookie read once at sign-up. Never replaced, except by an owner's invite link
+ * (so "you both get" holds even if the visitor first came another way).
  */
 function rememberFirstTouch(request: NextRequest, response: NextResponse) {
-  if (request.cookies.has(ATTRIBUTION_COOKIE)) return response;
   const a = attributionFromRequest(request.nextUrl.searchParams, request.headers.get("referer"), request.nextUrl.hostname);
-  if (a) {
+  // request.cookies holds decoded values; decodeAttribution expects the raw (encoded) form.
+  const raw = request.cookies.get(ATTRIBUTION_COOKIE)?.value;
+  const kept = raw ? decodeAttribution(encodeURIComponent(raw)) : null;
+  if (a && keepFirstTouch(kept, a) === a) {
     response.cookies.set(ATTRIBUTION_COOKIE, encodeAttribution(a), {
       path: "/",
       maxAge: ATTRIBUTION_MAX_AGE,
