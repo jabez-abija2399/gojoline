@@ -56,6 +56,8 @@ export interface PublishDeps {
   showcase?: Pick<ShowcaseStore, "savePublished">;
   /** Called after anything the showcase lists may have changed (clears its cache). */
   showcaseChanged?: () => void;
+  /** Counts publishes for admin analytics (first time or an update); never fails a publish. */
+  countPublish?: (kind: "first" | "update") => Promise<void>;
 }
 
 /**
@@ -228,6 +230,7 @@ async function deployLocked(
       publishedAt: new Date(),
       runtimeVersion: SITE_RUNTIME,
     });
+    await deps.countPublish?.(existing?.publishedAt ? "update" : "first").catch(() => undefined);
     // Resting sites stay resting: the new deployment replaced the host's flag.
     if (site.offlineAt) await deps.publisher.setResting?.(result.providerProjectId, true, result.deploymentId).catch((e: unknown) => reportError("resting switch failed", e, { projectId }));
     if (legacyProjectId && deps.legacy) {

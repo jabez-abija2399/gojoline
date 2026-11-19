@@ -1,3 +1,5 @@
+import { DbAnalytics, MemoryAnalytics, type AnalyticsSource } from "@/lib/analytics/report";
+import { DbEventStore, MemoryEventStore, type EventStore } from "@/lib/analytics/store";
 import "server-only";
 import { DbAdminStats, MemoryAdminStats, type AdminStats } from "@/lib/admin/stats";
 import type { PaymentNoticeDeps } from "@/lib/billing/notify";
@@ -184,6 +186,8 @@ interface Services {
   publicSites: PublicSiteCache;
   /** Owner feedback and the team's replies. */
   feedback: FeedbackStore;
+  /** Admin analytics counters (link clicks, publishes); counts only. */
+  analyticsEvents: EventStore;
   /** Growth loops: sign-up sources, referrals, and the public showcase (null without publishing or a database). */
   growth: { sources: SignupSourceStore; referrals: Referrals; showcase: ShowcaseStore | null };
 }
@@ -218,6 +222,7 @@ export function services(): Services {
       moderation: null,
       siteSettings: db ? new DbSiteSettingsStore(db) : new MemorySiteSettingsStore(),
       visits: { counter: new MemoryVisitCounter(), daily: new MemoryVisitsDailyStore(async () => null) },
+      analyticsEvents: db ? new DbEventStore(db) : new MemoryEventStore(),
       checkText: (texts, ctx) => checkOwnerText(texts, null, ctx),
       publicSites: new PublicSiteCache(async () => null),
       growth: {
@@ -273,6 +278,7 @@ export function services(): Services {
     if (svc.publish) {
       svc.publish.entitlements = billing.entitlements;
       svc.publish.settings = svc.siteSettings;
+      svc.publish.countPublish = (kind) => svc.analyticsEvents.bump(addisDay(Date.now()), "publish", kind);
       // Keywords always; the AI check when an API key is set (never in e2e).
       const key = process.env.SAYSITE_ANTHROPIC_API_KEY;
       const classifier = key && !isE2E(process.env) ? new LLMContentClassifier(new AnthropicLLMProvider(key), usage, process.env.SAFETY_MODEL || "claude-haiku-5-5") : null;
@@ -321,6 +327,13 @@ function showcaseChanged(): void {
 /** Accounts in the in-memory auth store (development and e2e only). */
 function memoryAccounts(): { id: string; name: string; email: string; phoneNumber?: string | null; createdAt: Date }[] {
   return (globalThis as unknown as { gojoAuthMemory?: { user?: { id: string; name: string; email: string; phoneNumber?: string | null; createdAt: Date }[] } }).gojoAuthMemory?.user ?? [];
+}
+
+/** Admin analytics by day, week and month (database when available). */
+export function analytics(): AnalyticsSource {
+  const db = getDb(process.env);
+  const events = services().analyticsEvents;
+  return db ? new DbAnalytics(db, events) : new MemoryAnalytics(events, memoryAccounts);
 }
 
 /** Admin overview numbers and user list (database when available). */
