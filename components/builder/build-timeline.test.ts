@@ -22,6 +22,17 @@ describe("build timeline", () => {
     expect(keys(tl)).toEqual(["understand", "plan", "write", "check", "save", "ready"]);
   });
 
+  it("names only the template's section types; raw model text is dropped", () => {
+    const tl = run([
+      { type: "tool_start", name: "write_file" },
+      { type: "section", name: "#B85C7A (contrast vs #FCF7F6…)" },
+      { type: "section", name: "menu" },
+      { type: "section", name: "constructor" },
+      { type: "section", name: "" },
+    ]);
+    expect(tl.sections).toEqual(["menu"]);
+  });
+
   it("goes straight to writing when the model starts with a tool, and through a fix", () => {
     const tl = run([
       { type: "tool_start", name: "search_replace" },

@@ -5,7 +5,7 @@ import type { LLMProvider, LLMRequest, LLMResponse } from "./types";
 /**
  * Deterministic stand-in used by e2e tests (E2E=1). Renames the site to the owner's message,
  * or writes a broken file when the message contains "break it", answers with markdown for
- * "telegram", and takes 1.5 s for "slowly" (6 s for "take your time"), so UI paths can be tested
+ * "telegram", asks a question (no change) for "question", and takes 1.5 s for "slowly" (6 s for "take your time"), so UI paths can be tested
  * without spending money.
  */
 export class DemoLLMProvider implements LLMProvider {
@@ -29,8 +29,11 @@ export class DemoLLMProvider implements LLMProvider {
     } else {
       const name = owner.replace(/["\\\n]/g, "").slice(0, 40);
       const match = /"name": \{\s*"en": "([^"]*)"/.exec(current);
+      // "slowly" also writes a working note first, as the real model does between tool calls:
+      // e2e checks it never reaches the owner's screen.
+      const note = /\bslowly\b/i.test(owner) ? [textBlock("Primary #B85C7A (contrast vs #FCF7F6 is 4.9:1).")] : [];
       content = match
-        ? [toolUseBlock("search_replace", { path: "src/site.json", old_string: match[0], new_string: match[0].replace(match[1]!, name) }), toolUseBlock("run_build", {})]
+        ? [...note, toolUseBlock("search_replace", { path: "src/site.json", old_string: match[0], new_string: match[0].replace(match[1]!, name) }), toolUseBlock("run_build", {})]
         : [textBlock("I could not find the site name.")];
     }
     // Reports its blocks like a streamed reply, so the progress card moves in e2e too.

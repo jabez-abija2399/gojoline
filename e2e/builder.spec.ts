@@ -66,8 +66,11 @@ test("the progress card follows the AI's real steps, and replies show bold and l
   await expect(card).toContainText("Checking everything works (in progress)");
   // Screen readers hear only the current step, from one quiet status line.
   await expect(card.getByRole("status")).toHaveText("Checking everything works");
+  // The AI's working notes (colours, contrast checks) never show on the card or in the chat.
+  await expect(page.getByText(/B85C7A|contrast vs/)).toHaveCount(0);
   await expect(page.getByText("Saved as version 1").first()).toBeVisible();
   await expect(card).toHaveCount(0);
+  await expect(page.getByText(/B85C7A|contrast vs/)).toHaveCount(0);
 
   await chat(page).fill("Add our Telegram");
   await chat(page).press("Enter");

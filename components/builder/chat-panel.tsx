@@ -29,7 +29,6 @@ interface Props {
   messages: UiMessage[];
   working: boolean;
   timeline: Timeline | null;
-  streamText: string;
   /** Before the first build: which languages the site will have. */
   languages?: { value: SiteLanguages; onChange: (v: SiteLanguages) => void };
   onSend: (text: string) => void;
@@ -67,7 +66,7 @@ const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 const NEXT = ["contact", "colours", "prices", "language"] as const;
 const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line bg-white px-3.5 text-sm font-medium lg:min-h-9 text-ink transition-colors hover:border-faint hover:bg-sunken";
 
-export function ChatPanel({ t, messages, working, timeline, streamText, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits, confirm, nextGrant, onBeforeSend }: Props) {
+export function ChatPanel({ t, messages, working, timeline, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits, confirm, nextGrant, onBeforeSend }: Props) {
   const [undoing, setUndoing] = useState(false);
   const [attach, setAttach] = useState<{ busy: boolean; note?: string; error?: string }>({ busy: false });
   const listRef = useRef<HTMLDivElement>(null);
@@ -84,7 +83,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
   useEffect(() => {
     // An empty chat starts at its top (the greeting); a conversation follows its newest line.
     if (messages.length > 0 || working) listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
-  }, [messages, streamText, working, celebrate, hasSite]);
+  }, [messages, timeline?.steps.length, working, celebrate, hasSite]);
 
   useEffect(() => {
     if (focusKey > 0) boxRef.current?.focus();
@@ -200,7 +199,7 @@ export function ChatPanel({ t, messages, working, timeline, streamText, onSend, 
             </div>
           </div>
         )}
-        {working && timeline && <BuildTimeline t={t} timeline={timeline} streamText={streamText} />}
+        {working && timeline && <BuildTimeline t={t} timeline={timeline} />}
         {working && !timeline && (
           <p role="status" className="flex items-center gap-2 font-medium text-ink">
             <Loader2 aria-hidden="true" className="size-4 animate-spin" />

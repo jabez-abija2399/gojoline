@@ -139,7 +139,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const [celebrate, setCelebrate] = useState(false);
   // Phones: a dot on the Preview tab when the site changed while the owner was elsewhere.
   const [previewFresh, setPreviewFresh] = useState(false);
-  const [streamText, setStreamText] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
   const [previewError, setPreviewError] = useState(false);
@@ -190,7 +189,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       const before = creditsRef.current;
       setWorking(true);
       setTimeline(startTimeline(Date.now()));
-      setStreamText("");
       setFirstBuildFailed(false);
       setFirstBuildWarm(false);
       lastBuildFailed.current = false;
@@ -223,12 +221,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 setPreviewUrl(event.url);
                 setPreviewLoading(false);
                 break;
-              case "text":
-                setStreamText((s) => s + event.delta);
-                setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
-                break;
               // Real progress from the agent: planning, a tool starting, the sections it writes,
-              // a tool that ran, finishing up near the budget, saving the new version.
+              // a tool that ran, finishing up near the budget, saving the new version. Never the
+              // model's own words: its working notes (colours, contrast checks) are not for owners.
               case "plan":
               case "tool_start":
               case "section":
@@ -301,7 +296,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         if (failed && versionsRef.current === 0) setFirstBuildFailed(true);
         setWorking(false);
         setTimeline(null);
-        setStreamText("");
       }
     },
     [projectId, t, addAssistant, noCredits, locale, maybeUpgrade],
@@ -415,7 +409,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       messages={messages}
       working={working}
       timeline={timeline}
-      streamText={streamText}
       onSend={(text) => send(text, siteLanguages)}
       welcome={welcome}
       languages={versions.length === 0 && !working ? { value: siteLanguages, onChange: setSiteLanguages } : undefined}

@@ -1,10 +1,9 @@
 "use client";
 
-import { useDeferredValue, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
-import { ChatMarkdown } from "@/components/chat/markdown";
 import type { Messages } from "@/lib/i18n";
-import type { SectionType } from "@/lib/agent/progress";
+import { SECTION_TYPES, type SectionType } from "@/lib/agent/progress";
 import { announcedStep, stepLabels } from "./timeline-label";
 
 export type TimelineKey = "understand" | "plan" | "write" | "check" | "fix" | "finish" | "save" | "ready";
@@ -19,8 +18,11 @@ export interface Timeline {
 /** A fresh timeline for a request sent now. */
 export const startTimeline = (now: number): Timeline => ({ steps: [{ key: "understand", done: false }], edits: 0, sections: [], startedAt: now });
 
-/** What the AI is doing right now, step by step, with a running clock. */
-export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builder"]; timeline: Timeline; streamText: string }) {
+/**
+ * What the AI is doing right now, step by step, with a running clock. Only fixed step labels and
+ * whitelisted section names: the model's own text (working notes such as colour checks) never shows.
+ */
+export function BuildTimeline({ t, timeline }: { t: Messages["builder"]; timeline: Timeline }) {
   const [now, setNow] = useState(() => timeline.startedAt);
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);
@@ -30,8 +32,6 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
   const label = stepLabels(t, timeline);
   // Screen readers hear only the step, once when it changes (not section names or streamed text).
   const announced = announcedStep(t, timeline);
-  // Streamed text arrives in many small pieces: parse it at a lower priority than typing.
-  const deferredText = useDeferredValue(streamText);
 
   return (
     <div role="group" aria-label={t.tlTitle} className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-line bg-white px-4 pt-4 pb-3 shadow-sm">
@@ -59,16 +59,14 @@ export function BuildTimeline({ t, timeline, streamText }: { t: Messages["builde
           </li>
         ))}
       </ol>
-      {deferredText && (
-        <div aria-live="off" className="border-t border-line pt-3 text-ink">
-          <ChatMarkdown text={deferredText} />
-        </div>
-      )}
     </div>
   );
 }
 
 type ProgressEvent = { type: string; name?: string; ok?: boolean };
+const KNOWN_SECTIONS = new Set<string>(SECTION_TYPES);
+/** Only the template's section types become names on screen; anything else is dropped. */
+const isSection = (name?: string): name is SectionType => typeof name === "string" && KNOWN_SECTIONS.has(name);
 const isEdit = (name?: string) => name === "write_file" || name === "search_replace";
 
 /**
@@ -101,8 +99,9 @@ export function nextTimeline(tl: Timeline, event: ProgressEvent): Timeline {
       } else if (isEdit(event.name) && !open("fix") && !open("finish") && !open("check")) start("write");
       break;
     case "section":
+      if (!isSection(event.name)) break;
       finish("understand", "plan");
-      if (event.name && !sections.includes(event.name as SectionType)) sections = [...sections, event.name as SectionType];
+      if (!sections.includes(event.name)) sections = [...sections, event.name];
       if (!open("fix") && !open("finish") && !open("check")) start("write");
       break;
     case "tool":
