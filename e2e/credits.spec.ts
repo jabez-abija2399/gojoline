@@ -27,6 +27,12 @@ test("a bigger request asks first, then uses its changes; low and zero changes a
   // The first build is free, whatever its size.
   await expect(log(page).getByText("Free first build · 10 changes left")).toBeVisible();
 
+  // A clarifying question changes nothing, so it costs nothing.
+  await say(page, "One question first");
+  await expect(log(page).getByText("What is your business called?")).toBeVisible();
+  await expect(log(page).getByText("No changes used · 10 left")).toBeVisible();
+  await expect(page.getByRole("link", { name: "10 changes left" })).toBeVisible();
+
   await say(page, "Add a new page for our menu");
   const ask = page.getByRole("group", { name: /uses 2 of your changes/ });
   await expect(ask).toContainText("This is a medium change (a new section or page) and uses 2 of your changes. Go ahead?");

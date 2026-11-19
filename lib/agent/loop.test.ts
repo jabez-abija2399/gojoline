@@ -55,6 +55,22 @@ describe("runAgent", () => {
     ]);
   });
 
+  it("replies only with a final turn that ended on its own, never a mid-run note", async () => {
+    const ws = new MemoryWorkspace({ "src/site.json": "name: 'Old'" });
+    // The last turn is a tool call followed by an empty final turn: the earlier note is not the reply.
+    const llm = new ScriptedLLMProvider([
+      { content: [textBlock("Primary #B85C7A (contrast vs #FCF7F6)."), toolUseBlock("search_replace", { path: "src/site.json", old_string: "Old", new_string: "New" }), toolUseBlock("run_build", {})] },
+      { content: [] },
+    ]);
+    const r = await runAgent({ ...base, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "pink" });
+    expect(r).toMatchObject({ status: "changed", reply: "" });
+    // A final turn cut off at max_tokens is not a reply either.
+    const cut = new ScriptedLLMProvider([{ content: [textBlock("Let me think about #B85C7A and")], stopReason: "max_tokens" }]);
+    expect((await runAgent({ ...base, llm: cut, workspace: ws, usage: new MemoryUsageLogger(), userContent: "?" })).reply).toBe("");
+    const done = new ScriptedLLMProvider([{ content: [textBlock("What is your business called?")] }]);
+    expect((await runAgent({ ...base, llm: done, workspace: ws, usage: new MemoryUsageLogger(), userContent: "?" })).reply).toBe("What is your business called?");
+  });
+
   it("builds automatically if the model forgets", async () => {
     const ws = new MemoryWorkspace({ "src/site.json": "a" });
     const llm = new ScriptedLLMProvider([

@@ -25,10 +25,11 @@ import { shouldOpenUpgrade, type UpgradeTrigger } from "@/lib/billing/upgrade-ru
 
 /** "Used 2 changes · 18 left" under an AI answer (a free first build says so). */
 function usageNote(t: Messages["builder"], charged: number, left: number, firstBuild: boolean): string {
-  if (charged === 0) return format(firstBuild ? (left === 1 ? t.usedFreeOne : t.usedFree) : t.usedNone, { left });
+  if (charged === 0) return format(firstBuild ? (left === 1 ? t.usedFreeOne : t.usedFree) : left === 1 ? t.usedNoneOne : t.usedNone, { left });
   return format(charged === 1 ? t.usedOne : t.usedMany, { n: charged, left });
 }
 import type { UiVersion } from "./versions-panel";
+import { replyText } from "./reply-text";
 
 // Opened now and then, not on every visit: their code loads the first time they are shown.
 const VersionsPanel = dynamic(() => import("./versions-panel").then((m) => m.VersionsPanel));
@@ -139,7 +140,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const [celebrate, setCelebrate] = useState(false);
   // Phones: a dot on the Preview tab when the site changed while the owner was elsewhere.
   const [previewFresh, setPreviewFresh] = useState(false);
-  const [streamText, setStreamText] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
   const [previewError, setPreviewError] = useState(false);
@@ -190,7 +190,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       const before = creditsRef.current;
       setWorking(true);
       setTimeline(startTimeline(Date.now()));
-      setStreamText("");
       setFirstBuildFailed(false);
       setFirstBuildWarm(false);
       lastBuildFailed.current = false;
@@ -223,12 +222,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 setPreviewUrl(event.url);
                 setPreviewLoading(false);
                 break;
-              case "text":
-                setStreamText((s) => s + event.delta);
-                setTimeline((tl) => (tl ? nextTimeline(tl, event) : tl));
-                break;
               // Real progress from the agent: planning, a tool starting, the sections it writes,
-              // a tool that ran, finishing up near the budget, saving the new version.
+              // a tool that ran, finishing up near the budget, saving the new version. Never the
+              // model's own words: its working notes (colours, contrast checks) are not for owners.
               case "plan":
               case "tool_start":
               case "section":
@@ -259,7 +255,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 failed = m.status === "failed";
                 const usage = typeof event.charged === "number" && typeof event.credits === "number" ? usageNote(t, event.charged, event.credits, versionsRef.current === 0 && m.status === "changed") : undefined;
                 if (m.status === "failed") addAssistant(event.tooBig ? t.tooBigFailed : t.reverted, { tone: "error", usage });
-                else addAssistant(event.tooBig ? [m.text, t.tooBigPartial].filter(Boolean).join("\n\n") : m.text, { versionNumber: m.versionNumber, usage });
+                else addAssistant(event.tooBig ? [m.text, t.tooBigPartial].filter(Boolean).join("\n\n") : replyText(t, m.status, m.text), { versionNumber: m.versionNumber, usage });
                 if (typeof event.siteName === "string" && event.siteName) setName(event.siteName);
                 if (typeof event.credits === "number") maybeUpgrade("after_run", before, event.credits);
                 if (m.versionNumber) {
@@ -301,7 +297,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         if (failed && versionsRef.current === 0) setFirstBuildFailed(true);
         setWorking(false);
         setTimeline(null);
-        setStreamText("");
       }
     },
     [projectId, t, addAssistant, noCredits, locale, maybeUpgrade],
@@ -415,7 +410,6 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       messages={messages}
       working={working}
       timeline={timeline}
-      streamText={streamText}
       onSend={(text) => send(text, siteLanguages)}
       welcome={welcome}
       languages={versions.length === 0 && !working ? { value: siteLanguages, onChange: setSiteLanguages } : undefined}

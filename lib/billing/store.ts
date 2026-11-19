@@ -76,8 +76,8 @@ export interface BillingStore {
   refund(userId: string, ref: string, n: number, cap: number, day: string, meta?: LedgerMeta): Promise<number>;
   /** The owner's credit movements, newest first. */
   ledger(userId: string, limit: number, offset: number): Promise<LedgerEntry[]>;
-  /** Ledger entries of this kind since the given time (e.g. refunds today). */
-  countSince(userId: string, reason: LedgerReason, since: Date): Promise<number>;
+  /** Ledger entries of this kind since the given time (e.g. refunds today), optionally only refs starting with `refPrefix`. */
+  countSince(userId: string, reason: LedgerReason, since: Date, refPrefix?: string): Promise<number>;
   /** Sum of credits added for these reasons since the given time (e.g. bought changes this year). */
   sumSince(userId: string, reasons: LedgerReason[], since: Date): Promise<number>;
   /** Atomically extends (same plan, still active) or starts (otherwise) the subscription by one period. */
@@ -163,8 +163,8 @@ export class MemoryBillingStore implements BillingStore {
       .slice(offset, offset + limit)
       .map((l) => ({ delta: l.delta, reason: l.reason, size: l.size, note: l.note, createdAt: l.at }));
   }
-  async countSince(userId: string, reason: LedgerReason, since: Date) {
-    return this.rows.filter((l) => l.userId === userId && l.reason === reason && l.at >= since).length;
+  async countSince(userId: string, reason: LedgerReason, since: Date, refPrefix?: string) {
+    return this.rows.filter((l) => l.userId === userId && l.reason === reason && l.at >= since && (!refPrefix || l.ref.startsWith(refPrefix))).length;
   }
   async sumSince(userId: string, reasons: LedgerReason[], since: Date) {
     return this.rows.filter((l) => l.userId === userId && reasons.includes(l.reason) && l.at >= since && l.delta > 0).reduce((n, l) => n + l.delta, 0);
@@ -371,11 +371,11 @@ export class DbBillingStore implements BillingStore {
       .offset(offset);
     return rows;
   }
-  async countSince(userId: string, reason: LedgerReason, since: Date) {
+  async countSince(userId: string, reason: LedgerReason, since: Date, refPrefix?: string) {
     const [row] = await this.db
       .select({ n: sql<number>`count(*)::int` })
       .from(creditLedger)
-      .where(and(eq(creditLedger.userId, userId), eq(creditLedger.reason, reason), gte(creditLedger.createdAt, since)));
+      .where(and(eq(creditLedger.userId, userId), eq(creditLedger.reason, reason), gte(creditLedger.createdAt, since), refPrefix ? sql`starts_with(${creditLedger.ref}, ${refPrefix})` : undefined));
     return Number(row?.n ?? 0);
   }
   async sumSince(userId: string, reasons: LedgerReason[], since: Date) {

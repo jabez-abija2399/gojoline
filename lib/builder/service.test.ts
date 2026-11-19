@@ -23,7 +23,7 @@ import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
 import { MemorySandboxProvider } from "@/lib/providers/sandbox/memory";
 import { sendOwnerMessage, type BuilderDeps, type BuilderEvent } from "./service";
 import { HeuristicSizer } from "@/lib/agent/size";
-import { toolUseBlock } from "@/lib/providers/llm/fake";
+import { ScriptedLLMProvider, textBlock, toolUseBlock } from "@/lib/providers/llm/fake";
 import { costNanoUsd } from "@/lib/providers/llm/pricing";
 import { MAX_FIRST_BUILD_CAP_CENTS } from "@/lib/billing/credits";
 
@@ -91,7 +91,7 @@ describe("changes by request size", () => {
       lock: new MemoryLock(),
       credits: {
         consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
-        refund: (u, r, n, meta) => billing.refundEdit(u, r, n, meta),
+        refund: (u, r, n, meta) => billing.giveBack(u, r, n, meta),
         left: (u) => billing.creditsLeft(u),
         freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
         pricing: async () => ({ sizeCredits: (await billing.credits()).sizeCredits, capCentsPerCredit: 15, firstBuildCapCents: 75 }),
@@ -163,6 +163,96 @@ describe("changes by request size", () => {
     const failed = await send("break it: add a new page", "medium");
     expect(failed).toMatchObject({ type: "done", charged: 0, credits: 3 });
     expect(failed.type === "done" && failed.message.status).toBe("failed");
+  });
+});
+
+describe("answers that change nothing", () => {
+  const starter = readFileSync("templates/site/src/site.json", "utf8");
+  const tiny = { inputTokens: 100, outputTokens: 20, cacheReadTokens: 0, cacheWriteTokens: 0 };
+  const turn = (content: ReturnType<typeof textBlock>[], usage = tiny) => ({ content, usage });
+  async function setup(withSizes = false) {
+    const billing = new Billing(new MemoryBillingStore());
+    const deps: BuilderDeps = {
+      store: new MemoryProjectStore(),
+      sandboxes: new MemorySandboxProvider({ "src/site.json": starter }),
+      llm: new DemoLLMProvider(),
+      usage: new MemoryUsageLogger(),
+      model: "claude-opus-5-5",
+      lock: new MemoryLock(),
+      credits: {
+        consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
+        refund: (u, r, n, meta) => billing.giveBack(u, r, n, meta),
+        refundAnswer: (u, r, n, meta) => billing.giveBackAnswer(u, r, n, meta),
+        left: (u) => billing.creditsLeft(u),
+        freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
+        ...(withSizes ? { pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15, firstBuildCapCents: 75 }) } : {}),
+      },
+      ...(withSizes ? { sizer: new HeuristicSizer() } : {}),
+    };
+    const p = (await deps.store.createProject("u", { name: "", locale: "en" })).id;
+    const send = async (text: string, confirm?: { size: "medium" | "large"; cost: number }) => {
+      const events: BuilderEvent[] = [];
+      await sendOwnerMessage(deps, { ownerId: "u", projectId: p, text, confirmSize: confirm?.size, confirmCost: confirm?.cost, onEvent: (e) => events.push(e) });
+      return { last: events.at(-1)!, events };
+    };
+    expect((await send("Selam Cafe")).last.type).toBe("done");
+    return { billing, deps, send };
+  }
+
+  it("a clarifying question (no file written, no build) costs nothing", async () => {
+    const { billing, send } = await setup();
+    const { last } = await send("a question first");
+    expect(last).toMatchObject({ type: "done", charged: 0, credits: 10, message: { status: "answered", text: "What is your business called?" } });
+    expect(await billing.creditsLeft("u")).toBe(10);
+    // A real change is still charged.
+    expect((await send("Abol Cafe")).last).toMatchObject({ type: "done", charged: 1, credits: 9 });
+  });
+
+  it("gives back at most 3 answers a day, apart from failure refunds", async () => {
+    const { billing, send } = await setup();
+    for (let i = 0; i < 3; i++) expect((await send(`question ${i}`)).last).toMatchObject({ charged: 0, credits: 10 });
+    expect((await send("question 4")).last).toMatchObject({ charged: 1, credits: 9 });
+    // Failures still come back: their cap is separate.
+    const failed = (await send("break it")).last;
+    expect(failed).toMatchObject({ charged: 0, credits: 9 });
+    // Many failure refunds don't use up the answers' cap either.
+    for (let i = 0; i < 12; i++) await billing.giveBack("u", `earlier-${i}`, 1);
+    expect(await billing.giveBackAnswer("u", "next", 1)).toBe(0);
+  });
+
+  it("charges answers that built, took more turns or cost more than a small change", async () => {
+    const { deps, send } = await setup();
+    const demo = deps.llm;
+    // Built without writing.
+    deps.llm = new ScriptedLLMProvider([turn([toolUseBlock("run_build", {})]), turn([textBlock("It builds fine.")])]);
+    expect((await send("check it")).last).toMatchObject({ charged: 1, message: { status: "answered" } });
+    // Three turns of reading before answering.
+    deps.llm = new ScriptedLLMProvider([turn([toolUseBlock("read_file", { path: "src/site.json" })]), turn([toolUseBlock("read_file", { path: "src/site.json" })]), turn([textBlock("Here is a long essay.")])]);
+    expect((await send("tell me everything")).last).toMatchObject({ charged: 1 });
+    // One answer that cost more than a small change pays for.
+    deps.llm = new ScriptedLLMProvider([turn([textBlock("A very long answer.")], { inputTokens: 1000, outputTokens: 8000, cacheReadTokens: 0, cacheWriteTokens: 0 })]);
+    expect((await send("write me a poem")).last).toMatchObject({ charged: 1 });
+    deps.llm = demo;
+  });
+
+  it("never gives back more than a small request costs", async () => {
+    const { send } = await setup(true);
+    const asked = await send("a question about a new page for our menu");
+    expect(asked.last).toMatchObject({ type: "needs_confirm", cost: 2 });
+    expect((await send("a question about a new page for our menu", { size: "medium", cost: 2 })).last).toMatchObject({ type: "done", charged: 1, credits: 9 });
+  });
+
+  it("never sends the model's working notes to the owner's screen", async () => {
+    const { deps, send } = await setup();
+    deps.llm = new ScriptedLLMProvider([
+      turn([textBlock("Primary #B85C7A (contrast vs #FCF7F6 is 4.9:1)."), toolUseBlock("read_file", { path: "src/site.json" })]),
+      turn([textBlock("Which colour do you like?")]),
+    ]);
+    const { events, last } = await send("make it pink");
+    expect(JSON.stringify(events.slice(0, -1))).not.toMatch(/B85C7A|FCF7F6|contrast/i);
+    expect(events.some((e) => e.type === "text")).toBe(false);
+    expect(events.some((e) => e.type === "plan")).toBe(true);
+    expect(last).toMatchObject({ type: "done", message: { text: "Which colour do you like?" } });
   });
 });
 

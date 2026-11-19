@@ -1,7 +1,7 @@
 import "server-only";
 import { movedPage, noticeTargets } from "./hosts";
 import { reportError } from "@/lib/observability/report";
-import { extractForms } from "@/lib/cloud/forms";
+import { scanForms } from "@/lib/cloud/forms";
 import type { CloudStore } from "@/lib/cloud/types";
 import type { Lock } from "@/lib/lock";
 import type { AssetStore } from "@/lib/cloud/assets";
@@ -77,6 +77,7 @@ export type PublishError =
   | "blocked"
   | "plan_limit"
   | "unfinished"
+  | "form_invalid"
   | "failed";
 
 export type PublishOutcome =
@@ -122,6 +123,12 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
   if (!latest) return { ok: false, error: "no_version" };
   // Example details from a template (placeholder phone, [bracketed] text) must not go live.
   if (hasExampleDetails(latest.files["src/site.json"] ?? "")) return { ok: false, error: "unfinished" };
+  // A form the Data API can't register would go live unable to take answers: stop before deploying.
+  const formScan = scanForms(latest.files["src/site.json"] ?? "");
+  if (formScan.invalid.length) {
+    console.warn("publish stopped: form not registrable", projectId, formScan.invalid);
+    return { ok: false, error: "form_invalid" };
+  }
   const plan = deps.entitlements ? await deps.entitlements(user.id) : null;
   const firstLive = (existing?.status ?? "pending") !== "published";
   // A new live site: one at a time per owner, so parallel publishes can't pass the site limit together.
@@ -131,7 +138,7 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
     if (firstLive && (await deps.sites.countPublished(user.id, projectId)) >= (plan?.maxSites ?? 1)) {
       return { ok: false, error: "plan_limit" };
     }
-    return await deployLocked(deps, user, projectId, { existing, slug, latest, plan, project });
+    return await deployLocked(deps, user, projectId, { existing, slug, latest, plan, project, formScan });
   } finally {
     if (ownerToken) await deps.lock.release(`publish-owner:${user.id}`, ownerToken);
   }
@@ -141,9 +148,9 @@ async function deployLocked(
   deps: PublishDeps,
   user: PublishUser,
   projectId: string,
-  ctx: { existing: Site | null; slug: string; latest: NonNullable<Awaited<ReturnType<ProjectStore["latestVersion"]>>>; plan: Awaited<ReturnType<EntitlementsResolver>> | null; project: NonNullable<Awaited<ReturnType<ProjectStore["getProject"]>>> },
+  ctx: { existing: Site | null; slug: string; latest: NonNullable<Awaited<ReturnType<ProjectStore["latestVersion"]>>>; plan: Awaited<ReturnType<EntitlementsResolver>> | null; project: NonNullable<Awaited<ReturnType<ProjectStore["getProject"]>>>; formScan: ReturnType<typeof scanForms> },
 ): Promise<PublishOutcome> {
-  const { existing, slug, latest, plan, project } = ctx;
+  const { existing, slug, latest, plan, project, formScan } = ctx;
   // Claim the address in our database before anything is deployed (atomic, unique).
   if (!existing && !(await deps.sites.reserve(user.id, projectId, slug, deps.publisher.name))) return { ok: false, error: "slug_taken" };
 
@@ -237,7 +244,7 @@ async function deployLocked(
     }
     await saveShowcaseCard(deps, user.id, projectId, project.locale, latest.files["src/site.json"], build.files).catch((e: unknown) => reportError("showcase card failed", e, { projectId }));
     // Forms on the live site accept answers only in the shape published here.
-    await deps.cloud?.saveForms(site.id, extractForms(latest.files["src/site.json"] ?? ""));
+    await deps.cloud?.saveForms(site.id, formScan.forms);
     return { ok: true, site };
   } catch (error) {
     const msg = error instanceof Error ? error.message : "unknown";

@@ -77,7 +77,7 @@ export interface AgentRunInput {
 
 export interface AgentRunResult {
   status: "changed" | "answered" | "failed";
-  /** Final text shown to the owner. */
+  /** Final text shown to the owner: only from a last turn that ended on its own; "" otherwise. */
   reply: string;
   /** Full message list to persist for the next turn. */
   messages: MessageParam[];
@@ -87,6 +87,8 @@ export interface AgentRunResult {
   turns: number;
   /** The run stopped because it reached its cost budget. */
   stoppedForBudget: boolean;
+  /** The site was built at least once (a build tool call or the loop's own build). */
+  built: boolean;
 }
 
 /**
@@ -102,7 +104,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
   let lastBuildOk: boolean | null = null;
   let editedSinceBuild = false;
   let cost = 0;
-  let replyParts: string[] = [];
+  let reply = "";
   let turns = 0;
   let stoppedForBudget = false;
   let warned = false;
@@ -198,8 +200,10 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
     await input.usage.log(usageRecord(response, { ...input.context, purpose: "agent" }));
     messages.push({ role: "assistant", content: response.content });
 
-    const text = response.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("").trim();
-    if (text) replyParts = [text];
+    // The reply is only the text of a turn that finished on its own (end_turn, no tool call).
+    // Text beside tool calls, or cut off, is the model's working notes, never shown to the owner.
+    const finalTurn = response.stopReason === "end_turn" && !response.content.some((b) => b.type === "tool_use");
+    reply = finalTurn ? response.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("").trim() : "";
 
     if (response.stopReason === "refusal") break;
     const toolUses = response.content.filter((b) => b.type === "tool_use");
@@ -287,17 +291,19 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       costNanoUsd: cost,
       turns,
       stoppedForBudget,
+      built: lastBuildOk !== null,
     };
   }
 
   return {
     status: changed.size > 0 ? "changed" : "answered",
-    reply: replyParts.join("\n").trim(),
+    reply,
     messages,
     changedPaths: [...changed],
     fixAttempts: Math.max(0, failedBuilds),
     costNanoUsd: cost,
     turns,
     stoppedForBudget,
+    built: lastBuildOk !== null,
   };
 }

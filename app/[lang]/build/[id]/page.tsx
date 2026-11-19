@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { replyText } from "@/components/builder/reply-text";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 import { Builder } from "@/components/builder/builder";
@@ -97,7 +98,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
           initialMessages={messages.map((m) => ({
             id: m.id,
             role: m.role,
-            text: m.status === "failed" ? t.builder.reverted : m.text,
+            text: m.role === "assistant" ? replyText(t.builder, m.status, m.text) : m.text,
             versionNumber: m.versionNumber,
             tone: m.status === "failed" ? "error" : undefined,
           }))}

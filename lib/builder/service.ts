@@ -2,7 +2,7 @@ import "server-only";
 import { reportError } from "@/lib/observability/report";
 import { randomUUID } from "node:crypto";
 import { keywordCheck } from "@/lib/safety/keywords";
-import { runAgent, type AgentEvent } from "@/lib/agent/loop";
+import { runAgent, type AgentEvent, type AgentRunResult } from "@/lib/agent/loop";
 import { agentSystemPrompt, userTurn } from "@/lib/agent/prompt";
 import type { LLMProvider, MessageParam } from "@/lib/providers/llm/types";
 import type { UsageLogger } from "@/lib/providers/llm/usage-log";
@@ -39,7 +39,13 @@ export interface BuilderDeps {
    */
   credits?: {
     consume(userId: string, ref: string, n: number, meta?: LedgerMeta): Promise<boolean>;
+    /** Returns how many changes were given back (fewer or none past the daily refund cap). */
     refund(userId: string, ref: string, n: number, meta?: LedgerMeta): Promise<unknown>;
+    /**
+     * Gives back changes for a request whose AI only answered, on its own small daily cap;
+     * returns how many. Without it answers are charged like changes.
+     */
+    refundAnswer?(userId: string, ref: string, n: number, meta?: LedgerMeta): Promise<number>;
     left?(userId: string): Promise<number>;
     /** True when this request is a free first build (a project with no saved version yet, within the monthly cap). */
     freeFirstBuild?(userId: string, ref: string): Promise<boolean>;
@@ -211,7 +217,11 @@ export async function sendOwnerMessage(
       model: deps.model,
       usage: deps.usage,
       context: { userId: input.ownerId, projectId: project.id },
-      onEvent: input.onEvent,
+      // Progress only: the model's streamed words (working notes like "#B85C7A (contrast vs …)")
+      // never leave the server; the owner gets the final reply with "done".
+      onEvent: (e) => {
+        if (e.type !== "text") input.onEvent(e);
+      },
       signal: input.signal,
       // Changing an existing site is usually small: less thinking costs less (measured in evals).
       effort: latest ? "low" : "medium",
@@ -245,10 +255,25 @@ export async function sendOwnerMessage(
     // Refund failures on our side, not runs the owner walked away from, and not requests too big
     // for their budget (the AI work was done and paid for; the owner is told to split it).
     let charged = chargedRef ? cost : 0;
-    if (result.status === "failed" && chargedRef && !input.signal?.aborted && !result.stoppedForBudget) {
-      await refund();
-      chargedRef = null;
-      charged = 0;
+    if (chargedRef && !input.signal?.aborted && !result.stoppedForBudget) {
+      if (result.status === "failed") {
+        charged = Math.max(0, cost - givenBack(await refund(), cost));
+        chargedRef = null;
+      } else if (deps.credits?.refundAnswer && isCheapAnswer(result, pricing)) {
+        // A short clarifying question costs nothing, on its own small daily cap and never more
+        // than a small request, so long answers can't be farmed for free AI.
+        const owner = `answer-refund:${input.ownerId}`;
+        const held = await deps.lock.acquire(owner, 30_000);
+        if (held) {
+          try {
+            const given = await deps.credits.refundAnswer(input.ownerId, ref, Math.min(cost, pricing.sizeCredits.small), meta);
+            charged = Math.max(0, cost - given);
+          } finally {
+            await deps.lock.release(owner, held);
+          }
+        }
+        chargedRef = null;
+      }
     }
     const message = await store.addMessage(input.ownerId, {
       projectId: project.id,
@@ -274,6 +299,24 @@ export async function sendOwnerMessage(
   } finally {
     await deps.lock.release(`project:${project.id}`, token);
   }
+}
+
+/** Turns a refundable answer may take: the question itself, and at most one look at a file first. */
+export const ANSWER_MAX_TURNS = 2;
+
+/**
+ * A run that only answered (no file written, no build), briefly: at most ANSWER_MAX_TURNS turns
+ * and under the AI cost one small change pays for. Only these are given back.
+ */
+export function isCheapAnswer(result: Pick<AgentRunResult, "status" | "built" | "changedPaths" | "turns" | "costNanoUsd">, pricing: SizePricing): boolean {
+  const smallCapNano = pricing.sizeCredits.small * pricing.capCentsPerCredit * 10_000_000;
+  return result.status === "answered" && result.changedPaths.length === 0 && !result.built && result.turns <= ANSWER_MAX_TURNS && result.costNanoUsd < smallCapNano;
+}
+
+/** How many changes a refund gave back: a count, or true/false from older refund functions. */
+function givenBack(r: unknown, asked: number): number {
+  if (typeof r === "number") return Math.max(0, Math.min(asked, r));
+  return r === false ? 0 : asked;
 }
 
 /** The owner's AI changes left after this request (refunds included), sent with the last event. */

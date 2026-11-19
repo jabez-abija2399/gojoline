@@ -244,7 +244,8 @@ export function services(): Services {
     if (svc.builder) {
       svc.builder.credits = {
         consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
-        refund: (u, r, n, meta) => billing.refundEdit(u, r, n, meta),
+        refund: (u, r, n, meta) => billing.giveBack(u, r, n, meta),
+        refundAnswer: (u, r, n, meta) => billing.giveBackAnswer(u, r, n, meta),
         left: (u) => billing.creditsLeft(u),
         freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
         pricing: async () => {

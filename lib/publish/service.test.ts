@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { MemoryCloudStore } from "@/lib/cloud/memory-store";
 import { MemoryLock } from "@/lib/lock";
 import { MemoryProjectStore } from "@/lib/projects/memory-store";
 import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
@@ -169,6 +170,38 @@ describe("publishSite", () => {
     // A paid plan has no badge to protect.
     deps.entitlements = async () => ({ plan: "starter", customDomain: true, maxSites: 1, badge: false, telegramNotify: true, telegramEdits: false, answersPerMonth: 100, storageBytes: 1 });
     expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
+  });
+
+  describe("forms", () => {
+    const formSite = (form: Record<string, unknown>) =>
+      JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [form] }] });
+    const booking = {
+      type: "form",
+      id: "booking",
+      kind: "booking",
+      eyebrow: { en: "Book a table" },
+      heading: { en: "Reserve" },
+      fields: [{ name: "name", label: { en: "Name" }, type: "text", required: true }],
+      submitLabel: { en: "Send" },
+      successMessage: { en: "Thanks" },
+    };
+
+    it("registers a form with a label above it (eyebrow) at publish", async () => {
+      const sites = deps.sites as MemorySiteStore;
+      const cloud = new MemoryCloudStore(sites);
+      deps.cloud = cloud;
+      const p = await projectWithVersion("alice", { "src/site.ts": siteTs, "src/site.json": formSite(booking) });
+      const r = await publishSite(deps, alice, p.id, "selam-coffee");
+      expect(r.ok).toBe(true);
+      expect((await cloud.getForm(r.ok ? r.site.id : "", "booking"))?.eyebrow).toEqual({ en: "Book a table" });
+    });
+
+    it("stops before deploying when a form can't be registered (never a live site with a broken form)", async () => {
+      deps.cloud = new MemoryCloudStore(deps.sites as MemorySiteStore);
+      const p = await projectWithVersion("alice", { "src/site.ts": siteTs, "src/site.json": formSite({ ...booking, fields: [] }) });
+      expect(await publishSite(deps, alice, p.id, "selam-coffee")).toEqual({ ok: false, error: "form_invalid" });
+      expect(publisher.published.size).toBe(0);
+    });
   });
 
   it("won't publish template placeholders", async () => {
