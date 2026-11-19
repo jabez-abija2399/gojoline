@@ -42,7 +42,8 @@ if [ ! -f /root/.ssh/id_ed25519 ]; then
   mkdir -p /root/.ssh && chmod 700 /root/.ssh
   ssh-keygen -q -t ed25519 -N "" -C "gojoline-server" -f /root/.ssh/id_ed25519
 fi
-export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new"
+# GitHub's published host key (docs.github.com, "GitHub's SSH key fingerprints"), pinned, not trusted on first use.
+grep -q '^github.com ssh-ed25519 ' /root/.ssh/known_hosts 2>/dev/null || echo 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' >> /root/.ssh/known_hosts
 if [ ! -d "$APP_DIR/.git" ]; then
   if ! git clone --branch main "$REPO" "$APP_DIR"; then
     echo
@@ -63,13 +64,26 @@ if [ ! -f .env ]; then
   exit 0
 fi
 chmod 600 .env
+# Without these the site can't start or (rate limits fail closed) nobody can sign in.
+missing=""
+for k in APP_DOMAIN DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL NEXT_PUBLIC_APP_URL UPSTASH_REDIS_REST_URL UPSTASH_REDIS_REST_TOKEN CRON_SECRET; do
+  v=$(grep "^$k=" .env | cut -d= -f2- || true)
+  [ -n "$v" ] || missing="$missing $k"
+done
+if [ -n "$missing" ]; then
+  echo "Fill these in .env first:$missing"
+  exit 1
+fi
 
-echo "== 6/6 Automatic updates from GitHub (every 5 minutes) and the daily visits job"
-install -m 0644 gojoline-update.service gojoline-update.timer gojoline-daily.service gojoline-daily.timer /etc/systemd/system/
+echo "== 6/6 Build, start, then automatic updates (every 5 minutes), weekly refresh and the daily job"
+# The scripts that run as root are copied out of the repo: a commit can't change them.
+install -m 0755 update.sh /usr/local/sbin/gojoline-update
+install -m 0755 daily.sh /usr/local/sbin/gojoline-daily
+install -m 0644 gojoline-update.service gojoline-update.timer gojoline-daily.service gojoline-daily.timer gojoline-refresh.service gojoline-refresh.timer /etc/systemd/system/
 systemctl daemon-reload
-systemctl enable --now gojoline-update.timer gojoline-daily.timer
-
 echo "Building and starting (the first build takes 5 to 10 minutes)..."
-bash update.sh --force
+/usr/local/sbin/gojoline-update --force
+# Timers only after the first deploy, so two builds never overlap.
+systemctl enable --now gojoline-update.timer gojoline-daily.timer gojoline-refresh.timer
 echo
 echo "Done. Check: curl -s https://\$(grep ^APP_DOMAIN= .env | cut -d= -f2)/api/health"

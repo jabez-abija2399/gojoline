@@ -15,7 +15,7 @@ ARG NEXT_PUBLIC_APP_URL=https://gojoline.afridea.et
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL \
     NEXT_OUTPUT=standalone \
     NEXT_TELEMETRY_DISABLED=1 \
-    NODE_OPTIONS=--max-old-space-size=3072
+    NODE_OPTIONS=--max-old-space-size=2048
 RUN npm run build
 
 FROM node:22-bookworm-slim AS run

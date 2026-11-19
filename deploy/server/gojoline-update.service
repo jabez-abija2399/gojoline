@@ -5,4 +5,6 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/bash /opt/gojoline/deploy/server/update.sh
+ExecStart=/usr/local/sbin/gojoline-update
+NoNewPrivileges=yes
+PrivateTmp=yes

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # The daily job Vercel's cron used to run (vercel.json): roll visit counts into the database.
 set -euo pipefail
-cd /opt/gojoline/deploy/server
-DOMAIN=$(grep '^APP_DOMAIN=' .env | cut -d= -f2-)
-SECRET=$(grep '^CRON_SECRET=' .env | cut -d= -f2-)
-curl -fsS --max-time 120 -H "Authorization: Bearer ${SECRET}" "https://${DOMAIN}/api/cron/visits"
+ENV=/opt/gojoline/deploy/server/.env
+DOMAIN=$(grep '^APP_DOMAIN=' "$ENV" | cut -d= -f2- | tr -d '\r')
+SECRET=$(grep '^CRON_SECRET=' "$ENV" | cut -d= -f2- | tr -d '\r')
+[ -n "$DOMAIN" ] && [ -n "$SECRET" ] || { echo "APP_DOMAIN or CRON_SECRET is empty in $ENV" >&2; exit 1; }
+# The secret goes through stdin, never on the command line (visible in the process list).
+printf 'Authorization: Bearer %s\n' "$SECRET" | curl -fsS --max-time 120 -H @- "https://${DOMAIN}/api/cron/visits"

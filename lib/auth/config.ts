@@ -57,7 +57,8 @@ export function createAuth(c: AuthConfig) {
     database: c.database,
     // useSecureCookies stays off so Better Auth doesn't add __Secure- in front of __Host-; the
     // cookies are still Secure (and host-only, path /) through the default attributes.
-    advanced: { cookiePrefix: authCookiePrefix(c.secureCookies), useSecureCookies: false, ...(c.secureCookies ? { defaultCookieAttributes: { secure: true } } : {}) },
+    // Rate limits per visitor: x-real-ip is set by the platform (Vercel, or Caddy on our server), never by the client.
+    advanced: { ipAddress: { ipAddressHeaders: ["x-real-ip"] }, cookiePrefix: authCookiePrefix(c.secureCookies), useSecureCookies: false, ...(c.secureCookies ? { defaultCookieAttributes: { secure: true } } : {}) },
     session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
     // Google confirms the email, so a Google sign-in joins the account that already uses it.
     socialProviders: c.google ? { google: { clientId: c.google.clientId, clientSecret: c.google.clientSecret, prompt: "select_account" } } : undefined,

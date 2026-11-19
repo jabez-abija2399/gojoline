@@ -1,0 +1,9 @@
+[Unit]
+Description=Gojoline: weekly rebuild on Sunday 03:30 Addis Ababa time (00:30 UTC)
+
+[Timer]
+OnCalendar=Sun *-*-* 00:30:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

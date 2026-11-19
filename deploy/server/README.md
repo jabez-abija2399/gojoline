@@ -21,10 +21,20 @@ Open EC2 in Frankfurt: https://eu-central-1.console.aws.amazon.com/ec2/home?regi
 | Image (AMI) | **Ubuntu Server 24.04 LTS**, architecture **64-bit (Arm)** |
 | Instance type | **t4g.medium** (2 vCPU, 4 GB) |
 | Key pair | "Proceed without a key pair" is fine: you connect from the browser (step 3) |
-| Network settings | Tick **Allow SSH traffic** from **Anywhere** (the browser terminal in step 3 connects from AWS's own addresses; login is by temporary key only, never a password), and tick **Allow HTTPS** and **Allow HTTP** from the internet |
+| Network settings | Tick **Allow HTTPS** and **Allow HTTP** from the internet, and **Allow SSH traffic** (we narrow SSH to AWS's browser terminal right after launch, below) |
 | Storage | **30 GB gp3** |
+| Advanced details → Metadata version | **V2 only (token required)** |
 
 Click **Launch instance**.
+
+**Narrow SSH to the browser terminal only:** EC2 → Instances → `gojoline` → **Security** tab → the
+security group → **Edit inbound rules** → the SSH rule's **Source**: choose **Custom** and type
+`ec2-instance-connect`, pick **com.amazonaws.eu-central-1.ec2-instance-connect** → Save rules.
+Now nobody on the internet can even try to log in; only the Connect button in the AWS console works.
+
+**Protect `main` on GitHub** (the server deploys whatever reaches `main`): the repo → **Settings →
+Branches → Add branch protection rule** → branch `main`, leave **Allow force pushes** and
+**Allow deletions** off → Create. (Merges still go straight to `main` after the checks, as now.)
 
 ## 2. Give it a fixed address (Elastic IP)
 
@@ -39,7 +49,7 @@ A black terminal opens in the browser. Paste each command below and press Enter.
 ## 4. Let the server read the code (read-only)
 
 ```bash
-sudo mkdir -p /root/.ssh && sudo ssh-keygen -q -t ed25519 -N "" -C gojoline-server -f /root/.ssh/id_ed25519 && sudo cat /root/.ssh/id_ed25519.pub
+sudo install -d -m 700 /root/.ssh && sudo ssh-keygen -q -t ed25519 -N "" -C gojoline-server -f /root/.ssh/id_ed25519 && sudo cat /root/.ssh/id_ed25519.pub
 ```
 
 Copy the line it prints (starts with `ssh-ed25519`). On GitHub: the `gojoline` repo →
@@ -47,7 +57,7 @@ Copy the line it prints (starts with `ssh-ed25519`). On GitHub: the `gojoline` r
 **Allow write access unticked**, Add key. Then:
 
 ```bash
-sudo GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new" git clone --branch main git@github.com:jabez-abija2399/gojoline.git /opt/gojoline
+echo 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' | sudo tee -a /root/.ssh/known_hosts >/dev/null && sudo git clone --branch main git@github.com:jabez-abija2399/gojoline.git /opt/gojoline
 ```
 
 ## 5. First setup run (creates the settings file)
@@ -66,7 +76,7 @@ sudo nano /opt/gojoline/deploy/server/.env
 
 Copy each value from the old Vercel project (gojoline → Settings → Environment Variables).
 Keep `BETTER_AUTH_SECRET` exactly the same, or everyone is signed out. Leave empty what you
-never set. Save: **Ctrl+O**, Enter, **Ctrl+X**. Never paste these values into a chat.
+never set. Write values as they are: no quotes, no spaces around `=`. Save: **Ctrl+O**, Enter, **Ctrl+X**. Never paste these values into a chat.
 
 ## 7. Start it
 
@@ -102,9 +112,12 @@ Keep the "Zero spend budget" too: it emails you if real money is ever charged.
 ## Everyday
 
 - **Updates:** nothing to do. A push to `main` is live within about 15 minutes (5 to check, ~10 to build).
+  Every Sunday night it also rebuilds with fresh security patches. If a deploy fails, the old version
+  keeps running and the next check tries again: `sudo journalctl -u gojoline-update --since today`.
 - **Is it up?** `curl -s https://gojoline.afridea.et/api/health` prints `{"ok":true}`.
 - **Logs:** `cd /opt/gojoline/deploy/server && sudo docker compose logs --tail 100 app`
-- **Deploy now:** `sudo bash /opt/gojoline/deploy/server/update.sh --force`
+- **Deploy now:** `sudo gojoline-update --force`
+- **After changing a script in `deploy/server/`:** run `sudo bash /opt/gojoline/deploy/server/setup.sh` once to install it.
 - **Restart:** `cd /opt/gojoline/deploy/server && sudo docker compose restart`
 
 ## When you leave this server (or it is no longer needed)

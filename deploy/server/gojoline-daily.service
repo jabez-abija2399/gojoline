@@ -4,4 +4,7 @@ After=docker.service network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/bash /opt/gojoline/deploy/server/daily.sh
+ExecStart=/usr/local/sbin/gojoline-daily
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
