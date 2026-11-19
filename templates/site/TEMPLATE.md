@@ -144,6 +144,16 @@ Every site moves the way the best sites do, by itself: hero words rise in, the h
 Reference as `"src": "/stock/<name>.webp"`. Each photo is served in the size the screen needs. Names with `-hero-` are wide photos that suit `immersive` and `banner` heroes and photo `cta` bands. Choose by what the photo shows, from any group. Don't use one photo twice on a page.
 
 <!-- stock:start -->
+- `bakery-about-baker-shaping-dough`: A baker's hands press and shape bread dough on a floured work table beside rows of dough balls.
+- `bakery-card-birthday-cake-sparkler`: A person places a lit sparkler on a layered chocolate cake with cream filling on a white cake stand.
+- `bakery-card-black-forest-cake`: A three-layer chocolate black forest cake with cream, dark cherries and chocolate glaze on a white plate.
+- `bakery-card-croissants`: Golden flaky croissants on a metal cooling rack.
+- `bakery-card-fresh-bread-loaves`: Golden-brown round artisan bread loaves cooling on a rack in a bakery kitchen.
+- `bakery-card-white-tiered-wedding-cake`: A white three-tier wedding cake decorated with pink, red and peach roses and peonies.
+- `bakery-gallery-cake-slice`: A slice of vanilla layer cake with cream filling on a white plate.
+- `bakery-gallery-cupcakes`: Chocolate and vanilla cupcakes with swirled frosting arranged on a rustic wooden board.
+- `bakery-hero-bakery-counter-cakes`: Chocolate cakes and a strawberry-topped cake sit on brass cake stands behind the glass of a warm-lit cafe counter.
+- `bakery-hero-layered-flower-cake`: A tall semi-naked layer cake with white frosting and caramel drips, topped with fresh red and pink flowers, lit softly from the side.
 - `business-about-handshake-team`: Three formally dressed African men laughing and shaking hands outdoors with palm trees behind.
 - `business-about-office`: Modern office corridor with black-framed glass partition walls, pendant lamps and a lounge area.
 - `business-card-addis-towers`: Vertical view of Addis Ababa's glass high-rise towers above green trees under a blue sky.
@@ -215,6 +225,16 @@ Reference as `"src": "/stock/<name>.webp"`. Each photo is served in the size the
 - `garage-card-tyre-wheel-service`: Two mechanics in overalls in a Nigerian workshop sit beside removed tyres while servicing the wheel hub of a white van.
 - `garage-hero-car-on-lift-clean-bay`: A dark SUV raised on a two-post lift at the far end of a bright, clean, white-tiled workshop bay.
 - `garage-hero-mechanic-under-bonnet`: A mechanic in blue overalls leans over the open bonnet of a white car, working on the engine in a tidy workshop.
+- `gym-about-gym-floor-benches`: An empty, bright gym floor with rows of adjustable benches in front of racks of dumbbells and a mirror wall.
+- `gym-card-boxing`: A man in boxing gloves throws a punch at a heavy bag in a dim gym lit in red and blue.
+- `gym-card-group-outdoor-class`: A group of men and women in Uganda follow an instructor through an aerobics class on the grass in a park.
+- `gym-card-stretching`: Two smiling women do a deep lunge stretch together in a bright studio with a wooden floor.
+- `gym-card-trainer-coaching`: A personal trainer kneels beside a woman doing a dumbbell row on a bench, coaching her through the exercise.
+- `gym-card-woman-barbell-squat`: Seen from behind, a woman in an orange top holds a padded barbell across her shoulders in a gym in Accra, Ghana.
+- `gym-gallery-battle-ropes`: A man in a squat whips battle ropes on green turf inside a gym in Addis Ababa.
+- `gym-gallery-dumbbell-rack`: Black hexagonal dumbbells on a vertical metal rack against a brick wall.
+- `gym-hero-deadlift`: A man in a lifting belt holds a loaded barbell at the top of a deadlift in a gym in Addis Ababa.
+- `gym-hero-dumbbell-press`: A man lies on a bench pressing two heavy dumbbells overhead in a moody, red and blue lit gym in Addis Ababa.
 - `hotel-about-coffee-ceremony-host`: Woman in a white Ethiopian habesha dress pouring coffee from a clay jebena into rows of small cups on a carved wooden rekebot (face not shown).
 - `hotel-about-thatched-lounge`: Open-air lodge lounge and dining area under a high thatched roof with cane armchairs and a leather sofa, bush garden beyond (square crop).
 - `hotel-card-dining-bread-baskets`: Hands of a host in Ethiopian traditional dress cutting traditional bread (difo dabo) in a woven mesob basket, with more woven baskets alongside.
@@ -255,6 +275,16 @@ Reference as `"src": "/stock/<name>.webp"`. Each photo is served in the size the
 - `personal-gallery-pattern`: Vintage geometric repeat pattern in orange, grey-blue and yellow (public-domain print).
 - `personal-hero-man-turtleneck`: Studio portrait of a Black man with a short beard in a black turtleneck against a dark grey backdrop.
 - `personal-hero-woman-orange-blazer`: Confident young Black woman with natural hair, arms crossed, in an orange blazer against a pale teal wall.
+- `pharmacy-about-smiling-pharmacist-white-coat`: A smiling Black woman in glasses and a white coat gestures with open hands against a plain white background.
+- `pharmacy-card-blood-pressure-check`: A health worker in a white coat measures the blood pressure of an older Nigerian woman in a patterned dress at an outdoor clinic.
+- `pharmacy-card-blood-sugar-test`: Close-up of a Black woman's hands holding a glucose meter to test a drop of blood from her fingertip.
+- `pharmacy-card-delivery-courier`: A Black courier with a backpack checks his phone on a scooter while carrying a brown paper delivery bag on a city street.
+- `pharmacy-card-pharmacist-advice`: A pharmacist in a white coat explains a medicine box to an older woman beside wooden pharmacy shelves.
+- `pharmacy-card-vitamins-blank-bottle`: An unlabelled white supplement bottle stands beside a glass of water and a few pink capsules on a beige surface.
+- `pharmacy-gallery-pharmacy-interior`: An empty, tidy pharmacy interior with dark wooden glass-fronted cabinets, a long wooden counter and a chandelier.
+- `pharmacy-gallery-shelves-soft-focus`: A pharmacist seen from behind stands before white shelves of medicine bottles whose labels are softly out of focus.
+- `pharmacy-hero-lagos-pharmacy-customers`: A man in a white shirt and a woman in a pink blouse examine a medicine box together beside bright pharmacy shelves in Lagos, Nigeria.
+- `pharmacy-hero-pharmacist-counter-customer`: A pharmacist in a white coat shows a pill bottle to an older Black woman across the counter of a pharmacy.
 - `real-estate-about-addis-neighbourhood`: Daytime view over an Addis Ababa district of white and blue mid-rise blocks surrounded by dense green trees under a clear sky.
 - `real-estate-about-team-three-men`: Portrait-orientation photo of three young African men in smart shirts and dark trousers standing on a stone path beside a building with greenery behind.
 - `real-estate-card-apartment-block-yellow-balconies`: Newly finished nine-storey white apartment block with yellow balcony railings on a green hillside, a small excavator at its base.
@@ -294,6 +324,16 @@ Reference as `"src": "/stock/<name>.webp"`. Each photo is served in the size the
 - `shop-gallery-handwoven-textile`: A hand holding the fringed edge of a white hand-woven cotton cloth with blue patterned bands, a loom blurred behind.
 - `shop-hero-habesha-dress-field`: A smiling Ethiopian woman in an embroidered traditional dress and silver jewellery stands between golden mounds of harvested grain under a blue sky (calm area on the left).
 - `shop-hero-woven-baskets-wall`: A wall of round coiled woven basket trays, brightly coloured on the left and natural straw on the right.
+- `studio-about-photographer-at-work`: A young African woman with an afro photographs outdoors with a DSLR camera in warm light.
+- `studio-card-couple-dancing`: A Black bride in an off-shoulder white dress and her groom in a dark suit dance close together at their wedding reception.
+- `studio-card-couple-portrait-addis`: An Ethiopian couple dressed all in white, the woman holding a white bouquet, stand side by side in front of a pale roller shutter in Addis Ababa.
+- `studio-card-guests-celebrating`: A bride in a white gown dances outdoors at night with groomsmen and bridesmaids celebrating around her.
+- `studio-card-hands-wedding-rings`: Close-up of an Ethiopian couple's hands resting on a white wedding dress, both wearing gold wedding rings.
+- `studio-card-reception-floral-decor`: A tall pink and peach rose centerpiece stands on a round reception table inside a white event tent set with gold chairs.
+- `studio-gallery-bride-getting-ready`: An Ethiopian bride in a white dress holds a white bouquet beside a round mirror in a softly lit room.
+- `studio-gallery-decorated-table`: A long wedding table with a white cloth, glassware and white and pink flower arrangements set outdoors among greenery.
+- `studio-hero-couple-embrace-garden`: An African groom in a grey suit kisses his bride in a white gown and veil under a flowering tree in a green garden.
+- `studio-hero-habesha-bride-cathedral`: An Ethiopian bride in a white embroidered habesha wedding dress and veil sits with her groom in white traditional clothes under a flower arch in front of a cathedral in Addis Ababa.
 - `tours-about-men-viewpoint-tree`: Three Ethiopian men in white shawls resting at a viewpoint under a broad-leafed tree, looking over a highland town and valley (Lalibela area).
 - `tours-about-pilgrims-red-path`: Men in white cotton shawls talking on a red-earth path between rock walls beside a bright green pool (Lalibela area).
 - `tours-card-blue-nile-falls`: Blue Nile Falls (Tis Abay) in full flow surrounded by green forest under a blue sky.
@@ -306,6 +346,16 @@ Reference as `"src": "/stock/<name>.webp"`. Each photo is served in the size the
 - `tours-gallery-spice-market`: Woman in a green headscarf sorting red and green chillies and ginger at an open-air Ethiopian market (extra).
 - `tours-hero-highlands-sunset`: Sunset over Ethiopian highland ridges with a road winding through the valley; dark foreground and dramatic blue sky.
 - `tours-hero-simien-misty-peaks`: Layered misty rock pinnacles and table mountains of the Ethiopian highlands above a green hill; soft grey sky fills the top third.
+- `training-about-teacher-helping-pupils`: A Black woman teacher leans over a desk and points at a pupil's exercise book while two children write.
+- `training-card-computer-lab`: African adult students sit at desktop computers in a bright computer lab while an instructor stands at the front.
+- `training-card-driving-lesson`: A young Black woman sits at the steering wheel of a car while a man in the passenger seat talks her through driving.
+- `training-card-english-class`: A Black woman teacher stands at a whiteboard with English words and letters on it, teaching a student seen from behind.
+- `training-card-graduate-diploma`: A smiling African graduate in cap and gown holds a rolled diploma at an outdoor ceremony in Burundi.
+- `training-card-students-studying`: Two African students in white school uniforms study a booklet together at a desk in a classroom.
+- `training-gallery-group-discussion`: A diverse group of young students, several of them Black, discuss an assignment around a table in a bright room.
+- `training-gallery-library-study`: Students work on laptops at long desks in a bright modern library with bookshelves and a staircase.
+- `training-hero-instructor-uniformed-class`: An African instructor in a white embroidered shirt speaks to a bright classroom of seated students in beige uniforms in Burkina Faso.
+- `training-hero-teacher-whiteboard-class`: A Black woman teacher stands by a whiteboard in a bright classroom while pupils seen from behind listen at their desks.
 - `worship-about-priest-candle`: Elderly man in a white turban and purple shawl holding a lit taper candle against a dark stone wall, seen in profile.
 - `worship-about-priests-drum-lalibela`: Ethiopian Orthodox priests and deacons in white robes and turbans with prayer staffs, seated on carpets beside a large kebero drum against red rock.
 - `worship-card-bible-prayer-hands`: Clasped hands resting on an open Bible on a wooden table (face not shown).

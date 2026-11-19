@@ -14,7 +14,7 @@ export function Cards({ section }: { section: CardsSection }) {
   const layout = section.layout ?? "grid";
   // Pills by badge ("For sale", "For rent", "Trek") when cards carry two or more kinds.
   const kinds = [...new Set(section.items.map((it) => (it.badge ? text(it.badge) : "")).filter(Boolean))];
-  const filterable = section.filters !== false && kinds.length >= 2 && section.items.length >= 4 && layout !== "stack" && layout !== "index";
+  const filterable = section.filters !== false && kinds.length >= 2 && section.items.length >= 4 && layout !== "stack" && layout !== "index" && layout !== "pricing";
   const [kind, setKind] = useState<string | null>(null);
   const items = kind ? section.items.filter((it) => it.badge && text(it.badge) === kind) : section.items;
   const arch = section.imageShape === "arch" ? "arch" : "";
@@ -133,6 +133,46 @@ export function Cards({ section }: { section: CardsSection }) {
               );
             })}
           </Rail>
+        ) : layout === "pricing" ? (
+          // Plans side by side; the one with a badge ("Most chosen") stands out on the dark accent.
+          <ul className={`grid items-stretch gap-5 ${n >= 3 ? "lg:grid-cols-3" : ""} ${n === 2 || n === 4 ? "md:grid-cols-2" : ""} ${n === 4 ? "xl:grid-cols-4" : ""}`}>
+            {items.map((item, i) => {
+              const featured = Boolean(item.badge);
+              return (
+                <li key={section.items.indexOf(item)} style={{ "--i": i } as React.CSSProperties} className={`tier card reveal flex flex-col gap-4 p-6 md:p-8 ${featured ? "tier-featured on-dark bg-accent text-on-accent" : ""}`}>
+                  {item.badge && <span className="tier-badge">{text(item.badge)}</span>}
+                  <div className="flex flex-col gap-1">
+                    <ItemTitle className="text-2xl leading-tight">{text(item.title)}</ItemTitle>
+                    {item.subtitle && <p className="text-muted">{text(item.subtitle)}</p>}
+                  </div>
+                  {item.price && (
+                    <p className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="tier-price">{formatPrice(item.price, lang)}</span>
+                      {item.priceNote && <span className="small-label">{text(item.priceNote)}</span>}
+                    </p>
+                  )}
+                  {item.meta && item.meta.length > 0 && (
+                    <ul className="flex flex-col gap-2 border-t border-current/15 pt-4">
+                      {item.meta.map((m, k) => (
+                        <li key={k} className="flex items-start gap-2.5">
+                          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-1 size-4 flex-none">
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                          <span>{text(m)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {item.description && <p className="text-muted">{text(item.description)}</p>}
+                  {item.action && (
+                    <a href={href(item.action.href)} className={`btn mt-auto ${featured ? "btn-primary" : "btn-outline"}`}>
+                      {text(item.action.label)}
+                    </a>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         ) : layout === "people" ? (
           <ul className={`grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 ${n >= 4 ? "md:grid-cols-4" : "md:grid-cols-3"}`}>
             {items.map((item, i) => (

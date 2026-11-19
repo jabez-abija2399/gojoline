@@ -1,0 +1,454 @@
+{
+  "name": { "en": "Lidya Cakes", "am": "ሊዲያ ኬክ" },
+  "tagline": { "en": "Cakes for every celebration and bread every morning, in Bole, Addis Ababa", "am": "ለየበዓሉ ኬክና በየማለዳው ዳቦ፣ ቦሌ፣ አዲስ አበባ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#A3324B", "accent": "#2E1D17", "background": "#FFF8F0", "text": "#2E1D17", "highlight": "#F2C14E", "font": "classic", "radius": "large", "style": "organic" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Bole Medhanialem, behind the church, Addis Ababa", "am": "ቦሌ መድኃኔዓለም፣ ከቤተ ክርስቲያኑ ጀርባ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Every day", "am": "በየቀኑ" },
+        "time": { "en": "6:30 am to 9:00 pm", "am": "ከጠዋቱ 12:30 እስከ ምሽቱ 3 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Home", "am": "መነሻ" },
+      "description": { "en": "Celebration cakes made to order and fresh bread every morning in Bole, Addis Ababa. Order for a date, collect or have it delivered.", "am": "በቦሌ፣ አዲስ አበባ በትዕዛዝ የሚሠሩ የበዓል ኬኮችና በየማለዳው ትኩስ ዳቦ። ለአንድ ቀን ይዘዙ፤ ይውሰዱ ወይም እናድርስ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "id": "top",
+          "eyebrow": { "en": "Baked fresh in Bole", "am": "በቦሌ ትኩስ የተጋገረ" },
+          "heading": { "en": "Cakes for every celebration", "am": "ለየበዓሉ የሚሆን ኬክ" },
+          "subheading": { "en": "Birthdays, weddings and holidays, made to order. Fresh bread and pastries every morning from half past six.", "am": "ልደት፣ ሠርግና በዓል፣ በትዕዛዝ። ትኩስ ዳቦና ኬክ በየማለዳው ከ12:30 ጀምሮ።" },
+          "image": {
+            "src": "/stock/bakery-hero-layered-flower-cake.webp",
+            "alt": { "en": "A tall layered cake with cream between the layers and fresh flowers on top", "am": "በንብርብሮቹ መካከል ክሬም ያለውና በላዩ ትኩስ አበባ የተደረገበት ረጅም ኬክ" }
+          },
+          "stamp": { "en": "Order two days ahead · Bole · ", "am": "ከሁለት ቀን በፊት ይዘዙ · ቦሌ · " },
+          "primaryAction": {
+            "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+            "href": "/order"
+          },
+          "secondaryAction": {
+            "label": { "en": "See our cakes", "am": "ኬኮቻችንን ይመልከቱ" },
+            "href": "/cakes"
+          }
+        },
+        {
+          "type": "marquee",
+          "id": "holidays",
+          "tone": "primary",
+          "items": [
+            { "en": "Genna", "am": "ገና" },
+            { "en": "Timkat", "am": "ጥምቀት" },
+            { "en": "Fasika", "am": "ፋሲካ" },
+            { "en": "Eid", "am": "ዒድ" },
+            { "en": "Enkutatash", "am": "እንቁጣጣሽ" },
+            { "en": "Birthdays", "am": "ልደት" },
+            { "en": "Weddings", "am": "ሠርግ" }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "cakes",
+          "layout": "grid",
+          "eyebrow": { "en": "Celebration cakes", "am": "የበዓል ኬኮች" },
+          "heading": { "en": "Pick your cake", "am": "ኬክዎን ይምረጡ" },
+          "intro": { "en": "Sizes and prices in Birr. Every cake can carry your message.", "am": "መጠንና ዋጋ በብር። ሁሉም ኬክ መልእክትዎን ይይዛል።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/bakery-card-black-forest-cake.webp",
+                "alt": { "en": "A black forest cake topped with cherries and chocolate", "am": "በቼሪና በቸኮሌት ያጌጠ ብላክ ፎረስት ኬክ" }
+              },
+              "title": { "en": "Black forest", "am": "ብላክ ፎረስት" },
+              "subtitle": { "en": "Our best seller", "am": "በብዛት የሚሸጠው" },
+              "meta": [
+                { "en": "20 cm · 12 people", "am": "20 ሳ.ሜ · 12 ሰው" },
+                { "en": "26 cm · 20 people", "am": "26 ሳ.ሜ · 20 ሰው" }
+              ],
+              "price": { "amountMinor": 180000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/bakery-card-birthday-cake-sparkler.webp",
+                "alt": { "en": "A chocolate layer cake with a sparkler on top", "am": "በላዩ ብልጭታ ያለው የቸኮሌት ንብርብር ኬክ" }
+              },
+              "title": { "en": "Chocolate birthday cake", "am": "የቸኮሌት የልደት ኬክ" },
+              "subtitle": { "en": "Your message on top", "am": "መልእክትዎ በላዩ ላይ" },
+              "meta": [
+                { "en": "20 cm · 12 people", "am": "20 ሳ.ሜ · 12 ሰው" },
+                { "en": "Name and age", "am": "ስምና ዕድሜ" }
+              ],
+              "price": { "amountMinor": 160000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/bakery-card-white-tiered-wedding-cake.webp",
+                "alt": { "en": "A white three-tier wedding cake with sugar flowers", "am": "የስኳር አበቦች ያሉት ባለ ሦስት ደረጃ ነጭ የሠርግ ኬክ" }
+              },
+              "title": { "en": "Wedding cake, three tiers", "am": "ባለ ሦስት ደረጃ የሠርግ ኬክ" },
+              "subtitle": { "en": "For 80 to 150 guests", "am": "ከ80 እስከ 150 እንግዶች" },
+              "meta": [
+                { "en": "Tasting first", "am": "መጀመሪያ ቅምሻ" },
+                { "en": "Order 2 weeks ahead", "am": "ከ2 ሳምንት በፊት ይዘዙ" }
+              ],
+              "price": { "amountMinor": 1200000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+                "href": "/order"
+              }
+            }
+          ],
+          "action": {
+            "label": { "en": "See our cakes", "am": "ኬኮቻችንን ይመልከቱ" },
+            "href": "/cakes"
+          }
+        },
+        {
+          "type": "menu",
+          "id": "today",
+          "eyebrow": { "en": "From six thirty", "am": "ከ12:30 ጀምሮ" },
+          "heading": { "en": "Fresh every morning", "am": "በየማለዳው ትኩስ" },
+          "categories": [
+            {
+              "name": { "en": "Bread and pastries", "am": "ዳቦና ኬክ" },
+              "items": [
+                {
+                  "name": { "en": "Croissant", "am": "ክሮሳንት" },
+                  "price": { "amountMinor": 7000, "currency": "ETB" },
+                  "image": {
+                    "src": "/stock/bakery-card-croissants.webp",
+                    "alt": { "en": "Golden croissants cooling on a wire rack", "am": "በሽቦ መደርደሪያ ላይ የሚቀዘቅዙ ወርቃማ ክሮሳንቶች" }
+                  },
+                  "tag": { "en": "Warm at 7", "am": "1 ሰዓት ላይ ትኩስ" }
+                },
+                {
+                  "name": { "en": "Round loaf", "am": "ክብ ዳቦ" },
+                  "price": { "amountMinor": 9000, "currency": "ETB" },
+                  "image": {
+                    "src": "/stock/bakery-card-fresh-bread-loaves.webp",
+                    "alt": { "en": "Round loaves of fresh bread in a basket", "am": "በቅርጫት ውስጥ ያሉ ክብ ትኩስ ዳቦዎች" }
+                  }
+                },
+                {
+                  "name": { "en": "Cupcake", "am": "ካፕኬክ" },
+                  "price": { "amountMinor": 8000, "currency": "ETB" },
+                  "image": {
+                    "src": "/stock/bakery-gallery-cupcakes.webp",
+                    "alt": { "en": "Cupcakes with swirls of cream and chocolate on a wooden board", "am": "በእንጨት ሳንቃ ላይ ክሬምና ቸኮሌት ያላቸው ካፕኬኮች" }
+                  }
+                },
+                {
+                  "name": { "en": "Slice of cake", "am": "ቁራጭ ኬክ" },
+                  "price": { "amountMinor": 15000, "currency": "ETB" },
+                  "image": {
+                    "src": "/stock/bakery-gallery-cake-slice.webp",
+                    "alt": { "en": "A slice of vanilla cake on a white plate", "am": "በነጭ ሳህን ላይ ያለ የቫኒላ ኬክ ቁራጭ" }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "id": "how",
+          "eyebrow": { "en": "How to order", "am": "እንዴት ይታዘዛል" },
+          "heading": { "en": "Your cake in four steps", "am": "ኬክዎ በአራት ደረጃ" },
+          "items": [
+            {
+              "title": { "en": "Pick a cake and a date", "am": "ኬክና ቀን ይምረጡ" },
+              "description": { "en": "At least two days ahead; two weeks for weddings.", "am": "ቢያንስ ከሁለት ቀን በፊት፤ ለሠርግ ከሁለት ሳምንት በፊት።" }
+            },
+            {
+              "title": { "en": "We confirm on Telegram", "am": "በቴሌግራም እናረጋግጣለን" },
+              "description": { "en": "With the price, within the hour.", "am": "ከዋጋው ጋር፣ በአንድ ሰዓት ውስጥ።" }
+            },
+            {
+              "title": { "en": "Pay half to hold it", "am": "ለማስያዝ ግማሹን ይክፈሉ" },
+              "description": { "en": "Telebirr or bank transfer.", "am": "በቴሌብር ወይም በባንክ።" }
+            },
+            {
+              "title": { "en": "Collect or delivered", "am": "ይውሰዱ ወይም እናድርስ" },
+              "description": { "en": "Anywhere in Addis Ababa.", "am": "በአዲስ አበባ ውስጥ የትም።" }
+            }
+          ],
+          "action": {
+            "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+            "href": "/order"
+          }
+        },
+        {
+          "type": "about",
+          "id": "abroad",
+          "eyebrow": { "en": "For family far away", "am": "ከሩቅ ላሉ ቤተሰቦች" },
+          "heading": { "en": "Send a cake home from abroad", "am": "ከውጭ ሆነው ወደ ቤት ኬክ ይላኩ" },
+          "body": { "en": "Order here from anywhere, and we deliver to your family in Addis with a photo when it arrives. Many of our birthday cakes are ordered from Washington, Dubai and London.", "am": "ከየትም ሆነው እዚህ ይዘዙ፤ ለቤተሰብዎ አዲስ አበባ ውስጥ እናደርሳለን፣ ሲደርስም ፎቶ እንልካለን። ብዙ የልደት ኬኮቻችን ከዋሽንግተን፣ ከዱባይና ከለንደን ይታዘዛሉ።" },
+          "image": {
+            "src": "/stock/bakery-about-baker-shaping-dough.webp",
+            "alt": { "en": "A baker's hands shaping balls of dough on a floured table", "am": "ዱቄት በተነሰነሰበት ጠረጴዛ ላይ ሊጥ የሚያድቦለቡሉ የጋጋሪ እጆች" }
+          },
+          "imageShape": "arch",
+          "points": [
+            { "en": "Delivery with a photo", "am": "ከፎቶ ጋር ማድረስ" },
+            { "en": "Pay by card from abroad through family, or bank transfer", "am": "ከውጭ በቤተሰብ በኩል ወይም በባንክ ዝውውር ይክፈሉ" }
+          ],
+          "action": {
+            "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+            "href": "/order"
+          }
+        },
+        {
+          "type": "gallery",
+          "id": "made",
+          "layout": "prints",
+          "eyebrow": { "en": "Made this week", "am": "በዚህ ሳምንት የተሠሩ" },
+          "heading": { "en": "Straight from our oven", "am": "ከምድጃችን የወጡ" },
+          "images": [
+            {
+              "src": "/stock/bakery-hero-bakery-counter-cakes.webp",
+              "alt": { "en": "A bakery counter with whole cakes on glass stands", "am": "ሙሉ ኬኮች በመስታወት መቆሚያዎች ላይ ያሉበት የዳቦ ቤት መደርደሪያ" }
+            },
+            {
+              "src": "/stock/bakery-gallery-cupcakes.webp",
+              "alt": { "en": "Cupcakes with swirls of cream and chocolate on a wooden board", "am": "በእንጨት ሳንቃ ላይ ክሬምና ቸኮሌት ያላቸው ካፕኬኮች" }
+            },
+            {
+              "src": "/stock/bakery-card-white-tiered-wedding-cake.webp",
+              "alt": { "en": "A white three-tier wedding cake with sugar flowers", "am": "የስኳር አበቦች ያሉት ባለ ሦስት ደረጃ ነጭ የሠርግ ኬክ" }
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "id": "words",
+          "eyebrow": { "en": "Customers say", "am": "ደንበኞች ምን ይላሉ" },
+          "heading": { "en": "Sweet words", "am": "ጣፋጭ ቃላት" },
+          "items": [
+            {
+              "quote": { "en": "I ordered my mother's birthday cake from Dubai. They sent me a photo of her holding it.", "am": "የእናቴን የልደት ኬክ ከዱባይ አዘዝኩ። ኬኩን ይዛ ፎቶ ላኩልኝ።" },
+              "name": "Tsega W.",
+              "role": { "en": "Birthday cake from Dubai", "am": "የልደት ኬክ ከዱባይ" }
+            },
+            {
+              "quote": { "en": "The black forest was the first thing gone at our Genna lunch.", "am": "በገና ምሳችን ቀድሞ ያለቀው ብላክ ፎረስቱ ነበር።" },
+              "name": "Abel K.",
+              "role": { "en": "Holiday order", "am": "የበዓል ትዕዛዝ" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "end",
+          "heading": { "en": "Genna is coming", "am": "ገና እየመጣ ነው" },
+          "body": { "en": "Holiday cakes sell out: order by 4 January.", "am": "የበዓል ኬኮች ያልቃሉ፤ እስከ ታኅሣሥ 26 ይዘዙ።" },
+          "image": {
+            "src": "/stock/bakery-card-black-forest-cake.webp",
+            "alt": { "en": "A black forest cake topped with cherries and chocolate", "am": "በቼሪና በቸኮሌት ያጌጠ ብላክ ፎረስት ኬክ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+            "href": "/order"
+          },
+          "secondaryAction": {
+            "label": { "en": "See our cakes", "am": "ኬኮቻችንን ይመልከቱ" },
+            "href": "/cakes"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/cakes",
+      "title": { "en": "Cakes", "am": "ኬኮች" },
+      "nav": { "en": "Cakes", "am": "ኬኮች" },
+      "description": { "en": "Celebration cakes from Lidya Cakes with sizes and prices in Birr: birthday, black forest and wedding cakes, made to order.", "am": "የሊዲያ ኬክ የበዓል ኬኮች ከመጠንና ከዋጋ ጋር በብር፦ የልደት፣ ብላክ ፎረስትና የሠርግ ኬኮች፣ በትዕዛዝ።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "all",
+          "layout": "grid",
+          "eyebrow": { "en": "Made to order", "am": "በትዕዛዝ" },
+          "heading": { "en": "All our cakes", "am": "ሁሉም ኬኮቻችን" },
+          "intro": { "en": "Prices in Birr. Other sizes and flavours on request.", "am": "ዋጋ በብር። ሌላ መጠንና ጣዕም ሲጠየቅ።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/bakery-card-black-forest-cake.webp",
+                "alt": { "en": "A black forest cake topped with cherries and chocolate", "am": "በቼሪና በቸኮሌት ያጌጠ ብላክ ፎረስት ኬክ" }
+              },
+              "title": { "en": "Black forest", "am": "ብላክ ፎረስት" },
+              "subtitle": { "en": "Our best seller", "am": "በብዛት የሚሸጠው" },
+              "meta": [
+                { "en": "20 cm · 12 people", "am": "20 ሳ.ሜ · 12 ሰው" },
+                { "en": "26 cm · 20 people", "am": "26 ሳ.ሜ · 20 ሰው" }
+              ],
+              "price": { "amountMinor": 180000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/bakery-card-birthday-cake-sparkler.webp",
+                "alt": { "en": "A chocolate layer cake with a sparkler on top", "am": "በላዩ ብልጭታ ያለው የቸኮሌት ንብርብር ኬክ" }
+              },
+              "title": { "en": "Chocolate birthday cake", "am": "የቸኮሌት የልደት ኬክ" },
+              "subtitle": { "en": "Your message on top", "am": "መልእክትዎ በላዩ ላይ" },
+              "meta": [
+                { "en": "20 cm · 12 people", "am": "20 ሳ.ሜ · 12 ሰው" },
+                { "en": "Name and age", "am": "ስምና ዕድሜ" }
+              ],
+              "price": { "amountMinor": 160000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/bakery-card-white-tiered-wedding-cake.webp",
+                "alt": { "en": "A white three-tier wedding cake with sugar flowers", "am": "የስኳር አበቦች ያሉት ባለ ሦስት ደረጃ ነጭ የሠርግ ኬክ" }
+              },
+              "title": { "en": "Wedding cake, three tiers", "am": "ባለ ሦስት ደረጃ የሠርግ ኬክ" },
+              "subtitle": { "en": "For 80 to 150 guests", "am": "ከ80 እስከ 150 እንግዶች" },
+              "meta": [
+                { "en": "Tasting first", "am": "መጀመሪያ ቅምሻ" },
+                { "en": "Order 2 weeks ahead", "am": "ከ2 ሳምንት በፊት ይዘዙ" }
+              ],
+              "price": { "amountMinor": 1200000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+                "href": "/order"
+              }
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": { "en": "Questions about cakes", "am": "ስለ ኬኮች ጥያቄዎች" },
+          "items": [
+            {
+              "question": { "en": "Do you make fasting cakes?", "am": "የጾም ኬክ ትሠራላችሁ?" },
+              "answer": { "en": "Yes, without eggs or butter, for the fasting seasons. Ask when you order.", "am": "አዎ፣ ያለ እንቁላልና ቅቤ፣ ለጾም ወቅቶች። ሲያዝዙ ይጠይቁ።" }
+            },
+            {
+              "question": { "en": "How far ahead should I order?", "am": "ምን ያህል ቀድሜ ማዘዝ አለብኝ?" },
+              "answer": { "en": "Two days for most cakes, two weeks for weddings, and earlier before holidays.", "am": "ለአብዛኞቹ ኬኮች ሁለት ቀን፣ ለሠርግ ሁለት ሳምንት፣ ከበዓላት በፊት ቀደም ብለው።" }
+            },
+            {
+              "question": { "en": "Do you deliver?", "am": "ታደርሳላችሁ?" },
+              "answer": { "en": "Yes, anywhere in Addis Ababa. The fee depends on the distance.", "am": "አዎ፣ በአዲስ አበባ ውስጥ የትም። ክፍያው እንደ ርቀቱ ነው።" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/order",
+      "title": { "en": "Order", "am": "ይዘዙ" },
+      "nav": { "en": "Order", "am": "ይዘዙ" },
+      "description": { "en": "Order a cake from Lidya Cakes for a date of your choice, from Addis or abroad.", "am": "ከሊዲያ ኬክ ለመረጡት ቀን ኬክ ይዘዙ፤ ከአዲስ አበባም ከውጭም።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "order",
+          "kind": "order",
+          "heading": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
+          "intro": { "en": "Pick a date at least two days ahead. We confirm the price on Telegram within the hour.", "am": "ቢያንስ ከሁለት ቀን በፊት ቀን ይምረጡ። ዋጋውን በአንድ ሰዓት ውስጥ በቴሌግራም እናረጋግጣለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone or Telegram", "am": "ስልክ ወይም ቴሌግራም" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "cake",
+              "label": { "en": "Which cake?", "am": "የትኛው ኬክ?" },
+              "type": "select",
+              "required": true,
+              "options": [
+                { "en": "Black forest", "am": "ብላክ ፎረስት" },
+                { "en": "Chocolate birthday cake", "am": "የቸኮሌት የልደት ኬክ" },
+                { "en": "Wedding cake", "am": "የሠርግ ኬክ" },
+                { "en": "Something else", "am": "ሌላ" }
+              ]
+            },
+            {
+              "name": "size",
+              "label": { "en": "For how many people?", "am": "ለስንት ሰው?" },
+              "type": "number"
+            },
+            {
+              "name": "date",
+              "label": { "en": "Date", "am": "ቀን" },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "message",
+              "label": { "en": "Message on the cake", "am": "በኬኩ ላይ የሚጻፈው" },
+              "type": "text"
+            }
+          ],
+          "submitLabel": { "en": "Send my order", "am": "ትዕዛዜን ላክ" },
+          "successMessage": { "en": "Thank you. We will confirm your cake on Telegram shortly.", "am": "እናመሰግናለን። ኬክዎን በቅርቡ በቴሌግራም እናረጋግጣለን።" }
+        }
+      ]
+    },
+    {
+      "path": "/visit",
+      "title": { "en": "Visit", "am": "ይጎብኙን" },
+      "nav": { "en": "Visit", "am": "ይጎብኙን" },
+      "description": { "en": "Visit Lidya Cakes in Bole Medhanialem, Addis Ababa: opening hours and directions.", "am": "ሊዲያ ኬክን በቦሌ መድኃኔዓለም ይጎብኙ፦ የሥራ ሰዓትና አቅጣጫ።" },
+      "sections": [
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": { "en": "Come for coffee and cake", "am": "ለቡናና ለኬክ ይምጡ" },
+          "intro": { "en": "Fresh bread from half past six every morning.", "am": "በየማለዳው ከ12:30 ጀምሮ ትኩስ ዳቦ።" }
+        },
+        {
+          "type": "map",
+          "id": "map",
+          "heading": { "en": "Find us in Bole", "am": "በቦሌ ያግኙን" },
+          "query": "Bole Medhanialem, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,346 @@
+{
+  "name": { "en": "Kidist Pharmacy", "am": "ቅድስት ፋርማሲ" },
+  "tagline": { "en": "Your neighbourhood pharmacy in Gerji, Addis Ababa", "am": "በገርጂ፣ አዲስ አበባ የሰፈርዎ ፋርማሲ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#12703B", "accent": "#10201A", "background": "#F6FAF7", "text": "#10201A", "highlight": "#F4B731", "font": "modern", "radius": "small", "style": "calm" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Gerji, Mebrat Hail road, Addis Ababa", "am": "ገርጂ፣ መብራት ኃይል መንገድ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Every day", "am": "በየቀኑ" },
+        "time": { "en": "7:00 am to 10:00 pm", "am": "ከጠዋቱ 1 እስከ ምሽቱ 4 ሰዓት" }
+      },
+      {
+        "days": { "en": "Night duty", "am": "የሌሊት ተረኛ" },
+        "time": { "en": "Saturdays, all night", "am": "ቅዳሜ፣ ሌሊቱን ሙሉ" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Home", "am": "መነሻ" },
+      "description": { "en": "Kidist Pharmacy in Gerji, Addis Ababa: open every day, night duty on Saturdays, blood pressure and sugar checks, advice from a registered pharmacist and home delivery.", "am": "ቅድስት ፋርማሲ በገርጂ፣ አዲስ አበባ፦ በየቀኑ ክፍት፣ ቅዳሜ የሌሊት ተረኛ፣ የደም ግፊትና የስኳር ምርመራ፣ የተመዘገበ ፋርማሲስት ምክርና እስከ ቤት ማድረስ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "id": "top",
+          "eyebrow": { "en": "Gerji · open every day", "am": "ገርጂ · በየቀኑ ክፍት" },
+          "heading": { "en": "Your neighbourhood pharmacy", "am": "የሰፈርዎ ፋርማሲ" },
+          "subheading": { "en": "A registered pharmacist every hour we are open, simple health checks, and delivery to your door.", "am": "ክፍት በሆንንበት ሰዓት ሁሉ የተመዘገበ ፋርማሲስት፣ ቀላል የጤና ምርመራዎችና እስከ በርዎ ማድረስ።" },
+          "image": {
+            "src": "/stock/pharmacy-hero-pharmacist-counter-customer.webp",
+            "alt": { "en": "A pharmacist at the counter talking with a customer", "am": "ፋርማሲስት በመደርደሪያው ከደንበኛ ጋር ሲነጋገር" }
+          },
+          "primaryAction": {
+            "label": { "en": "Ask if it's in stock", "am": "መኖሩን ይጠይቁ" },
+            "href": "/ask"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call the pharmacy", "am": "ይደውሉልን" },
+            "href": "tel:+251911000000"
+          }
+        },
+        {
+          "type": "services",
+          "id": "services",
+          "variant": "numbered",
+          "eyebrow": { "en": "What we do", "am": "የምንሠራው" },
+          "heading": { "en": "Care without a queue", "am": "ያለ ወረፋ እንክብካቤ" },
+          "image": {
+            "src": "/stock/pharmacy-card-blood-pressure-check.webp",
+            "alt": { "en": "A health worker checking a woman's blood pressure", "am": "የጤና ባለሙያ የአንዲት ሴትን የደም ግፊት ሲለካ" }
+          },
+          "items": [
+            {
+              "title": { "en": "Blood pressure check", "am": "የደም ግፊት መለካት" },
+              "description": { "en": "Five minutes, at the counter. Free.", "am": "አምስት ደቂቃ፣ በመደርደሪያው። በነጻ።" }
+            },
+            {
+              "title": { "en": "Blood sugar test", "am": "የስኳር ምርመራ" },
+              "description": { "en": "Results in a minute, with advice on what they mean.", "am": "ውጤት በአንድ ደቂቃ፣ ትርጉሙን ከሚያስረዳ ምክር ጋር።" },
+              "price": { "amountMinor": 10000, "currency": "ETB" }
+            },
+            {
+              "title": { "en": "Advice in private", "am": "በግል ምክር" },
+              "description": { "en": "Questions about your treatment, side effects or what to buy for a child.", "am": "ስለ ሕክምናዎ፣ ስለ ጎንዮሽ ጉዳት ወይም ለልጅ ስለሚገዛው ጥያቄዎች።" }
+            },
+            {
+              "title": { "en": "Home delivery", "am": "እስከ ቤት ማድረስ" },
+              "description": { "en": "Gerji, Bole and CMC, within two hours.", "am": "ገርጂ፣ ቦሌና ሲኤምሲ፣ በሁለት ሰዓት ውስጥ።" },
+              "price": { "amountMinor": 8000, "currency": "ETB" }
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "id": "how",
+          "eyebrow": { "en": "Prescriptions", "am": "የሐኪም ማዘዣ" },
+          "heading": { "en": "Ready before you arrive", "am": "ከመድረስዎ በፊት ዝግጁ" },
+          "intro": { "en": "Send a photo of your prescription on Telegram. It stays between you and the pharmacist: this website never stores it.", "am": "የማዘዣዎን ፎቶ በቴሌግራም ይላኩ። በእርስዎና በፋርማሲስቱ መካከል ይቀራል፤ ይህ ድረ-ገጽ ፈጽሞ አያስቀምጠውም።" },
+          "items": [
+            {
+              "title": { "en": "Send a photo on Telegram", "am": "ፎቶ በቴሌግራም ይላኩ" },
+              "description": { "en": "Or bring the paper.", "am": "ወይም ወረቀቱን ይዘው ይምጡ።" }
+            },
+            {
+              "title": { "en": "We prepare it", "am": "እናዘጋጃለን" },
+              "description": { "en": "And call if something is missing.", "am": "የጎደለ ካለም እንደውላለን።" }
+            },
+            {
+              "title": { "en": "Pick up or we deliver", "am": "ይውሰዱ ወይም እናድርስ" },
+              "description": { "en": "The pharmacist explains how to take it.", "am": "ፋርማሲስቱ አወሳሰዱን ያስረዳል።" }
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "id": "licence",
+          "eyebrow": { "en": "Licensed pharmacy", "am": "ፈቃድ ያለው ፋርማሲ" },
+          "heading": { "en": "Your pharmacist", "am": "ፋርማሲስትዎ" },
+          "body": { "en": "A registered pharmacist is here every hour we are open, to answer questions in private and help you choose. Ask us anything: there is a quiet corner for it.", "am": "ክፍት በሆንንበት ሰዓት ሁሉ የተመዘገበ ፋርማሲስት አለ፤ ጥያቄዎችን በግል ይመልሳል፣ እንዲመርጡም ያግዛል። ማንኛውንም ይጠይቁን፤ ለዚህ የተዘጋጀ ጸጥ ያለ ቦታ አለ።" },
+          "image": {
+            "src": "/stock/pharmacy-about-smiling-pharmacist-white-coat.webp",
+            "alt": { "en": "A smiling woman in a white coat", "am": "ነጭ ጋዋን የለበሰች ፈገግተኛ ሴት" }
+          },
+          "imageSide": "end",
+          "points": [
+            { "en": "Responsible pharmacist: [name], B.Pharm", "am": "ኃላፊ ፋርማሲስት፦ [ስም]፣ ቢ.ፋርም" },
+            { "en": "EFDA licence: [your licence number]", "am": "የኢፍዳ ፈቃድ፦ [የፈቃድ ቁጥርዎ]" },
+            { "en": "Outlet type: retail pharmacy", "am": "የተቋም ዓይነት፦ የችርቻሮ ፋርማሲ" }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "ask",
+          "kind": "contact",
+          "heading": { "en": "Ask if it's in stock", "am": "መኖሩን ይጠይቁ" },
+          "intro": { "en": "Tell us what you are looking for. The pharmacist answers by phone or Telegram, usually within half an hour.", "am": "የሚፈልጉትን ይንገሩን። ፋርማሲስቱ በስልክ ወይም በቴሌግራም ብዙ ጊዜ በግማሽ ሰዓት ውስጥ ይመልሳል።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone", "am": "ስልክ" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "need",
+              "label": { "en": "What are you looking for?", "am": "ምን ይፈልጋሉ?" },
+              "type": "textarea",
+              "required": true
+            },
+            {
+              "name": "delivery",
+              "label": { "en": "Pick up or delivery?", "am": "ይወስዳሉ ወይስ እናድርስ?" },
+              "type": "select",
+              "options": [
+                { "en": "I will pick it up", "am": "እወስዳለሁ" },
+                { "en": "Please deliver", "am": "እባክዎ ያድርሱ" }
+              ]
+            }
+          ],
+          "submitLabel": { "en": "Ask the pharmacist", "am": "ፋርማሲስቱን ይጠይቁ" },
+          "successMessage": { "en": "Thank you. The pharmacist will call you shortly.", "am": "እናመሰግናለን። ፋርማሲስቱ በቅርቡ ይደውልልዎታል።" }
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": { "en": "Good to know", "am": "ማወቅ ያለብዎ" },
+          "items": [
+            {
+              "question": { "en": "Are you open at night?", "am": "ማታ ክፍት ናችሁ?" },
+              "answer": { "en": "Until 10 pm every day, and all night on Saturdays when we are on night duty.", "am": "በየቀኑ እስከ ምሽቱ 4 ሰዓት፣ ቅዳሜ የሌሊት ተረኛ ስንሆን ሌሊቱን ሙሉ።" }
+            },
+            {
+              "question": { "en": "Can I pay by Telebirr?", "am": "በቴሌብር መክፈል እችላለሁ?" },
+              "answer": { "en": "Yes, and by bank transfer or cash.", "am": "አዎ፣ በባንክ ዝውውርና በጥሬ ገንዘብም።" }
+            },
+            {
+              "question": { "en": "Is my prescription kept private?", "am": "ማዘዣዬ በምስጢር ይያዛል?" },
+              "answer": { "en": "Yes. Only the pharmacist sees it, and the website never stores it.", "am": "አዎ። የሚያየው ፋርማሲስቱ ብቻ ነው፤ ድረ-ገጹም ፈጽሞ አያስቀምጠውም።" }
+            }
+          ]
+        },
+        {
+          "type": "map",
+          "id": "map",
+          "heading": { "en": "Find us in Gerji", "am": "በገርጂ ያግኙን" },
+          "query": "Gerji, Addis Ababa"
+        }
+      ]
+    },
+    {
+      "path": "/services",
+      "title": { "en": "Services", "am": "አገልግሎቶች" },
+      "nav": { "en": "Services", "am": "አገልግሎቶች" },
+      "description": { "en": "Health checks, advice and delivery at Kidist Pharmacy in Gerji.", "am": "በገርጂ በቅድስት ፋርማሲ የጤና ምርመራ፣ ምክርና ማድረስ።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "all",
+          "layout": "grid",
+          "eyebrow": { "en": "Services", "am": "አገልግሎቶች" },
+          "heading": { "en": "Here for your everyday health", "am": "ለዕለታዊ ጤናዎ" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/pharmacy-card-blood-pressure-check.webp",
+                "alt": { "en": "A health worker checking a woman's blood pressure", "am": "የጤና ባለሙያ የአንዲት ሴትን የደም ግፊት ሲለካ" }
+              },
+              "title": { "en": "Blood pressure check", "am": "የደም ግፊት መለካት" },
+              "description": { "en": "Free, at the counter, with a card to track your readings.", "am": "በነጻ፣ በመደርደሪያው፣ ውጤቱን የሚመዘግቡበት ካርድ ጋር።" }
+            },
+            {
+              "image": {
+                "src": "/stock/pharmacy-card-blood-sugar-test.webp",
+                "alt": { "en": "A finger-prick blood sugar test with a small meter", "am": "በትንሽ መለኪያ የሚደረግ የስኳር ምርመራ" }
+              },
+              "title": { "en": "Blood sugar test", "am": "የስኳር ምርመራ" },
+              "description": { "en": "Results in a minute.", "am": "ውጤት በአንድ ደቂቃ።" },
+              "price": { "amountMinor": 10000, "currency": "ETB" }
+            },
+            {
+              "image": {
+                "src": "/stock/pharmacy-card-pharmacist-advice.webp",
+                "alt": { "en": "A pharmacist explaining something to a customer", "am": "ፋርማሲስት ለደንበኛ ሲያስረዳ" }
+              },
+              "title": { "en": "Advice from the pharmacist", "am": "የፋርማሲስት ምክር" },
+              "description": { "en": "In private, free.", "am": "በግል፣ በነጻ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/pharmacy-card-delivery-courier.webp",
+                "alt": { "en": "A courier carrying a paper bag", "am": "የወረቀት ቦርሳ የያዘ መልእክተኛ" }
+              },
+              "title": { "en": "Home delivery", "am": "እስከ ቤት ማድረስ" },
+              "description": { "en": "Within two hours nearby.", "am": "በአቅራቢያ በሁለት ሰዓት ውስጥ።" },
+              "price": { "amountMinor": 8000, "currency": "ETB" }
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "id": "licence",
+          "eyebrow": { "en": "Licensed pharmacy", "am": "ፈቃድ ያለው ፋርማሲ" },
+          "heading": { "en": "Your pharmacist", "am": "ፋርማሲስትዎ" },
+          "body": { "en": "A registered pharmacist is here every hour we are open, to answer questions in private and help you choose. Ask us anything: there is a quiet corner for it.", "am": "ክፍት በሆንንበት ሰዓት ሁሉ የተመዘገበ ፋርማሲስት አለ፤ ጥያቄዎችን በግል ይመልሳል፣ እንዲመርጡም ያግዛል። ማንኛውንም ይጠይቁን፤ ለዚህ የተዘጋጀ ጸጥ ያለ ቦታ አለ።" },
+          "image": {
+            "src": "/stock/pharmacy-about-smiling-pharmacist-white-coat.webp",
+            "alt": { "en": "A smiling woman in a white coat", "am": "ነጭ ጋዋን የለበሰች ፈገግተኛ ሴት" }
+          },
+          "imageSide": "end",
+          "points": [
+            { "en": "Responsible pharmacist: [name], B.Pharm", "am": "ኃላፊ ፋርማሲስት፦ [ስም]፣ ቢ.ፋርም" },
+            { "en": "EFDA licence: [your licence number]", "am": "የኢፍዳ ፈቃድ፦ [የፈቃድ ቁጥርዎ]" },
+            { "en": "Outlet type: retail pharmacy", "am": "የተቋም ዓይነት፦ የችርቻሮ ፋርማሲ" }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/ask",
+      "title": { "en": "Ask us", "am": "ይጠይቁን" },
+      "nav": { "en": "Ask us", "am": "ይጠይቁን" },
+      "description": { "en": "Ask Kidist Pharmacy whether something is in stock, or send a prescription on Telegram.", "am": "ቅድስት ፋርማሲን አንድ ነገር መኖሩን ይጠይቁ፤ ወይም ማዘዣ በቴሌግራም ይላኩ።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "ask-page",
+          "kind": "contact",
+          "heading": { "en": "Ask if it's in stock", "am": "መኖሩን ይጠይቁ" },
+          "intro": { "en": "Tell us what you are looking for. The pharmacist answers by phone or Telegram, usually within half an hour.", "am": "የሚፈልጉትን ይንገሩን። ፋርማሲስቱ በስልክ ወይም በቴሌግራም ብዙ ጊዜ በግማሽ ሰዓት ውስጥ ይመልሳል።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone", "am": "ስልክ" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "need",
+              "label": { "en": "What are you looking for?", "am": "ምን ይፈልጋሉ?" },
+              "type": "textarea",
+              "required": true
+            },
+            {
+              "name": "delivery",
+              "label": { "en": "Pick up or delivery?", "am": "ይወስዳሉ ወይስ እናድርስ?" },
+              "type": "select",
+              "options": [
+                { "en": "I will pick it up", "am": "እወስዳለሁ" },
+                { "en": "Please deliver", "am": "እባክዎ ያድርሱ" }
+              ]
+            }
+          ],
+          "submitLabel": { "en": "Ask the pharmacist", "am": "ፋርማሲስቱን ይጠይቁ" },
+          "successMessage": { "en": "Thank you. The pharmacist will call you shortly.", "am": "እናመሰግናለን። ፋርማሲስቱ በቅርቡ ይደውልልዎታል።" }
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": { "en": "Or call or write", "am": "ወይም ይደውሉ ወይም ይጻፉ" },
+          "intro": { "en": "Prescriptions: send a photo on Telegram.", "am": "ማዘዣ፦ ፎቶውን በቴሌግራም ይላኩ።" }
+        }
+      ]
+    },
+    {
+      "path": "/visit",
+      "title": { "en": "Visit", "am": "ይጎብኙን" },
+      "nav": { "en": "Visit", "am": "ይጎብኙን" },
+      "description": { "en": "Opening hours, night duty and directions to Kidist Pharmacy in Gerji.", "am": "የቅድስት ፋርማሲ የሥራ ሰዓት፣ የሌሊት ተረኛና አቅጣጫ፣ ገርጂ።" },
+      "sections": [
+        {
+          "type": "contact",
+          "id": "visit-contact",
+          "heading": { "en": "Open every day", "am": "በየቀኑ ክፍት" },
+          "intro": { "en": "Night duty on Saturdays.", "am": "ቅዳሜ የሌሊት ተረኛ።" }
+        },
+        {
+          "type": "gallery",
+          "id": "inside",
+          "layout": "mosaic",
+          "heading": { "en": "Inside the pharmacy", "am": "በፋርማሲው ውስጥ" },
+          "images": [
+            {
+              "src": "/stock/pharmacy-gallery-pharmacy-interior.webp",
+              "alt": { "en": "A quiet pharmacy interior with wooden cabinets", "am": "የእንጨት ቁም ሣጥኖች ያሉት ጸጥ ያለ የፋርማሲ ውስጥ" }
+            },
+            {
+              "src": "/stock/pharmacy-gallery-shelves-soft-focus.webp",
+              "alt": { "en": "Pharmacy shelves, softly out of focus", "am": "የፋርማሲ መደርደሪያዎች፣ ደብዘዝ ብለው" }
+            },
+            {
+              "src": "/stock/pharmacy-hero-lagos-pharmacy-customers.webp",
+              "alt": { "en": "Two people looking at a box together in a pharmacy", "am": "በፋርማሲ ውስጥ አንድ ሳጥን አብረው የሚመለከቱ ሁለት ሰዎች" }
+            }
+          ]
+        },
+        {
+          "type": "map",
+          "id": "visit-map",
+          "heading": { "en": "Find us in Gerji", "am": "በገርጂ ያግኙን" },
+          "query": "Gerji, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

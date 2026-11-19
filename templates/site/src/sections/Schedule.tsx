@@ -23,6 +23,39 @@ export function Schedule({ section }: { section: ScheduleSection }) {
     ) : null;
   const tiles = section.layout === "tiles";
   const n = section.items.length;
+  if (section.layout === "week") {
+    // Days in the order they first appear, each with its items: a column per day, swiped on phones.
+    const days: { day: string; items: typeof section.items }[] = [];
+    for (const item of section.items) {
+      const day = item.day ? text(item.day) : "";
+      const group = days.find((d) => d.day === day) ?? (days.push({ day, items: [] }), days[days.length - 1]!);
+      group.items.push(item);
+    }
+    return (
+      <section id={section.id ?? "schedule"} className="section">
+        <div className="container-site flex flex-col gap-8 md:gap-10">
+          <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
+          <ul className="week-grid" style={{ "--days": days.length } as React.CSSProperties}>
+            {days.map((d, di) => (
+              <li key={di} className="week-day reveal" style={{ "--i": di } as React.CSSProperties}>
+                {d.day && <p className="week-day-name">{d.day}</p>}
+                <ul className="flex flex-col gap-2">
+                  {d.items.map((item, ii) => (
+                    <li key={ii} className="week-slot">
+                      <span className="time-value">{text(item.time)}</span>
+                      <span className="font-semibold">{text(item.title)}</span>
+                      {item.note && <span className="week-note">{text(item.note)}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+          {section.footnote && <p className="text-muted">{text(section.footnote)}</p>}
+        </div>
+      </section>
+    );
+  }
   return (
     <section id={section.id ?? "schedule"} className="section">
       <div className={`container-site ${tiles ? "flex flex-col gap-8 md:gap-10" : "grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-14"}`}>

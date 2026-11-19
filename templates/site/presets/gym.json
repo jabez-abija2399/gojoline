@@ -1,0 +1,531 @@
+{
+  "name": { "en": "Iron Addis", "am": "አይረን አዲስ" },
+  "tagline": { "en": "Gym and classes in Sarbet, Addis Ababa", "am": "ጂምና ክፍሎች በሳር ቤት፣ አዲስ አበባ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#C62E17", "accent": "#121212", "background": "#F2F2EE", "text": "#111111", "highlight": "#D4FF3A", "font": "condensed", "radius": "small", "style": "kinetic" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Sarbet, near Canadian Embassy, Addis Ababa", "am": "ሳር ቤት፣ ካናዳ ኤምባሲ አጠገብ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Monday to Saturday", "am": "ከሰኞ እስከ ቅዳሜ" },
+        "time": { "en": "5:30 am to 10:00 pm", "am": "ከ11:30 እስከ ምሽቱ 4 ሰዓት" }
+      },
+      {
+        "days": { "en": "Sunday", "am": "እሑድ" },
+        "time": { "en": "7:00 am to 1:00 pm", "am": "ከጠዋቱ 1 እስከ 7 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Home", "am": "መነሻ" },
+      "description": { "en": "Iron Addis gym in Sarbet, Addis Ababa: memberships from 2,500 Birr a month, strength, boxing and women-only classes, and a free first visit.", "am": "አይረን አዲስ ጂም በሳር ቤት፣ አዲስ አበባ፦ አባልነት ከ2,500 ብር በወር፣ የጥንካሬ፣ የቦክስና የሴቶች ብቻ ክፍሎች፣ እና ነጻ የመጀመሪያ ጉብኝት።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "immersive",
+          "id": "top",
+          "eyebrow": { "en": "Sarbet · open from 5:30 am", "am": "ሳር ቤት · ከ11:30 ጀምሮ ክፍት" },
+          "heading": { "en": "Train harder", "am": "ጠንክረው ይሥሩ" },
+          "subheading": { "en": "Free weights, real coaches and classes every day. Your first visit is on us.", "am": "ነጻ ክብደቶች፣ እውነተኛ አሠልጣኞችና በየቀኑ ክፍሎች። የመጀመሪያ ጉብኝትዎ በእኛ ነው።" },
+          "image": {
+            "src": "/stock/gym-hero-deadlift.webp",
+            "alt": { "en": "A man lifting a heavy barbell off the floor", "am": "ከባድ ባርቤል ከወለል የሚያነሳ ሰው" }
+          },
+          "primaryAction": {
+            "label": { "en": "Book a free first visit", "am": "ነጻ የመጀመሪያ ጉብኝት ይያዙ" },
+            "href": "/join"
+          },
+          "secondaryAction": {
+            "label": { "en": "See memberships", "am": "አባልነቶችን ይመልከቱ" },
+            "href": "/memberships"
+          }
+        },
+        {
+          "type": "stats",
+          "id": "numbers",
+          "tone": "dark",
+          "items": [
+            {
+              "value": { "en": "600 m²", "am": "600 ሜ²" },
+              "label": { "en": "of training floor", "am": "የልምምድ ወለል" }
+            },
+            {
+              "value": { "en": "24", "am": "24" },
+              "label": { "en": "classes a week", "am": "ክፍሎች በሳምንት" }
+            },
+            {
+              "value": { "en": "5", "am": "5" },
+              "label": { "en": "certified trainers", "am": "የተረጋገጡ አሠልጣኞች" }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "train",
+          "layout": "grid",
+          "eyebrow": { "en": "Ways to train", "am": "የልምምድ መንገዶች" },
+          "heading": { "en": "Find your thing", "am": "የሚስማማዎትን ያግኙ" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/gym-card-woman-barbell-squat.webp",
+                "alt": { "en": "A woman squatting with a barbell", "am": "በባርቤል ስኳት የምትሠራ ሴት" }
+              },
+              "title": { "en": "Strength", "am": "ጥንካሬ" },
+              "description": { "en": "Barbells, racks and a coach to check your form.", "am": "ባርቤሎች፣ መደርደሪያዎችና አቋምዎን የሚያይ አሠልጣኝ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/gym-card-boxing.webp",
+                "alt": { "en": "Boxing gloves hitting pads", "am": "የቦክስ ጓንቶች ፓድ ሲመቱ" }
+              },
+              "title": { "en": "Boxing", "am": "ቦክስ" },
+              "description": { "en": "Pads, bags and footwork, twice a week.", "am": "ፓድ፣ ቦርሳና የእግር እንቅስቃሴ፣ በሳምንት ሁለቴ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/gym-card-group-outdoor-class.webp",
+                "alt": { "en": "A group class training outdoors", "am": "ከቤት ውጭ የሚሠራ የቡድን ስፖርት" }
+              },
+              "title": { "en": "Group classes", "am": "የቡድን ክፍሎች" },
+              "description": { "en": "Circuit, aerobics and a Saturday run.", "am": "ሰርኪት፣ ኤሮቢክስና የቅዳሜ ሩጫ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/gym-card-trainer-coaching.webp",
+                "alt": { "en": "A trainer coaching someone through a lift", "am": "አሠልጣኝ አንድን ሰው በማንሳት ሲያግዝ" }
+              },
+              "title": { "en": "Personal training", "am": "የግል ልምምድ" },
+              "description": { "en": "One coach, your plan, your pace.", "am": "አንድ አሠልጣኝ፣ የእርስዎ ዕቅድ፣ የእርስዎ ፍጥነት።" },
+              "price": { "amountMinor": 80000, "currency": "ETB" },
+              "priceNote": { "en": "a session", "am": "በአንድ ልምምድ" }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "memberships",
+          "layout": "pricing",
+          "eyebrow": { "en": "Memberships", "am": "አባልነት" },
+          "heading": { "en": "No joining fee", "am": "የመመዝገቢያ ክፍያ የለም" },
+          "items": [
+            {
+              "title": { "en": "Day pass", "am": "የቀን ማለፊያ" },
+              "subtitle": { "en": "Try a day, any day", "am": "አንድ ቀን ይሞክሩ" },
+              "price": { "amountMinor": 30000, "currency": "ETB" },
+              "priceNote": { "en": "a day", "am": "በቀን" },
+              "meta": [
+                { "en": "Gym floor", "am": "የጂም ወለል" },
+                { "en": "Lockers and showers", "am": "ቁም ሣጥንና ሻወር" }
+              ],
+              "action": {
+                "label": { "en": "Book a free first visit", "am": "ነጻ የመጀመሪያ ጉብኝት ይያዙ" },
+                "href": "/join"
+              }
+            },
+            {
+              "title": { "en": "Monthly", "am": "ወርሃዊ" },
+              "subtitle": { "en": "Everything, every day", "am": "ሁሉንም፣ በየቀኑ" },
+              "badge": { "en": "Most chosen", "am": "በብዛት የሚመረጥ" },
+              "price": { "amountMinor": 250000, "currency": "ETB" },
+              "priceNote": { "en": "a month", "am": "በወር" },
+              "meta": [
+                { "en": "Gym floor, 5:30 am to 10 pm", "am": "የጂም ወለል፣ ከ11:30 እስከ 4 ሰዓት" },
+                { "en": "All group classes", "am": "ሁሉም የቡድን ክፍሎች" },
+                { "en": "A plan from a trainer", "am": "ከአሠልጣኝ የሚዘጋጅ ዕቅድ" },
+                { "en": "Lockers and showers", "am": "ቁም ሣጥንና ሻወር" }
+              ],
+              "action": {
+                "label": { "en": "Book a free first visit", "am": "ነጻ የመጀመሪያ ጉብኝት ይያዙ" },
+                "href": "/join"
+              }
+            },
+            {
+              "title": { "en": "Three months", "am": "ሦስት ወር" },
+              "subtitle": { "en": "For a real change", "am": "ለእውነተኛ ለውጥ" },
+              "price": { "amountMinor": 650000, "currency": "ETB" },
+              "priceNote": { "en": "for 3 months", "am": "ለ3 ወር" },
+              "meta": [
+                { "en": "Everything in monthly", "am": "የወርሃዊው ሁሉ" },
+                { "en": "Two personal sessions", "am": "ሁለት የግል ልምምዶች" },
+                { "en": "Body check every month", "am": "በየወሩ የሰውነት ምርመራ" }
+              ],
+              "action": {
+                "label": { "en": "Book a free first visit", "am": "ነጻ የመጀመሪያ ጉብኝት ይያዙ" },
+                "href": "/join"
+              }
+            }
+          ]
+        },
+        {
+          "type": "schedule",
+          "id": "classes",
+          "layout": "week",
+          "eyebrow": { "en": "Classes", "am": "ክፍሎች" },
+          "heading": { "en": "This week on the floor", "am": "የዚህ ሳምንት ክፍሎች" },
+          "items": [
+            {
+              "day": { "en": "Monday", "am": "ሰኞ" },
+              "time": { "en": "6:30 am", "am": "12:30" },
+              "title": { "en": "Strength", "am": "ጥንካሬ" }
+            },
+            {
+              "day": { "en": "Monday", "am": "ሰኞ" },
+              "time": { "en": "6:00 pm", "am": "12:00" },
+              "title": { "en": "Boxing", "am": "ቦክስ" }
+            },
+            {
+              "day": { "en": "Tuesday", "am": "ማክሰኞ" },
+              "time": { "en": "7:00 am", "am": "1:00" },
+              "title": { "en": "Aerobics", "am": "ኤሮቢክስ" },
+              "note": { "en": "Women only", "am": "ለሴቶች ብቻ" }
+            },
+            {
+              "day": { "en": "Tuesday", "am": "ማክሰኞ" },
+              "time": { "en": "6:00 pm", "am": "12:00" },
+              "title": { "en": "Circuit", "am": "ሰርኪት" }
+            },
+            {
+              "day": { "en": "Thursday", "am": "ሐሙስ" },
+              "time": { "en": "6:30 am", "am": "12:30" },
+              "title": { "en": "Strength", "am": "ጥንካሬ" }
+            },
+            {
+              "day": { "en": "Thursday", "am": "ሐሙስ" },
+              "time": { "en": "6:00 pm", "am": "12:00" },
+              "title": { "en": "Boxing", "am": "ቦክስ" }
+            },
+            {
+              "day": { "en": "Saturday", "am": "ቅዳሜ" },
+              "time": { "en": "8:00 am", "am": "2:00" },
+              "title": { "en": "Outdoor run", "am": "የውጪ ሩጫ" },
+              "note": { "en": "From the gym door", "am": "ከጂሙ በር" }
+            },
+            {
+              "day": { "en": "Saturday", "am": "ቅዳሜ" },
+              "time": { "en": "10:00 am", "am": "4:00" },
+              "title": { "en": "Stretch and mobility", "am": "መለጠጥና እንቅስቃሴ" },
+              "note": { "en": "Women only", "am": "ለሴቶች ብቻ" }
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "id": "members",
+          "heading": { "en": "From our members", "am": "ከአባሎቻችን" },
+          "items": [
+            {
+              "quote": { "en": "The women-only mornings got me started. Six months later I lift with everyone.", "am": "የሴቶች ብቻ ጠዋቶች አስጀመሩኝ። ከስድስት ወር በኋላ ከሁሉም ጋር አነሳለሁ።" },
+              "name": "Selam A.",
+              "role": { "en": "Member since 2025", "am": "ከ2025 ጀምሮ አባል" }
+            },
+            {
+              "quote": { "en": "Coaches who actually watch your form. Best gym in Sarbet.", "am": "አቋምዎን በእውነት የሚያዩ አሠልጣኞች። በሳር ቤት ምርጡ ጂም።" },
+              "name": "Dawit K.",
+              "role": { "en": "Strength", "am": "ጥንካሬ" }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "join",
+          "kind": "booking",
+          "heading": { "en": "Your first visit is free", "am": "የመጀመሪያ ጉብኝትዎ በነጻ ነው" },
+          "intro": { "en": "Pick a time. A trainer shows you around, checks your goals and writes a first plan.", "am": "ሰዓት ይምረጡ። አሠልጣኝ ያስጎበኝዎታል፣ ግብዎን ያያል፣ የመጀመሪያ ዕቅድም ያዘጋጃል።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone", "am": "ስልክ" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": { "en": "Day", "am": "ቀን" },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "goal",
+              "label": { "en": "Your goal", "am": "ግብዎ" },
+              "type": "select",
+              "options": [
+                { "en": "Get stronger", "am": "መጠንከር" },
+                { "en": "Lose weight", "am": "ክብደት መቀነስ" },
+                { "en": "Get fit for a sport", "am": "ለስፖርት መዘጋጀት" },
+                { "en": "Women-only classes", "am": "የሴቶች ብቻ ክፍሎች" }
+              ]
+            }
+          ],
+          "submitLabel": { "en": "Book my free visit", "am": "ነጻ ጉብኝቴን ይያዙ" },
+          "successMessage": { "en": "See you soon. We will call to confirm the time.", "am": "በቅርቡ እንገናኝ። ሰዓቱን ለማረጋገጥ እንደውላለን።" }
+        }
+      ]
+    },
+    {
+      "path": "/memberships",
+      "title": { "en": "Memberships", "am": "አባልነት" },
+      "nav": { "en": "Memberships", "am": "አባልነት" },
+      "description": { "en": "Iron Addis memberships and prices: day pass, monthly and three months.", "am": "የአይረን አዲስ አባልነትና ዋጋ፦ የቀን ማለፊያ፣ ወርሃዊና ሦስት ወር።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "plans",
+          "layout": "pricing",
+          "eyebrow": { "en": "Memberships", "am": "አባልነት" },
+          "heading": { "en": "Pick a plan", "am": "ዕቅድ ይምረጡ" },
+          "intro": { "en": "Pay by Telebirr, bank transfer or cash. Freeze your membership for up to a month when you travel.", "am": "በቴሌብር፣ በባንክ ዝውውር ወይም በጥሬ ይክፈሉ። ሲጓዙ አባልነትዎን እስከ አንድ ወር ማቆየት ይችላሉ።" },
+          "items": [
+            {
+              "title": { "en": "Day pass", "am": "የቀን ማለፊያ" },
+              "subtitle": { "en": "Try a day, any day", "am": "አንድ ቀን ይሞክሩ" },
+              "price": { "amountMinor": 30000, "currency": "ETB" },
+              "priceNote": { "en": "a day", "am": "በቀን" },
+              "meta": [
+                { "en": "Gym floor", "am": "የጂም ወለል" },
+                { "en": "Lockers and showers", "am": "ቁም ሣጥንና ሻወር" }
+              ],
+              "action": {
+                "label": { "en": "Book a free first visit", "am": "ነጻ የመጀመሪያ ጉብኝት ይያዙ" },
+                "href": "/join"
+              }
+            },
+            {
+              "title": { "en": "Monthly", "am": "ወርሃዊ" },
+              "subtitle": { "en": "Everything, every day", "am": "ሁሉንም፣ በየቀኑ" },
+              "badge": { "en": "Most chosen", "am": "በብዛት የሚመረጥ" },
+              "price": { "amountMinor": 250000, "currency": "ETB" },
+              "priceNote": { "en": "a month", "am": "በወር" },
+              "meta": [
+                { "en": "Gym floor, 5:30 am to 10 pm", "am": "የጂም ወለል፣ ከ11:30 እስከ 4 ሰዓት" },
+                { "en": "All group classes", "am": "ሁሉም የቡድን ክፍሎች" },
+                { "en": "A plan from a trainer", "am": "ከአሠልጣኝ የሚዘጋጅ ዕቅድ" },
+                { "en": "Lockers and showers", "am": "ቁም ሣጥንና ሻወር" }
+              ],
+              "action": {
+                "label": { "en": "Book a free first visit", "am": "ነጻ የመጀመሪያ ጉብኝት ይያዙ" },
+                "href": "/join"
+              }
+            },
+            {
+              "title": { "en": "Three months", "am": "ሦስት ወር" },
+              "subtitle": { "en": "For a real change", "am": "ለእውነተኛ ለውጥ" },
+              "price": { "amountMinor": 650000, "currency": "ETB" },
+              "priceNote": { "en": "for 3 months", "am": "ለ3 ወር" },
+              "meta": [
+                { "en": "Everything in monthly", "am": "የወርሃዊው ሁሉ" },
+                { "en": "Two personal sessions", "am": "ሁለት የግል ልምምዶች" },
+                { "en": "Body check every month", "am": "በየወሩ የሰውነት ምርመራ" }
+              ],
+              "action": {
+                "label": { "en": "Book a free first visit", "am": "ነጻ የመጀመሪያ ጉብኝት ይያዙ" },
+                "href": "/join"
+              }
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "id": "coaches",
+          "variant": "numbered",
+          "eyebrow": { "en": "Coaches", "am": "አሠልጣኞች" },
+          "heading": { "en": "Who coaches you", "am": "ማን ያሠለጥንዎታል" },
+          "image": {
+            "src": "/stock/gym-about-gym-floor-benches.webp",
+            "alt": { "en": "A gym floor with benches and racks", "am": "ወንበሮችና መደርደሪያዎች ያሉት የጂም ወለል" }
+          },
+          "items": [
+            {
+              "title": { "en": "Head coach, strength", "am": "ዋና አሠልጣኝ፣ ጥንካሬ" },
+              "description": { "en": "[Name]: ten years of powerlifting.", "am": "[ስም]፦ የአሥር ዓመት የፓወርሊፍቲንግ ልምድ።" }
+            },
+            {
+              "title": { "en": "Boxing coach", "am": "የቦክስ አሠልጣኝ" },
+              "description": { "en": "[Name]: former national team.", "am": "[ስም]፦ የቀድሞ የብሔራዊ ቡድን አባል።" }
+            },
+            {
+              "title": { "en": "Women's classes", "am": "የሴቶች ክፍሎች" },
+              "description": { "en": "[Name]: aerobics and mobility.", "am": "[ስም]፦ ኤሮቢክስና እንቅስቃሴ።" }
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": { "en": "Before you join", "am": "ከመመዝገብዎ በፊት" },
+          "items": [
+            {
+              "question": { "en": "Is there a joining fee?", "am": "የመመዝገቢያ ክፍያ አለ?" },
+              "answer": { "en": "No. You pay the membership and that is all.", "am": "የለም። አባልነቱን ብቻ ይከፍላሉ።" }
+            },
+            {
+              "question": { "en": "Are there women-only times?", "am": "የሴቶች ብቻ ሰዓት አለ?" },
+              "answer": { "en": "Yes: Tuesday at 7 am and Saturday at 10 am, with a woman coach.", "am": "አዎ፦ ማክሰኞ ከጠዋቱ 1 ሰዓትና ቅዳሜ ከጠዋቱ 4 ሰዓት፣ ከሴት አሠልጣኝ ጋር።" }
+            },
+            {
+              "question": { "en": "Can I bring a friend?", "am": "ጓደኛ ማምጣት እችላለሁ?" },
+              "answer": { "en": "Yes, once a month for free on a monthly membership.", "am": "አዎ፣ ወርሃዊ አባል ከሆኑ በወር አንድ ጊዜ በነጻ።" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/classes",
+      "title": { "en": "Classes", "am": "ክፍሎች" },
+      "nav": { "en": "Classes", "am": "ክፍሎች" },
+      "description": { "en": "The weekly class timetable at Iron Addis, with women-only sessions.", "am": "የአይረን አዲስ ሳምንታዊ የክፍሎች ሰሌዳ፣ የሴቶች ብቻ ክፍሎችን ጨምሮ።" },
+      "sections": [
+        {
+          "type": "schedule",
+          "id": "classes-all",
+          "layout": "week",
+          "eyebrow": { "en": "Classes", "am": "ክፍሎች" },
+          "heading": { "en": "This week on the floor", "am": "የዚህ ሳምንት ክፍሎች" },
+          "items": [
+            {
+              "day": { "en": "Monday", "am": "ሰኞ" },
+              "time": { "en": "6:30 am", "am": "12:30" },
+              "title": { "en": "Strength", "am": "ጥንካሬ" }
+            },
+            {
+              "day": { "en": "Monday", "am": "ሰኞ" },
+              "time": { "en": "6:00 pm", "am": "12:00" },
+              "title": { "en": "Boxing", "am": "ቦክስ" }
+            },
+            {
+              "day": { "en": "Tuesday", "am": "ማክሰኞ" },
+              "time": { "en": "7:00 am", "am": "1:00" },
+              "title": { "en": "Aerobics", "am": "ኤሮቢክስ" },
+              "note": { "en": "Women only", "am": "ለሴቶች ብቻ" }
+            },
+            {
+              "day": { "en": "Tuesday", "am": "ማክሰኞ" },
+              "time": { "en": "6:00 pm", "am": "12:00" },
+              "title": { "en": "Circuit", "am": "ሰርኪት" }
+            },
+            {
+              "day": { "en": "Thursday", "am": "ሐሙስ" },
+              "time": { "en": "6:30 am", "am": "12:30" },
+              "title": { "en": "Strength", "am": "ጥንካሬ" }
+            },
+            {
+              "day": { "en": "Thursday", "am": "ሐሙስ" },
+              "time": { "en": "6:00 pm", "am": "12:00" },
+              "title": { "en": "Boxing", "am": "ቦክስ" }
+            },
+            {
+              "day": { "en": "Saturday", "am": "ቅዳሜ" },
+              "time": { "en": "8:00 am", "am": "2:00" },
+              "title": { "en": "Outdoor run", "am": "የውጪ ሩጫ" },
+              "note": { "en": "From the gym door", "am": "ከጂሙ በር" }
+            },
+            {
+              "day": { "en": "Saturday", "am": "ቅዳሜ" },
+              "time": { "en": "10:00 am", "am": "4:00" },
+              "title": { "en": "Stretch and mobility", "am": "መለጠጥና እንቅስቃሴ" },
+              "note": { "en": "Women only", "am": "ለሴቶች ብቻ" }
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "id": "floor",
+          "layout": "mosaic",
+          "heading": { "en": "The gym", "am": "ጂሙ" },
+          "images": [
+            {
+              "src": "/stock/gym-gallery-battle-ropes.webp",
+              "alt": { "en": "Battle ropes in motion", "am": "በእንቅስቃሴ ላይ ያሉ የስፖርት ገመዶች" }
+            },
+            {
+              "src": "/stock/gym-gallery-dumbbell-rack.webp",
+              "alt": { "en": "A rack of dumbbells", "am": "የዳምቤል መደርደሪያ" }
+            },
+            {
+              "src": "/stock/gym-hero-dumbbell-press.webp",
+              "alt": { "en": "A woman pressing dumbbells on a bench", "am": "በወንበር ላይ ዳምቤል የምትገፋ ሴት" }
+            },
+            {
+              "src": "/stock/gym-card-stretching.webp",
+              "alt": { "en": "A woman stretching on a mat", "am": "በምንጣፍ ላይ የምትለጠጥ ሴት" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/join",
+      "title": { "en": "Join", "am": "ይመዝገቡ" },
+      "nav": { "en": "Join", "am": "ይመዝገቡ" },
+      "description": { "en": "Book a free first visit at Iron Addis in Sarbet.", "am": "በሳር ቤት በአይረን አዲስ ነጻ የመጀመሪያ ጉብኝት ይያዙ።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "join-page",
+          "kind": "booking",
+          "heading": { "en": "Your first visit is free", "am": "የመጀመሪያ ጉብኝትዎ በነጻ ነው" },
+          "intro": { "en": "Pick a time. A trainer shows you around, checks your goals and writes a first plan.", "am": "ሰዓት ይምረጡ። አሠልጣኝ ያስጎበኝዎታል፣ ግብዎን ያያል፣ የመጀመሪያ ዕቅድም ያዘጋጃል።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone", "am": "ስልክ" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": { "en": "Day", "am": "ቀን" },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "goal",
+              "label": { "en": "Your goal", "am": "ግብዎ" },
+              "type": "select",
+              "options": [
+                { "en": "Get stronger", "am": "መጠንከር" },
+                { "en": "Lose weight", "am": "ክብደት መቀነስ" },
+                { "en": "Get fit for a sport", "am": "ለስፖርት መዘጋጀት" },
+                { "en": "Women-only classes", "am": "የሴቶች ብቻ ክፍሎች" }
+              ]
+            }
+          ],
+          "submitLabel": { "en": "Book my free visit", "am": "ነጻ ጉብኝቴን ይያዙ" },
+          "successMessage": { "en": "See you soon. We will call to confirm the time.", "am": "በቅርቡ እንገናኝ። ሰዓቱን ለማረጋገጥ እንደውላለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": { "en": "Or just walk in", "am": "ወይም በቀጥታ ይምጡ" }
+        },
+        {
+          "type": "map",
+          "id": "map",
+          "heading": { "en": "Find us in Sarbet", "am": "በሳር ቤት ያግኙን" },
+          "query": "Sarbet, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}
