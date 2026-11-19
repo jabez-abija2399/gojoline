@@ -494,6 +494,7 @@ export const en = {
     accessSubmit: "Continue",
     accessWrong: "That code is not right. Please check it and try again.",
     unavailable: "The builder isn't working right now. Please try again later.",
+    paused: "Building and changing sites is paused for a short while. Your sites stay online, and your messages, visits and business info are all here. No changes are used.",
     chatLabel: "Your message",
     chatPlaceholder: "Describe your business, or the change you want",
     send: "Send",
@@ -574,6 +575,7 @@ export const en = {
     liveAt: "Live at",
     close: "Close",
     publishErrors: {
+      paused: "Publishing is paused for a short while. Your live site stays online as it is.",
       not_found: "We couldn't find this site.",
       no_version: "Build your site first by sending a message.",
       unverified: "Please confirm your phone or email before publishing.",

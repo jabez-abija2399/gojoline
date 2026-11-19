@@ -44,6 +44,8 @@ const SIDE_TABS = ["preview", "photos", "versions", "code"] as const;
 const TAB_ICONS = { chat: MessageCircle, preview: Eye, photos: Images, versions: History, code: FileText };
 
 interface Props {
+  /** Building is paused (no sandbox): the chat says so once; no preview is opened. */
+  paused?: boolean;
   noCredits: { text: string; action: string };
   /** When the next monthly changes arrive, e.g. "1 December". */
   nextGrant: string;
@@ -85,7 +87,7 @@ export interface PendingConfirm {
   left: number;
 }
 
-export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant, upgrade, upgradeText, installText }: Props) {
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant, upgrade, upgradeText, installText, paused = false }: Props) {
   const [credits, setCredits] = useState<number | null>(initialCredits);
   const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
@@ -124,7 +126,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const templateId = initialVersions.length === 1 ? /^template:([a-z-]+)$/.exec(initialVersions[0]!.summary)?.[1] : undefined;
   const templateName = templateId ? (t.templates as Record<string, string>)[templateId] : undefined;
   const welcome = templateName ? t.welcomeTemplate.replace("{industry}", templateName) : undefined;
-  const [messages, setMessages] = useState<UiMessage[]>(initialMessages);
+  const [messages, setMessages] = useState<UiMessage[]>(() => (paused ? [...initialMessages, { id: "paused", role: "assistant", text: t.paused }] : initialMessages));
   const [versions, setVersions] = useState<UiVersion[]>(initialVersions);
   const [current, setCurrent] = useState<number | null>(initialVersions[0]?.number ?? null);
   const [working, setWorking] = useState(false);
@@ -141,8 +143,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   // Phones: a dot on the Preview tab when the site changed while the owner was elsewhere.
   const [previewFresh, setPreviewFresh] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
-  const [previewError, setPreviewError] = useState(false);
+  // Paused: no preview to open, so it shows the "couldn't open" state at once.
+  const [previewLoading, setPreviewLoading] = useState(!paused && initialVersions.length > 0);
+  const [previewError, setPreviewError] = useState(paused && initialVersions.length > 0);
   const [previewAttempt, setPreviewAttempt] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
   const [mobileTab, setMobileTab] = useState<Tab>(templateName ? "preview" : "chat");
@@ -164,7 +167,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
 
   // Wake the sandbox for an existing site so the preview shows straight away.
   useEffect(() => {
-    if (initialVersions.length === 0) return;
+    if (paused || initialVersions.length === 0) return;
     let cancelled = false;
     fetch(`/api/projects/${projectId}/preview`, { method: "POST" })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("preview"))))
@@ -176,7 +179,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
     return () => {
       cancelled = true;
     };
-  }, [projectId, initialVersions.length, previewAttempt]);
+  }, [projectId, initialVersions.length, previewAttempt, paused]);
 
   const addAssistant = useCallback((text: string, extra: Partial<UiMessage> = {}) => {
     setMessages((m) => [...m, { id: nextId(), role: "assistant", text, ...extra }]);
@@ -285,7 +288,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 }
                 // A refusal is a normal answer, not a system failure.
                 else if (event.code === "blocked") addAssistant(t.blocked);
-                else addAssistant(event.code === "busy" ? t.busy : t.failed, { tone: "error" });
+                else addAssistant(event.code === "busy" ? t.busy : event.code === "paused" ? t.paused : t.failed, { tone: "error" });
                 break;
             }
           }
@@ -304,14 +307,14 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
 
   // A description typed on "Your sites" starts the build as soon as the new site opens.
   useEffect(() => {
-    if (initialMessages.length > 0 || initialVersions.length > 0) return;
+    if (paused || initialMessages.length > 0 || initialVersions.length > 0) return;
     // After hydration, and only once: the prompt is removed from storage as it is read.
     const id = setTimeout(() => {
       const start = takeStartPrompt();
       if (start) void send(start.text, start.languages);
     }, 0);
     return () => clearTimeout(id);
-  }, [initialMessages.length, initialVersions.length, send]);
+  }, [initialMessages.length, initialVersions.length, send, paused]);
 
   const retryPreview = useCallback(() => {
     setPreviewError(false);

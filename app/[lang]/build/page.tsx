@@ -92,7 +92,7 @@ export default async function ProjectsPage({
         {/* A warm glow behind the start box: the one place on the page that asks for something. */}
         <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(60%_70%_at_50%_0%,var(--gojo-coral-soft),transparent)]" />
         <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12">
-          {builder && <PresetStart autoStart={cards.length === 0} />}
+          {builder && !builder.paused && <PresetStart autoStart={cards.length === 0} />}
           {tooMany && (
             <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">
               {b.tooMany}
@@ -105,6 +105,12 @@ export default async function ProjectsPage({
             </>
           ) : (
             <>
+              {builder.paused ? (
+                <>
+                  <h1 className="text-2xl font-semibold tracking-tight">{name ? format(a.greeting, { name }) : a.greetingNoName}</h1>
+                  <p role="status" className="rounded-xl border border-line bg-white p-4 text-ink-muted">{b.paused}</p>
+                </>
+              ) : (
               <StartBox
                 t={{ startBody: b.startBody, startPlaceholder: b.startPlaceholder, ideasLabel: b.ideasLabel, ideas: b.ideas, startLang: b.startLang, langEn: b.langEn, langAm: b.langAm, langBothShort: b.langBothShort, newSite: b.newSite }}
                 locale={lang}
@@ -112,7 +118,8 @@ export default async function ProjectsPage({
                 title={name ? format(a.greeting, { name }) : a.greetingNoName}
                 autoStart={cards.length === 0}
               />
-              {cards.length === 0 && (
+              )}
+              {cards.length === 0 && !builder.paused && (
                 // First visit: the short video and steps, for owners who'd like to see how it works first.
                 <Link href={`/${lang}/guide`} className="-mt-4 inline-flex min-h-11 w-fit items-center gap-2 self-center rounded-full px-3 text-sm font-medium text-ink underline underline-offset-4 hover:bg-white/60">
                   <PlayCircle aria-hidden="true" className="size-5 shrink-0" />
