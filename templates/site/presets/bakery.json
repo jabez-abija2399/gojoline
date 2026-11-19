@@ -155,19 +155,11 @@
                 },
                 {
                   "name": { "en": "Cupcake", "am": "ካፕኬክ" },
-                  "price": { "amountMinor": 8000, "currency": "ETB" },
-                  "image": {
-                    "src": "/stock/bakery-gallery-cupcakes.webp",
-                    "alt": { "en": "Cupcakes with swirls of cream and chocolate on a wooden board", "am": "በእንጨት ሳንቃ ላይ ክሬምና ቸኮሌት ያላቸው ካፕኬኮች" }
-                  }
+                  "price": { "amountMinor": 8000, "currency": "ETB" }
                 },
                 {
                   "name": { "en": "Slice of cake", "am": "ቁራጭ ኬክ" },
-                  "price": { "amountMinor": 15000, "currency": "ETB" },
-                  "image": {
-                    "src": "/stock/bakery-gallery-cake-slice.webp",
-                    "alt": { "en": "A slice of vanilla cake on a white plate", "am": "በነጭ ሳህን ላይ ያለ የቫኒላ ኬክ ቁራጭ" }
-                  }
+                  "price": { "amountMinor": 15000, "currency": "ETB" }
                 }
               ]
             }
@@ -229,16 +221,16 @@
           "heading": { "en": "Straight from our oven", "am": "ከምድጃችን የወጡ" },
           "images": [
             {
-              "src": "/stock/bakery-hero-bakery-counter-cakes.webp",
-              "alt": { "en": "A bakery counter with whole cakes on glass stands", "am": "ሙሉ ኬኮች በመስታወት መቆሚያዎች ላይ ያሉበት የዳቦ ቤት መደርደሪያ" }
-            },
-            {
               "src": "/stock/bakery-gallery-cupcakes.webp",
               "alt": { "en": "Cupcakes with swirls of cream and chocolate on a wooden board", "am": "በእንጨት ሳንቃ ላይ ክሬምና ቸኮሌት ያላቸው ካፕኬኮች" }
             },
             {
-              "src": "/stock/bakery-card-white-tiered-wedding-cake.webp",
-              "alt": { "en": "A white three-tier wedding cake with sugar flowers", "am": "የስኳር አበቦች ያሉት ባለ ሦስት ደረጃ ነጭ የሠርግ ኬክ" }
+              "src": "/stock/bakery-hero-bakery-counter-cakes.webp",
+              "alt": { "en": "A bakery counter with whole cakes on glass stands", "am": "ሙሉ ኬኮች በመስታወት መቆሚያዎች ላይ ያሉበት የዳቦ ቤት መደርደሪያ" }
+            },
+            {
+              "src": "/stock/bakery-gallery-cake-slice.webp",
+              "alt": { "en": "A slice of vanilla cake on a white plate", "am": "በነጭ ሳህን ላይ ያለ የቫኒላ ኬክ ቁራጭ" }
             }
           ]
         },
@@ -265,10 +257,6 @@
           "id": "end",
           "heading": { "en": "Genna is coming", "am": "ገና እየመጣ ነው" },
           "body": { "en": "Holiday cakes sell out: order by 4 January.", "am": "የበዓል ኬኮች ያልቃሉ፤ እስከ ታኅሣሥ 26 ይዘዙ።" },
-          "image": {
-            "src": "/stock/bakery-card-black-forest-cake.webp",
-            "alt": { "en": "A black forest cake topped with cherries and chocolate", "am": "በቼሪና በቸኮሌት ያጌጠ ብላክ ፎረስት ኬክ" }
-          },
           "primaryAction": {
             "label": { "en": "Order a cake", "am": "ኬክ ይዘዙ" },
             "href": "/order"

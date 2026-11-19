@@ -39,7 +39,7 @@ export const am: Messages = {
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",
       build: "ድረ-ገጼን ሥራልኝ",
     },
-    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", darkMode: "ጨለማ ገጽታ", seeTemplates: "17ቱንም አብነቶች ይመልከቱ" },
+    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", darkMode: "ጨለማ ገጽታ", seeTemplates: "22ቱንም አብነቶች ይመልከቱ" },
     demo: {
       pick: "የንግድ ዓይነት ይምረጡ",
       prompts: {
@@ -61,7 +61,7 @@ export const am: Messages = {
     proof: [
       { value: "~40 ሰከንድ", label: "እስከ መጀመሪያው ድረ-ገጽ" },
       { value: "30 ከ30", label: "የሙከራ ድረ-ገጾች በመጀመሪያ ሙከራ በትክክል ተሠርተዋል" },
-      { value: "17", label: "ዝግጁ አብነቶች" },
+      { value: "22", label: "ዝግጁ አብነቶች" },
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
     eyebrows: { how: "እንዴት ይሠራል", features: "ባህሪያት", faq: "ማወቅ ያለብዎ", final: "ዛሬ ይጀምሩ" },
@@ -134,7 +134,7 @@ export const am: Messages = {
         events: "ሠርግና ዝግጅቶች",
         business: "ንግድና የግል",
       },
-      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ" },
+      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ", organic: "ለስላሳ", cinematic: "ፊልማዊ", brutal: "ብሎክ", calm: "ረጋ ያለ", kinetic: "ብርቱ" },
       features: { prices: "ዋጋ ወይም ምናሌ", booking: "የቀጠሮ ወይም የትዕዛዝ ቅጽ", gallery: "የፎቶ ማዕከል", team: "ቡድን ወይም ሠራተኞች", times: "የሥራ፣ የአገልግሎት ወይም የሶላት ሰዓት", reviews: "አስተያየቶች", map: "ካርታ" },
       about: {
         cafe: "ተወዳጅ ምግቦች፣ ሙሉ ምናሌና የጠረጴዛ ቀጠሮ",
@@ -154,6 +154,11 @@ export const am: Messages = {
         fashion: "ስብስብ ከመጠን ጋር፣ በልክ ማሰፋትና ከውጭ ማዘዝ",
         construction: "የዛሬ ዋጋ በመለኪያ፣ የዋጋ ጥያቄና ማድረስ",
         garage: "ቋሚ የአገልግሎት ዋጋ፣ ቀጠሮና መኪና ከሹፌር ጋር",
+        bakery: "ኬኮች ከመጠንና ከዋጋ ጋር፣ ትኩስ ዳቦና ከውጭ ማዘዝ",
+        studio: "ሠርጎች በጋለሪ፣ ፓኬጆች ጎን ለጎንና የቀን ጥያቄ",
+        training: "ኮርሶች ከክፍያና ከቅበላ ጋር፣ ሳምንታዊ የጊዜ ሰሌዳና ምዝገባ",
+        pharmacy: "የጤና ምርመራ፣ ፈቃድ ያለው ፋርማሲስትና የዕቃ ጥያቄ",
+        gym: "አባልነት፣ የክፍሎች ሰሌዳና ነጻ የመጀመሪያ ጉብኝት",
       },
     },
     templatePreview: {
@@ -468,6 +473,11 @@ export const am: Messages = {
       fashion: "ፋሽን ወይም ልብስ ሰፊ",
       construction: "የግንባታ ዕቃ ወይም ሥራ ተቋራጭ",
       garage: "ጋራዥ ወይም የመኪና ኪራይ",
+      bakery: "ዳቦ ወይም ኬክ ቤት",
+      studio: "ፎቶ አንሺ ወይም ስቱዲዮ",
+      training: "የሥልጠና ማዕከል ወይም ማጠናከሪያ",
+      pharmacy: "ፋርማሲ",
+      gym: "ጂም ወይም የአካል ብቃት",
     },
     empty: "እስካሁን ድረ-ገጽ የለዎትም። አንድ ይጀምሩ፤ ጥቂት ደቂቃዎች ብቻ ይወስዳል።",
     untitled: "አዲስ ድረ-ገጽ",

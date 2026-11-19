@@ -100,8 +100,8 @@ save("bakery", {
               items: [
                 { name: t("Croissant", "ክሮሳንት"), price: birr(70), image: P.croissants, tag: t("Warm at 7", "1 ሰዓት ላይ ትኩስ") },
                 { name: t("Round loaf", "ክብ ዳቦ"), price: birr(90), image: P.bread },
-                { name: t("Cupcake", "ካፕኬክ"), price: birr(80), image: P.cupcakes },
-                { name: t("Slice of cake", "ቁራጭ ኬክ"), price: birr(150), image: P.slice },
+                { name: t("Cupcake", "ካፕኬክ"), price: birr(80) },
+                { name: t("Slice of cake", "ቁራጭ ኬክ"), price: birr(150) },
               ],
             },
           ],
@@ -136,7 +136,7 @@ save("bakery", {
           layout: "prints",
           eyebrow: t("Made this week", "በዚህ ሳምንት የተሠሩ"),
           heading: t("Straight from our oven", "ከምድጃችን የወጡ"),
-          images: [P.counter, P.cupcakes, P.wedding],
+          images: [P.cupcakes, P.counter, P.slice],
         },
         {
           type: "testimonials",
@@ -153,7 +153,6 @@ save("bakery", {
           id: "end",
           heading: t("Genna is coming", "ገና እየመጣ ነው"),
           body: t("Holiday cakes sell out: order by 4 January.", "የበዓል ኬኮች ያልቃሉ፤ እስከ ታኅሣሥ 26 ይዘዙ።"),
-          image: P.forest,
           primaryAction: order,
           secondaryAction: cakes,
         },

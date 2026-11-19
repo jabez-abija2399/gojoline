@@ -422,5 +422,115 @@
         "height": 933
       }
     }
+  },
+  "bakery": {
+    "en": {
+      "src": "/showcase/bakery-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/bakery-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/bakery-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/bakery-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "gym": {
+    "en": {
+      "src": "/showcase/gym-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/gym-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/gym-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/gym-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "pharmacy": {
+    "en": {
+      "src": "/showcase/pharmacy-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/pharmacy-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/pharmacy-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/pharmacy-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "studio": {
+    "en": {
+      "src": "/showcase/studio-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/studio-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/studio-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/studio-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "training": {
+    "en": {
+      "src": "/showcase/training-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/training-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/training-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/training-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }
