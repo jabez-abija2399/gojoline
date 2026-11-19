@@ -45,7 +45,7 @@ const orderForm = {
 
 save("bakery", {
   name: t("Lidya Cakes", "ሊዲያ ኬክ"),
-  tagline: t("Cakes for every celebration and bread every morning, in Bole, Addis Ababa", "ለየበዓሉ ኬክና በየማለዳው ዳቦ፣ ቦሌ፣ አዲስ አበባ"),
+  tagline: t("Cakes for every celebration and bread every morning, in Bole, Addis Ababa", "ለሁሉም በዓል ኬክና በየማለዳው ዳቦ፣ ቦሌ፣ አዲስ አበባ"),
   languages: ["en", "am"],
   theme: { primary: "#A3324B", accent: "#2E1D17", background: "#FFF8F0", text: "#2E1D17", highlight: "#F2C14E", font: "classic", radius: "large", style: "organic" },
   business: {
@@ -66,7 +66,7 @@ save("bakery", {
           variant: "split",
           id: "top",
           eyebrow: t("Baked fresh in Bole", "በቦሌ ትኩስ የተጋገረ"),
-          heading: t("Cakes for every celebration", "ለየበዓሉ የሚሆን ኬክ"),
+          heading: t("Cakes for every celebration", "ለሁሉም በዓል የሚሆን ኬክ"),
           subheading: t("Birthdays, weddings and holidays, made to order. Fresh bread and pastries every morning from half past six.", "ልደት፣ ሠርግና በዓል፣ በትዕዛዝ። ትኩስ ዳቦና ኬክ በየማለዳው ከ12:30 ጀምሮ።"),
           image: P.layered,
           stamp: t("Order two days ahead · Bole · ", "ከሁለት ቀን በፊት ይዘዙ · ቦሌ · "),
@@ -164,7 +164,7 @@ save("bakery", {
       nav: t("Cakes", "ኬኮች"),
       description: t("Celebration cakes from Lidya Cakes with sizes and prices in Birr: birthday, black forest and wedding cakes, made to order.", "የሊዲያ ኬክ የበዓል ኬኮች ከመጠንና ከዋጋ ጋር በብር፦ የልደት፣ ብላክ ፎረስትና የሠርግ ኬኮች፣ በትዕዛዝ።"),
       sections: [
-        { type: "cards", id: "all", layout: "grid", eyebrow: t("Made to order", "በትዕዛዝ"), heading: t("All our cakes", "ሁሉም ኬኮቻችን"), intro: t("Prices in Birr. Other sizes and flavours on request.", "ዋጋ በብር። ሌላ መጠንና ጣዕም ሲጠየቅ።"), items: cakeCards },
+        { type: "cards", id: "all", layout: "grid", eyebrow: t("Made to order", "በትዕዛዝ"), heading: t("All our cakes", "ሁሉም ኬኮቻችን"), intro: t("Prices in Birr. Other sizes and flavours on request.", "ዋጋ በብር። ሌላ መጠንና ጣዕም ሲጠይቁ እንሠራለን።"), items: cakeCards },
         {
           type: "faq",
           id: "questions",

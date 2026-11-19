@@ -1,6 +1,6 @@
 {
   "name": { "en": "Lidya Cakes", "am": "ሊዲያ ኬክ" },
-  "tagline": { "en": "Cakes for every celebration and bread every morning, in Bole, Addis Ababa", "am": "ለየበዓሉ ኬክና በየማለዳው ዳቦ፣ ቦሌ፣ አዲስ አበባ" },
+  "tagline": { "en": "Cakes for every celebration and bread every morning, in Bole, Addis Ababa", "am": "ለሁሉም በዓል ኬክና በየማለዳው ዳቦ፣ ቦሌ፣ አዲስ አበባ" },
   "languages": [
     "en",
     "am"
@@ -29,7 +29,7 @@
           "variant": "split",
           "id": "top",
           "eyebrow": { "en": "Baked fresh in Bole", "am": "በቦሌ ትኩስ የተጋገረ" },
-          "heading": { "en": "Cakes for every celebration", "am": "ለየበዓሉ የሚሆን ኬክ" },
+          "heading": { "en": "Cakes for every celebration", "am": "ለሁሉም በዓል የሚሆን ኬክ" },
           "subheading": { "en": "Birthdays, weddings and holidays, made to order. Fresh bread and pastries every morning from half past six.", "am": "ልደት፣ ሠርግና በዓል፣ በትዕዛዝ። ትኩስ ዳቦና ኬክ በየማለዳው ከ12:30 ጀምሮ።" },
           "image": {
             "src": "/stock/bakery-hero-layered-flower-cake.webp",
@@ -280,7 +280,7 @@
           "layout": "grid",
           "eyebrow": { "en": "Made to order", "am": "በትዕዛዝ" },
           "heading": { "en": "All our cakes", "am": "ሁሉም ኬኮቻችን" },
-          "intro": { "en": "Prices in Birr. Other sizes and flavours on request.", "am": "ዋጋ በብር። ሌላ መጠንና ጣዕም ሲጠየቅ።" },
+          "intro": { "en": "Prices in Birr. Other sizes and flavours on request.", "am": "ዋጋ በብር። ሌላ መጠንና ጣዕም ሲጠይቁ እንሠራለን።" },
           "items": [
             {
               "image": {

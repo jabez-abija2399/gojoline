@@ -13,7 +13,7 @@
     "hours": [
       {
         "days": { "en": "Monday to Saturday", "am": "ከሰኞ እስከ ቅዳሜ" },
-        "time": { "en": "5:30 am to 10:00 pm", "am": "ከ11:30 እስከ ምሽቱ 4 ሰዓት" }
+        "time": { "en": "5:30 am to 10:00 pm", "am": "ከንጋቱ 11:30 እስከ ምሽቱ 4 ሰዓት" }
       },
       {
         "days": { "en": "Sunday", "am": "እሑድ" },
@@ -32,9 +32,9 @@
           "type": "hero",
           "variant": "immersive",
           "id": "top",
-          "eyebrow": { "en": "Sarbet · open from 5:30 am", "am": "ሳር ቤት · ከ11:30 ጀምሮ ክፍት" },
-          "heading": { "en": "Train harder", "am": "ጠንክረው ይሥሩ" },
-          "subheading": { "en": "Free weights, real coaches and classes every day. Your first visit is on us.", "am": "ነጻ ክብደቶች፣ እውነተኛ አሠልጣኞችና በየቀኑ ክፍሎች። የመጀመሪያ ጉብኝትዎ በእኛ ነው።" },
+          "eyebrow": { "en": "Sarbet · open from 5:30 am", "am": "ሳር ቤት · ከንጋቱ 11:30 ጀምሮ ክፍት" },
+          "heading": { "en": "Train harder", "am": "ጠንክረው ይለማመዱ" },
+          "subheading": { "en": "Free weights, real coaches and classes every day. Your first visit is on us.", "am": "ዳምቤልና ባርቤል፣ እውነተኛ አሠልጣኞችና በየቀኑ ክፍሎች። የመጀመሪያ ጉብኝትዎ በእኛ ነው።" },
           "image": {
             "src": "/stock/gym-hero-deadlift.webp",
             "alt": { "en": "A man lifting a heavy barbell off the floor", "am": "ከባድ ባርቤል ከወለል የሚያነሳ ሰው" }
@@ -63,7 +63,7 @@
             },
             {
               "value": { "en": "5", "am": "5" },
-              "label": { "en": "certified trainers", "am": "የተረጋገጡ አሠልጣኞች" }
+              "label": { "en": "certified trainers", "am": "ሰርተፊኬት ያላቸው አሠልጣኞች" }
             }
           ]
         },
@@ -138,7 +138,7 @@
               "price": { "amountMinor": 250000, "currency": "ETB" },
               "priceNote": { "en": "a month", "am": "በወር" },
               "meta": [
-                { "en": "Gym floor, 5:30 am to 10 pm", "am": "የጂም ወለል፣ ከ11:30 እስከ 4 ሰዓት" },
+                { "en": "Gym floor, 5:30 am to 10 pm", "am": "የጂም ወለል፣ ከንጋቱ 11:30 እስከ ምሽቱ 4 ሰዓት" },
                 { "en": "All group classes", "am": "ሁሉም የቡድን ክፍሎች" },
                 { "en": "A plan from a trainer", "am": "ከአሠልጣኝ የሚዘጋጅ ዕቅድ" },
                 { "en": "Lockers and showers", "am": "ቁም ሣጥንና ሻወር" }
@@ -171,47 +171,48 @@
           "layout": "week",
           "eyebrow": { "en": "Classes", "am": "ክፍሎች" },
           "heading": { "en": "This week on the floor", "am": "የዚህ ሳምንት ክፍሎች" },
+          "footnote": { "en": "Amharic times use the Ethiopian clock.", "am": "ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።" },
           "items": [
             {
               "day": { "en": "Monday", "am": "ሰኞ" },
-              "time": { "en": "6:30 am", "am": "12:30" },
+              "time": { "en": "6:30 am", "am": "ጠዋት 12:30" },
               "title": { "en": "Strength", "am": "ጥንካሬ" }
             },
             {
               "day": { "en": "Monday", "am": "ሰኞ" },
-              "time": { "en": "6:00 pm", "am": "12:00" },
+              "time": { "en": "6:00 pm", "am": "ማታ 12:00" },
               "title": { "en": "Boxing", "am": "ቦክስ" }
             },
             {
               "day": { "en": "Tuesday", "am": "ማክሰኞ" },
-              "time": { "en": "7:00 am", "am": "1:00" },
+              "time": { "en": "7:00 am", "am": "ጠዋት 1:00" },
               "title": { "en": "Aerobics", "am": "ኤሮቢክስ" },
               "note": { "en": "Women only", "am": "ለሴቶች ብቻ" }
             },
             {
               "day": { "en": "Tuesday", "am": "ማክሰኞ" },
-              "time": { "en": "6:00 pm", "am": "12:00" },
+              "time": { "en": "6:00 pm", "am": "ማታ 12:00" },
               "title": { "en": "Circuit", "am": "ሰርኪት" }
             },
             {
               "day": { "en": "Thursday", "am": "ሐሙስ" },
-              "time": { "en": "6:30 am", "am": "12:30" },
+              "time": { "en": "6:30 am", "am": "ጠዋት 12:30" },
               "title": { "en": "Strength", "am": "ጥንካሬ" }
             },
             {
               "day": { "en": "Thursday", "am": "ሐሙስ" },
-              "time": { "en": "6:00 pm", "am": "12:00" },
+              "time": { "en": "6:00 pm", "am": "ማታ 12:00" },
               "title": { "en": "Boxing", "am": "ቦክስ" }
             },
             {
               "day": { "en": "Saturday", "am": "ቅዳሜ" },
-              "time": { "en": "8:00 am", "am": "2:00" },
+              "time": { "en": "8:00 am", "am": "ጠዋት 2:00" },
               "title": { "en": "Outdoor run", "am": "የውጪ ሩጫ" },
               "note": { "en": "From the gym door", "am": "ከጂሙ በር" }
             },
             {
               "day": { "en": "Saturday", "am": "ቅዳሜ" },
-              "time": { "en": "10:00 am", "am": "4:00" },
+              "time": { "en": "10:00 am", "am": "ጠዋት 4:00" },
               "title": { "en": "Stretch and mobility", "am": "መለጠጥና እንቅስቃሴ" },
               "note": { "en": "Women only", "am": "ለሴቶች ብቻ" }
             }
@@ -225,7 +226,7 @@
             {
               "quote": { "en": "The women-only mornings got me started. Six months later I lift with everyone.", "am": "የሴቶች ብቻ ጠዋቶች አስጀመሩኝ። ከስድስት ወር በኋላ ከሁሉም ጋር አነሳለሁ።" },
               "name": "Selam A.",
-              "role": { "en": "Member since 2025", "am": "ከ2025 ጀምሮ አባል" }
+              "role": { "en": "Member since 2025", "am": "ከ2017 ዓ.ም. ጀምሮ አባል" }
             },
             {
               "quote": { "en": "Coaches who actually watch your form. Best gym in Sarbet.", "am": "አቋምዎን በእውነት የሚያዩ አሠልጣኞች። በሳር ቤት ምርጡ ጂም።" },
@@ -288,7 +289,7 @@
           "layout": "pricing",
           "eyebrow": { "en": "Memberships", "am": "አባልነት" },
           "heading": { "en": "Pick a plan", "am": "ዕቅድ ይምረጡ" },
-          "intro": { "en": "Pay by Telebirr, bank transfer or cash. Freeze your membership for up to a month when you travel.", "am": "በቴሌብር፣ በባንክ ዝውውር ወይም በጥሬ ይክፈሉ። ሲጓዙ አባልነትዎን እስከ አንድ ወር ማቆየት ይችላሉ።" },
+          "intro": { "en": "Pay by Telebirr, bank transfer or cash. Freeze your membership for up to a month when you travel.", "am": "በቴሌብር፣ በባንክ ዝውውር ወይም በጥሬ ይክፈሉ። ሲጓዙ አባልነትዎን እስከ አንድ ወር ማቆም ይችላሉ።" },
           "items": [
             {
               "title": { "en": "Day pass", "am": "የቀን ማለፊያ" },
@@ -311,7 +312,7 @@
               "price": { "amountMinor": 250000, "currency": "ETB" },
               "priceNote": { "en": "a month", "am": "በወር" },
               "meta": [
-                { "en": "Gym floor, 5:30 am to 10 pm", "am": "የጂም ወለል፣ ከ11:30 እስከ 4 ሰዓት" },
+                { "en": "Gym floor, 5:30 am to 10 pm", "am": "የጂም ወለል፣ ከንጋቱ 11:30 እስከ ምሽቱ 4 ሰዓት" },
                 { "en": "All group classes", "am": "ሁሉም የቡድን ክፍሎች" },
                 { "en": "A plan from a trainer", "am": "ከአሠልጣኝ የሚዘጋጅ ዕቅድ" },
                 { "en": "Lockers and showers", "am": "ቁም ሣጥንና ሻወር" }
@@ -396,47 +397,48 @@
           "layout": "week",
           "eyebrow": { "en": "Classes", "am": "ክፍሎች" },
           "heading": { "en": "This week on the floor", "am": "የዚህ ሳምንት ክፍሎች" },
+          "footnote": { "en": "Amharic times use the Ethiopian clock.", "am": "ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።" },
           "items": [
             {
               "day": { "en": "Monday", "am": "ሰኞ" },
-              "time": { "en": "6:30 am", "am": "12:30" },
+              "time": { "en": "6:30 am", "am": "ጠዋት 12:30" },
               "title": { "en": "Strength", "am": "ጥንካሬ" }
             },
             {
               "day": { "en": "Monday", "am": "ሰኞ" },
-              "time": { "en": "6:00 pm", "am": "12:00" },
+              "time": { "en": "6:00 pm", "am": "ማታ 12:00" },
               "title": { "en": "Boxing", "am": "ቦክስ" }
             },
             {
               "day": { "en": "Tuesday", "am": "ማክሰኞ" },
-              "time": { "en": "7:00 am", "am": "1:00" },
+              "time": { "en": "7:00 am", "am": "ጠዋት 1:00" },
               "title": { "en": "Aerobics", "am": "ኤሮቢክስ" },
               "note": { "en": "Women only", "am": "ለሴቶች ብቻ" }
             },
             {
               "day": { "en": "Tuesday", "am": "ማክሰኞ" },
-              "time": { "en": "6:00 pm", "am": "12:00" },
+              "time": { "en": "6:00 pm", "am": "ማታ 12:00" },
               "title": { "en": "Circuit", "am": "ሰርኪት" }
             },
             {
               "day": { "en": "Thursday", "am": "ሐሙስ" },
-              "time": { "en": "6:30 am", "am": "12:30" },
+              "time": { "en": "6:30 am", "am": "ጠዋት 12:30" },
               "title": { "en": "Strength", "am": "ጥንካሬ" }
             },
             {
               "day": { "en": "Thursday", "am": "ሐሙስ" },
-              "time": { "en": "6:00 pm", "am": "12:00" },
+              "time": { "en": "6:00 pm", "am": "ማታ 12:00" },
               "title": { "en": "Boxing", "am": "ቦክስ" }
             },
             {
               "day": { "en": "Saturday", "am": "ቅዳሜ" },
-              "time": { "en": "8:00 am", "am": "2:00" },
+              "time": { "en": "8:00 am", "am": "ጠዋት 2:00" },
               "title": { "en": "Outdoor run", "am": "የውጪ ሩጫ" },
               "note": { "en": "From the gym door", "am": "ከጂሙ በር" }
             },
             {
               "day": { "en": "Saturday", "am": "ቅዳሜ" },
-              "time": { "en": "10:00 am", "am": "4:00" },
+              "time": { "en": "10:00 am", "am": "ጠዋት 4:00" },
               "title": { "en": "Stretch and mobility", "am": "መለጠጥና እንቅስቃሴ" },
               "note": { "en": "Women only", "am": "ለሴቶች ብቻ" }
             }

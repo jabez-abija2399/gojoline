@@ -1,6 +1,7 @@
 import { DateLine } from "../components/DateLine";
 import { useNextTime } from "../components/NextUp";
 import { SectionHead } from "../components/SectionHead";
+import { ItemTitle } from "../components/SectionTitle";
 import { uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
 import type { ScheduleSection } from "../lib/types";
@@ -35,10 +36,11 @@ export function Schedule({ section }: { section: ScheduleSection }) {
       <section id={section.id ?? "schedule"} className="section">
         <div className="container-site flex flex-col gap-8 md:gap-10">
           <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
-          <ul className="week-grid" style={{ "--days": days.length } as React.CSSProperties}>
+          {/* Scrolls sideways on phones: focusable and named, so keyboards can reach every day. */}
+          <ul className="week-grid" tabIndex={0} aria-label={text(section.heading)} style={{ "--days": days.length } as React.CSSProperties}>
             {days.map((d, di) => (
               <li key={di} className="week-day reveal" style={{ "--i": di } as React.CSSProperties}>
-                {d.day && <p className="week-day-name">{d.day}</p>}
+                {d.day && <ItemTitle className="week-day-name">{d.day}</ItemTitle>}
                 <ul className="flex flex-col gap-2">
                   {d.items.map((item, ii) => (
                     <li key={ii} className="week-slot">

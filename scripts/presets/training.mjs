@@ -25,24 +25,24 @@ const courseCards = [
   { image: P.studying, badge: t("Exam prep", "የፈተና ዝግጅት"), title: t("Grade 12 national exam prep", "የ12ኛ ክፍል ብሔራዊ ፈተና ዝግጅት"), meta: [t("4 months", "4 ወር"), t("Weekends", "ቅዳሜና እሑድ"), t("Next class 12 January", "ቀጣይ ክፍል ጥር 4")], price: birr(2500), priceNote: month, action: register },
   { image: P.english, badge: t("Languages", "ቋንቋ"), title: t("IELTS and English", "አይኤልቲኤስና እንግሊዝኛ"), meta: [t("8 weeks", "8 ሳምንት"), t("Evenings", "ምሽት"), t("Next class 5 January", "ቀጣይ ክፍል ታኅሣሥ 27")], price: birr(6000), priceNote: t("whole course", "ለሙሉ ኮርሱ"), action: register },
   { image: P.computers, badge: t("Computers", "ኮምፒውተር"), title: t("Computer basics and Excel", "የኮምፒውተር መሠረታዊና ኤክሴል"), meta: [t("6 weeks", "6 ሳምንት"), t("Mornings or evenings", "ጠዋት ወይም ምሽት"), t("Certificate", "ሰርተፊኬት")], price: birr(4500), priceNote: t("whole course", "ለሙሉ ኮርሱ"), action: register },
-  { image: P.driving, badge: t("Driving", "መንጃ"), title: t("Driving lessons, automatic", "የማሽከርከር ትምህርት፣ አውቶማቲክ"), meta: [t("20 lessons", "20 ትምህርቶች"), t("Theory and road", "ቲዎሪና መንገድ")], price: birr(9000), priceNote: t("whole course", "ለሙሉ ኮርሱ"), action: register },
+  { image: P.driving, badge: t("Driving", "ማሽከርከር"), title: t("Driving lessons, automatic", "የማሽከርከር ትምህርት፣ አውቶማቲክ"), meta: [t("20 lessons", "20 ትምህርቶች"), t("Theory and road", "ቲዎሪና መንገድ")], price: birr(9000), priceNote: t("whole course", "ለሙሉ ኮርሱ"), action: register },
 ];
 
 const timetable = {
   type: "schedule",
   id: "week",
   layout: "week",
-  eyebrow: t("This term", "በዚህ ተርም"),
+  eyebrow: t("This term", "በዚህ ሴሚስተር"),
   heading: t("Weekly timetable", "ሳምንታዊ የጊዜ ሰሌዳ"),
   items: [
-    { day: t("Monday", "ሰኞ"), time: t("5:30 pm", "11:30"), title: t("IELTS, room 2", "አይኤልቲኤስ፣ ክፍል 2") },
-    { day: t("Monday", "ሰኞ"), time: t("7:00 pm", "1:00"), title: t("Excel, lab", "ኤክሴል፣ ላብ") },
-    { day: t("Wednesday", "ረቡዕ"), time: t("5:30 pm", "11:30"), title: t("IELTS, room 2", "አይኤልቲኤስ፣ ክፍል 2") },
-    { day: t("Wednesday", "ረቡዕ"), time: t("7:00 pm", "1:00"), title: t("Computer basics, lab", "የኮምፒውተር መሠረታዊ፣ ላብ") },
-    { day: t("Saturday", "ቅዳሜ"), time: t("8:30 am", "2:30"), title: t("Maths, grade 12", "ሂሳብ፣ 12ኛ ክፍል"), note: t("Mock exam", "የሙከራ ፈተና") },
-    { day: t("Saturday", "ቅዳሜ"), time: t("11:00 am", "5:00"), title: t("Physics, grade 12", "ፊዚክስ፣ 12ኛ ክፍል") },
-    { day: t("Sunday", "እሑድ"), time: t("8:30 am", "2:30"), title: t("English, grade 12", "እንግሊዝኛ፣ 12ኛ ክፍል") },
-    { day: t("Sunday", "እሑድ"), time: t("11:00 am", "5:00"), title: t("Biology, grade 12", "ባዮሎጂ፣ 12ኛ ክፍል") },
+    { day: t("Monday", "ሰኞ"), time: t("5:30 pm", "ከሰዓት 11:30"), title: t("IELTS, room 2", "አይኤልቲኤስ፣ ክፍል 2") },
+    { day: t("Monday", "ሰኞ"), time: t("7:00 pm", "ማታ 1:00"), title: t("Excel, lab", "ኤክሴል፣ ላብ") },
+    { day: t("Wednesday", "ረቡዕ"), time: t("5:30 pm", "ከሰዓት 11:30"), title: t("IELTS, room 2", "አይኤልቲኤስ፣ ክፍል 2") },
+    { day: t("Wednesday", "ረቡዕ"), time: t("7:00 pm", "ማታ 1:00"), title: t("Computer basics, lab", "የኮምፒውተር መሠረታዊ፣ ላብ") },
+    { day: t("Saturday", "ቅዳሜ"), time: t("8:30 am", "ጠዋት 2:30"), title: t("Maths, grade 12", "ሂሳብ፣ 12ኛ ክፍል"), note: t("Mock exam", "የሙከራ ፈተና") },
+    { day: t("Saturday", "ቅዳሜ"), time: t("11:00 am", "ጠዋት 5:00"), title: t("Physics, grade 12", "ፊዚክስ፣ 12ኛ ክፍል") },
+    { day: t("Sunday", "እሑድ"), time: t("8:30 am", "ጠዋት 2:30"), title: t("English, grade 12", "እንግሊዝኛ፣ 12ኛ ክፍል") },
+    { day: t("Sunday", "እሑድ"), time: t("11:00 am", "ጠዋት 5:00"), title: t("Biology, grade 12", "ባዮሎጂ፣ 12ኛ ክፍል") },
   ],
   footnote: t("Amharic times use the Ethiopian clock.", "ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።"),
 };
@@ -175,7 +175,7 @@ save("training", {
       path: "/timetable",
       title: t("Timetable", "የጊዜ ሰሌዳ"),
       nav: t("Timetable", "የጊዜ ሰሌዳ"),
-      description: t("The weekly timetable of Lucy Academy this term.", "የሉሲ አካዳሚ የዚህ ተርም ሳምንታዊ የጊዜ ሰሌዳ።"),
+      description: t("The weekly timetable of Lucy Academy this term.", "የሉሲ አካዳሚ የዚህ ሴሚስተር ሳምንታዊ የጊዜ ሰሌዳ።"),
       sections: [{ ...timetable, id: "week-all" }],
     },
     {

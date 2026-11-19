@@ -31,7 +31,7 @@ const bookForm = {
   id: "date",
   kind: "booking",
   heading: t("Is my date free?", "ቀኔ ክፍት ነው?"),
-  intro: t("We take one wedding a day. Tell us your date and we answer on Telegram the same day.", "በቀን አንድ ሠርግ ብቻ እንይዛለን። ቀንዎን ይንገሩን፤ በዕለቱ በቴሌግራም እንመልሳለን።"),
+  intro: t("We take one wedding a day. Tell us your date and we answer on Telegram the same day.", "በቀን አንድ ሠርግ ብቻ እንይዛለን። ቀናችሁን ንገሩን፤ በዕለቱ በቴሌግራም እንመልሳለን።"),
   fields: [
     { name: "names", label: t("Your names", "ስማችሁ"), type: "text", required: true },
     { name: "phone", label: t("Phone or Telegram", "ስልክ ወይም ቴሌግራም"), type: "tel", required: true },
@@ -60,7 +60,7 @@ save("studio", {
       path: "/",
       title: t("Home", "መነሻ"),
       nav: t("Home", "መነሻ"),
-      description: t("Wedding photography and film in Addis Ababa: the wedding day, melse and kelekel, with packages in Birr and dates for couples abroad.", "የሠርግ ፎቶና ቪዲዮ በአዲስ አበባ፦ የሠርግ ዕለት፣ መልስና ቅልቅል፤ ፓኬጆች በብርና ለውጭ ነዋሪ ጥንዶች ቀን።"),
+      description: t("Wedding photography and film in Addis Ababa: the wedding day, melse and kelekel, with packages in Birr and dates for couples abroad.", "የሠርግ ፎቶና ቪዲዮ በአዲስ አበባ፦ የሠርግ ዕለት፣ መልስና ቅልቅል፤ ፓኬጆች በብር፤ በውጭ የሚኖሩ ጥንዶችም ቀን ማስያዝ ይችላሉ።"),
       sections: [
         {
           type: "hero",
@@ -86,7 +86,7 @@ save("studio", {
           id: "us",
           eyebrow: t("Behind the camera", "ከካሜራው ጀርባ"),
           heading: t("We watch, and wait for the moment", "እንመለከታለን፣ ጊዜውን እንጠብቃለን"),
-          body: t("We don't stage your day. We stay close, quiet and early, so the photos show how it felt: the laughter at the door, the songs, your mother's face.", "ቀናችሁን አናዘጋጅም። ቀርበን፣ ዝም ብለንና ቀድመን እንገኛለን፤ ፎቶዎቹ ስሜቱን እንዲያሳዩ፦ በሩ ላይ ያለውን ሳቅ፣ ዘፈኑን፣ የእናታችሁን ፊት።"),
+          body: t("We don't stage your day. We stay close, quiet and early, so the photos show how it felt: the laughter at the door, the songs, your mother's face.", "ቀናችሁን አናዘጋጅም። ቀርበን፣ በጸጥታና ቀድመን እንገኛለን፤ ፎቶዎቹ ስሜቱን እንዲያሳዩ፦ በሩ ላይ ያለውን ሳቅ፣ ዘፈኑን፣ የእናታችሁን ፊት።"),
           image: P.photographer,
           imageSide: "end",
         },
@@ -95,7 +95,7 @@ save("studio", {
           id: "packages",
           layout: "pricing",
           eyebrow: t("Packages", "ፓኬጆች"),
-          heading: t("Choose how much of the story", "ምን ያህሉን ታሪክ"),
+          heading: t("Choose how much of the story", "ከታሪኩ ምን ያህሉን ትፈልጋላችሁ?"),
           intro: t("Prices in Birr. Travel outside Addis is added at cost.", "ዋጋ በብር። ከአዲስ አበባ ውጭ ለሚደረግ ጉዞ ወጪው ይጨመራል።"),
           items: tiers,
         },

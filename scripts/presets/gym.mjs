@@ -23,7 +23,7 @@ const P = {
 
 const tiers = [
   { title: t("Day pass", "የቀን ማለፊያ"), subtitle: t("Try a day, any day", "አንድ ቀን ይሞክሩ"), price: birr(300), priceNote: t("a day", "በቀን"), meta: [t("Gym floor", "የጂም ወለል"), t("Lockers and showers", "ቁም ሣጥንና ሻወር")], action: join },
-  { title: t("Monthly", "ወርሃዊ"), subtitle: t("Everything, every day", "ሁሉንም፣ በየቀኑ"), badge: t("Most chosen", "በብዛት የሚመረጥ"), price: birr(2500), priceNote: month, meta: [t("Gym floor, 5:30 am to 10 pm", "የጂም ወለል፣ ከ11:30 እስከ 4 ሰዓት"), t("All group classes", "ሁሉም የቡድን ክፍሎች"), t("A plan from a trainer", "ከአሠልጣኝ የሚዘጋጅ ዕቅድ"), t("Lockers and showers", "ቁም ሣጥንና ሻወር")], action: join },
+  { title: t("Monthly", "ወርሃዊ"), subtitle: t("Everything, every day", "ሁሉንም፣ በየቀኑ"), badge: t("Most chosen", "በብዛት የሚመረጥ"), price: birr(2500), priceNote: month, meta: [t("Gym floor, 5:30 am to 10 pm", "የጂም ወለል፣ ከንጋቱ 11:30 እስከ ምሽቱ 4 ሰዓት"), t("All group classes", "ሁሉም የቡድን ክፍሎች"), t("A plan from a trainer", "ከአሠልጣኝ የሚዘጋጅ ዕቅድ"), t("Lockers and showers", "ቁም ሣጥንና ሻወር")], action: join },
   { title: t("Three months", "ሦስት ወር"), subtitle: t("For a real change", "ለእውነተኛ ለውጥ"), price: birr(6500), priceNote: t("for 3 months", "ለ3 ወር"), meta: [t("Everything in monthly", "የወርሃዊው ሁሉ"), t("Two personal sessions", "ሁለት የግል ልምምዶች"), t("Body check every month", "በየወሩ የሰውነት ምርመራ")], action: join },
 ];
 
@@ -33,15 +33,16 @@ const timetable = {
   layout: "week",
   eyebrow: t("Classes", "ክፍሎች"),
   heading: t("This week on the floor", "የዚህ ሳምንት ክፍሎች"),
+  footnote: t("Amharic times use the Ethiopian clock.", "ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።"),
   items: [
-    { day: t("Monday", "ሰኞ"), time: t("6:30 am", "12:30"), title: t("Strength", "ጥንካሬ") },
-    { day: t("Monday", "ሰኞ"), time: t("6:00 pm", "12:00"), title: t("Boxing", "ቦክስ") },
-    { day: t("Tuesday", "ማክሰኞ"), time: t("7:00 am", "1:00"), title: t("Aerobics", "ኤሮቢክስ"), note: t("Women only", "ለሴቶች ብቻ") },
-    { day: t("Tuesday", "ማክሰኞ"), time: t("6:00 pm", "12:00"), title: t("Circuit", "ሰርኪት") },
-    { day: t("Thursday", "ሐሙስ"), time: t("6:30 am", "12:30"), title: t("Strength", "ጥንካሬ") },
-    { day: t("Thursday", "ሐሙስ"), time: t("6:00 pm", "12:00"), title: t("Boxing", "ቦክስ") },
-    { day: t("Saturday", "ቅዳሜ"), time: t("8:00 am", "2:00"), title: t("Outdoor run", "የውጪ ሩጫ"), note: t("From the gym door", "ከጂሙ በር") },
-    { day: t("Saturday", "ቅዳሜ"), time: t("10:00 am", "4:00"), title: t("Stretch and mobility", "መለጠጥና እንቅስቃሴ"), note: t("Women only", "ለሴቶች ብቻ") },
+    { day: t("Monday", "ሰኞ"), time: t("6:30 am", "ጠዋት 12:30"), title: t("Strength", "ጥንካሬ") },
+    { day: t("Monday", "ሰኞ"), time: t("6:00 pm", "ማታ 12:00"), title: t("Boxing", "ቦክስ") },
+    { day: t("Tuesday", "ማክሰኞ"), time: t("7:00 am", "ጠዋት 1:00"), title: t("Aerobics", "ኤሮቢክስ"), note: t("Women only", "ለሴቶች ብቻ") },
+    { day: t("Tuesday", "ማክሰኞ"), time: t("6:00 pm", "ማታ 12:00"), title: t("Circuit", "ሰርኪት") },
+    { day: t("Thursday", "ሐሙስ"), time: t("6:30 am", "ጠዋት 12:30"), title: t("Strength", "ጥንካሬ") },
+    { day: t("Thursday", "ሐሙስ"), time: t("6:00 pm", "ማታ 12:00"), title: t("Boxing", "ቦክስ") },
+    { day: t("Saturday", "ቅዳሜ"), time: t("8:00 am", "ጠዋት 2:00"), title: t("Outdoor run", "የውጪ ሩጫ"), note: t("From the gym door", "ከጂሙ በር") },
+    { day: t("Saturday", "ቅዳሜ"), time: t("10:00 am", "ጠዋት 4:00"), title: t("Stretch and mobility", "መለጠጥና እንቅስቃሴ"), note: t("Women only", "ለሴቶች ብቻ") },
   ],
 };
 
@@ -71,7 +72,7 @@ save("gym", {
     telegram: "yourbusiness",
     address: t("Sarbet, near Canadian Embassy, Addis Ababa", "ሳር ቤት፣ ካናዳ ኤምባሲ አጠገብ፣ አዲስ አበባ"),
     hours: [
-      { days: t("Monday to Saturday", "ከሰኞ እስከ ቅዳሜ"), time: t("5:30 am to 10:00 pm", "ከ11:30 እስከ ምሽቱ 4 ሰዓት") },
+      { days: t("Monday to Saturday", "ከሰኞ እስከ ቅዳሜ"), time: t("5:30 am to 10:00 pm", "ከንጋቱ 11:30 እስከ ምሽቱ 4 ሰዓት") },
       { days: t("Sunday", "እሑድ"), time: t("7:00 am to 1:00 pm", "ከጠዋቱ 1 እስከ 7 ሰዓት") },
     ],
   },
@@ -86,9 +87,9 @@ save("gym", {
           type: "hero",
           variant: "immersive",
           id: "top",
-          eyebrow: t("Sarbet · open from 5:30 am", "ሳር ቤት · ከ11:30 ጀምሮ ክፍት"),
-          heading: t("Train harder", "ጠንክረው ይሥሩ"),
-          subheading: t("Free weights, real coaches and classes every day. Your first visit is on us.", "ነጻ ክብደቶች፣ እውነተኛ አሠልጣኞችና በየቀኑ ክፍሎች። የመጀመሪያ ጉብኝትዎ በእኛ ነው።"),
+          eyebrow: t("Sarbet · open from 5:30 am", "ሳር ቤት · ከንጋቱ 11:30 ጀምሮ ክፍት"),
+          heading: t("Train harder", "ጠንክረው ይለማመዱ"),
+          subheading: t("Free weights, real coaches and classes every day. Your first visit is on us.", "ዳምቤልና ባርቤል፣ እውነተኛ አሠልጣኞችና በየቀኑ ክፍሎች። የመጀመሪያ ጉብኝትዎ በእኛ ነው።"),
           image: P.deadlift,
           primaryAction: join,
           secondaryAction: plans,
@@ -100,7 +101,7 @@ save("gym", {
           items: [
             { value: t("600 m²", "600 ሜ²"), label: t("of training floor", "የልምምድ ወለል") },
             { value: t("24", "24"), label: t("classes a week", "ክፍሎች በሳምንት") },
-            { value: t("5", "5"), label: t("certified trainers", "የተረጋገጡ አሠልጣኞች") },
+            { value: t("5", "5"), label: t("certified trainers", "ሰርተፊኬት ያላቸው አሠልጣኞች") },
           ],
         },
         {
@@ -123,7 +124,7 @@ save("gym", {
           id: "members",
           heading: t("From our members", "ከአባሎቻችን"),
           items: [
-            { quote: t("The women-only mornings got me started. Six months later I lift with everyone.", "የሴቶች ብቻ ጠዋቶች አስጀመሩኝ። ከስድስት ወር በኋላ ከሁሉም ጋር አነሳለሁ።"), name: "Selam A.", role: t("Member since 2025", "ከ2025 ጀምሮ አባል") },
+            { quote: t("The women-only mornings got me started. Six months later I lift with everyone.", "የሴቶች ብቻ ጠዋቶች አስጀመሩኝ። ከስድስት ወር በኋላ ከሁሉም ጋር አነሳለሁ።"), name: "Selam A.", role: t("Member since 2025", "ከ2017 ዓ.ም. ጀምሮ አባል") },
             { quote: t("Coaches who actually watch your form. Best gym in Sarbet.", "አቋምዎን በእውነት የሚያዩ አሠልጣኞች። በሳር ቤት ምርጡ ጂም።"), name: "Dawit K.", role: t("Strength", "ጥንካሬ") },
           ],
         },
@@ -136,7 +137,7 @@ save("gym", {
       nav: t("Memberships", "አባልነት"),
       description: t("Iron Addis memberships and prices: day pass, monthly and three months.", "የአይረን አዲስ አባልነትና ዋጋ፦ የቀን ማለፊያ፣ ወርሃዊና ሦስት ወር።"),
       sections: [
-        { type: "cards", id: "plans", layout: "pricing", eyebrow: t("Memberships", "አባልነት"), heading: t("Pick a plan", "ዕቅድ ይምረጡ"), intro: t("Pay by Telebirr, bank transfer or cash. Freeze your membership for up to a month when you travel.", "በቴሌብር፣ በባንክ ዝውውር ወይም በጥሬ ይክፈሉ። ሲጓዙ አባልነትዎን እስከ አንድ ወር ማቆየት ይችላሉ።"), items: tiers },
+        { type: "cards", id: "plans", layout: "pricing", eyebrow: t("Memberships", "አባልነት"), heading: t("Pick a plan", "ዕቅድ ይምረጡ"), intro: t("Pay by Telebirr, bank transfer or cash. Freeze your membership for up to a month when you travel.", "በቴሌብር፣ በባንክ ዝውውር ወይም በጥሬ ይክፈሉ። ሲጓዙ አባልነትዎን እስከ አንድ ወር ማቆም ይችላሉ።"), items: tiers },
         {
           type: "services",
           id: "coaches",

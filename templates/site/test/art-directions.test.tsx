@@ -64,14 +64,16 @@ describe("art directions (organic, cinematic, brutal, calm, kinetic)", () => {
     const out = html(preset("gym"));
     expect(out.match(/tier-featured/g)).toHaveLength(1);
     expect(out.match(/class="tier card/g)).toHaveLength(3);
-    expect(text(out)).toMatch(/Most chosen.*Monthly.*2,500/);
+    // The badge follows the name in reading order (shown above it with CSS).
+    expect(text(out)).toMatch(/Monthly.*Most chosen.*2,500/);
   });
 
   it("a week timetable groups classes by day, in order, with notes", () => {
     const gym = preset("gym");
     const out = html(gym, "en", gym.pages.findIndex((p) => p.path === "/classes"));
     expect(out).toContain('style="--days:4"');
-    expect([...out.matchAll(/class="week-day-name">([^<]+)</g)].map((m) => m[1])).toEqual(["Monday", "Tuesday", "Thursday", "Saturday"]);
+    expect(out).toMatch(/<ul class="week-grid" tabindex="0" aria-label="This week on the floor"/);
+    expect([...out.matchAll(/<h[23] class="item-title week-day-name">([^<]+)</g)].map((m) => m[1])).toEqual(["Monday", "Tuesday", "Thursday", "Saturday"]);
     expect(out.match(/Women only/g)).toHaveLength(2);
   });
 

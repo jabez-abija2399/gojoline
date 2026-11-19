@@ -22,7 +22,7 @@
       "path": "/",
       "title": { "en": "Home", "am": "መነሻ" },
       "nav": { "en": "Home", "am": "መነሻ" },
-      "description": { "en": "Wedding photography and film in Addis Ababa: the wedding day, melse and kelekel, with packages in Birr and dates for couples abroad.", "am": "የሠርግ ፎቶና ቪዲዮ በአዲስ አበባ፦ የሠርግ ዕለት፣ መልስና ቅልቅል፤ ፓኬጆች በብርና ለውጭ ነዋሪ ጥንዶች ቀን።" },
+      "description": { "en": "Wedding photography and film in Addis Ababa: the wedding day, melse and kelekel, with packages in Birr and dates for couples abroad.", "am": "የሠርግ ፎቶና ቪዲዮ በአዲስ አበባ፦ የሠርግ ዕለት፣ መልስና ቅልቅል፤ ፓኬጆች በብር፤ በውጭ የሚኖሩ ጥንዶችም ቀን ማስያዝ ይችላሉ።" },
       "sections": [
         {
           "type": "hero",
@@ -82,7 +82,7 @@
           "id": "us",
           "eyebrow": { "en": "Behind the camera", "am": "ከካሜራው ጀርባ" },
           "heading": { "en": "We watch, and wait for the moment", "am": "እንመለከታለን፣ ጊዜውን እንጠብቃለን" },
-          "body": { "en": "We don't stage your day. We stay close, quiet and early, so the photos show how it felt: the laughter at the door, the songs, your mother's face.", "am": "ቀናችሁን አናዘጋጅም። ቀርበን፣ ዝም ብለንና ቀድመን እንገኛለን፤ ፎቶዎቹ ስሜቱን እንዲያሳዩ፦ በሩ ላይ ያለውን ሳቅ፣ ዘፈኑን፣ የእናታችሁን ፊት።" },
+          "body": { "en": "We don't stage your day. We stay close, quiet and early, so the photos show how it felt: the laughter at the door, the songs, your mother's face.", "am": "ቀናችሁን አናዘጋጅም። ቀርበን፣ በጸጥታና ቀድመን እንገኛለን፤ ፎቶዎቹ ስሜቱን እንዲያሳዩ፦ በሩ ላይ ያለውን ሳቅ፣ ዘፈኑን፣ የእናታችሁን ፊት።" },
           "image": {
             "src": "/stock/studio-about-photographer-at-work.webp",
             "alt": { "en": "A photographer looking through her camera at work", "am": "ፎቶ አንሺ በካሜራዋ ስትሠራ" }
@@ -94,7 +94,7 @@
           "id": "packages",
           "layout": "pricing",
           "eyebrow": { "en": "Packages", "am": "ፓኬጆች" },
-          "heading": { "en": "Choose how much of the story", "am": "ምን ያህሉን ታሪክ" },
+          "heading": { "en": "Choose how much of the story", "am": "ከታሪኩ ምን ያህሉን ትፈልጋላችሁ?" },
           "intro": { "en": "Prices in Birr. Travel outside Addis is added at cost.", "am": "ዋጋ በብር። ከአዲስ አበባ ውጭ ለሚደረግ ጉዞ ወጪው ይጨመራል።" },
           "items": [
             {
@@ -182,7 +182,7 @@
           "id": "date",
           "kind": "booking",
           "heading": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
-          "intro": { "en": "We take one wedding a day. Tell us your date and we answer on Telegram the same day.", "am": "በቀን አንድ ሠርግ ብቻ እንይዛለን። ቀንዎን ይንገሩን፤ በዕለቱ በቴሌግራም እንመልሳለን።" },
+          "intro": { "en": "We take one wedding a day. Tell us your date and we answer on Telegram the same day.", "am": "በቀን አንድ ሠርግ ብቻ እንይዛለን። ቀናችሁን ንገሩን፤ በዕለቱ በቴሌግራም እንመልሳለን።" },
           "fields": [
             {
               "name": "names",
@@ -403,7 +403,7 @@
           "id": "date-book",
           "kind": "booking",
           "heading": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
-          "intro": { "en": "We take one wedding a day. Tell us your date and we answer on Telegram the same day.", "am": "በቀን አንድ ሠርግ ብቻ እንይዛለን። ቀንዎን ይንገሩን፤ በዕለቱ በቴሌግራም እንመልሳለን።" },
+          "intro": { "en": "We take one wedding a day. Tell us your date and we answer on Telegram the same day.", "am": "በቀን አንድ ሠርግ ብቻ እንይዛለን። ቀናችሁን ንገሩን፤ በዕለቱ በቴሌግራም እንመልሳለን።" },
           "fields": [
             {
               "name": "names",

@@ -140,11 +140,12 @@ export function Cards({ section }: { section: CardsSection }) {
               const featured = Boolean(item.badge);
               return (
                 <li key={section.items.indexOf(item)} style={{ "--i": i } as React.CSSProperties} className={`tier card reveal flex flex-col gap-4 p-6 md:p-8 ${featured ? "tier-featured on-dark bg-accent text-on-accent" : ""}`}>
-                  {item.badge && <span className="tier-badge">{text(item.badge)}</span>}
                   <div className="flex flex-col gap-1">
                     <ItemTitle className="text-2xl leading-tight">{text(item.title)}</ItemTitle>
                     {item.subtitle && <p className="text-muted">{text(item.subtitle)}</p>}
                   </div>
+                  {/* After the name in reading order, shown above it. */}
+                  {item.badge && <span className="tier-badge order-first">{text(item.badge)}</span>}
                   {item.price && (
                     <p className="flex flex-wrap items-baseline gap-x-2">
                       <span className="tier-price">{formatPrice(item.price, lang)}</span>

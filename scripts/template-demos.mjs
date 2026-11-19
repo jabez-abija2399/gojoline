@@ -6,7 +6,7 @@
 //   node scripts/template-demos.mjs [id ...]
 //   SHOWCASE_WORKDIR=/path/with/node_modules node scripts/template-demos.mjs   (reuse an installed copy)
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -20,7 +20,8 @@ if (!work) {
 }
 for (const dir of ["src", "scripts"]) cpSync(join(template, dir), join(work, dir), { recursive: true });
 cpSync(join(template, "stock.json"), join(work, "stock.json"));
-if (!existsSync(join(work, "public", "stock"))) cpSync(join(template, "public", "stock"), join(work, "public", "stock"), { recursive: true });
+// Always synced: a reused work folder would otherwise miss photos added since.
+cpSync(join(template, "public", "stock"), join(work, "public", "stock"), { recursive: true, force: true });
 
 const only = process.argv.slice(2);
 const ids = readdirSync(join(template, "presets")).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)).filter((id) => !only.length || only.includes(id)).sort();

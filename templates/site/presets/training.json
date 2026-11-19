@@ -139,7 +139,7 @@
                 "src": "/stock/training-card-driving-lesson.webp",
                 "alt": { "en": "An instructor beside a learner at the wheel of a car", "am": "መሪ ከያዘች ተማሪ አጠገብ ያለ የማሽከርከር አሠልጣኝ" }
               },
-              "badge": { "en": "Driving", "am": "መንጃ" },
+              "badge": { "en": "Driving", "am": "ማሽከርከር" },
               "title": { "en": "Driving lessons, automatic", "am": "የማሽከርከር ትምህርት፣ አውቶማቲክ" },
               "meta": [
                 { "en": "20 lessons", "am": "20 ትምህርቶች" },
@@ -186,48 +186,48 @@
           "type": "schedule",
           "id": "week",
           "layout": "week",
-          "eyebrow": { "en": "This term", "am": "በዚህ ተርም" },
+          "eyebrow": { "en": "This term", "am": "በዚህ ሴሚስተር" },
           "heading": { "en": "Weekly timetable", "am": "ሳምንታዊ የጊዜ ሰሌዳ" },
           "items": [
             {
               "day": { "en": "Monday", "am": "ሰኞ" },
-              "time": { "en": "5:30 pm", "am": "11:30" },
+              "time": { "en": "5:30 pm", "am": "ከሰዓት 11:30" },
               "title": { "en": "IELTS, room 2", "am": "አይኤልቲኤስ፣ ክፍል 2" }
             },
             {
               "day": { "en": "Monday", "am": "ሰኞ" },
-              "time": { "en": "7:00 pm", "am": "1:00" },
+              "time": { "en": "7:00 pm", "am": "ማታ 1:00" },
               "title": { "en": "Excel, lab", "am": "ኤክሴል፣ ላብ" }
             },
             {
               "day": { "en": "Wednesday", "am": "ረቡዕ" },
-              "time": { "en": "5:30 pm", "am": "11:30" },
+              "time": { "en": "5:30 pm", "am": "ከሰዓት 11:30" },
               "title": { "en": "IELTS, room 2", "am": "አይኤልቲኤስ፣ ክፍል 2" }
             },
             {
               "day": { "en": "Wednesday", "am": "ረቡዕ" },
-              "time": { "en": "7:00 pm", "am": "1:00" },
+              "time": { "en": "7:00 pm", "am": "ማታ 1:00" },
               "title": { "en": "Computer basics, lab", "am": "የኮምፒውተር መሠረታዊ፣ ላብ" }
             },
             {
               "day": { "en": "Saturday", "am": "ቅዳሜ" },
-              "time": { "en": "8:30 am", "am": "2:30" },
+              "time": { "en": "8:30 am", "am": "ጠዋት 2:30" },
               "title": { "en": "Maths, grade 12", "am": "ሂሳብ፣ 12ኛ ክፍል" },
               "note": { "en": "Mock exam", "am": "የሙከራ ፈተና" }
             },
             {
               "day": { "en": "Saturday", "am": "ቅዳሜ" },
-              "time": { "en": "11:00 am", "am": "5:00" },
+              "time": { "en": "11:00 am", "am": "ጠዋት 5:00" },
               "title": { "en": "Physics, grade 12", "am": "ፊዚክስ፣ 12ኛ ክፍል" }
             },
             {
               "day": { "en": "Sunday", "am": "እሑድ" },
-              "time": { "en": "8:30 am", "am": "2:30" },
+              "time": { "en": "8:30 am", "am": "ጠዋት 2:30" },
               "title": { "en": "English, grade 12", "am": "እንግሊዝኛ፣ 12ኛ ክፍል" }
             },
             {
               "day": { "en": "Sunday", "am": "እሑድ" },
-              "time": { "en": "11:00 am", "am": "5:00" },
+              "time": { "en": "11:00 am", "am": "ጠዋት 5:00" },
               "title": { "en": "Biology, grade 12", "am": "ባዮሎጂ፣ 12ኛ ክፍል" }
             }
           ],
@@ -403,7 +403,7 @@
                 "src": "/stock/training-card-driving-lesson.webp",
                 "alt": { "en": "An instructor beside a learner at the wheel of a car", "am": "መሪ ከያዘች ተማሪ አጠገብ ያለ የማሽከርከር አሠልጣኝ" }
               },
-              "badge": { "en": "Driving", "am": "መንጃ" },
+              "badge": { "en": "Driving", "am": "ማሽከርከር" },
               "title": { "en": "Driving lessons, automatic", "am": "የማሽከርከር ትምህርት፣ አውቶማቲክ" },
               "meta": [
                 { "en": "20 lessons", "am": "20 ትምህርቶች" },
@@ -448,54 +448,54 @@
       "path": "/timetable",
       "title": { "en": "Timetable", "am": "የጊዜ ሰሌዳ" },
       "nav": { "en": "Timetable", "am": "የጊዜ ሰሌዳ" },
-      "description": { "en": "The weekly timetable of Lucy Academy this term.", "am": "የሉሲ አካዳሚ የዚህ ተርም ሳምንታዊ የጊዜ ሰሌዳ።" },
+      "description": { "en": "The weekly timetable of Lucy Academy this term.", "am": "የሉሲ አካዳሚ የዚህ ሴሚስተር ሳምንታዊ የጊዜ ሰሌዳ።" },
       "sections": [
         {
           "type": "schedule",
           "id": "week-all",
           "layout": "week",
-          "eyebrow": { "en": "This term", "am": "በዚህ ተርም" },
+          "eyebrow": { "en": "This term", "am": "በዚህ ሴሚስተር" },
           "heading": { "en": "Weekly timetable", "am": "ሳምንታዊ የጊዜ ሰሌዳ" },
           "items": [
             {
               "day": { "en": "Monday", "am": "ሰኞ" },
-              "time": { "en": "5:30 pm", "am": "11:30" },
+              "time": { "en": "5:30 pm", "am": "ከሰዓት 11:30" },
               "title": { "en": "IELTS, room 2", "am": "አይኤልቲኤስ፣ ክፍል 2" }
             },
             {
               "day": { "en": "Monday", "am": "ሰኞ" },
-              "time": { "en": "7:00 pm", "am": "1:00" },
+              "time": { "en": "7:00 pm", "am": "ማታ 1:00" },
               "title": { "en": "Excel, lab", "am": "ኤክሴል፣ ላብ" }
             },
             {
               "day": { "en": "Wednesday", "am": "ረቡዕ" },
-              "time": { "en": "5:30 pm", "am": "11:30" },
+              "time": { "en": "5:30 pm", "am": "ከሰዓት 11:30" },
               "title": { "en": "IELTS, room 2", "am": "አይኤልቲኤስ፣ ክፍል 2" }
             },
             {
               "day": { "en": "Wednesday", "am": "ረቡዕ" },
-              "time": { "en": "7:00 pm", "am": "1:00" },
+              "time": { "en": "7:00 pm", "am": "ማታ 1:00" },
               "title": { "en": "Computer basics, lab", "am": "የኮምፒውተር መሠረታዊ፣ ላብ" }
             },
             {
               "day": { "en": "Saturday", "am": "ቅዳሜ" },
-              "time": { "en": "8:30 am", "am": "2:30" },
+              "time": { "en": "8:30 am", "am": "ጠዋት 2:30" },
               "title": { "en": "Maths, grade 12", "am": "ሂሳብ፣ 12ኛ ክፍል" },
               "note": { "en": "Mock exam", "am": "የሙከራ ፈተና" }
             },
             {
               "day": { "en": "Saturday", "am": "ቅዳሜ" },
-              "time": { "en": "11:00 am", "am": "5:00" },
+              "time": { "en": "11:00 am", "am": "ጠዋት 5:00" },
               "title": { "en": "Physics, grade 12", "am": "ፊዚክስ፣ 12ኛ ክፍል" }
             },
             {
               "day": { "en": "Sunday", "am": "እሑድ" },
-              "time": { "en": "8:30 am", "am": "2:30" },
+              "time": { "en": "8:30 am", "am": "ጠዋት 2:30" },
               "title": { "en": "English, grade 12", "am": "እንግሊዝኛ፣ 12ኛ ክፍል" }
             },
             {
               "day": { "en": "Sunday", "am": "እሑድ" },
-              "time": { "en": "11:00 am", "am": "5:00" },
+              "time": { "en": "11:00 am", "am": "ጠዋት 5:00" },
               "title": { "en": "Biology, grade 12", "am": "ባዮሎጂ፣ 12ኛ ክፍል" }
             }
           ],

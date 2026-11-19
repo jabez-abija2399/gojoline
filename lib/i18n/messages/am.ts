@@ -134,7 +134,7 @@ export const am: Messages = {
         events: "ሠርግና ዝግጅቶች",
         business: "ንግድና የግል",
       },
-      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ", organic: "ለስላሳ", cinematic: "ፊልማዊ", brutal: "ብሎክ", calm: "ረጋ ያለ", kinetic: "ብርቱ" },
+      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ", organic: "ለስላሳ", cinematic: "ፊልማዊ", brutal: "ደማቅ ሳጥኖች", calm: "ረጋ ያለ", kinetic: "ብርቱ" },
       features: { prices: "ዋጋ ወይም ምናሌ", booking: "የቀጠሮ ወይም የትዕዛዝ ቅጽ", gallery: "የፎቶ ማዕከል", team: "ቡድን ወይም ሠራተኞች", times: "የሥራ፣ የአገልግሎት ወይም የሶላት ሰዓት", reviews: "አስተያየቶች", map: "ካርታ" },
       about: {
         cafe: "ተወዳጅ ምግቦች፣ ሙሉ ምናሌና የጠረጴዛ ቀጠሮ",
@@ -157,7 +157,7 @@ export const am: Messages = {
         bakery: "ኬኮች ከመጠንና ከዋጋ ጋር፣ ትኩስ ዳቦና ከውጭ ማዘዝ",
         studio: "ሠርጎች በጋለሪ፣ ፓኬጆች ጎን ለጎንና የቀን ጥያቄ",
         training: "ኮርሶች ከክፍያና ከቅበላ ጋር፣ ሳምንታዊ የጊዜ ሰሌዳና ምዝገባ",
-        pharmacy: "የጤና ምርመራ፣ ፈቃድ ያለው ፋርማሲስትና የዕቃ ጥያቄ",
+        pharmacy: "የጤና ምርመራ፣ ፈቃድ ያለው ፋርማሲስትና ምርት መኖሩን መጠየቅ",
         gym: "አባልነት፣ የክፍሎች ሰሌዳና ነጻ የመጀመሪያ ጉብኝት",
       },
     },
