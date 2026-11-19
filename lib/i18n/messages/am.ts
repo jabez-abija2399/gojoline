@@ -803,7 +803,7 @@ export const am: Messages = {
     ledgerTitle: "የለውጦችዎ ታሪክ",
     ledgerEmpty: "እስካሁን ምንም የለም።",
     ledgerLabel: "የተጨመሩ እና ጥቅም ላይ የዋሉ ለውጦች",
-    ledger: { monthly_grant: "ወርሃዊ ለውጦች", topup: "የተገዙ ተጨማሪ ለውጦች", ai_edit: "የድረ-ገጽ ለውጥ", refund: "ተመልሷል፤ ለውጡ አልሠራም", admin: "ከጎጆላይን የተሰጠ ስጦታ", first_build: "የድረ-ገጽ የመጀመሪያ ግንባታ (ነጻ)", referral: "ለግብዣ የተሰጠ ምስጋና" },
+    ledger: { monthly_grant: "ወርሃዊ ለውጦች", topup: "የተገዙ ተጨማሪ ለውጦች", ai_edit: "የድረ-ገጽ ለውጥ", refund: "ተመልሷል፤ ምንም አልተለወጠም ወይም ለውጡ አልሠራም", admin: "ከጎጆላይን የተሰጠ ስጦታ", first_build: "የድረ-ገጽ የመጀመሪያ ግንባታ (ነጻ)", referral: "ለግብዣ የተሰጠ ምስጋና" },
     sizeNames: { small: "ትንሽ", medium: "መካከለኛ", large: "ትልቅ" },
     ledgerAi: "የድረ-ገጽ ለውጥ፣ {size}",
     newer: "አዳዲሶቹ",

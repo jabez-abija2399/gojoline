@@ -127,13 +127,14 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 
 ## Form and progress fixes (2026-11-19)
 - [x] Bookings on published sites: the Data API's form schema is the site template's own (`formSectionSchema`), so a form with a small label above it (`eyebrow`) is registered at publish; a form that can't be registered stops the publish before anything is deployed (`form_invalid`, en/am) instead of going live broken; a test builds every form kind with every field type and every optional property and checks it is registered; lists checked against every preset
-- [ ] Progress label shows only whitelisted section names and step labels (no raw model text or hex colours)
-- [ ] A turn that only asks a question (no file written, no build) costs nothing: “No changes used”
+- [x] Progress card shows only fixed step labels and whitelisted section names: the model's streamed words (working notes such as “#B85C7A (contrast vs #FCF7F6…)”) never leave the server; the reply arrives with “done”; the browser also drops any section name that isn't a template section type
+- [x] A turn that only answers (no file written, no build) gives its changes back, within the existing daily refund cap (12 a day); the chat footer says “No changes used · {left} left”; a run that built, was stopped at its cost cap or was abandoned is still charged
 
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Questions (2026-11-19): a clarifying question as a site's very first message still uses that month's free first build (the free build is claimed before the AI runs). Release the claim when the first run only answered, if owners hit the monthly limit this way.
 - Forms (2026-11-19): **sites published before this fix with a form that has a label above it (`eyebrow`) went live without their form registered; their visitors see “Something went wrong” and owners get no bookings. They need one more publish.** List them (read only) with `DATABASE_URL=… node --experimental-strip-types scripts/forms-check.mts` (prints `slug<TAB>missing form ids`), then ask those owners to publish again or republish for them.
 - First-build preview (2026-11-18): e2e runs on the in-memory sandbox, whose preview is `about:blank`, so the reveal is checked on that frame; check the fade on a real Vercel Sandbox preview after deploy. The Amharic placeholder strings need the native-speaker review.
 - Growth (2026-11-18): claw back an invite thank-you when refunds or payment reversals are built (the reward is a `referral` ledger row per owner, ref `referral:<invited id>`, easy to reverse).

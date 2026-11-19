@@ -87,6 +87,8 @@ export interface AgentRunResult {
   turns: number;
   /** The run stopped because it reached its cost budget. */
   stoppedForBudget: boolean;
+  /** The site was built at least once (a build tool call or the loop's own build). */
+  built: boolean;
 }
 
 /**
@@ -287,6 +289,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       costNanoUsd: cost,
       turns,
       stoppedForBudget,
+      built: lastBuildOk !== null,
     };
   }
 
@@ -299,5 +302,6 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
     costNanoUsd: cost,
     turns,
     stoppedForBudget,
+    built: lastBuildOk !== null,
   };
 }

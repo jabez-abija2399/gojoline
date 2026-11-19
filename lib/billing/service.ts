@@ -176,8 +176,13 @@ export class Billing {
    * REFUND_CREDITS_PER_DAY changes a day; past that, only what is left of the day's cap.
    */
   async refundEdit(userId: string, ref: string, n = 1, meta: LedgerMeta = {}): Promise<boolean> {
+    return (await this.giveBack(userId, ref, n, meta)) > 0;
+  }
+
+  /** As `refundEdit`, returning how many changes were given back (fewer near the daily cap, 0 past it). */
+  async giveBack(userId: string, ref: string, n = 1, meta: LedgerMeta = {}): Promise<number> {
     const day = this.now().toISOString().slice(0, 10);
-    return (await this.db.refund(userId, ref, n, REFUND_CREDITS_PER_DAY, day, meta)) > 0;
+    return this.db.refund(userId, ref, n, REFUND_CREDITS_PER_DAY, day, meta);
   }
 
   /** Plan, changes left, and what the Plan page explains about them. */

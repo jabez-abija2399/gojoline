@@ -2,7 +2,7 @@ import "server-only";
 import { reportError } from "@/lib/observability/report";
 import { randomUUID } from "node:crypto";
 import { keywordCheck } from "@/lib/safety/keywords";
-import { runAgent, type AgentEvent } from "@/lib/agent/loop";
+import { runAgent, type AgentEvent, type AgentRunResult } from "@/lib/agent/loop";
 import { agentSystemPrompt, userTurn } from "@/lib/agent/prompt";
 import type { LLMProvider, MessageParam } from "@/lib/providers/llm/types";
 import type { UsageLogger } from "@/lib/providers/llm/usage-log";
@@ -39,6 +39,7 @@ export interface BuilderDeps {
    */
   credits?: {
     consume(userId: string, ref: string, n: number, meta?: LedgerMeta): Promise<boolean>;
+    /** Returns how many changes were given back (fewer or none past the daily refund cap). */
     refund(userId: string, ref: string, n: number, meta?: LedgerMeta): Promise<unknown>;
     left?(userId: string): Promise<number>;
     /** True when this request is a free first build (a project with no saved version yet, within the monthly cap). */
@@ -211,7 +212,11 @@ export async function sendOwnerMessage(
       model: deps.model,
       usage: deps.usage,
       context: { userId: input.ownerId, projectId: project.id },
-      onEvent: input.onEvent,
+      // Progress only: the model's streamed words (working notes like "#B85C7A (contrast vs …)")
+      // never leave the server; the owner gets the final reply with "done".
+      onEvent: (e) => {
+        if (e.type !== "text") input.onEvent(e);
+      },
       signal: input.signal,
       // Changing an existing site is usually small: less thinking costs less (measured in evals).
       effort: latest ? "low" : "medium",
@@ -242,13 +247,14 @@ export async function sendOwnerMessage(
         }
       }
     }
-    // Refund failures on our side, not runs the owner walked away from, and not requests too big
-    // for their budget (the AI work was done and paid for; the owner is told to split it).
+    // Refund failures on our side, and answers that changed nothing (a clarifying question: no
+    // file written, no build); not runs the owner walked away from, and not requests too big for
+    // their budget (the AI work was done and paid for; the owner is told to split it). Refunds
+    // keep the daily cap (lib/billing), so a stream of questions can't run the AI for free.
     let charged = chargedRef ? cost : 0;
-    if (result.status === "failed" && chargedRef && !input.signal?.aborted && !result.stoppedForBudget) {
-      await refund();
+    if (chargedRef && !input.signal?.aborted && !result.stoppedForBudget && costsNothing(result)) {
+      charged = Math.max(0, cost - givenBack(await refund(), cost));
       chargedRef = null;
-      charged = 0;
     }
     const message = await store.addMessage(input.ownerId, {
       projectId: project.id,
@@ -274,6 +280,18 @@ export async function sendOwnerMessage(
   } finally {
     await deps.lock.release(`project:${project.id}`, token);
   }
+}
+
+/** A run that charges nothing: it failed on our side, or only answered (no file written, no build). */
+export function costsNothing(result: Pick<AgentRunResult, "status" | "built" | "changedPaths">): boolean {
+  if (result.status === "failed") return true;
+  return result.status === "answered" && result.changedPaths.length === 0 && !result.built;
+}
+
+/** How many changes a refund gave back: a count, or true/false from older refund functions. */
+function givenBack(r: unknown, asked: number): number {
+  if (typeof r === "number") return Math.max(0, Math.min(asked, r));
+  return r === false ? 0 : asked;
 }
 
 /** The owner's AI changes left after this request (refunds included), sent with the last event. */
