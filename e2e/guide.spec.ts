@@ -67,16 +67,19 @@ for (const lang of ["en", "am"] as const) {
   });
 }
 
-test("guide: screenshots are responsive pictures, the first one eager and the rest lazy", async ({ page }, info) => {
+test("guide: screenshots are responsive pictures, all lazy (none is above the fold)", async ({ page }, info) => {
   await sizeFor(page, info.project.name);
   await page.goto("/en/guide");
   const imgs = page.locator("main picture img");
   expect(await imgs.count()).toBeGreaterThanOrEqual(15);
-  await expect(imgs.first()).toHaveAttribute("loading", "eager");
-  await expect(imgs.nth(1)).toHaveAttribute("loading", "lazy");
+  for (const loading of await imgs.evaluateAll((els) => els.map((i) => i.getAttribute("loading")))) expect(loading).toBe("lazy");
+  // The poster (the LCP element) is preloaded at high priority instead.
+  await expect(page.locator('link[rel="preload"][as="image"][href="/guide/gojoline-guide-poster.webp"]')).toHaveAttribute("fetchpriority", "high");
   await expect(imgs.first()).toHaveAttribute("width", "1440");
   await expect(page.locator("main picture source[type='image/avif']").first()).toHaveAttribute("srcset", /\.avif 390w/);
   // The browser picks the phone picture on phones, the computer one on wide screens.
+  await imgs.first().scrollIntoViewIfNeeded();
+  await expect.poll(() => imgs.first().evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
   const src = await imgs.first().evaluate((i: HTMLImageElement) => i.currentSrc);
   expect(src).toMatch(info.project.name === "mobile" ? /phone-01-start-390\.(avif|webp)$/ : /01-start-(720|1440)\.(avif|webp)$/);
 });
