@@ -74,10 +74,16 @@ export async function unfold(page: Page, name: RegExp) {
   // Wait for the page to draw the toggle first: checking at once can run before it exists and
   // skip unfolding on phones.
   await button.waitFor({ state: "attached" });
-  if (!(await button.isVisible())) return;
+  // Decide by screen width (lg = 1024 px), not by visibility: while the page still streams in, the
+  // toggle is in the page but not shown yet, and checking then skipped unfolding on phones.
+  if ((page.viewportSize()?.width ?? 1280) >= 1024) return;
+  await expect(button).toBeVisible();
   // Wait for the page's code before tapping: React replays taps made during hydration, so quick
   // retries could replay two taps and fold it again. Retried slowly, and only kept once it stays open.
   await page.waitForLoadState("load");
+  // React marks an element once it has hydrated it; tapping before that is replayed later and
+  // can fold the section again after the check below.
+  await expect.poll(() => button.evaluate((el) => Object.keys(el).some((k) => k.startsWith("__reactProps")))).toBe(true);
   await expect(async () => {
     if ((await button.getAttribute("aria-expanded")) !== "true") await button.click();
     await expect(button).toHaveAttribute("aria-expanded", "true", { timeout: 2000 });
