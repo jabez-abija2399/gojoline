@@ -1,0 +1,38 @@
+# Gojoline on one server: the app (built from this repo's Dockerfile) behind Caddy (HTTPS).
+# Started and updated by setup.sh / update.sh; see README.md.
+services:
+  app:
+    build:
+      context: ../..
+      args:
+        NEXT_PUBLIC_APP_URL: https://${APP_DOMAIN}
+    image: gojoline-app
+    env_file: .env
+    restart: unless-stopped
+    expose:
+      - "3000"
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+  caddy:
+    image: caddy:2.8
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+volumes:
+  caddy_data:
+  caddy_config:

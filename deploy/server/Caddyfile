@@ -1,0 +1,10 @@
+# HTTPS certificate from Let's Encrypt, renewed automatically. The DNS record must be
+# "DNS only" (grey cloud) in Cloudflare so the visitor's real address reaches us.
+{$APP_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:3000 {
+		# The app rate-limits by X-Real-IP: always our view of the visitor, never a header they sent.
+		header_up X-Real-IP {remote_host}
+		header_up -X-Forwarded-For
+	}
+}

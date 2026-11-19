@@ -1,0 +1,7 @@
+[Unit]
+Description=Gojoline: daily visits rollup and screenshot cleanup
+After=docker.service network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash /opt/gojoline/deploy/server/daily.sh
