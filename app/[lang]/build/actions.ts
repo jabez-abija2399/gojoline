@@ -13,7 +13,7 @@ export async function createProject(form: FormData) {
   const owner = await ownerId();
   if (!owner) redirect(`/${lang}/sign-in?next=/${lang}/build`);
   const builder = services().builder;
-  if (!builder) redirect(`/${lang}/build`);
+  if (!builder || builder.paused) redirect(`/${lang}/build`);
   const perHour = Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR) || 10;
   const limiter = services().rateLimiter;
   // Per owner and per IP: clearing the owner cookie must not reset the limit.

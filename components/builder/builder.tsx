@@ -44,6 +44,8 @@ const SIDE_TABS = ["preview", "photos", "versions", "code"] as const;
 const TAB_ICONS = { chat: MessageCircle, preview: Eye, photos: Images, versions: History, code: FileText };
 
 interface Props {
+  /** Building is paused (no sandbox): the chat says so once; no preview is opened. */
+  paused?: boolean;
   noCredits: { text: string; action: string };
   /** When the next monthly changes arrive, e.g. "1 December". */
   nextGrant: string;
@@ -85,7 +87,7 @@ export interface PendingConfirm {
   left: number;
 }
 
-export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant, upgrade, upgradeText, installText }: Props) {
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant, upgrade, upgradeText, installText, paused = false }: Props) {
   const [credits, setCredits] = useState<number | null>(initialCredits);
   const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
@@ -141,7 +143,8 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   // Phones: a dot on the Preview tab when the site changed while the owner was elsewhere.
   const [previewFresh, setPreviewFresh] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
+  // Paused: no preview is opened (the panel says building is paused).
+  const [previewLoading, setPreviewLoading] = useState(!paused && initialVersions.length > 0);
   const [previewError, setPreviewError] = useState(false);
   const [previewAttempt, setPreviewAttempt] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
@@ -164,7 +167,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
 
   // Wake the sandbox for an existing site so the preview shows straight away.
   useEffect(() => {
-    if (initialVersions.length === 0) return;
+    if (paused || initialVersions.length === 0) return;
     let cancelled = false;
     fetch(`/api/projects/${projectId}/preview`, { method: "POST" })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("preview"))))
@@ -176,7 +179,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
     return () => {
       cancelled = true;
     };
-  }, [projectId, initialVersions.length, previewAttempt]);
+  }, [projectId, initialVersions.length, previewAttempt, paused]);
 
   const addAssistant = useCallback((text: string, extra: Partial<UiMessage> = {}) => {
     setMessages((m) => [...m, { id: nextId(), role: "assistant", text, ...extra }]);
@@ -285,7 +288,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 }
                 // A refusal is a normal answer, not a system failure.
                 else if (event.code === "blocked") addAssistant(t.blocked);
-                else addAssistant(event.code === "busy" ? t.busy : t.failed, { tone: "error" });
+                else addAssistant(event.code === "busy" ? t.busy : event.code === "paused" ? t.paused : t.failed, { tone: "error" });
                 break;
             }
           }
@@ -304,14 +307,14 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
 
   // A description typed on "Your sites" starts the build as soon as the new site opens.
   useEffect(() => {
-    if (initialMessages.length > 0 || initialVersions.length > 0) return;
+    if (paused || initialMessages.length > 0 || initialVersions.length > 0) return;
     // After hydration, and only once: the prompt is removed from storage as it is read.
     const id = setTimeout(() => {
       const start = takeStartPrompt();
       if (start) void send(start.text, start.languages);
     }, 0);
     return () => clearTimeout(id);
-  }, [initialMessages.length, initialVersions.length, send]);
+  }, [initialMessages.length, initialVersions.length, send, paused]);
 
   const retryPreview = useCallback(() => {
     setPreviewError(false);
@@ -394,6 +397,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         setFocusChat((k) => k + 1);
       }, onSmaller: smaller, onDiscard: dropPending } : undefined}
       nextGrant={nextGrant}
+      paused={paused ? t.paused : undefined}
       onBeforeSend={() => !maybeUpgrade("send", credits, credits)}
       t={t}
       hasSite={versions.length > 0}
@@ -405,7 +409,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       focusKey={focusChat}
       onAttach={photos.upload}
       photoErrors={photoText.photoErrors}
-      onUndo={previous !== null ? undo : undefined}
+      onUndo={previous !== null && !paused ? undo : undefined}
       credits={{ left: credits, href: `/${locale}/billing` }}
       messages={messages}
       working={working}
@@ -415,7 +419,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       languages={versions.length === 0 && !working ? { value: siteLanguages, onChange: setSiteLanguages } : undefined}
     />
   );
-  const view = previewView({ hasVersion: versions.length > 0, working, firstBuildFailed, url: previewUrl, loading: previewLoading, error: previewError });
+  const view = previewView({ paused, hasVersion: versions.length > 0, working, firstBuildFailed, url: previewUrl, loading: previewLoading, error: previewError });
   const backToChat = useCallback(() => {
     setMobileTab("chat");
     setFocusChat((k) => k + 1);
@@ -437,7 +441,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       warm={firstBuildWarm}
     />
   );
-  const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working} onRestore={restore} />;
+  const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working || paused} onRestore={restore} />;
   const code = <CodePanel t={t} projectId={projectId} refreshKey={current ?? 0} />;
   const photosPanel = <PhotosPanel t={t} tp={photoText} projectId={projectId} photos={photos} disabled={working} onUse={handPhoto} />;
   const panels: Record<SideTab, React.ReactNode> = { preview, photos: photosPanel, versions: versionsPanel, code };
@@ -453,7 +457,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         t={t}
         projectId={projectId}
         hasVersion={versions.length > 0}
-        disabled={working}
+        disabled={working || paused}
         onLive={onLive}
         feedback={{ href: `/${locale}/feedback?from=${encodeURIComponent(`/${locale}/build/${projectId}`)}`, label: chrome.feedbackAfterPublish }}
       >

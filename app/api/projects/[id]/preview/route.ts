@@ -10,6 +10,7 @@ export async function POST(_request: Request, ctx: RouteContext<"/api/projects/[
   const g = await guardBuilder({ mutating: true, limit: { name: "preview", perHour: 60 } });
   if (!g.ok) return g.response;
   if (!(await g.builder.store.getProject(g.owner, id))) return json(404, { error: "not_found" });
+  if (g.builder.paused) return json(503, { error: "paused" });
   const latest = await g.builder.store.latestVersion(g.owner, id);
   if (!latest) return json(200, { url: null });
   const sandbox = await g.builder.sandboxes.open(id, latest.files);

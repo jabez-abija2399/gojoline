@@ -172,6 +172,7 @@ export const dashboardAm: Shape<typeof dashboardEn> = {
   publishing: "እየታተመ ነው...",
   publishedNow: "ታትሟል። ኦንላይን ያለው ድረ-ገጽዎ ተዘምኗል።",
   publishFailed: "ማተም አልሰራም። እንደገና ለመሞከር አርታኢውን ይክፈቱ።",
+  publishPaused: "ማተም ለአጭር ጊዜ ቆሟል። ድረ-ገጽዎ አስቀድሞ ከታተመ በመስመር ላይ ይቀጥላል።",
   versionsTitle: "የቀድሞ ስሪቶች",
   versionsIntro: "ወደ ቀድሞው የድረ-ገጽዎ ስሪት ይመለሱ። መመለስ ነፃ ነው፤ የAI ለውጦችን አይጠቀምም።",
   restore: "ይመልሱ",
