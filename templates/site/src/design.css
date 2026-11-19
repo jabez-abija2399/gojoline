@@ -64,6 +64,117 @@
   font-display: swap;
   unicode-range: U+1200-137F;
 }
+/* Size-matched stand-ins for the Latin heading fonts (Arial or Times scaled to each font's width
+   and height at weights 500 and 700; scripts/font-fallbacks.py). Until the real font arrives, a heading
+   keeps its line breaks, so nothing below it moves when it swaps (layout shift budget). */
+@font-face {
+  font-family: "Outfit Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Roboto"), local("Roboto-Regular");
+  font-weight: 100 549;
+  size-adjust: 99.4%;
+  ascent-override: 100.6%;
+  descent-override: 26.2%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Outfit Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 550 900;
+  size-adjust: 95.6%;
+  ascent-override: 104.6%;
+  descent-override: 27.2%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Bricolage Grotesque Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Roboto"), local("Roboto-Regular");
+  font-weight: 100 549;
+  size-adjust: 106.7%;
+  ascent-override: 87.1%;
+  descent-override: 25.3%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Bricolage Grotesque Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 550 900;
+  size-adjust: 102.1%;
+  ascent-override: 91.1%;
+  descent-override: 26.5%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Nunito Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Roboto"), local("Roboto-Regular");
+  font-weight: 100 549;
+  size-adjust: 101.3%;
+  ascent-override: 99.8%;
+  descent-override: 34.8%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Nunito Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 550 900;
+  size-adjust: 97.4%;
+  ascent-override: 103.8%;
+  descent-override: 36.2%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Fraunces Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Noto Serif");
+  font-weight: 100 549;
+  size-adjust: 117.1%;
+  ascent-override: 83.5%;
+  descent-override: 21.8%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Fraunces Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), local("Liberation Serif Bold"), local("Noto Serif Bold");
+  font-weight: 550 900;
+  size-adjust: 115.1%;
+  ascent-override: 84.9%;
+  descent-override: 22.1%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Cormorant Garamond Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Noto Serif");
+  font-weight: 100 549;
+  size-adjust: 97.0%;
+  ascent-override: 95.3%;
+  descent-override: 29.6%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Cormorant Garamond Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), local("Liberation Serif Bold"), local("Noto Serif Bold");
+  font-weight: 550 900;
+  size-adjust: 92.1%;
+  ascent-override: 100.3%;
+  descent-override: 31.2%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Newsreader Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Noto Serif");
+  font-weight: 100 549;
+  size-adjust: 108.8%;
+  ascent-override: 67.6%;
+  descent-override: 24.4%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Newsreader Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), local("Liberation Serif Bold"), local("Noto Serif Bold");
+  font-weight: 550 900;
+  size-adjust: 105.0%;
+  ascent-override: 70.0%;
+  descent-override: 25.2%;
+  line-gap-override: 0.0%;
+}
 @font-face {
   font-family: "Bricolage Grotesque";
   src: url("/fonts/bricolage-latin.woff2") format("woff2");

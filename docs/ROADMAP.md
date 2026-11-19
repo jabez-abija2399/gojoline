@@ -125,6 +125,10 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] No starter template during a first build: a building placeholder in the device frame (site outline, current step, elapsed time, “Usually about a minute”; still under reduced motion; en, am, dark, 360 px), the site fades in once its frame has loaded, a failed first build shows the recovery message; later edits and template starts unchanged; progress label lists the newest three sections cleanly (“and 2 more”)
 - [x] Review fixes: the built site loads under the placeholder (inert) for an instant reveal, no preview re-render on streamed text, clock stops when the request ends, no frozen progress bars under reduced motion, clearer failure copy, section names as nouns (en) and quoted (am), ሰከንድ in full
 
+## Art directions and new templates (2026-11-18)
+- [x] Slice 1: three art directions (luxe, swiss, bento), poster and bento heroes, a price table with units, a highlight colour, two heading fonts and a narrow Ge'ez cut; fashion, construction and garage templates (17 in all); design, performance and security reviews fixed
+- [x] Slice 2: five more art directions (organic, cinematic, brutal, calm, kinetic), pricing plans, a week timetable and prints; bakery, studio, training, pharmacy and gym templates (22 in all); size-matched fallback faces for the Latin heading fonts; design, performance and security reviews fixed (2026-11-19)
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
@@ -162,6 +166,8 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - The photo library (12 MB) is traced into every route's function through the `"/**"` key in `next.config.ts`; scope it to the routes that build and publish.
 - The builder landing page measured LCP 3.4 to 3.75 s in one run on a loaded machine during the review (budget 2.5 s); not compared with `main`. Check the Lighthouse CI result after this merge.
 - Generated sites' script is 95.9 KB gzip of the 100 KB budget; Lighthouse's simulated LCP still adds the script's download (2.0 to 2.6 s on photo-heavy home pages, against 1.7 to 2.0 s measured on a throttled phone). Next step: hydrate only the interactive parts (display-only sections such as drawings, icons and cards are about 28 KB gzip), or a decision to move the template to Preact (react-dom is about 63 KB gzip).
+- Generated-site speed after slice 2 of the art directions (performance review, 2026-11-19): Amharic home pages of gym, studio and training sit on the 2.0 s LCP line (1.94 to 2.10 s, devtools throttling; the same as slice 1). Next levers, best first: subset the 79 KB Ge'ez font per site at build time; ship only the site's own art direction's CSS (every site now carries all twelve, about 3 KB gzip of render-blocking CSS); a 160 px photo size for menu thumbnails (bakery wastes about 31 KB) and a 320 px one for prints; the `.wipe` reveal animates `clip-path` (not composited). The week timetable's day reveal never runs on phones (its scroll timeline is the sideways grid); harmless, days stay visible.
+- The Amharic of the five slice-2 starters (bakery, studio, training, pharmacy, gym) and their gallery strings needs the native-speaker review.
 - Amharic in the motion-kit additions (tabs, giving boxes, ribbons, announcements, prayer and service times, stamps) needs the native-speaker review with the rest of the templates.
 - Template ideas from the writers, not built: a "from" note on service prices, an action on services and menu sections, a focal point for cropped photos, an included/not-included list for tours.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
