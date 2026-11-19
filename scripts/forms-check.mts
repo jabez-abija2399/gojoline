@@ -1,11 +1,22 @@
 // Lists live sites whose published forms aren't registered with the Data API (visitors' answers
-// would fail). Read only: it changes nothing. Such a site needs one more publish.
+// would fail): a form missing from site_forms, or saved in a shape the current form schema no
+// longer accepts. Read only: one READ ONLY transaction, it changes nothing. Such a site needs
+// one more publish.
 //   DATABASE_URL=... node --experimental-strip-types scripts/forms-check.mts
-// Prints one slug per line with the missing form ids; exits 1 when any site needs a republish.
+// Prints one slug per line with the form ids to fix; exits 1 when any site needs a republish.
 import { pathToFileURL } from "node:url";
+// The Data API's own form schema (lib/cloud/forms.ts uses the same one), by relative path so
+// this runs under plain Node.
+import { formSectionSchema } from "../templates/site/src/lib/schema.ts";
 
-/** Form ids a site.json shows that aren't among the registered form keys. */
-export function missingForms(siteJson: string | null | undefined, registered: string[]): string[] {
+export interface SavedForm {
+  formKey: string;
+  definition: unknown;
+}
+
+/** Form ids a site.json shows that have no saved definition the Data API can read. */
+export function missingForms(siteJson: string | null | undefined, saved: SavedForm[]): string[] {
+  const registered = saved.filter((f) => formSectionSchema.safeParse(f.definition).success).map((f) => f.formKey);
   let site: unknown;
   try {
     site = JSON.parse(siteJson ?? "");
@@ -34,18 +45,23 @@ async function main() {
   }
   const { neon } = await import("@neondatabase/serverless");
   const sql = neon(url);
-  const rows = (await sql`
-    select s.slug, v.files->>'src/site.json' as site_json,
-      coalesce(array_agg(f.form_key) filter (where f.form_key is not null), '{}') as keys
-    from sites s
-    join project_versions v on v.project_id = s.project_id and v.number = s.published_version
-    left join site_forms f on f.site_id = s.id
-    where s.status = 'published'
-    group by s.slug, v.files
-    order by s.slug`) as { slug: string; site_json: string | null; keys: string[] }[];
+  const [rows] = (await sql.transaction(
+    [
+      sql`
+        select s.slug, v.files->>'src/site.json' as site_json,
+          coalesce(json_agg(json_build_object('formKey', f.form_key, 'definition', f.definition)) filter (where f.form_key is not null), '[]') as saved
+        from sites s
+        join project_versions v on v.project_id = s.project_id and v.number = s.published_version
+        left join site_forms f on f.site_id = s.id
+        where s.status = 'published'
+        group by s.slug, v.files
+        order by s.slug`,
+    ],
+    { readOnly: true },
+  )) as [{ slug: string; site_json: string | null; saved: SavedForm[] }[]];
   let broken = 0;
   for (const r of rows) {
-    const missing = missingForms(r.site_json, r.keys);
+    const missing = missingForms(r.site_json, r.saved);
     if (missing.length) {
       broken++;
       console.log(`${r.slug}\t${missing.join(",")}`);
