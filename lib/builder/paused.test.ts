@@ -56,7 +56,7 @@ describe("building paused (no sandbox configured)", () => {
     await expect(new PausedSandboxProvider().open()).rejects.toBeInstanceOf(BuildingPausedError);
     const p = new PausedPublishProvider("afridea.et");
     expect(p.urlFor("selam")).toBe("https://selam.afridea.et");
-    expect(new PausedPublishProvider().urlFor("SLUG").split("SLUG")).toEqual(["", ""]);
+    expect(new URL(new PausedPublishProvider().urlFor("slug")).hostname).toBe("slug.invalid");
     await expect(p.publish()).rejects.toBeInstanceOf(BuildingPausedError);
   });
 });

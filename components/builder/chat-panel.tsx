@@ -25,6 +25,8 @@ export interface UiMessage {
 }
 
 interface Props {
+  /** Building is paused: this notice replaces the welcome and the message box (nothing can be sent). */
+  paused?: string;
   t: Messages["builder"];
   messages: UiMessage[];
   working: boolean;
@@ -66,7 +68,7 @@ const IDEAS = ["cafe", "shop", "clinic", "personal"] as const;
 const NEXT = ["contact", "colours", "prices", "language"] as const;
 const chip = "min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line bg-white px-3.5 text-sm font-medium lg:min-h-9 text-ink transition-colors hover:border-faint hover:bg-sunken";
 
-export function ChatPanel({ t, messages, working, timeline, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits, confirm, nextGrant, onBeforeSend }: Props) {
+export function ChatPanel({ paused, t, messages, working, timeline, onSend, welcome, languages, hasSite, celebrate, onSeeSite, onPhotos, draft, onDraft: setDraft, focusKey, onAttach, photoErrors, onUndo, credits, confirm, nextGrant, onBeforeSend }: Props) {
   const [undoing, setUndoing] = useState(false);
   const [attach, setAttach] = useState<{ busy: boolean; note?: string; error?: string }>({ busy: false });
   const listRef = useRef<HTMLDivElement>(null);
@@ -104,7 +106,7 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
   const submit = () => {
     const text = draft.trim();
     // A new message while a bigger request waits replaces it (the waiting one was never run).
-    if (!text || working) return;
+    if (!text || working || paused) return;
     // Kept in the box: the owner can send it once they have changes again.
     if (onBeforeSend && !onBeforeSend()) return;
     // The waiting request is dropped from the chat (it was never run).
@@ -118,7 +120,7 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
     boxRef.current?.focus();
   };
 
-  const fresh = messages.length === 0 && !welcome && !working && !hasSite;
+  const fresh = !paused && messages.length === 0 && !welcome && !working && !hasSite;
   const lastId = messages.at(-1)?.id;
 
   return (
@@ -144,7 +146,7 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
             </ul>
           </div>
         ) : (
-          <Bubble role="assistant" label={t.assistant} text={welcome ?? t.welcome} />
+          <Bubble role="assistant" label={t.assistant} text={paused ?? welcome ?? t.welcome} />
         )}
         {messages.map((m) => (
           <Bubble
@@ -208,7 +210,7 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
         )}
       </div>
       {/* With no changes left, the suggestions would only lead to "no changes": room for the note instead. */}
-      {hasSite && !working && !out && (
+      {hasSite && !working && !out && !paused && (
         <div className="flex flex-col gap-2 border-t border-line bg-white pt-2 lg:pt-3">
           <p id="chat-next" className="flex items-center gap-2 px-4 text-sm font-medium text-ink-muted max-lg:sr-only">
             <Sparkles aria-hidden="true" className="size-4 text-faint" />
@@ -231,7 +233,7 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
           </ul>
         </div>
       )}
-      {languages && (
+      {languages && !paused && (
         <LanguageChoice
           title={t.langTitle}
           labels={{ en: t.langEn, am: t.langAm, both: t.langBothShort }}
@@ -243,7 +245,7 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
           <p className="text-sm text-ink-muted max-sm:hidden">{t.langHint}</p>
         </LanguageChoice>
       )}
-      {credits.left !== null && credits.left <= 3 && !working && !confirm && (
+      {credits.left !== null && credits.left <= 3 && !working && !confirm && !paused && (
         // Running low or out: say so before the next request, with where to get more.
         <div className={`flex gap-x-3 gap-y-2 border-t border-line bg-paper px-4 py-2 text-sm ${out ? "flex-col" : "items-center"}`}>
           <p className="flex min-w-0 flex-1 items-start gap-2">
@@ -264,6 +266,9 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
           )}
         </div>
       )}
+      {paused ? (
+        <p className="border-t border-line bg-paper px-4 py-3 text-sm text-ink-muted">{paused}</p>
+      ) : (
       <form
         className="flex flex-col gap-1 bg-white p-3"
         onSubmit={(e) => {
@@ -338,6 +343,7 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
           )}
         </div>
       </form>
+      )}
     </div>
   );
 }

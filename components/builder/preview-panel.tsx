@@ -179,6 +179,11 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
             <SiteSkeleton />
             <p className="text-center text-ink-muted">{t.previewLoading}</p>
           </div>
+        ) : view === "paused" ? (
+          <div className="flex w-full max-w-[390px] flex-col items-center justify-center gap-4 self-center rounded-[2rem] border-2 border-dashed border-line bg-white/70 px-6 py-16 text-center">
+            <Image src="/brand/mark.svg" alt="" width={56} height={56} className="size-14 opacity-80" />
+            <p className="max-w-[32ch] text-ink-muted">{t.previewPaused}</p>
+          </div>
         ) : view === "error" || view === "failed" ? (
           <div className="flex max-w-md flex-col items-center gap-3 self-center rounded-2xl border border-line bg-white p-6 text-center text-ink-muted" role={view === "error" ? "alert" : undefined}>
             <p>{view === "error" ? t.previewError : t.previewFirstFailed}</p>

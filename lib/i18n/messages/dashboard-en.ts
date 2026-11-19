@@ -168,6 +168,7 @@ export const dashboardEn = {
   publishing: "Publishing...",
   publishedNow: "Published. Your live site is up to date.",
   publishFailed: "Publishing didn't work. Open the editor to try again.",
+  publishPaused: "Publishing is paused for a short while. If your site is already online, it stays online.",
   versionsTitle: "Earlier versions",
   versionsIntro: "Go back to an earlier version of your site. Restoring is free and doesn't use AI changes.",
   restore: "Restore",

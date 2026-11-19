@@ -1,3 +1,4 @@
+import type { LLMProvider } from "@/lib/providers/llm/types";
 import type { SandboxProvider } from "./types";
 
 /** Thrown when something tries to open a sandbox while building is paused. */
@@ -15,6 +16,13 @@ export class BuildingPausedError extends Error {
  */
 export class PausedSandboxProvider implements SandboxProvider {
   async open(): Promise<never> {
+    throw new BuildingPausedError();
+  }
+}
+
+/** No paid AI while paused, even for a caller that forgets to check `paused`. */
+export class PausedLLMProvider implements LLMProvider {
+  async complete(): Promise<never> {
     throw new BuildingPausedError();
   }
 }

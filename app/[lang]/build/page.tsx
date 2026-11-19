@@ -39,6 +39,7 @@ export default async function ProjectsPage({
   const a = t.app;
   const b = t.builder;
   const builder = services().builder;
+  const paused = !!builder?.paused;
   const owned = await ownerSites(user.id);
   const tooMany = (await searchParams).error === "too_many";
   const name = greetingName(user.name);
@@ -72,6 +73,7 @@ export default async function ProjectsPage({
               </span>
               <span className="flex flex-1 items-center gap-2 px-3 pt-3 text-sm font-medium">{b.templates[site.id]}</span>
             </Link>
+            {!paused && (
             <form action={createProject} data-preset={site.id} className="p-2 pt-1 sm:p-3 sm:pt-1">
               <input type="hidden" name="lang" value={lang} />
               <input type="hidden" name="preset" value={site.id} />
@@ -80,6 +82,7 @@ export default async function ProjectsPage({
                 <ArrowRight aria-hidden="true" className="size-4" />
               </PendingButton>
             </form>
+            )}
           </li>
         ))}
       </ul>
@@ -89,8 +92,8 @@ export default async function ProjectsPage({
   return (
     <AppShell locale={lang} t={t} user={user}>
       <main id="main" className="relative flex w-full flex-1 flex-col overflow-x-clip">
-        {/* A warm glow behind the start box: the one place on the page that asks for something. */}
-        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(60%_70%_at_50%_0%,var(--gojo-coral-soft),transparent)]" />
+        {/* A warm glow behind the start box: the one place on the page that asks for something (none while building is paused). */}
+        {!paused && <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(60%_70%_at_50%_0%,var(--gojo-coral-soft),transparent)]" />}
         <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12">
           {builder && !builder.paused && <PresetStart autoStart={cards.length === 0} />}
           {tooMany && (
@@ -107,8 +110,8 @@ export default async function ProjectsPage({
             <>
               {builder.paused ? (
                 <>
-                  <h1 className="text-2xl font-semibold tracking-tight">{name ? format(a.greeting, { name }) : a.greetingNoName}</h1>
-                  <p role="status" className="rounded-xl border border-line bg-white p-4 text-ink-muted">{b.paused}</p>
+                  <h1 className="font-display text-3xl font-bold tracking-tight text-balance sm:text-4xl">{name ? format(a.greetingBack, { name }) : a.greetingBackNoName}</h1>
+                  <p className="max-w-[65ch] rounded-xl border border-line bg-white p-4 text-ink-muted">{b.paused}</p>
                 </>
               ) : (
               <StartBox
@@ -126,7 +129,7 @@ export default async function ProjectsPage({
                   {t.guide.buildLink}
                 </Link>
               )}
-              <HomeTabs label={a.homeTabs} labels={{ sites: `${a.sites}${cards.length ? ` (${cards.length})` : ""}`, templates: a.templates }} initial={cards.length === 0 ? "templates" : "sites"} sites={sitesPanel} templates={templatesPanel} />
+              <HomeTabs label={a.homeTabs} labels={{ sites: `${a.sites}${cards.length ? ` (${cards.length})` : ""}`, templates: a.templates }} initial={cards.length === 0 && !paused ? "templates" : "sites"} sites={sitesPanel} templates={templatesPanel} />
             </>
           )}
         </div>

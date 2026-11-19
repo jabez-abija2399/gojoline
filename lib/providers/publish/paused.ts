@@ -6,7 +6,8 @@ export class PausedPublishProvider implements PublishProvider {
   readonly name = "paused";
   constructor(private base = "") {}
   urlFor(slug: string): string {
-    return this.base ? `https://${slug}.${this.base}` : slug;
+    // Always a valid URL (abuse reports parse a sample address): `.invalid` when no domain is set.
+    return `https://${slug}.${this.base || "invalid"}`;
   }
   async publish(): Promise<PublishResult> {
     throw new BuildingPausedError();

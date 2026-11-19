@@ -126,7 +126,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   const templateId = initialVersions.length === 1 ? /^template:([a-z-]+)$/.exec(initialVersions[0]!.summary)?.[1] : undefined;
   const templateName = templateId ? (t.templates as Record<string, string>)[templateId] : undefined;
   const welcome = templateName ? t.welcomeTemplate.replace("{industry}", templateName) : undefined;
-  const [messages, setMessages] = useState<UiMessage[]>(() => (paused ? [...initialMessages, { id: "paused", role: "assistant", text: t.paused }] : initialMessages));
+  const [messages, setMessages] = useState<UiMessage[]>(initialMessages);
   const [versions, setVersions] = useState<UiVersion[]>(initialVersions);
   const [current, setCurrent] = useState<number | null>(initialVersions[0]?.number ?? null);
   const [working, setWorking] = useState(false);
@@ -143,9 +143,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   // Phones: a dot on the Preview tab when the site changed while the owner was elsewhere.
   const [previewFresh, setPreviewFresh] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  // Paused: no preview to open, so it shows the "couldn't open" state at once.
+  // Paused: no preview is opened (the panel says building is paused).
   const [previewLoading, setPreviewLoading] = useState(!paused && initialVersions.length > 0);
-  const [previewError, setPreviewError] = useState(paused && initialVersions.length > 0);
+  const [previewError, setPreviewError] = useState(false);
   const [previewAttempt, setPreviewAttempt] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
   const [mobileTab, setMobileTab] = useState<Tab>(templateName ? "preview" : "chat");
@@ -397,6 +397,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         setFocusChat((k) => k + 1);
       }, onSmaller: smaller, onDiscard: dropPending } : undefined}
       nextGrant={nextGrant}
+      paused={paused ? t.paused : undefined}
       onBeforeSend={() => !maybeUpgrade("send", credits, credits)}
       t={t}
       hasSite={versions.length > 0}
@@ -408,7 +409,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       focusKey={focusChat}
       onAttach={photos.upload}
       photoErrors={photoText.photoErrors}
-      onUndo={previous !== null ? undo : undefined}
+      onUndo={previous !== null && !paused ? undo : undefined}
       credits={{ left: credits, href: `/${locale}/billing` }}
       messages={messages}
       working={working}
@@ -418,7 +419,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       languages={versions.length === 0 && !working ? { value: siteLanguages, onChange: setSiteLanguages } : undefined}
     />
   );
-  const view = previewView({ hasVersion: versions.length > 0, working, firstBuildFailed, url: previewUrl, loading: previewLoading, error: previewError });
+  const view = previewView({ paused, hasVersion: versions.length > 0, working, firstBuildFailed, url: previewUrl, loading: previewLoading, error: previewError });
   const backToChat = useCallback(() => {
     setMobileTab("chat");
     setFocusChat((k) => k + 1);
@@ -440,7 +441,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       warm={firstBuildWarm}
     />
   );
-  const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working} onRestore={restore} />;
+  const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working || paused} onRestore={restore} />;
   const code = <CodePanel t={t} projectId={projectId} refreshKey={current ?? 0} />;
   const photosPanel = <PhotosPanel t={t} tp={photoText} projectId={projectId} photos={photos} disabled={working} onUse={handPhoto} />;
   const panels: Record<SideTab, React.ReactNode> = { preview, photos: photosPanel, versions: versionsPanel, code };
@@ -456,7 +457,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         t={t}
         projectId={projectId}
         hasVersion={versions.length > 0}
-        disabled={working}
+        disabled={working || paused}
         onLive={onLive}
         feedback={{ href: `/${locale}/feedback?from=${encodeURIComponent(`/${locale}/build/${projectId}`)}`, label: chrome.feedbackAfterPublish }}
       >
