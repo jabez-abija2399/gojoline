@@ -125,10 +125,16 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] No starter template during a first build: a building placeholder in the device frame (site outline, current step, elapsed time, “Usually about a minute”; still under reduced motion; en, am, dark, 360 px), the site fades in once its frame has loaded, a failed first build shows the recovery message; later edits and template starts unchanged; progress label lists the newest three sections cleanly (“and 2 more”)
 - [x] Review fixes: the built site loads under the placeholder (inert) for an instant reveal, no preview re-render on streamed text, clock stops when the request ends, no frozen progress bars under reduced motion, clearer failure copy, section names as nouns (en) and quoted (am), ሰከንድ in full
 
+## Form and progress fixes (2026-11-19)
+- [x] Bookings on published sites: the Data API's form schema is the site template's own (`formSectionSchema`), so a form with a small label above it (`eyebrow`) is registered at publish; a form that can't be registered stops the publish before anything is deployed (`form_invalid`, en/am) instead of going live broken; a test builds every form kind with every field type and every optional property and checks it is registered; lists checked against every preset
+- [ ] Progress label shows only whitelisted section names and step labels (no raw model text or hex colours)
+- [ ] A turn that only asks a question (no file written, no build) costs nothing: “No changes used”
+
 ## Later (postponed by the founder)
 - [ ] Chapa: `PaymentProvider` implementation (sandbox) + Chapa button in templates
 
 ## Follow-ups
+- Forms (2026-11-19): **sites published before this fix with a form that has a label above it (`eyebrow`) went live without their form registered; their visitors see “Something went wrong” and owners get no bookings. They need one more publish.** List them (read only) with `DATABASE_URL=… node --experimental-strip-types scripts/forms-check.mts` (prints `slug<TAB>missing form ids`), then ask those owners to publish again or republish for them.
 - First-build preview (2026-11-18): e2e runs on the in-memory sandbox, whose preview is `about:blank`, so the reveal is checked on that frame; check the fade on a real Vercel Sandbox preview after deploy. The Amharic placeholder strings need the native-speaker review.
 - Growth (2026-11-18): claw back an invite thank-you when refunds or payment reversals are built (the reward is a `referral` ledger row per owner, ref `referral:<invited id>`, easy to reverse).
 - Growth (2026-11-18): the Amharic sector page copy (`lib/landing/sectors.ts`) and the growth strings need a native-speaker review before launch.

@@ -569,6 +569,7 @@ export const en = {
       taken_down: "This site was taken down. Please contact support.",
       build_failed: "Your site couldn't be prepared for publishing. Ask in the chat to fix it, then try again.",
       unfinished: "Your site still has example details: the phone +251 911 000 000, an example Telegram name, text in [square brackets], or the template's example reviews, people or giving goal. Tell me your real details in the chat (or ask me to remove the reviews and people), then publish.",
+      form_invalid: "A form on your site (booking, order or contact) isn't set up in a way visitors can send. Ask in the chat to fix the form, then publish again.",
       blocked: "Your site has something we can't publish, such as a password or payment form, or content against our rules. Please change it and try again.",
       failed: "Publishing didn't work this time. Please try again.",
       too_many: "You've published many times. Please wait a little.",
