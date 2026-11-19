@@ -18,7 +18,10 @@ export interface Shot {
 
 /** One or two shots per section; each one's alt text is `sections.<id>.shots[i]` in the messages. */
 export const GUIDE_SHOTS: Record<GuideSection, readonly Shot[]> = {
-  start: [{ desktop: "01-sign-in", phone: "phone-01-sign-in" }],
+  start: [
+    { desktop: "01-start", phone: "phone-01-start" },
+    { desktop: "01-sign-in", phone: "phone-01-sign-in" },
+  ],
   describe: [{ desktop: "02-describe", phone: "phone-02-describe" }],
   build: [
     { desktop: "03-building", phone: "phone-03-building" },

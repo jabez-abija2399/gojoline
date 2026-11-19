@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, PlayCircle } from "lucide-react";
 import { AppShell } from "@/components/app/app-shell";
 import { HomeTabs } from "@/components/app/home-tabs";
 import { SitesGrid, type SiteCard } from "@/components/app/sites-grid";
@@ -112,6 +112,13 @@ export default async function ProjectsPage({
                 title={name ? format(a.greeting, { name }) : a.greetingNoName}
                 autoStart={cards.length === 0}
               />
+              {cards.length === 0 && (
+                // First visit: the short video and steps, for owners who'd like to see how it works first.
+                <Link href={`/${lang}/guide`} className="-mt-4 inline-flex min-h-11 w-fit items-center gap-2 self-center rounded-full px-3 text-sm font-medium text-ink underline underline-offset-4 hover:bg-white/60">
+                  <PlayCircle aria-hidden="true" className="size-5 shrink-0" />
+                  {t.guide.buildLink}
+                </Link>
+              )}
               <HomeTabs label={a.homeTabs} labels={{ sites: `${a.sites}${cards.length ? ` (${cards.length})` : ""}`, templates: a.templates }} initial={cards.length === 0 ? "templates" : "sites"} sites={sitesPanel} templates={templatesPanel} />
             </>
           )}

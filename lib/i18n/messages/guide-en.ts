@@ -79,7 +79,7 @@ export const guideEn = {
         "If you see {google}, you can use your Google account instead.",
       ],
       tip: "Use the same email or Google account every time, so your sites are always in one place.",
-      shots: ["The sign-in page: Phone or email, and Send me a code"],
+      shots: ["The Gojoline home page with the Start free button", "The sign-in page: Phone or email, and Send me a code"],
     },
     describe: {
       title: "Describe your business",

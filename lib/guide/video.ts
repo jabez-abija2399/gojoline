@@ -19,8 +19,15 @@ export const CHAPTERS_TXT = `0:00  Intro
 4:44  Closing
 `;
 
-/** Length of public/guide/gojoline-guide-720.mp4, in seconds. */
+/** Length of public/guide/gojoline-guide-720.mp4, in seconds, and its size in bytes. */
 export const VIDEO_SECONDS = 288.37;
+export const VIDEO_BYTES = 5_645_679;
+
+/**
+ * The English captions are burned into the picture near the bottom; a captions track turned on
+ * in the player shows near the top so the two never cover each other.
+ */
+export const CAPTION_SETTINGS = "line:6%";
 
 /**
  * When each English caption burned into the video shows (start, end in seconds), in the same
@@ -121,11 +128,13 @@ export interface Cue {
   start: number;
   end: number;
   text: string;
+  /** WebVTT cue settings, like "line:6%" (shown near the top). */
+  settings?: string;
 }
 
 /** A WebVTT file from cues (each must end after it starts). */
 export function toVtt(cues: readonly Cue[]): string {
-  const body = cues.map((c, i) => `${i + 1}\n${vttTime(c.start)} --> ${vttTime(c.end)}\n${cueText(c.text)}`).join("\n\n");
+  const body = cues.map((c, i) => `${i + 1}\n${vttTime(c.start)} --> ${vttTime(c.end)}${c.settings ? ` ${c.settings}` : ""}\n${cueText(c.text)}`).join("\n\n");
   return `WEBVTT\n\n${body}\n`;
 }
 
@@ -135,9 +144,9 @@ export function chapterCues(chapters: readonly Chapter[], duration: number, titl
 }
 
 /** Caption cues from their times and texts (the same length, in the same order). */
-export function captionCues(times: readonly (readonly [number, number])[], texts: readonly string[]): Cue[] {
+export function captionCues(times: readonly (readonly [number, number])[], texts: readonly string[], settings?: string): Cue[] {
   if (times.length !== texts.length) throw new Error(`captions: ${times.length} times but ${texts.length} texts`);
-  return times.map(([start, end], i) => ({ start, end, text: texts[i] ?? "" }));
+  return times.map(([start, end], i) => ({ start, end, text: texts[i] ?? "", ...(settings ? { settings } : {}) }));
 }
 
 /** Where in the video each of the guide's ten sections starts, by section number. */

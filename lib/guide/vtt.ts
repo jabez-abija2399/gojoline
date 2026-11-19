@@ -4,7 +4,7 @@
  * test checks the committed files still match.
  */
 import { GUIDE_SECTIONS, trackSrc } from "./sections.ts";
-import { CAPTION_TIMES, CHAPTERS_TXT, VIDEO_SECONDS, captionCues, chapterCues, parseChapters, toVtt, type Chapter } from "./video.ts";
+import { CAPTION_SETTINGS, CAPTION_TIMES, CHAPTERS_TXT, VIDEO_SECONDS, captionCues, chapterCues, parseChapters, toVtt, type Chapter } from "./video.ts";
 
 type GuideText = {
   video: { captions: readonly string[]; intro: string; closing: string };
@@ -25,7 +25,7 @@ export function vttFiles(texts: { en: GuideText; am: GuideText }): Record<string
   for (const lang of ["en", "am"] as const) {
     const g = texts[lang];
     out[trackSrc("chapters", lang)] = toVtt(chapterCues(chapters, VIDEO_SECONDS, (c) => chapterTitle(c, g)));
-    out[trackSrc("captions", lang)] = toVtt(captionCues(CAPTION_TIMES, g.video.captions));
+    out[trackSrc("captions", lang)] = toVtt(captionCues(CAPTION_TIMES, g.video.captions, CAPTION_SETTINGS));
   }
   return out;
 }

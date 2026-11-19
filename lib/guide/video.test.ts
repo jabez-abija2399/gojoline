@@ -1,10 +1,10 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { guideAm } from "@/lib/i18n/messages/guide-am";
 import { guideEn } from "@/lib/i18n/messages/guide-en";
-import { DESKTOP, GUIDE_SECTIONS, GUIDE_SHOTS, PHONE, shotSrc, shotSrcSet } from "./sections";
-import { CAPTION_TIMES, CHAPTERS_TXT, VIDEO_SECONDS, captionCues, chapterCues, clock, parseChapters, parseTimestamp, sectionStarts, toVtt, vttTime } from "./video";
+import { DESKTOP, GUIDE_SECTIONS, GUIDE_SHOTS, PHONE, POSTER_FILE, VIDEO_FILE, shotSrc, shotSrcSet } from "./sections";
+import { CAPTION_TIMES, CHAPTERS_TXT, VIDEO_BYTES, VIDEO_SECONDS, captionCues, chapterCues, clock, parseChapters, parseTimestamp, sectionStarts, toVtt, vttTime } from "./video";
 import { chapterTitle, vttFiles } from "./vtt";
 
 const PUBLIC = join(process.cwd(), "public");
@@ -72,6 +72,7 @@ describe("times", () => {
 describe("WebVTT", () => {
   it("writes cues and keeps their text safe", () => {
     expect(toVtt([{ start: 1, end: 2.5, text: "A <b> & --> c\n\nd" }])).toBe("WEBVTT\n\n1\n00:00:01.000 --> 00:00:02.500\nA &lt;b> &amp; -> c\nd\n");
+    expect(toVtt(captionCues([[0, 1]], ["Hi"], "line:6%"))).toBe("WEBVTT\n\n1\n00:00:00.000 --> 00:00:01.000 line:6%\nHi\n");
   });
   it("runs each chapter until the next and the last until the end", () => {
     const cues = chapterCues(parseChapters(CHAPTERS_TXT), VIDEO_SECONDS, (c) => c.title);
@@ -96,6 +97,15 @@ describe("WebVTT", () => {
     const files = vttFiles({ en: guideEn, am: guideAm });
     expect(Object.keys(files).sort()).toEqual(["/guide/captions-am.vtt", "/guide/captions-en.vtt", "/guide/chapters-am.vtt", "/guide/chapters-en.vtt"]);
     for (const [path, body] of Object.entries(files)) expect(readFileSync(join(PUBLIC, path), "utf8"), path).toBe(body);
+  });
+});
+
+describe("files", () => {
+  it("the video, at the size the download link says, and its poster", () => {
+    expect(statSync(join(PUBLIC, VIDEO_FILE)).size).toBe(VIDEO_BYTES);
+    // Small enough for slow connections (target: 15 MB at most).
+    expect(VIDEO_BYTES).toBeLessThan(15_000_000);
+    expect(existsSync(join(PUBLIC, POSTER_FILE))).toBe(true);
   });
 });
 

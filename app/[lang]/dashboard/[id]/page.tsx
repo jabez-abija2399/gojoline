@@ -112,7 +112,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
           })}
         </nav>
         <ActiveTabInView navId="dashboard-tabs" />
-        {home && <HomePanel o={home} t={d} locale={lang} projectId={id} siteName={name} supportBot={bot} scan={scan} />}
+        {home && <HomePanel o={home} t={d} locale={lang} projectId={id} siteName={name} supportBot={bot} scan={scan} guideLabel={t.guide.dashboardLink} />}
         {tab === "messages" && (
           <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
             <MessagesPanel t={d} locale={lang} projectId={id} />

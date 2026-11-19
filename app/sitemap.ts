@@ -7,6 +7,7 @@ const PAGES = [
   { path: "/templates", priority: 0.8, changeFrequency: "monthly" as const },
   { path: "/pricing", priority: 0.8, changeFrequency: "monthly" as const },
   { path: "/showcase", priority: 0.6, changeFrequency: "weekly" as const },
+  { path: "/guide", priority: 0.7, changeFrequency: "monthly" as const },
   { path: "/privacy", priority: 0.3, changeFrequency: "yearly" as const },
   { path: "/terms", priority: 0.3, changeFrequency: "yearly" as const },
   ...SECTORS.map((s) => ({ path: `/website-for/${s}`, priority: 0.7, changeFrequency: "monthly" as const })),
