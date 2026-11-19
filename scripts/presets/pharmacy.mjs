@@ -24,11 +24,11 @@ const askForm = {
   id: "ask",
   kind: "contact",
   heading: t("Ask if it's in stock", "መኖሩን ይጠይቁ"),
-  intro: t("Tell us what you are looking for. The pharmacist answers by phone or Telegram, usually within half an hour.", "የሚፈልጉትን ይንገሩን። ፋርማሲስቱ በስልክ ወይም በቴሌግራም ብዙ ጊዜ በግማሽ ሰዓት ውስጥ ይመልሳል።"),
+  intro: t("Tell us what you are looking for. The pharmacist answers by phone or Telegram, usually within half an hour. Please don't write prescriptions or health details here: send prescriptions on Telegram.", "የሚፈልጉትን ይንገሩን። ፋርማሲስቱ በስልክ ወይም በቴሌግራም ብዙ ጊዜ በግማሽ ሰዓት ውስጥ ይመልሳል። እባክዎ ማዘዣ ወይም የጤና መረጃ እዚህ አይጻፉ፤ ማዘዣ በቴሌግራም ይላኩ።"),
   fields: [
     { name: "name", label: t("Your name", "ስምዎ"), type: "text", required: true },
     { name: "phone", label: t("Phone", "ስልክ"), type: "tel", required: true },
-    { name: "need", label: t("What are you looking for?", "ምን ይፈልጋሉ?"), type: "textarea", required: true },
+    { name: "need", label: t("What are you looking for?", "ምን ይፈልጋሉ?"), type: "text" },
     { name: "delivery", label: t("Pick up or delivery?", "ይወስዳሉ ወይስ እናድርስ?"), type: "select", options: [t("I will pick it up", "እወስዳለሁ"), t("Please deliver", "እባክዎ ያድርሱ")] },
   ],
   submitLabel: t("Ask the pharmacist", "ፋርማሲስቱን ይጠይቁ"),
