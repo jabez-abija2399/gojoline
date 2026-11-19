@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Check, Lock, Moon, Send, TriangleAlert, Users, Inbox, MessageCircle, Info } from "lucide-react";
+import { ArrowRight, BookOpen, Check, Lock, Moon, Send, TriangleAlert, Users, Inbox, MessageCircle, Info } from "lucide-react";
 import { ago } from "@/lib/app/shell-data";
 import { nextStep, weekTrend, type Trend } from "@/lib/dashboard/stats";
 import type { Home } from "@/lib/dashboard/overview";
@@ -34,7 +34,7 @@ function trendWords(t: T, trend: Trend): string {
 }
 
 /** Home: is the site out there, the one next step, and three numbers for the last week. */
-export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan }: { o: Home; t: T; locale: Locale; projectId: string; siteName: string; supportBot: string; scan: string[] }) {
+export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan, guideLabel }: { o: Home; t: T; locale: Locale; projectId: string; siteName: string; supportBot: string; scan: string[]; guideLabel: string }) {
   const builder = `/${locale}/build/${projectId}`;
   const tab = (id: string, hash = "") => `/${locale}/dashboard/${projectId}?tab=${id}${hash}`;
   const num = new Intl.NumberFormat(locale === "am" ? "am-ET" : "en-US");
@@ -152,6 +152,14 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan 
           </details>
         </section>
       )}
+
+      {/* New owners: the step-by-step guide with its video. */}
+      <p className="flex items-center gap-2 text-sm">
+        <BookOpen aria-hidden="true" className="size-4 shrink-0 text-ink-muted" />
+        <Link href={`/${locale}/guide`} className="inline-flex min-h-11 items-center font-medium text-link underline underline-offset-4 lg:min-h-9">
+          {guideLabel}
+        </Link>
+      </p>
 
       {!draft && (
         <>

@@ -29,6 +29,7 @@ export function SiteFooter({ locale, t }: { locale: Locale; t: Messages }) {
       id: "help",
       title: f.help,
       links: [
+        { href: `/${locale}/guide`, label: t.guide.footerLink },
         { href: `/${locale}#faq`, label: f.questions },
         { href: `https://t.me/${bot}`, label: f.telegramBot, external: true },
         { href: `/${locale}/report`, label: f.report },

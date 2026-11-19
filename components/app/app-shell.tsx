@@ -55,6 +55,7 @@ export async function AppShell({ locale, t, user, children, feedbackUnread }: { 
           languageLabel: t.common.languageSwitchLabel,
           pwa: t.pwa,
           feedback: t.feedback.navLabel,
+          guide: t.guide.nav,
           invite: t.growth.invite.nav,
           feedbackUnread: unread === 0 ? "" : unread === 1 ? t.feedback.navUnreadOne : t.feedback.navUnread.replace("{n}", String(unread)),
         }}

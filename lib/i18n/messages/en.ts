@@ -1,6 +1,7 @@
 import { dashboardEn } from "./dashboard-en";
 import { errorMessages } from "./errors";
 import { feedbackEn } from "./feedback-en";
+import { guideEn } from "./guide-en";
 import { growthEn } from "./growth-en";
 
 /**
@@ -1230,6 +1231,7 @@ export const en = {
   },
   feedback: feedbackEn,
   growth: growthEn,
+  guide: guideEn,
   errors: errorMessages.en,
 };
 

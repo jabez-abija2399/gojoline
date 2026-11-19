@@ -34,6 +34,11 @@ const nextConfig: NextConfig = {
         source: "/templates/:path(.+\\.(?:webp|png|jpe?g|avif))",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
       },
+      // The guide's video, captions and screenshots (public/guide/, made by scripts/guide-assets.mts): same caching.
+      {
+        source: "/guide/:path(.+\\.(?:webp|avif|mp4|vtt))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
       // Live template demos (public/demo/<id>/, built by scripts/template-demos.mjs): shown in a
       // frame on Gojoline's own preview pages only, with the same strict policy as published sites,
       // and kept out of search engines. Later entries override the same header above.

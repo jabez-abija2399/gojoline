@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronsUpDown, CreditCard, Globe, LayoutGrid, LayoutTemplate, LogOut, Menu, MessageSquareHeart, Plus, Sparkles, X, Zap, UserPlus } from "lucide-react";
+import { BookOpen, ChevronsUpDown, CreditCard, Globe, LayoutGrid, LayoutTemplate, LogOut, Menu, MessageSquareHeart, Plus, Sparkles, X, Zap, UserPlus } from "lucide-react";
 import { InstallApp } from "@/components/pwa/install-app";
 import { LanguageSwitch } from "@/components/site/language-switch";
 import { signOut } from "@/lib/auth/actions";
@@ -39,6 +39,8 @@ export interface SidebarText {
   languageLabel: string;
   pwa: { install: string; iosTitle: string; iosSteps: string; close: string };
   feedback: string;
+  /** "Guide": how to use Gojoline, step by step with a video. */
+  guide: string;
   /** "Invite a business": the owner's invite link on the Plan page. */
   invite: string;
   /** Already worded for the number; empty when there is no unread reply. */
@@ -77,6 +79,7 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
   const home = `/${locale}/build`;
   const billing = `/${locale}/billing`;
   const feedbackPath = `/${locale}/feedback`;
+  const guidePath = `/${locale}/guide`;
   // The page it was sent from goes along, so the team knows where it happened.
   const feedbackHref = pathname && pathname !== feedbackPath ? `${feedbackPath}?from=${encodeURIComponent(pathname)}` : feedbackPath;
   const low = credits !== null && credits <= 3;
@@ -220,6 +223,10 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
         )}
 
         <div className="mt-auto flex shrink-0 flex-col gap-2">
+          <Link href={guidePath} onClick={close} aria-current={current(guidePath)} className={item}>
+            <BookOpen aria-hidden="true" className="size-4 shrink-0" />
+            <span className="min-w-0 flex-1 truncate">{text.guide}</span>
+          </Link>
           <Link href={`${billing}#invite-title`} onClick={close} className={item}>
             <UserPlus aria-hidden="true" className="size-4 shrink-0" />
             <span className="min-w-0 flex-1 truncate">{text.invite}</span>
