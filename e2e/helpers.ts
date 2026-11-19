@@ -72,12 +72,13 @@ export async function unfold(page: Page, name: RegExp) {
   // includeHidden: on large screens the toggle is in the page but hidden (lg:hidden).
   const button = page.getByRole("button", { name, includeHidden: true });
   // Wait for the page to draw the toggle first: checking at once can run before it exists and
-  // skip unfolding on phones.
+  // skip unfolding on phones. The whole page must have arrived too: a streamed part waits in a
+  // hidden holder until it is swapped in, and looked "hidden" (as on large screens) until then.
   await button.waitFor({ state: "attached" });
-  if (!(await button.isVisible())) return;
   // Wait for the page's code before tapping: React replays taps made during hydration, so quick
   // retries could replay two taps and fold it again. Retried slowly, and only kept once it stays open.
   await page.waitForLoadState("load");
+  if (!(await button.isVisible())) return;
   await expect(async () => {
     if ((await button.getAttribute("aria-expanded")) !== "true") await button.click();
     await expect(button).toHaveAttribute("aria-expanded", "true", { timeout: 2000 });
