@@ -2,7 +2,8 @@ import { Lightbulb, Play } from "lucide-react";
 import { DESKTOP, PHONE, shotSrc, shotSrcSet, type Shot } from "@/lib/guide/sections";
 
 /** A real screenshot: the phone picture on phones, the computer one on wider screens, AVIF or WebP. */
-export function GuideShot({ shot, alt, eager }: { shot: Shot; alt: string; eager: boolean }) {
+/** Always lazy: the video poster is the page's first picture. */
+export function GuideShot({ shot, alt }: { shot: Shot; alt: string }) {
   const phone = shot.phone;
   return (
     // Without a phone picture the shot is for large screens only (a computer screen shrunk to a phone is unreadable).
@@ -17,7 +18,7 @@ export function GuideShot({ shot, alt, eager }: { shot: Shot; alt: string; eager
           alt={alt}
           width={DESKTOP.width}
           height={DESKTOP.height}
-          loading={eager ? "eager" : "lazy"}
+          loading="lazy"
           decoding="async"
           className="mx-auto h-auto w-full rounded-xl border border-line bg-white shadow-sm max-md:max-w-[16rem]"
         />

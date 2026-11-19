@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { preload } from "react-dom";
 import { ArrowRight, MessageSquareHeart, Send } from "lucide-react";
-import { AppShell } from "@/components/app/app-shell";
 import { GuideShot, GuideTip, NumberedSteps, SeekLink } from "@/components/guide/guide-parts";
 import { GuideVideo } from "@/components/guide/guide-video";
 import { WasPrice } from "@/components/pricing/offer-price";
@@ -10,13 +10,12 @@ import { formatBirr, PlanHighlights } from "@/components/pricing/plan-highlights
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { creditSettings, launchOffer, planFeatures } from "@/lib/app/shell-data";
-import { currentUser } from "@/lib/auth/session";
 import { looksSignedIn } from "@/lib/auth/signed-in";
 import { REQUEST_SIZES } from "@/lib/billing/credits";
 import { offerPrice } from "@/lib/billing/discounts";
 import { offerBadgeText } from "@/lib/billing/offer-text";
 import { PLAN_IDS } from "@/lib/billing/plans";
-import { ANSWER_REFUNDS_PER_DAY } from "@/lib/billing/service";
+import { ANSWER_REFUNDS_PER_DAY, REFUND_CREDITS_PER_DAY, freeFirstBuildsPerMonth } from "@/lib/billing/service";
 import { REFERRAL_MONTHLY_CAP } from "@/lib/growth/referral-rules";
 import { GUIDE_SECTIONS, GUIDE_SHOTS, POSTER_FILE, VIDEO_FILE, trackSrc } from "@/lib/guide/sections";
 import { CHAPTERS_TXT, VIDEO_BYTES, clock, parseChapters, sectionStarts } from "@/lib/guide/video";
@@ -89,20 +88,15 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = getMessages(lang);
-  // A cookie check first, so signed-out visitors cost no database call for the session.
-  const user = (await looksSignedIn()) ? await currentUser() : null;
+  // The guide always uses the public frame: the app shell's client code would ship to every
+  // visitor otherwise. A signed-in owner gets "Your sites" in the header and direct links.
+  const signedIn = await looksSignedIn();
+  // The poster is the first big picture (LCP on phones): fetch it before the page's CSS settles.
+  preload(POSTER_FILE, { as: "image", fetchPriority: "high" });
   const [{ prices }, features, credits, offer] = await Promise.all([services().billing.settings(), planFeatures(), creditSettings(), launchOffer()]);
   const bot = services().telegram?.username ?? "gojoline_bot";
-  const content = <GuideContent locale={lang} t={t} signedIn={!!user} prices={prices} features={features} credits={credits} offer={offer} bot={bot} />;
+  const content = <GuideContent locale={lang} t={t} signedIn={signedIn} prices={prices} features={features} credits={credits} offer={offer} bot={bot} />;
 
-  if (user)
-    return (
-      <AppShell locale={lang} t={t} user={user}>
-        <main id="main" tabIndex={-1} className="flex w-full flex-1 flex-col focus:outline-none">
-          {content}
-        </main>
-      </AppShell>
-    );
   return (
     <>
       <SiteHeader locale={lang} t={t} nav />
@@ -128,8 +122,17 @@ type Props = {
 function GuideContent({ locale, t, signedIn, prices, features, credits, offer, bot }: Props) {
   const g = t.guide;
   const labels = uiLabels(t);
-  const f = (s: string, extra: Record<string, string | number> = {}) => format(s, { ...labels, ...extra });
   const list = (items: string[]) => new Intl.ListFormat(locale === "am" ? "am" : "en", { type: "conjunction" }).format(items);
+  const plansWhere = (has: (p: (typeof PLAN_IDS)[number]) => boolean) => list(PLAN_IDS.filter(has).map((p) => t.billing.plans[p]));
+  // Rules from the code and the plans, so the guide says exactly what the app does.
+  const rules: Record<string, string | number> = {
+    n: REFUND_CREDITS_PER_DAY,
+    m: ANSWER_REFUNDS_PER_DAY,
+    firstBuilds: list(PLAN_IDS.map((p) => `${t.billing.plans[p]} ${freeFirstBuildsPerMonth(p)}`)),
+    telegramPlans: plansWhere((p) => features[p].telegramNotify),
+    noTelegramPlans: plansWhere((p) => !features[p].telegramNotify),
+  };
+  const f = (s: string, extra: Record<string, string | number> = {}) => format(s, { ...labels, ...rules, ...extra });
   const now = new Date();
   const telegram = `https://t.me/${bot}`;
   const buildHref = signedIn ? `/${locale}/build` : `/${locale}/sign-in?next=/${locale}/build`;
@@ -138,13 +141,13 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
   const topupOffer = offerPrice(offer, "topup", prices.topup, now);
   const faqValues = {
     plans: list(PLAN_IDS.filter((p) => features[p].customDomain).map((p) => t.billing.plans[p])),
-    n: ANSWER_REFUNDS_PER_DAY,
+    // Own domain: who gets a guide and who gets it done (PLAN_FEATURES.domainHelp).
+    domainHelp: [format(g.domainGuide, { plans: plansWhere((p) => features[p].domainHelp === "guide") }), format(g.domainForYou, { plans: plansWhere((p) => features[p].domainHelp === "done_for_you") })].join(" "),
     sites: format(g.sitesAnswer, { list: list(PLAN_IDS.map((p) => format(g.sitesPlan, { plan: t.billing.plans[p], n: features[p].maxSites }))) }),
   };
   const sizeCost = (n: number) => (n === 1 ? g.sections.edit.sizeCostOne : format(g.sections.edit.sizeCost, { n }));
   const mb = (VIDEO_BYTES / 1e6).toFixed(1);
   const link = "font-medium text-link underline underline-offset-4";
-  let shotIndex = 0;
 
   const tocItems = (
     <ol className="flex flex-col gap-0.5">
@@ -185,8 +188,8 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
           fallback={g.video.fallback}
           download={format(g.video.download, { size: `${mb} MB` })}
           tracks={[
-            { kind: "captions", src: trackSrc("captions", "en"), srcLang: "en", label: g.video.captionsEn },
-            { kind: "captions", src: trackSrc("captions", "am"), srcLang: "am", label: g.video.captionsAm },
+            { kind: "captions", src: trackSrc("captions", "en"), srcLang: "en", label: g.video.captionsEn, isDefault: locale === "en" },
+            { kind: "captions", src: trackSrc("captions", "am"), srcLang: "am", label: g.video.captionsAm, isDefault: locale === "am" },
             { kind: "chapters", src: trackSrc("chapters", locale), srcLang: locale, label: g.video.chaptersLabel },
           ]}
         />
@@ -200,14 +203,14 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
 
       <div className="grid gap-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
         <nav aria-label={g.toc.title} className="hidden lg:block">
-          <div className={`sticky ${signedIn ? "top-6" : "top-24"} flex max-h-[calc(100dvh-8rem)] flex-col gap-2 overflow-y-auto`}>
+          <div className="sticky top-24 flex max-h-[calc(100dvh-8rem)] flex-col gap-2 overflow-y-auto">
             <p className="px-2 text-sm font-semibold text-ink-muted">{g.toc.title}</p>
             {tocItems}
           </div>
         </nav>
 
         <div className="flex min-w-0 flex-col gap-12">
-          <details className="group rounded-2xl border border-line bg-white lg:hidden">
+          <details data-toc className="group rounded-2xl border border-line bg-white lg:hidden">
             <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-2 px-4 font-semibold [&::-webkit-details-marker]:hidden">
               {g.toc.title}
               <ArrowRight aria-hidden="true" className="size-4 rotate-90 transition-transform group-open:-rotate-90" />
@@ -222,7 +225,7 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
             return (
               <section key={id} id={`guide-${id}`} aria-labelledby={`guide-${id}-title`} className="flex scroll-mt-24 flex-col gap-5">
                 <div className="flex flex-col gap-2">
-                  <h2 id={`guide-${id}-title`} className="flex items-center gap-3 font-display text-2xl font-bold tracking-tight">
+                  <h2 id={`guide-${id}-title`} tabIndex={-1} className="flex items-center gap-3 font-display focus:outline-none text-2xl font-bold tracking-tight">
                     <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-coral-soft text-base text-ink tabular-nums">{i + 1}</span>
                     {s.title}
                   </h2>
@@ -262,11 +265,13 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
                   </ul>
                 )}
 
+                {id === "publish" && <p className="max-w-[65ch] rounded-xl border border-warning/40 bg-white p-4">{g.sections.publish.unfinished}</p>}
+
                 {s.tip && <GuideTip label={g.tip}>{f(s.tip)}</GuideTip>}
 
                 <div className="flex flex-col gap-4">
                   {GUIDE_SHOTS[id].map((shot, k) => (
-                    <GuideShot key={shot.desktop} shot={shot} alt={s.shots[k] ?? ""} eager={shotIndex++ === 0} />
+                    <GuideShot key={shot.desktop} shot={shot} alt={s.shots[k] ?? ""} />
                   ))}
                 </div>
               </section>
@@ -274,7 +279,7 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
           })}
 
           <section id="guide-faq" aria-labelledby="guide-faq-title" className="flex scroll-mt-24 flex-col gap-4">
-            <h2 id="guide-faq-title" className="font-display text-2xl font-bold tracking-tight">{g.faqTitle}</h2>
+            <h2 id="guide-faq-title" tabIndex={-1} className="font-display focus:outline-none text-2xl font-bold tracking-tight">{g.faqTitle}</h2>
             <div className="flex flex-col divide-y divide-line rounded-2xl border border-line bg-white">
               {g.faq.map((item) => (
                 <details key={item.q} className="group px-4">
@@ -345,8 +350,8 @@ function EditDetails({ t, sizeCost, credits }: { t: Messages; sizeCost: (n: numb
             </div>
           ))}
         </dl>
-        <p>{format(e.question, { n: ANSWER_REFUNDS_PER_DAY })}</p>
-        <p>{e.failed}</p>
+        <p>{format(e.question, { m: ANSWER_REFUNDS_PER_DAY })}</p>
+        <p>{format(e.failed, { n: REFUND_CREDITS_PER_DAY })}</p>
       </div>
     </div>
   );

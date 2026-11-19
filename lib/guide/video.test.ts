@@ -97,6 +97,11 @@ describe("WebVTT", () => {
     const files = vttFiles({ en: guideEn, am: guideAm });
     expect(Object.keys(files).sort()).toEqual(["/guide/captions-am.vtt", "/guide/captions-en.vtt", "/guide/chapters-am.vtt", "/guide/chapters-en.vtt"]);
     for (const [path, body] of Object.entries(files)) expect(readFileSync(join(PUBLIC, path), "utf8"), path).toBe(body);
+    // No placeholder left unfilled: captions are fixed text, not the guide's {label} templates.
+    for (const [path, body] of Object.entries(files)) expect(body, path).not.toMatch(/[{}]/);
+    // The captions say what the video shows: email sign-in only, the real address.
+    expect(files["/guide/captions-en.vtt"]).toContain("Sign in with your email. We send you a 6-digit code.");
+    expect(files["/guide/captions-en.vtt"]).toContain("Go to gojoline.afridea.et and press Start free.");
   });
 });
 

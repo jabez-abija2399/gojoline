@@ -28,6 +28,11 @@ for (const lang of ["en", "am"] as const) {
     await expect(video.locator('track[kind="captions"][srclang="en"]')).toHaveAttribute("src", "/guide/captions-en.vtt");
     await expect(video.locator('track[kind="captions"][srclang="am"]')).toHaveAttribute("src", "/guide/captions-am.vtt");
     await expect(video.locator('track[kind="chapters"]')).toHaveAttribute("src", `/guide/chapters-${lang}.vtt`);
+    // Captions in the page's language are on from the start.
+    await expect(video.locator(`track[kind="captions"][srclang="${lang}"]`)).toHaveAttribute("default", "");
+    await expect(video.locator(`track[kind="captions"][srclang="${lang === "en" ? "am" : "en"}"]`)).not.toHaveAttribute("default", /.*/);
+    // The poster (the first big picture) is fetched early.
+    await expect(page.locator('link[rel="preload"][as="image"][href="/guide/gojoline-guide-poster.webp"]')).toHaveAttribute("fetchpriority", "high");
     // The captions file is real WebVTT.
     const vtt = await page.request.get("/guide/captions-am.vtt");
     expect(vtt.headers()["content-type"]).toContain("text/vtt");
@@ -36,6 +41,11 @@ for (const lang of ["en", "am"] as const) {
     await expect(page.getByRole("heading", { level: 2 })).toHaveCount(12); // ten sections, the questions and the call to action
     await expect(page.getByRole("heading", { level: 2, name: t.describe })).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: t.faq })).toBeVisible();
+    // Rules read from the plans: Telegram alerts only where the plan has them, email sign-in only.
+    if (lang === "en") {
+      await expect(page.getByText("connect Telegram to get every booking on your phone (on Starter and Business)", { exact: false })).toBeVisible();
+      await expect(page.getByText("Signing in with a phone number is coming soon", { exact: false })).toBeVisible();
+    }
     // Real prices from the billing settings (defaults in e2e).
     await expect(page.getByText(lang === "en" ? "499 Birr a month" : "በወር 499 ብር", { exact: true })).toBeVisible();
 
@@ -48,6 +58,12 @@ for (const lang of ["en", "am"] as const) {
     await expect(toc).toBeVisible();
     await toc.getByRole("link", { name: t.describe, exact: true }).click();
     await expect(page).toHaveURL(/#guide-describe$/);
+    // The reader lands on the section's heading; on phones the contents fold away again.
+    await expect(page.getByRole("heading", { level: 2, name: t.describe })).toBeFocused();
+    if (info.project.name === "mobile") {
+      await expect(toc).toBeHidden();
+      await page.locator("details summary", { hasText: t.toc }).click();
+    }
     // Nothing of the video has loaded yet; a chapter click starts it there.
     expect(media).toEqual([]);
     await toc.getByRole("link", { name: t.play }).click();
@@ -62,16 +78,17 @@ for (const lang of ["en", "am"] as const) {
   });
 }
 
-test("guide: screenshots are responsive pictures, the first one eager and the rest lazy", async ({ page }, info) => {
+test("guide: screenshots are responsive pictures, all lazy (the poster comes first)", async ({ page }, info) => {
   await sizeFor(page, info.project.name);
   await page.goto("/en/guide");
   const imgs = page.locator("main picture img");
   expect(await imgs.count()).toBeGreaterThanOrEqual(15);
-  await expect(imgs.first()).toHaveAttribute("loading", "eager");
-  await expect(imgs.nth(1)).toHaveAttribute("loading", "lazy");
+  expect(await imgs.evaluateAll((all) => all.every((i) => i.getAttribute("loading") === "lazy"))).toBe(true);
   await expect(imgs.first()).toHaveAttribute("width", "1440");
   await expect(page.locator("main picture source[type='image/avif']").first()).toHaveAttribute("srcset", /\.avif 390w/);
   // The browser picks the phone picture on phones, the computer one on wide screens.
+  await imgs.first().scrollIntoViewIfNeeded();
+  await expect.poll(() => imgs.first().evaluate((i: HTMLImageElement) => i.currentSrc)).not.toBe("");
   const src = await imgs.first().evaluate((i: HTMLImageElement) => i.currentSrc);
   expect(src).toMatch(info.project.name === "mobile" ? /phone-01-start-390\.(avif|webp)$/ : /01-start-(720|1440)\.(avif|webp)$/);
 });
@@ -96,16 +113,16 @@ test("guide is linked from the start screen, the menu and a site's dashboard", a
   await expect(startLink).toHaveAttribute("href", "/en/guide");
   await startLink.click();
   await expect(page.getByRole("heading", { level: 1, name: "How to use Gojoline" })).toBeVisible();
-  // Signed in, it opens inside the app with the menu, and the menu marks it.
-  await openAppMenu(page);
-  const guide = page.locator("#app-sidebar").getByRole("link", { name: "Guide", exact: true });
-  await expect(guide).toHaveAttribute("aria-current", "page");
-  if (info.project.name === "mobile") await page.keyboard.press("Escape");
-  // A signed-in "Build your website" goes straight to the start screen.
+  // Signed in, the page keeps the public frame (no app code for visitors) with direct links.
   await expect(page.getByRole("link", { name: "Build your website" })).toHaveAttribute("href", "/en/build");
 
-  // A site's dashboard Home links to it too.
+  // The app's menu links to it.
   await page.goto("/en/build");
+  await openAppMenu(page);
+  await expect(page.locator("#app-sidebar").getByRole("link", { name: "Guide", exact: true })).toHaveAttribute("href", "/en/guide");
+  if (info.project.name === "mobile") await page.keyboard.press("Escape");
+
+  // A site's dashboard Home links to it too.
   await page.getByRole("button", { name: "Start a new site" }).click();
   const chat = page.getByRole("textbox", { name: "Your message" });
   await chat.fill("Bole Buna");
