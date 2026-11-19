@@ -60,7 +60,8 @@ import { DbShowcaseStore, MemoryShowcaseStore, type ShowcaseStore } from "@/lib/
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
 const isE2E = (env: Env) => env.E2E === "1";
-const onVercelProd = (env: Env) => env.NODE_ENV === "production" && env.VERCEL === "1";
+/** Production on Vercel or on our own server (deploy/server sets GOJO_SERVER=1): fail closed there. */
+const onVercelProd = (env: Env) => env.NODE_ENV === "production" && (env.VERCEL === "1" || env.GOJO_SERVER === "1");
 
 function pickRateLimiter(env: Env): RateLimiter {
   if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {

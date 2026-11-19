@@ -1,0 +1,10 @@
+[Unit]
+Description=Gojoline: daily visits rollup and screenshot cleanup
+After=docker.service network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/gojoline-daily
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict

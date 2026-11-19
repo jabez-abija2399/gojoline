@@ -1,0 +1,9 @@
+[Unit]
+Description=Gojoline: weekly rebuild with fresh base images (security patches)
+After=docker.service network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/gojoline-update --force
+NoNewPrivileges=yes
+PrivateTmp=yes
