@@ -174,7 +174,7 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
         <p className="text-sm font-semibold uppercase tracking-wide text-ink-muted">{g.eyebrow}</p>
         <h1 className="font-display text-3xl font-bold tracking-tight text-balance sm:text-4xl">{g.title}</h1>
         <p className="max-w-[65ch] text-lg text-ink-muted">{g.intro}</p>
-        {g.screenshotsNote && <p className="max-w-[65ch] rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink-muted">{g.screenshotsNote}</p>}
+        {locale !== "en" && <p className="max-w-[65ch] rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink-muted">{g.screenshotsNote}</p>}
       </header>
 
       <div className="flex max-w-4xl flex-col gap-2">

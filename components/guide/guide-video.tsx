@@ -25,9 +25,8 @@ export function GuideVideo({ src, poster, label, tracks, fallback, download }: {
       const t = Number(link.dataset.seek);
       if (!Number.isFinite(t) || t < 0) return;
       e.preventDefault();
-      // Before the video has loaded, the time is kept until it can be applied.
-      if (video.readyState >= HTMLMediaElement.HAVE_METADATA) video.currentTime = t;
-      else video.addEventListener("loadedmetadata", () => (video.currentTime = t), { once: true });
+      // Before the video has loaded, the browser keeps this as the time to start from.
+      video.currentTime = t;
       const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
       video.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
       video.focus({ preventScroll: true });

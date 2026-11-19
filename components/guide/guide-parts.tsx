@@ -12,7 +12,6 @@ export function GuideShot({ shot, alt, eager }: { shot: Shot; alt: string; eager
         {phone && <source media="(max-width: 767px)" type="image/webp" srcSet={shotSrcSet(phone, PHONE.widths, "webp")} sizes="16rem" width={PHONE.width} height={PHONE.height} />}
         <source type="image/avif" srcSet={shotSrcSet(shot.desktop, DESKTOP.widths, "avif")} sizes="(min-width: 1024px) 48rem, 100vw" width={DESKTOP.width} height={DESKTOP.height} />
         <source type="image/webp" srcSet={shotSrcSet(shot.desktop, DESKTOP.widths, "webp")} sizes="(min-width: 1024px) 48rem, 100vw" width={DESKTOP.width} height={DESKTOP.height} />
-        {/* eslint-disable-next-line @next/next/no-img-element -- pre-made AVIF/WebP files in public/guide, art-directed by screen size */}
         <img
           src={shotSrc(shot.desktop, DESKTOP.widths[0], "webp")}
           alt={alt}
