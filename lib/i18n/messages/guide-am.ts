@@ -16,9 +16,10 @@ export const guideAm: Shape<typeof guideEn> = {
   footerLink: "ጎጆላይንን እንዴት መጠቀም እንደሚቻል",
   video: {
     label: "ቪዲዮ፦ ጎጆላይንን እንዴት መጠቀም እንደሚቻል፣ 4 ደቂቃ ከ48 ሰከንድ",
-    length: "4 ደቂቃ 48 ሰከንድ · ድምፅ የለውም፤ ጽሑፉ በእንግሊዝኛ በምስሉ ላይ አለ። የአማርኛ ጽሑፍ ለማብራት CC የሚለውን ቁልፍ ይጫኑ",
+    length: "4 ደቂቃ 48 ሰከንድ · ድምፅ የለውም፤ የአማርኛ ጽሑፍ ከምስሉ በላይ ይታያል",
     fallback: "አሳሽዎ ይህን ቪዲዮ እዚህ ማጫወት አልቻለም።",
-    download: "ቪዲዮውን ያውርዱ (MP4፣ {size})",
+    download: "ቪዲዮውን ያውርዱ ({size})",
+    size: "{n} ሜባ",
     captionsEn: "እንግሊዝኛ",
     captionsAm: "አማርኛ",
     chaptersLabel: "ክፍሎች",
@@ -61,12 +62,14 @@ export const guideAm: Shape<typeof guideEn> = {
   },
   toc: {
     title: "በዚህ ገጽ ላይ",
-    toggle: "ማውጫውን አሳይ",
     faq: "ጥያቄዎች",
     playNamed: "{time} ፦ ክፍል {n}፣ {title}፣ ከዚህ ጀምሮ አጫውት",
     watchPart: "ይህን ክፍል ይመልከቱ ({time})",
   },
   stepsLabel: "ደረጃዎች",
+  stepsFor: "ደረጃዎች፦ {title}",
+  tipLabel: "{label}፦",
+  quoted: "«{text}»",
   tip: "ጠቃሚ ምክር",
   sections: {
     start: {
@@ -210,8 +213,6 @@ export const guideAm: Shape<typeof guideEn> = {
       plansTitle: "ዕቅዶቹ",
       priceMonth: "በወር {price} ብር",
       priceFree: "0 ብር",
-      offer: "{badge}",
-      was: "ቀድሞ {price} ብር",
       steps: [
         "በማውጫው ውስጥ «{plan}»ን ይክፈቱ እና ዕቅድ (በወር ወይም በዓመት) ወይም ተጨማሪ ለውጦችን ይምረጡ።",
         "የሚታየውን መጠን ወደ ቴሌብር ቁጥራችን ወይም የባንክ ሂሳባችን ይላኩ። ገጹ ቁጥሩን፣ ስሙን እና «ቅዳ» የሚል ቁልፍ ያሳያል።",

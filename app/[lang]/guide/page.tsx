@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { preload } from "react-dom";
 import { ArrowRight, MessageSquareHeart, Send } from "lucide-react";
 import { AppShell } from "@/components/app/app-shell";
 import { GuideShot, GuideTip, NumberedSteps, SeekLink } from "@/components/guide/guide-parts";
@@ -88,6 +89,8 @@ function uiLabels(t: Messages): Record<string, string> {
 export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
+  // The poster is the largest thing on screen: fetch it first (a video poster cannot take fetchpriority).
+  preload(POSTER_FILE, { as: "image", fetchPriority: "high" });
   const t = getMessages(lang);
   // A cookie check first, so signed-out visitors cost no database call for the session.
   const user = (await looksSignedIn()) ? await currentUser() : null;
@@ -144,7 +147,6 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
   const sizeCost = (n: number) => (n === 1 ? g.sections.edit.sizeCostOne : format(g.sections.edit.sizeCost, { n }));
   const mb = (VIDEO_BYTES / 1e6).toFixed(1);
   const link = "font-medium text-link underline underline-offset-4";
-  let shotIndex = 0;
 
   const tocItems = (
     <ol className="flex flex-col gap-0.5">
@@ -171,7 +173,7 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12">
       <header className="flex max-w-3xl flex-col gap-3">
-        <p className="text-sm font-semibold uppercase tracking-wide text-ink-muted">{g.eyebrow}</p>
+        <p className={`text-sm font-semibold text-ink-muted ${locale === "am" ? "" : "uppercase tracking-wide"}`}>{g.eyebrow}</p>
         <h1 className="font-display text-3xl font-bold tracking-tight text-balance sm:text-4xl">{g.title}</h1>
         <p className="max-w-[65ch] text-lg text-ink-muted">{g.intro}</p>
         {locale !== "en" && <p className="max-w-[65ch] rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink-muted">{g.screenshotsNote}</p>}
@@ -183,17 +185,17 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
           poster={POSTER_FILE}
           label={g.video.label}
           fallback={g.video.fallback}
-          download={format(g.video.download, { size: `${mb} MB` })}
+          download={format(g.video.download, { size: format(g.video.size, { n: mb }) })}
           tracks={[
             { kind: "captions", src: trackSrc("captions", "en"), srcLang: "en", label: g.video.captionsEn },
-            { kind: "captions", src: trackSrc("captions", "am"), srcLang: "am", label: g.video.captionsAm },
+            { kind: "captions", src: trackSrc("captions", "am"), srcLang: "am", label: g.video.captionsAm, default: locale === "am" },
             { kind: "chapters", src: trackSrc("chapters", locale), srcLang: locale, label: g.video.chaptersLabel },
           ]}
         />
         <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-muted">
           <span>{g.video.length}</span>
           <a href={VIDEO_FILE} download className="inline-flex min-h-11 items-center font-medium text-ink underline underline-offset-4 lg:min-h-9">
-            {format(g.video.download, { size: `${mb} MB` })}
+            {format(g.video.download, { size: format(g.video.size, { n: mb }) })}
           </a>
         </p>
       </div>
@@ -235,11 +237,11 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
                 {id === "describe" && (
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="flex flex-col gap-1 rounded-xl border-2 border-lagoon bg-white p-4">
-                      <p className="text-sm font-semibold">✓ {g.sections.describe.goodTitle}</p>
+                      <p className="text-sm font-semibold"><span aria-hidden="true">✓ </span>{g.sections.describe.goodTitle}</p>
                       <p className="text-ink">{g.sections.describe.good}</p>
                     </div>
                     <div className="flex flex-col gap-1 rounded-xl border border-dashed border-line bg-white p-4">
-                      <p className="text-sm font-semibold">✗ {g.sections.describe.vagueTitle}</p>
+                      <p className="text-sm font-semibold"><span aria-hidden="true">✗ </span>{g.sections.describe.vagueTitle}</p>
                       <p className="text-ink-muted">{g.sections.describe.vague}</p>
                     </div>
                   </div>
@@ -249,7 +251,7 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
 
                 <div className="flex max-w-[65ch] flex-col gap-3">
                   {id === "plan" && <h3 className="font-semibold">{t.billing.pay.stepsTitle}</h3>}
-                  <NumberedSteps steps={s.steps.map((x) => f(x))} label={`${g.stepsLabel}: ${s.title}`} />
+                  <NumberedSteps steps={s.steps.map((x) => f(x))} label={format(g.stepsFor, { title: s.title })} />
                 </div>
 
                 {id === "edit" && <EditDetails t={t} sizeCost={sizeCost} credits={credits} />}
@@ -262,11 +264,11 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
                   </ul>
                 )}
 
-                {s.tip && <GuideTip label={g.tip}>{f(s.tip)}</GuideTip>}
+                {s.tip && <GuideTip label={format(g.tipLabel, { label: g.tip })}>{f(s.tip)}</GuideTip>}
 
                 <div className="flex flex-col gap-4">
                   {GUIDE_SHOTS[id].map((shot, k) => (
-                    <GuideShot key={shot.desktop} shot={shot} alt={s.shots[k] ?? ""} eager={shotIndex++ === 0} />
+                    <GuideShot key={shot.desktop} shot={shot} alt={s.shots[k] ?? ""} />
                   ))}
                 </div>
               </section>
@@ -286,10 +288,9 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
                 </details>
               ))}
             </div>
-            <p className="text-ink-muted">
-              <Link href={`/${locale}/report`} className={link}>{t.footer.report}</Link>
-              {" · "}
-              <a href={telegram} target="_blank" rel="noopener noreferrer" className={link}>
+            <p className="flex flex-wrap items-center gap-x-6 text-ink-muted">
+              <Link href={`/${locale}/report`} className={`${link} inline-flex min-h-11 items-center lg:min-h-9`}>{t.footer.report}</Link>
+              <a href={telegram} target="_blank" rel="noopener noreferrer" className={`${link} inline-flex min-h-11 items-center lg:min-h-9`}>
                 {g.ctaTelegram}
                 <span className="sr-only"> {g.newTab}</span>
               </a>
@@ -330,7 +331,7 @@ function EditDetails({ t, sizeCost, credits }: { t: Messages; sizeCost: (n: numb
         <h3 className="font-semibold">{e.examplesTitle}</h3>
         <ul className="flex flex-wrap gap-2">
           {e.examples.map((x) => (
-            <li key={x} className="rounded-2xl border border-line bg-white px-3 py-2">“{x}”</li>
+            <li key={x} className="rounded-2xl border border-line bg-white px-3 py-2">{format(t.guide.quoted, { text: x })}</li>
           ))}
         </ul>
       </div>

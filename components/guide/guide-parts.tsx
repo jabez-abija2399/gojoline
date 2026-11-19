@@ -2,7 +2,8 @@ import { Lightbulb, Play } from "lucide-react";
 import { DESKTOP, PHONE, shotSrc, shotSrcSet, type Shot } from "@/lib/guide/sections";
 
 /** A real screenshot: the phone picture on phones, the computer one on wider screens, AVIF or WebP. */
-export function GuideShot({ shot, alt, eager }: { shot: Shot; alt: string; eager: boolean }) {
+/** Always lazy: no screenshot is above the fold (the video and contents come first). */
+export function GuideShot({ shot, alt }: { shot: Shot; alt: string }) {
   const phone = shot.phone;
   return (
     // Without a phone picture the shot is for large screens only (a computer screen shrunk to a phone is unreadable).
@@ -10,14 +11,14 @@ export function GuideShot({ shot, alt, eager }: { shot: Shot; alt: string; eager
       <picture>
         {phone && <source media="(max-width: 767px)" type="image/avif" srcSet={shotSrcSet(phone, PHONE.widths, "avif")} sizes="16rem" width={PHONE.width} height={PHONE.height} />}
         {phone && <source media="(max-width: 767px)" type="image/webp" srcSet={shotSrcSet(phone, PHONE.widths, "webp")} sizes="16rem" width={PHONE.width} height={PHONE.height} />}
-        <source type="image/avif" srcSet={shotSrcSet(shot.desktop, DESKTOP.widths, "avif")} sizes="(min-width: 1024px) 48rem, 100vw" width={DESKTOP.width} height={DESKTOP.height} />
-        <source type="image/webp" srcSet={shotSrcSet(shot.desktop, DESKTOP.widths, "webp")} sizes="(min-width: 1024px) 48rem, 100vw" width={DESKTOP.width} height={DESKTOP.height} />
+        <source type="image/avif" srcSet={shotSrcSet(shot.desktop, DESKTOP.widths, "avif")} sizes="(min-width: 1024px) 51rem, calc(100vw - 3rem)" width={DESKTOP.width} height={DESKTOP.height} />
+        <source type="image/webp" srcSet={shotSrcSet(shot.desktop, DESKTOP.widths, "webp")} sizes="(min-width: 1024px) 51rem, calc(100vw - 3rem)" width={DESKTOP.width} height={DESKTOP.height} />
         <img
           src={shotSrc(shot.desktop, DESKTOP.widths[0], "webp")}
           alt={alt}
           width={DESKTOP.width}
           height={DESKTOP.height}
-          loading={eager ? "eager" : "lazy"}
+          loading="lazy"
           decoding="async"
           className="mx-auto h-auto w-full rounded-xl border border-line bg-white shadow-sm max-md:max-w-[16rem]"
         />
@@ -31,7 +32,7 @@ export function GuideTip({ label, children }: { label: string; children: React.R
     <div role="note" className="flex gap-3 rounded-xl border border-line bg-sunken p-4">
       <Lightbulb aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ink" />
       <p>
-        <strong className="font-semibold">{label}: </strong>
+        <strong className="font-semibold">{label} </strong>
         {children}
       </p>
     </div>

@@ -156,7 +156,7 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan,
       {/* New owners: the step-by-step guide with its video. */}
       <p className="flex items-center gap-2 text-sm">
         <BookOpen aria-hidden="true" className="size-4 shrink-0 text-ink-muted" />
-        <Link href={`/${locale}/guide`} className="inline-flex min-h-11 items-center font-medium text-link underline-offset-4 hover:underline lg:min-h-9">
+        <Link href={`/${locale}/guide`} className="inline-flex min-h-11 items-center font-medium text-link underline underline-offset-4 lg:min-h-9">
           {guideLabel}
         </Link>
       </p>

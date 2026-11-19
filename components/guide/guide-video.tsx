@@ -7,6 +7,8 @@ interface Track {
   src: string;
   srcLang: "en" | "am";
   label: string;
+  /** Shown without pressing CC (the Amharic captions on the Amharic page). */
+  default?: boolean;
 }
 
 /**
@@ -51,7 +53,7 @@ export function GuideVideo({ src, poster, label, tracks, fallback, download }: {
     >
       <source src={src} type="video/mp4" />
       {tracks.map((t) => (
-        <track key={`${t.kind}-${t.srcLang}`} kind={t.kind} src={t.src} srcLang={t.srcLang} label={t.label} />
+        <track key={`${t.kind}-${t.srcLang}`} kind={t.kind} src={t.src} srcLang={t.srcLang} label={t.label} default={t.default} />
       ))}
       <a href={src} download>
         {fallback} {download}

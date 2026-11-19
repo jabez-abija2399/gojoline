@@ -28,6 +28,11 @@ for (const lang of ["en", "am"] as const) {
     await expect(video.locator('track[kind="captions"][srclang="en"]')).toHaveAttribute("src", "/guide/captions-en.vtt");
     await expect(video.locator('track[kind="captions"][srclang="am"]')).toHaveAttribute("src", "/guide/captions-am.vtt");
     await expect(video.locator('track[kind="chapters"]')).toHaveAttribute("src", `/guide/chapters-${lang}.vtt`);
+    // A silent video with English on screen: the Amharic page shows the Amharic captions without pressing CC.
+    const amDefault = video.locator('track[kind="captions"][srclang="am"]');
+    if (lang === "am") await expect(amDefault).toHaveAttribute("default", "");
+    else await expect(amDefault).not.toHaveAttribute("default", /.*/);
+    await expect(video.locator('track[kind="captions"][srclang="en"]')).not.toHaveAttribute("default", /.*/);
     // The captions file is real WebVTT.
     const vtt = await page.request.get("/guide/captions-am.vtt");
     expect(vtt.headers()["content-type"]).toContain("text/vtt");
