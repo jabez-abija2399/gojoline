@@ -1,10 +1,32 @@
-# HTTPS certificate from Let's Encrypt, renewed automatically. The DNS record must be
-# "DNS only" (grey cloud) in Cloudflare so the visitor's real address reaches us.
+# HTTPS certificates from Let's Encrypt, renewed automatically. DNS records must be "DNS only"
+# (grey cloud) in Cloudflare so the visitor's real address reaches us.
+{
+	# Preview certificates are issued on first visit, only for workspaces that are running.
+	on_demand_tls {
+		ask http://runner:7070/ask
+	}
+}
+
 {$APP_DOMAIN} {
 	encode zstd gzip
 	reverse_proxy app:3000 {
 		# The app rate-limits by X-Real-IP: always our view of the visitor, never a header they sent.
 		header_up X-Real-IP {remote_host}
 		header_up -X-Forwarded-For
+	}
+}
+
+# Live previews of sites being built, each on its own origin (never the app's):
+# https://gojo-<project id>.preview.<APP_DOMAIN> -> that workspace's Vite server.
+*.preview.{$APP_DOMAIN} {
+	tls {
+		on_demand
+	}
+	@workspace header_regexp ws Host ^(gojo-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.preview\.
+	handle @workspace {
+		reverse_proxy {re.ws.1}:5173
+	}
+	handle {
+		respond 404
 	}
 }

@@ -64,6 +64,11 @@ if [ ! -f .env ]; then
   exit 0
 fi
 chmod 600 .env
+# The app and the sandbox runner share a secret, made here once.
+if ! grep -q '^SANDBOX_RUNNER_SECRET=.\+' .env; then
+  sed -i '/^SANDBOX_RUNNER_SECRET=/d' .env
+  echo "SANDBOX_RUNNER_SECRET=$(openssl rand -hex 32)" >> .env
+fi
 # Without these the site can't start or (rate limits fail closed) nobody can sign in.
 missing=""
 for k in APP_DOMAIN DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL NEXT_PUBLIC_APP_URL UPSTASH_REDIS_REST_URL UPSTASH_REDIS_REST_TOKEN CRON_SECRET; do

@@ -5,9 +5,10 @@ One server runs Gojoline in Docker, with Caddy in front for HTTPS. It updates it
 
 Time: about 1 to 2 hours. Cost: about $1 a day of AWS credit (`t4g.medium`).
 
-**Works right away:** sign-in, dashboards, messages, visits, payments, admin, all public pages.
-**Not yet:** building and changing sites with AI. That still uses Vercel Sandbox, which is paused
-with the Vercel team, until builds move to this server (next slice).
+**Works:** everything, including building and changing sites with AI. Each site being worked on
+runs in its own container on this server (no internet, capped memory), started by a small
+"runner"; its live preview is at `https://gojo-<id>.preview.gojoline.afridea.et`.
+**Publishing** needs the Cloudflare setup in `docs/ROADMAP.md` ("Blocked"); until then it says paused.
 
 ---
 
@@ -95,6 +96,12 @@ Grey cloud matters: the app limits sign-in attempts by the visitor's address, an
 HTTPS certificate itself. Within a few minutes https://gojoline.afridea.et works again.
 Telegram and Google sign-in keep working: the address didn't change.
 
+## 8b. Previews address (once)
+
+Cloudflare → `afridea.et` → **DNS** → **Add record**: type **A**, name **`*.preview.gojoline`**,
+IPv4 = the Elastic IP, proxy **DNS only (grey cloud)**. Save. Each preview gets its own
+certificate automatically the first time it opens.
+
 ## 9. Stop automatically when the free credit ends
 
 After the server exists: https://us-east-1.console.aws.amazon.com/costmanagement/home#/budgets/create
@@ -118,6 +125,8 @@ Keep the "Zero spend budget" too: it emails you if real money is ever charged.
 - **Logs:** `cd /opt/gojoline/deploy/server && sudo docker compose logs --tail 100 app`
 - **Deploy now:** `sudo gojoline-update --force`
 - **After changing a script in `deploy/server/`:** run `sudo bash /opt/gojoline/deploy/server/setup.sh` once to install it.
+- **Site workspaces:** `sudo docker ps --filter label=gojoline.sandbox=1` (at most 2 run at once; idle ones stop after 15 minutes).
+- **Runner logs:** `cd /opt/gojoline/deploy/server && sudo docker compose logs --tail 50 runner`
 - **Restart:** `cd /opt/gojoline/deploy/server && sudo docker compose restart`
 
 ## When you leave this server (or it is no longer needed)

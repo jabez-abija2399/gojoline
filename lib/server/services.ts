@@ -1,5 +1,6 @@
 import "server-only";
 import { PausedLLMProvider, PausedSandboxProvider } from "@/lib/providers/sandbox/paused";
+import { DockerSandboxProvider } from "@/lib/providers/sandbox/docker";
 import { PausedPublishProvider } from "@/lib/providers/publish/paused";
 import { DbAdminStats, MemoryAdminStats, type AdminStats } from "@/lib/admin/stats";
 import type { PaymentNoticeDeps } from "@/lib/billing/notify";
@@ -100,6 +101,10 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
     return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock(), assets };
   }
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
+  // Our own server (deploy/server): workspaces run in Docker through the runner.
+  if (key && db && env.SANDBOX_RUNNER_URL && env.SANDBOX_RUNNER_SECRET) {
+    return { store, sandboxes: new DockerSandboxProvider({ url: env.SANDBOX_RUNNER_URL, secret: env.SANDBOX_RUNNER_SECRET }), llm: new AnthropicLLMProvider(key), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets };
+  }
   if (!key || !env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID || !env.VERCEL_PROJECT_ID) {
     // With a database, owners still see their sites, dashboards and messages; building waits.
     if (!db) return null;
@@ -134,10 +139,10 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   // Cloudflare once it's configured; sites still on the Vercel fallback move on their next publish.
   if (cloudflare) return { ...base, publisher: cloudflare, legacy: vercel };
   if (vercel) return { ...base, publisher: vercel };
-  // Building paused and no host: site lists still show; publishing says it's paused. (With a real
-  // host above, publishSite refuses on `paused` too, while takedowns, the offline switch and
-  // domains keep working: none of them needs a sandbox.)
-  return builder.paused ? { ...base, publisher: new PausedPublishProvider(env.PUBLISH_BASE_DOMAIN || "") } : null;
+  // No host yet (Cloudflare not set up, Vercel paused): site lists and live addresses still show,
+  // and publishing says it's paused. With a real host above, publishSite still refuses while
+  // building is paused, but takedowns, the offline switch and domains keep working.
+  return { ...base, paused: true, publisher: new PausedPublishProvider(env.PUBLISH_BASE_DOMAIN || "") };
 }
 
 /** Sites on R2 + the sites Worker at *.PUBLISH_BASE_DOMAIN (see scripts/cloudflare-setup.mjs). */
