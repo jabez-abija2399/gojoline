@@ -16,7 +16,7 @@ describe("build timeline", () => {
     tl = run([{ type: "tool_start", name: "run_build" }, { type: "tool", name: "write_file" }, { type: "tool", name: "run_build" }], tl);
     expect(keys(tl)).toEqual(["understand", "plan", "write", "check*"]);
     expect(tl.edits).toBe(1);
-    tl = run([{ type: "build", ok: true }, { type: "plan" }, { type: "text" }, { type: "saving" }], tl);
+    tl = run([{ type: "build", ok: true }, { type: "plan" }, { type: "saving" }], tl);
     expect(keys(tl)).toEqual(["understand", "plan", "write", "check", "save*"]);
     tl = nextTimeline(tl, { type: "done" });
     expect(keys(tl)).toEqual(["understand", "plan", "write", "check", "save", "ready"]);
@@ -57,7 +57,7 @@ describe("build timeline", () => {
   });
 
   it("still works with only executed-tool events (older servers)", () => {
-    const tl = run([{ type: "text" }, { type: "tool", name: "write_file" }, { type: "tool", name: "run_build" }, { type: "build", ok: true }, { type: "done" }]);
+    const tl = run([{ type: "plan" }, { type: "tool", name: "write_file" }, { type: "tool", name: "run_build" }, { type: "build", ok: true }, { type: "done" }]);
     expect(keys(tl)).toEqual(["understand", "plan", "write", "check", "ready"]);
   });
 

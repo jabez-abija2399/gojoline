@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { SECTION_TYPES, type SectionType } from "@/lib/agent/progress";
-import { announcedStep, stepLabels } from "./timeline-label";
+import { announcedStep, currentStep, stepLabels } from "./timeline-label";
 
 export type TimelineKey = "understand" | "plan" | "write" | "check" | "fix" | "finish" | "save" | "ready";
 export interface Timeline {
@@ -30,8 +30,15 @@ export function BuildTimeline({ t, timeline }: { t: Messages["builder"]; timelin
   }, []);
   const seconds = Math.max(0, Math.round((now - timeline.startedAt) / 1000));
   const label = stepLabels(t, timeline);
-  // Screen readers hear only the step, once when it changes (not section names or streamed text).
-  const announced = announcedStep(t, timeline);
+  // When the current step began (a new step, or a new round of the same step, starts the clock again).
+  const stepId = `${timeline.steps.length}-${currentStep(timeline)}`;
+  const [since, setSince] = useState({ id: stepId, at: timeline.startedAt });
+  // Adjusted while rendering (React's pattern for state that follows a prop), at the clock's last tick.
+  if (since.id !== stepId) setSince({ id: stepId, at: now });
+  const slow = since.id === stepId && isSlowStep(now - since.at);
+  // Screen readers hear only the step, once when it changes (not section names or streamed text),
+  // and the reassurance once when a step runs long.
+  const announced = slow ? t.tlSlow : announcedStep(t, timeline);
 
   return (
     <div role="group" aria-label={t.tlTitle} className="msg-in relative flex w-full max-w-[90%] shrink-0 flex-col gap-3 self-start overflow-hidden rounded-2xl rounded-bl-sm border border-line bg-white px-4 pt-4 pb-3 shadow-sm">
@@ -59,9 +66,18 @@ export function BuildTimeline({ t, timeline }: { t: Messages["builder"]; timelin
           </li>
         ))}
       </ol>
+      {slow && (
+        <p aria-hidden="true" className="text-sm text-ink-muted">
+          {t.tlSlow}
+        </p>
+      )}
     </div>
   );
 }
+
+/** After this long on one step the card says the AI is still working, so it never looks frozen. */
+export const SLOW_STEP_MS = 15_000;
+export const isSlowStep = (msOnStep: number) => msOnStep >= SLOW_STEP_MS;
 
 type ProgressEvent = { type: string; name?: string; ok?: boolean };
 const KNOWN_SECTIONS = new Set<string>(SECTION_TYPES);
@@ -85,7 +101,6 @@ export function nextTimeline(tl: Timeline, event: ProgressEvent): Timeline {
   };
   let { edits, sections } = tl;
   switch (event.type) {
-    case "text":
     case "plan":
       finish("understand");
       // Only before any work: the closing reply is not planning.

@@ -25,7 +25,7 @@ import { shouldOpenUpgrade, type UpgradeTrigger } from "@/lib/billing/upgrade-ru
 
 /** "Used 2 changes · 18 left" under an AI answer (a free first build says so). */
 function usageNote(t: Messages["builder"], charged: number, left: number, firstBuild: boolean): string {
-  if (charged === 0) return format(firstBuild ? (left === 1 ? t.usedFreeOne : t.usedFree) : t.usedNone, { left });
+  if (charged === 0) return format(firstBuild ? (left === 1 ? t.usedFreeOne : t.usedFree) : left === 1 ? t.usedNoneOne : t.usedNone, { left });
   return format(charged === 1 ? t.usedOne : t.usedMany, { n: charged, left });
 }
 import type { UiVersion } from "./versions-panel";

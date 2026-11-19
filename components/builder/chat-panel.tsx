@@ -83,7 +83,7 @@ export function ChatPanel({ t, messages, working, timeline, onSend, welcome, lan
   useEffect(() => {
     // An empty chat starts at its top (the greeting); a conversation follows its newest line.
     if (messages.length > 0 || working) listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
-  }, [messages, timeline?.steps.length, working, celebrate, hasSite]);
+  }, [messages, timeline?.steps.length, timeline?.sections.length, timeline?.edits, working, celebrate, hasSite]);
 
   useEffect(() => {
     if (focusKey > 0) boxRef.current?.focus();
