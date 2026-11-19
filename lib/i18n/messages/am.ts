@@ -2,6 +2,7 @@ import { dashboardAm } from "./dashboard-am";
 import type { Messages } from "./en";
 import { errorMessages } from "./errors";
 import { feedbackAm } from "./feedback-am";
+import { guideAm } from "./guide-am";
 import { growthAm } from "./growth-am";
 
 /**
@@ -1227,5 +1228,6 @@ export const am: Messages = {
   },
   feedback: feedbackAm,
   growth: growthAm,
+  guide: guideAm,
   errors: errorMessages.am,
 };
