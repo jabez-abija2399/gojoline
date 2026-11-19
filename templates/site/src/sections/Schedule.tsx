@@ -1,6 +1,7 @@
 import { DateLine } from "../components/DateLine";
 import { useNextTime } from "../components/NextUp";
 import { SectionHead } from "../components/SectionHead";
+import { ItemTitle } from "../components/SectionTitle";
 import { uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
 import type { ScheduleSection } from "../lib/types";
@@ -23,6 +24,40 @@ export function Schedule({ section }: { section: ScheduleSection }) {
     ) : null;
   const tiles = section.layout === "tiles";
   const n = section.items.length;
+  if (section.layout === "week") {
+    // Days in the order they first appear, each with its items: a column per day, swiped on phones.
+    const days: { day: string; items: typeof section.items }[] = [];
+    for (const item of section.items) {
+      const day = item.day ? text(item.day) : "";
+      const group = days.find((d) => d.day === day) ?? (days.push({ day, items: [] }), days[days.length - 1]!);
+      group.items.push(item);
+    }
+    return (
+      <section id={section.id ?? "schedule"} className="section">
+        <div className="container-site flex flex-col gap-8 md:gap-10">
+          <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
+          {/* Scrolls sideways on phones: focusable and named, so keyboards can reach every day. */}
+          <ul className="week-grid" tabIndex={0} aria-label={text(section.heading)} style={{ "--days": days.length } as React.CSSProperties}>
+            {days.map((d, di) => (
+              <li key={di} className="week-day reveal" style={{ "--i": di } as React.CSSProperties}>
+                {d.day && <ItemTitle className="week-day-name">{d.day}</ItemTitle>}
+                <ul className="flex flex-col gap-2">
+                  {d.items.map((item, ii) => (
+                    <li key={ii} className="week-slot">
+                      <span className="time-value">{text(item.time)}</span>
+                      <span className="font-semibold">{text(item.title)}</span>
+                      {item.note && <span className="week-note">{text(item.note)}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+          {section.footnote && <p className="text-muted">{text(section.footnote)}</p>}
+        </div>
+      </section>
+    );
+  }
   return (
     <section id={section.id ?? "schedule"} className="section">
       <div className={`container-site ${tiles ? "flex flex-col gap-8 md:gap-10" : "grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-14"}`}>

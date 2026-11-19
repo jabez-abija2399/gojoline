@@ -52,3 +52,44 @@ describe("art directions (luxe, swiss, bento)", () => {
     expect(text(out)).toContain("ከሰኞ እስከ ቅዳሜ");
   });
 });
+
+describe("art directions (organic, cinematic, brutal, calm, kinetic)", () => {
+  it.each(["bakery", "studio", "training", "pharmacy", "gym"])("%s is valid and readable", (id) => {
+    const site = preset(id);
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("pricing cards set one plan apart, with its badge and a filled button", () => {
+    const out = html(preset("gym"));
+    expect(out.match(/tier-featured/g)).toHaveLength(1);
+    expect(out.match(/class="tier card/g)).toHaveLength(3);
+    // The badge follows the name in reading order (shown above it with CSS).
+    expect(text(out)).toMatch(/Monthly.*Most chosen.*2,500/);
+  });
+
+  it("a week timetable groups classes by day, in order, with notes", () => {
+    const gym = preset("gym");
+    const out = html(gym, "en", gym.pages.findIndex((p) => p.path === "/classes"));
+    expect(out).toContain('style="--days:4"');
+    expect(out).toMatch(/<ul class="week-grid" tabindex="0" aria-label="This week on the floor"/);
+    expect([...out.matchAll(/<h[23] class="item-title week-day-name">([^<]+)</g)].map((m) => m[1])).toEqual(["Monday", "Tuesday", "Thursday", "Saturday"]);
+    expect(out.match(/Women only/g)).toHaveLength(2);
+  });
+
+  it("prints lay photos askew, and cinematic galleries sit in the dark", () => {
+    const bakery = html(preset("bakery"));
+    expect(bakery).toContain('<ul class="prints">');
+    expect(bakery).toMatch(/class="print reveal" style="--i:0;--tilt:-3deg"/);
+    const studio = html(preset("studio"));
+    expect(studio).toMatch(/<section[^>]*class="[^"]*on-dark[^"]*"[^>]*>(?:(?!<\/section>).)*class="prints"/s);
+  });
+
+  it("the pharmacy names no medicine and shows its licence and pharmacist", () => {
+    const site = preset("pharmacy");
+    const all = JSON.stringify(site).toLowerCase();
+    for (const word of ["paracetamol", "amoxicillin", "ibuprofen", "panadol", "antibiotic"]) expect(all).not.toContain(word);
+    expect(text(html(site))).toMatch(/EFDA licence/);
+    expect(text(html(site))).toMatch(/Responsible pharmacist/);
+  });
+});

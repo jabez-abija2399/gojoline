@@ -1,0 +1,460 @@
+{
+  "name": { "en": "Meron Studio", "am": "ሜሮን ስቱዲዮ" },
+  "tagline": { "en": "Wedding photography and film in Addis Ababa and across Ethiopia", "am": "የሠርግ ፎቶና ቪዲዮ በአዲስ አበባና በመላው ኢትዮጵያ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#8C5528", "accent": "#14110F", "background": "#F5F0E8", "text": "#1A1714", "highlight": "#B08D57", "font": "editorial", "radius": "none", "style": "cinematic" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Kazanchis, 3rd floor, Addis Ababa", "am": "ካዛንቺስ፣ 3ኛ ፎቅ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Monday to Saturday", "am": "ከሰኞ እስከ ቅዳሜ" },
+        "time": { "en": "By appointment", "am": "በቀጠሮ" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Home", "am": "መነሻ" },
+      "description": { "en": "Wedding photography and film in Addis Ababa: the wedding day, melse and kelekel, with packages in Birr and dates for couples abroad.", "am": "የሠርግ ፎቶና ቪዲዮ በአዲስ አበባ፦ የሠርግ ዕለት፣ መልስና ቅልቅል፤ ፓኬጆች በብር፤ በውጭ የሚኖሩ ጥንዶችም ቀን ማስያዝ ይችላሉ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "immersive",
+          "id": "top",
+          "eyebrow": { "en": "Weddings in Addis Ababa and beyond", "am": "ሠርጎች በአዲስ አበባና ከዚያም ባሻገር" },
+          "heading": { "en": "Your day, told like a film", "am": "ቀናችሁ፣ እንደ ፊልም" },
+          "subheading": { "en": "Photography and film for the wedding, the melse and the kelekel.", "am": "ለሠርግ፣ ለመልስና ለቅልቅል ፎቶና ቪዲዮ።" },
+          "image": {
+            "src": "/stock/studio-hero-habesha-bride-cathedral.webp",
+            "alt": { "en": "A bride in a white embroidered habesha dress and her groom under a flower arch outside a cathedral", "am": "ጥልፍ ያለው ነጭ የሀበሻ ቀሚስ የለበሰች ሙሽሪትና ሙሽራው ከካቴድራል ውጭ በአበባ ቅስት ሥር" }
+          },
+          "primaryAction": {
+            "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+            "href": "/book"
+          },
+          "secondaryAction": {
+            "label": { "en": "See weddings", "am": "ሠርጎችን ይመልከቱ" },
+            "href": "/weddings"
+          }
+        },
+        {
+          "type": "gallery",
+          "id": "latest",
+          "layout": "prints",
+          "eyebrow": { "en": "Latest weddings", "am": "የቅርብ ሠርጎች" },
+          "heading": { "en": "Hana and Yonas, Entoto", "am": "ሐና እና ዮናስ፣ እንጦጦ" },
+          "images": [
+            {
+              "src": "/stock/studio-card-couple-portrait-addis.webp",
+              "alt": { "en": "A young couple in white standing together in Addis Ababa", "am": "ነጭ የለበሱ ወጣት ጥንዶች በአዲስ አበባ" }
+            },
+            {
+              "src": "/stock/studio-card-hands-wedding-rings.webp",
+              "alt": { "en": "A couple's hands with their wedding rings", "am": "የጋብቻ ቀለበት ያደረጉ የጥንዶች እጆች" }
+            },
+            {
+              "src": "/stock/studio-card-couple-dancing.webp",
+              "alt": { "en": "A bride and groom dancing at their reception", "am": "ሙሽሪትና ሙሽራው በግብዣቸው ላይ ሲጨፍሩ" }
+            },
+            {
+              "src": "/stock/studio-gallery-bride-getting-ready.webp",
+              "alt": { "en": "A bride holding white flowers by a window", "am": "ነጭ አበባ የያዘች ሙሽሪት በመስኮት አጠገብ" }
+            },
+            {
+              "src": "/stock/studio-card-reception-floral-decor.webp",
+              "alt": { "en": "A reception hall with round tables and pale flowers", "am": "ክብ ጠረጴዛዎችና ነጣ ያሉ አበቦች ያሉት የግብዣ አዳራሽ" }
+            },
+            {
+              "src": "/stock/studio-card-guests-celebrating.webp",
+              "alt": { "en": "Wedding guests celebrating at night", "am": "ማታ የሚደሰቱ የሠርግ እንግዶች" }
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "id": "us",
+          "eyebrow": { "en": "Behind the camera", "am": "ከካሜራው ጀርባ" },
+          "heading": { "en": "We watch, and wait for the moment", "am": "እንመለከታለን፣ ጊዜውን እንጠብቃለን" },
+          "body": { "en": "We don't stage your day. We stay close, quiet and early, so the photos show how it felt: the laughter at the door, the songs, your mother's face.", "am": "ቀናችሁን አናዘጋጅም። ቀርበን፣ በጸጥታና ቀድመን እንገኛለን፤ ፎቶዎቹ ስሜቱን እንዲያሳዩ፦ በሩ ላይ ያለውን ሳቅ፣ ዘፈኑን፣ የእናታችሁን ፊት።" },
+          "image": {
+            "src": "/stock/studio-about-photographer-at-work.webp",
+            "alt": { "en": "A photographer looking through her camera at work", "am": "ፎቶ አንሺ በካሜራዋ ስትሠራ" }
+          },
+          "imageSide": "end"
+        },
+        {
+          "type": "cards",
+          "id": "packages",
+          "layout": "pricing",
+          "eyebrow": { "en": "Packages", "am": "ፓኬጆች" },
+          "heading": { "en": "Choose how much of the story", "am": "ከታሪኩ ምን ያህሉን ትፈልጋላችሁ?" },
+          "intro": { "en": "Prices in Birr. Travel outside Addis is added at cost.", "am": "ዋጋ በብር። ከአዲስ አበባ ውጭ ለሚደረግ ጉዞ ወጪው ይጨመራል።" },
+          "items": [
+            {
+              "title": { "en": "Melse", "am": "መልስ" },
+              "subtitle": { "en": "The day after", "am": "ከሠርጉ ማግስት" },
+              "price": { "amountMinor": 2500000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "meta": [
+                { "en": "4 hours, one photographer", "am": "4 ሰዓት፣ አንድ ፎቶ አንሺ" },
+                { "en": "150 edited photos", "am": "150 የተስተካከሉ ፎቶዎች" },
+                { "en": "Online gallery", "am": "የመስመር ላይ ጋለሪ" }
+              ],
+              "action": {
+                "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+                "href": "/book"
+              }
+            },
+            {
+              "title": { "en": "Wedding day", "am": "የሠርጉ ዕለት" },
+              "subtitle": { "en": "From getting ready to the last dance", "am": "ከዝግጅት እስከ መጨረሻው ጭፈራ" },
+              "badge": { "en": "Most chosen", "am": "በብዛት የሚመረጥ" },
+              "price": { "amountMinor": 6500000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "meta": [
+                { "en": "Two photographers", "am": "ሁለት ፎቶ አንሺዎች" },
+                { "en": "Film of the day", "am": "የዕለቱ ቪዲዮ" },
+                { "en": "400 edited photos", "am": "400 የተስተካከሉ ፎቶዎች" },
+                { "en": "A printed album", "am": "የታተመ አልበም" }
+              ],
+              "action": {
+                "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+                "href": "/book"
+              }
+            },
+            {
+              "title": { "en": "The full story", "am": "ሙሉ ታሪኩ" },
+              "subtitle": { "en": "Wedding, melse and kelekel", "am": "ሠርግ፣ መልስና ቅልቅል" },
+              "price": { "amountMinor": 11000000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "meta": [
+                { "en": "Three days covered", "am": "ሦስት ቀን" },
+                { "en": "Drone and film", "am": "ድሮንና ቪዲዮ" },
+                { "en": "Two albums for the families", "am": "ለቤተሰቦች ሁለት አልበም" }
+              ],
+              "action": {
+                "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+                "href": "/book"
+              }
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "id": "how",
+          "eyebrow": { "en": "How we work", "am": "እንዴት እንሠራለን" },
+          "heading": { "en": "From the first call to the album", "am": "ከመጀመሪያው ጥሪ እስከ አልበሙ" },
+          "items": [
+            {
+              "title": { "en": "Ask about your date", "am": "ስለ ቀናችሁ ጠይቁ" },
+              "description": { "en": "We answer the same day.", "am": "በዕለቱ እንመልሳለን።" }
+            },
+            {
+              "title": { "en": "Meet us, or call from abroad", "am": "ተገናኙን፣ ወይም ከውጭ ደውሉ" },
+              "description": { "en": "Coffee in Kazanchis or a video call.", "am": "ቡና በካዛንቺስ ወይም የቪዲዮ ጥሪ።" }
+            },
+            {
+              "title": { "en": "Hold the date", "am": "ቀኑን ያዙ" },
+              "description": { "en": "Half when you book, by Telebirr or bank.", "am": "ግማሹን ስትይዙ፣ በቴሌብር ወይም በባንክ።" }
+            },
+            {
+              "title": { "en": "Photos in three weeks", "am": "ፎቶዎች በሦስት ሳምንት" },
+              "description": { "en": "Online first, the album after.", "am": "መጀመሪያ በመስመር ላይ፣ ከዚያ አልበሙ።" }
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "id": "words",
+          "quote": { "en": "They caught every moment of the kelekel, even the ones we missed.", "am": "የቅልቅሉን እያንዳንዱን ጊዜ ያዙት፤ እኛ ያመለጡንንም ጭምር።" },
+          "name": { "en": "Bethlehem and Samuel", "am": "ቤተልሔምና ሳሙኤል" },
+          "role": { "en": "Married in Addis, living in Toronto", "am": "በአዲስ አበባ የተጋቡ፣ በቶሮንቶ የሚኖሩ" }
+        },
+        {
+          "type": "form",
+          "id": "date",
+          "kind": "booking",
+          "heading": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+          "intro": { "en": "We take one wedding a day. Tell us your date and we answer on Telegram the same day.", "am": "በቀን አንድ ሠርግ ብቻ እንይዛለን። ቀናችሁን ንገሩን፤ በዕለቱ በቴሌግራም እንመልሳለን።" },
+          "fields": [
+            {
+              "name": "names",
+              "label": { "en": "Your names", "am": "ስማችሁ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone or Telegram", "am": "ስልክ ወይም ቴሌግራም" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": { "en": "Wedding date", "am": "የሠርጉ ቀን" },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "place",
+              "label": { "en": "Where", "am": "የት" },
+              "type": "text"
+            },
+            {
+              "name": "package",
+              "label": { "en": "Package", "am": "ፓኬጅ" },
+              "type": "select",
+              "options": [
+                { "en": "Melse", "am": "መልስ" },
+                { "en": "Wedding day", "am": "የሠርጉ ዕለት" },
+                { "en": "The full story", "am": "ሙሉ ታሪኩ" },
+                { "en": "Not sure yet", "am": "ገና አልወሰንንም" }
+              ]
+            },
+            {
+              "name": "country",
+              "label": { "en": "Country, if you live abroad", "am": "በውጭ የምትኖሩ ከሆነ አገር" },
+              "type": "text"
+            }
+          ],
+          "submitLabel": { "en": "Ask about our date", "am": "ስለ ቀናችን ጠይቅ" },
+          "successMessage": { "en": "Thank you. We will tell you today if your date is free.", "am": "እናመሰግናለን። ቀናችሁ ክፍት መሆኑን ዛሬ እንነግራችኋለን።" }
+        },
+        {
+          "type": "cta",
+          "id": "end",
+          "heading": { "en": "Weekends in January are filling", "am": "የጥር ቅዳሜና እሑዶች እየሞሉ ነው" },
+          "body": { "en": "We take one wedding a day.", "am": "በቀን አንድ ሠርግ ብቻ እንይዛለን።" },
+          "image": {
+            "src": "/stock/studio-hero-couple-embrace-garden.webp",
+            "alt": { "en": "A couple embracing in a green garden", "am": "በአረንጓዴ የአትክልት ቦታ ውስጥ የተቃቀፉ ጥንዶች" }
+          },
+          "primaryAction": {
+            "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+            "href": "/book"
+          },
+          "secondaryAction": {
+            "label": { "en": "Packages", "am": "ፓኬጆች" },
+            "href": "/packages"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/weddings",
+      "title": { "en": "Weddings", "am": "ሠርጎች" },
+      "nav": { "en": "Weddings", "am": "ሠርጎች" },
+      "description": { "en": "Weddings photographed by Meron Studio in Addis Ababa and across Ethiopia.", "am": "በሜሮን ስቱዲዮ በአዲስ አበባና በመላው ኢትዮጵያ የተነሱ ሠርጎች።" },
+      "sections": [
+        {
+          "type": "gallery",
+          "id": "all",
+          "layout": "wall",
+          "eyebrow": { "en": "Weddings", "am": "ሠርጎች" },
+          "heading": { "en": "Couples we have filmed", "am": "ያነሳናቸው ጥንዶች" },
+          "images": [
+            {
+              "src": "/stock/studio-hero-habesha-bride-cathedral.webp",
+              "alt": { "en": "A bride in a white embroidered habesha dress and her groom under a flower arch outside a cathedral", "am": "ጥልፍ ያለው ነጭ የሀበሻ ቀሚስ የለበሰች ሙሽሪትና ሙሽራው ከካቴድራል ውጭ በአበባ ቅስት ሥር" }
+            },
+            {
+              "src": "/stock/studio-card-couple-portrait-addis.webp",
+              "alt": { "en": "A young couple in white standing together in Addis Ababa", "am": "ነጭ የለበሱ ወጣት ጥንዶች በአዲስ አበባ" }
+            },
+            {
+              "src": "/stock/studio-card-couple-dancing.webp",
+              "alt": { "en": "A bride and groom dancing at their reception", "am": "ሙሽሪትና ሙሽራው በግብዣቸው ላይ ሲጨፍሩ" }
+            },
+            {
+              "src": "/stock/studio-card-hands-wedding-rings.webp",
+              "alt": { "en": "A couple's hands with their wedding rings", "am": "የጋብቻ ቀለበት ያደረጉ የጥንዶች እጆች" }
+            },
+            {
+              "src": "/stock/studio-gallery-bride-getting-ready.webp",
+              "alt": { "en": "A bride holding white flowers by a window", "am": "ነጭ አበባ የያዘች ሙሽሪት በመስኮት አጠገብ" }
+            },
+            {
+              "src": "/stock/studio-card-guests-celebrating.webp",
+              "alt": { "en": "Wedding guests celebrating at night", "am": "ማታ የሚደሰቱ የሠርግ እንግዶች" }
+            },
+            {
+              "src": "/stock/studio-gallery-decorated-table.webp",
+              "alt": { "en": "A long decorated table with flowers and candles", "am": "አበባና ሻማ ያጌጠ ረጅም ጠረጴዛ" }
+            },
+            {
+              "src": "/stock/studio-card-reception-floral-decor.webp",
+              "alt": { "en": "A reception hall with round tables and pale flowers", "am": "ክብ ጠረጴዛዎችና ነጣ ያሉ አበቦች ያሉት የግብዣ አዳራሽ" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "ask",
+          "heading": { "en": "Want this for your day?", "am": "ለቀናችሁ ይህን ትፈልጋላችሁ?" },
+          "primaryAction": {
+            "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+            "href": "/book"
+          },
+          "secondaryAction": {
+            "label": { "en": "Packages", "am": "ፓኬጆች" },
+            "href": "/packages"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/packages",
+      "title": { "en": "Packages", "am": "ፓኬጆች" },
+      "nav": { "en": "Packages", "am": "ፓኬጆች" },
+      "description": { "en": "Wedding photography packages from Meron Studio with prices in Birr: melse, wedding day and the full story.", "am": "የሜሮን ስቱዲዮ የሠርግ ፎቶ ፓኬጆች ከዋጋ ጋር በብር፦ መልስ፣ የሠርግ ዕለትና ሙሉ ታሪኩ።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "plans",
+          "layout": "pricing",
+          "eyebrow": { "en": "Packages", "am": "ፓኬጆች" },
+          "heading": { "en": "Every package, every price", "am": "ሁሉም ፓኬጆች፣ ሁሉም ዋጋዎች" },
+          "items": [
+            {
+              "title": { "en": "Melse", "am": "መልስ" },
+              "subtitle": { "en": "The day after", "am": "ከሠርጉ ማግስት" },
+              "price": { "amountMinor": 2500000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "meta": [
+                { "en": "4 hours, one photographer", "am": "4 ሰዓት፣ አንድ ፎቶ አንሺ" },
+                { "en": "150 edited photos", "am": "150 የተስተካከሉ ፎቶዎች" },
+                { "en": "Online gallery", "am": "የመስመር ላይ ጋለሪ" }
+              ],
+              "action": {
+                "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+                "href": "/book"
+              }
+            },
+            {
+              "title": { "en": "Wedding day", "am": "የሠርጉ ዕለት" },
+              "subtitle": { "en": "From getting ready to the last dance", "am": "ከዝግጅት እስከ መጨረሻው ጭፈራ" },
+              "badge": { "en": "Most chosen", "am": "በብዛት የሚመረጥ" },
+              "price": { "amountMinor": 6500000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "meta": [
+                { "en": "Two photographers", "am": "ሁለት ፎቶ አንሺዎች" },
+                { "en": "Film of the day", "am": "የዕለቱ ቪዲዮ" },
+                { "en": "400 edited photos", "am": "400 የተስተካከሉ ፎቶዎች" },
+                { "en": "A printed album", "am": "የታተመ አልበም" }
+              ],
+              "action": {
+                "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+                "href": "/book"
+              }
+            },
+            {
+              "title": { "en": "The full story", "am": "ሙሉ ታሪኩ" },
+              "subtitle": { "en": "Wedding, melse and kelekel", "am": "ሠርግ፣ መልስና ቅልቅል" },
+              "price": { "amountMinor": 11000000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "meta": [
+                { "en": "Three days covered", "am": "ሦስት ቀን" },
+                { "en": "Drone and film", "am": "ድሮንና ቪዲዮ" },
+                { "en": "Two albums for the families", "am": "ለቤተሰቦች ሁለት አልበም" }
+              ],
+              "action": {
+                "label": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+                "href": "/book"
+              }
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": { "en": "Before you book", "am": "ከመያዛችሁ በፊት" },
+          "items": [
+            {
+              "question": { "en": "We live abroad. Can we book?", "am": "በውጭ እንኖራለን። መያዝ እንችላለን?" },
+              "answer": { "en": "Yes. Most of our couples plan from abroad: we meet on video and family can pay in Birr.", "am": "አዎ። አብዛኞቹ ጥንዶቻችን ከውጭ ሆነው ያቅዳሉ፤ በቪዲዮ እንገናኛለን፣ ቤተሰብም በብር ሊከፍል ይችላል።" }
+            },
+            {
+              "question": { "en": "Do you travel outside Addis?", "am": "ከአዲስ አበባ ውጭ ትሄዳላችሁ?" },
+              "answer": { "en": "Yes: Bahir Dar, Hawassa, Gondar and further. Travel is added at cost.", "am": "አዎ፦ ባሕር ዳር፣ ሐዋሳ፣ ጎንደርና ከዚያም ባሻገር። የጉዞ ወጪ ይጨመራል።" }
+            },
+            {
+              "question": { "en": "When do we get the photos?", "am": "ፎቶዎቹን መቼ እናገኛለን?" },
+              "answer": { "en": "An online gallery in three weeks, the album about a month later.", "am": "የመስመር ላይ ጋለሪ በሦስት ሳምንት፣ አልበሙ ከአንድ ወር ያህል በኋላ።" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/book",
+      "title": { "en": "Book", "am": "ቀጠሮ" },
+      "nav": { "en": "Book", "am": "ቀጠሮ" },
+      "description": { "en": "Ask Meron Studio whether your wedding date is free.", "am": "የሠርጋችሁ ቀን ክፍት መሆኑን ሜሮን ስቱዲዮን ጠይቁ።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "date-book",
+          "kind": "booking",
+          "heading": { "en": "Is my date free?", "am": "ቀኔ ክፍት ነው?" },
+          "intro": { "en": "We take one wedding a day. Tell us your date and we answer on Telegram the same day.", "am": "በቀን አንድ ሠርግ ብቻ እንይዛለን። ቀናችሁን ንገሩን፤ በዕለቱ በቴሌግራም እንመልሳለን።" },
+          "fields": [
+            {
+              "name": "names",
+              "label": { "en": "Your names", "am": "ስማችሁ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone or Telegram", "am": "ስልክ ወይም ቴሌግራም" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": { "en": "Wedding date", "am": "የሠርጉ ቀን" },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "place",
+              "label": { "en": "Where", "am": "የት" },
+              "type": "text"
+            },
+            {
+              "name": "package",
+              "label": { "en": "Package", "am": "ፓኬጅ" },
+              "type": "select",
+              "options": [
+                { "en": "Melse", "am": "መልስ" },
+                { "en": "Wedding day", "am": "የሠርጉ ዕለት" },
+                { "en": "The full story", "am": "ሙሉ ታሪኩ" },
+                { "en": "Not sure yet", "am": "ገና አልወሰንንም" }
+              ]
+            },
+            {
+              "name": "country",
+              "label": { "en": "Country, if you live abroad", "am": "በውጭ የምትኖሩ ከሆነ አገር" },
+              "type": "text"
+            }
+          ],
+          "submitLabel": { "en": "Ask about our date", "am": "ስለ ቀናችን ጠይቅ" },
+          "successMessage": { "en": "Thank you. We will tell you today if your date is free.", "am": "እናመሰግናለን። ቀናችሁ ክፍት መሆኑን ዛሬ እንነግራችኋለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "heading": { "en": "Or write to us", "am": "ወይም ጻፉልን" },
+          "intro": { "en": "Telegram is the quickest way to reach us.", "am": "በፍጥነት የምታገኙን በቴሌግራም ነው።" }
+        }
+      ]
+    }
+  ]
+}

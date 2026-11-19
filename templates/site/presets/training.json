@@ -1,0 +1,566 @@
+{
+  "name": { "en": "Lucy Academy", "am": "ሉሲ አካዳሚ" },
+  "tagline": { "en": "Exam prep, English and computer courses in Megenagna, Addis Ababa", "am": "የፈተና ዝግጅት፣ እንግሊዝኛና የኮምፒውተር ኮርሶች፣ መገናኛ፣ አዲስ አበባ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#2445C8", "accent": "#16204A", "background": "#FAF9F6", "text": "#17172B", "highlight": "#FFC83D", "font": "grotesk", "radius": "medium", "style": "brutal" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Megenagna, above the bank, 2nd floor, Addis Ababa", "am": "መገናኛ፣ ከባንኩ በላይ፣ 2ኛ ፎቅ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Monday to Friday", "am": "ከሰኞ እስከ ዓርብ" },
+        "time": { "en": "8:00 am to 8:30 pm", "am": "ከጠዋቱ 2 እስከ ምሽቱ 2:30" }
+      },
+      {
+        "days": { "en": "Saturday and Sunday", "am": "ቅዳሜና እሑድ" },
+        "time": { "en": "8:00 am to 5:00 pm", "am": "ከጠዋቱ 2 እስከ ቀኑ 11 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Home", "am": "መነሻ" },
+      "description": { "en": "Grade 12 exam prep, IELTS, computer and driving courses in Megenagna, Addis Ababa, with fees, next intakes and a weekly timetable.", "am": "የ12ኛ ክፍል ፈተና ዝግጅት፣ አይኤልቲኤስ፣ የኮምፒውተርና የማሽከርከር ኮርሶች በመገናኛ፣ አዲስ አበባ፤ ክፍያ፣ ቀጣይ ቅበላና ሳምንታዊ የጊዜ ሰሌዳ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "id": "top",
+          "eyebrow": { "en": "Megenagna · Addis Ababa", "am": "መገናኛ · አዲስ አበባ" },
+          "heading": { "en": "Pass your exam with confidence", "am": "ፈተናዎን በልበ ሙሉነት ይለፉ" },
+          "subheading": { "en": "Small classes, weekly mock exams and teachers who know the national exam.", "am": "አነስተኛ ክፍሎች፣ ሳምንታዊ የሙከራ ፈተናዎችና ብሔራዊ ፈተናውን የሚያውቁ መምህራን።" },
+          "image": {
+            "src": "/stock/training-hero-teacher-whiteboard-class.webp",
+            "alt": { "en": "A teacher at a whiteboard in front of a class", "am": "በነጭ ሰሌዳ ፊት ለክፍሉ የምታስተምር መምህርት" }
+          },
+          "stamp": { "en": "Next class 5 January · ", "am": "ቀጣይ ክፍል ታኅሣሥ 27 · " },
+          "primaryAction": {
+            "label": { "en": "Register", "am": "ይመዝገቡ" },
+            "href": "/register"
+          },
+          "secondaryAction": {
+            "label": { "en": "See courses", "am": "ኮርሶቹን ይመልከቱ" },
+            "href": "/courses"
+          },
+          "hours": false
+        },
+        {
+          "type": "stats",
+          "id": "results",
+          "tone": "dark",
+          "items": [
+            {
+              "value": { "en": "87%", "am": "87%" },
+              "label": { "en": "passed the national exam last year", "am": "ባለፈው ዓመት ብሔራዊ ፈተናውን ያለፉ" }
+            },
+            {
+              "value": { "en": "1,200+", "am": "1,200+" },
+              "label": { "en": "students since 2016", "am": "ከ2008 ጀምሮ ተማሪዎች" }
+            },
+            {
+              "value": { "en": "20", "am": "20" },
+              "label": { "en": "students per class at most", "am": "በአንድ ክፍል ቢበዛ ተማሪዎች" }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "courses",
+          "layout": "grid",
+          "eyebrow": { "en": "Courses", "am": "ኮርሶች" },
+          "heading": { "en": "Pick your course", "am": "ኮርስዎን ይምረጡ" },
+          "intro": { "en": "Fees in Birr, paid by the month or for the whole course.", "am": "ክፍያ በብር፣ በወር ወይም ለሙሉ ኮርሱ።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/training-card-students-studying.webp",
+                "alt": { "en": "Students studying together at a desk", "am": "በጠረጴዛ ዙሪያ አብረው የሚያጠኑ ተማሪዎች" }
+              },
+              "badge": { "en": "Exam prep", "am": "የፈተና ዝግጅት" },
+              "title": { "en": "Grade 12 national exam prep", "am": "የ12ኛ ክፍል ብሔራዊ ፈተና ዝግጅት" },
+              "meta": [
+                { "en": "4 months", "am": "4 ወር" },
+                { "en": "Weekends", "am": "ቅዳሜና እሑድ" },
+                { "en": "Next class 12 January", "am": "ቀጣይ ክፍል ጥር 4" }
+              ],
+              "price": { "amountMinor": 250000, "currency": "ETB" },
+              "priceNote": { "en": "per month", "am": "በወር" },
+              "action": {
+                "label": { "en": "Register", "am": "ይመዝገቡ" },
+                "href": "/register"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/training-card-english-class.webp",
+                "alt": { "en": "An English lesson with words on the whiteboard", "am": "በነጭ ሰሌዳው ላይ ቃላት ያሉበት የእንግሊዝኛ ትምህርት" }
+              },
+              "badge": { "en": "Languages", "am": "ቋንቋ" },
+              "title": { "en": "IELTS and English", "am": "አይኤልቲኤስና እንግሊዝኛ" },
+              "meta": [
+                { "en": "8 weeks", "am": "8 ሳምንት" },
+                { "en": "Evenings", "am": "ምሽት" },
+                { "en": "Next class 5 January", "am": "ቀጣይ ክፍል ታኅሣሥ 27" }
+              ],
+              "price": { "amountMinor": 600000, "currency": "ETB" },
+              "priceNote": { "en": "whole course", "am": "ለሙሉ ኮርሱ" },
+              "action": {
+                "label": { "en": "Register", "am": "ይመዝገቡ" },
+                "href": "/register"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/training-card-computer-lab.webp",
+                "alt": { "en": "Adults learning in a computer lab", "am": "በኮምፒውተር ክፍል የሚማሩ አዋቂዎች" }
+              },
+              "badge": { "en": "Computers", "am": "ኮምፒውተር" },
+              "title": { "en": "Computer basics and Excel", "am": "የኮምፒውተር መሠረታዊና ኤክሴል" },
+              "meta": [
+                { "en": "6 weeks", "am": "6 ሳምንት" },
+                { "en": "Mornings or evenings", "am": "ጠዋት ወይም ምሽት" },
+                { "en": "Certificate", "am": "ሰርተፊኬት" }
+              ],
+              "price": { "amountMinor": 450000, "currency": "ETB" },
+              "priceNote": { "en": "whole course", "am": "ለሙሉ ኮርሱ" },
+              "action": {
+                "label": { "en": "Register", "am": "ይመዝገቡ" },
+                "href": "/register"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/training-card-driving-lesson.webp",
+                "alt": { "en": "An instructor beside a learner at the wheel of a car", "am": "መሪ ከያዘች ተማሪ አጠገብ ያለ የማሽከርከር አሠልጣኝ" }
+              },
+              "badge": { "en": "Driving", "am": "ማሽከርከር" },
+              "title": { "en": "Driving lessons, automatic", "am": "የማሽከርከር ትምህርት፣ አውቶማቲክ" },
+              "meta": [
+                { "en": "20 lessons", "am": "20 ትምህርቶች" },
+                { "en": "Theory and road", "am": "ቲዎሪና መንገድ" }
+              ],
+              "price": { "amountMinor": 900000, "currency": "ETB" },
+              "priceNote": { "en": "whole course", "am": "ለሙሉ ኮርሱ" },
+              "action": {
+                "label": { "en": "Register", "am": "ይመዝገቡ" },
+                "href": "/register"
+              }
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "id": "route",
+          "eyebrow": { "en": "Your route", "am": "መንገድዎ" },
+          "heading": { "en": "From the first class to the certificate", "am": "ከመጀመሪያው ክፍል እስከ ሰርተፊኬቱ" },
+          "items": [
+            {
+              "title": { "en": "Placement test", "am": "የደረጃ መለኪያ ፈተና" },
+              "description": { "en": "Free, 30 minutes, so you start at the right level.", "am": "በነጻ፣ 30 ደቂቃ፣ ከትክክለኛው ደረጃ እንዲጀምሩ።" }
+            },
+            {
+              "title": { "en": "Classes", "am": "ክፍሎች" },
+              "description": { "en": "With homework checked every week.", "am": "የቤት ሥራ በየሳምንቱ እየታየ።" }
+            },
+            {
+              "title": { "en": "Mock exams", "am": "የሙከራ ፈተናዎች" },
+              "description": { "en": "Under real exam conditions, with marks.", "am": "በእውነተኛ የፈተና ሁኔታ፣ ከውጤት ጋር።" }
+            },
+            {
+              "title": { "en": "Exam and certificate", "am": "ፈተናና ሰርተፊኬት" },
+              "description": { "en": "A certificate for every course you finish.", "am": "ለጨረሱት እያንዳንዱ ኮርስ ሰርተፊኬት።" }
+            }
+          ],
+          "action": {
+            "label": { "en": "Register", "am": "ይመዝገቡ" },
+            "href": "/register"
+          }
+        },
+        {
+          "type": "schedule",
+          "id": "week",
+          "layout": "week",
+          "eyebrow": { "en": "This term", "am": "በዚህ ሴሚስተር" },
+          "heading": { "en": "Weekly timetable", "am": "ሳምንታዊ የጊዜ ሰሌዳ" },
+          "items": [
+            {
+              "day": { "en": "Monday", "am": "ሰኞ" },
+              "time": { "en": "5:30 pm", "am": "ከሰዓት 11:30" },
+              "title": { "en": "IELTS, room 2", "am": "አይኤልቲኤስ፣ ክፍል 2" }
+            },
+            {
+              "day": { "en": "Monday", "am": "ሰኞ" },
+              "time": { "en": "7:00 pm", "am": "ማታ 1:00" },
+              "title": { "en": "Excel, lab", "am": "ኤክሴል፣ ላብ" }
+            },
+            {
+              "day": { "en": "Wednesday", "am": "ረቡዕ" },
+              "time": { "en": "5:30 pm", "am": "ከሰዓት 11:30" },
+              "title": { "en": "IELTS, room 2", "am": "አይኤልቲኤስ፣ ክፍል 2" }
+            },
+            {
+              "day": { "en": "Wednesday", "am": "ረቡዕ" },
+              "time": { "en": "7:00 pm", "am": "ማታ 1:00" },
+              "title": { "en": "Computer basics, lab", "am": "የኮምፒውተር መሠረታዊ፣ ላብ" }
+            },
+            {
+              "day": { "en": "Saturday", "am": "ቅዳሜ" },
+              "time": { "en": "8:30 am", "am": "ጠዋት 2:30" },
+              "title": { "en": "Maths, grade 12", "am": "ሂሳብ፣ 12ኛ ክፍል" },
+              "note": { "en": "Mock exam", "am": "የሙከራ ፈተና" }
+            },
+            {
+              "day": { "en": "Saturday", "am": "ቅዳሜ" },
+              "time": { "en": "11:00 am", "am": "ጠዋት 5:00" },
+              "title": { "en": "Physics, grade 12", "am": "ፊዚክስ፣ 12ኛ ክፍል" }
+            },
+            {
+              "day": { "en": "Sunday", "am": "እሑድ" },
+              "time": { "en": "8:30 am", "am": "ጠዋት 2:30" },
+              "title": { "en": "English, grade 12", "am": "እንግሊዝኛ፣ 12ኛ ክፍል" }
+            },
+            {
+              "day": { "en": "Sunday", "am": "እሑድ" },
+              "time": { "en": "11:00 am", "am": "ጠዋት 5:00" },
+              "title": { "en": "Biology, grade 12", "am": "ባዮሎጂ፣ 12ኛ ክፍል" }
+            }
+          ],
+          "footnote": { "en": "Amharic times use the Ethiopian clock.", "am": "ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።" }
+        },
+        {
+          "type": "about",
+          "id": "teachers",
+          "eyebrow": { "en": "Our teachers", "am": "መምህራኖቻችን" },
+          "heading": { "en": "Teachers who know the exam", "am": "ፈተናውን የሚያውቁ መምህራን" },
+          "body": { "en": "Our teachers have prepared students for the national exam for years. They know which questions come back, and they make time for the student who is stuck.", "am": "መምህራኖቻችን ለዓመታት ተማሪዎችን ለብሔራዊ ፈተና አዘጋጅተዋል። የትኞቹ ጥያቄዎች እንደሚደጋገሙ ያውቃሉ፤ ለተቸገረ ተማሪም ጊዜ ይሰጣሉ።" },
+          "image": {
+            "src": "/stock/training-about-teacher-helping-pupils.webp",
+            "alt": { "en": "A teacher helping two pupils with their work", "am": "መምህርት ሁለት ተማሪዎችን ስታግዝ" }
+          },
+          "points": [
+            { "en": "Accredited by the city education bureau: [your licence number]", "am": "በከተማው ትምህርት ቢሮ ዕውቅና ያለው፦ [የፈቃድ ቁጥርዎ]" },
+            { "en": "Parents get a report every month", "am": "ወላጆች በየወሩ ሪፖርት ያገኛሉ" }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "id": "words",
+          "eyebrow": { "en": "Students say", "am": "ተማሪዎች ምን ይላሉ" },
+          "heading": { "en": "They passed", "am": "አልፈዋል" },
+          "items": [
+            {
+              "quote": { "en": "The Saturday mock exams made the real one feel easy.", "am": "የቅዳሜው የሙከራ ፈተናዎች እውነተኛውን ቀላል አደረጉት።" },
+              "name": "Meklit A.",
+              "role": { "en": "Grade 12, 2025", "am": "12ኛ ክፍል፣ 2017" }
+            },
+            {
+              "quote": { "en": "I got 7.5 in IELTS after eight weeks of evening classes.", "am": "ከስምንት ሳምንት የምሽት ትምህርት በኋላ በአይኤልቲኤስ 7.5 አገኘሁ።" },
+              "name": "Henok T.",
+              "role": { "en": "IELTS", "am": "አይኤልቲኤስ" }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "register",
+          "kind": "registration",
+          "heading": { "en": "Register for a course", "am": "ለኮርስ ይመዝገቡ" },
+          "intro": { "en": "Pick a course. We call to confirm your place and how to pay the first month.", "am": "ኮርስ ይምረጡ። ቦታዎን ለማረጋገጥና የመጀመሪያውን ወር ክፍያ ለመንገር እንደውላለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Student's name", "am": "የተማሪው ስም" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone", "am": "ስልክ" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "course",
+              "label": { "en": "Course", "am": "ኮርስ" },
+              "type": "select",
+              "required": true,
+              "options": [
+                { "en": "Grade 12 exam prep", "am": "የ12ኛ ክፍል ፈተና ዝግጅት" },
+                { "en": "IELTS and English", "am": "አይኤልቲኤስና እንግሊዝኛ" },
+                { "en": "Computer basics and Excel", "am": "የኮምፒውተር መሠረታዊና ኤክሴል" },
+                { "en": "Driving lessons", "am": "የማሽከርከር ትምህርት" }
+              ]
+            },
+            {
+              "name": "time",
+              "label": { "en": "Mornings, evenings or weekends?", "am": "ጠዋት፣ ምሽት ወይስ ቅዳሜና እሑድ?" },
+              "type": "select",
+              "options": [
+                { "en": "Mornings", "am": "ጠዋት" },
+                { "en": "Evenings", "am": "ምሽት" },
+                { "en": "Weekends", "am": "ቅዳሜና እሑድ" }
+              ]
+            }
+          ],
+          "submitLabel": { "en": "Register", "am": "ይመዝገቡ" },
+          "successMessage": { "en": "Thank you. We will call you to confirm your place.", "am": "እናመሰግናለን። ቦታዎን ለማረጋገጥ እንደውልልዎታለን።" }
+        },
+        {
+          "type": "faq",
+          "id": "questions",
+          "heading": { "en": "Questions from parents", "am": "የወላጆች ጥያቄዎች" },
+          "items": [
+            {
+              "question": { "en": "Can we pay by the month?", "am": "በወር መክፈል እንችላለን?" },
+              "answer": { "en": "Yes. Exam prep is paid monthly; short courses at the start.", "am": "አዎ። የፈተና ዝግጅት በወር ይከፈላል፤ አጫጭር ኮርሶች ሲጀምሩ።" }
+            },
+            {
+              "question": { "en": "What if my child misses a class?", "am": "ልጄ ክፍል ቢያመልጠውስ?" },
+              "answer": { "en": "They can join the same lesson in another group that week.", "am": "በዚያው ሳምንት ተመሳሳዩን ትምህርት በሌላ ቡድን መከታተል ይችላል።" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/courses",
+      "title": { "en": "Courses", "am": "ኮርሶች" },
+      "nav": { "en": "Courses", "am": "ኮርሶች" },
+      "description": { "en": "All courses at Lucy Academy with fees in Birr and next intakes.", "am": "በሉሲ አካዳሚ ያሉ ሁሉም ኮርሶች ከክፍያና ከቀጣይ ቅበላ ጋር።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "all",
+          "layout": "grid",
+          "eyebrow": { "en": "Courses", "am": "ኮርሶች" },
+          "heading": { "en": "All courses", "am": "ሁሉም ኮርሶች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/training-card-students-studying.webp",
+                "alt": { "en": "Students studying together at a desk", "am": "በጠረጴዛ ዙሪያ አብረው የሚያጠኑ ተማሪዎች" }
+              },
+              "badge": { "en": "Exam prep", "am": "የፈተና ዝግጅት" },
+              "title": { "en": "Grade 12 national exam prep", "am": "የ12ኛ ክፍል ብሔራዊ ፈተና ዝግጅት" },
+              "meta": [
+                { "en": "4 months", "am": "4 ወር" },
+                { "en": "Weekends", "am": "ቅዳሜና እሑድ" },
+                { "en": "Next class 12 January", "am": "ቀጣይ ክፍል ጥር 4" }
+              ],
+              "price": { "amountMinor": 250000, "currency": "ETB" },
+              "priceNote": { "en": "per month", "am": "በወር" },
+              "action": {
+                "label": { "en": "Register", "am": "ይመዝገቡ" },
+                "href": "/register"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/training-card-english-class.webp",
+                "alt": { "en": "An English lesson with words on the whiteboard", "am": "በነጭ ሰሌዳው ላይ ቃላት ያሉበት የእንግሊዝኛ ትምህርት" }
+              },
+              "badge": { "en": "Languages", "am": "ቋንቋ" },
+              "title": { "en": "IELTS and English", "am": "አይኤልቲኤስና እንግሊዝኛ" },
+              "meta": [
+                { "en": "8 weeks", "am": "8 ሳምንት" },
+                { "en": "Evenings", "am": "ምሽት" },
+                { "en": "Next class 5 January", "am": "ቀጣይ ክፍል ታኅሣሥ 27" }
+              ],
+              "price": { "amountMinor": 600000, "currency": "ETB" },
+              "priceNote": { "en": "whole course", "am": "ለሙሉ ኮርሱ" },
+              "action": {
+                "label": { "en": "Register", "am": "ይመዝገቡ" },
+                "href": "/register"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/training-card-computer-lab.webp",
+                "alt": { "en": "Adults learning in a computer lab", "am": "በኮምፒውተር ክፍል የሚማሩ አዋቂዎች" }
+              },
+              "badge": { "en": "Computers", "am": "ኮምፒውተር" },
+              "title": { "en": "Computer basics and Excel", "am": "የኮምፒውተር መሠረታዊና ኤክሴል" },
+              "meta": [
+                { "en": "6 weeks", "am": "6 ሳምንት" },
+                { "en": "Mornings or evenings", "am": "ጠዋት ወይም ምሽት" },
+                { "en": "Certificate", "am": "ሰርተፊኬት" }
+              ],
+              "price": { "amountMinor": 450000, "currency": "ETB" },
+              "priceNote": { "en": "whole course", "am": "ለሙሉ ኮርሱ" },
+              "action": {
+                "label": { "en": "Register", "am": "ይመዝገቡ" },
+                "href": "/register"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/training-card-driving-lesson.webp",
+                "alt": { "en": "An instructor beside a learner at the wheel of a car", "am": "መሪ ከያዘች ተማሪ አጠገብ ያለ የማሽከርከር አሠልጣኝ" }
+              },
+              "badge": { "en": "Driving", "am": "ማሽከርከር" },
+              "title": { "en": "Driving lessons, automatic", "am": "የማሽከርከር ትምህርት፣ አውቶማቲክ" },
+              "meta": [
+                { "en": "20 lessons", "am": "20 ትምህርቶች" },
+                { "en": "Theory and road", "am": "ቲዎሪና መንገድ" }
+              ],
+              "price": { "amountMinor": 900000, "currency": "ETB" },
+              "priceNote": { "en": "whole course", "am": "ለሙሉ ኮርሱ" },
+              "action": {
+                "label": { "en": "Register", "am": "ይመዝገቡ" },
+                "href": "/register"
+              }
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "id": "rooms",
+          "layout": "mosaic",
+          "heading": { "en": "Our classrooms", "am": "ክፍሎቻችን" },
+          "images": [
+            {
+              "src": "/stock/training-hero-instructor-uniformed-class.webp",
+              "alt": { "en": "An instructor teaching a class of students in uniform", "am": "ዩኒፎርም ለለበሱ ተማሪዎች የሚያስተምር መምህር" }
+            },
+            {
+              "src": "/stock/training-gallery-library-study.webp",
+              "alt": { "en": "A quiet library with students reading", "am": "ተማሪዎች የሚያነቡበት ጸጥ ያለ ቤተ መጻሕፍት" }
+            },
+            {
+              "src": "/stock/training-gallery-group-discussion.webp",
+              "alt": { "en": "Students in a group discussion", "am": "በቡድን የሚወያዩ ተማሪዎች" }
+            },
+            {
+              "src": "/stock/training-card-graduate-diploma.webp",
+              "alt": { "en": "A smiling graduate holding a diploma", "am": "ዲፕሎማ የያዘ ፈገግተኛ ተመራቂ" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/timetable",
+      "title": { "en": "Timetable", "am": "የጊዜ ሰሌዳ" },
+      "nav": { "en": "Timetable", "am": "የጊዜ ሰሌዳ" },
+      "description": { "en": "The weekly timetable of Lucy Academy this term.", "am": "የሉሲ አካዳሚ የዚህ ሴሚስተር ሳምንታዊ የጊዜ ሰሌዳ።" },
+      "sections": [
+        {
+          "type": "schedule",
+          "id": "week-all",
+          "layout": "week",
+          "eyebrow": { "en": "This term", "am": "በዚህ ሴሚስተር" },
+          "heading": { "en": "Weekly timetable", "am": "ሳምንታዊ የጊዜ ሰሌዳ" },
+          "items": [
+            {
+              "day": { "en": "Monday", "am": "ሰኞ" },
+              "time": { "en": "5:30 pm", "am": "ከሰዓት 11:30" },
+              "title": { "en": "IELTS, room 2", "am": "አይኤልቲኤስ፣ ክፍል 2" }
+            },
+            {
+              "day": { "en": "Monday", "am": "ሰኞ" },
+              "time": { "en": "7:00 pm", "am": "ማታ 1:00" },
+              "title": { "en": "Excel, lab", "am": "ኤክሴል፣ ላብ" }
+            },
+            {
+              "day": { "en": "Wednesday", "am": "ረቡዕ" },
+              "time": { "en": "5:30 pm", "am": "ከሰዓት 11:30" },
+              "title": { "en": "IELTS, room 2", "am": "አይኤልቲኤስ፣ ክፍል 2" }
+            },
+            {
+              "day": { "en": "Wednesday", "am": "ረቡዕ" },
+              "time": { "en": "7:00 pm", "am": "ማታ 1:00" },
+              "title": { "en": "Computer basics, lab", "am": "የኮምፒውተር መሠረታዊ፣ ላብ" }
+            },
+            {
+              "day": { "en": "Saturday", "am": "ቅዳሜ" },
+              "time": { "en": "8:30 am", "am": "ጠዋት 2:30" },
+              "title": { "en": "Maths, grade 12", "am": "ሂሳብ፣ 12ኛ ክፍል" },
+              "note": { "en": "Mock exam", "am": "የሙከራ ፈተና" }
+            },
+            {
+              "day": { "en": "Saturday", "am": "ቅዳሜ" },
+              "time": { "en": "11:00 am", "am": "ጠዋት 5:00" },
+              "title": { "en": "Physics, grade 12", "am": "ፊዚክስ፣ 12ኛ ክፍል" }
+            },
+            {
+              "day": { "en": "Sunday", "am": "እሑድ" },
+              "time": { "en": "8:30 am", "am": "ጠዋት 2:30" },
+              "title": { "en": "English, grade 12", "am": "እንግሊዝኛ፣ 12ኛ ክፍል" }
+            },
+            {
+              "day": { "en": "Sunday", "am": "እሑድ" },
+              "time": { "en": "11:00 am", "am": "ጠዋት 5:00" },
+              "title": { "en": "Biology, grade 12", "am": "ባዮሎጂ፣ 12ኛ ክፍል" }
+            }
+          ],
+          "footnote": { "en": "Amharic times use the Ethiopian clock.", "am": "ሰዓቶቹ በኢትዮጵያ አቆጣጠር ናቸው።" }
+        }
+      ]
+    },
+    {
+      "path": "/register",
+      "title": { "en": "Register", "am": "ምዝገባ" },
+      "nav": { "en": "Register", "am": "ምዝገባ" },
+      "description": { "en": "Register for a course at Lucy Academy in Megenagna.", "am": "በመገናኛ በሉሲ አካዳሚ ለኮርስ ይመዝገቡ።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "register-page",
+          "kind": "registration",
+          "heading": { "en": "Register for a course", "am": "ለኮርስ ይመዝገቡ" },
+          "intro": { "en": "Pick a course. We call to confirm your place and how to pay the first month.", "am": "ኮርስ ይምረጡ። ቦታዎን ለማረጋገጥና የመጀመሪያውን ወር ክፍያ ለመንገር እንደውላለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Student's name", "am": "የተማሪው ስም" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone", "am": "ስልክ" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "course",
+              "label": { "en": "Course", "am": "ኮርስ" },
+              "type": "select",
+              "required": true,
+              "options": [
+                { "en": "Grade 12 exam prep", "am": "የ12ኛ ክፍል ፈተና ዝግጅት" },
+                { "en": "IELTS and English", "am": "አይኤልቲኤስና እንግሊዝኛ" },
+                { "en": "Computer basics and Excel", "am": "የኮምፒውተር መሠረታዊና ኤክሴል" },
+                { "en": "Driving lessons", "am": "የማሽከርከር ትምህርት" }
+              ]
+            },
+            {
+              "name": "time",
+              "label": { "en": "Mornings, evenings or weekends?", "am": "ጠዋት፣ ምሽት ወይስ ቅዳሜና እሑድ?" },
+              "type": "select",
+              "options": [
+                { "en": "Mornings", "am": "ጠዋት" },
+                { "en": "Evenings", "am": "ምሽት" },
+                { "en": "Weekends", "am": "ቅዳሜና እሑድ" }
+              ]
+            }
+          ],
+          "submitLabel": { "en": "Register", "am": "ይመዝገቡ" },
+          "successMessage": { "en": "Thank you. We will call you to confirm your place.", "am": "እናመሰግናለን። ቦታዎን ለማረጋገጥ እንደውልልዎታለን።" }
+        },
+        {
+          "type": "map",
+          "id": "map",
+          "heading": { "en": "Find us in Megenagna", "am": "በመገናኛ ያግኙን" },
+          "query": "Megenagna, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

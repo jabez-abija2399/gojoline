@@ -64,6 +64,117 @@
   font-display: swap;
   unicode-range: U+1200-137F;
 }
+/* Size-matched stand-ins for the Latin heading fonts (Arial or Times scaled to each font's width
+   and height at weights 500 and 700; scripts/font-fallbacks.py). Until the real font arrives, a heading
+   keeps its line breaks, so nothing below it moves when it swaps (layout shift budget). */
+@font-face {
+  font-family: "Outfit Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Roboto"), local("Roboto-Regular");
+  font-weight: 100 549;
+  size-adjust: 99.4%;
+  ascent-override: 100.6%;
+  descent-override: 26.2%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Outfit Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 550 900;
+  size-adjust: 95.6%;
+  ascent-override: 104.6%;
+  descent-override: 27.2%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Bricolage Grotesque Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Roboto"), local("Roboto-Regular");
+  font-weight: 100 549;
+  size-adjust: 106.7%;
+  ascent-override: 87.1%;
+  descent-override: 25.3%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Bricolage Grotesque Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 550 900;
+  size-adjust: 102.1%;
+  ascent-override: 91.1%;
+  descent-override: 26.5%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Nunito Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Roboto"), local("Roboto-Regular");
+  font-weight: 100 549;
+  size-adjust: 101.3%;
+  ascent-override: 99.8%;
+  descent-override: 34.8%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Nunito Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 550 900;
+  size-adjust: 97.4%;
+  ascent-override: 103.8%;
+  descent-override: 36.2%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Fraunces Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Noto Serif");
+  font-weight: 100 549;
+  size-adjust: 117.1%;
+  ascent-override: 83.5%;
+  descent-override: 21.8%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Fraunces Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), local("Liberation Serif Bold"), local("Noto Serif Bold");
+  font-weight: 550 900;
+  size-adjust: 115.1%;
+  ascent-override: 84.9%;
+  descent-override: 22.1%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Cormorant Garamond Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Noto Serif");
+  font-weight: 100 549;
+  size-adjust: 97.0%;
+  ascent-override: 95.3%;
+  descent-override: 29.6%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Cormorant Garamond Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), local("Liberation Serif Bold"), local("Noto Serif Bold");
+  font-weight: 550 900;
+  size-adjust: 92.1%;
+  ascent-override: 100.3%;
+  descent-override: 31.2%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Newsreader Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Noto Serif");
+  font-weight: 100 549;
+  size-adjust: 108.8%;
+  ascent-override: 67.6%;
+  descent-override: 24.4%;
+  line-gap-override: 0.0%;
+}
+@font-face {
+  font-family: "Newsreader Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), local("Liberation Serif Bold"), local("Noto Serif Bold");
+  font-weight: 550 900;
+  size-adjust: 105.0%;
+  ascent-override: 70.0%;
+  descent-override: 25.2%;
+  line-gap-override: 0.0%;
+}
 @font-face {
   font-family: "Bricolage Grotesque";
   src: url("/fonts/bricolage-latin.woff2") format("woff2");
@@ -1030,5 +1141,343 @@
   }
   [data-style="bento"] .hero-glow {
     background: none;
+  }
+
+
+  /* ---- Pricing tiers (cards layout "pricing") ---- */
+  .tier {
+    position: relative;
+    border-radius: var(--site-radius);
+  }
+  .tier-featured {
+    box-shadow: 0 24px 48px -24px color-mix(in oklab, var(--site-accent) 60%, transparent);
+  }
+  @media (min-width: 1024px) {
+    .tier-featured {
+      transform: translateY(-0.75rem);
+    }
+  }
+  .tier-badge {
+    width: fit-content;
+    border-radius: 999px;
+    background: var(--site-highlight);
+    color: var(--site-on-highlight);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .tier-price {
+    font-family: var(--site-font-heading);
+    font-size: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- Week timetable (schedule layout "week") ---- */
+  .week-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(13rem, 1fr);
+    gap: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.5rem;
+  }
+  .week-day {
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .week-day-name {
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 0.5rem;
+    font-family: var(--site-font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+  .week-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    border-radius: var(--site-radius);
+    background: var(--site-surface);
+    padding: 0.75rem 0.875rem;
+  }
+  .week-note {
+    width: fit-content;
+    margin-top: 0.25rem;
+    border-radius: 999px;
+    background: var(--site-highlight);
+    color: var(--site-on-highlight);
+    padding: 0.0625rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  @media (min-width: 1024px) {
+    .week-grid {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(min(var(--days, 5), 7), minmax(0, 1fr));
+      overflow: visible;
+    }
+  }
+
+  /* ---- Prints (gallery layout "prints") ---- */
+  .prints {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 0.875rem;
+  }
+  @media (min-width: 768px) {
+    .prints {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2.5rem 2rem;
+    }
+  }
+  .print {
+    background: #fff;
+    padding: 0.5rem 0.5rem 1.75rem;
+    box-shadow: 0 14px 30px -18px rgb(0 0 0 / 0.55);
+    rotate: var(--tilt, 0deg);
+  }
+  /* The ring goes around the whole print: drawn on the button inside, it vanished into the white frame. */
+  .print:has(:focus-visible) {
+    outline: 3px solid currentColor;
+    outline-offset: 4px;
+  }
+  .print :focus-visible {
+    outline: none;
+  }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .print {
+      transition: rotate 300ms, scale 300ms;
+    }
+    .print:hover {
+      rotate: 0deg;
+      scale: 1.03;
+    }
+  }
+
+  /* ---- organic: soft, round, playful (bakeries, cafés, children) ---- */
+  [data-style="organic"] :is(.section-title, .depth-frame)::before {
+    display: none;
+  }
+  [data-style="organic"] .section-head {
+    align-items: center;
+    text-align: center;
+  }
+  [data-style="organic"] .eyebrow,
+  [data-style="organic"] .hero-eyebrow {
+    width: fit-content;
+    border: 0;
+    border-radius: 999px;
+    background: var(--site-highlight);
+    color: var(--site-on-highlight);
+    padding: 0.25rem 0.875rem;
+    font-weight: 700;
+  }
+  [data-style="organic"] .eyebrow::before {
+    display: none;
+  }
+  [data-style="organic"] .btn {
+    border-radius: 999px;
+    padding-inline: 1.5rem;
+  }
+  [data-style="organic"] :is(.card, .pcard) {
+    border: 0;
+    border-radius: calc(var(--site-radius) * 1.4);
+    background: var(--site-primary-soft);
+    box-shadow: none;
+  }
+  [data-style="organic"] .zoom,
+  [data-style="organic"] .rounded-site {
+    border-radius: calc(var(--site-radius) * 1.4);
+  }
+  /* Tinted sections get a scalloped top edge, like a cake board or a paper doily. */
+  [data-style="organic"] main > section.bg-surface {
+    position: relative;
+  }
+  [data-style="organic"] main > section.bg-surface::before {
+    content: "";
+    position: absolute;
+    inset: -11px 0 auto;
+    height: 12px;
+    background: radial-gradient(circle at 12px 12px, var(--site-surface) 11px, transparent 12px) 0 0 / 24px 12px repeat-x;
+  }
+
+  /* ---- cinematic: titles as film chapters, galleries in the dark ---- */
+  [data-style="cinematic"] main {
+    counter-reset: site-chapter;
+  }
+  [data-style="cinematic"] main > section:has(.section-title) {
+    counter-increment: site-chapter;
+  }
+  [data-style="cinematic"] .headline {
+    font-size: clamp(2.75rem, 1.5rem + 5.5vw, 6rem);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+  [data-style="cinematic"] .section-title {
+    font-size: clamp(2.25rem, 1.6rem + 2.8vw, 3.75rem);
+    font-weight: 400;
+  }
+  :lang(am) [data-style="cinematic"] :is(.headline, .section-title) {
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.3;
+  }
+  /* Each titled section is a chapter: a small number above its title (01, 02; Ge'ez numerals in
+     Amharic), with empty alternative text so it is never read out. */
+  [data-style="cinematic"] .section-title::before {
+    content: counter(site-chapter, decimal-leading-zero) / "";
+    display: block;
+    width: auto;
+    height: auto;
+    margin-bottom: 0.75rem;
+    background: none;
+    animation: none;
+    font-family: var(--site-font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    color: var(--site-primary);
+  }
+  :lang(am) [data-style="cinematic"] .section-title::before {
+    content: counter(site-chapter, ethiopic-numeric) / "";
+  }
+  [data-style="cinematic"] :is(.on-dark, .bg-accent) .section-title::before {
+    color: inherit;
+  }
+  [data-style="cinematic"] .eyebrow::before,
+  [data-style="cinematic"] .depth-frame::before {
+    display: none;
+  }
+  [data-style="cinematic"] :is(.card, .pcard):not(.tier) {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  [data-style="cinematic"] .pcard > div:last-child {
+    padding-inline: 0;
+  }
+  [data-style="cinematic"] .btn {
+    border-radius: 999px;
+  }
+  @media (min-width: 768px) {
+    [data-style="cinematic"] .section {
+      padding-block: 8rem;
+    }
+  }
+
+  /* ---- brutal: thick ink borders, hard shadows, labels on the highlight ---- */
+  [data-style="brutal"] :is(.card, .pcard, .btn, .week-slot, .print, .bento-tile, input, select, textarea, form) {
+    border: 2px solid var(--site-text);
+    box-shadow: 4px 4px 0 var(--site-text);
+  }
+  [data-style="brutal"] .btn {
+    transition: transform 120ms, box-shadow 120ms;
+  }
+  [data-style="brutal"] .btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--site-text);
+  }
+  [data-style="brutal"] .on-dark :is(.card, .btn) {
+    border-color: currentColor;
+    box-shadow: 4px 4px 0 currentColor;
+  }
+  [data-style="brutal"] :is(.headline, .section-title, .item-title, .stat-value) {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  :lang(am) [data-style="brutal"] :is(.headline, .section-title, .item-title, .stat-value) {
+    letter-spacing: 0;
+  }
+  [data-style="brutal"] :is(.section-title, .depth-frame)::before,
+  [data-style="brutal"] .eyebrow::before {
+    display: none;
+  }
+  [data-style="brutal"] .eyebrow,
+  [data-style="brutal"] .hero-eyebrow {
+    width: fit-content;
+    border: 2px solid var(--site-text);
+    border-radius: 999px;
+    background: var(--site-highlight);
+    color: var(--site-on-highlight);
+    padding: 0.125rem 0.75rem;
+    font-weight: 700;
+  }
+  [data-style="brutal"] .step-number {
+    border: 2px solid var(--site-text);
+    background: var(--site-highlight);
+    color: var(--site-on-highlight);
+  }
+
+  /* ---- calm: quiet, spacious, hairlines only ---- */
+  [data-style="calm"] :is(.headline, .section-title) {
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  :lang(am) [data-style="calm"] :is(.headline, .section-title) {
+    letter-spacing: 0;
+  }
+  [data-style="calm"] :is(.section-title, .depth-frame)::before,
+  [data-style="calm"] .eyebrow::before {
+    display: none;
+  }
+  [data-style="calm"] .hero-glow {
+    background: none;
+  }
+  [data-style="calm"] :is(.card, .pcard) {
+    border: 1px solid var(--site-line);
+    background: var(--site-surface);
+    box-shadow: none;
+  }
+  [data-style="calm"] .eyebrow {
+    color: var(--site-primary);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) {
+    [data-style="calm"] .section {
+      padding-block: 7rem;
+    }
+  }
+
+  /* ---- kinetic: condensed capitals, huge stacked headlines, one word outlined ---- */
+  [data-style="kinetic"] :is(.headline, .section-title, .item-title, .stat-value, .fact-value, .wordmark, .tier-price, .time-value) {
+    font-stretch: 75%;
+    font-weight: 900;
+  }
+  [data-style="kinetic"] :is(.headline, .section-title, .wordmark):not(:lang(am)) {
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+  }
+  [data-style="kinetic"] .headline {
+    font-size: clamp(3.5rem, 1.6rem + 9vw, 8rem);
+    line-height: 0.86;
+  }
+  [data-style="kinetic"] .section-title {
+    font-size: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
+    line-height: 0.9;
+  }
+  :lang(am) [data-style="kinetic"] :is(.headline, .section-title) {
+    line-height: 1.2;
+  }
+  /* The second word stands in outline (Latin only: thin strokes break Ge'ez apart). */
+  [data-style="kinetic"] .headline .w:nth-of-type(2):not(:lang(am)) {
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0.035em currentColor;
+    paint-order: stroke fill;
+  }
+  [data-style="kinetic"] :is(.section-title, .depth-frame)::before {
+    display: none;
+  }
+  [data-style="kinetic"] :is(.card, .pcard, .btn, .week-slot) {
+    border-radius: 4px;
+  }
+  [data-style="kinetic"] .btn {
+    font-weight: 800;
+    letter-spacing: 0.02em;
   }
 }

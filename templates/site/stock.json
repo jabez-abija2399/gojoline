@@ -1,4 +1,94 @@
 {
+  "bakery-about-baker-shaping-dough": {
+    "src": "/stock/bakery-about-baker-shaping-dough.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A baker's hands press and shape bread dough on a floured work table beside rows of dough balls.",
+    "by": "Vaibhav Jadhav",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/man-preparing-dough-for-bread-3218467/"
+  },
+  "bakery-card-birthday-cake-sparkler": {
+    "src": "/stock/bakery-card-birthday-cake-sparkler.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A person places a lit sparkler on a layered chocolate cake with cream filling on a white cake stand.",
+    "by": "Max Samano",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/woman-putting-candle-on-birthday-cake-15229830/"
+  },
+  "bakery-card-black-forest-cake": {
+    "src": "/stock/bakery-card-black-forest-cake.webp",
+    "width": 800,
+    "height": 923,
+    "shows": "A three-layer chocolate black forest cake with cream, dark cherries and chocolate glaze on a white plate.",
+    "by": "Jacob Thomas",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/chocolate-cake-with-cherries-and-cream-6jHpcBPw7i8"
+  },
+  "bakery-card-croissants": {
+    "src": "/stock/bakery-card-croissants.webp",
+    "width": 800,
+    "height": 534,
+    "shows": "Golden flaky croissants on a metal cooling rack.",
+    "by": "Arda Kaykısız",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/freshly-made-croissants-20002837/"
+  },
+  "bakery-card-fresh-bread-loaves": {
+    "src": "/stock/bakery-card-fresh-bread-loaves.webp",
+    "width": 800,
+    "height": 534,
+    "shows": "Golden-brown round artisan bread loaves cooling on a rack in a bakery kitchen.",
+    "by": "Anthony Rahayel",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/freshly-baked-artisan-bread-on-cooling-rack-30350350/"
+  },
+  "bakery-card-white-tiered-wedding-cake": {
+    "src": "/stock/bakery-card-white-tiered-wedding-cake.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A white three-tier wedding cake decorated with pink, red and peach roses and peonies.",
+    "by": "Samantha Gades",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/round-white-icing-covered-3-layer-cake-NNHNe3rXcNY"
+  },
+  "bakery-gallery-cake-slice": {
+    "src": "/stock/bakery-gallery-cake-slice.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A slice of vanilla layer cake with cream filling on a white plate.",
+    "by": "Yulia Oliinychenko",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/slice-of-cake-on-a-plate-19651067/"
+  },
+  "bakery-gallery-cupcakes": {
+    "src": "/stock/bakery-gallery-cupcakes.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "Chocolate and vanilla cupcakes with swirled frosting arranged on a rustic wooden board.",
+    "by": "Candice Pickering",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/cupcakes-on-a-wooden-board-9045540/"
+  },
+  "bakery-hero-bakery-counter-cakes": {
+    "src": "/stock/bakery-hero-bakery-counter-cakes.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "Chocolate cakes and a strawberry-topped cake sit on brass cake stands behind the glass of a warm-lit cafe counter.",
+    "by": "Pham Ngoc Anh",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/a-display-case-with-cakes-and-pastries-on-it-28146830/"
+  },
+  "bakery-hero-layered-flower-cake": {
+    "src": "/stock/bakery-hero-layered-flower-cake.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A tall semi-naked layer cake with white frosting and caramel drips, topped with fresh red and pink flowers, lit softly from the side.",
+    "by": "James Coleman",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/white-icing-covered-cake-with-flowers-on-top-5HR1gItc7Gs"
+  },
   "business-about-handshake-team": {
     "src": "/stock/business-about-handshake-team.webp",
     "width": 800,
@@ -638,6 +728,96 @@
     "licence": "Pexels",
     "source": "https://www.pexels.com/photo/mechanic-looking-at-the-engine-of-the-car-8985452/"
   },
+  "gym-about-gym-floor-benches": {
+    "src": "/stock/gym-about-gym-floor-benches.webp",
+    "width": 800,
+    "height": 534,
+    "shows": "An empty, bright gym floor with rows of adjustable benches in front of racks of dumbbells and a mirror wall.",
+    "by": "大 董",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/modern-gym-with-dumbbells-and-benches-40371837/"
+  },
+  "gym-card-boxing": {
+    "src": "/stock/gym-card-boxing.webp",
+    "width": 800,
+    "height": 450,
+    "shows": "A man in boxing gloves throws a punch at a heavy bag in a dim gym lit in red and blue.",
+    "by": "Abuti Engidashet",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/20817812/"
+  },
+  "gym-card-group-outdoor-class": {
+    "src": "/stock/gym-card-group-outdoor-class.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A group of men and women in Uganda follow an instructor through an aerobics class on the grass in a park.",
+    "by": "Speak Media Uganda",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/a-group-of-people-in-a-park-doing-yoga-28037628/"
+  },
+  "gym-card-stretching": {
+    "src": "/stock/gym-card-stretching.webp",
+    "width": 800,
+    "height": 534,
+    "shows": "Two smiling women do a deep lunge stretch together in a bright studio with a wooden floor.",
+    "by": "Kampus Production",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/smiling-women-stretching-their-legs-8957627/"
+  },
+  "gym-card-trainer-coaching": {
+    "src": "/stock/gym-card-trainer-coaching.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A personal trainer kneels beside a woman doing a dumbbell row on a bench, coaching her through the exercise.",
+    "by": "Julia Larson",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/professional-instructor-encouraging-black-woman-lifting-dumbbell-6455911/"
+  },
+  "gym-card-woman-barbell-squat": {
+    "src": "/stock/gym-card-woman-barbell-squat.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "Seen from behind, a woman in an orange top holds a padded barbell across her shoulders in a gym in Accra, Ghana.",
+    "by": "Zeal Creative Studios",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/back-view-of-woman-lifting-weights-in-gym-34043586/"
+  },
+  "gym-gallery-battle-ropes": {
+    "src": "/stock/gym-gallery-battle-ropes.webp",
+    "width": 800,
+    "height": 450,
+    "shows": "A man in a squat whips battle ropes on green turf inside a gym in Addis Ababa.",
+    "by": "Abuti Engidashet",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/20817815/"
+  },
+  "gym-gallery-dumbbell-rack": {
+    "src": "/stock/gym-gallery-dumbbell-rack.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "Black hexagonal dumbbells on a vertical metal rack against a brick wall.",
+    "by": "Andres Ayrton",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/metal-dumbbell-rack-in-gym-6550849/"
+  },
+  "gym-hero-deadlift": {
+    "src": "/stock/gym-hero-deadlift.webp",
+    "width": 800,
+    "height": 450,
+    "shows": "A man in a lifting belt holds a loaded barbell at the top of a deadlift in a gym in Addis Ababa.",
+    "by": "Abuti Engidashet",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/man-in-dead-lift-at-gym-20817818/"
+  },
+  "gym-hero-dumbbell-press": {
+    "src": "/stock/gym-hero-dumbbell-press.webp",
+    "width": 800,
+    "height": 450,
+    "shows": "A man lies on a bench pressing two heavy dumbbells overhead in a moody, red and blue lit gym in Addis Ababa.",
+    "by": "Abuti Engidashet",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/20817822/"
+  },
   "hotel-about-coffee-ceremony-host": {
     "src": "/stock/hotel-about-coffee-ceremony-host.webp",
     "width": 800,
@@ -998,6 +1178,96 @@
     "licence": "Unsplash",
     "source": "https://unsplash.com/photos/woman-in-orange-blazer-standing-AzVexpHvuKY"
   },
+  "pharmacy-about-smiling-pharmacist-white-coat": {
+    "src": "/stock/pharmacy-about-smiling-pharmacist-white-coat.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A smiling Black woman in glasses and a white coat gestures with open hands against a plain white background.",
+    "by": "Tessy Agbonome",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/smiling-doctor-in-eyeglasses-18252412/"
+  },
+  "pharmacy-card-blood-pressure-check": {
+    "src": "/stock/pharmacy-card-blood-pressure-check.webp",
+    "width": 800,
+    "height": 532,
+    "shows": "A health worker in a white coat measures the blood pressure of an older Nigerian woman in a patterned dress at an outdoor clinic.",
+    "by": "Lagos Food Bank Initiative",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/women-on-checkup-in-doctors-office-8248433/"
+  },
+  "pharmacy-card-blood-sugar-test": {
+    "src": "/stock/pharmacy-card-blood-sugar-test.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "Close-up of a Black woman's hands holding a glucose meter to test a drop of blood from her fingertip.",
+    "by": "Tessy Agbonome",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/woman-hands-holding-glucose-meter-19963069/"
+  },
+  "pharmacy-card-delivery-courier": {
+    "src": "/stock/pharmacy-card-delivery-courier.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A Black courier with a backpack checks his phone on a scooter while carrying a brown paper delivery bag on a city street.",
+    "by": "Mike Jones",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/a-courier-looking-at-his-cellphone-9461320/"
+  },
+  "pharmacy-card-pharmacist-advice": {
+    "src": "/stock/pharmacy-card-pharmacist-advice.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A pharmacist in a white coat explains a medicine box to an older woman beside wooden pharmacy shelves.",
+    "by": "cottonbro studio",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/an-elderly-woman-looking-at-the-product-she-is-holding-while-standing-beside-a-woman-in-white-uniform-8657366/"
+  },
+  "pharmacy-card-vitamins-blank-bottle": {
+    "src": "/stock/pharmacy-card-vitamins-blank-bottle.webp",
+    "width": 800,
+    "height": 800,
+    "shows": "An unlabelled white supplement bottle stands beside a glass of water and a few pink capsules on a beige surface.",
+    "by": "Supplements On Demand",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/white-bottle-of-supplements-beside-a-glass-of-water-13779107/"
+  },
+  "pharmacy-gallery-pharmacy-interior": {
+    "src": "/stock/pharmacy-gallery-pharmacy-interior.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "An empty, tidy pharmacy interior with dark wooden glass-fronted cabinets, a long wooden counter and a chandelier.",
+    "by": "cottonbro studio",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/interior-of-a-vintage-pharmacy-8667531/"
+  },
+  "pharmacy-gallery-shelves-soft-focus": {
+    "src": "/stock/pharmacy-gallery-shelves-soft-focus.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A pharmacist seen from behind stands before white shelves of medicine bottles whose labels are softly out of focus.",
+    "by": "Ivan S",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/back-view-of-a-pharmacist-standing-in-front-of-a-cabinet-full-of-medication-9629685/"
+  },
+  "pharmacy-hero-lagos-pharmacy-customers": {
+    "src": "/stock/pharmacy-hero-lagos-pharmacy-customers.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A man in a white shirt and a woman in a pink blouse examine a medicine box together beside bright pharmacy shelves in Lagos, Nigeria.",
+    "by": "Ninthgrid",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/african-customers-shopping-in-lagos-pharmacy-30678215/"
+  },
+  "pharmacy-hero-pharmacist-counter-customer": {
+    "src": "/stock/pharmacy-hero-pharmacist-counter-customer.webp",
+    "width": 800,
+    "height": 640,
+    "shows": "A pharmacist in a white coat shows a pill bottle to an older Black woman across the counter of a pharmacy.",
+    "by": "Rhoda Baer (National Cancer Institute)",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/pharmacist-showing-pill-bottle-to-woman-NNpo-liY5aU"
+  },
   "real-estate-about-addis-neighbourhood": {
     "src": "/stock/real-estate-about-addis-neighbourhood.webp",
     "width": 800,
@@ -1349,6 +1619,96 @@
     "licence": "Unsplash",
     "source": "https://unsplash.com/photos/Pez23wGG1RM"
   },
+  "studio-about-photographer-at-work": {
+    "src": "/stock/studio-about-photographer-at-work.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A young African woman with an afro photographs outdoors with a DSLR camera in warm light.",
+    "by": "Elisbeth K.",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/woman-taking-a-picture-by-camera-20381856/"
+  },
+  "studio-card-couple-dancing": {
+    "src": "/stock/studio-card-couple-dancing.webp",
+    "width": 800,
+    "height": 534,
+    "shows": "A Black bride in an off-shoulder white dress and her groom in a dark suit dance close together at their wedding reception.",
+    "by": "Wayne Fotografias",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/a-newlywed-couple-dancing-together-11360201/"
+  },
+  "studio-card-couple-portrait-addis": {
+    "src": "/stock/studio-card-couple-portrait-addis.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "An Ethiopian couple dressed all in white, the woman holding a white bouquet, stand side by side in front of a pale roller shutter in Addis Ababa.",
+    "by": "Amen Kingdom",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/a-man-and-a-woman-dressed-in-white-standing-next-to-each-other-aJEY09A2VXw"
+  },
+  "studio-card-guests-celebrating": {
+    "src": "/stock/studio-card-guests-celebrating.webp",
+    "width": 800,
+    "height": 450,
+    "shows": "A bride in a white gown dances outdoors at night with groomsmen and bridesmaids celebrating around her.",
+    "by": "Amari Shutters",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/bride-dancing-with-guests-under-the-night-sky-RkNquEVicho"
+  },
+  "studio-card-hands-wedding-rings": {
+    "src": "/stock/studio-card-hands-wedding-rings.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "Close-up of an Ethiopian couple's hands resting on a white wedding dress, both wearing gold wedding rings.",
+    "by": "Abenezer Muluken",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/ethiopian-wedding-couple-holding-hands-36178490/"
+  },
+  "studio-card-reception-floral-decor": {
+    "src": "/stock/studio-card-reception-floral-decor.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A tall pink and peach rose centerpiece stands on a round reception table inside a white event tent set with gold chairs.",
+    "by": "Adi Albulescu",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/floral-centerpiece-on-a-table-in-a-white-event-tent-qGHAn-qOr5Q"
+  },
+  "studio-gallery-bride-getting-ready": {
+    "src": "/stock/studio-gallery-bride-getting-ready.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "An Ethiopian bride in a white dress holds a white bouquet beside a round mirror in a softly lit room.",
+    "by": "Gift Habeshaw",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/a-person-standing-in-front-of-a-mirror-posing-for-the-camera-B2POPSR3zQo"
+  },
+  "studio-gallery-decorated-table": {
+    "src": "/stock/studio-gallery-decorated-table.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A long wedding table with a white cloth, glassware and white and pink flower arrangements set outdoors among greenery.",
+    "by": "Cody Chan",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/dining-table-setting-7jgtAhJkjwk"
+  },
+  "studio-hero-couple-embrace-garden": {
+    "src": "/stock/studio-hero-couple-embrace-garden.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "An African groom in a grey suit kisses his bride in a white gown and veil under a flowering tree in a green garden.",
+    "by": "Samwel francis",
+    "licence": "Unsplash",
+    "source": "https://unsplash.com/photos/a-bride-and-groom-embracing-under-a-tree-OyhCn_7YoQo"
+  },
+  "studio-hero-habesha-bride-cathedral": {
+    "src": "/stock/studio-hero-habesha-bride-cathedral.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "An Ethiopian bride in a white embroidered habesha wedding dress and veil sits with her groom in white traditional clothes under a flower arch in front of a cathedral in Addis Ababa.",
+    "by": "Abel Abera",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/ethiopian-wedding-in-front-of-cathedral-34498421/"
+  },
   "tours-about-men-viewpoint-tree": {
     "src": "/stock/tours-about-men-viewpoint-tree.webp",
     "width": 800,
@@ -1456,6 +1816,96 @@
     "by": "Daniele Levis Pelusi",
     "licence": "Unsplash",
     "source": "https://unsplash.com/photos/mountain-photograph-kUzXgJ3-ThA"
+  },
+  "training-about-teacher-helping-pupils": {
+    "src": "/stock/training-about-teacher-helping-pupils.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A Black woman teacher leans over a desk and points at a pupil's exercise book while two children write.",
+    "by": "Katerina Holmes",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/black-teacher-standing-near-desk-and-pointing-at-pupils-copybook-5905478/"
+  },
+  "training-card-computer-lab": {
+    "src": "/stock/training-card-computer-lab.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "African adult students sit at desktop computers in a bright computer lab while an instructor stands at the front.",
+    "by": "Kenneth Chiamaka Ejiofor",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/diverse-group-learning-programming-in-computer-lab-30879378/"
+  },
+  "training-card-driving-lesson": {
+    "src": "/stock/training-card-driving-lesson.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A young Black woman sits at the steering wheel of a car while a man in the passenger seat talks her through driving.",
+    "by": "Gustavo Fring",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/"
+  },
+  "training-card-english-class": {
+    "src": "/stock/training-card-english-class.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A Black woman teacher stands at a whiteboard with English words and letters on it, teaching a student seen from behind.",
+    "by": "Tima Miroshnichenko",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/woman-teaching-english-in-class-5427868/"
+  },
+  "training-card-graduate-diploma": {
+    "src": "/stock/training-card-graduate-diploma.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A smiling African graduate in cap and gown holds a rolled diploma at an outdoor ceremony in Burundi.",
+    "by": "Safari Consoler",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/smiling-graduate-with-diploma-in-hand-20240506/"
+  },
+  "training-card-students-studying": {
+    "src": "/stock/training-card-students-studying.webp",
+    "width": 800,
+    "height": 541,
+    "shows": "Two African students in white school uniforms study a booklet together at a desk in a classroom.",
+    "by": "Tosin Olowoleni",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/african-students-focused-on-classroom-studies-34162714/"
+  },
+  "training-gallery-group-discussion": {
+    "src": "/stock/training-gallery-group-discussion.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A diverse group of young students, several of them Black, discuss an assignment around a table in a bright room.",
+    "by": "Monstera Production",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/diverse-students-gathering-around-table-6238028/"
+  },
+  "training-gallery-library-study": {
+    "src": "/stock/training-gallery-library-study.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "Students work on laptops at long desks in a bright modern library with bookshelves and a staircase.",
+    "by": "Kampus Production",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/concentrated-young-diverse-students-using-laptops-during-lesson-in-library-5940711/"
+  },
+  "training-hero-instructor-uniformed-class": {
+    "src": "/stock/training-hero-instructor-uniformed-class.webp",
+    "width": 800,
+    "height": 600,
+    "shows": "An African instructor in a white embroidered shirt speaks to a bright classroom of seated students in beige uniforms in Burkina Faso.",
+    "by": "Aristide Ouedraogo",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/african-classroom-training-session-with-uniformed-students-31820972/"
+  },
+  "training-hero-teacher-whiteboard-class": {
+    "src": "/stock/training-hero-teacher-whiteboard-class.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A Black woman teacher stands by a whiteboard in a bright classroom while pupils seen from behind listen at their desks.",
+    "by": "Katerina Holmes",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/black-teacher-with-kids-in-modern-classroom-5905919/"
   },
   "worship-about-priest-candle": {
     "src": "/stock/worship-about-priest-candle.webp",

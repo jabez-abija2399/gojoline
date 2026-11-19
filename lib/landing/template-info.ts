@@ -308,6 +308,81 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  bakery: {
+    category: "food",
+    designedFor: {
+      en: ["Bakeries and cake shops", "Home bakers taking orders", "Pastry and dessert shops", "Wedding cake makers"],
+      am: ["ዳቦና ኬክ ቤቶች", "ትዕዛዝ የሚቀበሉ የቤት ጋጋሪዎች", "የፓስቲና የጣፋጭ ሱቆች", "የሠርግ ኬክ ሠሪዎች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Cakes with sizes and prices", am: "ኬኮች ከመጠንና ከዋጋ ጋር" } },
+      { key: "menu", label: { en: "Daily bread and pastries", am: "የዕለቱ ዳቦና ፓስቲ" } },
+      { key: "order", label: { en: "Cake orders, also from abroad", am: "የኬክ ትዕዛዝ፣ ከውጭም" } },
+      "steps",
+      "gallery",
+      "languages",
+    ],
+  },
+  studio: {
+    category: "events",
+    designedFor: {
+      en: ["Wedding photographers", "Video and film studios", "Portrait studios", "Event photographers"],
+      am: ["የሠርግ ፎቶ አንሺዎች", "የቪዲዮና የፊልም ስቱዲዮዎች", "የፎቶ ስቱዲዮዎች", "የዝግጅት ፎቶ አንሺዎች"],
+    },
+    highlights: [
+      "gallery",
+      { key: "prices", label: { en: "Packages side by side", am: "ፓኬጆች ጎን ለጎን" } },
+      { key: "booking", label: { en: "Date enquiries", am: "የቀን ጥያቄ" } },
+      "steps",
+      "callTelegram",
+      "languages",
+    ],
+  },
+  training: {
+    category: "education",
+    designedFor: {
+      en: ["Tutoring and exam prep centres", "Language schools", "Computer training centres", "Driving schools"],
+      am: ["የማጠናከሪያና የፈተና ዝግጅት ማዕከላት", "የቋንቋ ትምህርት ቤቶች", "የኮምፒውተር ሥልጠና ማዕከላት", "የማሽከርከር ትምህርት ቤቶች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Courses with fees and intakes", am: "ኮርሶች ከክፍያና ከቅበላ ጋር" } },
+      { key: "times", label: { en: "Weekly timetable", am: "ሳምንታዊ የጊዜ ሰሌዳ" } },
+      "registration",
+      "numbers",
+      "faq",
+      "languages",
+    ],
+  },
+  pharmacy: {
+    category: "health",
+    designedFor: {
+      en: ["Community pharmacies", "Drug stores", "Medical supply shops", "Optical shops"],
+      am: ["የሰፈር ፋርማሲዎች", "መድኃኒት ቤቶች", "የሕክምና ዕቃ ሱቆች", "የመነጽር ሱቆች"],
+    },
+    highlights: [
+      { key: "contactForm", label: { en: "Ask if it's in stock", am: "መኖሩን ይጠይቁ" } },
+      { key: "callTelegram", label: { en: "Prescriptions on Telegram", am: "ማዘዣ በቴሌግራም" } },
+      "hours",
+      "steps",
+      "map",
+      "languages",
+    ],
+  },
+  gym: {
+    category: "health",
+    designedFor: {
+      en: ["Gyms and fitness centres", "Boxing and martial arts clubs", "Women-only fitness studios", "Personal trainers"],
+      am: ["ጂሞችና የአካል ብቃት ማዕከላት", "የቦክስና የማርሻል አርት ክለቦች", "የሴቶች ብቻ የአካል ብቃት ስቱዲዮዎች", "የግል አሠልጣኞች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Memberships side by side", am: "አባልነት ጎን ለጎን" } },
+      { key: "times", label: { en: "Class timetable", am: "የክፍሎች ሰሌዳ" } },
+      { key: "booking", label: { en: "Free first visit", am: "ነጻ የመጀመሪያ ጉብኝት" } },
+      "numbers",
+      "reviews",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

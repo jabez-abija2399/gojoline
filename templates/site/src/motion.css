@@ -587,6 +587,13 @@
   [data-style="swiss"] main > section:first-child::after {
     animation: site-band-stripe 1.8s linear 3;
   }
+  /* Kinetic headlines: words slide in from alternate sides (movement only, never hidden). */
+  [data-style="kinetic"] .headline.split .w:nth-of-type(odd) {
+    animation-name: site-from-left;
+  }
+  [data-style="kinetic"] .headline.split .w:nth-of-type(even) {
+    animation-name: site-from-right;
+  }
   /* The business name on a poster hero rises into place (movement only: it is never hidden). */
   .poster-name {
     animation: site-poster 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -1019,5 +1026,18 @@
 @keyframes site-poster {
   from {
     transform: translateY(0.25em);
+  }
+}
+
+@keyframes site-from-left {
+  from {
+    opacity: 0.15;
+    transform: translateX(-0.6em);
+  }
+}
+@keyframes site-from-right {
+  from {
+    opacity: 0.15;
+    transform: translateX(0.6em);
   }
 }

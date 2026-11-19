@@ -5,23 +5,23 @@ const fonts: Record<Theme["font"], { heading: string; body: string; amHeading?: 
   // Headings use one small bundled font (public/fonts); body text stays on system fonts, so
   // there is little to download on slow networks. Ge'ez uses the bundled Noto subset.
   modern: {
-    heading: '"Outfit", system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
+    heading: '"Outfit", "Outfit Fallback", system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
   classic: {
-    heading: '"Fraunces", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
+    heading: '"Fraunces", "Fraunces Fallback", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
   friendly: {
-    heading: '"Nunito", ui-rounded, "SF Pro Rounded", system-ui, "Noto Sans Ethiopic", sans-serif',
+    heading: '"Nunito", "Nunito Fallback", ui-rounded, "SF Pro Rounded", system-ui, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
   elegant: {
-    heading: '"Cormorant Garamond", "Iowan Old Style", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
+    heading: '"Cormorant Garamond", "Cormorant Garamond Fallback", "Iowan Old Style", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
   grotesk: {
-    heading: '"Bricolage Grotesque", system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
+    heading: '"Bricolage Grotesque", "Bricolage Grotesque Fallback", system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
   // Tall, narrow and heavy. Amharic headings get a narrow cut of Noto Sans Ethiopic (one small
@@ -34,7 +34,7 @@ const fonts: Record<Theme["font"], { heading: string; body: string; amHeading?: 
     amHeading: '"Noto Sans Ethiopic Narrow", "Noto Sans Ethiopic Narrow Fallback", "Noto Sans Ethiopic", system-ui, sans-serif',
   },
   editorial: {
-    heading: '"Newsreader", "Iowan Old Style", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
+    heading: '"Newsreader", "Newsreader Fallback", "Iowan Old Style", Georgia, "Times New Roman", "Noto Sans Ethiopic", serif',
     body: 'system-ui, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif',
   },
 };

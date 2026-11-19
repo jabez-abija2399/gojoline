@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { TEMPLATE_ROOT } from "./files";
 
 /** Ready-made starting sites, one per industry (templates/site/presets/<id>.json, EN + AM). */
-export const PRESET_IDS = ["cafe", "hotel", "clinic", "school", "shop", "worship", "mosque", "events", "ngo", "real-estate", "tours", "personal", "business", "salon", "fashion", "construction", "garage"] as const;
+export const PRESET_IDS = ["cafe", "hotel", "clinic", "school", "shop", "worship", "mosque", "events", "ngo", "real-estate", "tours", "personal", "business", "salon", "fashion", "construction", "garage", "bakery", "studio", "training", "pharmacy", "gym"] as const;
 export type PresetId = (typeof PRESET_IDS)[number];
 
 export function isPresetId(v: unknown): v is PresetId {

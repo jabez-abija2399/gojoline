@@ -9,7 +9,9 @@ import { useSite } from "../lib/context";
 import type { GallerySection, Image } from "../lib/types";
 
 export function Gallery({ section }: { section: GallerySection }) {
-  const { text, lang } = useSite();
+  const { text, lang, site } = useSite();
+  // A film is shown in the dark: on cinematic sites every gallery sits on the dark band.
+  const dark = site.theme.style === "cinematic";
   const [open, setOpen] = useState<number | null>(null);
   const [wallPaused, setWallPaused] = useState(false);
   const count = section.images.length;
@@ -24,9 +26,27 @@ export function Gallery({ section }: { section: GallerySection }) {
     );
   const photos = section.images.filter((im) => im.src).length;
   const viewer = photos > 0 && <Lightbox images={section.images.filter((im) => im.src)} index={open} onChange={setOpen} onClose={() => setOpen(null)} />;
+  if (section.layout === "prints") {
+    // White-framed prints laid slightly askew; each straightens when pointed at (motion.css).
+    return (
+      <section id={section.id ?? "gallery"} className={`section overflow-hidden ${dark ? "bg-accent text-on-accent on-dark" : ""}`}>
+        <div className="container-site flex flex-col gap-8 md:gap-10">
+          <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
+          <ul className="prints">
+            {section.images.map((image, i) => (
+              <li key={i} className="print reveal" style={{ "--i": i % 3, "--tilt": `${[-3, 2, -1.5, 2.5, -2][i % 5]}deg` } as React.CSSProperties}>
+                {photo(image, i, <Picture image={image} sizes="(min-width: 768px) 30vw, 160px" className="aspect-[4/5] w-full" />)}
+              </li>
+            ))}
+          </ul>
+        </div>
+        {viewer}
+      </section>
+    );
+  }
   if (section.layout === "scroll") {
     return (
-      <section id={section.id ?? "gallery"} className="section overflow-hidden">
+      <section id={section.id ?? "gallery"} className={`section overflow-hidden ${dark ? "bg-accent text-on-accent on-dark" : ""}`}>
         <div className="container-site flex flex-col gap-8 md:gap-10">
           <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
           {/* A row to swipe: tall and wide photos alternate, like a contact sheet. */}
@@ -62,7 +82,7 @@ export function Gallery({ section }: { section: GallerySection }) {
       </div>
     );
     return (
-      <section id={section.id ?? "gallery"} data-paused={wallPaused || undefined} className="section overflow-hidden">
+      <section id={section.id ?? "gallery"} data-paused={wallPaused || undefined} className={`section overflow-hidden ${dark ? "bg-accent text-on-accent on-dark" : ""}`}>
         <div className="container-site flex flex-col gap-8 md:gap-10">
           <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro}>
             <PauseButton photos paused={wallPaused} onToggle={() => setWallPaused((p) => !p)} className="pause-btn-inline" />
@@ -81,7 +101,7 @@ export function Gallery({ section }: { section: GallerySection }) {
   const cols = big || count >= 4 ? "md:grid-cols-4" : count === 3 ? "md:grid-cols-3" : count === 2 ? "md:grid-cols-2" : "md:grid-cols-1";
   const wideFirst = !big && count % 2 === 1;
   return (
-    <section id={section.id ?? "gallery"} className="section">
+    <section id={section.id ?? "gallery"} className={`section ${dark ? "bg-accent text-on-accent on-dark" : ""}`}>
       <div className="container-site flex flex-col gap-8 md:gap-10">
         <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
         {/* Editorial grid: with 5+ photos the first is large and the rest fill around it. */}

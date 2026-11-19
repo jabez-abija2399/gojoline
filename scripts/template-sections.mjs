@@ -28,7 +28,8 @@ if (!work) {
   execFileSync("npm", ["ci", "--no-audit", "--no-fund"], { cwd: work, stdio: "inherit" });
 }
 // The library is needed by the build; the build keeps only the photos the site uses.
-if (!existsSync(join(work, "public", "stock"))) cpSync(join(root, "templates", "site", "public", "stock"), join(work, "public", "stock"), { recursive: true });
+// Always synced: a reused work folder would otherwise miss photos added since.
+cpSync(join(root, "templates", "site", "public", "stock"), join(work, "public", "stock"), { recursive: true, force: true });
 for (const dir of ["src", "scripts"]) cpSync(join(root, "templates", "site", dir), join(work, dir), { recursive: true });
 cpSync(join(root, "templates", "site", "stock.json"), join(work, "stock.json"));
 

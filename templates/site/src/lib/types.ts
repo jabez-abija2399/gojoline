@@ -205,7 +205,8 @@ export interface GallerySection {
   heading: Text;
   intro?: Text;
   /** mosaic: a grid, the first photo large. scroll: one row to swipe through. wall: columns of photos drifting slowly up and down (weddings, events; 6 or more photos). */
-  layout?: "mosaic" | "scroll" | "wall";
+  /** prints: photos as white-framed prints laid slightly askew, like a pile on a table (weddings, studios, bakeries). */
+  layout?: "mosaic" | "scroll" | "wall" | "prints";
   images: Image[];
 }
 
@@ -241,8 +242,10 @@ export interface CardsSection {
    * people: portraits with a name and role (doctors, team, stylists).
    * stack: large cards that pile up on each other as the visitor scrolls (rooms, projects, programmes).
    * index: a list of big titles in rows; on a computer the picture follows the mouse (portfolios, projects, collections).
+   * pricing: 2 to 4 plans or packages side by side (memberships, wedding packages, course fees): a card with a `badge`
+   * ("Most chosen") stands out; `meta` lists what is included; each has its own `action`.
    */
-  layout?: "grid" | "feature" | "scroll" | "people" | "stack" | "index";
+  layout?: "grid" | "feature" | "scroll" | "people" | "stack" | "index" | "pricing";
   /** arch: pictures rounded at the top like a doorway (feature, scroll and people layouts). */
   imageShape?: "arch";
   /** With 4 or more cards carrying 2 or more different badges, pills above let visitors show one kind ("For sale", "For rent"). Default true. */
@@ -282,12 +285,12 @@ export interface ScheduleSection {
   eyebrow?: Text;
   heading: Text;
   intro?: Text;
-  /** list: rows. tiles: a tile per time (prayer times, a few sessions). */
-  layout?: "list" | "tiles";
+  /** list: rows. tiles: a tile per time (prayer times, a few sessions). week: a timetable with a column per `day` (classes, gyms, courses), swiped on phones. */
+  layout?: "list" | "tiles" | "week";
   /** Show today's date above the times in these calendars (for prayer and service times). */
   dates?: ("gregorian" | "ethiopian" | "hijri")[];
   /** `at`: the time as "HH:MM" (24 hours, Addis Ababa time). With it, the next one is highlighted with a countdown. */
-  items: { time: Text; title: Text; note?: Text; at?: string }[];
+  items: { time: Text; title: Text; note?: Text; at?: string; /** week layout: the day this item is on ("Monday"); items of one day stay together in order. */ day?: Text }[];
   footnote?: Text;
 }
 
@@ -477,8 +480,13 @@ export interface Theme {
    * border under the hero (fashion, tailors). swiss: a strict grid, numbered sections, square
    * corners, tabular figures and a hazard stripe (building materials, contractors, industry).
    * bento: everything in rounded tiles, tight gaps, bold numbers (garages, rentals, services).
+   * organic: soft and playful: round shapes, scalloped edges, pill labels (bakeries, cafés, children).
+   * cinematic: told like a film: big light serif titles numbered as chapters, galleries on dark bands (weddings, photographers).
+   * brutal: thick ink borders and hard offset shadows, bold labels on the highlight (training centres, tutors, youth).
+   * calm: quiet and spacious: hairlines, generous space, no decoration (pharmacies, counselling, clinics).
+   * kinetic: condensed capitals, huge stacked headlines with an outlined word, dark bands (gyms, sports, events).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic";
 }
 
 export interface Business {
