@@ -86,4 +86,4 @@ echo "Building and starting (the first build takes 5 to 10 minutes)..."
 # Timers only after the first deploy, so two builds never overlap.
 systemctl enable --now gojoline-update.timer gojoline-daily.timer gojoline-refresh.timer
 echo
-echo "Done. Check: curl -s https://\$(grep ^APP_DOMAIN= .env | cut -d= -f2)/api/health"
+echo "Done. Once DNS points here, check: curl -s https://$(grep ^APP_DOMAIN= .env | cut -d= -f2-)/api/health"
