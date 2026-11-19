@@ -13,6 +13,10 @@ import { canonicalReference, type BillingStore, type LedgerMeta, type LedgerReas
  * can't become unlimited free AI.
  */
 export const REFUND_CREDITS_PER_DAY = 12;
+/** Answers that changed nothing (a clarifying question) given back a day: their own cap, apart from failures. */
+export const ANSWER_REFUNDS_PER_DAY = 3;
+/** Ledger refs of answer refunds start with this (the request's own ref follows). */
+export const ANSWER_REFUND_PREFIX = "answer:";
 /** Credit settings are read on every AI request: kept this long per server instance. */
 const CREDIT_SETTINGS_TTL_MS = 10_000;
 /**
@@ -183,6 +187,21 @@ export class Billing {
   async giveBack(userId: string, ref: string, n = 1, meta: LedgerMeta = {}): Promise<number> {
     const day = this.now().toISOString().slice(0, 10);
     return this.db.refund(userId, ref, n, REFUND_CREDITS_PER_DAY, day, meta);
+  }
+
+  /**
+   * Gives back `n` changes for a request whose AI only answered (no file written, no build), at
+   * most ANSWER_REFUNDS_PER_DAY answers a UTC day, counted apart from failure refunds. Returns
+   * how many were given (0 past the cap or when this request was already given back). Callers
+   * hold a per-owner lock around it (the builder's `answer-refund:<owner>`), so parallel answers
+   * can't pass the cap between the count and the write.
+   */
+  async giveBackAnswer(userId: string, ref: string, n: number, meta: LedgerMeta = {}): Promise<number> {
+    if (!Number.isInteger(n) || n < 1) return 0;
+    const now = this.now();
+    const dayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    if ((await this.db.countSince(userId, "refund", dayStart, ANSWER_REFUND_PREFIX)) >= ANSWER_REFUNDS_PER_DAY) return 0;
+    return (await this.db.addCredits(userId, n, "refund", `${ANSWER_REFUND_PREFIX}${ref}`, meta)) ? n : 0;
   }
 
   /** Plan, changes left, and what the Plan page explains about them. */

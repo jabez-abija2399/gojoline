@@ -168,7 +168,9 @@ describe("changes by request size", () => {
 
 describe("answers that change nothing", () => {
   const starter = readFileSync("templates/site/src/site.json", "utf8");
-  async function setup() {
+  const tiny = { inputTokens: 100, outputTokens: 20, cacheReadTokens: 0, cacheWriteTokens: 0 };
+  const turn = (content: ReturnType<typeof textBlock>[], usage = tiny) => ({ content, usage });
+  async function setup(withSizes = false) {
     const billing = new Billing(new MemoryBillingStore());
     const deps: BuilderDeps = {
       store: new MemoryProjectStore(),
@@ -180,14 +182,17 @@ describe("answers that change nothing", () => {
       credits: {
         consume: (u, r, n, meta) => billing.consumeEdit(u, r, n, meta),
         refund: (u, r, n, meta) => billing.giveBack(u, r, n, meta),
+        refundAnswer: (u, r, n, meta) => billing.giveBackAnswer(u, r, n, meta),
         left: (u) => billing.creditsLeft(u),
         freeFirstBuild: (u, r) => billing.freeFirstBuild(u, r),
+        ...(withSizes ? { pricing: async () => ({ sizeCredits: { small: 1, medium: 2, large: 4 }, capCentsPerCredit: 15, firstBuildCapCents: 75 }) } : {}),
       },
+      ...(withSizes ? { sizer: new HeuristicSizer() } : {}),
     };
     const p = (await deps.store.createProject("u", { name: "", locale: "en" })).id;
-    const send = async (text: string) => {
+    const send = async (text: string, confirm?: { size: "medium" | "large"; cost: number }) => {
       const events: BuilderEvent[] = [];
-      await sendOwnerMessage(deps, { ownerId: "u", projectId: p, text, onEvent: (e) => events.push(e) });
+      await sendOwnerMessage(deps, { ownerId: "u", projectId: p, text, confirmSize: confirm?.size, confirmCost: confirm?.cost, onEvent: (e) => events.push(e) });
       return { last: events.at(-1)!, events };
     };
     expect((await send("Selam Cafe")).last.type).toBe("done");
@@ -203,35 +208,45 @@ describe("answers that change nothing", () => {
     expect((await send("Abol Cafe")).last).toMatchObject({ type: "done", charged: 1, credits: 9 });
   });
 
-  it("charges an answer that ran a build, and keeps the daily refund cap", async () => {
-    const { billing, deps, send } = await setup();
-    const demo = deps.llm;
-    let first = true;
-    deps.llm = {
-      complete: async (req) => {
-        // Builds without writing, then answers: the sandbox was used, so it is charged.
-        if (first) {
-          first = false;
-          const usage = { inputTokens: 100, outputTokens: 20, cacheReadTokens: 0, cacheWriteTokens: 0 };
-          return { content: [toolUseBlock("run_build", {})], stopReason: "tool_use", model: req.model, usage, costNanoUsd: costNanoUsd(req.model, usage), durationMs: 1, firstTokenMs: 1 };
-        }
-        return demo.complete(req);
-      },
-    };
-    expect((await send("check it")).last).toMatchObject({ type: "done", charged: 1, credits: 9, message: { status: "answered" } });
-    deps.llm = demo;
-    // Past the day's refund cap, questions are charged again.
+  it("gives back at most 3 answers a day, apart from failure refunds", async () => {
+    const { billing, send } = await setup();
+    for (let i = 0; i < 3; i++) expect((await send(`question ${i}`)).last).toMatchObject({ charged: 0, credits: 10 });
+    expect((await send("question 4")).last).toMatchObject({ charged: 1, credits: 9 });
+    // Failures still come back: their cap is separate.
+    const failed = (await send("break it")).last;
+    expect(failed).toMatchObject({ charged: 0, credits: 9 });
+    // Many failure refunds don't use up the answers' cap either.
     for (let i = 0; i < 12; i++) await billing.giveBack("u", `earlier-${i}`, 1);
-    const before = await billing.creditsLeft("u");
-    expect((await send("one more question")).last).toMatchObject({ type: "done", charged: 1, credits: before - 1 });
+    expect(await billing.giveBackAnswer("u", "next", 1)).toBe(0);
+  });
+
+  it("charges answers that built, took more turns or cost more than a small change", async () => {
+    const { deps, send } = await setup();
+    const demo = deps.llm;
+    // Built without writing.
+    deps.llm = new ScriptedLLMProvider([turn([toolUseBlock("run_build", {})]), turn([textBlock("It builds fine.")])]);
+    expect((await send("check it")).last).toMatchObject({ charged: 1, message: { status: "answered" } });
+    // Three turns of reading before answering.
+    deps.llm = new ScriptedLLMProvider([turn([toolUseBlock("read_file", { path: "src/site.json" })]), turn([toolUseBlock("read_file", { path: "src/site.json" })]), turn([textBlock("Here is a long essay.")])]);
+    expect((await send("tell me everything")).last).toMatchObject({ charged: 1 });
+    // One answer that cost more than a small change pays for.
+    deps.llm = new ScriptedLLMProvider([turn([textBlock("A very long answer.")], { inputTokens: 1000, outputTokens: 8000, cacheReadTokens: 0, cacheWriteTokens: 0 })]);
+    expect((await send("write me a poem")).last).toMatchObject({ charged: 1 });
+    deps.llm = demo;
+  });
+
+  it("never gives back more than a small request costs", async () => {
+    const { send } = await setup(true);
+    const asked = await send("a question about a new page for our menu");
+    expect(asked.last).toMatchObject({ type: "needs_confirm", cost: 2 });
+    expect((await send("a question about a new page for our menu", { size: "medium", cost: 2 })).last).toMatchObject({ type: "done", charged: 1, credits: 9 });
   });
 
   it("never sends the model's working notes to the owner's screen", async () => {
     const { deps, send } = await setup();
-    const usage = { inputTokens: 100, outputTokens: 20, cacheReadTokens: 0, cacheWriteTokens: 0 };
     deps.llm = new ScriptedLLMProvider([
-      { content: [textBlock("Primary #B85C7A (contrast vs #FCF7F6 is 4.9:1)."), toolUseBlock("read_file", { path: "src/site.json" })], usage },
-      { content: [textBlock("Which colour do you like?")], usage },
+      turn([textBlock("Primary #B85C7A (contrast vs #FCF7F6 is 4.9:1)."), toolUseBlock("read_file", { path: "src/site.json" })]),
+      turn([textBlock("Which colour do you like?")]),
     ]);
     const { events, last } = await send("make it pink");
     expect(JSON.stringify(events.slice(0, -1))).not.toMatch(/B85C7A|FCF7F6|contrast/i);

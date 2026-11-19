@@ -29,6 +29,7 @@ function usageNote(t: Messages["builder"], charged: number, left: number, firstB
   return format(charged === 1 ? t.usedOne : t.usedMany, { n: charged, left });
 }
 import type { UiVersion } from "./versions-panel";
+import { replyText } from "./reply-text";
 
 // Opened now and then, not on every visit: their code loads the first time they are shown.
 const VersionsPanel = dynamic(() => import("./versions-panel").then((m) => m.VersionsPanel));
@@ -254,7 +255,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 failed = m.status === "failed";
                 const usage = typeof event.charged === "number" && typeof event.credits === "number" ? usageNote(t, event.charged, event.credits, versionsRef.current === 0 && m.status === "changed") : undefined;
                 if (m.status === "failed") addAssistant(event.tooBig ? t.tooBigFailed : t.reverted, { tone: "error", usage });
-                else addAssistant(event.tooBig ? [m.text, t.tooBigPartial].filter(Boolean).join("\n\n") : m.text, { versionNumber: m.versionNumber, usage });
+                else addAssistant(event.tooBig ? [m.text, t.tooBigPartial].filter(Boolean).join("\n\n") : replyText(t, m.status, m.text), { versionNumber: m.versionNumber, usage });
                 if (typeof event.siteName === "string" && event.siteName) setName(event.siteName);
                 if (typeof event.credits === "number") maybeUpgrade("after_run", before, event.credits);
                 if (m.versionNumber) {

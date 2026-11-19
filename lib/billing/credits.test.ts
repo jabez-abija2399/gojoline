@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { makeUser, testDb } from "@/test/db";
 import { costCapNano, creditSettingsSchema, DEFAULT_FIRST_BUILD_CAP_CENTS, firstBuildCapNano, MAX_FIRST_BUILD_CAP_CENTS, defaultCreditSettings, mergeCreditSettings, nextMonthlyGrant, planFeaturesWith, usdToCents } from "./credits";
 import { planComparison, planHighlights } from "./compare";
-import { Billing, REFUND_CREDITS_PER_DAY } from "./service";
+import { ANSWER_REFUND_PREFIX, ANSWER_REFUNDS_PER_DAY, Billing, REFUND_CREDITS_PER_DAY } from "./service";
 import { loadCreditSettings, MemorySettingsStore } from "./settings";
 import { DbBillingStore, MemoryBillingStore, type BillingStore } from "./store";
 
@@ -163,6 +163,29 @@ describe("multi-change debits", () => {
     await tomorrow.consumeEdit("u", "y", 4);
     expect(await tomorrow.refundEdit("u", "y", 4)).toBe(true);
   }, 30_000);
+
+  it("Postgres: answer refunds count only answer refs, once per request", async () => {
+    const db = await testDb();
+    await makeUser(db, "u");
+    const store = new DbBillingStore(db);
+    const b = new Billing(store);
+    await store.addCredits("u", 10, "admin", "gift");
+    await b.giveBack("u", "fail-1", 1);
+    expect(await b.giveBackAnswer("u", "a1", 1)).toBe(1);
+    expect(await b.giveBackAnswer("u", "a1", 1)).toBe(0);
+    expect(await store.countSince("u", "refund", new Date(0), ANSWER_REFUND_PREFIX)).toBe(1);
+    expect(await store.countSince("u", "refund", new Date(0))).toBe(2);
+  }, 30_000);
+
+  it("gives back at most ANSWER_REFUNDS_PER_DAY answers a day, apart from failure refunds", async () => {
+    const store = new MemoryBillingStore();
+    const b = new Billing(store);
+    for (let i = 0; i < REFUND_CREDITS_PER_DAY; i++) await b.giveBack("u", `fail-${i}`, 1);
+    const given = [];
+    for (let i = 0; i <= ANSWER_REFUNDS_PER_DAY; i++) given.push(await b.giveBackAnswer("u", `a${i}`, 1));
+    expect(given).toEqual([...Array(ANSWER_REFUNDS_PER_DAY).fill(1), 0]);
+    expect(await b.giveBackAnswer("u", "a0", 1)).toBe(0);
+  });
 
   it("refunds at most REFUND_CREDITS_PER_DAY changes a day", async () => {
     const store = new MemoryBillingStore();

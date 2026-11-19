@@ -494,6 +494,8 @@ export const en = {
     stepEditing: "Updating your site",
     stepChecking: "Checking everything works",
     stepFixing: "Fixing a small problem",
+    replyChanged: "Done. Your site is updated: have a look at the preview.",
+    replyMissing: "I couldn't finish my answer this time. Please ask again.",
     reverted: "I couldn't finish this change, so I kept your site as it was. Please try again or say it another way.",
     confirmMedium: "This is a medium change (a new section or page) and uses {n} of your changes. Go ahead?",
     confirmLarge: "This is a large change (several pages or a new design) and uses {n} of your changes. Go ahead?",
