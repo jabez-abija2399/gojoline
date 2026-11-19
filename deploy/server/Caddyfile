@@ -8,6 +8,9 @@
 }
 
 {$APP_DOMAIN} {
+	# Site workspaces (gojoline-previews) never reach the app through us.
+	@fromWorkspace remote_ip 172.30.240.0/24
+	respond @fromWorkspace 403
 	encode zstd gzip
 	reverse_proxy app:3000 {
 		# The app rate-limits by X-Real-IP: always our view of the visitor, never a header they sent.
@@ -22,8 +25,21 @@
 	tls {
 		on_demand
 	}
+	@fromWorkspace remote_ip 172.30.240.0/24
+	respond @fromWorkspace 403
+	header {
+		# Only the builder may frame a preview; no sniffing; the address never leaks onward.
+		Content-Security-Policy "frame-ancestors https://{$APP_DOMAIN}"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		X-Robots-Tag "noindex, nofollow"
+	}
 	@workspace header_regexp ws Host ^(gojo-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.preview\.
 	handle @workspace {
+		# Only with the owner's preview pass (the runner checks it; a bare address shows nothing).
+		forward_auth runner:7070 {
+			uri /gate
+		}
 		reverse_proxy {re.ws.1}:5173
 	}
 	handle {

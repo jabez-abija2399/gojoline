@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { containerName, execArgs, previewHostName, runArgs, safeSitePath, tarFiles, toStop } from "./lib.ts";
+import { containerName, execArgs, previewHostName, runArgs, safeSitePath, signPreview, tarFiles, toStop, verifyPreview } from "./lib.ts";
 
 const ID = "0f8fad5b-d9cb-469f-a165-70867728950e";
 
@@ -59,5 +59,23 @@ describe("sandbox runner helpers", () => {
   it("lets Caddy certify only workspace preview hosts", () => {
     expect(previewHostName(`gojo-${ID}.preview.afridea.et`, "afridea.et")).toBe(`gojo-${ID}`);
     for (const bad of ["gojoline.afridea.et", `app.preview.afridea.et`, `gojo-${ID}.preview.evil.et`, `x.gojo-${ID}.preview.afridea.et`]) expect(previewHostName(bad, "afridea.et")).toBeNull();
+  });
+
+  it("never stops a workspace in the middle of a command, even past the limit", () => {
+    const now = 1_000_000;
+    const used = new Map([["a", now - 5000], ["b", now - 4000], ["c", now]]);
+    expect(toStop(used, now, 15 * 60_000, 1, "c", new Set(["a", "b"]))).toEqual([]);
+    expect(toStop(new Map([["a", now - 20 * 60_000]]), now, 15 * 60_000, 2, undefined, new Set(["a"]))).toEqual([]);
+  });
+
+  it("signs preview passes for one workspace, until they expire", () => {
+    const s = "x".repeat(32);
+    const t = signPreview(s, "gojo-a", 2000);
+    expect(verifyPreview(s, "gojo-a", t, 1000)).toBe(true);
+    expect(verifyPreview(s, "gojo-b", t, 1000)).toBe(false);
+    expect(verifyPreview(s, "gojo-a", t, 2001)).toBe(false);
+    expect(verifyPreview("y".repeat(32), "gojo-a", t, 1000)).toBe(false);
+    expect(verifyPreview(s, "gojo-a", `9999999999.${t.split(".")[1]}`, 1000)).toBe(false);
+    for (const bad of [null, "", "abc", "1.", ".x", "x".repeat(300)]) expect(verifyPreview(s, "gojo-a", bad, 1000)).toBe(false);
   });
 });

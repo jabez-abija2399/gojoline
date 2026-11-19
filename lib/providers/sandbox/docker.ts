@@ -1,9 +1,12 @@
 import "server-only";
 import type { BuildResult } from "@/lib/agent/workspace";
 import { isVersionedPath, lockedTemplateFiles, stockFilesFor, type TemplateFile } from "@/lib/template/files";
+import { PREVIEW_PARAM, signPreview } from "@/deploy/server/runner/lib";
 import type { SandboxProvider, SiteSandbox } from "./types";
 
 const PORT = 5173;
+/** How long a preview pass works (the builder asks for a fresh one each time it opens). */
+const PASS_SECONDS = 12 * 3600;
 
 export interface RunnerConfig {
   /** The runner on the private compose network, e.g. http://runner:7070. */
@@ -41,14 +44,15 @@ export class RunnerClient {
  */
 export class DockerSandboxProvider implements SandboxProvider {
   private client: RunnerClient;
-  constructor(config: RunnerConfig) {
+  constructor(private config: RunnerConfig) {
     this.client = new RunnerClient(config);
   }
 
   async open(projectId: string, files: Record<string, string> | null): Promise<SiteSandbox> {
     const opened = await this.client.call<{ name: string; fresh: boolean; previewHost: string | null }>("/open", { project: projectId });
     if (!opened.previewHost || !/^gojo-[0-9a-f-]{36}\.preview\.[a-z0-9.-]+$/.test(opened.previewHost)) throw new Error("Unexpected preview host");
-    const site = new DockerSiteSandbox(this.client, projectId, opened.name, opened.previewHost);
+    const pass = signPreview(this.config.secret, opened.name, Math.floor(Date.now() / 1000) + PASS_SECONDS);
+    const site = new DockerSiteSandbox(this.client, projectId, opened.name, opened.previewHost, pass);
     // The image already holds this deployment's template: only the saved version is written in.
     if (files) await site.restoreFiles(files);
     await site.ensureDevServer();
@@ -65,10 +69,12 @@ export class DockerSiteSandbox implements SiteSandbox {
     private project: string,
     readonly id: string,
     private host: string,
+    private pass: string,
   ) {}
 
+  /** The owner's preview: Caddy lets it through only with this pass (the runner's /gate). */
   get previewUrl() {
-    return `https://${this.host}`;
+    return `https://${this.host}/?${PREVIEW_PARAM}=${encodeURIComponent(this.pass)}`;
   }
 
   private exec(cmd: string[], opts: { cwd?: string; env?: Record<string, string>; timeoutS?: number } = {}) {

@@ -43,6 +43,9 @@ services:
       - "7070"
     mem_limit: 128m
     security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    read_only: true
+    tmpfs: [/tmp, /root]
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "5" }
@@ -75,6 +78,10 @@ networks:
   previews:
     name: gojoline-previews
     internal: true
+    # A fixed range, so Caddy can refuse app requests coming from a workspace.
+    ipam:
+      config:
+        - subnet: 172.30.240.0/24
 
 volumes:
   caddy_data:

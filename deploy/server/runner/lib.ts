@@ -1,3 +1,5 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
+
 /**
  * Pure helpers for the sandbox runner (deploy/server/runner/server.ts): names, paths, the exact
  * `docker` arguments it may use, and a small tar writer. Kept free of I/O so they are unit-tested.
@@ -47,6 +49,10 @@ export function runArgs(name: string, image: string, network: string, limits: Li
     "--cap-drop", "ALL",
     "--security-opt", "no-new-privileges",
     "--tmpfs", "/tmp:rw,size=256m",
+    "--init",
+    "--ulimit", "nofile=1024:1024",
+    "--log-opt", "max-size=5m",
+    "--log-opt", "max-file=1",
     image,
   ];
 }
@@ -109,13 +115,14 @@ export function tarFiles(files: { path: string; data: Buffer }[]): Buffer {
 }
 
 /** Which running workspaces to stop: idle too long, then the least recently used beyond `max`. */
-export function toStop(lastUsed: Map<string, number>, now: number, idleMs: number, max: number, keep?: string): string[] {
+export function toStop(lastUsed: Map<string, number>, now: number, idleMs: number, max: number, keep?: string, busy: ReadonlySet<string> = new Set()): string[] {
   const stop = new Set<string>();
-  for (const [name, at] of lastUsed) if (name !== keep && now - at > idleMs) stop.add(name);
+  for (const [name, at] of lastUsed) if (name !== keep && !busy.has(name) && now - at > idleMs) stop.add(name);
   const alive = [...lastUsed].filter(([n]) => !stop.has(n)).sort((a, b) => b[1] - a[1]);
   // The one being opened always stays; the oldest others go until at most `max` are running.
+  // A workspace in the middle of a command (a build, a publish) is never stopped: the limit waits.
   const ordered = keep ? [...alive.filter(([n]) => n === keep), ...alive.filter(([n]) => n !== keep)] : alive;
-  for (const [name] of ordered.slice(max)) stop.add(name);
+  for (const [name] of ordered.slice(max)) if (!busy.has(name) && name !== keep) stop.add(name);
   return [...stop];
 }
 
@@ -126,3 +133,25 @@ export function previewHostName(host: string, base: string): string | null {
   const label = host.slice(0, -suffix.length);
   return /^gojo-[0-9a-f-]{36}$/.test(label) && containerName(label.slice(5)) === label ? label : null;
 }
+
+/**
+ * A preview pass: only the owner's builder gets it (in the preview URL), and Caddy lets a preview
+ * through only with a valid one (`/gate`). `exp` is in seconds; the pass names one workspace.
+ */
+export function signPreview(secret: string, name: string, exp: number): string {
+  const mac = createHmac("sha256", secret).update(`preview|${name}|${exp}`).digest("base64url");
+  return `${exp}.${mac}`;
+}
+
+export function verifyPreview(secret: string, name: string, token: string | null | undefined, nowS: number): boolean {
+  if (!token || token.length > 200) return false;
+  const [expRaw, mac] = token.split(".");
+  const exp = Number(expRaw);
+  if (!Number.isInteger(exp) || exp < nowS || !mac) return false;
+  const want = Buffer.from(signPreview(secret, name, exp).split(".")[1]!);
+  const got = Buffer.from(mac);
+  return want.length === got.length && timingSafeEqual(want, got);
+}
+
+export const PREVIEW_PARAM = "gojo_preview";
+export const PREVIEW_COOKIE = "gojo_preview";

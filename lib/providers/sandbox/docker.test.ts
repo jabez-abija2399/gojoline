@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { verifyPreview } from "@/deploy/server/runner/lib";
 import { DockerSandboxProvider } from "./docker";
 
 const ID = "0f8fad5b-d9cb-469f-a165-70867728950e";
@@ -49,7 +50,10 @@ describe("DockerSandboxProvider (through the runner)", () => {
     const r = fakeRunner();
     r.files.set("src/old.json", Buffer.from("{}"));
     const site = await new DockerSandboxProvider(config(r.fetchFn)).open(ID, { "src/site.json": '{"name":"Selam"}' });
-    expect(site.previewUrl).toBe(`https://gojo-${ID}.preview.afridea.et`);
+    expect(site.previewUrl).toMatch(new RegExp(`^https://gojo-${ID}\\.preview\\.afridea\\.et/\\?gojo_preview=\\d+\\.[\\w-]+$`));
+    const pass = decodeURIComponent(site.previewUrl.split("=")[1]!);
+    expect(verifyPreview("s3cret-s3cret-s3cret-s3cret", `gojo-${ID}`, pass, Math.floor(Date.now() / 1000))).toBe(true);
+    expect(verifyPreview("s3cret-s3cret-s3cret-s3cret", "gojo-00000000-0000-0000-0000-000000000000", pass, Math.floor(Date.now() / 1000))).toBe(false);
     expect(await site.readFile("src/site.json")).toBe('{"name":"Selam"}');
     expect(r.calls[0]).toEqual({ path: "/open", body: { project: ID } });
     expect(r.calls.filter((c) => c.path === "/exec" && (c.body.cmd as string[])[0] === "node").length).toBe(2);
