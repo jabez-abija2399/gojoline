@@ -811,7 +811,7 @@ export const en = {
       duplicate: "This transaction number was already sent.",
       receipt: "That photo can't be used. Please send a photo (JPEG, PNG or WebP) under 4 MB.",
       receipt_missing: "Please add a photo of your receipt or SMS.",
-      failed: "We couldn't send your payment for checking. Nothing was charged here; check your connection and send it again.",
+      failed: "Your payment details weren't sent. Check your connection and send them again.",
       too_many: "Too many tries. Please wait a little.",
     },
     noCredits: "You've used all your changes for this month.",

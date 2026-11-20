@@ -465,7 +465,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         {({ status, button }) => <TopBar locale={locale} projectId={projectId} text={chrome} siteName={name} status={status} publish={button} />}
       </PublishBar>
       <main id="main" className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <h1 className="sr-only">{name}</h1>
+        <h1 className="sr-only">{name || t.untitled}</h1>
         <TabList
           tabs={["chat", ...SIDE_TABS] as const}
           labels={tabLabels}

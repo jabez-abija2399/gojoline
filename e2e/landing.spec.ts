@@ -16,7 +16,9 @@ test.describe("landing page", () => {
   test("redirects / to a language and remembers the choice", async ({ page }) => {
     await page.goto("/");
     await expect(page).toHaveURL(/\/en$/);
-    await page.getByRole("banner").getByRole("link", { name: "አማርኛ" }).click();
+    // Phones keep the language link in the menu, so the logo keeps its size.
+    if (test.info().project.name === "mobile") await page.locator("summary", { hasText: "Menu" }).click();
+    await page.getByRole("banner").getByRole("link", { name: "አማርኛ" }).filter({ visible: true }).click();
     await expect(page).toHaveURL(/\/am$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "am");
     await page.goto("/");

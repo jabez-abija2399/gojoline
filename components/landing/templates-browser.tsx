@@ -62,6 +62,7 @@ export function TemplatesBrowser({ items, labels, about, locale, categories, sty
   const [pickedStyles, setStyles] = useState<TemplateStyle[]>([]);
   const [pickedFeatures, setFeatures] = useState<TemplateFeature[]>([]);
   const [open, setOpen] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
 
   // Everything matching the search and the other filters, in any category.
   const anyCategory = useMemo(() => {
@@ -107,7 +108,7 @@ export function TemplatesBrowser({ items, labels, about, locale, categories, sty
         ))}
       </fieldset>
       {/* Practical filters first; the dozen looks stay folded until wanted. */}
-      <details open={pickedStyles.length > 0 || undefined} className="group/style">
+      <details open={styleOpen} onToggle={(e) => setStyleOpen(e.currentTarget.open)} className="group/style">
         <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 font-semibold [&::-webkit-details-marker]:hidden">
           <span>
             {t.style}

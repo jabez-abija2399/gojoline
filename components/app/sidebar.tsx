@@ -145,14 +145,15 @@ export function Sidebar({ locale, text, who, credits, monthly, canUpgrade, recen
             </>
           )}
         </button>
-        <Link href={home} aria-label={text.home} className="inline-flex min-h-11 items-center">
+        <Link href={home} aria-label={text.home} className="inline-flex min-h-11 shrink-0 items-center">
           <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={text.logoAlt} width={125} height={32} className="logo-light h-8 w-auto" priority />
           <Image src={locale === "am" ? "/brand/logo-am-reversed.svg" : "/brand/logo-reversed.svg"} alt={text.logoAlt} width={125} height={32} className="logo-dark h-8 w-auto" priority />
         </Link>
         {credits !== null && (
-          <Link href={billing} className={`ms-auto inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold ${low ? "border-warning text-warning" : "border-line text-ink"} bg-white`}>
-            <Sparkles aria-hidden="true" className="size-4" />
-            <span aria-hidden="true">{text.creditsShort.replace("{n}", String(credits))}</span>
+          <Link href={billing} className={`ms-auto inline-flex min-h-11 min-w-0 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold ${low ? "border-warning text-warning" : "border-line text-ink"} bg-white`}>
+            <Sparkles aria-hidden="true" className="size-4 shrink-0" />
+            {/* The same words as the sidebar ("1 change left", "No changes left"). */}
+            <span aria-hidden="true" className="truncate">{text.creditsLeft}</span>
             <span className="sr-only">{text.creditsChipLabel.replace("{n}", String(credits))}</span>
           </Link>
         )}

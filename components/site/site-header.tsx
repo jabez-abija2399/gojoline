@@ -13,7 +13,7 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
   const other: Locale = locale === "en" ? "am" : "en";
   const theme = await readTheme();
   const logo = (
-    <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 items-center rounded-md">
+    <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 shrink-0 items-center rounded-md">
       {/* The brand logo: dark letters on light pages, its reversed version in dark mode. */}
       <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority={theme !== "dark"} className={`logo-light ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
       <Image src={locale === "am" ? "/brand/logo-am-reversed.svg" : "/brand/logo-reversed.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority={theme === "dark"} className={`logo-dark ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
@@ -48,7 +48,7 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
                 {t.landing.nav.signIn}
               </Link>
             )}
-            <span className="[&>a]:rounded-full [&>a]:border-0 [&>a]:px-3 [&>a]:hover:bg-sunken">{language}</span>
+            <span className="max-sm:hidden [&>a]:rounded-full [&>a]:border-0 [&>a]:px-3 [&>a]:hover:bg-sunken">{language}</span>
             <span className="max-md:hidden">
               <ThemeToggle initial={theme} label={t.landing.nav.darkMode} />
             </span>
@@ -73,6 +73,10 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
                     {l.label}
                   </Link>
                 ))}
+                {/* Small phones: the language link lives here, so the logo keeps its size in the bar. */}
+                <span className="sm:hidden">
+                  <LanguageSwitch target={other} label={t.common.languageSwitch} ariaLabel={t.common.languageSwitchLabel} className="flex min-h-11 items-center rounded-full px-4 font-medium text-ink hover:bg-sunken" />
+                </span>
                 <ThemeToggle initial={theme} label={t.landing.nav.darkMode} row />
               </nav>
             </PhoneMenu>
