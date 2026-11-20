@@ -322,7 +322,7 @@ describe("publishSite", () => {
     // Renamed works that keep a library photo and its sample price.
     expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Work ${n}` } })))))).toBe(true);
     // The sample artist and title kept, with the photo removed.
-    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map(({ image: _image, ...rest }) => rest))))).toBe(true);
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i) => Object.fromEntries(Object.entries(i).filter(([k]) => k !== "image"))))))).toBe(true);
     // The library's artwork photos never publish, whatever the price, title or artist.
     expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i) => ({ image: i.image, title: { en: "My painting" }, subtitle: { en: "Me" }, price: { amountMinor: 18000100, currency: "ETB" } })))))).toBe(true);
     expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i) => ({ image: i.image, title: { en: "My painting" }, subtitle: { en: "Me" } })))))).toBe(true);

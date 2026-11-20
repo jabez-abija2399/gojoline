@@ -174,7 +174,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           {actions()}
           {section.image && (
             <div className="zoom mt-8 w-full rounded-site shadow-2xl shadow-primary/10">
-              <Picture image={section.image} priority={first} wide sizes="(min-width: 1152px) 1104px, (min-width: 768px) 100vw, 225px" className="aspect-[4/3] w-full rounded-site sm:aspect-[16/9]" />
+              <Picture image={section.image} priority={first} wide sizes={site.theme.style === "museum" ? FULL : "(min-width: 1152px) 1104px, (min-width: 768px) 100vw, 225px"} className="aspect-[4/3] w-full rounded-site sm:aspect-[16/9]" />
             </div>
           )}
           {facts && <Facts facts={facts} className="mt-2 w-full justify-center border-t border-line pt-6" />}

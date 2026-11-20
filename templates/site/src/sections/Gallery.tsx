@@ -113,7 +113,7 @@ export function Gallery({ section }: { section: GallerySection }) {
               {photo(
                 image,
                 section.images.slice(0, i).filter((im) => im.src).length,
-                <Picture image={image} sizes={museum ? "(min-width: 768px) 58vw, 160px" : big && i === 0 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 25vw, 120px"} className={`size-full rounded-site ${wideFirst && i === 0 ? "aspect-[2/1] md:aspect-square" : "aspect-square"}`} />,
+                <Picture image={image} sizes={museum ? (i % 4 === 0 || i % 4 === 3 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 35vw, 160px") : big && i === 0 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 25vw, 120px"} className={`size-full rounded-site ${wideFirst && i === 0 ? "aspect-[2/1] md:aspect-square" : "aspect-square"}`} />,
               )}
             </li>
           ))}
