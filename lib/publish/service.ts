@@ -312,8 +312,8 @@ type Json = Record<string, unknown>;
 const isStock = (image: unknown) => typeof (image as Json | undefined)?.src === "string" && ((image as Json).src as string).startsWith("/stock/");
 const texts = (v: unknown): string[] => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v as Json).filter((x): x is string => typeof x === "string") : []);
 
-/** Starters whose cards show work for clients: their sample project names are invented businesses. */
-const CLIENT_WORK_PRESETS = new Set<string>(["agency", "architect"]);
+/** Starters whose cards are invented: a studio's sample clients and projects, a shop's sample products (shown in strangers' photos, at made-up prices). */
+const CLIENT_WORK_PRESETS = new Set<string>(["agency", "boutique", "architect"]);
 
 /**
  * The reviews, quotes and people a site shows, with whether each sits beside a sample photo.

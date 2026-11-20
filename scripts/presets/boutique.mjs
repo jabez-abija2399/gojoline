@@ -71,7 +71,7 @@ const categories = [
   { image: img("personal-hero-woman-orange-blazer", "A woman with natural hair in an orange blazer, arms crossed", "ብርቱካናማ ኮት የለበሰችና እጆቿን ያጣመረች ሴት"), title: t("Women", "ሴቶች"), subtitle: t("Dresses, kemis, tailoring", "ቀሚሶች፣ የሀበሻ ቀሚስ፣ ስፌት"), action: link("Shop women", "የሴቶች", "/shop") },
   { image: img("fashion-card-tailor-measuring-client", "A tailor measuring a young man in a white shirt and black waistcoat", "ነጭ ሸሚዝና ጥቁር ሰደርያ የለበሰን ወጣት የሚለካ ልብስ ሰፊ"), title: t("Men", "ወንዶች"), subtitle: t("Gabi, shirts, made to measure", "ጋቢ፣ ሸሚዝ፣ በልክ የሚሠራ"), action: link("Shop men", "የወንዶች", "/shop") },
   { image: img("studio-card-couple-portrait-addis", "A couple dressed all in white, the woman holding white flowers", "ሙሉ ነጭ የለበሱ ጥንዶች፣ ሴቷ ነጭ አበባ ይዛለች"), title: t("Weddings", "ሠርግ"), subtitle: t("Matching sets for two", "ለሁለት ተመሳሳይ ልብሶች"), action: link("Shop weddings", "የሠርግ", "/shop") },
-  { image: img("fashion-gallery-loom-striped-threads", "Brightly coloured striped threads stretched across a wooden handloom", "በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች"), title: t("Shawls", "ነጠላና ጋቢ"), subtitle: t("Netela and gabi, woven by hand", "በእጅ የተሸመኑ ነጠላና ጋቢ"), action: link("Shop shawls", "ነጠላና ጋቢ", "/shop") },
+  { image: img("personal-gallery-pattern", "A geometric repeat pattern in orange, grey-blue and yellow", "በብርቱካናማ፣ ግራጫ-ሰማያዊና ቢጫ የተሠራ ጂኦሜትሪክ ጥለት"), title: t("Shawls", "ነጠላና ጋቢ"), subtitle: t("Netela and gabi, woven by hand", "በእጅ የተሸመኑ ነጠላና ጋቢ"), action: link("Shop shawls", "ነጠላና ጋቢ", "/shop") },
 ];
 
 save("boutique", {
@@ -112,7 +112,7 @@ save("boutique", {
             "Every piece starts on a handloom in Shiro Meda, where two weavers work one length of cotton for up to ten days.\n\nWe cut it in our studio in Bole into shapes you can wear to work, to a wedding and on a Sunday afternoon, and we make each one only when you order it.",
             "እያንዳንዱ ልብስ የሚጀምረው በሽሮ ሜዳ በሚገኝ የእጅ ሽመና ላይ ነው፤ ሁለት ሸማኔዎች አንድን የጥጥ ርዝመት እስከ አሥር ቀን ይሠሩታል።\n\nበቦሌ ባለው ስቱዲዮአችን ለሥራ፣ ለሠርግና ለእሁድ ከሰዓት በሚለበሱ ቅርጾች እንቆርጠዋለን፤ እያንዳንዱንም የምንሠራው ሲያዝዙ ብቻ ነው።",
           ),
-          image: img("fashion-about-handloom-weavers", "Two young men weaving striped cloth at an outdoor wooden handloom, white shawls hanging in front", "ሁለት ወጣቶች ከቤት ውጭ ባለ የእንጨት ሽመና ሸንተረር ጨርቅ ሲሸምኑ፣ ፊት ለፊት ነጭ ጋቢዎች ተንጠልጥለው"),
+          image: img("fashion-gallery-loom-striped-threads", "Brightly coloured striped threads stretched across a wooden handloom under a blue sky", "በሰማያዊ ሰማይ ሥር በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች"),
           imageSide: "start",
         },
         { type: "quote", id: "promise", quote: t("We make fewer things, and we make them to be kept.", "ጥቂት ነገሮችን እንሠራለን፤ የምንሠራቸውም እንዲቆዩ ነው።") },
@@ -124,10 +124,10 @@ save("boutique", {
           kind: "registration",
           eyebrow: t("Letters from the loom", "ከሽመናው የሚላኩ ደብዳቤዎች"),
           heading: t("New pieces, a few times a year", "አዳዲስ ልብሶች፣ በዓመት ጥቂት ጊዜ"),
-          intro: t("No sales, no noise. Just the new season, before anyone else sees it.", "ቅናሽ የለም፣ ጫጫታ የለም። አዲሱን ወቅት ብቻ፣ ከማንም በፊት።"),
+          intro: t("No sales, no noise: we write when a new season is ready. We use your email for nothing else; write to us any time to be taken off the list.", "ቅናሽ የለም፣ ጫጫታ የለም፦ አዲስ ወቅት ሲደርስ እንጽፋለን። ኢሜይልዎን ለሌላ ነገር አንጠቀምም፤ ከዝርዝሩ ለመውጣት በማንኛውም ጊዜ ይጻፉልን።"),
           fields: [{ name: "email", label: t("Your email", "ኢሜይልዎ"), type: "email", required: true }],
           submitLabel: t("Sign up", "ይመዝገቡ"),
-          successMessage: t("Thank you. The next letter is on its way.", "እናመሰግናለን። ቀጣዩ ደብዳቤ በመንገድ ላይ ነው።"),
+          successMessage: t("Thank you. You're on the list.", "እናመሰግናለን። በዝርዝሩ ውስጥ ገብተዋል።"),
         },
       ],
     },
