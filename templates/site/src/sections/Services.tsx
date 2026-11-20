@@ -27,9 +27,9 @@ variant === "list" ? (
             ))}
           </ul>
         ) : variant === "numbered" ? (
-          <ol className={`grid gap-x-10 gap-y-2 sm:grid-cols-2 ${section.items.length % 4 === 0 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+          <ol className={`services-numbered grid gap-x-10 gap-y-2 sm:grid-cols-2 ${section.items.length % 4 === 0 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
             {section.items.map((item, i) => (
-              <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className="reveal flex flex-col gap-2 border-t-2 border-text py-6">
+              <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className="service-row reveal flex flex-col gap-2 border-t-2 border-text py-6">
                 <span aria-hidden="true" className="numeral">
                   {String(i + 1).padStart(2, "0")}
                 </span>

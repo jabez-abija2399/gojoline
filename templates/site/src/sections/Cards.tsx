@@ -10,8 +10,10 @@ import type { CardItem, CardsSection } from "../lib/types";
 
 /** Cards with pictures: rooms, properties, tours, products, people, projects. */
 export function Cards({ section }: { section: CardsSection }) {
-  const { text, href, lang } = useSite();
+  const { site, text, href, lang } = useSite();
   const layout = section.layout ?? "grid";
+  // avant lays featured work across the page and grid tiles up to 7 of 12 columns: fetch photos to match.
+  const avant = site.theme.style === "avant";
   // Pills by badge ("For sale", "For rent", "Trek") when cards carry two or more kinds.
   const kinds = [...new Set(section.items.map((it) => (it.badge ? text(it.badge) : "")).filter(Boolean))];
   const filterable = section.filters !== false && kinds.length >= 2 && section.items.length >= 4 && layout !== "stack" && layout !== "index" && layout !== "pricing";
@@ -94,7 +96,7 @@ export function Cards({ section }: { section: CardsSection }) {
             {items.map((item, i) => (
               <li key={section.items.indexOf(item)} className="feature-row reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
                 <div className={`feature-photo zoom wipe relative rounded-site ${arch} ${i % 2 === 1 ? "md:order-last" : ""}`}>
-                  <Picture image={item.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
+                  <Picture image={item.image} sizes={avant ? "(min-width: 768px) 92vw, 225px" : "(min-width: 768px) 50vw, 160px"} className="aspect-[4/3] w-full rounded-site" />
                   <Badge item={item} />
                 </div>
                 <div className="feature-text flex flex-col gap-3">
@@ -190,14 +192,14 @@ export function Cards({ section }: { section: CardsSection }) {
             ))}
           </ul>
         ) : (
-          <ul className={`dim-others grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
+          <ul className={`card-grid dim-others grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
             {items.map((item, i) => (
               <li key={section.items.indexOf(item)} style={{ "--i": i % 3 } as React.CSSProperties} className="card pcard reveal lift flex flex-col overflow-hidden">
                 <div className="zoom relative">
                   {item.photos && item.photos.length > 0 && item.image ? (
                     <CardPhotos title={text(item.title)} photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
                   ) : (
-                    <Picture image={item.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" className="aspect-[4/3] w-full" />
+                    <Picture image={item.image} sizes={avant ? "(min-width: 768px) 55vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px"} className="aspect-[4/3] w-full" />
                   )}
                   <Badge item={item} />
                 </div>

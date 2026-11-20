@@ -1,0 +1,709 @@
+/*
+ * avant: an experimental creative studio. Black and white with one electric colour (the theme's
+ * primary), huge grotesque words, thick rules, a broken grid of grey photos that colour and bend on
+ * hover, titles that overlap their pictures, and a cursor ring (components/pointer.ts).
+ * Outside the cascade layers so its grid placements win over the utility classes; every rule is
+ * scoped to [data-style="avant"]. Built only into avant sites (scripts/only-used-styles.ts).
+ */
+[data-style="avant"] {
+  --avant-rule: 2px solid var(--site-text);
+}
+
+/* ---- Type: oversized grotesque, tight, heavy ---- */
+[data-style="avant"] :is(.headline, .section-title, .item-title, .pull-quote, .wordmark, .numeral, .stat-value) {
+  font-weight: 800;
+}
+/* Words the owner writes can be long: they break rather than run off the screen. */
+[data-style="avant"] :is(.headline, .section-title, .cta-band h1, .cta-band h2, .item-title) {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+[data-style="avant"] .headline {
+  font-size: clamp(3.25rem, 0.5rem + 12.5vw, 13.5rem);
+  line-height: 0.84;
+  letter-spacing: -0.055em;
+}
+[data-style="avant"] .section-title {
+  font-size: clamp(2.75rem, 1rem + 6vw, 7rem);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+}
+:lang(am) [data-style="avant"] :is(.headline, .section-title, .pull-quote) {
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+:lang(am) [data-style="avant"] .headline {
+  font-size: clamp(2.75rem, 0.75rem + 8vw, 8rem);
+}
+/* Each titled section is numbered, in the electric colour: (01), (02)… */
+[data-style="avant"] main {
+  counter-reset: avant-section;
+}
+[data-style="avant"] main > section:has(.section-title) {
+  counter-increment: avant-section;
+}
+[data-style="avant"] .section-title::before {
+  content: "(" counter(avant-section, decimal-leading-zero) ")" / "";
+  display: block;
+  width: auto;
+  height: auto;
+  margin-bottom: 1rem;
+  background: none;
+  animation: none;
+  font-family: var(--site-font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--site-primary);
+}
+:lang(am) [data-style="avant"] .section-title::before {
+  content: "(" counter(avant-section, ethiopic-numeric) ")" / "";
+}
+[data-style="avant"] :is(.on-dark, .bg-accent) .section-title::before {
+  color: inherit;
+}
+/* With a label above the title, the number joins the label instead. */
+[data-style="avant"] .eyebrow + .section-title::before {
+  display: none;
+}
+[data-style="avant"] .eyebrow:has(+ .section-title)::after {
+  content: "(" counter(avant-section, decimal-leading-zero) ")" / "";
+  color: var(--site-primary);
+}
+:lang(am) [data-style="avant"] .eyebrow:has(+ .section-title)::after {
+  content: "(" counter(avant-section, ethiopic-numeric) ")" / "";
+}
+[data-style="avant"] :is(.on-dark, .bg-accent) .eyebrow:has(+ .section-title)::after {
+  color: inherit;
+}
+/* Labels: bold capitals after a small square of the colour. */
+[data-style="avant"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab) {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+[data-style="avant"] .eyebrow {
+  font-size: 0.9375rem;
+}
+[data-style="avant"] .eyebrow::before {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+[data-style="avant"] .meta-item {
+  border: 1.5px solid currentColor;
+  border-radius: 0;
+  background: none;
+}
+[data-style="avant"] .hero-eyebrow {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+:lang(am) [data-style="avant"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab),
+[data-style="avant"] :lang(am):is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab) {
+  text-transform: none;
+  letter-spacing: 0;
+}
+[data-style="avant"] .hero-glow {
+  background: none;
+}
+
+/* ---- Structure: thick rules, square everything ---- */
+[data-style="avant"] main > section + section:not(.bg-accent, .on-dark, .bg-primary) {
+  border-top: var(--avant-rule);
+}
+[data-style="avant"] :is(.card, .pcard, .btn, .badge, .menu-tab, input, select, textarea, .rail-arrow) {
+  border-radius: 0;
+}
+[data-style="avant"] :is(.card, .pcard) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+[data-style="avant"] .site-header.header-scroll {
+  border-bottom: var(--avant-rule);
+  background: var(--site-background);
+}
+[data-style="avant"] .wordmark {
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+[data-style="avant"] .brand-mark {
+  border-radius: 0;
+  background: var(--site-text);
+  color: var(--site-background);
+}
+[data-style="avant"] .nav-link {
+  border-radius: 0;
+  font-size: 0.875rem;
+}
+[data-style="avant"] .nav-link:hover {
+  background: var(--site-text);
+  color: var(--site-background);
+}
+[data-style="avant"] .nav-link[aria-current="page"] {
+  text-decoration-thickness: 3px;
+}
+/* Buttons: square, a hard shadow that collapses when pressed; they lean towards the pointer. */
+[data-style="avant"] .btn {
+  border: 2px solid var(--site-text);
+  padding: 1rem 1.75rem;
+  box-shadow: 5px 5px 0 var(--site-text);
+}
+[data-style="avant"] .btn:focus-visible {
+  outline-offset: 9px;
+}
+[data-style="avant"] .btn:active {
+  box-shadow: 0 0 0 var(--site-text);
+  transform: translate(5px, 5px);
+}
+[data-style="avant"] :is(.on-dark, .bg-accent, .bg-primary) .btn {
+  border-color: currentColor;
+  box-shadow: 5px 5px 0 currentColor;
+}
+
+/* ---- Photos: grey and hard until pointed at, then colour and a bend ---- */
+/* Only where a mouse can bring the colour back: on phones the photos stay in colour. */
+@media (hover: hover) and (pointer: fine) {
+  [data-style="avant"] main img {
+    filter: grayscale(1);
+  }
+  [data-style="avant"] :is(li, figure, .zoom, a):hover > :is(img, .zoom img, div img),
+  [data-style="avant"] :is(.zoom, .feature-photo, .about-photo):hover img {
+    filter: none;
+  }
+}
+
+/* ---- Hero: words, nothing else ---- */
+[data-style="avant"] .hero-centered {
+  overflow-x: clip;
+  padding-block: 5rem 4rem;
+}
+[data-style="avant"] .hero-centered > .container-site {
+  align-items: flex-start;
+  text-align: start;
+}
+[data-style="avant"] .hero-centered .headline {
+  max-width: none;
+}
+/* The second word in the colour, the third in outline (Latin only: thin strokes break Ge'ez apart). */
+[data-style="avant"] .hero-centered .headline .w:nth-of-type(2) {
+  color: var(--site-primary);
+}
+[data-style="avant"] .hero-centered .headline .w:nth-of-type(3):not(:lang(am)) {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: max(2px, 0.03em) currentColor;
+}
+[data-style="avant"] .hero-centered .headline .w {
+  display: inline-block;
+  max-width: 100%;
+}
+@media (min-width: 768px) {
+  [data-style="avant"] .hero-centered {
+    padding-block: 7rem 6rem;
+  }
+  /* The words on the left, the sentence and buttons pushed to the right: an uneven page. */
+  [data-style="avant"] .hero-centered > .container-site > p.enter,
+  [data-style="avant"] .hero-centered > .container-site > div.enter {
+    align-self: flex-end;
+    max-width: 30rem;
+  }
+  [data-style="avant"] .hero-centered > .container-site > p.enter {
+    font-size: 1.375rem;
+    line-height: 1.35;
+    color: var(--site-text);
+  }
+}
+
+/* ---- Introduction: a small photo set low, a big first sentence ---- */
+[data-style="avant"] .about-photo {
+  margin: 0;
+}
+[data-style="avant"] .depth-frame::before {
+  border-radius: 0;
+  background: var(--site-primary);
+  transform: translate(12px, 12px);
+}
+[data-style="avant"] .about-text > p:first-of-type {
+  font-size: clamp(1.375rem, 1rem + 1.4vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--site-text);
+}
+@media (min-width: 768px) {
+  [data-style="avant"] .about-grid {
+    grid-template-columns: 4fr 8fr;
+    align-items: end;
+  }
+  [data-style="avant"] .about-grid:has(> .about-photo.md\:order-last) {
+    grid-template-columns: 8fr 4fr;
+  }
+  [data-style="avant"] .about-photo {
+    margin-bottom: 4rem;
+  }
+}
+
+/* ---- Selected work: a broken grid, numbered, titles over the pictures ---- */
+[data-style="avant"] .card-grid {
+  counter-reset: avant-work;
+  row-gap: 4rem;
+}
+[data-style="avant"] .card-grid > li {
+  position: relative;
+  overflow: visible;
+  counter-increment: avant-work;
+}
+[data-style="avant"] .card-grid > li::before {
+  content: counter(avant-work, decimal-leading-zero) / "";
+  position: absolute;
+  top: -1.75rem;
+  inset-inline-start: 0;
+  font-weight: 800;
+  font-size: 0.9375rem;
+}
+:lang(am) [data-style="avant"] .card-grid > li::before {
+  content: counter(avant-work, ethiopic-numeric) / "";
+}
+[data-style="avant"] .card-grid .pcard > div:last-child,
+[data-style="avant"] .card-grid > li > div:last-child {
+  position: relative;
+  z-index: 1;
+  margin-top: -2.25rem;
+  padding: 0;
+}
+[data-style="avant"] .card-grid .eyebrow {
+  width: fit-content;
+  background: var(--site-text);
+  color: var(--site-background);
+  padding: 0.35rem 0.6rem;
+}
+[data-style="avant"] .card-grid .eyebrow::before {
+  background: var(--site-primary);
+}
+[data-style="avant"] .card-grid .item-title {
+  width: fit-content;
+  max-width: 100%;
+  background: var(--site-background);
+  padding: 0.15em 0.3em 0.1em 0;
+  font-size: clamp(1.75rem, 1rem + 2vw, 3rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+[data-style="avant"] .card-grid .item-title + * {
+  margin-top: 0.25rem;
+}
+@media (max-width: 767px) {
+  [data-style="avant"] .card-grid > li:nth-child(even) {
+    margin-inline-start: 12%;
+  }
+}
+@media (min-width: 768px) {
+  [data-style="avant"] .card-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 1.5rem;
+    row-gap: 6rem;
+  }
+  [data-style="avant"] .card-grid > li:nth-child(4n + 1) {
+    grid-column: 1 / span 7;
+  }
+  [data-style="avant"] .card-grid > li:nth-child(4n + 2) {
+    grid-column: 9 / span 4;
+    margin-top: 12rem;
+  }
+  [data-style="avant"] .card-grid > li:nth-child(4n + 3) {
+    grid-column: 2 / span 5;
+    margin-top: -5rem;
+  }
+  [data-style="avant"] .card-grid > li:nth-child(4n + 4) {
+    grid-column: 7 / span 6;
+    margin-top: 6rem;
+  }
+  [data-style="avant"] .card-grid > li:nth-child(4n + 2) :is(img, .placeholder) {
+    aspect-ratio: 3 / 4;
+  }
+  [data-style="avant"] .card-grid > li:nth-child(4n + 3) :is(img, .placeholder) {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* ---- Services: an editorial index: huge outlined numbers, a title, a sentence ---- */
+[data-style="avant"] .services-numbered {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+[data-style="avant"] .service-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 1.25rem;
+  align-items: baseline;
+  border-top: var(--avant-rule);
+  padding-block: 1.75rem;
+}
+[data-style="avant"] .service-row:last-child {
+  border-bottom: var(--avant-rule);
+}
+[data-style="avant"] .service-row .numeral {
+  grid-row: span 2;
+  font-size: clamp(2.5rem, 1rem + 5vw, 6.5rem);
+  line-height: 0.85;
+  color: var(--site-text);
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px currentColor;
+}
+[data-style="avant"] .service-row .item-title {
+  font-size: clamp(1.75rem, 1rem + 2.6vw, 3.75rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+[data-style="avant"] .service-row p {
+  max-width: 44ch;
+}
+@media (min-width: 768px) {
+  [data-style="avant"] .service-row {
+    grid-template-columns: 9rem minmax(0, 1.2fr) minmax(0, 1fr);
+    column-gap: 2rem;
+    padding-inline: 0.75rem;
+  }
+  [data-style="avant"] .service-row .numeral {
+    grid-row: auto;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-style="avant"] .service-row:hover {
+    background: var(--site-primary);
+    color: var(--site-on-primary, #fff);
+  }
+  [data-style="avant"] .service-row:hover :is(p, .text-muted) {
+    color: inherit;
+  }
+  [data-style="avant"] .service-row:hover .numeral {
+    color: inherit;
+  }
+}
+
+/* ---- Featured projects: the picture across the page, the words in a box laid over it ---- */
+[data-style="avant"] .feature-list {
+  gap: 6rem;
+}
+[data-style="avant"] .feature-row {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+[data-style="avant"] .feature-photo {
+  order: 0;
+}
+[data-style="avant"] .feature-photo :is(img, .placeholder) {
+  aspect-ratio: 16 / 10;
+}
+[data-style="avant"] .feature-text {
+  position: relative;
+  z-index: 1;
+  width: min(40rem, 92%);
+  margin-top: -3rem;
+  margin-inline-start: 4%;
+  border: var(--avant-rule);
+  background: var(--site-background);
+  padding: 1.5rem;
+  box-shadow: 10px 10px 0 var(--site-primary);
+}
+[data-style="avant"] .feature-row:nth-child(even) .feature-text {
+  margin-inline: auto 4%;
+}
+[data-style="avant"] .feature-text .item-title {
+  font-size: clamp(2.25rem, 1rem + 4vw, 5rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+@media (min-width: 1024px) {
+  [data-style="avant"] .feature-photo :is(img, .placeholder) {
+    aspect-ratio: 21 / 10;
+  }
+  [data-style="avant"] .feature-text {
+    margin-top: -9rem;
+    padding: 2.25rem;
+  }
+}
+
+/* ---- Philosophy: one statement, very large, on black ---- */
+[data-style="avant"] .quote-section {
+  background: var(--site-text);
+  color: var(--site-background);
+}
+[data-style="avant"] .quote-section .pull-quote {
+  font-size: clamp(2.25rem, 0.75rem + 5vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-wrap: pretty;
+}
+[data-style="avant"] .quote-section .quote-mark {
+  height: auto;
+  font-family: var(--site-font-heading);
+  font-size: 8rem;
+  line-height: 0.6;
+}
+[data-style="avant"] .quote-section figcaption :is(span, .text-muted) {
+  color: inherit;
+}
+[data-style="avant"] .quote-section figure > div {
+  max-width: none;
+  align-items: flex-start;
+  text-align: start;
+}
+
+/* ---- Clients: names large on the colour, then their words in hard-edged boxes ---- */
+[data-style="avant"] .marquee-track li {
+  font-family: var(--site-font-heading);
+  font-size: clamp(2rem, 1rem + 4vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+:lang(am) [data-style="avant"] .marquee-track li {
+  text-transform: none;
+  letter-spacing: 0;
+}
+[data-style="avant"] .testimonial {
+  border: 2px solid currentColor;
+  border-radius: 0;
+  background: none;
+  box-shadow: 8px 8px 0 var(--site-primary);
+}
+@media (min-width: 768px) {
+  [data-style="avant"] .testimonial-list > li:first-child:not(:last-child) {
+    grid-column: span 2;
+  }
+  [data-style="avant"] .testimonial-list > li:first-child blockquote {
+    font-family: var(--site-font-heading);
+    font-size: clamp(1.75rem, 1rem + 1.6vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  [data-style="avant"] .testimonial-list > li:nth-child(3):last-child {
+    grid-column: 2 / span 2;
+  }
+}
+
+/* ---- Contact: the whole screen in the colour, a sentence as big as it gets ---- */
+[data-style="avant"] .cta-section {
+  padding-block: 0;
+  overflow-x: clip;
+}
+[data-style="avant"] .cta-section > .container-site {
+  max-width: none;
+  padding-inline: 0;
+}
+[data-style="avant"] .cta-band {
+  min-height: min(48rem, 92svh);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  border-radius: 0;
+  background: var(--site-primary);
+  color: var(--site-on-primary, #fff);
+  padding: 6rem max(1rem, calc((100% - 72rem) / 2)) 4rem;
+}
+@media (max-width: 767px) {
+  [data-style="avant"] .cta-band {
+    min-height: min(36rem, 70svh);
+  }
+}
+[data-style="avant"] .cta-band > svg {
+  display: none;
+}
+[data-style="avant"] .cta-band > div:first-of-type {
+  max-width: none;
+}
+[data-style="avant"] .cta-band :is(h1, h2) {
+  font-size: clamp(3rem, 0.5rem + 11vw, 12rem);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.055em;
+}
+:lang(am) [data-style="avant"] .cta-band :is(h1, h2) {
+  font-size: clamp(2.5rem, 1rem + 6vw, 6.5rem);
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+[data-style="avant"] .cta-band .btn-primary {
+  border-color: var(--site-text);
+  background: var(--site-background);
+  color: var(--site-text);
+  box-shadow: 6px 6px 0 var(--site-text);
+}
+[data-style="avant"] .cta-band > div:last-child {
+  width: auto;
+}
+
+/* ---- Footer: black, the name huge in outline ---- */
+[data-style="avant"] .site-footer {
+  background: var(--site-text);
+  color: var(--site-background);
+}
+[data-style="avant"] .footer-wordmark::before {
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  opacity: 1;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.5px currentColor;
+}
+:lang(am) [data-style="avant"] .footer-wordmark::before {
+  -webkit-text-fill-color: currentColor;
+  -webkit-text-stroke: 0;
+  opacity: 0.2;
+}
+
+/* ---- The cursor ring (components/pointer.ts): a circle that inverts what is under it ---- */
+[data-style="avant"] .cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: 7rem;
+  height: 7rem;
+  margin: -3.5rem 0 0 -3.5rem;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+/* The circle itself scales (composited), inside the box the script moves. */
+[data-style="avant"] .cursor-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 6px solid #fff;
+  border-radius: 50%;
+  scale: 0.32;
+  transition:
+    scale 250ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    background-color 250ms,
+    opacity 200ms;
+}
+[data-style="avant"] .cursor-ring:not([data-over])::before,
+[data-style="avant"] .cursor-ring[data-over="gone"]::before {
+  opacity: 0;
+}
+[data-style="avant"] .cursor-ring[data-over="link"]::before {
+  scale: 0.57;
+  border-width: 3.5px;
+}
+[data-style="avant"] .cursor-ring[data-over="picture"]::before {
+  scale: 1;
+  border-width: 2px;
+  background: #fff;
+}
+
+/* ---- Motion ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-style="avant"] .btn {
+    transition:
+      translate 300ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 200ms,
+      transform 150ms,
+      background-color 200ms;
+  }
+  [data-style="avant"] main img {
+    transition:
+      filter 500ms,
+      transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      clip-path 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  [data-style="avant"] .service-row {
+    transition:
+      background-color 250ms,
+      color 250ms,
+      padding 250ms;
+  }
+  /* Pictures bend when pointed at: a skew, a zoom and a torn edge. */
+  @media (hover: hover) and (pointer: fine) {
+    [data-style="avant"] .zoom:hover img {
+      transform: scale(1.07) skewX(-3deg);
+      clip-path: polygon(0 3%, 100% 0, 97% 100%, 2% 96%);
+    }
+  }
+  /* Hero words: each one drops in, then the line pulls apart as the page scrolls. */
+  [data-style="avant"] .headline.split .w {
+    animation: avant-drop 900ms cubic-bezier(0.2, 0.9, 0.1, 1) both;
+    animation-delay: calc(60ms + var(--w, 0) * 90ms);
+  }
+  @supports (animation-timeline: scroll()) {
+    [data-style="avant"] .hero-centered .headline.split .w {
+      animation:
+        avant-drop 900ms cubic-bezier(0.2, 0.9, 0.1, 1) both,
+        avant-apart linear both;
+      animation-delay: calc(60ms + var(--w, 0) * 90ms), 0s;
+      animation-timeline: auto, scroll(root);
+      animation-range: normal, 0 90vh;
+    }
+    [data-style="avant"] .hero-centered .headline.split .w:nth-of-type(even) {
+      animation-name: avant-drop, avant-apart-back;
+    }
+    [data-style="avant"] .cta-band :is(h1, h2) {
+      animation: avant-slide linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 30%;
+    }
+  }
+  @supports (animation-timeline: view()) {
+    /* Titles rise out of a slot as they arrive. */
+    [data-style="avant"] .section-title {
+      animation: avant-slot linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+    /* Each section slides up over the one before. */
+    [data-style="avant"] main > section:not(:first-child) {
+      animation: avant-section linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+@keyframes avant-drop {
+  from {
+    opacity: 0.15;
+    transform: translateY(0.35em) rotate(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Separate from transform, so the drop and the drift add up. */
+@keyframes avant-apart {
+  to {
+    translate: -6vw 0;
+  }
+}
+@keyframes avant-apart-back {
+  to {
+    translate: 6vw 0;
+  }
+}
+@keyframes avant-slide {
+  from {
+    transform: translateX(12%);
+  }
+  to {
+    transform: translateX(-4%);
+  }
+}
+@keyframes avant-slot {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes avant-section {
+  from {
+    transform: translateY(3rem);
+  }
+  to {
+    transform: none;
+  }
+}

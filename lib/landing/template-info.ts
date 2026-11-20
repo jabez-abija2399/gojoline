@@ -398,6 +398,20 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  agency: {
+    category: "business",
+    designedFor: {
+      en: ["Creative and branding agencies", "Design and architecture studios", "Production companies", "Artists and collectives"],
+      am: ["የፈጠራና የብራንዲንግ ኤጀንሲዎች", "የዲዛይንና የሥነ ሕንፃ ስቱዲዮዎች", "የፕሮዳክሽን ድርጅቶች", "አርቲስቶችና ቡድኖች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Selected work in a broken grid", am: "የተመረጡ ሥራዎች ባልተስተካከለ ፍርግርግ" } },
+      { key: "contactForm", label: { en: "Project enquiries", am: "የፕሮጀክት ጥያቄዎች" } },
+      "reviews",
+      "callTelegram",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

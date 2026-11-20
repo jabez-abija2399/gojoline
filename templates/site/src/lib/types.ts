@@ -488,8 +488,12 @@ export interface Theme {
    * grand: luxury hospitality: oversized light serif titles with an italic turn, champagne hairlines and
    * frames, asymmetric photos that open like curtains and drift as the page scrolls, quotes in large
    * italic type (resorts, boutique hotels, fine dining, spas).
+   * avant: an experimental studio: black and white with one electric colour (`primary`), huge
+   * grotesque words that move apart as the page scrolls, a broken grid of grey photos that colour
+   * and bend on hover, overlapping titles, a cursor ring and buttons that lean towards the pointer
+   * (creative agencies, design and architecture studios, artists).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant";
 }
 
 export interface Business {

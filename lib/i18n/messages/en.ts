@@ -40,7 +40,7 @@ export const en = {
       picked: "Showing {name}. An example description was added to the box below.",
       build: "Build my site",
     },
-    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", darkMode: "Dark mode", seeTemplates: "See all 23 templates" },
+    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", darkMode: "Dark mode", seeTemplates: "See all 24 templates" },
     demo: {
       pick: "Choose a kind of business",
       prompts: {
@@ -62,7 +62,7 @@ export const en = {
     proof: [
       { value: "~40 s", label: "to a first site" },
       { value: "30 of 30", label: "test sites built right the first time" },
-      { value: "23", label: "ready templates" },
+      { value: "24", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
     eyebrows: { how: "How it works", features: "Features", faq: "Good to know", final: "Start today" },
@@ -136,7 +136,7 @@ export const en = {
         events: "Weddings and events",
         business: "Business and personal",
       },
-      styles: { editorial: "Elegant", bold: "Bold", clean: "Clean", warm: "Warm", luxe: "Luxe", swiss: "Industrial", bento: "Tiles", organic: "Soft", cinematic: "Cinematic", brutal: "Bold blocks", calm: "Calm", kinetic: "Energetic", grand: "Grand" },
+      styles: { editorial: "Elegant", bold: "Bold", clean: "Clean", warm: "Warm", luxe: "Luxe", swiss: "Industrial", bento: "Tiles", organic: "Soft", cinematic: "Cinematic", brutal: "Bold blocks", calm: "Calm", kinetic: "Energetic", grand: "Grand", avant: "Experimental" },
       features: { prices: "Prices or menu", booking: "Booking or order form", gallery: "Photo gallery", team: "Team or staff", times: "Opening, service or prayer times", reviews: "Reviews", map: "Map" },
       about: {
         cafe: "Signature dishes, the full menu and table bookings",
@@ -162,6 +162,7 @@ export const en = {
         pharmacy: "Health checks, a licensed pharmacist and stock questions",
         gym: "Memberships, a class timetable and a free first visit",
         resort: "Signature suites in large photographs, experiences and private reservations",
+        agency: "Work in a broken grid, services as an index and a loud contact page",
       },
     },
     templatePreview: {
@@ -492,6 +493,7 @@ export const en = {
       pharmacy: "Pharmacy",
       gym: "Gym or fitness",
       resort: "Luxury hotel or resort",
+      agency: "Creative agency or design studio",
     },
     empty: "You have no sites yet. Start one: it takes a few minutes.",
     untitled: "New site",

@@ -137,6 +137,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 ## Luxury hotel template (2026-11-20)
 - [x] `grand` art direction (luxury hospitality: oversized serif, champagne hairlines and frames, asymmetric photos that open like curtains and drift in their frames, numbered suites, guests' words between hairlines, full-width photo call to action, phone menu as a sheet of serif links) and a 23rd starter, `resort` (a luxury hotel: suites, experiences, a destination band, journeys, reservations), in English and Amharic, from photos already in the library; design, performance and security reviews run and fixed
 
+## Creative agency template (2026-11-20)
+- [x] `avant` art direction (experimental studio: black and white with one electric colour, huge grotesque words that drop in and drift apart, numbered sections, a broken grid of work with titles over grey photos that colour and bend on hover, services as a numbered index, featured work with boxes over full-width pictures, a statement band, a full-screen contact band, a cursor ring and leaning buttons) and a 24th starter, `agency` (Kebero Studio), in English and Amharic, from library photos; design, performance and security reviews run and fixed
+
 ## User guide (2026-11-19)
 - [x] “How to use Gojoline” at `/{lang}/guide`: 720p video with captions and chapters (en, am), sticky contents on large screens and a folding one on phones that jumps the video, ten sections with steps, tips and real screenshots, questions, “Build your website”; real plan prices, change sizes and limits; links from the sidebar, the empty start screen, the dashboard Home, the public footer and the sitemap; unit tests (chapter and time parsing, WebVTT, files) and e2e (en/am at 360 and 1366, contents jump, captions, preload none, entry points, axe, no sideways scroll)
 
@@ -186,6 +189,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Amharic in the motion-kit additions (tabs, giving boxes, ribbons, announcements, prayer and service times, stamps) needs the native-speaker review with the rest of the templates.
 - Generated-site LCP (performance review, 2026-11-20): with compressed files, Lighthouse slow 4G gives 2.1 to 2.4 s on both hotel and resort (budget 2.0 s); about 1.7 s is render delay from the blocking stylesheet and fonts. Next steps: inline the first screen's CSS and load the rest without blocking, and split every art direction into its own file the way `grand.css` is (about 4 to 5 KB gzip less blocking CSS per site). Lighthouse CI must serve files compressed or it reports about 3.9 s.
 - Resort photos are heavier than the hotel's (hero 480 px 28 KB vs 16 KB, about photo 34 KB): re-encode those stock files or pick lighter ones when real luxury-hotel photos are added to the library.
+- Amharic in the `agency` template (`scripts/presets/agency.mjs`, 2026-11-20) and its gallery strings (`avant` style name "ሙከራዊ") needs the same native-speaker review.
 - Amharic in the `resort` template (`scripts/presets/resort.mjs`, 2026-11-20) and its gallery strings (`resort` in `lib/landing/template-info.ts`, `grand` style name "ግርማ ያለው") needs the same native-speaker review.
 - Template ideas from the writers, not built: a "from" note on service prices, an action on services and menu sections, a focal point for cropped photos, an included/not-included list for tours.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
