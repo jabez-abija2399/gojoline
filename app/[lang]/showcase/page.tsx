@@ -54,7 +54,7 @@ export default async function ShowcasePage({ params }: PageProps<"/[lang]/showca
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {entries.map((e, i) => (
               <li key={e.siteId}>
-                <a href={e.url} target="_blank" rel="noopener ugc" className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:border-faint hover:shadow-sm">
+                <a href={e.url} target="_blank" rel="noopener ugc" data-track="showcase_site" className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:border-faint hover:shadow-sm">
                   <span className="relative flex aspect-[16/10] items-center justify-center bg-sunken">
                     {e.thumb ? (
                       // eslint-disable-next-line @next/next/no-img-element -- our own ~640 px WebP, already sized; next/image would only re-encode it.
