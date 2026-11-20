@@ -20,6 +20,7 @@ import "./noir.css";
 import "./folio.css";
 import "./estate.css";
 import "./voyage.css";
+import "./museum.css";
 
 const container = document.getElementById("root")!;
 

@@ -17,6 +17,12 @@ export function Cards({ section }: { section: CardsSection }) {
   // estate: one wide (4 of 6 columns) and one narrow, then three across, repeating.
   const estate = site.theme.style === "estate";
   const voyage = site.theme.style === "voyage";
+  const museum = site.theme.style === "museum";
+  // The painting is shown at 80% of its wall (museum.css), on a 7/4/4/6 hang from 1024 px, the page 72rem at most.
+  const museumSizes = (i: number) => {
+    const [px, vw] = ([[490, 42], [265, 23], [265, 23], [415, 36]] as const)[i % 4]!;
+    return `(min-width: 1152px) ${px}px, (min-width: 1024px) ${vw}vw, (min-width: 640px) 36vw, 160px`;
+  };
   const estateSizes = (i: number) => (i % 5 === 0 ? "(min-width: 1280px) 720px, (min-width: 1024px) 62vw, (min-width: 640px) 92vw, 160px" : i % 5 === 1 ? "(min-width: 1024px) 34vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px");
   // monochrome shows the first of exactly three pieces large (7 of 12 columns).
   const bigFirst = site.theme.style === "monochrome" && section.items.length === 3;
@@ -205,7 +211,7 @@ export function Cards({ section }: { section: CardsSection }) {
                   {item.photos && item.photos.length > 0 && item.image ? (
                     <CardPhotos title={text(item.title)} photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
                   ) : (
-                    <Picture image={item.image} sizes={estate ? estateSizes(i) : voyage ? "(min-width: 640px) 50vw, 160px" : avant ? "(min-width: 768px) 55vw, 160px" : bigFirst && i === 0 ? "(min-width: 1024px) 58vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px"} className="aspect-[4/3] w-full" />
+                    <Picture image={item.image} sizes={estate ? estateSizes(i) : museum ? museumSizes(i) : voyage ? "(min-width: 640px) 50vw, 160px" : avant ? "(min-width: 768px) 55vw, 160px" : bigFirst && i === 0 ? "(min-width: 1024px) 58vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px"} className="aspect-[4/3] w-full" />
                   )}
                   <Badge item={item} />
                 </div>
@@ -244,11 +250,15 @@ function PriceLine({ item }: { item: CardItem }) {
 }
 
 function Body({ item, large = false, quiet = false }: { item: CardItem; large?: boolean; /** A link, not a filled button: for cards that repeat the page's main action. */ quiet?: boolean }) {
-  const { text, href } = useSite();
+  const { text, href, site } = useSite();
+  // A wall label (museum): the title first for screen readers moving by heading, the artist shown above it.
+  const label = site.theme.style === "museum";
+  const subtitle = item.subtitle && <p className="eyebrow">{text(item.subtitle)}</p>;
   return (
     <>
-      {item.subtitle && <p className="eyebrow">{text(item.subtitle)}</p>}
+      {!label && subtitle}
       <ItemTitle className={large ? "font-heading text-3xl leading-tight md:text-4xl" : "text-xl leading-snug"}>{text(item.title)}</ItemTitle>
+      {label && subtitle}
       {item.meta && item.meta.length > 0 && (
         <ul className="meta flex flex-wrap gap-x-3 gap-y-1 text-muted">
           {item.meta.map((m, i) => (

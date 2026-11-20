@@ -100,18 +100,20 @@ export function Gallery({ section }: { section: GallerySection }) {
   // runs full width, so no row ends with a gap.
   const cols = big || count >= 4 ? "md:grid-cols-4" : count === 3 ? "md:grid-cols-3" : count === 2 ? "md:grid-cols-2" : "md:grid-cols-1";
   const wideFirst = !big && count % 2 === 1;
+  // museum hangs the photos as an uneven 7/5, 5/7 grid (museum.css): wider files on computers.
+  const museum = site.theme.style === "museum";
   return (
     <section id={section.id ?? "gallery"} className={`section ${dark ? "bg-accent text-on-accent on-dark" : ""}`}>
       <div className="container-site flex flex-col gap-8 md:gap-10">
         <SectionHead eyebrow={section.eyebrow} heading={section.heading} intro={section.intro} />
         {/* Editorial grid: with 5+ photos the first is large and the rest fill around it. */}
-        <ul className={`grid grid-cols-2 gap-3 md:gap-4 ${cols}`}>
+        <ul className={`gallery-mosaic grid grid-cols-2 gap-3 md:gap-4 ${cols}`}>
           {section.images.map((image, i) => (
             <li key={i} style={{ "--i": i % 4 } as React.CSSProperties} className={`zoom reveal wipe rounded-site ${big && i === 0 ? "col-span-2 row-span-2" : wideFirst && i === 0 ? "max-md:col-span-2" : ""}`}>
               {photo(
                 image,
                 section.images.slice(0, i).filter((im) => im.src).length,
-                <Picture image={image} sizes={big && i === 0 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 25vw, 120px"} className={`size-full rounded-site ${wideFirst && i === 0 ? "aspect-[2/1] md:aspect-square" : "aspect-square"}`} />,
+                <Picture image={image} sizes={museum ? (i % 4 === 0 || i % 4 === 3 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 35vw, 160px") : big && i === 0 ? "(min-width: 768px) 50vw, 160px" : "(min-width: 768px) 25vw, 120px"} className={`size-full rounded-site ${wideFirst && i === 0 ? "aspect-[2/1] md:aspect-square" : "aspect-square"}`} />,
               )}
             </li>
           ))}

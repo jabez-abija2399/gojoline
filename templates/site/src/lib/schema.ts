@@ -113,7 +113,7 @@ export const siteSchema = z
     tagline: text.optional(),
     announcement: z.array(text).min(1).max(6).optional(),
     languages: z.array(z.enum(["en", "am"])).min(1).max(2).refine((l) => new Set(l).size === l.length, "Languages must be unique"),
-    theme: z.object({ primary: hex, accent: hex, background: hex, text: hex, highlight: hex.optional(), font: z.enum(["modern", "classic", "friendly", "elegant", "grotesk", "condensed", "editorial"]), radius: z.enum(["none", "small", "medium", "large"]), style: z.enum(["warm", "editorial", "bold", "clean", "luxe", "swiss", "bento", "organic", "cinematic", "brutal", "calm", "kinetic", "grand", "avant", "precise", "monochrome", "drafting", "noir", "folio", "estate", "voyage"]).optional() }).strict(),
+    theme: z.object({ primary: hex, accent: hex, background: hex, text: hex, highlight: hex.optional(), font: z.enum(["modern", "classic", "friendly", "elegant", "grotesk", "condensed", "editorial"]), radius: z.enum(["none", "small", "medium", "large"]), style: z.enum(["warm", "editorial", "bold", "clean", "luxe", "swiss", "bento", "organic", "cinematic", "brutal", "calm", "kinetic", "grand", "avant", "precise", "monochrome", "drafting", "noir", "folio", "estate", "voyage", "museum"]).optional() }).strict(),
     business: z
       .object({
         phone: z.string().max(40).optional(),
@@ -169,7 +169,7 @@ export function themeWarnings(theme: { primary: string; accent: string; backgrou
   // The highlight fills tags and tiles that carry text.
   if (theme.highlight) check(readableOn(theme.highlight), theme.highlight, "text on theme.highlight (tags, tiles)");
   // These styles set small labels and section numbers in the primary colour: it must read as text.
-  if (theme.style && ["luxe", "swiss", "grand", "avant", "precise"].includes(theme.style)) {
+  if (theme.style && ["luxe", "swiss", "grand", "avant", "precise", "museum"].includes(theme.style)) {
     check(theme.primary, theme.background, `theme.primary as small text on theme.background (${theme.style})`);
     check(theme.primary, "#ffffff", `theme.primary as small text on white (${theme.style})`);
   }

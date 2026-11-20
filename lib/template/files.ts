@@ -55,7 +55,7 @@ export function stockFilesFor(siteJson: string): TemplateFile[] {
   const out: TemplateFile[] = [];
   // The cap is above the size of the library, so a valid site never loses a photo to it.
   for (const name of [...names].sort().slice(0, 400)) {
-    for (const file of [`${name}.webp`, `${name}-480.webp`, `${name}-1600.webp`]) {
+    for (const file of [`${name}.webp`, `${name}-320.webp`, `${name}-480.webp`, `${name}-1600.webp`]) {
       const content = libraryPhoto(file);
       if (content) out.push({ path: `public/stock/${file}`, content });
     }

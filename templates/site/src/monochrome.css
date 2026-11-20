@@ -49,8 +49,12 @@
   background: none;
   padding: 0;
 }
-[data-style="monochrome"] :is(.brand-mark, .hero-glow) {
+[data-style="monochrome"] .brand-mark {
   display: none;
+}
+/* The glow only: the class is also on the split, centred and portrait heroes themselves. */
+[data-style="monochrome"] .hero-glow {
+  background-image: none;
 }
 
 /* ---- No boxes: square, hairline, black on white ---- */

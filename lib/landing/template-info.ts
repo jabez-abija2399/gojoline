@@ -490,6 +490,20 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  exhibit: {
+    category: "faith",
+    designedFor: {
+      en: ["Art galleries", "Museums and cultural centres", "Artists' collectives and studios", "Art fairs and biennales"],
+      am: ["የሥዕል ማሳያ ቤቶች", "ሙዚየሞችና የባህል ማዕከላት", "የሠዓሊዎች ማኅበራትና የሥራ ቦታዎች", "የጥበብ ትርዒቶች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Works with wall labels and prices", am: "ሥራዎች ከመግለጫና ከዋጋ ጋር" } },
+      { key: "times", label: { en: "Talks, tours and events", am: "ንግግሮች፣ ጉብኝቶችና ዝግጅቶች" } },
+      { key: "contactForm", label: { en: "Enquiries about works", am: "ስለ ሥራዎች ጥያቄዎች" } },
+      "gallery",
+      "languages",
+    ],
+  },
   voyage: {
     category: "travel",
     designedFor: {

@@ -517,8 +517,12 @@ export interface Theme {
    * voyage: a journey told as the page scrolls: full-screen photos as numbered chapters with words
    * laid over them, destinations as staggered prints, the route beside a photo that stays (travel
    * companies, tour operators, lodges, expeditions).
+   * museum: a gallery's white walls: a huge exhibition title, works hung on a pale wall with a wall
+   * label beneath (artist, title in italics, medium, size), an uneven hang, a red dot for sold works,
+   * events as a programme, the lights coming up on each work as it scrolls in (galleries, museums,
+   * art fairs, artists' collectives, cultural centres).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio" | "estate" | "voyage";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio" | "estate" | "voyage" | "museum";
 }
 
 export interface Business {

@@ -313,12 +313,16 @@ const isStock = (image: unknown) => typeof (image as Json | undefined)?.src === 
 const texts = (v: unknown): string[] => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v as Json).filter((x): x is string => typeof x === "string") : []);
 
 /** Starters whose cards are invented: a studio's sample clients and projects, a shop's sample products (shown in strangers' photos, at made-up prices). */
-const CLIENT_WORK_PRESETS = new Set<string>(["agency", "boutique", "architect", "dining", "folio", "estate", "voyage"]);
+const CLIENT_WORK_PRESETS = new Set<string>(["agency", "boutique", "architect", "dining", "folio", "estate", "voyage", "exhibit"]);
 
 /**
  * The reviews, quotes and people a site shows, with whether each sits beside a sample photo.
  * `work` adds every card title: compared only with the sample projects of CLIENT_WORK_PRESETS.
  */
+function isArtwork(image: unknown): boolean {
+  return isStock(image) && String((image as Json).src).startsWith("/stock/art-card-");
+}
+
 function peopleAndQuotes(site: unknown, work = false): { text: string; samplePhoto: boolean }[] {
   const out: { text: string; samplePhoto: boolean }[] = [];
   // A studio's or person's sample name ("Kebero Studio", "Ruth Mekonnen").
@@ -327,8 +331,14 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
   for (const page of Array.isArray(pages) ? pages : []) {
     for (const s of (Array.isArray((page as Json).sections) ? (page as Json).sections : []) as Json[]) {
       const items = (Array.isArray(s.items) ? s.items : []) as Json[];
+      // Library photos of other people's paintings and sculptures (art-card-*) are the sample works of
+      // the gallery starter: shown on a live site, they would be sold or claimed as the owner's own.
+      const shown = [s.image, ...(Array.isArray(s.images) ? s.images : []), ...items.flatMap((i) => [i.image, ...(Array.isArray(i.photos) ? i.photos : [])])];
+      if (shown.some(isArtwork)) out.push({ text: "art:sample-work", samplePhoto: true });
       if (s.type === "testimonials") for (const i of items) for (const t of texts(i.quote)) out.push({ text: t, samplePhoto: false });
       if (s.type === "quote") for (const t of texts(s.quote)) out.push({ text: t, samplePhoto: Boolean(s.name) && isStock(s.image) });
+      // A sample person quoted (an invented artist or founder) must not be credited with the owner's words.
+      if (s.type === "quote" && work) for (const t of texts(s.name)) out.push({ text: `quoted:${t}`, samplePhoto: false });
       if (s.type === "cards" && s.layout === "people") for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: isStock(i.image) });
       // A studio's sample clients: keeping them would claim work for businesses it never had.
       else if (s.type === "cards" && work)

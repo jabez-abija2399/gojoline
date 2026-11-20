@@ -375,3 +375,31 @@ describe("art direction (voyage)", () => {
     });
   });
 });
+
+describe("art direction (museum)", () => {
+  it("exhibit is valid and readable", () => {
+    const site = preset("exhibit");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("museum");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("opens on the exhibition, hangs the works with wall labels and shows the programme", () => {
+    const out = html(preset("exhibit"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain("hero-centered");
+    expect(out).toContain("card-grid");
+    expect(out).toContain("schedule-list");
+    expect(text(out)).toMatch(/Dry season, Afar.*Selam Tadesse.*Oil on canvas, 2025.*180,000/);
+    expect(text(out)).toMatch(/Sold/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("exhibit");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
