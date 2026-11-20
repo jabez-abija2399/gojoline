@@ -51,7 +51,7 @@ save("voyage", {
           eyebrow: t("Lalibela", "ላሊበላ"),
           heading: t("Churches cut down into the rock", "ወደ ዓለቱ ተቆፍረው የተሠሩ አብያተ ክርስቲያናት"),
           subheading: t("Arrive before the morning prayers and walk the trenches between them as the light comes down.", "ከጠዋት ጸሎት በፊት ይድረሱ፣ ብርሃኑ ሲወርድ በመካከላቸው ባሉት ቦዮች ይራመዱ።"),
-          image: img("tours-about-pilgrims-red-path", "Men in white shawls talking on a red-earth path between rock walls beside a green pool", "ነጭ ጋቢ የለበሱ ሰዎች በዓለት ግድግዳዎች መካከል በቀይ አፈር መንገድ ላይ ከአረንጓዴ ኩሬ አጠገብ ሲያወሩ"),
+          image: img("worship-hero-lalibela-st-george", "The rock-hewn Church of St George in Lalibela, framed by red rock walls", "በቀይ አለት ግድግዳ የተከበበው የላሊበላ ቤተ ጊዮርጊስ ውቅር ቤተ ክርስቲያን"),
         },
         {
           type: "hero",

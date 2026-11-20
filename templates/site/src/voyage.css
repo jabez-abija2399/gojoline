@@ -321,3 +321,18 @@
   background: transparent;
   color: var(--site-text);
 }
+/* Performance review fixes. The chapter drift needs a timeline that can advance: overflow:hidden made
+   the section its own scroll container and froze view() at 50%; clip keeps the crop without that. */
+[data-style="voyage"] .hero-immersive.hero-later {
+  overflow: clip;
+}
+/* Destinations are 3:2 on phones and tablets (tall crops blew the photos up 4x); tall prints on desktop. */
+@media (max-width: 1023px) {
+  [data-style="voyage"] .card-grid :is(img, .placeholder) {
+    aspect-ratio: 3 / 2;
+  }
+}
+/* The clip-path reveal repaints the photo every frame while it runs; a plain fade is enough here. */
+[data-style="voyage"] .wipe {
+  animation: none;
+}
