@@ -78,4 +78,11 @@ describe("sandbox runner helpers", () => {
     expect(verifyPreview(s, "gojo-a", `9999999999.${t.split(".")[1]}`, 1000)).toBe(false);
     for (const bad of [null, "", "abc", "1.", ".x", "x".repeat(300)]) expect(verifyPreview(s, "gojo-a", bad, 1000)).toBe(false);
   });
+
+  it("passes a publish's real-sized settings (SEO and business info JSON), within a total cap", () => {
+    const seo = JSON.stringify({ title: "Hana Beauty Salon", description: "x".repeat(5000), image: "/images/hero.webp" });
+    expect(execArgs("gojo-x", ["npm", "run", "build"], { timeoutS: 300, env: { VITE_SEO: seo, VITE_LIVE: "y".repeat(8000) } })).not.toBeNull();
+    expect(execArgs("gojo-x", ["npm"], { timeoutS: 5, env: { VITE_A: "a".repeat(32_001) } })).toBeNull();
+    expect(execArgs("gojo-x", ["npm"], { timeoutS: 5, env: { VITE_A: "a".repeat(32_000), VITE_B: "b".repeat(32_000) } })).toBeNull();
+  });
 });
