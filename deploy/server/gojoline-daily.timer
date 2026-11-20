@@ -1,0 +1,9 @@
+[Unit]
+Description=Gojoline: daily job at 00:20 Addis Ababa time (21:20 UTC)
+
+[Timer]
+OnCalendar=*-*-* 21:20:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

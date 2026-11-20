@@ -220,6 +220,12 @@ for (const w of want) {
   if (!apply) continue;
   const body = w.script ? { pattern: w.pattern, script: w.script } : { pattern: w.pattern };
   const r = have ? await cf("PUT", `/zones/${zone.id}/workers/routes/${have.id}`, body) : await cf("POST", `/zones/${zone.id}/workers/routes`, body);
+  // The catch-all for customers' own domains needs Cloudflare for SaaS; without it, skip it and
+  // keep going (sites on *.<zone> don't need it). Run again after enabling SaaS to add it.
+  if (!r.ok && w.pattern === "*/*" && r.errors.some((e) => e.code === 100327)) {
+    console.warn("  ! Skipped */* (customers' own domains): enable Cloudflare for SaaS (SSL/TLS → Custom Hostnames), then run this again. Sites on *." + base + " work without it.");
+    continue;
+  }
   if (!r.ok) fail(`route ${w.pattern}`, r);
 }
 

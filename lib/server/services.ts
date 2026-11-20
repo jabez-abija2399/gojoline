@@ -1,6 +1,9 @@
 import { DbAnalytics, MemoryAnalytics, type AnalyticsSource } from "@/lib/analytics/report";
 import { DbEventStore, MemoryEventStore, type EventStore } from "@/lib/analytics/store";
 import "server-only";
+import { PausedLLMProvider, PausedSandboxProvider } from "@/lib/providers/sandbox/paused";
+import { DockerSandboxProvider } from "@/lib/providers/sandbox/docker";
+import { PausedPublishProvider } from "@/lib/providers/publish/paused";
 import { DbAdminStats, MemoryAdminStats, type AdminStats } from "@/lib/admin/stats";
 import type { PaymentNoticeDeps } from "@/lib/billing/notify";
 import { emailSender } from "@/lib/providers/notify/pick";
@@ -62,7 +65,8 @@ import { DbShowcaseStore, MemoryShowcaseStore, type ShowcaseStore } from "@/lib/
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
 const isE2E = (env: Env) => env.E2E === "1";
-const onVercelProd = (env: Env) => env.NODE_ENV === "production" && env.VERCEL === "1";
+/** Production on Vercel or on our own server (deploy/server sets GOJO_SERVER=1): fail closed there. */
+const onVercelProd = (env: Env) => env.NODE_ENV === "production" && (env.VERCEL === "1" || env.GOJO_SERVER === "1");
 
 function pickRateLimiter(env: Env): RateLimiter {
   if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
@@ -99,7 +103,15 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
     return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock(), assets };
   }
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
-  if (!key || !env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID || !env.VERCEL_PROJECT_ID) return null;
+  // Our own server (deploy/server): workspaces run in Docker through the runner.
+  if (key && db && env.SANDBOX_RUNNER_URL && env.SANDBOX_RUNNER_SECRET) {
+    return { store, sandboxes: new DockerSandboxProvider({ url: env.SANDBOX_RUNNER_URL, secret: env.SANDBOX_RUNNER_SECRET }), llm: new AnthropicLLMProvider(key), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets };
+  }
+  if (!key || !env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID || !env.VERCEL_PROJECT_ID) {
+    // With a database, owners still see their sites, dashboards and messages; building waits.
+    if (!db) return null;
+    return { paused: true, store, sandboxes: new PausedSandboxProvider(), llm: new PausedLLMProvider(), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets };
+  }
   return {
     store,
     sandboxes: new VercelSandboxProvider({
@@ -122,13 +134,17 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   const sites = db ? new DbSiteStore(db) : new MemorySiteStore();
   const cloud: CloudStore = db ? new DbCloudStore(db) : new MemoryCloudStore(sites as MemorySiteStore);
   const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, assets: builder.assets, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined };
+  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, assets: builder.assets, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined, paused: builder.paused };
   if (isE2E(env)) return { ...base, publisher: new MemoryPublishProvider() };
   const vercel = env.VERCEL_TOKEN && env.VERCEL_TEAM_ID ? new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) : null;
   const cloudflare = pickCloudflarePublish(env);
   // Cloudflare once it's configured; sites still on the Vercel fallback move on their next publish.
   if (cloudflare) return { ...base, publisher: cloudflare, legacy: vercel };
-  return vercel ? { ...base, publisher: vercel } : null;
+  if (vercel) return { ...base, publisher: vercel };
+  // No host yet (Cloudflare not set up, Vercel paused): site lists and live addresses still show,
+  // and publishing says it's paused. With a real host above, publishSite still refuses while
+  // building is paused, but takedowns, the offline switch and domains keep working.
+  return { ...base, paused: true, publisher: new PausedPublishProvider(env.PUBLISH_BASE_DOMAIN || "") };
 }
 
 /** Sites on R2 + the sites Worker at *.PUBLISH_BASE_DOMAIN (see scripts/cloudflare-setup.mjs). */

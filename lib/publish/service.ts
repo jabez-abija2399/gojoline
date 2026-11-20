@@ -56,6 +56,8 @@ export interface PublishDeps {
   showcase?: Pick<ShowcaseStore, "savePublished">;
   /** Called after anything the showcase lists may have changed (clears its cache). */
   showcaseChanged?: () => void;
+  /** Building is paused (no sandbox): publishing answers "paused" before doing anything. */
+  paused?: boolean;
   /** Counts publishes for admin analytics (first time or an update); never fails a publish. */
   countPublish?: (kind: "first" | "update") => Promise<void>;
 }
@@ -80,6 +82,7 @@ export type PublishError =
   | "plan_limit"
   | "unfinished"
   | "form_invalid"
+  | "paused"
   | "failed";
 
 export type PublishOutcome =
@@ -110,6 +113,7 @@ export async function publishInfo(deps: PublishDeps, user: PublishUser, projectI
 export async function publishSite(deps: PublishDeps, user: PublishUser, projectId: string, requestedSlug: string): Promise<PublishOutcome> {
   const project = await deps.store.getProject(user.id, projectId);
   if (!project) return { ok: false, error: "not_found" };
+  if (deps.paused) return { ok: false, error: "paused" };
   // Verification before publish (Phase 1 trust rule).
   if (!user.verified) return { ok: false, error: "unverified" };
   const existing = await deps.sites.getByProject(user.id, projectId);

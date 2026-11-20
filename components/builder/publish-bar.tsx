@@ -17,11 +17,13 @@ interface Props {
   onLive?: (url: string | null) => void;
   /** "How was it?" after a publish: the feedback page, with where it came from. */
   feedback?: { href: string; label: string };
+  /** The Plan page, linked when the plan's live sites are all in use. */
+  planHref?: string;
   /** Places the status line and the Publish button in the top bar. */
   children: (parts: { status: React.ReactNode; button: React.ReactNode }) => React.ReactNode;
 }
 
-export function PublishBar({ t, projectId, hasVersion, disabled, onLive, feedback, children }: Props) {
+export function PublishBar({ t, projectId, hasVersion, disabled, onLive, feedback, planHref, children }: Props) {
   const [info, setInfo] = useState<Info | null>(null);
   const [loading, setLoading] = useState(false);
   const [slug, setSlug] = useState("");
@@ -224,6 +226,12 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, feedbac
               {errorText && (
                 <p id="publish-error" ref={alertRef} tabIndex={-1} role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">
                   {errorText}
+                  {phase.kind === "error" && phase.code === "plan_limit" && planHref && (
+                    <>
+                      {" "}
+                      <a href={planHref} className="font-semibold text-ink underline underline-offset-4">{t.publishErrors.planLimitLink}</a>
+                    </>
+                  )}
                 </p>
               )}
               {phase.kind === "publishing" && (

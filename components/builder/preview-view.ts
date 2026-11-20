@@ -5,10 +5,13 @@
  * - failed: that first build failed or stopped; the recovery message, still no template.
  * - live: the site (a saved version: the owner's own, or the template they picked).
  * - loading / error / empty: opening the preview of a saved site, it failed to open, or nothing yet.
+ * - paused: building is paused (no sandbox), so no preview opens; nothing failed.
  */
-export type PreviewView = "building" | "failed" | "live" | "loading" | "error" | "empty";
+export type PreviewView = "building" | "failed" | "live" | "loading" | "error" | "empty" | "paused";
 
 export interface PreviewState {
+  /** Building is paused: no sandbox, no preview. */
+  paused?: boolean;
   /** At least one saved version (a first build that finished, or a chosen template). */
   hasVersion: boolean;
   /** The AI is working on a request. */
@@ -21,6 +24,7 @@ export interface PreviewState {
 }
 
 export function previewView(s: PreviewState): PreviewView {
+  if (s.paused) return "paused";
   if (!s.hasVersion) {
     if (s.working) return "building";
     return s.firstBuildFailed ? "failed" : "empty";

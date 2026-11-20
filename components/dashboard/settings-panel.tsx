@@ -59,7 +59,7 @@ export function SettingsPanel({ t, tb, locale, projectId, bot, s, showcase }: { 
 /** Publishes the latest version again from the dashboard (no AI, no credits). */
 export function PublishNow({ t, projectId }: { t: T; projectId: string }) {
   const router = useRouter();
-  const [state, setState] = useState<"idle" | "busy" | "done" | "failed">("idle");
+  const [state, setState] = useState<"idle" | "busy" | "done" | "failed" | "paused">("idle");
   return (
     <div className="flex flex-col gap-2">
       <button
@@ -69,7 +69,8 @@ export function PublishNow({ t, projectId }: { t: T; projectId: string }) {
           if (state === "busy") return;
           setState("busy");
           const res = await fetch(`/api/projects/${projectId}/publish`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug: "" }) }).catch(() => null);
-          setState(res?.ok ? "done" : "failed");
+          const code = res && !res.ok ? ((await res.json().catch(() => null)) as { error?: string } | null)?.error : null;
+          setState(res?.ok ? "done" : code === "paused" ? "paused" : "failed");
           if (res?.ok) router.refresh();
         }}
         className={outline}
@@ -77,7 +78,7 @@ export function PublishNow({ t, projectId }: { t: T; projectId: string }) {
         <UploadCloud aria-hidden="true" className="size-4" />
         {state === "busy" ? t.publishing : t.publishNow}
       </button>
-      <p role={state === "failed" ? "alert" : "status"} className={state === "failed" ? "text-danger" : "text-ink"}>{state === "done" ? t.publishedNow : state === "failed" ? t.publishFailed : ""}</p>
+      <p role={state === "failed" ? "alert" : "status"} className={state === "failed" ? "text-danger" : "text-ink"}>{state === "done" ? t.publishedNow : state === "failed" ? t.publishFailed : state === "paused" ? t.publishPaused : ""}</p>
     </div>
   );
 }

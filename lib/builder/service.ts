@@ -26,6 +26,8 @@ export interface SizePricing {
 }
 
 export interface BuilderDeps {
+  /** No sandbox configured: owners see their sites, but nothing builds (and nothing is charged). */
+  paused?: boolean;
   store: ProjectStore;
   sandboxes: SandboxProvider;
   llm: LLMProvider;
@@ -79,7 +81,7 @@ export type BuilderEvent =
       tooBig?: boolean;
     }
   /** no_credits: fewer changes left than this request needs (`cost`), or none at all. */
-  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked"; credits?: number; cost?: number };
+  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked" | "paused"; credits?: number; cost?: number };
 
 const HISTORY_MESSAGES = 8;
 /** Longer than the longest agent run (route maxDuration is 300 s). */
@@ -143,6 +145,8 @@ export async function sendOwnerMessage(
   const { store } = deps;
   const project = await store.getProject(input.ownerId, input.projectId);
   if (!project) return input.onEvent({ type: "error", code: "not_found" });
+  // Before any lock, AI or charge: a paused builder costs the owner nothing.
+  if (deps.paused) return input.onEvent({ type: "error", code: "paused" });
   // Clearly harmful requests (phishing, scams...) never reach the agent and cost no credit.
   if (keywordCheck(input.text).length) return input.onEvent({ type: "error", code: "blocked" });
   const token = await deps.lock.acquire(`project:${project.id}`, LOCK_TTL_MS);

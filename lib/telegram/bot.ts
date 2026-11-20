@@ -142,6 +142,8 @@ async function edit(deps: BotDeps, link: TelegramLink, projectId: string, reques
 
 async function runEdit(deps: BotDeps, link: TelegramLink, projectId: string, request: string, say: (html: string) => Promise<void>, confirmed?: Confirmed) {
   const t = botText[link.locale];
+  // Building paused: say so before using the owner's AI limit (nothing is charged either way).
+  if (deps.builder?.paused) return say(t.paused);
   // Bot edits share the web builder's per-owner AI limit (no separate allowance).
   if (!(await deps.limiter.hit(`ai-message:o:${link.userId}`, Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR) || 40, 3_600_000)).allowed) return say(t.tooMany);
   await say(t.working);

@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 type Call = { method: string; path: string; body: string };
 
 /** A fake Cloudflare API with the zone as it is today: a wildcard to Vercel, DNS only. */
-function fakeApi() {
+function fakeApi(opts: { noSaas?: boolean } = {}) {
   const calls: Call[] = [];
   const records = [
     { id: "r1", type: "A", name: "afridea.et", content: "216.198.79.1", proxied: false },
@@ -36,6 +36,11 @@ function fakeApi() {
       if (path === "/accounts/acc/r2/buckets/gojoline") return res.end(ok({ name: "gojoline" }));
       if (path === "/zones/z1/dns_records" && req.method === "GET") return res.end(ok(records));
       if (path === "/zones/z1/workers/routes" && req.method === "GET") return res.end(ok([]));
+      // A zone without Cloudflare for SaaS refuses the catch-all route (as afridea.et did on 2026-11-20).
+      if (opts.noSaas && path === "/zones/z1/workers/routes" && req.method === "POST" && body.includes('"pattern":"*/*"')) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ success: false, errors: [{ code: 100327, message: "You cannot use a wildcard host without Cloudflare for SaaS." }] }));
+      }
       if (path.endsWith("/fallback_origin") && req.method === "GET") return res.end(JSON.stringify({ success: false, errors: [{ code: 1, message: "none" }] }));
       res.end(ok({}));
     });
@@ -46,8 +51,8 @@ function fakeApi() {
 let server: Server | null = null;
 afterEach(() => server?.close());
 
-async function run(args: string[], extraEnv: Record<string, string> = {}) {
-  const api = fakeApi();
+async function run(args: string[], extraEnv: Record<string, string> = {}, apiOpts: { noSaas?: boolean } = {}) {
+  const api = fakeApi(apiOpts);
   server = api.server;
   await new Promise<void>((r) => api.server.listen(0, "127.0.0.1", r));
   const port = (api.server.address() as AddressInfo).port;
@@ -96,5 +101,12 @@ describe("cloudflare-setup", () => {
     expect(added).toEqual(expect.arrayContaining(["gojoline.afridea.et", "shop.afridea.et"]));
     expect(added).not.toContain("*.afridea.et");
     await expect(run(["--apply"], { VERCEL_TOKEN: "bad", VERCEL_TEAM_ID: "team" })).rejects.toThrow(/Vercel/);
+  }, 20_000);
+
+  it("without Cloudflare for SaaS, skips only the customers'-domains route and still adds every exclusion", async () => {
+    const { out, calls } = await run(["--apply"], {}, { noSaas: true });
+    const routes = calls.filter((c) => c.method === "POST" && c.path === "/zones/z1/workers/routes").map((c) => JSON.parse(c.body).pattern);
+    expect(routes).toEqual(expect.arrayContaining(["*.afridea.et/*", "afridea.et/*", "gojoline.afridea.et/*"]));
+    expect(out).toContain("Done.");
   }, 20_000);
 });

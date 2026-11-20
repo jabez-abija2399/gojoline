@@ -33,4 +33,8 @@ describe("what the preview area shows", () => {
   it("a saved site whose preview could not open shows the error", () => {
     expect(previewView({ ...base, hasVersion: true, error: true })).toBe("error");
   });
+
+  it("says paused while building is paused, whatever else is going on (never the retry error)", () => {
+    for (const hasVersion of [true, false]) for (const error of [true, false]) expect(previewView({ paused: true, hasVersion, working: false, firstBuildFailed: false, url: null, loading: true, error })).toBe("paused");
+  });
 });
