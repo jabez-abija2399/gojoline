@@ -592,6 +592,7 @@ export const en = {
       failed: "Publishing didn't work this time. Please try again.",
       too_many: "You've published many times. Please wait a little.",
       unavailable: "Publishing isn't working right now. Please try again later.",
+      plan_limit: "You already have as many live sites as your plan allows. Upgrade on the Plan page for more live sites, or change your live site instead.",
     },
     domainTitle: "Your own web address",
     domainPaid: "Use your own address, like selamcoffee.com, on the Starter or Business plan.",
