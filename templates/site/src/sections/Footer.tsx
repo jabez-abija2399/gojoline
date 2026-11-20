@@ -13,10 +13,10 @@ export function Footer() {
   const social = Object.entries(b.social ?? {}).filter((e): e is [string, string] => typeof e[1] === "string");
   const hasContact = Boolean(b.phone || b.email || b.address);
   return (
-    <footer className="bg-accent text-on-accent">
+    <footer className="site-footer bg-accent text-on-accent">
       <div className="container-site grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:py-16">
         <div className="flex flex-col gap-3">
-          <p className="font-heading text-2xl font-bold">{text(site.name)}</p>
+          <p className="footer-name font-heading text-2xl font-bold">{text(site.name)}</p>
           {site.tagline && <p className="max-w-[40ch]">{text(site.tagline)}</p>}
           {social.length > 0 && (
             <ul className="flex flex-wrap gap-x-4">
@@ -85,7 +85,7 @@ export function Footer() {
       </div>
       {/* The name, very large, to close the page. */}
       {/* The elegant and bold styles close with the name, very large; drawn by CSS from data-name, so it's decoration only. */}
-      {(site.theme.style === "editorial" || site.theme.style === "bold") && <p aria-hidden="true" data-name={text(site.name)} style={{ "--chars": [...text(site.name)].length } as React.CSSProperties} className="footer-wordmark container-site" />}
+      {(site.theme.style === "editorial" || site.theme.style === "bold" || site.theme.style === "grand") && <p aria-hidden="true" data-name={text(site.name)} style={{ "--chars": [...text(site.name)].length } as React.CSSProperties} className="footer-wordmark container-site" />}
     </footer>
   );
 }

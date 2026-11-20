@@ -8,9 +8,9 @@ export function Cta({ section }: { section: CtaSection }) {
   const { text, href } = useSite();
   const photo = Boolean(section.image?.src);
   return (
-    <section id={section.id} className="section">
+    <section id={section.id} className="cta-section section">
       <div className="container-site">
-        <div className={`on-dark reveal relative isolate flex flex-col items-start gap-6 overflow-hidden rounded-site px-6 py-12 sm:px-12 md:flex-row md:items-center md:justify-between md:py-16 ${photo ? "bg-black text-white md:py-24" : "bg-accent text-on-accent"}`}>
+        <div className={`cta-band on-dark reveal relative isolate flex flex-col items-start gap-6 overflow-hidden rounded-site px-6 py-12 sm:px-12 md:flex-row md:items-center md:justify-between md:py-16 ${photo ? "bg-black text-white md:py-24" : "bg-accent text-on-accent"}`}>
           {/* Two faint circles in the band's own text colour: depth, and text over them stays readable in any theme. */}
           {photo && (
             <>

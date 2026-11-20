@@ -93,3 +93,42 @@ describe("art directions (organic, cinematic, brutal, calm, kinetic)", () => {
     expect(text(html(site))).toMatch(/Responsible pharmacist/);
   });
 });
+
+describe("art direction (grand)", () => {
+  it("resort is valid and readable, with the gold readable as small text", () => {
+    const site = preset("resort");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("grand");
+    expect(themeWarnings(site.theme)).toEqual([]);
+    // grand sets labels in the primary colour: a pale gold is refused.
+    expect(themeWarnings({ ...site.theme, primary: "#C9A96E" }).join(" ")).toMatch(/small text on theme.background \(grand\)/);
+  });
+
+  it("a full-screen photo further down the page is a second heading, not a second h1", () => {
+    const out = html(preset("resort"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(1);
+    expect(out).toMatch(/<h2 class="headline split[^"]*"><span[^>]*>.*The/s);
+    // The header sits on the first photo only.
+    expect(out.match(/header-overlay/g)).toHaveLength(1);
+  });
+
+  it("suites, experiences, guests and the closing call carry the hooks the art direction styles", () => {
+    const out = html(preset("resort"));
+    expect(out.match(/class="feature-row /g)).toHaveLength(3);
+    expect(out).toContain("about-grid");
+    expect(out.match(/class="testimonial reveal/g)).toHaveLength(3);
+    expect(out).toContain('class="cta-section section"');
+    expect(out).toContain("footer-wordmark");
+    expect(text(out)).toMatch(/The Acacia Suite.*28,000/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("resort");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

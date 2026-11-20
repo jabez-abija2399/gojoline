@@ -383,6 +383,21 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  resort: {
+    category: "travel",
+    designedFor: {
+      en: ["Luxury and boutique hotels", "Resorts and lodges", "Spa retreats", "Private villas"],
+      am: ["ቅንጡና ልዩ ሆቴሎች", "ሪዞርቶችና ሎጆች", "የስፓ ማረፊያዎች", "የግል ቪላዎች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Suites with nightly rates", am: "ስዊቶች ከአዳር ዋጋ ጋር" } },
+      { key: "booking", label: { en: "Private reservations", am: "የግል ቦታ ማስያዣ" } },
+      { key: "cards", label: { en: "Journeys from the hotel", am: "ከሆቴሉ የሚደረጉ ጉዞዎች" } },
+      "reviews",
+      "faq",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

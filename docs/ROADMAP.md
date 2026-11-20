@@ -134,6 +134,9 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Slice 1: three art directions (luxe, swiss, bento), poster and bento heroes, a price table with units, a highlight colour, two heading fonts and a narrow Ge'ez cut; fashion, construction and garage templates (17 in all); design, performance and security reviews fixed
 - [x] Slice 2: five more art directions (organic, cinematic, brutal, calm, kinetic), pricing plans, a week timetable and prints; bakery, studio, training, pharmacy and gym templates (22 in all); size-matched fallback faces for the Latin heading fonts; design, performance and security reviews fixed (2026-11-19)
 
+## Luxury hotel template (2026-11-20)
+- [x] `grand` art direction (luxury hospitality: oversized serif, champagne hairlines and frames, asymmetric photos that open like curtains and drift in their frames, numbered suites, guests' words between hairlines, full-width photo call to action, phone menu as a sheet of serif links) and a 23rd starter, `resort` (a luxury hotel: suites, experiences, a destination band, journeys, reservations), in English and Amharic, from photos already in the library; design, performance and security reviews run and fixed
+
 ## User guide (2026-11-19)
 - [x] “How to use Gojoline” at `/{lang}/guide`: 720p video with captions and chapters (en, am), sticky contents on large screens and a folding one on phones that jumps the video, ten sections with steps, tips and real screenshots, questions, “Build your website”; real plan prices, change sizes and limits; links from the sidebar, the empty start screen, the dashboard Home, the public footer and the sitemap; unit tests (chapter and time parsing, WebVTT, files) and e2e (en/am at 360 and 1366, contents jump, captions, preload none, entry points, axe, no sideways scroll)
 
@@ -181,6 +184,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Generated-site speed after slice 2 of the art directions (performance review, 2026-11-19): Amharic home pages of gym, studio and training sit on the 2.0 s LCP line (1.94 to 2.10 s, devtools throttling; the same as slice 1). Next levers, best first: subset the 79 KB Ge'ez font per site at build time; ship only the site's own art direction's CSS (every site now carries all twelve, about 3 KB gzip of render-blocking CSS); a 160 px photo size for menu thumbnails (bakery wastes about 31 KB) and a 320 px one for prints; the `.wipe` reveal animates `clip-path` (not composited). The week timetable's day reveal never runs on phones (its scroll timeline is the sideways grid); harmless, days stay visible.
 - The Amharic of the five slice-2 starters (bakery, studio, training, pharmacy, gym) and their gallery strings needs the native-speaker review.
 - Amharic in the motion-kit additions (tabs, giving boxes, ribbons, announcements, prayer and service times, stamps) needs the native-speaker review with the rest of the templates.
+- Amharic in the `resort` template (`scripts/presets/resort.mjs`, 2026-11-20) and its gallery strings (`resort` in `lib/landing/template-info.ts`, `grand` style name "ግርማ ያለው") needs the same native-speaker review.
 - Template ideas from the writers, not built: a "from" note on service prices, an action on services and menu sections, a focal point for cropped photos, an included/not-included list for tours.
 - Amharic quality of generated sites needs a native-speaker review (eval outputs in `evals/.runs/`); target ≥ 90%.
 
