@@ -1,4 +1,4 @@
-import { ArrowRight, Check, MessageCircle, Send, Wallet } from "lucide-react";
+import { ArrowRight, Check, MessageCircle, PlayCircle, Send, Wallet } from "lucide-react";
 
 const PILLAR_ICONS = [MessageCircle, Send, Wallet];
 import Link from "next/link";
@@ -27,6 +27,11 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates, 
           </span>
         </h1>
         <p className="max-w-[56ch] text-ink-muted sm:text-lg">{t.subtitle}</p>
+        {/* For visitors who'd like to see it working before signing up: the guide video. */}
+        <Link href={`/${locale}/guide`} className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 font-medium text-ink underline decoration-line underline-offset-4 hover:bg-white/60 hover:decoration-ink">
+          <PlayCircle aria-hidden="true" className="size-5 shrink-0" />
+          {t.watchGuide}
+        </Link>
       </section>
       <div className="mx-auto mt-5 max-w-[90rem] sm:px-6 md:mt-6">
         <LandingStage

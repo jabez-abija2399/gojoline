@@ -29,6 +29,7 @@ export const en = {
       titleEnd: "home online",
       subtitle: "Create a website for your business by chatting, in Amharic or English. Bookings reach you on Telegram. Paid in Birr.",
       note: "Free to start. No card needed.",
+      watchGuide: "Watch how it works (5 min)",
       promptLabel: "Describe your business",
       placeholder: "Ask Gojoline to build a website for your café, shop, clinic…",
       chipsLabel: "Gojoline for",
