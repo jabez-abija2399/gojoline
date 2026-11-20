@@ -36,6 +36,10 @@ test("create a site, edit it by chat, see versions and restore", async ({ page }
 
   await page.getByRole("tab", { name: "Advanced" }).filter({ visible: true }).click();
   await expect(page.locator("pre:visible")).toContainText('"en": "Selam Coffee"');
+  // View only: copying and the right-click menu are blocked, and the file shows with line numbers.
+  const blocked = await page.locator("pre:visible").evaluate((el) => ["copy", "contextmenu"].map((type) => !el.dispatchEvent(new Event(type, { bubbles: true, cancelable: true }))));
+  expect(blocked).toEqual([true, true]);
+  await expect(page.locator("pre:visible")).toHaveCSS("user-select", "none");
 
   // The project is named after the site.
   await page.goto("/en/build");
