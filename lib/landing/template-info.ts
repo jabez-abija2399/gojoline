@@ -490,6 +490,20 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  voyage: {
+    category: "travel",
+    designedFor: {
+      en: ["Travel companies", "Tour operators and expeditions", "Trekking and adventure guides", "Lodges with excursions"],
+      am: ["የጉዞ ድርጅቶች", "አስጎብኚዎችና ጉዞ አዘጋጆች", "የእግር ጉዞና የጀብዱ መሪዎች", "ጉብኝት የሚያዘጋጁ ሎጆች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Journeys with days and prices", am: "ጉዞዎች ከቀናትና ከዋጋ ጋር" } },
+      { key: "booking", label: { en: "Journey enquiries", am: "የጉዞ ጥያቄዎች" } },
+      { key: "cards", label: { en: "Destinations", am: "መዳረሻዎች" } },
+      "reviews",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

@@ -113,7 +113,7 @@ export const siteSchema = z
     tagline: text.optional(),
     announcement: z.array(text).min(1).max(6).optional(),
     languages: z.array(z.enum(["en", "am"])).min(1).max(2).refine((l) => new Set(l).size === l.length, "Languages must be unique"),
-    theme: z.object({ primary: hex, accent: hex, background: hex, text: hex, highlight: hex.optional(), font: z.enum(["modern", "classic", "friendly", "elegant", "grotesk", "condensed", "editorial"]), radius: z.enum(["none", "small", "medium", "large"]), style: z.enum(["warm", "editorial", "bold", "clean", "luxe", "swiss", "bento", "organic", "cinematic", "brutal", "calm", "kinetic", "grand", "avant", "precise", "monochrome", "drafting", "noir", "folio", "estate"]).optional() }).strict(),
+    theme: z.object({ primary: hex, accent: hex, background: hex, text: hex, highlight: hex.optional(), font: z.enum(["modern", "classic", "friendly", "elegant", "grotesk", "condensed", "editorial"]), radius: z.enum(["none", "small", "medium", "large"]), style: z.enum(["warm", "editorial", "bold", "clean", "luxe", "swiss", "bento", "organic", "cinematic", "brutal", "calm", "kinetic", "grand", "avant", "precise", "monochrome", "drafting", "noir", "folio", "estate", "voyage"]).optional() }).strict(),
     business: z
       .object({
         phone: z.string().max(40).optional(),

@@ -150,7 +150,7 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - [x] Fine dining: `noir` (the page turned dark from the theme's own colours) + `dining` ("ESAT", photos from the café and banquet library); design, performance and security reviews run and fixed
 - [x] Creative portfolio: `folio` (a developer's notebook, kinetic name, interactive index, cursor) + `folio` starter beside `personal`; design, performance and security reviews run and fixed
 - [x] Luxury real estate: `estate` (a property magazine) + `estate` starter ("Gara House Properties") beside `real-estate`; design, performance and security reviews run and fixed
-- [ ] Immersive travel: a story-told-by-scrolling direction beside `tours`
+- [x] Immersive travel: `voyage` (chapters as full-screen photos) + `voyage` starter ("Meda Journeys") beside `tours`; design, performance and security reviews run and fixed
 - [ ] Art gallery or museum: blocked on photos (the library has no artwork or gallery photos and new downloads are blocked here; see Blocked)
 
 ## User guide (2026-11-19)
@@ -204,6 +204,7 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - Resort photos are heavier than the hotel's (hero 480 px 28 KB vs 16 KB, about photo 34 KB): re-encode those stock files or pick lighter ones when real luxury-hotel photos are added to the library.
 <<<<<<< HEAD
 - Form `number` fields have no minimum or maximum: a booking can ask for 0, -3 or 999999999 guests (`lib/cloud/forms.ts` checks the format only). Add optional `min`/`max` to `formFieldSchema`, render them, enforce them in `checkSubmission`, and set 1 to 20 on booking guest fields (security review, 2026-11-20).
+- Amharic in the `voyage` template (`scripts/presets/voyage.mjs`, 2026-11-20) and its gallery strings (`voyage` style name "ታሪክ ተራኪ") needs the same native-speaker review.
 - Amharic in the `estate` template (`scripts/presets/estate.mjs`, 2026-11-20) and its gallery strings (`estate` style name "መጽሔት") needs the same native-speaker review.
 - Amharic in the `folio` template (`scripts/presets/folio.mjs`, 2026-11-20) and its gallery strings (`folio` style name "ማስታወሻ ደብተር") needs the same native-speaker review.
 - Amharic in the `dining` template (`scripts/presets/dining.mjs`, 2026-11-20) and its gallery strings (`noir` style name "የሻማ ብርሃን") needs the same native-speaker review.

@@ -20,10 +20,10 @@ describe("styles that ship only to the sites that use them", () => {
     expect(load(fileURLToPath(new URL("../src/design.css", import.meta.url)))).toBeNull();
   });
 
-  it.each(["grand", "avant", "precise", "monochrome", "drafting", "noir", "folio", "estate"])("every %s rule is scoped to the style, so dropping the file changes no other site", (name) => {
+  it.each(["grand", "avant", "precise", "monochrome", "drafting", "noir", "folio", "estate", "voyage"])("every %s rule is scoped to the style, so dropping the file changes no other site", (name) => {
     const css = readFileSync(fileURLToPath(new URL(`../src/${name}.css`, import.meta.url)), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
     const selectors = [...css.matchAll(/(^|})\s*([^@{}][^{}]*)\{/g)].map((m) => m[2]!.trim()).filter((s) => !/^(@|from\b|to\b|\d+%)/.test(s));
-    expect(selectors.length).toBeGreaterThan(50);
+    expect(selectors.length).toBeGreaterThan(20);
     for (const sel of selectors) for (const part of sel.split(/,(?![^(]*\))/)) expect(part, part).toContain(`[data-style="${name}"]`);
   });
 

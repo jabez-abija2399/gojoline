@@ -708,5 +708,27 @@
         "height": 933
       }
     }
+  },
+  "voyage": {
+    "en": {
+      "src": "/showcase/voyage-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/voyage-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/voyage-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/voyage-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }

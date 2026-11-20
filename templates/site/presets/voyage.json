@@ -1,0 +1,334 @@
+{
+  "name": { "en": "Meda Journeys", "am": "ሜዳ ጉዞዎች" },
+  "tagline": { "en": "Private journeys through the Ethiopian highlands, the rock churches and the Danakil", "am": "በኢትዮጵያ ደጋማ ቦታዎች፣ በውቅር አብያተ ክርስቲያናትና በዳናኪል የግል ጉዞዎች" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#9A3F25", "accent": "#12343B", "background": "#EFE7DA", "text": "#201A14", "font": "editorial", "radius": "none", "style": "voyage" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Addis Ababa", "am": "አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Every day", "am": "በየቀኑ" },
+        "time": { "en": "8:00 am to 8:00 pm", "am": "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "The journey", "am": "ጉዞው" },
+      "description": { "en": "Meda Journeys: private journeys through Ethiopia's highlands, rock churches and the Danakil, planned around you.", "am": "ሜዳ ጉዞዎች፦ በእርስዎ ልክ የሚታቀዱ በኢትዮጵያ ደጋማ ቦታዎች፣ ውቅር አብያተ ክርስቲያናትና ዳናኪል የግል ጉዞዎች።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "immersive",
+          "eyebrow": { "en": "Ethiopia, the long way round", "am": "ኢትዮጵያ፣ በረጅሙ መንገድ" },
+          "heading": { "en": "Where the road runs out, the journey begins", "am": "መንገዱ ሲያልቅ ጉዞው ይጀምራል" },
+          "image": {
+            "src": "/stock/tours-hero-simien-misty-peaks.webp",
+            "alt": { "en": "Layered misty rock pinnacles and table mountains above a green hill", "am": "ከአረንጓዴ ኮረብታ በላይ በጭጋግ የተሸፈኑ የዓለት ጫፎችና ጠፍጣፋ ተራሮች" }
+          },
+          "primaryAction": {
+            "label": { "en": "Plan a journey", "am": "ጉዞ ያቅዱ" },
+            "href": "/plan"
+          },
+          "secondaryAction": {
+            "label": { "en": "Read the journey", "am": "ጉዞውን ያንብቡ" },
+            "href": "#lalibela"
+          }
+        },
+        {
+          "type": "about",
+          "id": "how",
+          "eyebrow": { "en": "How we travel", "am": "እንዴት እንደምንጓዝ" },
+          "heading": { "en": "Slowly, with people who were born here", "am": "በዝግታ፣ እዚህ ከተወለዱ ሰዎች ጋር" },
+          "body": { "en": "Every journey is private and planned around you: the pace, the comfort and the days you want to stay put.\n\nYour guides grew up in the places you visit, and they know which roads to take and which to leave alone.", "am": "እያንዳንዱ ጉዞ የግል ሲሆን በእርስዎ ልክ ይታቀዳል፦ ፍጥነቱ፣ ምቾቱና ባሉበት መቆየት የሚፈልጓቸው ቀናት።\n\nመሪዎችዎ በሚጎበኟቸው ቦታዎች ያደጉ ናቸው፤ የትኛውን መንገድ መያዝና የትኛውን መተው እንዳለባቸው ያውቃሉ።" },
+          "image": {
+            "src": "/stock/tours-about-men-viewpoint-tree.webp",
+            "alt": { "en": "Three men in white shawls resting under a tree at a viewpoint over a highland town", "am": "ነጭ ጋቢ የለበሱ ሦስት ሰዎች ደጋማ ከተማን በሚያሳይ ቦታ ከዛፍ ሥር ሲያርፉ" }
+          },
+          "imageSide": "start"
+        },
+        {
+          "type": "hero",
+          "id": "lalibela",
+          "variant": "immersive",
+          "eyebrow": { "en": "Lalibela", "am": "ላሊበላ" },
+          "heading": { "en": "Churches cut down into the rock", "am": "ወደ ዓለቱ ተቆፍረው የተሠሩ አብያተ ክርስቲያናት" },
+          "subheading": { "en": "Arrive before the morning prayers and walk the trenches between them as the light comes down.", "am": "ከጠዋት ጸሎት በፊት ይድረሱ፣ ብርሃኑ ሲወርድ በመካከላቸው ባሉት ቦዮች ይራመዱ።" },
+          "image": {
+            "src": "/stock/tours-about-pilgrims-red-path.webp",
+            "alt": { "en": "Men in white shawls talking on a red-earth path between rock walls beside a green pool", "am": "ነጭ ጋቢ የለበሱ ሰዎች በዓለት ግድግዳዎች መካከል በቀይ አፈር መንገድ ላይ ከአረንጓዴ ኩሬ አጠገብ ሲያወሩ" }
+          }
+        },
+        {
+          "type": "hero",
+          "id": "simien",
+          "variant": "immersive",
+          "eyebrow": { "en": "The Simien Mountains", "am": "የሰሜን ተራሮች" },
+          "heading": { "en": "The roof of Africa, on foot", "am": "የአፍሪካ ጣሪያ፣ በእግር" },
+          "subheading": { "en": "Walk the escarpment with the geladas and sleep where the cliffs drop a kilometre below you.", "am": "ከጭላዳ ዝንጀሮዎች ጋር በገደሉ ጠርዝ ይራመዱ፣ ገደሎቹ ከበታችዎ በሚወርዱበት ቦታ ይደሩ።" },
+          "image": {
+            "src": "/stock/tours-hero-highlands-sunset.webp",
+            "alt": { "en": "Sunset over highland ridges with a road winding through the valley", "am": "በሸለቆው ውስጥ የሚጠመዘዝ መንገድ ያለበት ደጋማ ሸንተረሮች ላይ የፀሐይ መጥለቅ" }
+          }
+        },
+        {
+          "type": "cards",
+          "id": "destinations",
+          "layout": "grid",
+          "eyebrow": { "en": "Destinations", "am": "መዳረሻዎች" },
+          "heading": { "en": "Places that change you", "am": "የሚለውጡ ቦታዎች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/hotel-hero-lodge-pool-dusk.webp",
+                "alt": { "en": "A thatched lodge lit by lanterns at dusk, reflected in dark water", "am": "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሎጅ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ" }
+              },
+              "title": { "en": "Lake Tana", "am": "ጣና ሐይቅ" },
+              "subtitle": { "en": "Island monasteries by boat", "am": "በጀልባ የደሴት ገዳማት" },
+              "meta": [
+                { "en": "2 days", "am": "2 ቀን" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/tours-card-lalibela-monk.webp",
+                "alt": { "en": "A monk in a yellow robe reading beside a carved cross-shaped window", "am": "በተቀረጸ የመስቀል ቅርጽ መስኮት አጠገብ ቢጫ ልብስ የለበሱ መነኩሴ ሲያነቡ" }
+              },
+              "title": { "en": "Lalibela", "am": "ላሊበላ" },
+              "subtitle": { "en": "Eleven churches of stone", "am": "አሥራ አንድ የድንጋይ አብያተ ክርስቲያናት" },
+              "meta": [
+                { "en": "3 days", "am": "3 ቀን" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/tours-card-blue-nile-falls.webp",
+                "alt": { "en": "The Blue Nile Falls in full flow surrounded by green forest", "am": "በአረንጓዴ ደን የተከበበው የዓባይ ፏፏቴ በሙላት ሲፈስ" }
+              },
+              "title": { "en": "The Blue Nile", "am": "ዓባይ" },
+              "subtitle": { "en": "Smoke that thunders", "am": "የሚያጨስ ውኃ" },
+              "meta": [
+                { "en": "2 days", "am": "2 ቀን" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/tours-gallery-gondar-castle.webp",
+                "alt": { "en": "The castle of Fasilides in Gondar framed by two tall trees", "am": "በሁለት ረጃጅም ዛፎች መካከል የሚታየው የጎንደር የፋሲለደስ ግንብ" }
+              },
+              "title": { "en": "Gondar", "am": "ጎንደር" },
+              "subtitle": { "en": "Castles of the emperors", "am": "የነገሥታቱ ግንቦች" },
+              "meta": [
+                { "en": "2 days", "am": "2 ቀን" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/tours-gallery-gelada.webp",
+                "alt": { "en": "A gelada with its red chest patch sitting on a rock in front of wildflowers", "am": "ቀይ ደረት ያለው ጭላዳ ዝንጀሮ ከዱር አበቦች ፊት በዓለት ላይ ተቀምጦ" }
+              },
+              "title": { "en": "Simien wildlife", "am": "የሰሜን የዱር እንስሳት" },
+              "subtitle": { "en": "Geladas, ibex and lammergeier", "am": "ጭላዳ፣ ዋልያና ጥንብ አንሳ" },
+              "meta": [
+                { "en": "3 days", "am": "3 ቀን" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/tours-gallery-spice-market.webp",
+                "alt": { "en": "A woman sorting red and green chillies and ginger at an open-air market", "am": "በክፍት ገበያ ቀይና አረንጓዴ ቃሪያና ዝንጅብል የምትለይ ሴት" }
+              },
+              "title": { "en": "Harar and the markets", "am": "ሐረርና ገበያዎቹ" },
+              "subtitle": { "en": "Spice, coffee and the old walls", "am": "ቅመም፣ ቡናና ጥንታዊው ቅጥር" },
+              "meta": [
+                { "en": "3 days", "am": "3 ቀን" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hero",
+          "id": "danakil",
+          "variant": "immersive",
+          "eyebrow": { "en": "The Danakil", "am": "ዳናኪል" },
+          "heading": { "en": "Salt, fire and the oldest road", "am": "ጨው፣ እሳትና ጥንታዊው መንገድ" },
+          "subheading": { "en": "Walk beside the salt caravans at dawn, then climb to a lava lake by night.", "am": "ጎህ ሲቀድ ከጨው ቅፍለቶቹ ጋር ይራመዱ፣ ማታ ደግሞ ወደ እሳተ ገሞራ ሐይቅ ይውጡ።" },
+          "image": {
+            "src": "/stock/tours-gallery-salt-caravan.webp",
+            "alt": { "en": "A long camel salt caravan crossing cracked salt flats under a wide blue sky", "am": "ሰፊ ሰማያዊ ሰማይ ሥር የተሰነጠቀውን የጨው ሜዳ የሚያቋርጥ ረጅም የግመል ጨው ቅፍለት" }
+          }
+        },
+        {
+          "type": "cards",
+          "id": "journeys",
+          "layout": "feature",
+          "eyebrow": { "en": "Journeys", "am": "ጉዞዎች" },
+          "heading": { "en": "Two ways to begin", "am": "ለመጀመር ሁለት መንገዶች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/tours-card-simien-escarpment.webp",
+                "alt": { "en": "Sunlit green terraced escarpments and deep valleys of the Simien Mountains", "am": "በፀሐይ የበሩ አረንጓዴ የሰሜን ተራሮች ገደሎችና ጥልቅ ሸለቆዎች" }
+              },
+              "subtitle": { "en": "The north", "am": "ሰሜን" },
+              "title": { "en": "The Historic Route", "am": "ታሪካዊው መስመር" },
+              "meta": [
+                { "en": "12 days", "am": "12 ቀን" },
+                { "en": "Lalibela · Gondar · Simien · Bahir Dar", "am": "ላሊበላ · ጎንደር · ሰሜን · ባሕር ዳር" }
+              ],
+              "description": { "en": "The rock churches, the castles and four days on foot in the mountains.", "am": "ውቅር አብያተ ክርስቲያናት፣ ግንቦቹና በተራሮች ላይ አራት ቀን በእግር።" },
+              "price": { "amountMinor": 19800000, "currency": "ETB" },
+              "priceNote": { "en": "per person, from", "am": "ለአንድ ሰው፣ ጀምሮ" },
+              "action": {
+                "label": { "en": "Plan a journey", "am": "ጉዞ ያቅዱ" },
+                "href": "/plan"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/tours-card-danakil-dallol.webp",
+                "alt": { "en": "Yellow, green and rust-coloured sulphur springs at Dallol", "am": "በዳሎል ቢጫ፣ አረንጓዴና የዝገት ቀለም ያላቸው የድኝ ምንጮች" }
+              },
+              "subtitle": { "en": "The east", "am": "ምሥራቅ" },
+              "title": { "en": "Fire and Salt", "am": "እሳትና ጨው" },
+              "meta": [
+                { "en": "6 days", "am": "6 ቀን" },
+                { "en": "Mekele · Dallol · Erta Ale", "am": "መቀሌ · ዳሎል · ኤርታ አሌ" }
+              ],
+              "description": { "en": "Salt flats, sulphur springs and a lava lake, with camps run by Afar families.", "am": "የጨው ሜዳዎች፣ የድኝ ምንጮችና እሳተ ገሞራ ሐይቅ፣ በአፋር ቤተሰቦች በሚተዳደሩ ሰፈሮች።" },
+              "price": { "amountMinor": 12600000, "currency": "ETB" },
+              "priceNote": { "en": "per person, from", "am": "ለአንድ ሰው፣ ጀምሮ" },
+              "action": {
+                "label": { "en": "Plan a journey", "am": "ጉዞ ያቅዱ" },
+                "href": "/plan"
+              }
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "id": "route",
+          "variant": "numbered",
+          "eyebrow": { "en": "Your days", "am": "ቀኖችዎ" },
+          "heading": { "en": "How a journey unfolds", "am": "ጉዞው እንዴት እንደሚሄድ" },
+          "image": {
+            "src": "/stock/hotel-gallery-bush-dining-acacia.webp",
+            "alt": { "en": "A long table set for dinner in open grassland beside a lone acacia", "am": "ከብቸኛ ግራር አጠገብ በሜዳ ላይ ለእራት የተዘጋጀ ረጅም ገበታ" }
+          },
+          "items": [
+            {
+              "title": { "en": "We talk", "am": "እናወራለን" },
+              "description": { "en": "A call about what you want to see, how you like to travel and when.", "am": "ምን ማየት እንደሚፈልጉ፣ እንዴትና መቼ መጓዝ እንደሚወዱ በስልክ እንወያያለን።" }
+            },
+            {
+              "title": { "en": "We draw the route", "am": "መንገዱን እንነድፋለን" },
+              "description": { "en": "A day-by-day plan with the places to sleep, sent within the week.", "am": "የሚያድሩባቸውን ቦታዎች ጨምሮ በቀን በቀን የተዘጋጀ ዕቅድ፣ በሳምንቱ ውስጥ።" }
+            },
+            {
+              "title": { "en": "You travel", "am": "እርስዎ ይጓዛሉ" },
+              "description": { "en": "Your guide and driver are with you from the airport to the last evening.", "am": "መሪዎና ሹፌርዎ ከአየር ማረፊያው እስከ መጨረሻው ምሽት አብረውዎ ናቸው።" }
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "id": "travellers",
+          "eyebrow": { "en": "Travellers", "am": "ተጓዦች" },
+          "heading": { "en": "After the journey", "am": "ከጉዞው በኋላ" },
+          "items": [
+            {
+              "quote": { "en": "We stood in a church cut from the rock as the priests began to sing. Nothing has come close since.", "am": "ቀሳውስቱ መዘመር ሲጀምሩ ከዓለት በተፈለፈለ ቤተ ክርስቲያን ውስጥ ቆመን ነበር። ከዚያ ወዲህ የሚቀርበው ነገር አላየንም።" },
+              "name": "Anna & Tom",
+              "role": { "en": "The Historic Route", "am": "ታሪካዊው መስመር" }
+            },
+            {
+              "quote": { "en": "Our guide knew every family on the escarpment. We were guests, not tourists.", "am": "መሪያችን በገደሉ ጠርዝ ያሉትን ቤተሰቦች ሁሉ ያውቅ ነበር። እንግዶች እንጂ ጎብኚዎች አልነበርንም።" },
+              "name": "Kebede A.",
+              "role": { "en": "Simien trek", "am": "የሰሜን ተራሮች ጉዞ" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "begin",
+          "heading": { "en": "Your journey starts with a conversation", "am": "ጉዞዎ በውይይት ይጀምራል" },
+          "body": { "en": "Tell us where you dream of going. We will draw the route.", "am": "ለመሄድ የሚያልሙበትን ይንገሩን፤ መንገዱን እኛ እንነድፋለን።" },
+          "image": {
+            "src": "/stock/hotel-hero-infinity-pool-hills.webp",
+            "alt": { "en": "A pool on a terrace overlooking acacia-covered hills", "am": "በግራር የተሸፈኑ ኮረብታዎችን የሚመለከት በእርከን ላይ ያለ መዋኛ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Plan a journey", "am": "ጉዞ ያቅዱ" },
+            "href": "/plan"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/plan",
+      "title": { "en": "Plan", "am": "ያቅዱ" },
+      "nav": { "en": "Plan a journey", "am": "ጉዞ ያቅዱ" },
+      "description": { "en": "Plan a private journey through Ethiopia with Meda Journeys.", "am": "ከሜዳ ጉዞዎች ጋር በኢትዮጵያ የግል ጉዞ ያቅዱ።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "enquiry",
+          "kind": "booking",
+          "eyebrow": { "en": "Plan a journey", "am": "ጉዞ ያቅዱ" },
+          "heading": { "en": "Tell us about your journey", "am": "ስለ ጉዞዎ ይንገሩን" },
+          "intro": { "en": "A few details are enough. We will call or write to plan it with you.", "am": "ጥቂት ዝርዝሮች ይበቃሉ። አብረን ለማቀድ እንደውላለን ወይም እንጽፋለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone or WhatsApp", "am": "ስልክ ወይም ዋትስአፕ" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "email",
+              "label": { "en": "Email", "am": "ኢሜይል" },
+              "type": "email"
+            },
+            {
+              "name": "when",
+              "label": { "en": "When would you like to travel?", "am": "መቼ መጓዝ ይፈልጋሉ?" },
+              "type": "date"
+            },
+            {
+              "name": "travellers",
+              "label": { "en": "How many travellers?", "am": "ስንት ተጓዦች?" },
+              "type": "number"
+            },
+            {
+              "name": "dream",
+              "label": { "en": "Where do you dream of going?", "am": "ወዴት ለመሄድ ያልማሉ?" },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": { "en": "Send", "am": "ላክ" },
+          "successMessage": { "en": "Thank you. We will be in touch to plan your journey.", "am": "እናመሰግናለን። ጉዞዎን ለማቀድ እናገኝዎታለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "talk",
+          "eyebrow": { "en": "Talk to us", "am": "ያነጋግሩን" },
+          "heading": { "en": "Or call us, any day", "am": "ወይም በየትኛውም ቀን ይደውሉልን" }
+        }
+      ]
+    }
+  ]
+}

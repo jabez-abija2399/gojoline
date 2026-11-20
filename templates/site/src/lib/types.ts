@@ -514,8 +514,11 @@ export interface Theme {
    * estate: a luxury property magazine: sand paper, deep forest ink (the accent), a heavy serif with
    * large prices, the month's listing as a spread, listings in an uneven grid, filters as one search
    * bar (property agencies, developers, holiday rentals, serviced apartments).
+   * voyage: a journey told as the page scrolls: full-screen photos as numbered chapters with words
+   * laid over them, destinations as staggered prints, the route beside a photo that stays (travel
+   * companies, tour operators, lodges, expeditions).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio" | "estate";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio" | "estate" | "voyage";
 }
 
 export interface Business {

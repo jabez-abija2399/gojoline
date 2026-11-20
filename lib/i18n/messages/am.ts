@@ -41,7 +41,7 @@ export const am: Messages = {
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",
       build: "ድረ-ገጼን ሥራልኝ",
     },
-    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", darkMode: "ጨለማ ገጽታ", seeTemplates: "30ቱንም አብነቶች ይመልከቱ" },
+    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", darkMode: "ጨለማ ገጽታ", seeTemplates: "31ዱንም አብነቶች ይመልከቱ" },
     demo: {
       pick: "የንግድ ዓይነት ይምረጡ",
       prompts: {
@@ -63,7 +63,7 @@ export const am: Messages = {
     proof: [
       { value: "~40 ሰከንድ", label: "እስከ መጀመሪያው ድረ-ገጽ" },
       { value: "30 ከ30", label: "የሙከራ ድረ-ገጾች በመጀመሪያ ሙከራ በትክክል ተሠርተዋል" },
-      { value: "30", label: "ዝግጁ አብነቶች" },
+      { value: "31", label: "ዝግጁ አብነቶች" },
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
     eyebrows: { how: "እንዴት ይሠራል", features: "ባህሪያት", faq: "ማወቅ ያለብዎ", final: "ዛሬ ይጀምሩ" },
@@ -137,7 +137,7 @@ export const am: Messages = {
         events: "ሠርግና ዝግጅቶች",
         business: "ንግድና የግል",
       },
-      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ", organic: "ለስላሳ", cinematic: "ፊልማዊ", brutal: "ደማቅ ሳጥኖች", calm: "ረጋ ያለ", kinetic: "ብርቱ", grand: "ግርማ ያለው", avant: "ሙከራዊ", precise: "ጥርት ያለ", monochrome: "ጥቁርና ነጭ", drafting: "የሥነ ሕንፃ", noir: "የሻማ ብርሃን", folio: "ማስታወሻ ደብተር", estate: "መጽሔት" },
+      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ", organic: "ለስላሳ", cinematic: "ፊልማዊ", brutal: "ደማቅ ሳጥኖች", calm: "ረጋ ያለ", kinetic: "ብርቱ", grand: "ግርማ ያለው", avant: "ሙከራዊ", precise: "ጥርት ያለ", monochrome: "ጥቁርና ነጭ", drafting: "የሥነ ሕንፃ", noir: "የሻማ ብርሃን", folio: "ማስታወሻ ደብተር", estate: "መጽሔት", voyage: "ታሪክ ተራኪ" },
       features: { prices: "ዋጋ ወይም ምናሌ", booking: "የቀጠሮ ወይም የትዕዛዝ ቅጽ", gallery: "የፎቶ ማዕከል", team: "ቡድን ወይም ሠራተኞች", times: "የሥራ፣ የአገልግሎት ወይም የሶላት ሰዓት", reviews: "አስተያየቶች", map: "ካርታ" },
       about: {
         cafe: "ተወዳጅ ምግቦች፣ ሙሉ ምናሌና የጠረጴዛ ቀጠሮ",
@@ -170,6 +170,7 @@ export const am: Messages = {
         dining: "ጨለማና የሻማ ብርሃን ያለው ገጽ፣ ልዩ ምግቦች፣ እንደ ታተመ ካርድ ያለ ምግብ ዝርዝርና የጠረጴዛ ቦታ ማስያዝ",
         folio: "የሚንቀሳቀስ ስም፣ ሥራዎች እንደ ማውጫ፣ ዝርዝር ጥናቶች፣ ክህሎቶች፣ የሥራ ልምድና የመገናኛ ቅጽ",
         estate: "የወሩ ምርጥ ቤት፣ ቤቶች ከዋጋና ከማጣሪያ ጋር፣ ሰፈሮችና የግል ጉብኝት",
+        voyage: "በሙሉ ገጽ ምዕራፎች የሚተረክ ጉዞ፣ መዳረሻዎች፣ ጉዞዎች ከዋጋ ጋርና ጥያቄዎች",
       },
     },
     templatePreview: {
@@ -503,6 +504,7 @@ export const am: Messages = {
       dining: "ቅንጡ ምግብ ቤት",
       folio: "የገንቢ ወይም የዲዛይነር የሥራ ማሳያ",
       estate: "የቅንጡ ቤቶች ሽያጭ ኤጀንሲ",
+      voyage: "የጉዞ ድርጅት ወይም ጉዞዎች",
     },
     empty: "እስካሁን ድረ-ገጽ የለዎትም። አንድ ይጀምሩ፤ ጥቂት ደቂቃዎች ብቻ ይወስዳል።",
     untitled: "አዲስ ድረ-ገጽ",

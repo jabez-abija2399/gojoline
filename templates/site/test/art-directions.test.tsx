@@ -349,3 +349,29 @@ describe("art direction (estate)", () => {
     });
   });
 });
+
+describe("art direction (voyage)", () => {
+  it("voyage is valid and readable", () => {
+    const site = preset("voyage");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("voyage");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("tells the journey in chapters: later full-screen heroes, one h1", () => {
+    const out = html(preset("voyage"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(3);
+    expect(out).toContain("card-grid");
+    expect(text(out)).toMatch(/The Historic Route.*198,000/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("voyage");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

@@ -6,7 +6,7 @@ const siteJson = fileURLToPath(new URL("../src/site.json", import.meta.url));
 
 /** Styles that ship in their own file: only a site that uses one gets its CSS (it blocks the first paint), and only avant sites get the pointer script. */
 export function onlyUsedStyles(): Plugin {
-  const own = /\/src\/(grand|avant|precise|monochrome|drafting|noir|folio|estate)\.css$/;
+  const own = /\/src\/(grand|avant|precise|monochrome|drafting|noir|folio|estate|voyage)\.css$/;
   const readSite = () => {
     try {
       return readFileSync(siteJson, "utf8");
