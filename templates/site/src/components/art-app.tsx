@@ -12,48 +12,85 @@ const P = "fill-primary";
 const T = "fill-text";
 const M = "fill-muted";
 
-/** A row of a list: a dot, a long and a short line, a value on the right. */
-const row = (y: number, i: number, w = 120) => (
+/** Hairline borders that stay 1px however large the drawing is shown. */
+const hair = { className: "stroke-line", fill: "none", strokeWidth: 1, vectorEffect: "non-scaling-stroke" } as const;
+const num = (x: number, y: number, v: string, size: number, cls = T, anchor: "start" | "middle" | "end" = "start") => (
+  <text x={x} y={y} fontSize={size} fontWeight={600} textAnchor={anchor} className={`${cls} app-num`}>
+    {v}
+  </text>
+);
+
+/** A row of the sales list: a thumbnail, a name line, a status for the newest, an amount. */
+const row = (y: number, i: number, w: number, amount: string) => (
   <g key={y} className="app-row" style={{ "--i": i } as React.CSSProperties}>
-    <circle cx="146" cy={y} r="5" className={i === 1 ? P : L} />
-    <rect x="160" y={y - 4} width={w} height="7" rx="3.5" className={`${T} opacity-70`} />
-    <rect x="160" y={y + 7} width={w * 0.55} height="5" rx="2.5" className={`${M} opacity-50`} />
-    <rect x="322" y={y - 3} width="34" height="7" rx="3.5" className={i === 1 ? P : `${T} opacity-60`} />
+    <rect x="112" y={y - 6} width="12" height="12" rx="3" className={L} />
+    <rect x="130" y={y - 3.5} width={w} height="3.5" rx="1.75" className={`${T} opacity-70`} />
+    <rect x="130" y={y + 2} width={w * 0.5} height="2.5" rx="1.25" className={`${M} opacity-50`} />
+    {i === 0 && (
+      <>
+        <rect x="262" y={y - 5} width="34" height="10" rx="5" className={`${P} opacity-15`} />
+        <circle cx="269" cy={y} r="2" className={P} />
+        <rect x="274" y={y - 1.25} width="16" height="2.5" rx="1.25" className={P} />
+      </>
+    )}
+    {num(372, y + 3, amount, 8, T, "end")}
   </g>
 );
 
-const bars = [48, 70, 56, 92, 74, 110, 88];
+const bars = [46, 62, 52, 80, 66, 96, 74];
 
 export const appScenes: Partial<Record<ArtName, React.ReactNode>> = {
-  // A desktop app: title bar, sidebar, three figures, a bar chart and a list.
+  // A desktop app, framed to show whole in a wide crop: sidebar, three figures, a chart and the latest sales.
   dashboard: (
     <>
-      <rect x="0" y="0" width="400" height="300" className={`${P} opacity-10`} />
-      <rect x="22" y="22" width="356" height="256" rx="10" className={`${S} app-window`} />
-      <rect x="22" y="22" width="356" height="22" rx="10" className={L} />
-      <rect x="22" y="36" width="356" height="8" className={L} />
-      {[38, 50, 62].map((x) => (
-        <circle key={x} cx={x} cy="33" r="3.5" className={`${M} opacity-40`} />
+      <rect x="6" y="40" width="388" height="220" rx="8" className={`${S} app-window`} />
+      <rect x="6" y="40" width="388" height="220" rx="8" {...hair} />
+      {[16, 25, 34].map((x) => (
+        <circle key={x} cx={x} cy="49" r="2.5" className={L} />
       ))}
-      <rect x="22" y="44" width="86" height="234" className={`${L} opacity-60`} />
-      <rect x="34" y="58" width="44" height="8" rx="4" className={T} />
-      {[80, 98, 116, 134, 152].map((y, i) => (
-        <rect key={y} x="34" y={y} width={i === 0 ? 62 : 50 - i * 3} height="7" rx="3.5" className={i === 0 ? P : `${M} opacity-50`} />
-      ))}
-      {[120, 206, 292].map((x, i) => (
-        <g key={x} className="app-tile" style={{ "--i": i } as React.CSSProperties}>
-          <rect x={x} y="58" width="74" height="44" rx="6" className={i === 0 ? `${P} opacity-15` : `${L} opacity-70`} />
-          <rect x={x + 9} y="68" width="30" height="5" rx="2.5" className={`${M} opacity-60`} />
-          <rect x={x + 9} y="80" width={i === 0 ? 46 : 38} height="12" rx="3" className={i === 0 ? P : T} />
+      <path d="M6 58H394M96 58V260" {...hair} />
+      <rect x="16" y="68" width="10" height="10" rx="3" className={P} />
+      <rect x="31" y="71.5" width="34" height="3.5" rx="1.75" className={T} />
+      <rect x="12" y="88" width="78" height="14" rx="3" className={`${P} opacity-10`} />
+      {[95, 113, 131, 149].map((y, i) => (
+        <g key={y}>
+          <rect x="18" y={y - 3.5} width="7" height="7" rx="2" className={i === 0 ? P : `${M} opacity-40`} />
+          <rect x="31" y={y - 1.75} width={i === 0 ? 40 : 34 - i * 3} height="3.5" rx="1.75" className={i === 0 ? P : `${M} opacity-50`} />
         </g>
       ))}
-      <rect x="120" y="112" width="246" height="78" rx="6" className={`${L} opacity-40`} />
-      {bars.map((h, i) => (
-        <rect key={i} className={`app-bar ${i === 5 ? P : `${T} opacity-25`}`} style={{ "--i": i } as React.CSSProperties} x={134 + i * 33} y={182 - h * 0.6} width="18" height={h * 0.6} rx="3" />
+      {[
+        ["48,250", "+12%"],
+        ["312", ""],
+        ["1,204", ""],
+      ].map(([v, delta], i) => (
+        <g key={v} className="app-tile" style={{ "--i": i } as React.CSSProperties}>
+          <rect x={106 + i * 92} y="68" width="84" height="38" rx="5" className={S} />
+          <rect x={106 + i * 92} y="68" width="84" height="38" rx="5" {...hair} />
+          <rect x={114 + i * 92} y="76" width="28" height="3" rx="1.5" className={`${M} opacity-60`} />
+          {num(114 + i * 92, 98, v!, 13, i === 0 ? P : T)}
+          {delta && (
+            <>
+              <rect x={164} y="72" width="22" height="10" rx="5" className={`${P} opacity-15`} />
+              {num(175, 79.5, delta, 6, P, "middle")}
+            </>
+          )}
+        </g>
       ))}
-      {row(212, 0, 110)}
-      {row(240, 1, 92)}
-      {row(266, 2, 124)}
+      <rect x="106" y="114" width="268" height="78" rx="5" {...hair} />
+      {[132, 150, 168].map((y) => (
+        <path key={y} d={`M116 ${y}H364`} className="stroke-line" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+      ))}
+      <path d="M116 184H364" {...hair} />
+      {bars.map((h, i) => (
+        <rect key={i} className={`app-bar ${i === 5 ? P : L}`} style={{ "--i": i } as React.CSSProperties} x={124 + i * 34} y={184 - h * 0.6} width="12" height={h * 0.6} rx="2" />
+      ))}
+      <g className="app-tile" style={{ "--i": 3 } as React.CSSProperties}>
+        <rect x="274" y="109" width="48" height="14" rx="4" className={T} />
+        {num(298, 118.5, "9,840", 7, "fill-surface", "middle")}
+      </g>
+      {row(206, 0, 92, "1,250")}
+      {row(225, 1, 74, "640")}
+      {row(244, 2, 104, "2,380")}
     </>
   ),
   // A phone with a receipt: a sale just made, paid by mobile money.
@@ -61,14 +98,15 @@ export const appScenes: Partial<Record<ArtName, React.ReactNode>> = {
     <>
       <circle cx="200" cy="150" r="128" className={`${P} opacity-10`} />
       <rect x="138" y="18" width="124" height="264" rx="22" className={T} />
-      <rect x="145" y="26" width="110" height="248" rx="16" className={`${S} app-window`} />
+      <rect x="142" y="22" width="116" height="256" rx="18" className={`${S} app-window`} />
       <rect x="182" y="32" width="36" height="7" rx="3.5" className={T} />
       <rect x="157" y="54" width="54" height="7" rx="3.5" className={`${M} opacity-60`} />
       <rect x="157" y="68" width="78" height="16" rx="4" className={T} />
       <g className="app-tick">
-        <circle cx="200" cy="122" r="22" className={P} />
-        <path d="M189 122l8 8 15-16" className="stroke-on-primary" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="200" cy="112" r="14" className={P} />
+        <path d="M193 112l5 5 9-10" className="stroke-on-primary" strokeWidth="3.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       </g>
+      {num(200, 145, "1,250", 15, T, "middle")}
       {[160, 178, 196, 214].map((y, i) => (
         <g key={y} className="app-row" style={{ "--i": i } as React.CSSProperties}>
           <rect x="157" y={y} width={60 - i * 6} height="6" rx="3" className={`${M} opacity-60`} />
@@ -87,7 +125,6 @@ export const appScenes: Partial<Record<ArtName, React.ReactNode>> = {
   // A sales chart: a line rising over a grid, with the latest point marked.
   chart: (
     <>
-      <rect x="0" y="0" width="400" height="300" className={`${P} opacity-10`} />
       <rect x="30" y="30" width="340" height="240" rx="10" className={`${S} app-window`} />
       <rect x="50" y="50" width="70" height="8" rx="4" className={`${M} opacity-60`} />
       <rect x="50" y="66" width="110" height="18" rx="4" className={T} />
@@ -97,7 +134,7 @@ export const appScenes: Partial<Record<ArtName, React.ReactNode>> = {
         <rect key={y} x="50" y={y} width="300" height="1.5" className={L} />
       ))}
       <path d="M50 228 L100 214 L150 220 L200 184 L250 192 L300 150 L346 122 L346 240 L50 240Z" className={`${P} opacity-15`} />
-      <path className="app-line stroke-primary" d="M50 228 L100 214 L150 220 L200 184 L250 192 L300 150 L346 122" fill="none" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" pathLength={1} />
+      <path className="app-line stroke-primary" d="M50 228 L100 214 L150 220 L200 184 L250 192 L300 150 L346 122" fill="none" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" pathLength={1} />
       <circle cx="346" cy="122" r="9" className={`${P} app-dot`} />
       <circle cx="346" cy="122" r="4" className={S} />
     </>

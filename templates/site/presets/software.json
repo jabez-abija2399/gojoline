@@ -46,6 +46,7 @@
         },
         {
           "type": "stats",
+          "tone": "soft",
           "heading": { "en": "Shops across Ethiopia close the day with Lemlem", "am": "በመላው ኢትዮጵያ ያሉ ሱቆች ቀናቸውን በለምለም ይዘጋሉ" },
           "items": [
             {
@@ -216,7 +217,7 @@
           "layout": "pricing",
           "eyebrow": { "en": "Pricing", "am": "ዋጋ" },
           "heading": { "en": "One price per shop. Cancel any time.", "am": "ለአንድ ሱቅ አንድ ዋጋ። በማንኛውም ጊዜ ያቋርጡ።" },
-          "intro": { "en": "Every plan starts with 30 days free.", "am": "ሁሉም ጥቅሎች በ30 ነጻ ቀናት ይጀምራሉ።" },
+          "intro": { "en": "Paid plans start with 30 days free.", "am": "የሚከፈልባቸው ጥቅሎች በ30 ነጻ ቀናት ይጀምራሉ።" },
           "items": [
             {
               "title": { "en": "Kiosk", "am": "ኪዮስክ" },
@@ -229,7 +230,7 @@
                 { "en": "Daily summary", "am": "ዕለታዊ ማጠቃለያ" }
               ],
               "action": {
-                "label": { "en": "Start free for 30 days", "am": "ለ30 ቀን በነጻ ይጀምሩ" },
+                "label": { "en": "Start free", "am": "በነጻ ይጀምሩ" },
                 "href": "/contact"
               }
             },
@@ -297,7 +298,7 @@
     {
       "path": "/contact",
       "title": { "en": "Start", "am": "ይጀምሩ" },
-      "nav": { "en": "Start free", "am": "በነጻ ይጀምሩ" },
+      "nav": { "en": "Get started", "am": "ይጀምሩ" },
       "description": { "en": "Start Lemlem free for 30 days. We call you and set it up together.", "am": "ለምለምን ለ30 ቀን በነጻ ይጀምሩ። ደውለን አብረን እናዘጋጃለን።" },
       "sections": [
         {

@@ -141,13 +141,20 @@
   border-radius: var(--site-radius);
 }
 
-/* ---- Numbers: a row of figures between hairlines ---- */
+/* ---- Numbers: a row of figures between hairlines, on the page itself ---- */
+[data-style="precise"] .stats-band:not(.on-dark) {
+  background: var(--site-background);
+}
+[data-style="precise"] .stats-band:not(.on-dark) dl > div {
+  border-inline-start: 1px solid var(--site-line);
+}
 [data-style="precise"] .stat-value {
   font-size: clamp(2.25rem, 1.6rem + 2vw, 3.5rem);
 }
 
 /* ---- Features as tabs: a segmented control, the screen framed ---- */
 [data-style="precise"] .menu-tabs {
+  margin-inline: 0;
   width: fit-content;
   max-width: 100%;
   gap: 0.25rem;
@@ -174,17 +181,38 @@
 }
 
 /* ---- Integrations: a grid of tiles sharing their borders ---- */
+/* Each cell rules its own top and left edge inside itself; the frame draws the right and bottom.
+   Nothing overlaps, so no line is lost when a cell is animated or lands on a half pixel. */
 [data-style="precise"] .services-bento {
   gap: 0;
-  border: 1px solid var(--site-line);
+  border: solid var(--site-line);
+  border-width: 0 1px 1px 0;
   border-radius: var(--site-radius);
   overflow: hidden;
 }
+/* Six equal cells. */
 [data-style="precise"] .services-bento > li {
+  grid-column: auto;
+  grid-row: auto;
   border: 0;
   border-radius: 0;
-  box-shadow: inset -1px -1px 0 var(--site-line);
+  background: var(--site-surface);
+  box-shadow:
+    inset 1px 0 0 var(--site-line),
+    inset 0 1px 0 var(--site-line);
+  padding: 1.5rem;
+  justify-content: flex-start;
   transform: none;
+}
+[data-style="precise"] .services-bento > li :is(h2, h3) {
+  font-size: 1.125rem;
+}
+[data-style="precise"] .services-bento > li p {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+[data-style="precise"] .services-bento > li > span[aria-hidden] {
+  display: none;
 }
 [data-style="precise"] .services-bento > li > span:has(svg) {
   border-radius: 8px;
@@ -221,6 +249,7 @@
 
 /* ---- Customers' words: quiet bordered cards on the page, not another dark band ---- */
 [data-style="precise"] main > section:has(.testimonial) {
+  border-top: 1px solid var(--site-line);
   background: var(--site-background);
   color: var(--site-text);
 }
@@ -257,6 +286,11 @@
   }
   /* The product drawings come alive as they scroll in: bars rise, rows arrive, the line draws itself. */
   @supports (animation-timeline: view()) {
+    /* clip, not hidden: a hidden overflow would make the frame its own (never scrolling) scroller,
+       and the drawing's timeline would stand still. */
+    [data-style="precise"] .zoom {
+      overflow: clip;
+    }
     [data-style="precise"] .placeholder {
       view-timeline-name: --app;
     }
@@ -286,11 +320,20 @@
       animation-range: entry 20% cover 40%;
     }
   }
-  /* The latest point keeps a slow pulse, like live data. */
+  /* The product at the top is already on screen: it builds itself once, on a clock. */
+  [data-style="precise"] .hero-centered :is(.app-bar, .app-row, .app-tile) {
+    animation-timeline: auto;
+    animation-range: normal;
+    animation-duration: 700ms;
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+    animation-delay: calc(300ms + var(--i, 0) * 70ms);
+  }
+  /* The latest point pulses a few times, like live data (an SVG transform runs on the main thread,
+     so it stops). */
   [data-style="precise"] .app-dot {
     transform-box: fill-box;
     transform-origin: 50% 50%;
-    animation: precise-pulse 2.4s ease-in-out infinite;
+    animation: precise-pulse 2.4s ease-in-out 3;
   }
 }
 @keyframes precise-rise {
@@ -332,6 +375,7 @@
     transform: scale(1.35);
   }
 }
-[data-style="precise"] main > section:has(.testimonial) :focus-visible {
+/* Light surfaces inside sections that are dark in other styles: the focus ring follows. */
+[data-style="precise"] :is(main > section:has(.testimonial), .tier-featured) :focus-visible {
   outline-color: var(--site-focus);
 }

@@ -36,6 +36,7 @@ save("software", {
         },
         {
           type: "stats",
+          tone: "soft",
           heading: t("Shops across Ethiopia close the day with Lemlem", "በመላው ኢትዮጵያ ያሉ ሱቆች ቀናቸውን በለምለም ይዘጋሉ"),
           items: [
             { value: t("1,200+", "1,200+"), label: t("shops", "ሱቆች") },
@@ -130,7 +131,7 @@ save("software", {
           layout: "pricing",
           eyebrow: t("Pricing", "ዋጋ"),
           heading: t("One price per shop. Cancel any time.", "ለአንድ ሱቅ አንድ ዋጋ። በማንኛውም ጊዜ ያቋርጡ።"),
-          intro: t("Every plan starts with 30 days free.", "ሁሉም ጥቅሎች በ30 ነጻ ቀናት ይጀምራሉ።"),
+          intro: t("Paid plans start with 30 days free.", "የሚከፈልባቸው ጥቅሎች በ30 ነጻ ቀናት ይጀምራሉ።"),
           items: [
             {
               title: t("Kiosk", "ኪዮስክ"),
@@ -138,7 +139,7 @@ save("software", {
               price: birr(0),
               priceNote: t("free for good", "ለዘላለም ነጻ"),
               meta: [t("Up to 100 items", "እስከ 100 ዕቃዎች"), t("Sales and receipts", "ሽያጭና ደረሰኝ"), t("Daily summary", "ዕለታዊ ማጠቃለያ")],
-              action: trial,
+              action: link("Start free", "በነጻ ይጀምሩ", "/contact"),
             },
             {
               title: t("Shop", "ሱቅ"),
@@ -176,7 +177,7 @@ save("software", {
     {
       path: "/contact",
       title: t("Start", "ይጀምሩ"),
-      nav: t("Start free", "በነጻ ይጀምሩ"),
+      nav: t("Get started", "ይጀምሩ"),
       description: t("Start Lemlem free for 30 days. We call you and set it up together.", "ለምለምን ለ30 ቀን በነጻ ይጀምሩ። ደውለን አብረን እናዘጋጃለን።"),
       sections: [
         {
