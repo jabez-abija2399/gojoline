@@ -128,8 +128,8 @@
           "heading": { "en": "Four hands, one loom, ten days", "am": "አራት እጆች፣ አንድ ሽመና፣ አሥር ቀናት" },
           "body": { "en": "Every piece starts on a handloom in Shiro Meda, where two weavers work one length of cotton for up to ten days.\n\nWe cut it in our studio in Bole into shapes you can wear to work, to a wedding and on a Sunday afternoon, and we make each one only when you order it.", "am": "እያንዳንዱ ልብስ የሚጀምረው በሽሮ ሜዳ በሚገኝ የእጅ ሽመና ላይ ነው፤ ሁለት ሸማኔዎች አንድን የጥጥ ርዝመት እስከ አሥር ቀን ይሠሩታል።\n\nበቦሌ ባለው ስቱዲዮአችን ለሥራ፣ ለሠርግና ለእሁድ ከሰዓት በሚለበሱ ቅርጾች እንቆርጠዋለን፤ እያንዳንዱንም የምንሠራው ሲያዝዙ ብቻ ነው።" },
           "image": {
-            "src": "/stock/fashion-about-handloom-weavers.webp",
-            "alt": { "en": "Two young men weaving striped cloth at an outdoor wooden handloom, white shawls hanging in front", "am": "ሁለት ወጣቶች ከቤት ውጭ ባለ የእንጨት ሽመና ሸንተረር ጨርቅ ሲሸምኑ፣ ፊት ለፊት ነጭ ጋቢዎች ተንጠልጥለው" }
+            "src": "/stock/fashion-gallery-loom-striped-threads.webp",
+            "alt": { "en": "Brightly coloured striped threads stretched across a wooden handloom under a blue sky", "am": "በሰማያዊ ሰማይ ሥር በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች" }
           },
           "imageSide": "start"
         },
@@ -231,8 +231,8 @@
             },
             {
               "image": {
-                "src": "/stock/fashion-gallery-loom-striped-threads.webp",
-                "alt": { "en": "Brightly coloured striped threads stretched across a wooden handloom", "am": "በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች" }
+                "src": "/stock/personal-gallery-pattern.webp",
+                "alt": { "en": "A geometric repeat pattern in orange, grey-blue and yellow", "am": "በብርቱካናማ፣ ግራጫ-ሰማያዊና ቢጫ የተሠራ ጂኦሜትሪክ ጥለት" }
               },
               "title": { "en": "Shawls", "am": "ነጠላና ጋቢ" },
               "subtitle": { "en": "Netela and gabi, woven by hand", "am": "በእጅ የተሸመኑ ነጠላና ጋቢ" },
@@ -249,7 +249,7 @@
           "kind": "registration",
           "eyebrow": { "en": "Letters from the loom", "am": "ከሽመናው የሚላኩ ደብዳቤዎች" },
           "heading": { "en": "New pieces, a few times a year", "am": "አዳዲስ ልብሶች፣ በዓመት ጥቂት ጊዜ" },
-          "intro": { "en": "No sales, no noise. Just the new season, before anyone else sees it.", "am": "ቅናሽ የለም፣ ጫጫታ የለም። አዲሱን ወቅት ብቻ፣ ከማንም በፊት።" },
+          "intro": { "en": "No sales, no noise: we write when a new season is ready. We use your email for nothing else; write to us any time to be taken off the list.", "am": "ቅናሽ የለም፣ ጫጫታ የለም፦ አዲስ ወቅት ሲደርስ እንጽፋለን። ኢሜይልዎን ለሌላ ነገር አንጠቀምም፤ ከዝርዝሩ ለመውጣት በማንኛውም ጊዜ ይጻፉልን።" },
           "fields": [
             {
               "name": "email",
@@ -259,7 +259,7 @@
             }
           ],
           "submitLabel": { "en": "Sign up", "am": "ይመዝገቡ" },
-          "successMessage": { "en": "Thank you. The next letter is on its way.", "am": "እናመሰግናለን። ቀጣዩ ደብዳቤ በመንገድ ላይ ነው።" }
+          "successMessage": { "en": "Thank you. You're on the list.", "am": "እናመሰግናለን። በዝርዝሩ ውስጥ ገብተዋል።" }
         }
       ]
     },

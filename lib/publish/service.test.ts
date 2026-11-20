@@ -216,6 +216,13 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify({ business: { telegram: "selamcoffee" } }))).toBe(false);
     expect(hasExampleDetails(JSON.stringify({ a: { label: { en: "Call 0911 000 000" } } }))).toBe(true);
   });
+  it("blocks the boutique starter's sample products, shown in strangers' photos at invented prices", () => {
+    const boutique = JSON.parse(presetSiteJson("boutique")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    boutique.business = { phone: "+251 911 234 567", telegram: "realshop" };
+    for (const p of boutique.pages) p.sections = p.sections.filter((s) => s.type !== "quote");
+    expect(hasExampleDetails(JSON.stringify(boutique))).toBe(true);
+  });
+
   it("blocks a template's sample numbers until the owner's own replace them", () => {
     const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
     const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;
