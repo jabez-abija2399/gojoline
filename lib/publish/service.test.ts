@@ -223,6 +223,13 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify(boutique))).toBe(true);
   });
 
+  it("blocks the architect starter's sample projects (invented buildings)", () => {
+    const architect = JSON.parse(presetSiteJson("architect")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    architect.business = { phone: "+251 911 234 567", telegram: "realstudio" };
+    for (const p of architect.pages) p.sections = p.sections.filter((s) => !["quote", "stats", "cta"].includes(s.type));
+    expect(hasExampleDetails(JSON.stringify(architect))).toBe(true);
+  });
+
   it("blocks a template's sample numbers until the owner's own replace them", () => {
     const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
     const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;
