@@ -4,7 +4,9 @@ mention and clicks it (a coral ring on the click), and quiet classical piano und
 Prelude in C major, BWV 846: the composition is public domain and the recording is rendered
 here, note by note, so there is no recording right to clear).
 
-    python3 scripts/guide-video-polish.py <in.mp4> <out.mp4>
+    python3 scripts/guide-video-polish.py <in.mp4> <out.mp4> [clicks.json]
+
+clicks.json: [[seconds, x, y, label], ...] for an edited video; without it, the list below.
 
 One-off authoring tool. Needs ffmpeg, numpy and Pillow. The input is the silent 720p guide video;
 the output keeps its picture, timing and captions and adds the pointer and a music track.
@@ -164,7 +166,12 @@ def music(seconds, path, sr=44100, sixteenth=0.27):
         w.writeframes(pcm.tobytes())
 
 
-def main(src, dst):
+def main(src, dst, clicks_file=None):
+    global CLICKS
+    if clicks_file:
+        import json
+
+        CLICKS = sorted((c[0], c[1], c[2]) for c in json.load(open(clicks_file)))
     seconds = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", src]).decode())
     wav = dst + ".music.wav"
     music(seconds, wav)
@@ -201,4 +208,4 @@ def main(src, dst):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
