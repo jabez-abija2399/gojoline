@@ -239,3 +239,85 @@
     translate: 0 7%;
   }
 }
+
+/* ---- Review fixes ---- */
+/* Chapters: a stronger shade under the words, and the numeral large on its own line. */
+[data-style="voyage"] .hero-later .hero-shade {
+  background:
+    linear-gradient(to top, rgb(0 0 0 / 0.82), rgb(0 0 0 / 0.55) 50%, transparent 85%),
+    linear-gradient(to right, rgb(0 0 0 / 0.45), transparent 65%);
+}
+[data-style="voyage"] .hero-later .eyebrow {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+[data-style="voyage"] .hero-later .eyebrow::before {
+  display: block;
+  margin: 0;
+  font-family: var(--site-font-heading);
+  font-size: clamp(3rem, 2rem + 4vw, 6rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+/* Lines and fields that read: a warmer, darker rule; underlined fields; no white boxes. */
+[data-style="voyage"] {
+  --site-line: color-mix(in srgb, var(--site-text) 22%, var(--site-background));
+}
+[data-style="voyage"] main section :is(form, .card, dl) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding-inline: 0;
+}
+[data-style="voyage"] :is(input, select, textarea) {
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--site-text) 55%, transparent);
+  background: transparent;
+}
+/* Facts as plain small capitals, not chips that look like buttons. */
+[data-style="voyage"] .meta-item {
+  border: 0;
+  padding: 0;
+  color: var(--site-muted);
+}
+[data-style="voyage"] .meta-item:not(:last-child)::after {
+  content: "\00b7" / "";
+  margin-inline-start: 0.75rem;
+}
+/* Destination captions line up. */
+[data-style="voyage"] .card-grid .eyebrow {
+  min-height: 2lh;
+  text-wrap: balance;
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  [data-style="voyage"] .card-grid {
+    padding-bottom: 3rem;
+  }
+  [data-style="voyage"] .card-grid > li:nth-child(2n) {
+    translate: 0 3rem;
+  }
+}
+@media (max-width: 1023px) {
+  [data-style="voyage"] .feature-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* The closing band aligns with the page's own edge. */
+[data-style="voyage"] .cta-band {
+  padding-inline: max(1rem, calc((100% - 72rem) / 2 + 1rem));
+}
+@media (min-width: 640px) {
+  [data-style="voyage"] .cta-band {
+    padding-inline: max(1.5rem, calc((100% - 72rem) / 2 + 1.5rem));
+  }
+}
+/* One terracotta action per view: the contact section's call button is outlined. */
+[data-style="voyage"] main section:has(dl) .btn-primary {
+  border: 1px solid currentColor;
+  background: transparent;
+  color: var(--site-text);
+}

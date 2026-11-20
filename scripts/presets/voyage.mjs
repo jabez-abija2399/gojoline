@@ -69,7 +69,7 @@ save("voyage", {
           eyebrow: t("Destinations", "መዳረሻዎች"),
           heading: t("Places that change you", "የሚለውጡ ቦታዎች"),
           items: [
-            { image: img("hotel-hero-lodge-pool-dusk", "A thatched lodge lit by lanterns at dusk, reflected in dark water", "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሎጅ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ"), title: t("Where you sleep", "የሚያድሩበት"), subtitle: t("Lodges chosen for the view", "ለእይታቸው የተመረጡ ሎጆች"), meta: [t("2 days", "2 ቀን")] },
+            { image: img("hotel-hero-lodge-pool-dusk", "A thatched lodge lit by lanterns at dusk, reflected in dark water", "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሎጅ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ"), title: t("Where you sleep", "የሚያድሩበት"), subtitle: t("Lodges chosen for the view", "ለእይታቸው የተመረጡ ሎጆች") },
             { image: img("tours-card-lalibela-monk", "A monk in a yellow robe reading beside a carved cross-shaped window", "በተቀረጸ የመስቀል ቅርጽ መስኮት አጠገብ ቢጫ ልብስ የለበሱ መነኩሴ ሲያነቡ"), title: t("Lalibela", "ላሊበላ"), subtitle: t("Eleven churches of stone", "አሥራ አንድ የድንጋይ አብያተ ክርስቲያናት"), meta: [t("3 days", "3 ቀን")] },
             { image: img("tours-card-blue-nile-falls", "The Blue Nile Falls in full flow surrounded by green forest", "በአረንጓዴ ደን የተከበበው የዓባይ ፏፏቴ በሙላት ሲፈስ"), title: t("The Blue Nile", "ዓባይ"), subtitle: t("Tis Abay, the great smoke", "ጢስ ዓባይ"), meta: [t("2 days", "2 ቀን")] },
             { image: img("tours-gallery-gondar-castle", "The castle of Fasilides in Gondar framed by two tall trees", "በሁለት ረጃጅም ዛፎች መካከል የሚታየው የጎንደር የፋሲለደስ ግንብ"), title: t("Gondar", "ጎንደር"), subtitle: t("Castles of the emperors", "የነገሥታቱ ግንቦች"), meta: [t("2 days", "2 ቀን")] },
@@ -121,7 +121,7 @@ save("voyage", {
           variant: "numbered",
           eyebrow: t("Your days", "ቀኖችዎ"),
           heading: t("How a journey unfolds", "ጉዞው እንዴት እንደሚሄድ"),
-          image: img("hotel-gallery-bush-dining-acacia", "A long table set for dinner in open grassland beside a lone acacia", "ከብቸኛ ግራር አጠገብ በሜዳ ላይ ለእራት የተዘጋጀ ረጅም ገበታ"),
+          image: img("cafe-hero-coffee-ceremony-pour", "Coffee poured from a black clay jebena into rows of small cups in a carved wooden chest", "ከጥቁር የሸክላ ጀበና በተቀረጸ የእንጨት ሳጥን ውስጥ በተደረደሩ ትናንሽ ስኒዎች የሚቀዳ ቡና"),
           items: [
             { title: t("We talk", "እናወራለን"), description: t("A call about what you want to see, how you like to travel and when.", "ምን ማየት እንደሚፈልጉ፣ እንዴትና መቼ መጓዝ እንደሚወዱ በስልክ እንወያያለን።") },
             { title: t("We draw the route", "መንገዱን እንነድፋለን"), description: t("A day-by-day plan with the places to sleep, for you to change as you like.", "የሚያድሩባቸውን ቦታዎች ጨምሮ በቀን በቀን የተዘጋጀ፣ እንደፈለጉ የሚቀይሩት ዕቅድ።") },
@@ -151,7 +151,7 @@ save("voyage", {
     {
       path: "/plan",
       title: t("Plan", "ያቅዱ"),
-      nav: t("Plan a journey", "ጉዞ ያቅዱ"),
+      nav: t("Plan", "ያቅዱ"),
       description: t("Plan a private journey through Ethiopia with Meda Journeys.", "ከሜዳ ጉዞዎች ጋር በኢትዮጵያ የግል ጉዞ ያቅዱ።"),
       sections: [
         {

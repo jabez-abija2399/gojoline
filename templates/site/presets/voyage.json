@@ -92,10 +92,7 @@
                 "alt": { "en": "A thatched lodge lit by lanterns at dusk, reflected in dark water", "am": "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሎጅ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ" }
               },
               "title": { "en": "Where you sleep", "am": "የሚያድሩበት" },
-              "subtitle": { "en": "Lodges chosen for the view", "am": "ለእይታቸው የተመረጡ ሎጆች" },
-              "meta": [
-                { "en": "2 days", "am": "2 ቀን" }
-              ]
+              "subtitle": { "en": "Lodges chosen for the view", "am": "ለእይታቸው የተመረጡ ሎጆች" }
             },
             {
               "image": {
@@ -220,8 +217,8 @@
           "eyebrow": { "en": "Your days", "am": "ቀኖችዎ" },
           "heading": { "en": "How a journey unfolds", "am": "ጉዞው እንዴት እንደሚሄድ" },
           "image": {
-            "src": "/stock/hotel-gallery-bush-dining-acacia.webp",
-            "alt": { "en": "A long table set for dinner in open grassland beside a lone acacia", "am": "ከብቸኛ ግራር አጠገብ በሜዳ ላይ ለእራት የተዘጋጀ ረጅም ገበታ" }
+            "src": "/stock/cafe-hero-coffee-ceremony-pour.webp",
+            "alt": { "en": "Coffee poured from a black clay jebena into rows of small cups in a carved wooden chest", "am": "ከጥቁር የሸክላ ጀበና በተቀረጸ የእንጨት ሳጥን ውስጥ በተደረደሩ ትናንሽ ስኒዎች የሚቀዳ ቡና" }
           },
           "items": [
             {
@@ -275,7 +272,7 @@
     {
       "path": "/plan",
       "title": { "en": "Plan", "am": "ያቅዱ" },
-      "nav": { "en": "Plan a journey", "am": "ጉዞ ያቅዱ" },
+      "nav": { "en": "Plan", "am": "ያቅዱ" },
       "description": { "en": "Plan a private journey through Ethiopia with Meda Journeys.", "am": "ከሜዳ ጉዞዎች ጋር በኢትዮጵያ የግል ጉዞ ያቅዱ።" },
       "sections": [
         {
