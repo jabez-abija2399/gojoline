@@ -333,7 +333,16 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
       // A studio's sample clients: keeping them would claim work for businesses it never had.
       else if (s.type === "cards" && work)
         for (const i of items) {
+          const price = i.price as { amountMinor?: number; currency?: string } | undefined;
+          // A place tile (a name and a line, nothing else) is compared as the pair, so a real
+          // "Bole" card with the owner's own words is never mistaken for the sample.
+          if (!price && !i.meta && !i.description) {
+            out.push({ text: `place:${JSON.stringify([i.title, i.subtitle])}`, samplePhoto: false });
+            continue;
+          }
           for (const t of texts(i.title)) out.push({ text: t, samplePhoto: false });
+          // A kept sample listing or product: its library photo with its price, renamed or not.
+          if (price && isStock(i.image)) out.push({ text: `listing:${(i.image as Json).src as string}|${price.amountMinor}|${price.currency}`, samplePhoto: false });
           for (const t of texts(i.description)) out.push({ text: `about:${t}`, samplePhoto: false });
           // Their facts too (place, year, area): renaming a sample project must not keep its claims.
           if (Array.isArray(i.meta) && i.meta.length) out.push({ text: `meta:${JSON.stringify(i.meta)}`, samplePhoto: false });

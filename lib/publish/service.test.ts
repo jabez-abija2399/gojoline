@@ -269,6 +269,25 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify({ name: { en: "Abebe Kebede" }, business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "hero", variant: "portrait", image: { src: "/images/me.webp" } }] }] }))).toBe(false);
   });
 
+  it("blocks the estate starter's sample listings by photo and price, but not real place names", () => {
+    const estate = () => JSON.parse(presetSiteJson("estate")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; layout?: string; items?: Record<string, unknown>[] }[] }[] };
+    const owner = (site: ReturnType<typeof estate>, keep: (s: { type: string; layout?: string }) => boolean) => {
+      site.name = { en: "Abebe Homes" };
+      site.business = { phone: "+251 912 345 678", telegram: "abebehomes" };
+      for (const p of site.pages) p.sections = p.sections.filter(keep);
+      return site;
+    };
+    // Renamed listings without facts or words, but with the sample photo and price, still block.
+    const kept = owner(estate(), (s) => s.type === "cards" && s.layout === "grid");
+    for (const p of kept.pages) for (const s of p.sections) s.items = s.items!.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Home ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(kept))).toBe(true);
+    // The untouched neighbourhood tiles block...
+    expect(hasExampleDetails(JSON.stringify(owner(estate(), (s) => s.layout === "scroll")))).toBe(true);
+    // ...but a real site's own "Bole" card does not.
+    const real = { name: { en: "Abebe Homes" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "scroll", items: [{ title: { en: "Bole" }, subtitle: { en: "Our office is here" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
+  });
+
   it("blocks a template's sample numbers until the owner's own replace them", () => {
     const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
     const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;
