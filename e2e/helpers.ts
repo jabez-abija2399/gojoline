@@ -91,3 +91,18 @@ export async function unfold(page: Page, name: RegExp) {
     await expect(button).toHaveAttribute("aria-expanded", "true", { timeout: 100 });
   }).toPass();
 }
+
+const PAY_NAMES = { starter_month: "Starter, 1 month", starter_year: "Starter, 1 year", business_month: "Business, 1 month", business_year: "Business, 1 year" } as const;
+
+/** Chooses what to pay for on the Plan page, the way an owner does: on the plan cards (English). */
+export async function payFor(page: Page, product: keyof typeof PAY_NAMES | "topup") {
+  if (product === "topup") {
+    await page.getByRole("link", { name: /^Buy \d+ changes$/ }).click();
+    await expect(page.locator("#pay-product")).toHaveText(/extra changes/);
+    return;
+  }
+  const [plan, period] = product.split("_");
+  await page.getByRole("button", { name: period === "month" ? /^Monthly/ : /^Yearly/ }).click();
+  await page.getByRole("link", { name: new RegExp(`^(Choose|Renew) ${plan === "starter" ? "Starter" : "Business"}$`) }).click();
+  await expect(page.locator("#pay-product")).toHaveText(PAY_NAMES[product]);
+}

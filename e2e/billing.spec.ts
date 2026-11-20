@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn, unfold } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, payFor, signIn, unfold } from "./helpers";
 
 test("an owner sends a payment and an admin approves it", async ({ page, browser }) => {
   await signIn(page);
@@ -18,7 +18,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
 
-  await page.getByLabel("What are you paying for?").selectOption("starter_month");
+  await payFor(page, "starter_month");
   await page.getByRole("button", { name: "Send for checking" }).click();
   await expect(page.locator("main").getByRole("alert")).toContainText("transaction number");
   await expect(page.getByLabel("Transaction number")).toBeFocused();
@@ -38,7 +38,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
 
   // The same transaction number cannot be used twice, even typed differently.
   await page.getByRole("button", { name: "Send another payment" }).click();
-  await page.getByLabel("What are you paying for?").selectOption("starter_month");
+  await payFor(page, "starter_month");
   await page.getByLabel("Transaction number").fill(reference.toLowerCase().replace("E2E", "e2e-"));
   await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
   await page.getByRole("button", { name: "Send for checking" }).click();
@@ -78,10 +78,10 @@ test("payment steps: plan cards choose the product, Telebirr or CBE, copy button
   await expect(business).toContainText("a year");
   await expect(business).toContainText(/You save [\d,.]+ Birr a year/);
   await business.getByRole("link", { name: "Choose Business" }).click();
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("business_year");
+  await expect(page.locator("input[name=product]")).toHaveValue("business_year");
   await expect(page).toHaveURL(/product=business_year/);
   await page.getByRole("link", { name: "Buy 30 changes" }).click();
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("topup");
+  await expect(page.locator("input[name=product]")).toHaveValue("topup");
 
   // The exact amount and the account number, ready to paste into Telebirr or the bank app.
   await page.getByRole("button", { name: "Copy Telebirr number" }).click();
@@ -231,10 +231,10 @@ test("a pricing Choose button keeps the yearly choice through sign-in to the Pla
   await page.getByLabel("6-digit code").fill(code.code);
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/en\/billing\?product=business_year$/);
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("business_year");
+  await expect(page.locator("input[name=product]")).toHaveValue("business_year");
   // Signed in already: the same button goes straight to the Plan page.
   await page.goto("/en/pricing");
   await page.getByRole("link", { name: "Choose Starter" }).click();
   await expect(page).toHaveURL(/\/en\/billing\?product=starter_month$/);
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("starter_month");
+  await expect(page.locator("input[name=product]")).toHaveValue("starter_month");
 });

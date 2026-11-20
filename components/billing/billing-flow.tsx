@@ -36,10 +36,12 @@ interface Props {
   /** The newest payment still being checked, if any. */
   pending: PendingPayment | null;
   supportUrl: string;
+  /** "Compare all features" under the plan cards. */
+  compare: { href: string; text: string };
 }
 
 /** Plan choice, top-up and the three payment steps, sharing one "what are you paying for". */
-export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerName, highlights, topupCredits, initialProduct, accounts, notReady, pending, supportUrl }: Props) {
+export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerName, highlights, topupCredits, initialProduct, accounts, notReady, pending, supportUrl, compare }: Props) {
   const p = t.pay;
   const router = useRouter();
   const [product, setProduct] = useState<ProductId>(initialProduct);
@@ -126,6 +128,7 @@ export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerN
             );
           })}
         </ul>
+        <a href={compare.href} className="-mt-1 inline-flex min-h-11 w-fit items-center text-sm font-medium text-ink underline underline-offset-4 lg:min-h-9">{compare.text}</a>
         <div className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-4 sm:flex-row sm:items-center">
           <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-coral-soft text-ink">
             <Plus className="size-5" />
@@ -191,7 +194,6 @@ export function BillingFlow({ t, yearSavingText, plan, prices, offerText, offerN
             prices={prices}
             topupCredits={topupCredits}
             product={product}
-            onProduct={setProduct}
             accounts={accounts}
             onSent={() => {
               setChecking("sent");

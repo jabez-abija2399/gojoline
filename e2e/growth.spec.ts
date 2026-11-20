@@ -1,5 +1,5 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAccountMenu, signIn, unfold } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAccountMenu, payFor, signIn, unfold } from "./helpers";
 
 /** A second browser on the same device as the test's own page. */
 async function newPage(browser: Browser, opts: { userAgent?: string } = {}) {
@@ -84,7 +84,7 @@ test("a business joins through an invite link; when the admin approves its first
   // Another business: a different email domain (the same company's domain counts as inviting yourself).
   await signIn(invited.page, { contact: `invited-${Date.now()}-${test.info().project.name}@example.org` });
   await invited.page.goto("/en/billing");
-  await invited.page.getByLabel("What are you paying for?").selectOption("starter_month");
+  await payFor(invited.page, "starter_month");
   const reference = `REF${Date.now().toString(36).toUpperCase()}${test.info().project.name.length}`;
   await invited.page.getByLabel("Transaction number").fill(reference);
   await invited.page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");

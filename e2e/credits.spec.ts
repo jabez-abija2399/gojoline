@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn, unfold } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, payFor, signIn, unfold } from "./helpers";
 
 // Runs against the deterministic demo AI (E2E=1); request sizes come from the word list there.
 async function newSite(page: Page, lang: "en" | "am" = "en") {
@@ -109,7 +109,9 @@ test("Amharic: the bigger-change question and the Plan page's changes", async ({
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
   await page.goto("/am/billing");
-  await expect(page.getByRole("heading", { name: "አንድ ጥያቄ ስንት ለውጥ ይወስዳል" })).toBeVisible();
+  // How changes are counted folds out of the plan card.
+  await page.getByText("አንድ ጥያቄ ስንት ለውጥ ይወስዳል").click();
+  await expect(page.getByText("ትልቅ (ብዙ አዲስ ገጾች፣ አዲስ ዲዛይን)")).toBeVisible();
   await expect(page.getByRole("heading", { name: "የለውጦችዎ ታሪክ" })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
@@ -175,7 +177,7 @@ test("discount code: an admin makes one, the owner sees the price before sending
   const owner = await ctx.newPage();
   await signIn(owner);
   await owner.goto("/en/billing");
-  await owner.getByLabel("What are you paying for?").selectOption("starter_month");
+  await payFor(owner, "starter_month");
   await owner.getByRole("button", { name: "Have a code?" }).click();
   const box = owner.getByLabel("Discount code (optional)");
   await box.fill("NOSUCHCODE1");
@@ -253,7 +255,7 @@ test("launch offer: switched on in one click, struck-through prices, then no end
   await expect(page.getByText("Launch offer: 20% off until 31 Dec")).toBeVisible();
   await expect(plan).toContainText("1,039 Birr");
   await expect(plan.locator("s")).toContainText("was 1,299 Birr");
-  await page.getByLabel("What are you paying for?").selectOption("business_month");
+  await payFor(page, "business_month");
   await expect(page.getByText("You pay 1,039 Birr")).toBeVisible();
   await expect(page.getByText("Amount to send").first().locator("..")).toContainText("1,039 Birr");
 
@@ -273,7 +275,7 @@ test("launch offer: switched on in one click, struck-through prices, then no end
   await expect(biz.locator("s")).toContainText("was 1,299 Birr");
   await biz.getByRole("link", { name: "Choose Business" }).click();
   await expect(owner).toHaveURL(/\/en\/billing\?product=business_month#pay-title$/);
-  await expect(owner.getByLabel("What are you paying for?")).toHaveValue("business_month");
+  await expect(owner.locator("input[name=product]")).toHaveValue("business_month");
   await ctx.close();
 
   // No last day: on until switched off, and the public pages name no date. A new name too.

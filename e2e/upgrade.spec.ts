@@ -51,7 +51,7 @@ test("a Free owner at 0 changes sees the upgrade dialog on sending, and Upgrade 
   await chat(page).press("Enter");
   await dialog.getByRole("link", { name: "Upgrade to Starter" }).click();
   await expect(page).toHaveURL(/\/en\/billing\?product=starter_month#pay-title$/);
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("starter_month");
+  await expect(page.locator("input[name=product]")).toHaveValue("starter_month");
 });
 
 test("a Starter owner at 0 is offered 30 more changes first, then Business", async ({ page }) => {
@@ -69,7 +69,7 @@ test("a Starter owner at 0 is offered 30 more changes first, then Business", asy
   await chat(page).press("Enter");
   await dialog.getByRole("link", { name: "Buy 30 more changes" }).click();
   await expect(page).toHaveURL(/product=topup#pay-title$/);
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("topup");
+  await expect(page.locator("input[name=product]")).toHaveValue("topup");
 });
 
 test("Amharic upgrade dialog at 360 px", async ({ page }) => {
