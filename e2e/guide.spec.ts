@@ -101,7 +101,7 @@ test("guide is linked from public pages and the sitemap", async ({ page }) => {
 test("guide is linked from the start screen, the menu and a site's dashboard", async ({ page }, info) => {
   await signIn(page);
   // First visit, no sites yet: the start screen offers the guide.
-  const startLink = page.getByRole("link", { name: "New here? Watch the 5-minute guide" });
+  const startLink = page.getByRole("link", { name: "New here? Watch the 6-minute guide" });
   await expect(startLink).toHaveAttribute("href", "/en/guide");
   await startLink.click();
   await expect(page.getByRole("heading", { level: 1, name: "How to use Gojoline" })).toBeVisible();
