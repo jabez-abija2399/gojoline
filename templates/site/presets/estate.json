@@ -31,8 +31,8 @@
           "eyebrow": { "en": "Addis Ababa · For sale and to rent", "am": "አዲስ አበባ · ለሽያጭና ለኪራይ" },
           "heading": { "en": "Homes worth coming home to", "am": "ወደ ቤት መመለስ የሚያስመኙ ቤቶች" },
           "image": {
-            "src": "/stock/real-estate-hero-addis-skyline-trees.webp",
-            "alt": { "en": "The Addis Ababa skyline with a tall glass tower above a band of trees under a calm sky", "am": "የአዲስ አበባ ሰማይ መስመር፣ ከዛፎች መስመር በላይ ረጅም የመስታወት ሕንፃ በረጋ ሰማይ ሥር" }
+            "src": "/stock/real-estate-hero-modern-apartment-corner-sky.webp",
+            "alt": { "en": "The top corner of a black-and-white apartment block with large windows against a pale sky", "am": "ትልልቅ መስኮቶች ያሉት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ በፈዛዛ ሰማይ ፊት" }
           },
           "primaryAction": {
             "label": { "en": "See the homes", "am": "ቤቶቹን ይመልከቱ" },
@@ -106,7 +106,7 @@
               },
               "badge": { "en": "For rent", "am": "ለኪራይ" },
               "title": { "en": "Garden Apartment", "am": "የአትክልቱ አፓርትመንት" },
-              "subtitle": { "en": "Furnished, with a private garden", "am": "የተሟላ፣ የግል አትክልት ያለው" },
+              "subtitle": { "en": "Furnished, with a garden", "am": "የተሟላ፣ አትክልት ያለው" },
               "meta": [
                 { "en": "3 beds", "am": "3 መኝታ" },
                 { "en": "2 baths", "am": "2 መታጠቢያ" },
@@ -126,7 +126,7 @@
               },
               "badge": { "en": "For sale", "am": "ለሽያጭ" },
               "title": { "en": "Glass Terrace Flats", "am": "የመስታወት እርከን አፓርትመንቶች" },
-              "subtitle": { "en": "Two-bedroom flats with terraces", "am": "እርከን ያላቸው ባለ ሁለት መኝታ አፓርትመንቶች" },
+              "subtitle": { "en": "Flats with terraces", "am": "እርከን ያላቸው አፓርትመንቶች" },
               "meta": [
                 { "en": "2 beds", "am": "2 መኝታ" },
                 { "en": "2 baths", "am": "2 መታጠቢያ" },
@@ -145,7 +145,7 @@
               },
               "badge": { "en": "For sale", "am": "ለሽያጭ" },
               "title": { "en": "Courtyard House", "am": "የግቢው ቤት" },
-              "subtitle": { "en": "A family house around a courtyard", "am": "በግቢ ዙሪያ የተሠራ የቤተሰብ ቤት" },
+              "subtitle": { "en": "A courtyard house", "am": "የግቢ ቤት" },
               "meta": [
                 { "en": "4 beds", "am": "4 መኝታ" },
                 { "en": "3 baths", "am": "3 መታጠቢያ" },
@@ -203,8 +203,8 @@
             },
             {
               "image": {
-                "src": "/stock/real-estate-hero-modern-apartment-corner-sky.webp",
-                "alt": { "en": "The top corner of a black-and-white apartment block against a pale sky", "am": "በፈዛዛ ሰማይ ፊት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ" }
+                "src": "/stock/real-estate-hero-addis-skyline-trees.webp",
+                "alt": { "en": "The Addis Ababa skyline with a tall glass tower above a band of trees", "am": "የአዲስ አበባ ሰማይ መስመር፣ ከዛፎች መስመር በላይ ረጅም የመስታወት ሕንፃ" }
               },
               "title": { "en": "CMC", "am": "ሲኤምሲ" },
               "subtitle": { "en": "New buildings, wide roads", "am": "አዳዲስ ሕንፃዎች፣ ሰፋፊ መንገዶች" }
