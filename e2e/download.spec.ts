@@ -23,7 +23,9 @@ test("download your website: Business only, the live site as a ZIP; staff see th
   const card = page.getByRole("region", { name: "Download your website" });
   await expect(card.getByText("Downloading your website is part of the Business plan.")).toBeVisible();
   await expect(card.getByRole("button", { name: "Download ZIP" })).toHaveCount(0);
-  expect((await page.request.get(`/api/projects/${id}/download`)).status()).toBe(403);
+  expect(await page.evaluate(async (u) => (await fetch(u, { method: "POST" })).status, `/api/projects/${id}/download`)).toBe(403);
+  // Only POST from Gojoline itself starts a build (a link on another site can't).
+  expect((await page.request.get(`/api/projects/${id}/download`)).status()).toBe(405);
 
   // An admin moves the owner to Business.
   const { viewport, userAgent, isMobile, hasTouch, deviceScaleFactor, baseURL } = project.use;

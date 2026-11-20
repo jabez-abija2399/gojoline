@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useId, useMemo, useState } from "react";
 import type { Messages } from "@/lib/i18n";
 import { highlight, type TokenKind } from "@/lib/builder/code-view";
 
@@ -71,6 +71,7 @@ function FileView({ t, files, selected, onSelect, viewOnly }: { t: Messages["bui
   const paths = useMemo(() => Object.keys(files).sort(), [files]);
   const active = files[selected] !== undefined ? selected : paths[0];
   const lines = useMemo(() => (active ? highlight(active, files[active]!) : []), [active, files]);
+  const selectId = useId();
   if (!active) return <p className="m-4 rounded-xl border border-dashed border-line bg-white p-6 text-center text-ink-muted">{t.codeEmpty}</p>;
   const friendly = (p: string) => (p.endsWith("site.json") ? t.codeFiles.content : p.endsWith("styles.css") ? t.codeFiles.styles : null);
   const name = (p: string) => p.split("/").pop() ?? p;
@@ -79,8 +80,8 @@ function FileView({ t, files, selected, onSelect, viewOnly }: { t: Messages["bui
     <div className="flex min-h-0 flex-1 flex-col gap-3 p-4">
       {viewOnly && <p className="text-ink-muted">{t.codeHint}</p>}
       <div className="flex flex-wrap items-center gap-2">
-        <label htmlFor="file-select" className="text-sm font-medium">{t.codeFile}</label>
-        <select id="file-select" value={active} onChange={(e) => onSelect(e.target.value)} className="min-h-11 min-w-0 flex-1 rounded-lg border border-input bg-white px-3 lg:min-h-9">
+        <label htmlFor={selectId} className="text-sm font-medium">{t.codeFile}</label>
+        <select id={selectId} value={active} onChange={(e) => onSelect(e.target.value)} className="min-h-11 min-w-0 flex-1 rounded-lg border border-input bg-white px-3 lg:min-h-9">
           {paths.map((p) => (
             <option key={p} value={p}>{friendly(p) ? `${friendly(p)} (${name(p)})` : p}</option>
           ))}

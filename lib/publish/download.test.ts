@@ -92,4 +92,13 @@ describe("downloadSite", () => {
     await (deps.sites as MemorySiteStore).takeDown(site.id, "scam");
     expect(await downloadSite(deps, "alice", p.id)).toEqual({ ok: false, error: "taken_down" });
   });
+
+  it("refuses a site taken down while it built, and content the publish checks would stop", async () => {
+    const p = await published();
+    const site = (await deps.sites.getByProject("alice", p.id))!;
+    deps.guards = [{ check: async () => ({ ok: false, reasons: ["phishing"] }) }];
+    expect(await downloadSite(deps, "alice", p.id)).toEqual({ ok: false, error: "blocked" });
+    deps.guards = [{ check: async () => { await (deps.sites as MemorySiteStore).takeDown(site.id, "scam"); return { ok: true }; } }];
+    expect(await downloadSite(deps, "alice", p.id)).toEqual({ ok: false, error: "taken_down" });
+  });
 });

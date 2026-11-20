@@ -8,11 +8,14 @@ import { services } from "@/lib/server/services";
 export async function GET(_request: Request, ctx: RouteContext<"/api/admin/sites/[id]/files">) {
   const { id } = await ctx.params;
   // Not admin: the same answer as a missing site.
-  if (!z.uuid().safeParse(id).success || !isAdmin(await currentUser())) return json(404, { error: "not_found" });
+  const user = await currentUser();
+  if (!z.uuid().safeParse(id).success || !user || !isAdmin(user)) return json(404, { error: "not_found" });
   const svc = services();
   const site = await svc.moderation?.sites.byId(id);
   const builder = svc.builder;
   if (!site || !builder) return json(404, { error: "not_found" });
   const latest = await builder.store.latestVersion(site.ownerId, site.projectId);
+  // Staff reading an owner's site is on the record.
+  await svc.moderation?.audit({ actorId: user.id, action: "site.files_viewed", targetType: "site", targetId: id }).catch(() => undefined);
   return json(200, { files: latest?.files ?? {} });
 }

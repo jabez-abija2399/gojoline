@@ -347,11 +347,11 @@ function DownloadSection({ t, locale, projectId, status, canDownload }: { t: T; 
   const run = async () => {
     setBusy(true);
     setNote({ text: t.downloadPreparing });
-    const res = await fetch(`/api/projects/${projectId}/download`).catch(() => null);
+    const res = await fetch(`/api/projects/${projectId}/download`, { method: "POST" }).catch(() => null);
     if (!res?.ok) {
       const code = ((await res?.json().catch(() => null)) as { error?: string } | null)?.error;
       setBusy(false);
-      return setNote({ text: code === "busy" ? t.downloadBusy : code === "too_many" ? t.downloadTooMany : t.downloadFailed, alert: true });
+      return setNote({ text: code === "busy" ? t.downloadBusy : code === "too_many" ? t.downloadTooMany : code === "too_large" ? t.downloadTooLarge : code === "blocked" ? t.downloadBlocked : t.downloadFailed, alert: true });
     }
     const blob = await res.blob();
     const name = /filename="([^"]+)"/.exec(res.headers.get("Content-Disposition") ?? "")?.[1] ?? "website.zip";

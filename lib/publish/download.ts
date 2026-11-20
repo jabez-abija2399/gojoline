@@ -1,5 +1,6 @@
 import { reportError } from "@/lib/observability/report";
 import { buildLiveFiles, type PublishDeps } from "./service";
+import { scanBuiltSite } from "./scan";
 import { createZip } from "./zip";
 
 /**
@@ -9,7 +10,7 @@ import { createZip } from "./zip";
  */
 export type DownloadOutcome =
   | { ok: true; zip: Buffer; filename: string }
-  | { ok: false; error: "not_found" | "plan_required" | "not_published" | "taken_down" | "busy" | "paused" | "build_failed" | "failed" };
+  | { ok: false; error: "not_found" | "plan_required" | "not_published" | "taken_down" | "busy" | "paused" | "build_failed" | "blocked" | "too_large" | "failed" };
 
 export const README = `Your website from Gojoline
 ==========================
@@ -42,6 +43,9 @@ dashboard and Telegram while your Gojoline account is active.
 መልሶችን ወደ ጎጆላይን ዳሽቦርድዎና ቴሌግራምዎ መላካቸውን ይቀጥላሉ።
 `;
 
+/** Bigger archives are refused (memory, and plain ZIP stops at 4 GB). */
+export const MAX_DOWNLOAD_BYTES = 300 * 1024 * 1024;
+
 export async function downloadSite(deps: PublishDeps, ownerId: string, projectId: string): Promise<DownloadOutcome> {
   const project = await deps.store.getProject(ownerId, projectId);
   if (!project) return { ok: false, error: "not_found" };
@@ -60,10 +64,23 @@ export async function downloadSite(deps: PublishDeps, ownerId: string, projectId
   if (!token) return { ok: false, error: "busy" };
   try {
     const build = await buildLiveFiles(deps, { ownerId, projectId, locale: project.locale, files: version.files, siteKey: site.siteKey, url: site.url, slug: site.slug });
+    // The preview sandbox is shared: put the owner's newest draft back for their open preview.
+    const latest = await deps.store.latestVersion(ownerId, projectId);
+    if (latest && latest.number !== version.number) await deps.sandboxes.open(projectId, latest.files).catch((e: unknown) => reportError("restore after download failed", e, { projectId }));
     if (!build.ok) {
       console.warn("download build failed", projectId, build.output.slice(-1500));
       return { ok: false, error: "build_failed" };
     }
+    // The same checks as publishing (photos and settings may be newer than the last publish).
+    const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
+    if (scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] }).length) return { ok: false, error: "blocked" };
+    for (const guard of deps.guards ?? []) {
+      if (!(await guard.check({ files: build.files, source: version.files, projectId, ownerId })).ok) return { ok: false, error: "blocked" };
+    }
+    // Taken down while it built: nothing to hand out.
+    if ((await deps.sites.getByProject(ownerId, projectId))?.status === "taken_down") return { ok: false, error: "taken_down" };
+    const size = build.files.reduce((n, f) => n + f.data.length, 0);
+    if (size > MAX_DOWNLOAD_BYTES) return { ok: false, error: "too_large" };
     const zip = createZip([{ path: "README.txt", data: Buffer.from(README) }, ...build.files.map((f) => ({ path: f.path, data: f.data }))]);
     return { ok: true, zip, filename: `${site.slug}-website.zip` };
   } catch (e) {

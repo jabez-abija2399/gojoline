@@ -146,6 +146,8 @@ export const dashboardEn = {
   downloadUpgrade: "See the Business plan",
   downloadBusy: "Your site is being published right now. Try again in a minute.",
   downloadTooMany: "You've downloaded several times this hour. Please try again later.",
+  downloadTooLarge: "Your site is too big to download in one file. Remove some photos you don't use, or ask us on Telegram.",
+  downloadBlocked: "Your site has something our checks don't allow, so it can't be downloaded. Ask in the chat to change it.",
   downloadFailed: "We couldn't prepare the download. Check your connection and try again.",
   offlineTitle: "Take site offline",
   offlineBody: "Closed for a while? Your site shows a short note that it is resting, and forms stop. Nothing is deleted.",
