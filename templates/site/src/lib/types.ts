@@ -499,8 +499,26 @@ export interface Theme {
    * precise: a software product in the Swiss manner: a strict grid drawn in hairlines, tight
    * neutral type with one accent, product drawings that come alive, quiet cards with fine borders
    * (apps, software, online services, fintech).
+   * monochrome: a fashion house's shop set like a magazine: black and white (the photos carry the
+   * colour), a light serif, small tracked capitals, the name centred over the page, products as tall
+   * portraits with the price beneath, categories as big titles (fashion, design shops, concept stores).
+   * drafting: set like a drawing sheet: warm paper, black ink, a faint drafting grid, projects
+   * numbered A-01, facts as a title block, large photographs, much space (architects, interior
+   * designers, engineers, furniture makers).
+   * noir: fine dining by candlelight: the page turns dark (the accent becomes the room, the
+   * background colour the ink, the primary the brass details), photos rise out of the dark, centred
+   * serif titles, a menu like a printed card (restaurants, bars, chef's tables, wine and coffee rooms).
+   * folio: a creative developer's notebook: a dot grid, labels in monospace like code comments, a
+   * huge name that moves as the page scrolls, work as an index whose picture follows the pointer,
+   * a cursor ring and leaning buttons (developers, designers, illustrators, freelancers).
+   * estate: a luxury property magazine: sand paper, deep forest ink (the accent), a heavy serif with
+   * large prices, the month's listing as a spread, listings in an uneven grid, filters as one search
+   * bar (property agencies, developers, holiday rentals, serviced apartments).
+   * voyage: a journey told as the page scrolls: full-screen photos as numbered chapters with words
+   * laid over them, destinations as staggered prints, the route beside a photo that stays (travel
+   * companies, tour operators, lodges, expeditions).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio" | "estate" | "voyage";
 }
 
 export interface Business {

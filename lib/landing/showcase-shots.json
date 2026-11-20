@@ -598,5 +598,137 @@
         "height": 933
       }
     }
+  },
+  "boutique": {
+    "en": {
+      "src": "/showcase/boutique-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/boutique-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/boutique-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/boutique-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "architect": {
+    "en": {
+      "src": "/showcase/architect-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/architect-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/architect-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/architect-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "dining": {
+    "en": {
+      "src": "/showcase/dining-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/dining-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/dining-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/dining-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "folio": {
+    "en": {
+      "src": "/showcase/folio-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/folio-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/folio-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/folio-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "estate": {
+    "en": {
+      "src": "/showcase/estate-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/estate-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/estate-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/estate-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
+  },
+  "voyage": {
+    "en": {
+      "src": "/showcase/voyage-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/voyage-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/voyage-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/voyage-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }

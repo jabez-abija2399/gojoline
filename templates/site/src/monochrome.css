@@ -1,0 +1,345 @@
+/*
+ * monochrome: a fashion house's shop, set like a magazine. Black and white only (the photographs
+ * carry the colour), a light serif for titles, small tracked capitals for everything else, the
+ * name centred over the page, products as tall portraits with the price beneath, categories as a
+ * list of big titles, and no boxes anywhere. Outside the cascade layers so its layout wins over the
+ * utility classes; every rule is scoped to [data-style="monochrome"]. Built only into monochrome
+ * sites (scripts/only-used-styles.ts).
+ */
+
+/* ---- Type ---- */
+[data-style="monochrome"] :is(.headline, .section-title, .item-title, .pull-quote, .index-title) {
+  font-weight: 400;
+}
+[data-style="monochrome"] .headline {
+  font-size: clamp(3rem, 1.2rem + 7.5vw, 9rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+[data-style="monochrome"] .section-title {
+  font-size: clamp(2.25rem, 1.3rem + 3.6vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+:lang(am) [data-style="monochrome"] :is(.headline, .section-title) {
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+:lang(am) [data-style="monochrome"] .headline {
+  font-size: clamp(2.5rem, 1.2rem + 5vw, 6rem);
+}
+[data-style="monochrome"] :is(.section-title, .depth-frame, .eyebrow)::before {
+  display: none;
+}
+/* Small tracked capitals for labels, buttons, the menu and prices. */
+[data-style="monochrome"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab, .wordmark) {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+:lang(am) [data-style="monochrome"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab, .wordmark),
+[data-style="monochrome"] :lang(am):is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab, .wordmark) {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1rem;
+}
+[data-style="monochrome"] .hero-eyebrow {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+[data-style="monochrome"] :is(.brand-mark, .hero-glow) {
+  display: none;
+}
+
+/* ---- No boxes: square, hairline, black on white ---- */
+[data-style="monochrome"] :is(.card, .pcard, .btn, .badge, .menu-tab, input, select, textarea, .rail-arrow) {
+  border-radius: 0;
+}
+[data-style="monochrome"] :is(.card, .pcard) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+[data-style="monochrome"] .pcard > div:last-child {
+  padding-inline: 0;
+}
+[data-style="monochrome"] .btn {
+  padding: 1rem 2.25rem;
+}
+[data-style="monochrome"] .btn-outline {
+  border-width: 1px;
+}
+[data-style="monochrome"] .badge {
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="monochrome"] .nav-link,
+[data-style="monochrome"] .header-overlay .nav-desktop .nav-link {
+  background: none;
+  text-decoration: none;
+}
+[data-style="monochrome"] .nav-link:hover,
+[data-style="monochrome"] .nav-link[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+[data-style="monochrome"] .nav-lang {
+  border: 0;
+}
+[data-style="monochrome"] .site-header.header-scroll {
+  border-bottom: 1px solid var(--site-line);
+  background: var(--site-background);
+}
+/* No heavy button in the bar: the page's own actions are enough. */
+[data-style="monochrome"] .header-cta {
+  display: none;
+}
+/* The house's name, larger, with room to tap (phones). */
+[data-style="monochrome"] .site-header .wordmark {
+  min-width: 2.75rem;
+  font-size: 1.125rem;
+  letter-spacing: 0.24em;
+}
+:lang(am) [data-style="monochrome"] .site-header .wordmark {
+  letter-spacing: 0;
+  font-size: 1.25rem;
+}
+/* On wide screens, the name in the middle of the bar with the menu around it: only when the menu is
+   short enough (up to three pages, the language and the hidden button) to leave the middle free. */
+@media (min-width: 1280px) {
+  [data-style="monochrome"] .site-header > .container-site:has(.nav-desktop):not(:has(.nav-desktop > :nth-child(6))) {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+  [data-style="monochrome"] .site-header > .container-site:has(.nav-desktop):not(:has(.nav-desktop > :nth-child(6))) .wordmark {
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
+    z-index: 1;
+    justify-self: center;
+    letter-spacing: 0.32em;
+  }
+  :lang(am) [data-style="monochrome"] .site-header .wordmark {
+    letter-spacing: 0;
+  }
+  [data-style="monochrome"] .site-header > .container-site:has(.nav-desktop):not(:has(.nav-desktop > :nth-child(6))) .nav-desktop {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-content: space-between;
+    width: 100%;
+  }
+  [data-style="monochrome"] .site-header .nav-desktop > :nth-child(2) {
+    margin-inline-end: auto;
+  }
+}
+/* Menu text on the campaign photo: a shade at the top and a soft shadow behind the letters. */
+[data-style="monochrome"] .header-overlay :is(.nav-link, .wordmark, summary) {
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.55);
+}
+
+/* ---- Campaign: the photograph, a few words in its corner ---- */
+[data-style="monochrome"] .hero-immersive > .container-site {
+  min-height: min(64rem, calc(100svh - 1px));
+  padding-bottom: 3rem;
+}
+[data-style="monochrome"] .hero-immersive .hero-photo {
+  object-position: 50% 20%;
+}
+[data-style="monochrome"] .hero-immersive .hero-shade {
+  background: linear-gradient(to top, rgb(0 0 0 / 0.75), rgb(0 0 0 / 0.35) 50%, transparent 72%), linear-gradient(to bottom, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0.28) 14%, transparent 28%);
+}
+[data-style="monochrome"] .hero-immersive .headline {
+  max-width: 11ch;
+}
+[data-style="monochrome"] .hero-immersive :is(.btn-primary) {
+  border-color: #fff;
+  background: #fff;
+  color: var(--site-text);
+}
+[data-style="monochrome"] .hero-immersive .btn-glass {
+  border-width: 1px;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+/* ---- The collection: tall portraits to swipe, name and price beneath ---- */
+[data-style="monochrome"] .rail > li > :is(a, div) {
+  height: auto;
+  width: 68vw;
+  overflow: visible;
+  border-radius: 0;
+}
+@media (min-width: 640px) {
+  [data-style="monochrome"] .rail > li > :is(a, div) {
+    width: 19rem;
+  }
+}
+[data-style="monochrome"] .rail > li > :is(a, div) > :is(img, .placeholder) {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  height: auto;
+}
+[data-style="monochrome"] .rail .card-shade {
+  display: none;
+}
+[data-style="monochrome"] .rail > li > :is(a, div) > span.bottom-0 {
+  position: static;
+  gap: 0.25rem;
+  padding: 1rem 0 0;
+  color: var(--site-text);
+}
+[data-style="monochrome"] .rail > li > :is(a, div) > span.bottom-0 > :first-child {
+  font-size: 1.375rem;
+  font-weight: 400;
+}
+
+/* ---- Featured pieces: one tall picture, two beside it, captions in small capitals ---- */
+[data-style="monochrome"] .card-grid {
+  gap: 2.5rem 1.5rem;
+}
+[data-style="monochrome"] .card-grid :is(img, .placeholder) {
+  aspect-ratio: 4 / 5;
+}
+[data-style="monochrome"] .card-grid .item-title {
+  font-size: 1.375rem;
+}
+/* Exactly three pieces: the first large and tall, two beside it. More pieces stay an even grid. */
+@media (min-width: 1024px) {
+  [data-style="monochrome"] .card-grid:has(> li:nth-child(3):last-child) {
+    grid-template-columns: 7fr 5fr;
+  }
+  [data-style="monochrome"] .card-grid:has(> li:nth-child(3):last-child) > li:first-child {
+    grid-row: span 2;
+  }
+  [data-style="monochrome"] .card-grid:has(> li:nth-child(3):last-child) > li:first-child > .zoom {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 40rem;
+  }
+  [data-style="monochrome"] .card-grid:has(> li:nth-child(3):last-child) > li:first-child > .zoom :is(img, .placeholder) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+  [data-style="monochrome"] .card-grid:has(> li:nth-child(3):last-child) > li:first-child > div:last-child {
+    flex: none;
+  }
+  [data-style="monochrome"] .card-grid:has(> li:nth-child(3):last-child) > li:not(:first-child) :is(img, .placeholder) {
+    aspect-ratio: 16 / 11;
+  }
+}
+
+/* ---- Shop by category: a list of big titles, the picture follows the pointer ---- */
+[data-style="monochrome"] .index-row {
+  border-color: var(--site-text);
+}
+[data-style="monochrome"] .index-title {
+  font-size: clamp(2.25rem, 1.2rem + 4vw, 5rem);
+  letter-spacing: -0.03em;
+}
+
+/* ---- The story: a large picture, the words beside it, a quote set very large ---- */
+@media (min-width: 768px) {
+  [data-style="monochrome"] .about-grid {
+    grid-template-columns: 7fr 5fr;
+    column-gap: clamp(3rem, 6vw, 6rem);
+  }
+  [data-style="monochrome"] .about-grid:has(> .about-photo.md\:order-last) {
+    grid-template-columns: 5fr 7fr;
+  }
+}
+[data-style="monochrome"] .about-photo :is(img, .placeholder) {
+  aspect-ratio: 4 / 5;
+}
+[data-style="monochrome"] .quote-section {
+  background: var(--site-background);
+}
+[data-style="monochrome"] .quote-section .pull-quote {
+  font-size: clamp(2rem, 1rem + 3.6vw, 4.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+[data-style="monochrome"] .quote-section .quote-mark {
+  display: none;
+}
+
+/* ---- Newsletter: a black band, one line to write on ---- */
+[data-style="monochrome"] main > section:last-child:has(input[type="email"]):not(:has(select, textarea)),
+[data-style="monochrome"] .newsletter {
+  background: var(--site-text);
+  color: var(--site-background);
+  color-scheme: dark;
+}
+[data-style="monochrome"] main > section:last-child:has(input[type="email"]):not(:has(select, textarea)) :is(.text-muted, p) {
+  color: inherit;
+}
+[data-style="monochrome"] main > section:last-child:has(input[type="email"]):not(:has(select, textarea)) form {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  color: inherit;
+}
+[data-style="monochrome"] main > section:last-child:has(input[type="email"]):not(:has(select, textarea)) :is(input, textarea, select) {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+}
+[data-style="monochrome"] main > section:last-child:has(input[type="email"]):not(:has(select, textarea)) .btn-primary {
+  border-color: var(--site-background);
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="monochrome"] main > section:last-child:has(input[type="email"]):not(:has(select, textarea)) :focus-visible {
+  outline-color: var(--site-background);
+}
+
+/* ---- Footer: white, hairlines, small capitals ---- */
+[data-style="monochrome"] .site-footer {
+  border-top: 1px solid var(--site-line);
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="monochrome"] .site-footer .footer-name {
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 1.125rem;
+}
+[data-style="monochrome"] .site-footer p.font-semibold {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+:lang(am) [data-style="monochrome"] .site-footer :is(.footer-name, p.font-semibold) {
+  text-transform: none;
+  letter-spacing: 0;
+}
+[data-style="monochrome"] .site-footer :is(.border-on-accent\/20) {
+  border-color: var(--site-line);
+}
+[data-style="monochrome"] .site-footer :focus-visible {
+  outline-color: var(--site-focus);
+}
+
+/* ---- Motion: slow zooms, an underline drawn under a piece's name ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-style="monochrome"] .zoom img {
+    transition-duration: 1200ms;
+  }
+  [data-style="monochrome"] .rail > li > :is(a, div) > span.bottom-0 > :first-child {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    [data-style="monochrome"] .rail > li > :is(a, div):hover > span.bottom-0 > :first-child {
+      background-size: 100% 1px;
+    }
+  }
+}

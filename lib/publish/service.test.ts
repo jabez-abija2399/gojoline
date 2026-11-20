@@ -216,6 +216,100 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify({ business: { telegram: "selamcoffee" } }))).toBe(false);
     expect(hasExampleDetails(JSON.stringify({ a: { label: { en: "Call 0911 000 000" } } }))).toBe(true);
   });
+  it("blocks the boutique starter's sample products, shown in strangers' photos at invented prices", () => {
+    const boutique = JSON.parse(presetSiteJson("boutique")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    boutique.business = { phone: "+251 911 234 567", telegram: "realshop" };
+    for (const p of boutique.pages) p.sections = p.sections.filter((s) => s.type !== "quote");
+    expect(hasExampleDetails(JSON.stringify(boutique))).toBe(true);
+  });
+
+  it("blocks the architect starter's sample projects (invented buildings)", () => {
+    const architect = JSON.parse(presetSiteJson("architect")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    architect.business = { phone: "+251 911 234 567", telegram: "realstudio" };
+    for (const p of architect.pages) p.sections = p.sections.filter((s) => !["quote", "stats", "cta"].includes(s.type));
+    expect(hasExampleDetails(JSON.stringify(architect))).toBe(true);
+    // Renamed projects that keep the sample's place, year and area still block.
+    const renamed = JSON.parse(JSON.stringify(architect)) as { pages: { sections: { type: string; items?: { title: unknown }[] }[] }[] };
+    for (const p of renamed.pages) for (const s of p.sections) if (s.type === "cards") s.items = s.items!.map((i, n) => ({ ...i, title: { en: `Our real project ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(renamed))).toBe(true);
+  });
+
+  it("blocks the dining starter's sample dishes, renamed or not", () => {
+    const dining = JSON.parse(presetSiteJson("dining")) as { business: Record<string, unknown>; pages: { sections: { type: string; categories?: { items: { name: unknown }[] }[] }[] }[] };
+    dining.business = { phone: "+251 911 234 567", telegram: "realplace" };
+    for (const p of dining.pages) p.sections = p.sections.filter((s) => !["testimonials", "quote", "cards", "cta"].includes(s.type));
+    expect(hasExampleDetails(JSON.stringify(dining))).toBe(true);
+    // Renamed dishes that keep the sample's description still block.
+    for (const p of dining.pages) for (const s of p.sections) if (s.type === "menu") for (const c of s.categories!) c.items = c.items.map((i, n) => ({ ...i, name: { en: `Our dish ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(dining))).toBe(true);
+    // A café keeping its own sample menu is judged as before (only these starters' menus are compared).
+    const cafe = JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "menu", categories: [{ name: { en: "Drinks" }, items: [{ name: { en: "Macchiato" }, price: { amountMinor: 4000, currency: "ETB" } }] }] }] }] });
+    expect(hasExampleDetails(cafe)).toBe(false);
+  });
+
+  it("blocks the folio starter's stand-in person: portrait photo, work history, projects and name", () => {
+    const folio = () => JSON.parse(presetSiteJson("folio")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; image?: unknown; items?: { title?: unknown; meta?: unknown; description?: unknown }[] }[] }[] };
+    const strip = (site: ReturnType<typeof folio>, keep: string[]) => {
+      site.business = { phone: "+251 911 234 567", telegram: "realperson" };
+      site.name = { en: "Abebe Kebede" };
+      for (const p of site.pages) p.sections = p.sections.filter((s) => keep.includes(s.type));
+      return JSON.stringify(site);
+    };
+    // The stock portrait under the owner's own name still blocks.
+    expect(hasExampleDetails(strip(folio(), ["hero"]))).toBe(true);
+    // The sample work history blocks.
+    expect(hasExampleDetails(strip(folio(), ["timeline"]))).toBe(true);
+    // Renamed projects that keep the sample's descriptions block.
+    const renamed = folio();
+    for (const p of renamed.pages) for (const s of p.sections) if (s.type === "cards") s.items = s.items!.map((i, n) => ({ ...i, title: { en: `My project ${n}` }, meta: undefined }));
+    expect(hasExampleDetails(strip(renamed, ["cards"]))).toBe(true);
+    // The sample person's name blocks on its own.
+    expect(hasExampleDetails(JSON.stringify({ name: { en: "Ruth Mekonnen" }, business: { phone: "+251 911 234 567" }, pages: [] }))).toBe(true);
+    // The owner's own portrait (not from the library) publishes.
+    expect(hasExampleDetails(JSON.stringify({ name: { en: "Abebe Kebede" }, business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "hero", variant: "portrait", image: { src: "/images/me.webp" } }] }] }))).toBe(false);
+  });
+
+  it("blocks the estate starter's sample listings by photo and price, but not real place names", () => {
+    const estate = () => JSON.parse(presetSiteJson("estate")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; layout?: string; items?: Record<string, unknown>[] }[] }[] };
+    const owner = (site: ReturnType<typeof estate>, keep: (s: { type: string; layout?: string }) => boolean) => {
+      site.name = { en: "Abebe Homes" };
+      site.business = { phone: "+251 912 345 678", telegram: "abebehomes" };
+      for (const p of site.pages) p.sections = p.sections.filter(keep);
+      return site;
+    };
+    // Renamed listings without facts or words, but with the sample photo and price, still block.
+    const kept = owner(estate(), (s) => s.type === "cards" && s.layout === "grid");
+    for (const p of kept.pages) for (const s of p.sections) s.items = s.items!.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Home ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(kept))).toBe(true);
+    // The untouched neighbourhood tiles block...
+    expect(hasExampleDetails(JSON.stringify(owner(estate(), (s) => s.layout === "scroll")))).toBe(true);
+    // ...but a real site's own "Bole" card does not.
+    const real = { name: { en: "Abebe Homes" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "scroll", items: [{ title: { en: "Bole" }, subtitle: { en: "Our office is here" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
+  });
+
+  it("blocks the voyage starter's sample journeys and tiles, but not a real operator's own cards", () => {
+    const voyage = () => JSON.parse(presetSiteJson("voyage")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; layout?: string; items?: Record<string, unknown>[] }[] }[] };
+    const owner = (keep: (s: { type: string; layout?: string }) => boolean) => {
+      const site = voyage();
+      site.name = { en: "Abebe Tours" };
+      site.business = { phone: "+251 912 345 678", telegram: "abebetours" };
+      for (const p of site.pages) p.sections = p.sections.filter(keep);
+      return site;
+    };
+    // Renamed journeys keeping the sample photo and price block.
+    const kept = owner((s) => s.layout === "feature");
+    for (const p of kept.pages) for (const s of p.sections) s.items = s.items!.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Trip ${n}` }, description: { en: "Our own words" } }));
+    expect(hasExampleDetails(JSON.stringify(kept))).toBe(true);
+    // Kept destination tiles block, even with the languages written in another order.
+    const tiles = owner((s) => s.layout === "grid");
+    for (const p of tiles.pages) for (const s of p.sections) s.items = s.items!.map((i) => ({ ...i, title: { am: (i.title as { am: string }).am, en: (i.title as { en: string }).en } }));
+    expect(hasExampleDetails(JSON.stringify(tiles))).toBe(true);
+    // A real operator's own "The Historic Route" and "Lalibela" cards publish.
+    const real = { name: { en: "Abebe Tours" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "feature", items: [{ title: { en: "The Historic Route" }, description: { en: "Our ten-day tour of the north." }, price: { amountMinor: 5000000, currency: "ETB" } }] }, { type: "cards", layout: "grid", items: [{ title: { en: "Lalibela" }, subtitle: { en: "Where we started" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
+  });
+
   it("blocks a template's sample numbers until the owner's own replace them", () => {
     const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
     const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;
@@ -226,9 +320,10 @@ describe("publishSite", () => {
   });
 
   it("blocks the agency starter's sample clients until the owner's own work replaces them", () => {
-    const agency = JSON.parse(presetSiteJson("agency")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    const agency = JSON.parse(presetSiteJson("agency")) as { name?: unknown; business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
     // The owner's own phone and Telegram, and no reviews left: the sample projects still block.
     agency.business = { phone: "+251 911 234 567", telegram: "realstudio" };
+    (agency as { name?: unknown }).name = { en: "Real Studio" };
     for (const p of agency.pages) p.sections = p.sections.filter((s) => s.type !== "testimonials" && s.type !== "quote");
     expect(hasExampleDetails(JSON.stringify(agency))).toBe(true);
     // With the work replaced, it publishes; a café keeping its sample dish names is unaffected.

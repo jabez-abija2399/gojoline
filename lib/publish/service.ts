@@ -312,8 +312,8 @@ type Json = Record<string, unknown>;
 const isStock = (image: unknown) => typeof (image as Json | undefined)?.src === "string" && ((image as Json).src as string).startsWith("/stock/");
 const texts = (v: unknown): string[] => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v as Json).filter((x): x is string => typeof x === "string") : []);
 
-/** Starters whose cards show work for clients: their sample project names are invented businesses. */
-const CLIENT_WORK_PRESETS = new Set<string>(["agency"]);
+/** Starters whose cards are invented: a studio's sample clients and projects, a shop's sample products (shown in strangers' photos, at made-up prices). */
+const CLIENT_WORK_PRESETS = new Set<string>(["agency", "boutique", "architect", "dining", "folio", "estate", "voyage"]);
 
 /**
  * The reviews, quotes and people a site shows, with whether each sits beside a sample photo.
@@ -321,6 +321,8 @@ const CLIENT_WORK_PRESETS = new Set<string>(["agency"]);
  */
 function peopleAndQuotes(site: unknown, work = false): { text: string; samplePhoto: boolean }[] {
   const out: { text: string; samplePhoto: boolean }[] = [];
+  // A studio's or person's sample name ("Kebero Studio", "Ruth Mekonnen").
+  if (work) for (const t of texts((site as Json | null)?.name)) out.push({ text: `name:${t}`, samplePhoto: false });
   const pages = (site as Json | null)?.pages;
   for (const page of Array.isArray(pages) ? pages : []) {
     for (const s of (Array.isArray((page as Json).sections) ? (page as Json).sections : []) as Json[]) {
@@ -329,9 +331,42 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
       if (s.type === "quote") for (const t of texts(s.quote)) out.push({ text: t, samplePhoto: Boolean(s.name) && isStock(s.image) });
       if (s.type === "cards" && s.layout === "people") for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: isStock(i.image) });
       // A studio's sample clients: keeping them would claim work for businesses it never had.
-      else if (s.type === "cards" && work) for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: false });
+      else if (s.type === "cards" && work)
+        for (const i of items) {
+          const price = i.price as { amountMinor?: number; currency?: string } | undefined;
+          // A place tile (a name, a line, maybe a fact like "3 days"; no price or story) is compared
+          // as the name with its line, so a real "Bole" or "Lalibela" card is never mistaken for the sample.
+          if (!price && !i.description) {
+            // Per language, from trimmed text, so key order or an edit to the other language doesn't matter.
+            const title = (i.title ?? {}) as Json;
+            const sub = (i.subtitle ?? {}) as Json;
+            for (const lang of Object.keys(title)) {
+              const a = typeof title[lang] === "string" ? (title[lang] as string).trim() : "";
+              const b = typeof sub[lang] === "string" ? (sub[lang] as string).trim() : "";
+              if (a) out.push({ text: `place:${lang}:${a}|${b}`, samplePhoto: false });
+            }
+            continue;
+          }
+          for (const t of texts(i.title)) out.push({ text: t, samplePhoto: false });
+          // A kept sample listing or product: its library photo with its price, renamed or not.
+          if (price && isStock(i.image)) out.push({ text: `listing:${(i.image as Json).src as string}|${price.amountMinor}|${price.currency}`, samplePhoto: false });
+          for (const t of texts(i.description)) out.push({ text: `about:${t}`, samplePhoto: false });
+          // Their facts too (place, year, area): renaming a sample project must not keep its claims.
+          if (Array.isArray(i.meta) && i.meta.length) out.push({ text: `meta:${JSON.stringify(i.meta)}`, samplePhoto: false });
+        }
       // Big numbers ("1,200+ shops", "15 years") are claims: a template's sample figures must not go live.
       if (s.type === "stats") for (const i of items) out.push({ text: `stat:${JSON.stringify(i.value)}|${JSON.stringify(i.label)}`, samplePhoto: false });
+      // A restaurant's sample dishes and prices (only compared with CLIENT_WORK_PRESETS' menus).
+      if (s.type === "menu" && work)
+        for (const c of (Array.isArray(s.categories) ? s.categories : []) as Json[])
+          for (const i of (Array.isArray(c.items) ? c.items : []) as Json[]) {
+            for (const t of texts(i.name)) out.push({ text: `dish:${t}`, samplePhoto: false });
+            for (const t of texts(i.description)) out.push({ text: `dish:${t}`, samplePhoto: false });
+          }
+      // A portrait hero is the person the site is about: a library photo there is a stranger's face.
+      if (s.type === "hero" && s.variant === "portrait" && isStock(s.image)) out.push({ text: "hero:portrait", samplePhoto: true });
+      // A sample work history (only compared with CLIENT_WORK_PRESETS' timelines).
+      if (s.type === "timeline" && work) for (const i of items) out.push({ text: `timeline:${JSON.stringify([i.period, i.title])}`, samplePhoto: false });
       // A giving goal is a claim about real money: the templates' sample goals must not go live.
       const goal = (s.type === "give" ? (s as { goal?: { raised?: { amountMinor?: number }; target?: { amountMinor?: number } } }).goal : undefined);
       if (goal) out.push({ text: `goal:${goal.raised?.amountMinor}/${goal.target?.amountMinor}`, samplePhoto: false });

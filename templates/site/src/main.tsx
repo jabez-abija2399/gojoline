@@ -14,6 +14,12 @@ import "./design.css";
 import "./grand.css";
 import "./avant.css";
 import "./precise.css";
+import "./monochrome.css";
+import "./drafting.css";
+import "./noir.css";
+import "./folio.css";
+import "./estate.css";
+import "./voyage.css";
 
 const container = document.getElementById("root")!;
 

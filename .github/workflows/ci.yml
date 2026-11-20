@@ -83,3 +83,15 @@ jobs:
           size=$(cat dist/assets/*.js | gzip -9 | wc -c)
           echo "site JS gzip: $size bytes"
           test "$size" -le 102400
+      # Styles that bundle extra code (the pointer script, the app drawings) are checked too.
+      - name: JS budget per style that adds code
+        run: |
+          cp src/site.json /tmp/site.json.bak
+          for preset in agency folio software; do
+            cp "presets/$preset.json" src/site.json
+            npm run build > /dev/null
+            size=$(cat dist/assets/*.js | gzip -9 | wc -c)
+            echo "$preset JS gzip: $size bytes"
+            test "$size" -le 102400
+          done
+          cp /tmp/site.json.bak src/site.json

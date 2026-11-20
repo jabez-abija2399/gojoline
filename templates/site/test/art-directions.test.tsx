@@ -209,3 +209,169 @@ describe("art direction (precise)", () => {
     });
   });
 });
+
+describe("art direction (monochrome)", () => {
+  it("boutique is valid and readable", () => {
+    const site = preset("boutique");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("monochrome");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("is a shop: the season to swipe with prices, categories as titles, a one-field newsletter, an order form", () => {
+    const site = preset("boutique");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain('class="rail"');
+    expect(text(out)).toMatch(/Meskel dress.*9,800/);
+    expect(out).toContain("index-list");
+    const letter = site.pages[0]!.sections.at(-1)!;
+    expect(letter.type === "form" && letter.fields.map((f) => f.type)).toEqual(["email"]);
+    const order = html(site, "en", site.pages.findIndex((p) => p.path === "/order"));
+    expect(order).toMatch(/name="size"/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("boutique");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (drafting)", () => {
+  it("architect is valid and readable", () => {
+    const site = preset("architect");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("drafting");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("projects carry place, year and area for the title block, and the page has one h1", () => {
+    const site = preset("architect");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(1);
+    expect(text(out)).toMatch(/Entoto Ridge House.*Entoto.*2025.*420 m²/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("architect");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (noir)", () => {
+  it("dining is valid and readable as a light-first theme (the style turns it dark)", () => {
+    const site = preset("dining");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("noir");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("has signature dishes, a priced menu, the room and a booking form", () => {
+    const site = preset("dining");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="feature-row /g)).toHaveLength(3);
+    expect(text(out)).toMatch(/Ember tibs.*1,450/);
+    const reserve = html(site, "en", site.pages.findIndex((p) => p.path === "/reserve"));
+    expect(reserve).toMatch(/name="guests"/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("dining");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (folio)", () => {
+  it("folio is valid and readable", () => {
+    const site = preset("folio");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("folio");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("puts the statement first, then work as an index, case studies, skills and experience", () => {
+    const site = preset("folio");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain("hero-portrait");
+    expect(out).toContain("index-list");
+    expect(out.match(/class="feature-row /g)).toHaveLength(2);
+    expect(text(out)).toMatch(/Front-end lead/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("folio");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (estate)", () => {
+  it("estate is valid and readable", () => {
+    const site = preset("estate");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("estate");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("shows the listing of the month, homes with prices and a sale/rent filter", () => {
+    const out = html(preset("estate"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="feature-row /g)).toHaveLength(1);
+    expect(out).toContain("card-grid");
+    expect(out).toContain('class="menu-tabs"');
+    expect(text(out)).toMatch(/The Ridge Villa.*48,500,000/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("estate");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (voyage)", () => {
+  it("voyage is valid and readable", () => {
+    const site = preset("voyage");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("voyage");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("tells the journey in chapters: later full-screen heroes, one h1", () => {
+    const out = html(preset("voyage"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(3);
+    expect(out).toContain("card-grid");
+    expect(text(out)).toMatch(/The Meda Northern Circle.*198,000/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("voyage");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

@@ -145,12 +145,12 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - [x] Luxury hotel: `grand` + `resort`
 - [x] Creative agency: `avant` + `agency`
 - [x] SaaS / software product: `precise` (Swiss minimal, product interface drawings in the site's colours) + `software` ("Lemlem"); design, performance and security reviews run and fixed
-- [ ] Fashion e-commerce: a monochrome magazine direction + a shop-first fashion starter (the existing `fashion` stays as the tailor/made-to-measure site)
-- [ ] Architecture and interiors studio: a restrained grid direction + `architect` (photos: the real-estate and interior photos in the library)
-- [ ] Fine dining: a dark atmospheric direction + `dining` (photos: the café and banquet photos in the library)
-- [ ] Creative portfolio: an interactive personal direction + a second portfolio starter beside `personal`
-- [ ] Luxury real estate: a property-magazine direction beside `real-estate`
-- [ ] Immersive travel: a story-told-by-scrolling direction beside `tours`
+- [x] Fashion e-commerce: `monochrome` (a magazine shop, black and white) + `boutique` ("KUTA"); the existing `fashion` stays as the tailor/made-to-measure site; design, performance and security reviews run and fixed
+- [x] Architecture and interiors studio: `drafting` (a drawing sheet) + `architect` ("Meskot Architects", photos from the real-estate and interior library); design, performance and security reviews run and fixed
+- [x] Fine dining: `noir` (the page turned dark from the theme's own colours) + `dining` ("ESAT", photos from the café and banquet library); design, performance and security reviews run and fixed
+- [x] Creative portfolio: `folio` (a developer's notebook, kinetic name, interactive index, cursor) + `folio` starter beside `personal`; design, performance and security reviews run and fixed
+- [x] Luxury real estate: `estate` (a property magazine) + `estate` starter ("Gara House Properties") beside `real-estate`; design, performance and security reviews run and fixed
+- [x] Immersive travel: `voyage` (chapters as full-screen photos) + `voyage` starter ("Meda Journeys") beside `tours`; design, performance and security reviews run and fixed
 - [ ] Art gallery or museum: blocked on photos (the library has no artwork or gallery photos and new downloads are blocked here; see Blocked)
 
 ## User guide (2026-11-19)
@@ -197,11 +197,23 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - The photo library (12 MB) is traced into every route's function through the `"/**"` key in `next.config.ts`; scope it to the routes that build and publish.
 - The builder landing page measured LCP 3.4 to 3.75 s in one run on a loaded machine during the review (budget 2.5 s); not compared with `main`. Check the Lighthouse CI result after this merge.
 - Generated sites' script is 95.9 KB gzip of the 100 KB budget; Lighthouse's simulated LCP still adds the script's download (2.0 to 2.6 s on photo-heavy home pages, against 1.7 to 2.0 s measured on a throttled phone). Next step: hydrate only the interactive parts (display-only sections such as drawings, icons and cards are about 28 KB gzip), or a decision to move the template to Preact (react-dom is about 63 KB gzip).
+- Full-screen chapter photos (`voyage`, `grand`) sit inside Chrome's lazy-load distance and are fetched with the hero; LCP on the voyage home page was 1.98 to 3.49 s (median ~2.05 s) against 2.0 s, and 1.8 to 1.9 s without those fetches. Fix: a near-only loader for `hero-later` photos (one shared IntersectionObserver, `<noscript>` fallback). The same grand drift is frozen by `overflow: hidden` (use `clip`, as voyage does). The Danakil chapter photo needs a 1600 px file (2026-11-20).
+- Amharic pages of generated sites: LCP 2.0 to 2.1 s (budget 2.0 s) because the Ethiopic core font preload is 80.6 KB; subset it at build time to the characters the site uses. The shared clip-path photo wipe repaints while it runs; an overlay moved with `scale`/`translate` would run on the compositor (2026-11-20).
 - Generated-site speed after slice 2 of the art directions (performance review, 2026-11-19): Amharic home pages of gym, studio and training sit on the 2.0 s LCP line (1.94 to 2.10 s, devtools throttling; the same as slice 1). Next levers, best first: subset the 79 KB Ge'ez font per site at build time; ship only the site's own art direction's CSS (every site now carries all twelve, about 3 KB gzip of render-blocking CSS); a 160 px photo size for menu thumbnails (bakery wastes about 31 KB) and a 320 px one for prints; the `.wipe` reveal animates `clip-path` (not composited). The week timetable's day reveal never runs on phones (its scroll timeline is the sideways grid); harmless, days stay visible.
 - The Amharic of the five slice-2 starters (bakery, studio, training, pharmacy, gym) and their gallery strings needs the native-speaker review.
 - Amharic in the motion-kit additions (tabs, giving boxes, ribbons, announcements, prayer and service times, stamps) needs the native-speaker review with the rest of the templates.
 - Generated-site LCP (performance review, 2026-11-20): with compressed files, Lighthouse slow 4G gives 2.1 to 2.4 s on both hotel and resort (budget 2.0 s); about 1.7 s is render delay from the blocking stylesheet and fonts. Next steps: inline the first screen's CSS and load the rest without blocking, and split every art direction into its own file the way `grand.css` is (about 4 to 5 KB gzip less blocking CSS per site). Lighthouse CI must serve files compressed or it reports about 3.9 s.
 - Resort photos are heavier than the hotel's (hero 480 px 28 KB vs 16 KB, about photo 34 KB): re-encode those stock files or pick lighter ones when real luxury-hotel photos are added to the library.
+- Form `number` fields have no minimum or maximum: a booking can ask for 0, -3 or 999999999 guests (`lib/cloud/forms.ts` checks the format only). Add optional `min`/`max` to `formFieldSchema`, render them, enforce them in `checkSubmission`, and set 1 to 20 on booking guest fields (security review, 2026-11-20).
+- Amharic in the `voyage` template (`scripts/presets/voyage.mjs`, 2026-11-20) and its gallery strings (`voyage` style name "ታሪክ ተራኪ") needs the same native-speaker review.
+- Amharic in the `estate` template (`scripts/presets/estate.mjs`, 2026-11-20) and its gallery strings (`estate` style name "መጽሔት") needs the same native-speaker review.
+- Amharic in the `folio` template (`scripts/presets/folio.mjs`, 2026-11-20) and its gallery strings (`folio` style name "ማስታወሻ ደብተር") needs the same native-speaker review.
+- Amharic in the `dining` template (`scripts/presets/dining.mjs`, 2026-11-20) and its gallery strings (`noir` style name "የሻማ ብርሃን") needs the same native-speaker review.
+- A page whose first section is a cards grid (no hero) loads its first card photo lazily, though it is the largest paint (architect /projects, LCP 2.0 s): give that photo priority like a hero (performance review, 2026-11-20).
+- Amharic in the `architect` template (`scripts/presets/architect.mjs`, 2026-11-20) and its gallery strings (`drafting` style name "የሥነ ሕንፃ") needs the same native-speaker review.
+- Newsletter forms (boutique, 2026-11-20) store the address and notify the owner; there is no double opt-in yet, so a visitor can enter someone else's address. Add a confirmation email before owners send to these lists.
+- Demo sites carry the placeholder phone (`+251 911 000 000`) and Telegram (`yourbusiness`) in their call buttons and structured data; a demo visitor who taps them could reach a stranger. Consider leaving them out of demo builds.
+- Amharic in the `boutique` template (`scripts/presets/boutique.mjs`, 2026-11-20) and its gallery strings (`monochrome` style name "ጥቁርና ነጭ") needs the same native-speaker review.
 - Amharic in the `software` template (`scripts/presets/software.mjs`, 2026-11-20) and its gallery strings (`precise` style name "ጥርት ያለ") needs the same native-speaker review.
 - Amharic in the `agency` template (`scripts/presets/agency.mjs`, 2026-11-20) and its gallery strings (`avant` style name "ሙከራዊ") needs the same native-speaker review.
 - Amharic in the `resort` template (`scripts/presets/resort.mjs`, 2026-11-20) and its gallery strings (`resort` in `lib/landing/template-info.ts`, `grand` style name "ግርማ ያለው") needs the same native-speaker review.

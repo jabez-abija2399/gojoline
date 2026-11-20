@@ -427,6 +427,83 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  boutique: {
+    category: "shops",
+    designedFor: {
+      en: ["Fashion labels and boutiques", "Concept and design stores", "Jewellery and accessories", "Designers selling abroad"],
+      am: ["የፋሽን ብራንዶችና ቡቲኮች", "የዲዛይን መደብሮች", "ጌጣጌጥና ተጨማሪዎች", "ወደ ውጭ የሚሸጡ ዲዛይነሮች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Pieces with prices", am: "ልብሶች ከዋጋ ጋር" } },
+      { key: "order", label: { en: "Orders from anywhere", am: "ከየትም ትዕዛዝ" } },
+      { key: "cards", label: { en: "Shop by category", am: "በምድብ ግዢ" } },
+      "callTelegram",
+      "languages",
+    ],
+  },
+  architect: {
+    category: "business",
+    designedFor: {
+      en: ["Architects", "Interior designers", "Engineering firms", "Furniture and joinery makers"],
+      am: ["አርክቴክቶች", "የውስጥ ዲዛይነሮች", "የምህንድስና ድርጅቶች", "የቤት ዕቃና የአናጢነት ሠሪዎች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Projects as numbered sheets", am: "ፕሮጀክቶች በቁጥር የተሰጣቸው ሉሆች" } },
+      { key: "contactForm", label: { en: "Project enquiries", am: "የፕሮጀክት ጥያቄዎች" } },
+      "numbers",
+      "map",
+      "languages",
+    ],
+  },
+  dining: {
+    category: "food",
+    designedFor: {
+      en: ["Fine dining restaurants", "Chef's tables and supper clubs", "Wine and cocktail bars", "Hotel restaurants"],
+      am: ["ቅንጡ ምግብ ቤቶች", "የሼፍ ገበታዎችና የእራት ክለቦች", "የወይንና የኮክቴል ቤቶች", "የሆቴል ምግብ ቤቶች"],
+    },
+    highlights: ["menu", { key: "booking", label: { en: "Table reservations", am: "የጠረጴዛ ቦታ ማስያዝ" } }, "gallery", "reviews", "hours", "map", "languages"],
+  },
+  folio: {
+    category: "business",
+    designedFor: {
+      en: ["Developers and engineers", "Product and UI designers", "Illustrators and motion designers", "Freelancers looking for clients"],
+      am: ["ገንቢዎችና መሐንዲሶች", "የምርትና የበይነገጽ ዲዛይነሮች", "ሠዓሊዎችና የእንቅስቃሴ ዲዛይነሮች", "ደንበኛ የሚፈልጉ ራሳቸውን የቻሉ ባለሙያዎች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Work as an index", am: "ሥራዎች እንደ ማውጫ" } },
+      "timeline",
+      { key: "contactForm", label: { en: "Project enquiries", am: "የፕሮጀክት ጥያቄዎች" } },
+      "languages",
+    ],
+  },
+  estate: {
+    category: "business",
+    designedFor: {
+      en: ["Luxury property agencies", "Property developers", "Serviced apartments", "Holiday and weekend homes"],
+      am: ["የቅንጡ ቤቶች ኤጀንሲዎች", "የቤት አልሚዎች", "አገልግሎት ያላቸው አፓርትመንቶች", "የዕረፍትና የሳምንት መጨረሻ ቤቶች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Homes with prices", am: "ቤቶች ከዋጋ ጋር" } },
+      { key: "booking", label: { en: "Private viewings", am: "የግል ጉብኝት" } },
+      "numbers",
+      "reviews",
+      "languages",
+    ],
+  },
+  voyage: {
+    category: "travel",
+    designedFor: {
+      en: ["Travel companies", "Tour operators and expeditions", "Trekking and adventure guides", "Lodges with excursions"],
+      am: ["የጉዞ ድርጅቶች", "አስጎብኚዎችና ጉዞ አዘጋጆች", "የእግር ጉዞና የጀብዱ መሪዎች", "ጉብኝት የሚያዘጋጁ ሎጆች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Journeys with days and prices", am: "ጉዞዎች ከቀናትና ከዋጋ ጋር" } },
+      { key: "booking", label: { en: "Journey enquiries", am: "የጉዞ ጥያቄዎች" } },
+      { key: "cards", label: { en: "Destinations", am: "መዳረሻዎች" } },
+      "reviews",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

@@ -6,7 +6,7 @@ const siteJson = fileURLToPath(new URL("../src/site.json", import.meta.url));
 
 /** Styles that ship in their own file: only a site that uses one gets its CSS (it blocks the first paint), and only avant sites get the pointer script. */
 export function onlyUsedStyles(): Plugin {
-  const own = /\/src\/(grand|avant|precise)\.css$/;
+  const own = /\/src\/(grand|avant|precise|monochrome|drafting|noir|folio|estate|voyage)\.css$/;
   const readSite = () => {
     try {
       return readFileSync(siteJson, "utf8");
@@ -28,7 +28,7 @@ export function onlyUsedStyles(): Plugin {
       // The avant pointer: other sites get an empty stand-in, so its code costs them nothing.
       if (/\/src\/components\/pointer\.ts$/.test(id.split("?")[0]!)) {
         this.addWatchFile(siteJson);
-        return style() === "avant" ? null : "export function startPointer() { return () => {}; }";
+        return ["avant", "folio"].includes(style() ?? "") ? null : "export function startPointer() { return () => {}; }";
       }
       // The software drawings: only for a site that shows one.
       if (/\/src\/components\/art-app\.tsx$/.test(id.split("?")[0]!)) {

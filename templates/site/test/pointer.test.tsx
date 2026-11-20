@@ -10,9 +10,9 @@ const style = (JSON.parse(readFileSync(new URL("../src/site.json", import.meta.u
 const load = (id: string) => (onlyUsedStyles().load as (this: { addWatchFile: () => void }, id: string) => string | null).call({ addWatchFile: () => {} }, id);
 
 describe("the avant pointer script", () => {
-  it("is replaced by an empty stand-in when the site is not avant", () => {
+  it("is replaced by an empty stand-in when the site is neither avant nor folio", () => {
     const out = load(fileURLToPath(new URL("../src/components/pointer.ts", import.meta.url)));
-    if (style === "avant") expect(out).toBeNull();
+    if (style === "avant" || style === "folio") expect(out).toBeNull();
     else expect(out).toBe("export function startPointer() { return () => {}; }");
   });
 

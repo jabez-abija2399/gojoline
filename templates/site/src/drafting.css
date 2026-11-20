@@ -1,0 +1,360 @@
+/*
+ * drafting: an architecture or interiors studio, set like a drawing sheet. Warm paper, black ink,
+ * a faint drafting grid, projects numbered like sheets (A-01, A-02), facts set as a title block
+ * (place, year, area in columns under a rule), large architectural photographs, and a great deal of
+ * space. Restrained: no colour beyond the photographs, no shadows, no rounded corners. Outside the
+ * cascade layers so its layout wins over the utility classes; every rule is scoped to
+ * [data-style="drafting"]. Built only into drafting sites (scripts/only-used-styles.ts).
+ */
+[data-style="drafting"] {
+  --draft-rule: 1px solid var(--site-text);
+}
+
+/* ---- Type: a quiet grotesque, large titles, small data in capitals ---- */
+[data-style="drafting"] :is(.headline, .section-title, .item-title, .pull-quote, .index-title) {
+  font-weight: 500;
+}
+[data-style="drafting"] .headline {
+  font-size: clamp(2.75rem, 1.2rem + 6vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+[data-style="drafting"] .section-title {
+  font-size: clamp(2.25rem, 1.3rem + 3.4vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+:lang(am) [data-style="drafting"] :is(.headline, .section-title) {
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+[data-style="drafting"] :is(.section-title, .depth-frame)::before {
+  display: none;
+}
+/* Data and labels: small capitals with tabular figures, like a title block. */
+[data-style="drafting"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .small-label, .wordmark) {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+:lang(am) [data-style="drafting"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .meta, .small-label, .wordmark),
+[data-style="drafting"] :lang(am):is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .meta, .small-label, .wordmark) {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1rem;
+}
+[data-style="drafting"] .eyebrow {
+  font-weight: 500;
+}
+[data-style="drafting"] .eyebrow::before {
+  width: 0.75rem;
+  height: 1px;
+  background: currentColor;
+}
+[data-style="drafting"] .hero-eyebrow {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+[data-style="drafting"] :is(.brand-mark, .hero-glow) {
+  display: none;
+}
+
+/* ---- The sheet: a faint grid, ink rules, square corners ---- */
+[data-style="drafting"] .site-root {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--site-text) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--site-text) 5%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+[data-style="drafting"] main > section + section:not(.bg-accent, .on-dark) {
+  border-top: var(--draft-rule);
+}
+[data-style="drafting"] .section {
+  background: transparent;
+}
+[data-style="drafting"] :is(.card, .pcard, .btn, .badge, .menu-tab, input, select, textarea, .rail-arrow, form) {
+  border-radius: 0;
+  box-shadow: none;
+}
+[data-style="drafting"] :is(.card, .pcard) {
+  border: 0;
+  background: transparent;
+}
+[data-style="drafting"] .pcard > div:last-child {
+  padding-inline: 0;
+}
+[data-style="drafting"] .btn {
+  border-width: 1px;
+  padding: 0.9rem 1.5rem;
+}
+[data-style="drafting"] .site-header.header-scroll {
+  border-bottom: var(--draft-rule);
+  background: var(--site-background);
+  backdrop-filter: none;
+}
+[data-style="drafting"] .nav-link {
+  background: none;
+}
+[data-style="drafting"] .nav-link:hover {
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+[data-style="drafting"] .nav-lang {
+  border: 0;
+}
+[data-style="drafting"] .bg-surface,
+[data-style="drafting"] .bg-primary-soft {
+  background: transparent;
+}
+
+/* ---- Hero: the building, the title set small beneath a rule ---- */
+[data-style="drafting"] .hero-immersive > .container-site {
+  min-height: min(56rem, calc(100svh - 1px));
+}
+/* A dark band at the top for the menu, a deep shade at the foot for the words. */
+[data-style="drafting"] .hero-immersive .hero-shade {
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.7), transparent 26%),
+    linear-gradient(to top, rgb(0 0 0 / 0.8), rgb(0 0 0 / 0.6) 45%, rgb(0 0 0 / 0.3) 70%, transparent 85%);
+}
+/* The framed hero opens from a square sheet border, not a rounded card. */
+[data-style="drafting"] .hero-frame {
+  animation-name: draft-unframe;
+  /* Held only before its range: a finished clip-path would repaint on every scroll frame. */
+  animation-fill-mode: backwards;
+}
+/* No filled button in the bar: a ruled link, like the rest of the sheet. */
+[data-style="drafting"] .header-cta {
+  border: 1px solid currentColor;
+  background: none;
+  color: inherit;
+}
+[data-style="drafting"] .hero-immersive .headline {
+  max-width: 13ch;
+}
+/* A full-screen photo further down holds still (the page-top drift would leave it misplaced). */
+[data-style="drafting"] .hero-immersive.hero-later :is(.hero-parallax, .hero-photo) {
+  animation: none;
+}
+
+/* ---- Introduction: the words wide, a small photograph to the side ---- */
+@media (min-width: 768px) {
+  [data-style="drafting"] .about-grid {
+    grid-template-columns: 4fr 8fr;
+    align-items: start;
+    column-gap: clamp(3rem, 7vw, 7rem);
+  }
+  [data-style="drafting"] .about-grid:has(> .about-photo.md\:order-last) {
+    grid-template-columns: 8fr 4fr;
+  }
+}
+[data-style="drafting"] .about-photo :is(img, .placeholder) {
+  aspect-ratio: 3 / 4;
+}
+[data-style="drafting"] .about-text > p:first-of-type {
+  font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
+  line-height: 1.4;
+  color: var(--site-text);
+}
+
+/* ---- Projects: sheets A-01, A-02, a title block under each picture ---- */
+[data-style="drafting"] .card-grid {
+  counter-reset: draft-sheet;
+  gap: 4rem 2rem;
+}
+[data-style="drafting"] .card-grid > li {
+  counter-increment: draft-sheet;
+  gap: 0;
+}
+[data-style="drafting"] .card-grid > li > div:last-child {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 1rem;
+  border-top: var(--draft-rule);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
+[data-style="drafting"] .card-grid > li > div:last-child > * {
+  grid-column: 1;
+}
+/* The sheet number, top right of the title block. */
+[data-style="drafting"] .card-grid > li > div:last-child::before {
+  content: "A-" counter(draft-sheet, decimal-leading-zero) / "";
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+[data-style="drafting"] .card-grid .item-title {
+  font-size: clamp(1.5rem, 1rem + 1.2vw, 2.25rem);
+  letter-spacing: -0.02em;
+}
+/* Place, year and area in columns, like a title block. */
+[data-style="drafting"] .card-grid .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+[data-style="drafting"] .card-grid .meta-item {
+  white-space: nowrap;
+}
+[data-style="drafting"] .card-grid ~ .btn {
+  align-self: flex-start;
+}
+[data-style="drafting"] .meta-item {
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+[data-style="drafting"] .card-grid :is(img, .placeholder) {
+  aspect-ratio: 4 / 3;
+}
+@media (min-width: 1024px) {
+  [data-style="drafting"] .card-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  [data-style="drafting"] .card-grid > li:nth-child(3n + 1) {
+    grid-column: 1 / span 8;
+  }
+  [data-style="drafting"] .card-grid > li:nth-child(3n + 2) {
+    grid-column: 9 / span 4;
+  }
+  [data-style="drafting"] .card-grid > li:nth-child(3n + 2) :is(img, .placeholder) {
+    aspect-ratio: 3 / 4;
+  }
+  [data-style="drafting"] .card-grid > li:nth-child(3n) {
+    grid-column: 3 / span 10;
+  }
+  [data-style="drafting"] .card-grid > li:nth-child(3n) :is(img, .placeholder) {
+    aspect-ratio: 21 / 9;
+  }
+}
+
+/* ---- Principles: three numbered paragraphs between rules ---- */
+[data-style="drafting"] .service-row {
+  border-top: var(--draft-rule);
+}
+[data-style="drafting"] .service-row .numeral {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--site-text);
+}
+[data-style="drafting"] .service-row .item-title {
+  font-size: clamp(1.5rem, 1.1rem + 1vw, 2rem);
+  font-weight: 500;
+}
+
+/* ---- A statement: the words alone, large and quiet ---- */
+[data-style="drafting"] .quote-section .quote-mark {
+  display: none;
+}
+[data-style="drafting"] .quote-section .pull-quote {
+  font-size: clamp(1.75rem, 1rem + 2.8vw, 3.75rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+[data-style="drafting"] .quote-section figure > div {
+  align-items: flex-start;
+  max-width: 52rem;
+  margin-inline: 0;
+  text-align: start;
+}
+
+/* ---- Numbers: figures in a row of ruled cells ---- */
+[data-style="drafting"] .stats-band {
+  background: transparent;
+  color: var(--site-text);
+}
+[data-style="drafting"] .stats-band dl > div {
+  border-inline-start: var(--draft-rule);
+}
+[data-style="drafting"] .stat-value {
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+/* ---- Footer: the title block of the whole sheet ---- */
+[data-style="drafting"] .site-footer {
+  border-top: var(--draft-rule);
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="drafting"] .site-footer .footer-name {
+  font-weight: 500;
+}
+[data-style="drafting"] .site-footer p.font-semibold {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+:lang(am) [data-style="drafting"] .site-footer p.font-semibold {
+  text-transform: none;
+  letter-spacing: 0;
+}
+[data-style="drafting"] .site-footer .border-on-accent\/20 {
+  border-color: var(--site-text);
+}
+[data-style="drafting"] .site-footer :focus-visible {
+  outline-color: var(--site-focus);
+}
+[data-style="drafting"] .cta-band {
+  border: var(--draft-rule);
+  border-radius: 0;
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="drafting"] .cta-band > svg {
+  display: none;
+}
+[data-style="drafting"] .cta-band :focus-visible {
+  outline-color: var(--site-focus);
+}
+[data-style="drafting"] .cta-band .btn-outline {
+  border-color: currentColor;
+  color: inherit;
+}
+
+/* ---- Motion: images open from a vertical line ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* clip, not hidden: a hidden overflow makes the frame its own scroller and the reveal would
+       never advance. */
+    [data-style="drafting"] :is(.zoom, .card-grid > li) {
+      overflow: clip;
+    }
+    [data-style="drafting"] .wipe,
+    [data-style="drafting"] .card-grid > li > .zoom {
+      animation: draft-open linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+  [data-style="drafting"] .zoom img {
+    transition-duration: 1500ms;
+  }
+}
+@keyframes draft-unframe {
+  from {
+    clip-path: inset(1.25rem 1.25rem 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes draft-open {
+  from {
+    clip-path: inset(0 50% 0 50%);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}

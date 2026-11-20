@@ -1,0 +1,381 @@
+/*
+ * estate: a luxury property magazine. Sand paper, deep forest ink (the theme's accent), a heavy
+ * editorial serif with very large price figures, the month's listing set like a magazine spread,
+ * listings in an uneven grid with prices over the photographs, the filters as one search bar, and
+ * neighbourhoods to swipe. Outside the cascade layers so it wins over the utility classes; every
+ * rule is scoped to [data-style="estate"]. Built only into estate sites (scripts/only-used-styles.ts).
+ */
+
+/* ---- Type ---- */
+[data-style="estate"] :is(.headline, .section-title) {
+  font-weight: 600;
+}
+[data-style="estate"] .headline {
+  font-size: clamp(3rem, 1.3rem + 6.5vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+[data-style="estate"] .section-title {
+  font-size: clamp(2.25rem, 1.3rem + 3.4vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+:lang(am) [data-style="estate"] :is(.headline, .section-title) {
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+[data-style="estate"] :is(.section-title, .depth-frame)::before {
+  display: none;
+}
+[data-style="estate"] :is(.eyebrow, .hero-eyebrow, .btn, .badge, .nav-link, .menu-tab) {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+:lang(am) [data-style="estate"] :is(.eyebrow, .hero-eyebrow, .btn, .badge, .nav-link, .menu-tab),
+[data-style="estate"] :lang(am):is(.eyebrow, .hero-eyebrow, .btn, .badge, .nav-link, .menu-tab) {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1rem;
+}
+[data-style="estate"] .eyebrow {
+  color: var(--site-accent);
+}
+[data-style="estate"] .eyebrow::before {
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+}
+[data-style="estate"] :is(.on-dark, .bg-accent, .hero-immersive) .eyebrow {
+  color: inherit;
+}
+[data-style="estate"] .hero-eyebrow {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+[data-style="estate"] :is(.brand-mark, .hero-glow) {
+  display: none;
+}
+[data-style="estate"] .wordmark {
+  font-family: var(--site-font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Surfaces: no boxes, hairlines, square ---- */
+[data-style="estate"] :is(.card, .pcard) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+[data-style="estate"] .pcard > div:last-child {
+  padding-inline: 0;
+}
+[data-style="estate"] :is(.btn, .badge, .menu-tab, input, select, textarea) {
+  border-radius: 0;
+}
+[data-style="estate"] .btn {
+  padding: 1rem 1.75rem;
+}
+[data-style="estate"] .btn-primary {
+  background: var(--site-accent);
+  color: var(--site-on-accent);
+}
+[data-style="estate"] .site-header.header-scroll {
+  border-bottom: 1px solid var(--site-line);
+  background: var(--site-background);
+}
+[data-style="estate"] .nav-link,
+[data-style="estate"] .nav-lang {
+  border: 0;
+  background: none;
+}
+[data-style="estate"] .nav-link:hover {
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+[data-style="estate"] :is(.bg-surface, .bg-primary-soft):is(section) {
+  background: transparent;
+}
+[data-style="estate"] main > section + section:not(.bg-accent, .on-dark) {
+  border-top: 1px solid var(--site-line);
+}
+
+/* ---- Hero ---- */
+[data-style="estate"] .hero-immersive > .container-site {
+  min-height: min(56rem, calc(100svh - 1px));
+}
+[data-style="estate"] .hero-immersive .hero-shade {
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.6), transparent 26%),
+    linear-gradient(to top, rgb(0 0 0 / 0.8), rgb(0 0 0 / 0.45) 45%, transparent 75%);
+}
+[data-style="estate"] .hero-immersive .headline {
+  max-width: 12ch;
+}
+[data-style="estate"] .hero-immersive .btn-primary {
+  background: var(--site-background);
+  color: var(--site-text);
+}
+
+/* ---- Listing of the month: a spread, the price set very large ---- */
+[data-style="estate"] .feature-photo :is(img, .placeholder) {
+  aspect-ratio: 4 / 3;
+}
+@media (min-width: 1024px) {
+  [data-style="estate"] .feature-row {
+    grid-template-columns: 8fr 4fr;
+    column-gap: 4rem;
+  }
+}
+[data-style="estate"] .feature-text .item-title {
+  font-family: var(--site-font-heading);
+  font-size: clamp(2.25rem, 1.4rem + 2.2vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+[data-style="estate"] .meta-item {
+  border-radius: 0;
+  border: 1px solid var(--site-line);
+  background: none;
+}
+
+/* ---- Listings: one wide and one narrow, then three across (repeating) ---- */
+[data-style="estate"] .card-grid {
+  gap: 3rem 1.5rem;
+}
+/* Phones and tablets: 3:2, the shape of the photos (a tall crop would blow them up). */
+[data-style="estate"] .card-grid .zoom :is(img, .placeholder) {
+  aspect-ratio: 3 / 2;
+}
+@media (min-width: 1024px) {
+  [data-style="estate"] .card-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  [data-style="estate"] .card-grid > li {
+    grid-column: span 2;
+  }
+  [data-style="estate"] .card-grid > li:nth-child(5n + 1) {
+    grid-column: span 4;
+  }
+  [data-style="estate"] .card-grid > li:nth-child(5n + 1) .zoom :is(img, .placeholder) {
+    aspect-ratio: 16 / 10;
+  }
+  [data-style="estate"] .card-grid > li:not(:nth-child(5n + 1)):not(:nth-child(5n + 2)) .zoom :is(img, .placeholder) {
+    aspect-ratio: 3 / 2;
+  }
+}
+[data-style="estate"] .card-grid .item-title {
+  font-family: var(--site-font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+[data-style="estate"] .card-grid .badge {
+  background: var(--site-background);
+  color: var(--site-text);
+}
+/* The price, large, in the forest ink. */
+[data-style="estate"] .card-grid .font-heading.text-xl {
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+  color: var(--site-accent);
+}
+
+/* ---- Filters: one search bar ---- */
+[data-style="estate"] .menu-tabs {
+  width: fit-content;
+  max-width: 100%;
+  gap: 0;
+  margin-inline: 0;
+  padding: 0;
+  border: 1px solid var(--site-text);
+}
+[data-style="estate"] .menu-tab {
+  border: 0;
+  border-inline-end: 1px solid var(--site-line);
+  background: var(--site-background);
+  padding-inline: 1.25rem;
+}
+[data-style="estate"] .menu-tab:last-child {
+  border-inline-end: 0;
+}
+[data-style="estate"] .menu-tab:is([aria-pressed="true"], [aria-selected="true"]) {
+  background: var(--site-accent);
+  color: var(--site-on-accent);
+}
+
+/* ---- Neighbourhoods to swipe: tall photographs with the name across ---- */
+[data-style="estate"] .rail > li > :is(a, div) {
+  border-radius: 0;
+}
+[data-style="estate"] .rail .font-heading {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+/* ---- Numbers, quotes, the closing call ---- */
+[data-style="estate"] .stats-band:not(.on-dark) {
+  background: transparent;
+}
+[data-style="estate"] .stat-value {
+  font-size: clamp(2.5rem, 1.6rem + 2.6vw, 4.5rem);
+  font-weight: 600;
+  color: var(--site-accent);
+}
+[data-style="estate"] .stats-band dl > div {
+  border-color: var(--site-accent);
+}
+[data-style="estate"] .testimonial {
+  border: 0;
+  border-top: 1px solid currentColor;
+  border-radius: 0;
+  background: none;
+  padding: 1.5rem 0 0;
+}
+[data-style="estate"] .testimonial blockquote {
+  font-family: var(--site-font-heading);
+  font-size: 1.375rem;
+  line-height: 1.35;
+}
+:lang(am) [data-style="estate"] .testimonial blockquote {
+  font-family: var(--site-font-body);
+  font-size: 1.125rem;
+}
+[data-style="estate"] .cta-band {
+  border-radius: 0;
+}
+[data-style="estate"] .cta-band :is(h1, h2) {
+  font-size: clamp(2.25rem, 1.4rem + 2.6vw, 3.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+[data-style="estate"] .cta-band .btn-primary {
+  background: var(--site-background);
+  color: var(--site-text);
+}
+
+/* ---- Motion: slow zooms; a frame of the forest ink draws in on hover ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-style="estate"] .zoom img {
+    transition-duration: 1400ms;
+  }
+  [data-style="estate"] .card-grid .zoom::after {
+    transition: opacity 300ms;
+  }
+}
+
+/* ---- Review fixes ---- */
+/* Filter tabs: the focus ring inside each tab, visible on both states. */
+[data-style="estate"] .menu-tab:focus-visible {
+  outline: 2px solid var(--site-accent);
+  outline-offset: -5px;
+}
+[data-style="estate"] .menu-tab:is([aria-pressed="true"], [aria-selected="true"]):focus-visible {
+  outline-color: var(--site-on-accent);
+}
+[data-style="estate"] .menu-tab {
+  border-inline-end-color: color-mix(in oklab, var(--site-text) 55%, transparent);
+}
+/* Fields: borders that read (3:1); the form and contact panels without white boxes. */
+[data-style="estate"] :is(input, select, textarea) {
+  border-color: color-mix(in oklab, var(--site-text) 55%, transparent);
+}
+[data-style="estate"] main section :is(form, .card) {
+  border: 0;
+  border-top: 1px solid var(--site-text);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+/* A listing is one link: the whole card opens it. */
+[data-style="estate"] .card-grid > li {
+  position: relative;
+}
+[data-style="estate"] .card-grid .arrow-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+/* Neighbourhood tiles are not links: no hover zoom. */
+[data-style="estate"] .rail .zoom:hover img {
+  transform: none;
+}
+/* Prices never break before the currency. */
+[data-style="estate"] :is(.feature-text, .card-grid) .font-heading.text-xl {
+  white-space: nowrap;
+}
+[data-style="estate"] .feature-text .font-heading.text-xl {
+  font-size: clamp(2rem, 1.3rem + 1.6vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--site-accent);
+}
+@media (min-width: 1024px) {
+  [data-style="estate"] .feature-row {
+    grid-template-columns: 7fr 5fr;
+    align-items: start;
+  }
+  /* The wide and the narrow listing share one photo height, so captions line up. */
+  [data-style="estate"] .card-grid > li:nth-child(5n + 1) .zoom :is(img, .placeholder),
+  [data-style="estate"] .card-grid > li:nth-child(5n + 2) .zoom :is(img, .placeholder) {
+    aspect-ratio: auto;
+    height: clamp(26rem, 34vw, 30rem);
+  }
+  [data-style="estate"] .card-grid > li:not(:nth-child(5n + 1)) .arrow-link {
+    flex-basis: 100%;
+  }
+}
+/* Tablets: the listing of the month stacked; listings one wide then pairs. */
+@media (max-width: 1023px) {
+  [data-style="estate"] .feature-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  [data-style="estate"] .card-grid > li:nth-child(5n + 1) {
+    grid-column: 1 / -1;
+  }
+  [data-style="estate"] .card-grid > li:nth-child(5n + 1) .zoom :is(img, .placeholder) {
+    aspect-ratio: 16 / 9;
+  }
+}
+/* Smaller things: a lighter header button, square rail arrows, sand badges, no circles. */
+[data-style="estate"] .header-cta {
+  padding: 0.625rem 1.25rem;
+}
+[data-style="estate"] .rail-arrow {
+  border-radius: 0;
+}
+[data-style="estate"] :is(.card-grid, .feature-photo) .badge {
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="estate"] .cta-band > svg {
+  display: none;
+}
+/* A frame of the forest ink over a listing's photo on hover: an overlay that fades (composited). */
+[data-style="estate"] .card-grid .zoom::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 6px solid var(--site-accent);
+  opacity: 0;
+  pointer-events: none;
+}
+[data-style="estate"] .card-grid .badge {
+  z-index: 2;
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-style="estate"] .card-grid > li:hover .zoom::after {
+    opacity: 1;
+  }
+}
+/* The listing of the month needs no clip-path wipe (it repaints while running). */
+[data-style="estate"] .wipe {
+  animation: none;
+}

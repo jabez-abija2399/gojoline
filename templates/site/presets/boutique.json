@@ -1,0 +1,465 @@
+{
+  "name": { "en": "KUTA", "am": "ኩታ" },
+  "tagline": { "en": "Ethiopian cotton, woven by hand and cut for now. Addis Ababa.", "am": "በእጅ የተሸመነ፣ ለዛሬ የተቆረጠ የኢትዮጵያ ጥጥ። አዲስ አበባ።" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#111111", "accent": "#111111", "background": "#FFFFFF", "text": "#111111", "font": "editorial", "radius": "none", "style": "monochrome" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Bole Medhanialem, Addis Ababa", "am": "ቦሌ መድኃኔዓለም፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Studio, Tuesday to Sunday", "am": "ስቱዲዮ፣ ከማክሰኞ እስከ እሁድ" },
+        "time": { "en": "10:00 am to 7:00 pm", "am": "ከጠዋቱ 4 እስከ ምሽቱ 1 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Season", "am": "ወቅቱ" },
+      "description": { "en": "KUTA: hand-woven Ethiopian cotton, cut for now. The new season, made in Addis Ababa and sent abroad.", "am": "ኩታ፦ በእጅ የተሸመነ፣ ለዛሬ የተቆረጠ የኢትዮጵያ ጥጥ። አዲሱ ወቅት፣ በአዲስ አበባ ተሠርቶ ወደ ውጭም ይላካል።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "immersive",
+          "eyebrow": { "en": "Season 04 · The highland edit", "am": "ወቅት 04 · የደጋው ምርጫ" },
+          "heading": { "en": "Woven for now", "am": "ለዛሬ የተሸመነ" },
+          "image": {
+            "src": "/stock/fashion-hero-kemis-woman-rooftop.webp",
+            "alt": { "en": "A woman with red braided hair in a white habesha kemis with black and green embroidery on a rooftop above Addis Ababa", "am": "ቀይ ሹሩባ ያላትና ጥቁርና አረንጓዴ ጥልፍ ያለው ነጭ የሀበሻ ቀሚስ የለበሰች ሴት ከአዲስ አበባ በላይ በሚገኝ ጣሪያ ላይ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Shop the season", "am": "ወቅቱን ይግዙ" },
+            "href": "#collection"
+          },
+          "secondaryAction": {
+            "label": { "en": "Our story", "am": "ታሪካችን" },
+            "href": "#story"
+          }
+        },
+        {
+          "type": "cards",
+          "id": "collection",
+          "layout": "scroll",
+          "eyebrow": { "en": "The season", "am": "ወቅቱ" },
+          "heading": { "en": "New this season", "am": "የዚህ ወቅት አዲሶች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/fashion-card-habesha-dress-on-grass.webp",
+                "alt": { "en": "A woman sitting on grass in a white habesha dress with green, red and black embroidery down the front", "am": "ፊት ለፊቱ አረንጓዴ፣ ቀይና ጥቁር ጥልፍ ያለው ነጭ የሀበሻ ቀሚስ ለብሳ በሣር ላይ የተቀመጠች ሴት" }
+              },
+              "title": { "en": "Meskel dress", "am": "የመስቀል ቀሚስ" },
+              "subtitle": { "en": "Sizes XS to XL", "am": "መጠን ከXS እስከ XL" },
+              "price": { "amountMinor": 980000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-card-netela-shawl.webp",
+                "alt": { "en": "A woman holding a white netela shawl with a woven border up to her face in a golden field", "am": "በወርቃማ ማሳ ውስጥ ጥለት ያለው ነጭ ነጠላ ወደ ፊቷ ያስጠጋች ሴት" }
+              },
+              "title": { "en": "Woven netela", "am": "የተሸመነ ነጠላ" },
+              "subtitle": { "en": "One size", "am": "አንድ መጠን" },
+              "price": { "amountMinor": 240000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-card-man-gabi-orange-wall.webp",
+                "alt": { "en": "A young man wrapped in a white cotton shawl with blue, orange and green stripes", "am": "ሰማያዊ፣ ብርቱካናማና አረንጓዴ ሸንተረር ባለው ነጭ የጥጥ ጋቢ የተጠቀለለ ወጣት" }
+              },
+              "title": { "en": "Striped gabi", "am": "ሸንተረር ጋቢ" },
+              "subtitle": { "en": "One size", "am": "አንድ መጠን" },
+              "price": { "amountMinor": 360000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-card-couple-matching-outfits.webp",
+                "alt": { "en": "A couple in matching white outfits with gold and green embroidered borders by the water", "am": "በውኃ ዳር ወርቃማና አረንጓዴ ጥልፍ ያላቸው ተመሳሳይ ነጭ ልብሶች የለበሱ ጥንዶች" }
+              },
+              "title": { "en": "Holiday set for two", "am": "ለሁለት የበዓል ልብስ" },
+              "subtitle": { "en": "Made to your sizes", "am": "በመጠንዎ የሚሠራ" },
+              "price": { "amountMinor": 1850000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-hero-kemis-woman-green-field.webp",
+                "alt": { "en": "A woman in a white habesha dress with blue trim and a striped sash in a green field", "am": "ሰማያዊ ጥልፍና ሸንተረር መቀነት ያለው ነጭ የሀበሻ ቀሚስ ለብሳ በአረንጓዴ መስክ ላይ የቆመች ሴት" }
+              },
+              "title": { "en": "Highland kemis", "am": "የደጋ ቀሚስ" },
+              "subtitle": { "en": "Sizes XS to XL", "am": "መጠን ከXS እስከ XL" },
+              "price": { "amountMinor": 1120000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              }
+            }
+          ],
+          "action": {
+            "label": { "en": "See everything", "am": "ሁሉንም ይመልከቱ" },
+            "href": "/shop"
+          }
+        },
+        {
+          "type": "about",
+          "id": "story",
+          "eyebrow": { "en": "The story", "am": "ታሪኩ" },
+          "heading": { "en": "Four hands, one loom, ten days", "am": "አራት እጆች፣ አንድ ሽመና፣ አሥር ቀናት" },
+          "body": { "en": "Every piece starts on a handloom in Shiro Meda, where two weavers work one length of cotton for up to ten days.\n\nWe cut it in our studio in Bole into shapes you can wear to work, to a wedding and on a Sunday afternoon, and we make each one only when you order it.", "am": "እያንዳንዱ ልብስ የሚጀምረው በሽሮ ሜዳ በሚገኝ የእጅ ሽመና ላይ ነው፤ ሁለት ሸማኔዎች አንድን የጥጥ ርዝመት እስከ አሥር ቀን ይሠሩታል።\n\nበቦሌ ባለው ስቱዲዮአችን ለሥራ፣ ለሠርግና ለእሁድ ከሰዓት በሚለበሱ ቅርጾች እንቆርጠዋለን፤ እያንዳንዱንም የምንሠራው ሲያዝዙ ብቻ ነው።" },
+          "image": {
+            "src": "/stock/personal-gallery-pattern.webp",
+            "alt": { "en": "A geometric repeat pattern in orange, grey-blue and yellow", "am": "በብርቱካናማ፣ ግራጫ-ሰማያዊና ቢጫ የተሠራ ጂኦሜትሪክ ጥለት" }
+          },
+          "imageSide": "start"
+        },
+        {
+          "type": "quote",
+          "id": "promise",
+          "quote": { "en": "We make fewer things, and we make them to be kept.", "am": "ጥቂት ነገሮችን እንሠራለን፤ የምንሠራቸውም እንዲቆዩ ነው።" }
+        },
+        {
+          "type": "cards",
+          "id": "featured",
+          "layout": "grid",
+          "eyebrow": { "en": "Chosen for you", "am": "ለእርስዎ የተመረጡ" },
+          "heading": { "en": "The pieces we love this month", "am": "የዚህ ወር ተወዳጆቻችን" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-card-editorial-portrait.webp",
+                "alt": { "en": "A woman in a red hat and a red patterned dress holding a woven bag", "am": "ቀይ ባርኔጣና ቀይ ጥለት ያለው ቀሚስ የለበሰች፣ የተሸመነ ቦርሳ የያዘች ሴት" }
+              },
+              "subtitle": { "en": "The red edit", "am": "ቀዩ ምርጫ" },
+              "title": { "en": "Red cotton dress", "am": "ቀይ የጥጥ ቀሚስ" },
+              "price": { "amountMinor": 860000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/events-gallery-habesha-dress-celebration.webp",
+                "alt": { "en": "Young women in white embroidered dresses with green skirts clapping and singing at a street celebration", "am": "በጎዳና በዓል ላይ አረንጓዴ ቀሚስና ነጭ ጥልፍ ልብስ ለብሰው የሚያጨበጭቡና የሚዘምሩ ወጣት ሴቶች" }
+              },
+              "subtitle": { "en": "For the holidays", "am": "ለበዓላት" },
+              "title": { "en": "Ashenda dress", "am": "የአሸንዳ ቀሚስ" },
+              "price": { "amountMinor": 740000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-hero-man-turtleneck.webp",
+                "alt": { "en": "A man with a short beard in a black turtleneck against a dark grey backdrop", "am": "አጭር ጺም ያለውና ጥቁር ሹራብ የለበሰ ሰው በጥቁር ግራጫ ዳራ ፊት" }
+              },
+              "subtitle": { "en": "For him", "am": "ለወንዶች" },
+              "title": { "en": "Black wool layer", "am": "ጥቁር የሱፍ ሹራብ" },
+              "price": { "amountMinor": 420000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "categories",
+          "layout": "index",
+          "eyebrow": { "en": "Shop by", "am": "በምድብ" },
+          "heading": { "en": "Find your piece", "am": "የእርስዎን ያግኙ" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-hero-woman-orange-blazer.webp",
+                "alt": { "en": "A woman with natural hair in an orange blazer, arms crossed", "am": "ብርቱካናማ ኮት የለበሰችና እጆቿን ያጣመረች ሴት" }
+              },
+              "title": { "en": "Women", "am": "ሴቶች" },
+              "subtitle": { "en": "Dresses, kemis, tailoring", "am": "ቀሚሶች፣ የሀበሻ ቀሚስ፣ ስፌት" },
+              "action": {
+                "label": { "en": "Shop women", "am": "የሴቶች" },
+                "href": "/shop"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-card-tailor-measuring-client.webp",
+                "alt": { "en": "A tailor measuring a young man in a white shirt and black waistcoat", "am": "ነጭ ሸሚዝና ጥቁር ሰደርያ የለበሰን ወጣት የሚለካ ልብስ ሰፊ" }
+              },
+              "title": { "en": "Men", "am": "ወንዶች" },
+              "subtitle": { "en": "Gabi, shirts, made to measure", "am": "ጋቢ፣ ሸሚዝ፣ በልክ የሚሠራ" },
+              "action": {
+                "label": { "en": "Shop men", "am": "የወንዶች" },
+                "href": "/shop"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/studio-card-couple-portrait-addis.webp",
+                "alt": { "en": "A couple dressed all in white, the woman holding white flowers", "am": "ሙሉ ነጭ የለበሱ ጥንዶች፣ ሴቷ ነጭ አበባ ይዛለች" }
+              },
+              "title": { "en": "Weddings", "am": "ሠርግ" },
+              "subtitle": { "en": "Matching sets for two", "am": "ለሁለት ተመሳሳይ ልብሶች" },
+              "action": {
+                "label": { "en": "Shop weddings", "am": "የሠርግ" },
+                "href": "/shop"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-gallery-loom-striped-threads.webp",
+                "alt": { "en": "Brightly coloured striped threads stretched across a wooden handloom", "am": "በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች" }
+              },
+              "title": { "en": "Shawls", "am": "ነጠላና ጋቢ" },
+              "subtitle": { "en": "Netela and gabi, woven by hand", "am": "በእጅ የተሸመኑ ነጠላና ጋቢ" },
+              "action": {
+                "label": { "en": "Shop shawls", "am": "ነጠላና ጋቢ" },
+                "href": "/shop"
+              }
+            }
+          ]
+        },
+        {
+          "type": "form",
+          "id": "letter",
+          "kind": "registration",
+          "eyebrow": { "en": "Letters from the loom", "am": "ከሽመናው የሚላኩ ደብዳቤዎች" },
+          "heading": { "en": "New pieces, a few times a year", "am": "አዳዲስ ልብሶች፣ በዓመት ጥቂት ጊዜ" },
+          "intro": { "en": "No sales, no noise: we write when a new season is ready. We use your email for nothing else; write to us any time to be taken off the list.", "am": "ቅናሽ የለም፣ ጫጫታ የለም፦ አዲስ ወቅት ሲደርስ እንጽፋለን። ኢሜይልዎን ለሌላ ነገር አንጠቀምም፤ ከዝርዝሩ ለመውጣት በማንኛውም ጊዜ ይጻፉልን።" },
+          "fields": [
+            {
+              "name": "email",
+              "label": { "en": "Your email", "am": "ኢሜይልዎ" },
+              "type": "email",
+              "required": true
+            }
+          ],
+          "submitLabel": { "en": "Sign up", "am": "ይመዝገቡ" },
+          "successMessage": { "en": "Thank you. You're on the list.", "am": "እናመሰግናለን። በዝርዝሩ ውስጥ ገብተዋል።" }
+        }
+      ]
+    },
+    {
+      "path": "/shop",
+      "title": { "en": "Shop", "am": "ሱቅ" },
+      "nav": { "en": "Shop", "am": "ሱቅ" },
+      "description": { "en": "Every KUTA piece with its price in Birr. Made when you order, sent anywhere.", "am": "እያንዳንዱ የኩታ ልብስ ከዋጋው ጋር በብር። ሲያዝዙ ይሠራል፣ የትም ይላካል።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "all",
+          "layout": "grid",
+          "eyebrow": { "en": "Shop", "am": "ሱቅ" },
+          "heading": { "en": "Everything, made to order", "am": "ሁሉም፣ ሲታዘዝ የሚሠራ" },
+          "intro": { "en": "Each piece takes two to three weeks. We send within Ethiopia and abroad.", "am": "እያንዳንዱ ልብስ ከሁለት እስከ ሦስት ሳምንት ይወስዳል። በኢትዮጵያ ውስጥና ወደ ውጭ እንልካለን።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/fashion-card-habesha-dress-on-grass.webp",
+                "alt": { "en": "A woman sitting on grass in a white habesha dress with green, red and black embroidery down the front", "am": "ፊት ለፊቱ አረንጓዴ፣ ቀይና ጥቁር ጥልፍ ያለው ነጭ የሀበሻ ቀሚስ ለብሳ በሣር ላይ የተቀመጠች ሴት" }
+              },
+              "title": { "en": "Meskel dress", "am": "የመስቀል ቀሚስ" },
+              "subtitle": { "en": "Sizes XS to XL", "am": "መጠን ከXS እስከ XL" },
+              "price": { "amountMinor": 980000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              },
+              "badge": { "en": "Women", "am": "ሴቶች" }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-card-netela-shawl.webp",
+                "alt": { "en": "A woman holding a white netela shawl with a woven border up to her face in a golden field", "am": "በወርቃማ ማሳ ውስጥ ጥለት ያለው ነጭ ነጠላ ወደ ፊቷ ያስጠጋች ሴት" }
+              },
+              "title": { "en": "Woven netela", "am": "የተሸመነ ነጠላ" },
+              "subtitle": { "en": "One size", "am": "አንድ መጠን" },
+              "price": { "amountMinor": 240000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              },
+              "badge": { "en": "Shawls", "am": "ነጠላና ጋቢ" }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-card-man-gabi-orange-wall.webp",
+                "alt": { "en": "A young man wrapped in a white cotton shawl with blue, orange and green stripes", "am": "ሰማያዊ፣ ብርቱካናማና አረንጓዴ ሸንተረር ባለው ነጭ የጥጥ ጋቢ የተጠቀለለ ወጣት" }
+              },
+              "title": { "en": "Striped gabi", "am": "ሸንተረር ጋቢ" },
+              "subtitle": { "en": "One size", "am": "አንድ መጠን" },
+              "price": { "amountMinor": 360000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              },
+              "badge": { "en": "Men", "am": "ወንዶች" }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-card-couple-matching-outfits.webp",
+                "alt": { "en": "A couple in matching white outfits with gold and green embroidered borders by the water", "am": "በውኃ ዳር ወርቃማና አረንጓዴ ጥልፍ ያላቸው ተመሳሳይ ነጭ ልብሶች የለበሱ ጥንዶች" }
+              },
+              "title": { "en": "Holiday set for two", "am": "ለሁለት የበዓል ልብስ" },
+              "subtitle": { "en": "Made to your sizes", "am": "በመጠንዎ የሚሠራ" },
+              "price": { "amountMinor": 1850000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              },
+              "badge": { "en": "Couples", "am": "ጥንዶች" }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-hero-kemis-woman-green-field.webp",
+                "alt": { "en": "A woman in a white habesha dress with blue trim and a striped sash in a green field", "am": "ሰማያዊ ጥልፍና ሸንተረር መቀነት ያለው ነጭ የሀበሻ ቀሚስ ለብሳ በአረንጓዴ መስክ ላይ የቆመች ሴት" }
+              },
+              "title": { "en": "Highland kemis", "am": "የደጋ ቀሚስ" },
+              "subtitle": { "en": "Sizes XS to XL", "am": "መጠን ከXS እስከ XL" },
+              "price": { "amountMinor": 1120000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              },
+              "badge": { "en": "Women", "am": "ሴቶች" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-editorial-portrait.webp",
+                "alt": { "en": "A woman in a red hat and a red patterned dress holding a woven bag", "am": "ቀይ ባርኔጣና ቀይ ጥለት ያለው ቀሚስ የለበሰች፣ የተሸመነ ቦርሳ የያዘች ሴት" }
+              },
+              "subtitle": { "en": "The red edit", "am": "ቀዩ ምርጫ" },
+              "title": { "en": "Red cotton dress", "am": "ቀይ የጥጥ ቀሚስ" },
+              "price": { "amountMinor": 860000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              },
+              "badge": { "en": "Women", "am": "ሴቶች" }
+            },
+            {
+              "image": {
+                "src": "/stock/events-gallery-habesha-dress-celebration.webp",
+                "alt": { "en": "Young women in white embroidered dresses with green skirts clapping and singing at a street celebration", "am": "በጎዳና በዓል ላይ አረንጓዴ ቀሚስና ነጭ ጥልፍ ልብስ ለብሰው የሚያጨበጭቡና የሚዘምሩ ወጣት ሴቶች" }
+              },
+              "subtitle": { "en": "For the holidays", "am": "ለበዓላት" },
+              "title": { "en": "Ashenda dress", "am": "የአሸንዳ ቀሚስ" },
+              "price": { "amountMinor": 740000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              },
+              "badge": { "en": "Women", "am": "ሴቶች" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-hero-man-turtleneck.webp",
+                "alt": { "en": "A man with a short beard in a black turtleneck against a dark grey backdrop", "am": "አጭር ጺም ያለውና ጥቁር ሹራብ የለበሰ ሰው በጥቁር ግራጫ ዳራ ፊት" }
+              },
+              "subtitle": { "en": "For him", "am": "ለወንዶች" },
+              "title": { "en": "Black wool layer", "am": "ጥቁር የሱፍ ሹራብ" },
+              "price": { "amountMinor": 420000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
+                "href": "/order"
+              },
+              "badge": { "en": "Men", "am": "ወንዶች" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/order",
+      "title": { "en": "Order", "am": "ማዘዣ" },
+      "nav": { "en": "Order", "am": "ማዘዣ" },
+      "description": { "en": "Order a KUTA piece. Tell us your size and where to send it; we confirm by phone or Telegram.", "am": "የኩታ ልብስ ያዝዙ። መጠንዎንና የሚላክበትን ይንገሩን፤ በስልክ ወይም በቴሌግራም እናረጋግጣለን።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "order",
+          "kind": "order",
+          "eyebrow": { "en": "Made to order", "am": "ሲታዘዝ የሚሠራ" },
+          "heading": { "en": "Order a piece", "am": "ልብስ ያዝዙ" },
+          "intro": { "en": "We confirm the price, your size and delivery by phone or Telegram before we start. You pay when it is ready.", "am": "ከመጀመራችን በፊት ዋጋውን፣ መጠንዎንና አላላኩን በስልክ ወይም በቴሌግራም እናረጋግጣለን። ክፍያው ሲደርስ ነው።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone or WhatsApp", "am": "ስልክ ወይም ዋትስአፕ" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "piece",
+              "label": { "en": "Which piece?", "am": "የትኛው ልብስ?" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "size",
+              "label": { "en": "Size", "am": "መጠን" },
+              "type": "select",
+              "options": [
+                { "en": "XS", "am": "XS" },
+                { "en": "S", "am": "S" },
+                { "en": "M", "am": "M" },
+                { "en": "L", "am": "L" },
+                { "en": "XL", "am": "XL" },
+                { "en": "Made to measure", "am": "በልክ" }
+              ]
+            },
+            {
+              "name": "country",
+              "label": { "en": "Where should we send it?", "am": "ወዴት እንላክ?" },
+              "type": "text"
+            },
+            {
+              "name": "notes",
+              "label": { "en": "Anything else", "am": "ሌላ ነገር" },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": { "en": "Send my order", "am": "ትዕዛዜን ላክ" },
+          "successMessage": { "en": "Thank you. We will call you to confirm before we start.", "am": "እናመሰግናለን። ከመጀመራችን በፊት ለማረጋገጥ እንደውልልዎታለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "studio",
+          "eyebrow": { "en": "The studio", "am": "ስቱዲዮው" },
+          "heading": { "en": "Visit or write", "am": "ይጎብኙን ወይም ይጻፉልን" },
+          "intro": { "en": "Try pieces on at the studio in Bole, or write to us on Telegram.", "am": "በቦሌ ባለው ስቱዲዮ ልብሶቹን ይሞክሩ፣ ወይም በቴሌግራም ይጻፉልን።" }
+        }
+      ]
+    }
+  ]
+}
