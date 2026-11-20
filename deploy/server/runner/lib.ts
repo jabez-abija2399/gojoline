@@ -62,6 +62,8 @@ export const ALLOWED_COMMANDS = new Set(["npm", "node", "find", "rm", "cat", "ls
 
 /** Environment variable names the app may pass (the site's public VITE_* settings). */
 export const ENV_NAME = /^VITE_[A-Z0-9_]{1,60}$/;
+export const MAX_ENV_VALUE = 32_000;
+export const MAX_ENV_TOTAL = 64_000;
 
 export function execArgs(name: string, cmd: string[], opts: { cwd?: string; env?: Record<string, string>; timeoutS: number; stdin?: boolean }): string[] | null {
   if (cmd.length === 0 || !ALLOWED_COMMANDS.has(cmd[0]!)) return null;
@@ -69,8 +71,12 @@ export function execArgs(name: string, cmd: string[], opts: { cwd?: string; env?
   const cwd = opts.cwd ? safeSitePath(opts.cwd) : ".";
   if (cwd === null) return null;
   const env: string[] = [];
+  let envBytes = 0;
   for (const [k, v] of Object.entries(opts.env ?? {})) {
-    if (!ENV_NAME.test(k) || typeof v !== "string" || v.length > 2000) return null;
+    // Publish passes the site's SEO and business info (JSON): allow real sizes, cap the total.
+    if (!ENV_NAME.test(k) || typeof v !== "string" || v.includes("\0") || v.length > MAX_ENV_VALUE) return null;
+    envBytes += k.length + v.length;
+    if (envBytes > MAX_ENV_TOTAL) return null;
     env.push("-e", `${k}=${v}`);
   }
   const workdir = cwd === "." ? "/site" : `/site/${cwd}`;
