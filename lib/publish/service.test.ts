@@ -323,6 +323,17 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Work ${n}` } })))))).toBe(true);
     // The sample artist and title kept, with the photo removed.
     expect(hasExampleDetails(JSON.stringify(owner((items) => items.map(({ image: _image, ...rest }) => rest))))).toBe(true);
+    // The library's artwork photos never publish, whatever the price, title or artist.
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i) => ({ image: i.image, title: { en: "My painting" }, subtitle: { en: "Me" }, price: { amountMinor: 18000100, currency: "ETB" } })))))).toBe(true);
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i) => ({ image: i.image, title: { en: "My painting" }, subtitle: { en: "Me" } })))))).toBe(true);
+    const artwork = { name: { en: "My Studio" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "gallery", heading: { en: "Work" }, images: [{ src: "/stock/art-card-white-ring-sculpture.webp", alt: { en: "x" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(artwork))).toBe(true);
+    // The sample artist quoted with the owner's own words.
+    const quoted = { name: { en: "Addis Art Space" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "quote", quote: { en: "Our own words." }, name: { en: "Selam Tadesse" } }] }] };
+    expect(hasExampleDetails(JSON.stringify(quoted))).toBe(true);
+    // A tour operator's own "Meskel" package publishes.
+    const meskel = { name: { en: "Abebe Tours" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "grid", items: [{ title: { en: "Meskel", am: "መስቀል" }, description: { en: "The festival in Addis Ababa." }, price: { amountMinor: 900000, currency: "ETB" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(meskel))).toBe(false);
     // A real gallery's own work, with its own photo, artist and price, publishes.
     const real = { name: { en: "Addis Art Space" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "grid", items: [{ image: { src: "/uploads/work-1.webp", alt: { en: "A painting" } }, title: { en: "Blue hour" }, subtitle: { en: "Tigist Haile" }, meta: [{ en: "Oil on canvas, 2024" }], price: { amountMinor: 6000000, currency: "ETB" } }] }] }] };
     expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
