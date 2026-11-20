@@ -1,5 +1,5 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn, unfold } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAccountMenu, signIn, unfold } from "./helpers";
 
 /** A second browser on the same device as the test's own page. */
 async function newPage(browser: Browser, opts: { userAgent?: string } = {}) {
@@ -66,7 +66,7 @@ test("the Made with Gojoline badge links home on a Free site and is gone on a pa
 test("a business joins through an invite link; when the admin approves its first payment both are thanked", async ({ page, browser }) => {
   // The inviter finds the link from the sidebar.
   await signIn(page);
-  await openAppMenu(page);
+  await openAccountMenu(page);
   await page.getByRole("link", { name: "Invite a business" }).click();
   await expect(page.getByRole("heading", { name: "Invite a business" })).toBeVisible();
   const link = await page.getByLabel("Your invite link").inputValue();

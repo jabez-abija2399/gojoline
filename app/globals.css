@@ -643,3 +643,13 @@
   font-size: 13px;
   line-height: 1.4;
 }
+
+/* Sidebar Recent list: a thin scrollbar that only shows on hover. */
+.recent-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.recent-scroll:hover,
+.recent-scroll:focus-within {
+  scrollbar-color: var(--gojo-line) transparent;
+}

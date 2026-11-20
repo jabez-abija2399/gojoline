@@ -63,7 +63,8 @@ test("the progress card follows the AI's real steps, and replies show bold and l
   // The chat's card (the preview's first-build placeholder has the same name).
   const card = page.getByRole("tabpanel", { name: "Chat" }).getByRole("group", { name: "Building your site" });
   await expect(card).toContainText("Understanding your request (done)");
-  await expect(card).toContainText("Writing your site (done)");
+  // A new site is written whole, so the step names the sections as they are written.
+  await expect(card).toContainText(/Writing your .+ sections and \d+ more \(done\)/);
   await expect(card).toContainText("Checking everything works (in progress)");
   // Screen readers hear only the current step, from one quiet status line.
   await expect(card.getByRole("status")).toHaveText("Checking everything works");
@@ -254,7 +255,7 @@ test("undo the newest change for free; the changes left are shown and the menu o
   await expectNoHorizontalScroll(page);
 });
 
-test("on a short window the recent sites scroll and never cover the changes-left card", async ({ page }, info) => {
+test("on a short window the recent sites scroll on their own; the changes-left card and account row stay put", async ({ page }, info) => {
   test.skip(info.project.name === "mobile", "the desktop sidebar");
   await signIn(page);
   for (const id of ["cafe", "hotel", "clinic", "school", "shop"]) {
@@ -264,11 +265,22 @@ test("on a short window the recent sites scroll and never cover the changes-left
   }
   await page.setViewportSize({ width: 1280, height: 560 });
   await page.goto("/en/build");
-  const { listBottom, cardTop } = await page.evaluate(() => ({
-    listBottom: document.querySelector("[aria-labelledby=recent-title]")!.getBoundingClientRect().bottom,
-    cardTop: document.getElementById("credits-title")!.closest("a")!.getBoundingClientRect().top,
-  }));
-  expect(listBottom).toBeLessThanOrEqual(cardTop);
+  const box = await page.evaluate(() => {
+    const list = document.querySelector<HTMLElement>("[aria-labelledby=recent-title]")!;
+    return {
+      list: list.getBoundingClientRect(),
+      scrolls: list.scrollHeight > list.clientHeight,
+      cardBottom: document.getElementById("credits-title")!.closest("a")!.getBoundingClientRect().bottom,
+      accountTop: document.querySelector<HTMLElement>("[aria-controls=account-menu]")!.getBoundingClientRect().top,
+    };
+  });
+  // The card sits above the list, the account row below it, and the list scrolls in between.
+  expect(box.list.top).toBeGreaterThanOrEqual(box.cardBottom);
+  expect(box.list.bottom).toBeLessThanOrEqual(box.accountTop);
+  expect(box.scrolls).toBe(true);
+  await page.locator("[aria-labelledby=recent-title]").hover();
+  await page.mouse.wheel(0, 400);
+  await expect(page.locator("[aria-labelledby=recent-title] li").last()).toBeInViewport();
 });
 
 test("dark mode: chosen in the account menu, remembered, readable everywhere", async ({ page }, info) => {

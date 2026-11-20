@@ -28,7 +28,7 @@ export async function AppShell({ locale, t, user, children, feedbackUnread }: { 
         theme={{ value: theme, label: a.theme, names: a.themes }}
         canUpgrade={!allowance || allowance.plan !== "business"}
         feedbackUnread={unread}
-        recent={sites.slice(0, 6).map((s) => ({ id: s.project.id, name: s.project.name || t.builder.untitled, live: !!liveAddress(s.site) }))}
+        recent={sites.slice(0, 30).map((s) => ({ id: s.project.id, name: s.project.name || t.builder.untitled, live: !!liveAddress(s.site) }))}
         text={{
           sidebarLabel: a.sidebarLabel,
           mainNav: a.mainNav,
