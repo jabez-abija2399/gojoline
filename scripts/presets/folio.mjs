@@ -72,8 +72,8 @@ save("folio", {
           eyebrow: t("case studies", "ዝርዝር ጥናቶች"),
           heading: t("Two projects, up close", "ሁለት ፕሮጀክቶች፣ በቅርበት"),
           items: [
-            { ...work[0], description: t("The brief: show heavy 3D work without a heavy page. I built a viewer that streams each model only when you reach it, and a fallback image for slow phones. The site went from 9 MB to 600 KB on first load.", "መመሪያው፦ ከባድ የ3D ሥራን ከባድ ባልሆነ ገጽ ማሳየት። እያንዳንዱን ሞዴል ሲደርሱበት ብቻ የሚያወርድ ማሳያና ለዝግተኛ ስልኮች ምትክ ምስል ሠራሁ። የመጀመሪያው ጭነት ከ9 MB ወደ 600 KB ወረደ።") },
-            { ...work[2], description: t("Shop owners checked sales in a notebook. I sat with six of them for a week, then designed a dashboard that answers their three real questions on one screen.", "የሱቅ ባለቤቶች ሽያጭን በደብተር ይከታተሉ ነበር። ከስድስቱ ጋር ለአንድ ሳምንት ተቀምጬ፣ ሦስቱን እውነተኛ ጥያቄዎቻቸውን በአንድ ስክሪን የሚመልስ ዳሽቦርድ ነደፍኩ።") },
+            { ...work[0], image: img("real-estate-hero-modern-apartment-corner-sky", "The top corner of a black-and-white apartment block against a pale sky", "በፈዛዛ ሰማይ ፊት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ"), description: t("The brief: show heavy 3D work without a heavy page. I built a viewer that streams each model only when you reach it, and a fallback image for slow phones. The site went from 9 MB to 600 KB on first load.", "መመሪያው፦ ከባድ የ3D ሥራን ከባድ ባልሆነ ገጽ ማሳየት። እያንዳንዱን ሞዴል ሲደርሱበት ብቻ የሚያወርድ ማሳያና ለዝግተኛ ስልኮች ምትክ ምስል ሠራሁ። የመጀመሪያው ጭነት ከ9 MB ወደ 600 KB ወረደ።") },
+            { ...work[2], image: img("business-hero-team-meeting", "Five people around a white table in a bright meeting room", "በብሩህ የስብሰባ ክፍል ውስጥ በነጭ ጠረጴዛ ዙሪያ ያሉ አምስት ሰዎች"), description: t("Shop owners checked sales in a notebook. I sat with six of them for a week, then designed a dashboard that answers their three real questions on one screen.", "የሱቅ ባለቤቶች ሽያጭን በደብተር ይከታተሉ ነበር። ከስድስቱ ጋር ለአንድ ሳምንት ተቀምጬ፣ ሦስቱን እውነተኛ ጥያቄዎቻቸውን በአንድ ስክሪን የሚመልስ ዳሽቦርድ ነደፍኩ።") },
           ],
         },
         {
