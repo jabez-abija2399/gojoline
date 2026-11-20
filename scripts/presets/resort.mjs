@@ -72,7 +72,6 @@ save("resort", {
       { days: t("Reception", "እንግዳ መቀበያ"), time: t("Open day and night", "ቀንና ሌሊት ክፍት") },
       { days: t("Spa, every day", "ስፓ፣ በየቀኑ"), time: t("8:00 am to 8:00 pm", "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት") },
     ],
-    social: { instagram: "https://instagram.com/yourbusiness" },
   },
   pages: [
     {
