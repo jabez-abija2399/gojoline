@@ -505,8 +505,11 @@ export interface Theme {
    * drafting: set like a drawing sheet: warm paper, black ink, a faint drafting grid, projects
    * numbered A-01, facts as a title block, large photographs, much space (architects, interior
    * designers, engineers, furniture makers).
+   * noir: fine dining by candlelight: the page turns dark (the accent becomes the room, the
+   * background colour the ink, the primary the brass details), photos rise out of the dark, centred
+   * serif titles, a menu like a printed card (restaurants, bars, chef's tables, wine and coffee rooms).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir";
 }
 
 export interface Business {

@@ -1,0 +1,313 @@
+{
+  "name": { "en": "ESAT", "am": "እሳት" },
+  "tagline": { "en": "A kitchen built around a wood fire. Dinner, Tuesday to Saturday, in Bole.", "am": "በእንጨት እሳት ዙሪያ የተገነባ ወጥ ቤት። እራት፣ ከማክሰኞ እስከ ቅዳሜ፣ በቦሌ።" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#B07A45", "accent": "#2A211A", "background": "#F4EEE4", "text": "#1E1813", "font": "elegant", "radius": "none", "style": "noir" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Off Bole Road, behind the Friendship building, Addis Ababa", "am": "ከቦሌ መንገድ ገባ ብሎ፣ ከፍሬንድሺፕ ሕንፃ ጀርባ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Tuesday to Saturday", "am": "ከማክሰኞ እስከ ቅዳሜ" },
+        "time": { "en": "Dinner, 6:30 pm to 11:00 pm", "am": "እራት፣ ከምሽቱ 12:30 እስከ 5 ሰዓት" }
+      },
+      {
+        "days": { "en": "Sunday and Monday", "am": "እሁድና ሰኞ" },
+        "time": { "en": "Closed", "am": "ዝግ" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "ESAT", "am": "እሳት" },
+      "description": { "en": "ESAT: a wood-fire kitchen in Bole, Addis Ababa. A seasonal menu from the highlands, by candlelight.", "am": "እሳት፦ በቦሌ፣ አዲስ አበባ የእንጨት እሳት ወጥ ቤት። ከደጋው የሚመጣ የወቅቱ ምግብ፣ በሻማ ብርሃን።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "immersive",
+          "eyebrow": { "en": "Bole · Addis Ababa", "am": "ቦሌ · አዲስ አበባ" },
+          "heading": { "en": "Fire, smoke and time", "am": "እሳት፣ ጭስና ጊዜ" },
+          "subheading": { "en": "Eight tables, one wood fire, and a menu that changes with the highland seasons.", "am": "ስምንት ጠረጴዛዎች፣ አንድ የእንጨት እሳት፣ እና ከደጋው ወቅቶች ጋር የሚቀየር ምግብ።" },
+          "image": {
+            "src": "/stock/cafe-hero-clay-pot-dish.webp",
+            "alt": { "en": "A row of black clay pots of food with green herbs against a dark background", "am": "በጨለማ ዳራ ፊት አረንጓዴ ቅጠል የተደረገባቸው በምግብ የተሞሉ ጥቁር የሸክላ ድስቶች" }
+          },
+          "primaryAction": {
+            "label": { "en": "Reserve a table", "am": "ጠረጴዛ ያስይዙ" },
+            "href": "/reserve"
+          },
+          "secondaryAction": {
+            "label": { "en": "The menu", "am": "ምግቡ" },
+            "href": "#menu"
+          }
+        },
+        {
+          "type": "quote",
+          "id": "philosophy",
+          "quote": { "en": "We cook what the highlands give us this week: slowly, over wood, and only as much as we can serve well.", "am": "ደጋው በዚህ ሳምንት የሰጠንን እናበስላለን፦ ቀስ ብለን፣ በእንጨት፣ በደንብ ልናቀርብ የምንችለውን ያህል ብቻ።" }
+        },
+        {
+          "type": "cards",
+          "id": "signatures",
+          "layout": "feature",
+          "eyebrow": { "en": "From the fire", "am": "ከእሳቱ" },
+          "heading": { "en": "Signature dishes", "am": "ልዩ ምግቦቻችን" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/cafe-card-tibs-injera.webp",
+                "alt": { "en": "A black clay plate of beef tibs, kitfo and fresh cheese beside rolled injera and mitmita", "am": "በጥቁር የሸክላ ሳህን ጥብስ፣ ክትፎና አይብ ከተጠቀለለ እንጀራና ሚጥሚጣ አጠገብ" }
+              },
+              "subtitle": { "en": "Highland beef", "am": "የደጋ የበሬ ሥጋ" },
+              "title": { "en": "Ember tibs", "am": "የፍም ጥብስ" },
+              "description": { "en": "Beef from Debre Berhan, seared on the embers, with aged butter, rosemary and teff injera from the morning bake.", "am": "ከደብረ ብርሃን የመጣ የበሬ ሥጋ በፍም ላይ ተጠብሶ፣ ከቆየ ቅቤ፣ ከጥብስ ቅጠልና ከጠዋቱ የጤፍ እንጀራ ጋር።" }
+            },
+            {
+              "image": {
+                "src": "/stock/cafe-card-injera-veg-plate.webp",
+                "alt": { "en": "A white plate with rolled injera, red lentil stew, yellow split peas and collard greens", "am": "የተጠቀለለ እንጀራ፣ ቀይ የምስር ወጥ፣ ቢጫ ክክና ጎመን ያለበት ነጭ ሳህን" }
+              },
+              "subtitle": { "en": "The fasting table", "am": "የጾም ገበታ" },
+              "title": { "en": "Seven slow stews", "am": "ሰባት ቀስ ብለው የበሰሉ ወጦች" },
+              "description": { "en": "Lentils, split peas and greens cooked low for hours, served together the way they are on a fasting Wednesday.", "am": "ምስር፣ ክክና ጎመን ለሰዓታት በዝቅተኛ እሳት በስለው፣ በጾም ረቡዕ እንደሚቀርቡት አብረው የሚቀርቡ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/cafe-card-jebena-pour.webp",
+                "alt": { "en": "Coffee being poured from a clay jebena into a white cup on a tray scattered with beans", "am": "ቡና በተበተነበት ትሪ ላይ ከሸክላ ጀበና ወደ ነጭ ስኒ የሚቀዳ ቡና" }
+              },
+              "subtitle": { "en": "To finish", "am": "ለመጨረሻ" },
+              "title": { "en": "Coffee from the embers", "am": "ከፍሙ የሚመጣ ቡና" },
+              "description": { "en": "Beans roasted at the table over the last of the fire, ground by hand and poured three times.", "am": "በእሳቱ ቅሪት ላይ በጠረጴዛው አጠገብ የሚቆሉ፣ በእጅ የሚወቀጡና ሦስት ጊዜ የሚቀዱ ፍሬዎች።" }
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "id": "kitchen",
+          "eyebrow": { "en": "The kitchen", "am": "ወጥ ቤቱ" },
+          "heading": { "en": "A kitchen built around one fire", "am": "በአንድ እሳት ዙሪያ የተገነባ ወጥ ቤት" },
+          "body": { "en": "There is no gas in our kitchen. Everything is cooked over eucalyptus and olive wood, the way the cooks who taught us cooked at home.\n\nThe menu is written on Tuesday morning, after the market, and it ends when the week's produce does.", "am": "በወጥ ቤታችን ውስጥ ጋዝ የለም። ያስተማሩን ምግብ አብሳዮች በቤታቸው እንደሚያበስሉት ሁሉም ነገር በባሕር ዛፍና በወይራ እንጨት ይበስላል።\n\nምግቡ የሚጻፈው ማክሰኞ ጠዋት ከገበያ በኋላ ነው፤ የሚያልቀውም የሳምንቱ ምርት ሲያልቅ ነው።" },
+          "image": {
+            "src": "/stock/cafe-about-roasted-beans-pan.webp",
+            "alt": { "en": "Hands holding a clay pan of freshly roasted coffee beans with a metal stirrer", "am": "አዲስ የተቆላ ቡና ያለበትን የሸክላ መጥበሻ ከብረት ማማሰያ ጋር የያዙ እጆች" }
+          },
+          "imageSide": "end"
+        },
+        {
+          "type": "menu",
+          "id": "menu",
+          "eyebrow": { "en": "This season", "am": "የዚህ ወቅት" },
+          "heading": { "en": "The menu", "am": "ምግቡ" },
+          "intro": { "en": "Five courses for the table, or choose from the fire. Tell us when you book if you are fasting.", "am": "ለገበታው አምስት ዓይነት ምግብ፣ ወይም ከእሳቱ ይምረጡ። ሲያስይዙ የሚጾሙ ከሆነ ይንገሩን።" },
+          "categories": [
+            {
+              "name": { "en": "To begin", "am": "ለመጀመሪያ" },
+              "items": [
+                {
+                  "name": { "en": "Ayib with herbs and honey", "am": "አይብ ከቅጠላ ቅጠልና ከማር ጋር" },
+                  "description": { "en": "Fresh cheese, wild thyme, highland honey", "am": "ትኩስ አይብ፣ የዱር ጤና አዳም፣ የደጋ ማር" },
+                  "price": { "amountMinor": 65000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Smoked shiro", "am": "የተጨሰ ሽሮ" },
+                  "description": { "en": "Chickpea, smoked over wood, with crisp injera", "am": "በእንጨት የተጨሰ ሽምብራ፣ ከደረቅ እንጀራ ጋር" },
+                  "price": { "amountMinor": 58000, "currency": "ETB" },
+                  "tag": { "en": "Fasting", "am": "የጾም" }
+                }
+              ]
+            },
+            {
+              "name": { "en": "From the fire", "am": "ከእሳቱ" },
+              "items": [
+                {
+                  "name": { "en": "Ember tibs", "am": "የፍም ጥብስ" },
+                  "description": { "en": "Debre Berhan beef, aged butter, rosemary", "am": "የደብረ ብርሃን የበሬ ሥጋ፣ የቆየ ቅቤ፣ ጥብስ ቅጠል" },
+                  "price": { "amountMinor": 145000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Lake fish in banana leaf", "am": "በእንሰት ቅጠል የተጠቀለለ የሐይቅ ዓሣ" },
+                  "description": { "en": "Tilapia from Lake Ziway, green chilli, lemon", "am": "ከዝዋይ ሐይቅ የመጣ ቆሮሶ፣ አረንጓዴ ቃሪያ፣ ሎሚ" },
+                  "price": { "amountMinor": 125000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Seven slow stews", "am": "ሰባት ቀስ ብለው የበሰሉ ወጦች" },
+                  "description": { "en": "For two, with the morning's injera", "am": "ለሁለት፣ ከጠዋቱ እንጀራ ጋር" },
+                  "price": { "amountMinor": 180000, "currency": "ETB" },
+                  "tag": { "en": "Fasting", "am": "የጾም" }
+                }
+              ]
+            },
+            {
+              "name": { "en": "To finish", "am": "ለመጨረሻ" },
+              "items": [
+                {
+                  "name": { "en": "Honey and teff cake", "am": "የማርና የጤፍ ኬክ" },
+                  "description": { "en": "Warm, with spiced cream", "am": "ሞቅ ያለ፣ ከቅመም ክሬም ጋር" },
+                  "price": { "amountMinor": 52000, "currency": "ETB" }
+                },
+                {
+                  "name": { "en": "Coffee from the embers", "am": "ከፍሙ የሚመጣ ቡና" },
+                  "description": { "en": "Three rounds, roasted at the table", "am": "ሦስት ዙር፣ በጠረጴዛው አጠገብ የሚቆላ" },
+                  "price": { "amountMinor": 40000, "currency": "ETB" }
+                }
+              ]
+            },
+            {
+              "name": { "en": "The table", "am": "ገበታው" },
+              "items": [
+                {
+                  "name": { "en": "Five courses for the table", "am": "ለገበታው አምስት ዓይነት" },
+                  "description": { "en": "The kitchen's choice, Tuesday to Saturday", "am": "የወጥ ቤቱ ምርጫ፣ ከማክሰኞ እስከ ቅዳሜ" },
+                  "price": { "amountMinor": 420000, "currency": "ETB" },
+                  "unit": { "en": "per guest", "am": "ለአንድ እንግዳ" }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "id": "room",
+          "layout": "mosaic",
+          "eyebrow": { "en": "The room", "am": "አዳራሹ" },
+          "heading": { "en": "Candlelight and wood smoke", "am": "የሻማ ብርሃንና የእንጨት ጭስ" },
+          "images": [
+            {
+              "src": "/stock/studio-gallery-decorated-table.webp",
+              "alt": { "en": "A long table with a white cloth, glassware and white and pink flowers among greenery", "am": "ነጭ ልብስ፣ ብርጭቆዎችና በአረንጓዴ ተክል መካከል ነጭና ሮዝ አበቦች ያሉበት ረጅም ጠረጴዛ" }
+            },
+            {
+              "src": "/stock/cafe-gallery-cini-cups-tray.webp",
+              "alt": { "en": "Small cini coffee cups on an engraved metal tray", "am": "በተቀረጸ የብረት ትሪ ላይ ትናንሽ የሲኒ ስኒዎች" }
+            },
+            {
+              "src": "/stock/hotel-gallery-veranda-dusk.webp",
+              "alt": { "en": "A colonnaded veranda with soft lights above a lawn at dusk", "am": "ሲመሽ በመስኩ ላይ ለስላሳ መብራቶች ያሉት ምሰሶዎች ያሉት በረንዳ" }
+            },
+            {
+              "src": "/stock/events-card-decor-floral-centrepiece.webp",
+              "alt": { "en": "A tall rose centrepiece on a gold stand with round tables softly blurred behind", "am": "ከጀርባው ክብ ጠረጴዛዎች ያሉት በወርቃማ መቆሚያ ላይ ረጅም የጽጌረዳ አበባ ማስዋቢያ" }
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "id": "guests",
+          "eyebrow": { "en": "Guests", "am": "እንግዶች" },
+          "heading": { "en": "After dinner", "am": "ከእራት በኋላ" },
+          "items": [
+            {
+              "quote": { "en": "The tibs came off the embers still crackling. The best meal I have had in Addis.", "am": "ጥብሱ ከፍሙ ሲወርድ ገና ይንጣጣ ነበር። በአዲስ አበባ የበላሁት ምርጥ ምግብ።" },
+              "name": "Liya B.",
+              "role": { "en": "Anniversary dinner", "am": "የጋብቻ በዓል እራት" }
+            },
+            {
+              "quote": { "en": "A fasting menu that nobody at our table wanted to share.", "am": "በገበታችን ማንም ሊያካፍል ያልፈለገው የጾም ምግብ።" },
+              "name": "Henok A.",
+              "role": { "en": "Dinner with family", "am": "ከቤተሰብ ጋር እራት" }
+            },
+            {
+              "quote": { "en": "Quiet, warm and unhurried. They let the evening be long.", "am": "ጸጥ ያለ፣ ሞቅ ያለና የማይቸኩል። ምሽቱ እንዲረዝም ይፈቅዳሉ።" },
+              "name": "Marta K.",
+              "role": { "en": "Visiting from Nairobi", "am": "ከናይሮቢ የመጣች" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "reserve",
+          "heading": { "en": "A table by the fire is waiting", "am": "በእሳቱ አጠገብ ያለ ጠረጴዛ እየጠበቀዎ ነው" },
+          "body": { "en": "Eight tables, five evenings a week. Book a few days ahead.", "am": "ስምንት ጠረጴዛዎች፣ በሳምንት አምስት ምሽቶች። ከጥቂት ቀናት በፊት ያስይዙ።" },
+          "image": {
+            "src": "/stock/hotel-hero-lodge-pool-dusk.webp",
+            "alt": { "en": "A thatched building lit by lanterns at dusk, reflected in dark water", "am": "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሕንፃ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Reserve a table", "am": "ጠረጴዛ ያስይዙ" },
+            "href": "/reserve"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call us", "am": "ይደውሉልን" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/reserve",
+      "title": { "en": "Reserve", "am": "ያስይዙ" },
+      "nav": { "en": "Reserve", "am": "ያስይዙ" },
+      "description": { "en": "Reserve a table at ESAT in Bole. Dinner Tuesday to Saturday; we confirm by phone or Telegram.", "am": "በቦሌ በሚገኘው እሳት ጠረጴዛ ያስይዙ። እራት ከማክሰኞ እስከ ቅዳሜ፤ በስልክ ወይም በቴሌግራም እናረጋግጣለን።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "table",
+          "kind": "booking",
+          "eyebrow": { "en": "Reservations", "am": "ቦታ ማስያዝ" },
+          "heading": { "en": "Reserve a table", "am": "ጠረጴዛ ያስይዙ" },
+          "intro": { "en": "Tell us the evening and how many you are. We confirm by phone or Telegram within a few hours.", "am": "ምሽቱንና ስንት እንደሆናችሁ ይንገሩን። በጥቂት ሰዓታት ውስጥ በስልክ ወይም በቴሌግራም እናረጋግጣለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "date",
+              "label": { "en": "Evening", "am": "ምሽት" },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "time",
+              "label": { "en": "Time", "am": "ሰዓት" },
+              "type": "time",
+              "required": true
+            },
+            {
+              "name": "guests",
+              "label": { "en": "Guests", "am": "የእንግዶች ብዛት" },
+              "type": "number",
+              "required": true
+            },
+            {
+              "name": "notes",
+              "label": { "en": "Fasting, allergies or an occasion?", "am": "ጾም፣ አለርጂ ወይም ልዩ ቀን?" },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": { "en": "Request the table", "am": "ጠረጴዛውን ጠይቅ" },
+          "successMessage": { "en": "Thank you. We will confirm your table shortly.", "am": "እናመሰግናለን። ጠረጴዛዎን በቅርቡ እናረጋግጣለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "eyebrow": { "en": "Find us", "am": "ያግኙን" },
+          "heading": { "en": "Dinner, Tuesday to Saturday", "am": "እራት፣ ከማክሰኞ እስከ ቅዳሜ" },
+          "intro": { "en": "For groups of more than eight, call us.", "am": "ከስምንት በላይ ለሆኑ ቡድኖች ይደውሉልን።" }
+        },
+        {
+          "type": "map",
+          "id": "map",
+          "heading": { "en": "Behind the Friendship building", "am": "ከፍሬንድሺፕ ሕንፃ ጀርባ" },
+          "query": "Bole Road, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

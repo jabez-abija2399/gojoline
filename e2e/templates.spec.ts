@@ -65,7 +65,7 @@ test("a live demo is served with the site's own strict headers and can't be fram
 test("the templates page: search and filters narrow the list, and a card opens the full preview", async ({ page }) => {
   await page.goto("/en/templates");
   const list = page.getByRole("list", { name: "Example sites" });
-  await expect(list.getByRole("listitem")).toHaveCount(27);
+  await expect(list.getByRole("listitem")).toHaveCount(28);
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("searchbox", { name: "Search templates" }).fill("prayer");
@@ -78,7 +78,7 @@ test("the templates page: search and filters narrow the list, and a card opens t
   await expect(list.getByRole("listitem")).toHaveCount(4);
   // Back and Forward follow the address.
   await page.goBack();
-  await expect(list.getByRole("listitem")).toHaveCount(27);
+  await expect(list.getByRole("listitem")).toHaveCount(28);
   await page.goForward();
   await expect(page.getByRole("navigation", { name: "Category" }).getByRole("link", { name: "Health and beauty" })).toHaveAttribute("aria-current", "page");
   await expect(list.getByRole("listitem")).toHaveCount(4);
@@ -89,7 +89,7 @@ test("the templates page: search and filters narrow the list, and a card opens t
   await expect(page.getByRole("heading", { name: /Health and beauty/ })).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).first().click();
   await expect(page).toHaveURL(/\/en\/templates$/);
-  await expect(list.getByRole("listitem")).toHaveCount(27);
+  await expect(list.getByRole("listitem")).toHaveCount(28);
   await list.getByRole("link", { name: /Salon or barber/ }).click();
   await expect(page).toHaveURL(/\/en\/templates\/salon$/);
 });
@@ -108,7 +108,7 @@ test.describe("templates without JavaScript", () => {
     await expect(list.getByRole("link", { name: /Mosque/ })).toContainText("Faith and community");
     // An unknown category shows everything.
     await page.goto("/en/templates?category=nope");
-    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(27);
+    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(28);
   });
 });
 

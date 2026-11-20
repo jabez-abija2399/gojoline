@@ -16,6 +16,7 @@ import "./avant.css";
 import "./precise.css";
 import "./monochrome.css";
 import "./drafting.css";
+import "./noir.css";
 
 const container = document.getElementById("root")!;
 

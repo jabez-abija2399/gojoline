@@ -254,11 +254,39 @@ describe("art direction (drafting)", () => {
     const out = html(site);
     expect(out.match(/<h1/g)).toHaveLength(1);
     expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(1);
-    expect(text(out)).toMatch(/Hillside House.*Bishoftu.*2025.*420 m²/);
+    expect(text(out)).toMatch(/Entoto Ridge House.*Bishoftu.*2025.*420 m²/);
   });
 
   it("reads in Amharic on every page", () => {
     const site = preset("architect");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (noir)", () => {
+  it("dining is valid and readable as a light-first theme (the style turns it dark)", () => {
+    const site = preset("dining");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("noir");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("has signature dishes, a priced menu, the room and a booking form", () => {
+    const site = preset("dining");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="feature-row /g)).toHaveLength(3);
+    expect(text(out)).toMatch(/Ember tibs.*1,450/);
+    const reserve = html(site, "en", site.pages.findIndex((p) => p.path === "/reserve"));
+    expect(reserve).toMatch(/name="guests"/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("dining");
     site.pages.forEach((_, i) => {
       const out = text(html(site, "am", i));
       expect(out).toMatch(/[ሀ-፿]/);

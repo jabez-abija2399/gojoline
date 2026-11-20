@@ -455,6 +455,14 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  dining: {
+    category: "food",
+    designedFor: {
+      en: ["Fine dining restaurants", "Chef's tables and supper clubs", "Wine and cocktail bars", "Hotel restaurants"],
+      am: ["ቅንጡ ምግብ ቤቶች", "የሼፍ ገበታዎችና የእራት ክለቦች", "የወይንና የኮክቴል ቤቶች", "የሆቴል ምግብ ቤቶች"],
+    },
+    highlights: ["menu", { key: "booking", label: { en: "Table reservations", am: "የጠረጴዛ ቦታ ማስያዝ" } }, "gallery", "reviews", "hours", "map", "languages"],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

@@ -642,5 +642,27 @@
         "height": 933
       }
     }
+  },
+  "dining": {
+    "en": {
+      "src": "/showcase/dining-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/dining-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/dining-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/dining-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }
