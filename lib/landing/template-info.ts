@@ -427,6 +427,20 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  boutique: {
+    category: "shops",
+    designedFor: {
+      en: ["Fashion labels and boutiques", "Concept and design stores", "Jewellery and accessories", "Designers selling abroad"],
+      am: ["የፋሽን ብራንዶችና ቡቲኮች", "የዲዛይን መደብሮች", "ጌጣጌጥና ተጨማሪዎች", "ወደ ውጭ የሚሸጡ ዲዛይነሮች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Pieces with prices", am: "ልብሶች ከዋጋ ጋር" } },
+      { key: "order", label: { en: "Orders from anywhere", am: "ከየትም ትዕዛዝ" } },
+      { key: "cards", label: { en: "Shop by category", am: "በምድብ ግዢ" } },
+      "callTelegram",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

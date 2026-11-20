@@ -209,3 +209,34 @@ describe("art direction (precise)", () => {
     });
   });
 });
+
+describe("art direction (monochrome)", () => {
+  it("boutique is valid and readable", () => {
+    const site = preset("boutique");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("monochrome");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("is a shop: the season to swipe with prices, categories as titles, a one-field newsletter, an order form", () => {
+    const site = preset("boutique");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain('class="rail"');
+    expect(text(out)).toMatch(/Meskel dress.*9,800/);
+    expect(out).toContain("index-list");
+    const letter = site.pages[0]!.sections.at(-1)!;
+    expect(letter.type === "form" && letter.fields.map((f) => f.type)).toEqual(["email"]);
+    const order = html(site, "en", site.pages.findIndex((p) => p.path === "/order"));
+    expect(order).toMatch(/name="size"/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("boutique");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

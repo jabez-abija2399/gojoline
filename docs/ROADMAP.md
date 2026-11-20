@@ -145,7 +145,7 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - [x] Luxury hotel: `grand` + `resort`
 - [x] Creative agency: `avant` + `agency`
 - [x] SaaS / software product: `precise` (Swiss minimal, product interface drawings in the site's colours) + `software` ("Lemlem"); design, performance and security reviews run and fixed
-- [ ] Fashion e-commerce: a monochrome magazine direction + a shop-first fashion starter (the existing `fashion` stays as the tailor/made-to-measure site)
+- [x] Fashion e-commerce: `monochrome` (a magazine shop, black and white) + `boutique` ("KUTA"); the existing `fashion` stays as the tailor/made-to-measure site; design, performance and security reviews run and fixed
 - [ ] Architecture and interiors studio: a restrained grid direction + `architect` (photos: the real-estate and interior photos in the library)
 - [ ] Fine dining: a dark atmospheric direction + `dining` (photos: the café and banquet photos in the library)
 - [ ] Creative portfolio: an interactive personal direction + a second portfolio starter beside `personal`
@@ -202,6 +202,7 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - Amharic in the motion-kit additions (tabs, giving boxes, ribbons, announcements, prayer and service times, stamps) needs the native-speaker review with the rest of the templates.
 - Generated-site LCP (performance review, 2026-11-20): with compressed files, Lighthouse slow 4G gives 2.1 to 2.4 s on both hotel and resort (budget 2.0 s); about 1.7 s is render delay from the blocking stylesheet and fonts. Next steps: inline the first screen's CSS and load the rest without blocking, and split every art direction into its own file the way `grand.css` is (about 4 to 5 KB gzip less blocking CSS per site). Lighthouse CI must serve files compressed or it reports about 3.9 s.
 - Resort photos are heavier than the hotel's (hero 480 px 28 KB vs 16 KB, about photo 34 KB): re-encode those stock files or pick lighter ones when real luxury-hotel photos are added to the library.
+- Amharic in the `boutique` template (`scripts/presets/boutique.mjs`, 2026-11-20) and its gallery strings (`monochrome` style name "ጥቁርና ነጭ") needs the same native-speaker review.
 - Amharic in the `software` template (`scripts/presets/software.mjs`, 2026-11-20) and its gallery strings (`precise` style name "ጥርት ያለ") needs the same native-speaker review.
 - Amharic in the `agency` template (`scripts/presets/agency.mjs`, 2026-11-20) and its gallery strings (`avant` style name "ሙከራዊ") needs the same native-speaker review.
 - Amharic in the `resort` template (`scripts/presets/resort.mjs`, 2026-11-20) and its gallery strings (`resort` in `lib/landing/template-info.ts`, `grand` style name "ግርማ ያለው") needs the same native-speaker review.

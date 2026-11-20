@@ -499,8 +499,11 @@ export interface Theme {
    * precise: a software product in the Swiss manner: a strict grid drawn in hairlines, tight
    * neutral type with one accent, product drawings that come alive, quiet cards with fine borders
    * (apps, software, online services, fintech).
+   * monochrome: a fashion house's shop set like a magazine: black and white (the photos carry the
+   * colour), a light serif, small tracked capitals, the name centred over the page, products as tall
+   * portraits with the price beneath, categories as big titles (fashion, design shops, concept stores).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome";
 }
 
 export interface Business {

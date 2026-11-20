@@ -598,5 +598,27 @@
         "height": 933
       }
     }
+  },
+  "boutique": {
+    "en": {
+      "src": "/showcase/boutique-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/boutique-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/boutique-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/boutique-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }
