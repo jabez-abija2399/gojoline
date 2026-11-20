@@ -337,7 +337,14 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
           // A place tile (a name, a line, maybe a fact like "3 days"; no price or story) is compared
           // as the name with its line, so a real "Bole" or "Lalibela" card is never mistaken for the sample.
           if (!price && !i.description) {
-            out.push({ text: `place:${JSON.stringify([i.title, i.subtitle])}`, samplePhoto: false });
+            // Per language, from trimmed text, so key order or an edit to the other language doesn't matter.
+            const title = (i.title ?? {}) as Json;
+            const sub = (i.subtitle ?? {}) as Json;
+            for (const lang of Object.keys(title)) {
+              const a = typeof title[lang] === "string" ? (title[lang] as string).trim() : "";
+              const b = typeof sub[lang] === "string" ? (sub[lang] as string).trim() : "";
+              if (a) out.push({ text: `place:${lang}:${a}|${b}`, samplePhoto: false });
+            }
             continue;
           }
           for (const t of texts(i.title)) out.push({ text: t, samplePhoto: false });

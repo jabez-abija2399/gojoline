@@ -69,9 +69,9 @@ save("voyage", {
           eyebrow: t("Destinations", "መዳረሻዎች"),
           heading: t("Places that change you", "የሚለውጡ ቦታዎች"),
           items: [
-            { image: img("hotel-hero-lodge-pool-dusk", "A thatched lodge lit by lanterns at dusk, reflected in dark water", "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሎጅ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ"), title: t("Lake Tana", "ጣና ሐይቅ"), subtitle: t("Island monasteries by boat", "በጀልባ የደሴት ገዳማት"), meta: [t("2 days", "2 ቀን")] },
+            { image: img("hotel-hero-lodge-pool-dusk", "A thatched lodge lit by lanterns at dusk, reflected in dark water", "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሎጅ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ"), title: t("Where you sleep", "የሚያድሩበት"), subtitle: t("Lodges chosen for the view", "ለእይታቸው የተመረጡ ሎጆች"), meta: [t("2 days", "2 ቀን")] },
             { image: img("tours-card-lalibela-monk", "A monk in a yellow robe reading beside a carved cross-shaped window", "በተቀረጸ የመስቀል ቅርጽ መስኮት አጠገብ ቢጫ ልብስ የለበሱ መነኩሴ ሲያነቡ"), title: t("Lalibela", "ላሊበላ"), subtitle: t("Eleven churches of stone", "አሥራ አንድ የድንጋይ አብያተ ክርስቲያናት"), meta: [t("3 days", "3 ቀን")] },
-            { image: img("tours-card-blue-nile-falls", "The Blue Nile Falls in full flow surrounded by green forest", "በአረንጓዴ ደን የተከበበው የዓባይ ፏፏቴ በሙላት ሲፈስ"), title: t("The Blue Nile", "ዓባይ"), subtitle: t("Smoke that thunders", "የሚያጨስ ውኃ"), meta: [t("2 days", "2 ቀን")] },
+            { image: img("tours-card-blue-nile-falls", "The Blue Nile Falls in full flow surrounded by green forest", "በአረንጓዴ ደን የተከበበው የዓባይ ፏፏቴ በሙላት ሲፈስ"), title: t("The Blue Nile", "ዓባይ"), subtitle: t("Tis Abay, the great smoke", "ጢስ ዓባይ"), meta: [t("2 days", "2 ቀን")] },
             { image: img("tours-gallery-gondar-castle", "The castle of Fasilides in Gondar framed by two tall trees", "በሁለት ረጃጅም ዛፎች መካከል የሚታየው የጎንደር የፋሲለደስ ግንብ"), title: t("Gondar", "ጎንደር"), subtitle: t("Castles of the emperors", "የነገሥታቱ ግንቦች"), meta: [t("2 days", "2 ቀን")] },
             { image: img("tours-gallery-gelada", "A gelada with its red chest patch sitting on a rock in front of wildflowers", "ቀይ ደረት ያለው ጭላዳ ዝንጀሮ ከዱር አበቦች ፊት በዓለት ላይ ተቀምጦ"), title: t("Simien wildlife", "የሰሜን የዱር እንስሳት"), subtitle: t("Geladas, ibex and lammergeier", "ጭላዳ፣ ዋልያና ጥንብ አንሳ"), meta: [t("3 days", "3 ቀን")] },
             { image: img("tours-gallery-spice-market", "A woman sorting red and green chillies and ginger at an open-air market", "በክፍት ገበያ ቀይና አረንጓዴ ቃሪያና ዝንጅብል የምትለይ ሴት"), title: t("Harar and the markets", "ሐረርና ገበያዎቹ"), subtitle: t("Spice, coffee and the old walls", "ቅመም፣ ቡናና ጥንታዊው ቅጥር"), meta: [t("3 days", "3 ቀን")] },
@@ -83,7 +83,7 @@ save("voyage", {
           variant: "immersive",
           eyebrow: t("The Danakil", "ዳናኪል"),
           heading: t("Salt, fire and the oldest road", "ጨው፣ እሳትና ጥንታዊው መንገድ"),
-          subheading: t("Walk beside the salt caravans at dawn, then climb to a lava lake by night.", "ጎህ ሲቀድ ከጨው ቅፍለቶቹ ጋር ይራመዱ፣ ማታ ደግሞ ወደ እሳተ ገሞራ ሐይቅ ይውጡ።"),
+          subheading: t("Walk beside the salt caravans at dawn, then climb Erta Ale by night.", "ጎህ ሲቀድ ከጨው ቅፍለቶቹ ጋር ይራመዱ፣ ማታ ደግሞ ኤርታ አሌን ይውጡ።"),
           image: img("tours-gallery-salt-caravan", "A long camel salt caravan crossing cracked salt flats under a wide blue sky", "ሰፊ ሰማያዊ ሰማይ ሥር የተሰነጠቀውን የጨው ሜዳ የሚያቋርጥ ረጅም የግመል ጨው ቅፍለት"),
         },
         {
@@ -96,7 +96,7 @@ save("voyage", {
             {
               image: img("tours-card-simien-escarpment", "Sunlit green terraced escarpments and deep valleys of the Simien Mountains", "በፀሐይ የበሩ አረንጓዴ የሰሜን ተራሮች ገደሎችና ጥልቅ ሸለቆዎች"),
               subtitle: t("The north", "ሰሜን"),
-              title: t("The Historic Route", "ታሪካዊው መስመር"),
+              title: t("The Meda Northern Circle", "የሜዳ ሰሜናዊ ዙር"),
               meta: [t("12 days", "12 ቀን"), t("Lalibela · Gondar · Simien · Bahir Dar", "ላሊበላ · ጎንደር · ሰሜን · ባሕር ዳር")],
               description: t("The rock churches, the castles and four days on foot in the mountains.", "ውቅር አብያተ ክርስቲያናት፣ ግንቦቹና በተራሮች ላይ አራት ቀን በእግር።"),
               price: birr(198000),
@@ -106,9 +106,9 @@ save("voyage", {
             {
               image: img("tours-card-danakil-dallol", "Yellow, green and rust-coloured sulphur springs at Dallol", "በዳሎል ቢጫ፣ አረንጓዴና የዝገት ቀለም ያላቸው የድኝ ምንጮች"),
               subtitle: t("The east", "ምሥራቅ"),
-              title: t("Fire and Salt", "እሳትና ጨው"),
+              title: t("Meda's Salt Road", "የሜዳ የጨው መንገድ"),
               meta: [t("6 days", "6 ቀን"), t("Mekele · Dallol · Erta Ale", "መቀሌ · ዳሎል · ኤርታ አሌ")],
-              description: t("Salt flats, sulphur springs and a lava lake, with camps run by Afar families.", "የጨው ሜዳዎች፣ የድኝ ምንጮችና እሳተ ገሞራ ሐይቅ፣ በአፋር ቤተሰቦች በሚተዳደሩ ሰፈሮች።"),
+              description: t("Salt flats, sulphur springs and a volcano at night, sleeping in simple desert camps.", "የጨው ሜዳዎች፣ የድኝ ምንጮችና ማታ እሳተ ገሞራ፣ በቀላል የበረሃ ሰፈሮች እያደሩ።"),
               price: birr(126000),
               priceNote: t("per person, from", "ለአንድ ሰው፣ ጀምሮ"),
               action: plan,
@@ -124,7 +124,7 @@ save("voyage", {
           image: img("hotel-gallery-bush-dining-acacia", "A long table set for dinner in open grassland beside a lone acacia", "ከብቸኛ ግራር አጠገብ በሜዳ ላይ ለእራት የተዘጋጀ ረጅም ገበታ"),
           items: [
             { title: t("We talk", "እናወራለን"), description: t("A call about what you want to see, how you like to travel and when.", "ምን ማየት እንደሚፈልጉ፣ እንዴትና መቼ መጓዝ እንደሚወዱ በስልክ እንወያያለን።") },
-            { title: t("We draw the route", "መንገዱን እንነድፋለን"), description: t("A day-by-day plan with the places to sleep, sent within the week.", "የሚያድሩባቸውን ቦታዎች ጨምሮ በቀን በቀን የተዘጋጀ ዕቅድ፣ በሳምንቱ ውስጥ።") },
+            { title: t("We draw the route", "መንገዱን እንነድፋለን"), description: t("A day-by-day plan with the places to sleep, for you to change as you like.", "የሚያድሩባቸውን ቦታዎች ጨምሮ በቀን በቀን የተዘጋጀ፣ እንደፈለጉ የሚቀይሩት ዕቅድ።") },
             { title: t("You travel", "እርስዎ ይጓዛሉ"), description: t("Your guide and driver are with you from the airport to the last evening.", "መሪዎና ሹፌርዎ ከአየር ማረፊያው እስከ መጨረሻው ምሽት አብረውዎ ናቸው።") },
           ],
         },
@@ -134,7 +134,7 @@ save("voyage", {
           eyebrow: t("Travellers", "ተጓዦች"),
           heading: t("After the journey", "ከጉዞው በኋላ"),
           items: [
-            { quote: t("We stood in a church cut from the rock as the priests began to sing. Nothing has come close since.", "ቀሳውስቱ መዘመር ሲጀምሩ ከዓለት በተፈለፈለ ቤተ ክርስቲያን ውስጥ ቆመን ነበር። ከዚያ ወዲህ የሚቀርበው ነገር አላየንም።"), name: "Anna & Tom", role: t("The Historic Route", "ታሪካዊው መስመር") },
+            { quote: t("We stood in a church cut from the rock as the priests began to sing. Nothing has come close since.", "ቀሳውስቱ መዘመር ሲጀምሩ ከዓለት በተፈለፈለ ቤተ ክርስቲያን ውስጥ ቆመን ነበር። ከዚያ ወዲህ የሚቀርበው ነገር አላየንም።"), name: "Anna & Tom", role: t("The northern circle", "ሰሜናዊው ዙር") },
             { quote: t("Our guide knew every family on the escarpment. We were guests, not tourists.", "መሪያችን በገደሉ ጠርዝ ያሉትን ቤተሰቦች ሁሉ ያውቅ ነበር። እንግዶች እንጂ ጎብኚዎች አልነበርንም።"), name: "Kebede A.", role: t("Simien trek", "የሰሜን ተራሮች ጉዞ") },
           ],
         },
@@ -172,7 +172,7 @@ save("voyage", {
           submitLabel: t("Send", "ላክ"),
           successMessage: t("Thank you. We will be in touch to plan your journey.", "እናመሰግናለን። ጉዞዎን ለማቀድ እናገኝዎታለን።"),
         },
-        { type: "contact", id: "talk", eyebrow: t("Talk to us", "ያነጋግሩን"), heading: t("Or call us, any day", "ወይም በየትኛውም ቀን ይደውሉልን") },
+        { type: "contact", id: "talk", eyebrow: t("Talk to us", "ያነጋግሩን"), heading: t("Or call us", "ወይም ይደውሉልን") },
       ],
     },
   ],

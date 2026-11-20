@@ -363,7 +363,7 @@ describe("art direction (voyage)", () => {
     expect(out.match(/<h1/g)).toHaveLength(1);
     expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(3);
     expect(out).toContain("card-grid");
-    expect(text(out)).toMatch(/The Historic Route.*198,000/);
+    expect(text(out)).toMatch(/The Meda Northern Circle.*198,000/);
   });
 
   it("reads in Amharic on every page", () => {

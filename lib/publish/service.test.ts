@@ -288,6 +288,28 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
   });
 
+  it("blocks the voyage starter's sample journeys and tiles, but not a real operator's own cards", () => {
+    const voyage = () => JSON.parse(presetSiteJson("voyage")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; layout?: string; items?: Record<string, unknown>[] }[] }[] };
+    const owner = (keep: (s: { type: string; layout?: string }) => boolean) => {
+      const site = voyage();
+      site.name = { en: "Abebe Tours" };
+      site.business = { phone: "+251 912 345 678", telegram: "abebetours" };
+      for (const p of site.pages) p.sections = p.sections.filter(keep);
+      return site;
+    };
+    // Renamed journeys keeping the sample photo and price block.
+    const kept = owner((s) => s.layout === "feature");
+    for (const p of kept.pages) for (const s of p.sections) s.items = s.items!.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Trip ${n}` }, description: { en: "Our own words" } }));
+    expect(hasExampleDetails(JSON.stringify(kept))).toBe(true);
+    // Kept destination tiles block, even with the languages written in another order.
+    const tiles = owner((s) => s.layout === "grid");
+    for (const p of tiles.pages) for (const s of p.sections) s.items = s.items!.map((i) => ({ ...i, title: { am: (i.title as { am: string }).am, en: (i.title as { en: string }).en } }));
+    expect(hasExampleDetails(JSON.stringify(tiles))).toBe(true);
+    // A real operator's own "The Historic Route" and "Lalibela" cards publish.
+    const real = { name: { en: "Abebe Tours" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "feature", items: [{ title: { en: "The Historic Route" }, description: { en: "Our ten-day tour of the north." }, price: { amountMinor: 5000000, currency: "ETB" } }] }, { type: "cards", layout: "grid", items: [{ title: { en: "Lalibela" }, subtitle: { en: "Where we started" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
+  });
+
   it("blocks a template's sample numbers until the owner's own replace them", () => {
     const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
     const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;

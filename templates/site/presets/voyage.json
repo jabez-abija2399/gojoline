@@ -91,8 +91,8 @@
                 "src": "/stock/hotel-hero-lodge-pool-dusk.webp",
                 "alt": { "en": "A thatched lodge lit by lanterns at dusk, reflected in dark water", "am": "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሎጅ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ" }
               },
-              "title": { "en": "Lake Tana", "am": "ጣና ሐይቅ" },
-              "subtitle": { "en": "Island monasteries by boat", "am": "በጀልባ የደሴት ገዳማት" },
+              "title": { "en": "Where you sleep", "am": "የሚያድሩበት" },
+              "subtitle": { "en": "Lodges chosen for the view", "am": "ለእይታቸው የተመረጡ ሎጆች" },
               "meta": [
                 { "en": "2 days", "am": "2 ቀን" }
               ]
@@ -114,7 +114,7 @@
                 "alt": { "en": "The Blue Nile Falls in full flow surrounded by green forest", "am": "በአረንጓዴ ደን የተከበበው የዓባይ ፏፏቴ በሙላት ሲፈስ" }
               },
               "title": { "en": "The Blue Nile", "am": "ዓባይ" },
-              "subtitle": { "en": "Smoke that thunders", "am": "የሚያጨስ ውኃ" },
+              "subtitle": { "en": "Tis Abay, the great smoke", "am": "ጢስ ዓባይ" },
               "meta": [
                 { "en": "2 days", "am": "2 ቀን" }
               ]
@@ -160,7 +160,7 @@
           "variant": "immersive",
           "eyebrow": { "en": "The Danakil", "am": "ዳናኪል" },
           "heading": { "en": "Salt, fire and the oldest road", "am": "ጨው፣ እሳትና ጥንታዊው መንገድ" },
-          "subheading": { "en": "Walk beside the salt caravans at dawn, then climb to a lava lake by night.", "am": "ጎህ ሲቀድ ከጨው ቅፍለቶቹ ጋር ይራመዱ፣ ማታ ደግሞ ወደ እሳተ ገሞራ ሐይቅ ይውጡ።" },
+          "subheading": { "en": "Walk beside the salt caravans at dawn, then climb Erta Ale by night.", "am": "ጎህ ሲቀድ ከጨው ቅፍለቶቹ ጋር ይራመዱ፣ ማታ ደግሞ ኤርታ አሌን ይውጡ።" },
           "image": {
             "src": "/stock/tours-gallery-salt-caravan.webp",
             "alt": { "en": "A long camel salt caravan crossing cracked salt flats under a wide blue sky", "am": "ሰፊ ሰማያዊ ሰማይ ሥር የተሰነጠቀውን የጨው ሜዳ የሚያቋርጥ ረጅም የግመል ጨው ቅፍለት" }
@@ -179,7 +179,7 @@
                 "alt": { "en": "Sunlit green terraced escarpments and deep valleys of the Simien Mountains", "am": "በፀሐይ የበሩ አረንጓዴ የሰሜን ተራሮች ገደሎችና ጥልቅ ሸለቆዎች" }
               },
               "subtitle": { "en": "The north", "am": "ሰሜን" },
-              "title": { "en": "The Historic Route", "am": "ታሪካዊው መስመር" },
+              "title": { "en": "The Meda Northern Circle", "am": "የሜዳ ሰሜናዊ ዙር" },
               "meta": [
                 { "en": "12 days", "am": "12 ቀን" },
                 { "en": "Lalibela · Gondar · Simien · Bahir Dar", "am": "ላሊበላ · ጎንደር · ሰሜን · ባሕር ዳር" }
@@ -198,12 +198,12 @@
                 "alt": { "en": "Yellow, green and rust-coloured sulphur springs at Dallol", "am": "በዳሎል ቢጫ፣ አረንጓዴና የዝገት ቀለም ያላቸው የድኝ ምንጮች" }
               },
               "subtitle": { "en": "The east", "am": "ምሥራቅ" },
-              "title": { "en": "Fire and Salt", "am": "እሳትና ጨው" },
+              "title": { "en": "Meda's Salt Road", "am": "የሜዳ የጨው መንገድ" },
               "meta": [
                 { "en": "6 days", "am": "6 ቀን" },
                 { "en": "Mekele · Dallol · Erta Ale", "am": "መቀሌ · ዳሎል · ኤርታ አሌ" }
               ],
-              "description": { "en": "Salt flats, sulphur springs and a lava lake, with camps run by Afar families.", "am": "የጨው ሜዳዎች፣ የድኝ ምንጮችና እሳተ ገሞራ ሐይቅ፣ በአፋር ቤተሰቦች በሚተዳደሩ ሰፈሮች።" },
+              "description": { "en": "Salt flats, sulphur springs and a volcano at night, sleeping in simple desert camps.", "am": "የጨው ሜዳዎች፣ የድኝ ምንጮችና ማታ እሳተ ገሞራ፣ በቀላል የበረሃ ሰፈሮች እያደሩ።" },
               "price": { "amountMinor": 12600000, "currency": "ETB" },
               "priceNote": { "en": "per person, from", "am": "ለአንድ ሰው፣ ጀምሮ" },
               "action": {
@@ -230,7 +230,7 @@
             },
             {
               "title": { "en": "We draw the route", "am": "መንገዱን እንነድፋለን" },
-              "description": { "en": "A day-by-day plan with the places to sleep, sent within the week.", "am": "የሚያድሩባቸውን ቦታዎች ጨምሮ በቀን በቀን የተዘጋጀ ዕቅድ፣ በሳምንቱ ውስጥ።" }
+              "description": { "en": "A day-by-day plan with the places to sleep, for you to change as you like.", "am": "የሚያድሩባቸውን ቦታዎች ጨምሮ በቀን በቀን የተዘጋጀ፣ እንደፈለጉ የሚቀይሩት ዕቅድ።" }
             },
             {
               "title": { "en": "You travel", "am": "እርስዎ ይጓዛሉ" },
@@ -247,7 +247,7 @@
             {
               "quote": { "en": "We stood in a church cut from the rock as the priests began to sing. Nothing has come close since.", "am": "ቀሳውስቱ መዘመር ሲጀምሩ ከዓለት በተፈለፈለ ቤተ ክርስቲያን ውስጥ ቆመን ነበር። ከዚያ ወዲህ የሚቀርበው ነገር አላየንም።" },
               "name": "Anna & Tom",
-              "role": { "en": "The Historic Route", "am": "ታሪካዊው መስመር" }
+              "role": { "en": "The northern circle", "am": "ሰሜናዊው ዙር" }
             },
             {
               "quote": { "en": "Our guide knew every family on the escarpment. We were guests, not tourists.", "am": "መሪያችን በገደሉ ጠርዝ ያሉትን ቤተሰቦች ሁሉ ያውቅ ነበር። እንግዶች እንጂ ጎብኚዎች አልነበርንም።" },
@@ -326,7 +326,7 @@
           "type": "contact",
           "id": "talk",
           "eyebrow": { "en": "Talk to us", "am": "ያነጋግሩን" },
-          "heading": { "en": "Or call us, any day", "am": "ወይም በየትኛውም ቀን ይደውሉልን" }
+          "heading": { "en": "Or call us", "am": "ወይም ይደውሉልን" }
         }
       ]
     }
