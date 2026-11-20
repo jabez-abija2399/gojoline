@@ -11,7 +11,7 @@ type GuideText = {
   sections: Record<(typeof GUIDE_SECTIONS)[number], { title: string }>;
 };
 
-/** "2. Describe your business": a chapter's title in the guide's language. */
+/** "2. Describe what you want": a chapter's title in the guide's language. */
 export function chapterTitle(c: Chapter, g: GuideText): string {
   if (c.n === null) return c.start === 0 ? g.video.intro : g.video.closing;
   const id = GUIDE_SECTIONS[c.n - 1];
