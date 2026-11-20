@@ -71,7 +71,7 @@ test.describe("landing page", () => {
     await page.getByRole("navigation", { name: "Main" }).filter({ visible: true }).getByRole("link", { name: "Templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
     await expect(page.getByRole("heading", { level: 1, name: "Start from a real site" })).toBeVisible();
-    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(26);
+    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(27);
     await expectNoSeriousA11yIssues(page);
     await expectNoHorizontalScroll(page);
     await openMenu();
@@ -120,7 +120,7 @@ test.describe("landing page", () => {
     await expectPicked(page, "Hotel");
     await expect(page.getByRole("figure", { name: /builder with the site it made for Tana Shore Lodge/ })).toBeVisible();
 
-    await page.getByRole("link", { name: "See all 26 templates" }).click();
+    await page.getByRole("link", { name: "See all 27 templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
     await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
     // Every section of the template first, then the choice.

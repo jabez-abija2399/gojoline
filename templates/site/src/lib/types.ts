@@ -502,8 +502,11 @@ export interface Theme {
    * monochrome: a fashion house's shop set like a magazine: black and white (the photos carry the
    * colour), a light serif, small tracked capitals, the name centred over the page, products as tall
    * portraits with the price beneath, categories as big titles (fashion, design shops, concept stores).
+   * drafting: set like a drawing sheet: warm paper, black ink, a faint drafting grid, projects
+   * numbered A-01, facts as a title block, large photographs, much space (architects, interior
+   * designers, engineers, furniture makers).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting";
 }
 
 export interface Business {

@@ -20,7 +20,7 @@ describe("styles that ship only to the sites that use them", () => {
     expect(load(fileURLToPath(new URL("../src/design.css", import.meta.url)))).toBeNull();
   });
 
-  it.each(["grand", "avant", "precise", "monochrome"])("every %s rule is scoped to the style, so dropping the file changes no other site", (name) => {
+  it.each(["grand", "avant", "precise", "monochrome", "drafting"])("every %s rule is scoped to the style, so dropping the file changes no other site", (name) => {
     const css = readFileSync(fileURLToPath(new URL(`../src/${name}.css`, import.meta.url)), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
     const selectors = [...css.matchAll(/(^|})\s*([^@{}][^{}]*)\{/g)].map((m) => m[2]!.trim()).filter((s) => !/^(@|from\b|to\b|\d+%)/.test(s));
     expect(selectors.length).toBeGreaterThan(50);

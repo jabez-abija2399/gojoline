@@ -1,0 +1,345 @@
+{
+  "name": { "en": "Meskot Architects", "am": "መስኮት አርክቴክቶች" },
+  "tagline": { "en": "Architecture and interiors, Addis Ababa", "am": "ሥነ ሕንፃና የውስጥ ዲዛይን፣ አዲስ አበባ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#1A1A1A", "accent": "#1A1A1A", "background": "#EFEDE8", "text": "#1A1A1A", "font": "modern", "radius": "none", "style": "drafting" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Sarbet, Addis Ababa", "am": "ሳርቤት፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Monday to Friday", "am": "ከሰኞ እስከ ዓርብ" },
+        "time": { "en": "8:30 am to 5:30 pm", "am": "ከጠዋቱ 2:30 እስከ ምሽቱ 11:30" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Studio", "am": "ስቱዲዮ" },
+      "description": { "en": "Meskot Architects: houses, housing, workplaces and interiors in Addis Ababa and beyond.", "am": "መስኮት አርክቴክቶች፦ በአዲስ አበባና ከዚያ ውጭ መኖሪያ ቤቶች፣ የጋራ መኖሪያዎች፣ የሥራ ቦታዎችና የውስጥ ዲዛይን።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "immersive",
+          "frame": true,
+          "eyebrow": { "en": "9°01′ N · 38°45′ E · Addis Ababa", "am": "9°01′ ሰ · 38°45′ ም · አዲስ አበባ" },
+          "heading": { "en": "Buildings that hold the light", "am": "ብርሃንን የሚይዙ ሕንፃዎች" },
+          "image": {
+            "src": "/stock/real-estate-hero-modern-apartment-corner-sky.webp",
+            "alt": { "en": "The top corner of a black-and-white apartment block with large windows against a pale sky", "am": "ትልልቅ መስኮቶች ያሉት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ በፈዛዛ ሰማይ ፊት" }
+          },
+          "primaryAction": {
+            "label": { "en": "Selected work", "am": "የተመረጡ ሥራዎች" },
+            "href": "#work"
+          },
+          "secondaryAction": {
+            "label": { "en": "Start a project", "am": "ፕሮጀክት እንጀምር" },
+            "href": "/contact"
+          }
+        },
+        {
+          "type": "about",
+          "id": "studio",
+          "eyebrow": { "en": "The studio", "am": "ስቱዲዮው" },
+          "heading": { "en": "Architecture and interiors, drawn by hand first", "am": "ሥነ ሕንፃና የውስጥ ዲዛይን፣ መጀመሪያ በእጅ የሚሳሉ" },
+          "body": { "en": "We design houses, housing and workplaces for the light, rain and altitude of the Ethiopian highlands.\n\nEvery project begins with a walk around the site and a pencil, and ends with us on site until the last window is in.", "am": "ለኢትዮጵያ ደጋማ ቦታዎች ብርሃን፣ ዝናብና ከፍታ የሚስማሙ መኖሪያ ቤቶችን፣ የጋራ መኖሪያዎችንና የሥራ ቦታዎችን እንነድፋለን።\n\nእያንዳንዱ ፕሮጀክት የሚጀምረው ቦታውን በመዞርና በእርሳስ ነው፤ የሚያልቀውም የመጨረሻው መስኮት እስኪገባ ድረስ ቦታው ላይ በመገኘታችን ነው።" },
+          "image": {
+            "src": "/stock/personal-about-creative-desk.webp",
+            "alt": { "en": "A wooden desk with pencils, brushes, books, rolled drawings, a lamp and plants", "am": "እርሳሶች፣ ብሩሾች፣ መጻሕፍት፣ የተጠቀለሉ ሥዕሎች፣ መብራትና ተክሎች ያሉበት የእንጨት ጠረጴዛ" }
+          },
+          "imageSide": "start"
+        },
+        {
+          "type": "cards",
+          "id": "work",
+          "layout": "grid",
+          "eyebrow": { "en": "Selected work", "am": "የተመረጡ ሥራዎች" },
+          "heading": { "en": "Three recent buildings", "am": "ሦስት የቅርብ ጊዜ ሕንፃዎች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/real-estate-card-modern-villa-palms.webp",
+                "alt": { "en": "A white flat-roofed villa with timber screens and planted terraces among palm trees", "am": "በዘንባባ ዛፎች መካከል የእንጨት መጋረጃዎችና ተክል ያለባቸው እርከኖች ያሉት ጠፍጣፋ ጣሪያ ያለው ነጭ ቪላ" }
+              },
+              "subtitle": { "en": "House", "am": "መኖሪያ ቤት" },
+              "title": { "en": "Hillside House", "am": "የኮረብታው ቤት" },
+              "meta": [
+                { "en": "Bishoftu", "am": "ቢሾፍቱ" },
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "420 m²", "am": "420 ካሬ ሜትር" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/construction-gallery-apartment-building-luanda.webp",
+                "alt": { "en": "A white multi-storey apartment building with curved balconies behind large green trees", "am": "ከትልልቅ አረንጓዴ ዛፎች ጀርባ ጠመዝማዛ በረንዳዎች ያሉት ባለ ብዙ ፎቅ ነጭ የመኖሪያ ሕንፃ" }
+              },
+              "subtitle": { "en": "Housing", "am": "የጋራ መኖሪያ" },
+              "title": { "en": "Curve Residences", "am": "የከርቭ መኖሪያዎች" },
+              "meta": [
+                { "en": "Bole", "am": "ቦሌ" },
+                { "en": "2024", "am": "2016 ዓ.ም." },
+                { "en": "6,800 m²", "am": "6,800 ካሬ ሜትር" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-card-midrise-apartments-balconies.webp",
+                "alt": { "en": "A mid-rise apartment building with glass balconies, large windows, pale cladding and a brick base", "am": "የመስታወት በረንዳዎች፣ ትልልቅ መስኮቶች፣ ፈዛዛ ሽፋንና የጡብ መሠረት ያለው መካከለኛ ከፍታ ያለው ሕንፃ" }
+              },
+              "subtitle": { "en": "Mixed use", "am": "ቅይጥ አገልግሎት" },
+              "title": { "en": "Kazanchis Court", "am": "ካዛንቺስ ኮርት" },
+              "meta": [
+                { "en": "Kazanchis", "am": "ካዛንቺስ" },
+                { "en": "2023", "am": "2015 ዓ.ም." },
+                { "en": "3,200 m²", "am": "3,200 ካሬ ሜትር" }
+              ]
+            }
+          ],
+          "action": {
+            "label": { "en": "All projects", "am": "ሁሉም ፕሮጀክቶች" },
+            "href": "/projects"
+          }
+        },
+        {
+          "type": "hero",
+          "id": "context",
+          "variant": "immersive",
+          "eyebrow": { "en": "Context", "am": "አውድ" },
+          "heading": { "en": "We design for this city's light, rain and height", "am": "ለዚህች ከተማ ብርሃን፣ ዝናብና ከፍታ እንነድፋለን" },
+          "image": {
+            "src": "/stock/real-estate-hero-addis-skyline-trees.webp",
+            "alt": { "en": "The Addis Ababa skyline with a tall glass tower above a dark band of trees under a calm sky", "am": "የአዲስ አበባ ሰማይ መስመር፣ ከጨለማ የዛፎች መስመር በላይ ረጅም የመስታወት ሕንፃ በረጋ ሰማይ ሥር" }
+          }
+        },
+        {
+          "type": "services",
+          "id": "principles",
+          "variant": "numbered",
+          "eyebrow": { "en": "Principles", "am": "መርሖች" },
+          "heading": { "en": "How we work", "am": "እንዴት እንደምንሠራ" },
+          "items": [
+            {
+              "title": { "en": "Site first", "am": "መጀመሪያ ቦታው" },
+              "description": { "en": "Sun, wind, neighbours and the trees already there shape the plan before we draw a wall.", "am": "ግድግዳ ከመሳላችን በፊት ፀሐይ፣ ነፋስ፣ ጎረቤቶችና ቀድሞ የነበሩ ዛፎች ዕቅዱን ይቀርጻሉ።" }
+            },
+            {
+              "title": { "en": "Local materials", "am": "የአገር ውስጥ ቁሳቁሶች" },
+              "description": { "en": "Stone, brick and timber that builders here know, used carefully and left honest.", "am": "እዚህ ያሉ ግንበኞች የሚያውቋቸው ድንጋይ፣ ጡብና እንጨት፣ በጥንቃቄ የሚጠቀሙና ተፈጥሯቸው የሚታይ።" }
+            },
+            {
+              "title": { "en": "On site to the end", "am": "እስከ መጨረሻ ቦታው ላይ" },
+              "description": { "en": "We visit every week of construction, so what is built is what was drawn.", "am": "በግንባታው እያንዳንዱ ሳምንት እንጎበኛለን፤ የተሳለው እንዲገነባ።" }
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "id": "statement",
+          "quote": { "en": "A good building is quiet. It lets the light, the people and the city speak.", "am": "ጥሩ ሕንፃ ጸጥ ያለ ነው። ብርሃኑ፣ ሰዎቹና ከተማዋ እንዲናገሩ ይፈቅዳል።" }
+        },
+        {
+          "type": "stats",
+          "id": "profile",
+          "tone": "soft",
+          "heading": { "en": "The studio in numbers", "am": "ስቱዲዮው በቁጥር" },
+          "items": [
+            {
+              "value": { "en": "12", "am": "12" },
+              "label": { "en": "years of practice", "am": "የሥራ ዓመታት" }
+            },
+            {
+              "value": { "en": "48", "am": "48" },
+              "label": { "en": "buildings completed", "am": "የተጠናቀቁ ሕንፃዎች" }
+            },
+            {
+              "value": { "en": "9", "am": "9" },
+              "label": { "en": "architects and designers", "am": "አርክቴክቶችና ዲዛይነሮች" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "contact",
+          "heading": { "en": "A site, a brief or just a sketch?", "am": "ቦታ፣ መመሪያ ወይም ንድፍ ብቻ አለዎት?" },
+          "body": { "en": "Tell us about it. The first conversation is free and carries no obligation.", "am": "ስለ እሱ ይንገሩን። የመጀመሪያው ውይይት ነጻና ግዴታ የሌለበት ነው።" },
+          "primaryAction": {
+            "label": { "en": "Start a project", "am": "ፕሮጀክት እንጀምር" },
+            "href": "/contact"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/projects",
+      "title": { "en": "Projects", "am": "ፕሮጀክቶች" },
+      "nav": { "en": "Projects", "am": "ፕሮጀክቶች" },
+      "description": { "en": "Houses, housing, workplaces and interiors by Meskot Architects.", "am": "በመስኮት አርክቴክቶች የተሠሩ መኖሪያ ቤቶች፣ የጋራ መኖሪያዎች፣ የሥራ ቦታዎችና የውስጥ ዲዛይኖች።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "projects",
+          "layout": "grid",
+          "eyebrow": { "en": "Projects", "am": "ፕሮጀክቶች" },
+          "heading": { "en": "Built and in progress", "am": "የተገነቡና በሂደት ላይ ያሉ" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/real-estate-card-modern-villa-palms.webp",
+                "alt": { "en": "A white flat-roofed villa with timber screens and planted terraces among palm trees", "am": "በዘንባባ ዛፎች መካከል የእንጨት መጋረጃዎችና ተክል ያለባቸው እርከኖች ያሉት ጠፍጣፋ ጣሪያ ያለው ነጭ ቪላ" }
+              },
+              "subtitle": { "en": "House", "am": "መኖሪያ ቤት" },
+              "title": { "en": "Hillside House", "am": "የኮረብታው ቤት" },
+              "meta": [
+                { "en": "Bishoftu", "am": "ቢሾፍቱ" },
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "420 m²", "am": "420 ካሬ ሜትር" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/construction-gallery-apartment-building-luanda.webp",
+                "alt": { "en": "A white multi-storey apartment building with curved balconies behind large green trees", "am": "ከትልልቅ አረንጓዴ ዛፎች ጀርባ ጠመዝማዛ በረንዳዎች ያሉት ባለ ብዙ ፎቅ ነጭ የመኖሪያ ሕንፃ" }
+              },
+              "subtitle": { "en": "Housing", "am": "የጋራ መኖሪያ" },
+              "title": { "en": "Curve Residences", "am": "የከርቭ መኖሪያዎች" },
+              "meta": [
+                { "en": "Bole", "am": "ቦሌ" },
+                { "en": "2024", "am": "2016 ዓ.ም." },
+                { "en": "6,800 m²", "am": "6,800 ካሬ ሜትር" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-card-midrise-apartments-balconies.webp",
+                "alt": { "en": "A mid-rise apartment building with glass balconies, large windows, pale cladding and a brick base", "am": "የመስታወት በረንዳዎች፣ ትልልቅ መስኮቶች፣ ፈዛዛ ሽፋንና የጡብ መሠረት ያለው መካከለኛ ከፍታ ያለው ሕንፃ" }
+              },
+              "subtitle": { "en": "Mixed use", "am": "ቅይጥ አገልግሎት" },
+              "title": { "en": "Kazanchis Court", "am": "ካዛንቺስ ኮርት" },
+              "meta": [
+                { "en": "Kazanchis", "am": "ካዛንቺስ" },
+                { "en": "2023", "am": "2015 ዓ.ም." },
+                { "en": "3,200 m²", "am": "3,200 ካሬ ሜትር" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-card-bright-living-room.webp",
+                "alt": { "en": "A bright living room with two grey sofas facing each other, a pale rug and sliding glass doors", "am": "ፊት ለፊት የተቀመጡ ሁለት ግራጫ ሶፋዎች፣ ፈዛዛ ምንጣፍና ተንሸራታች የመስታወት በሮች ያሉት ብሩህ ሳሎን" }
+              },
+              "subtitle": { "en": "Interior", "am": "የውስጥ ዲዛይን" },
+              "title": { "en": "Sarbet Apartment", "am": "የሳርቤት አፓርትመንት" },
+              "meta": [
+                { "en": "Sarbet", "am": "ሳርቤት" },
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "160 m²", "am": "160 ካሬ ሜትር" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/business-about-office.webp",
+                "alt": { "en": "An office corridor with black-framed glass walls, pendant lamps and a lounge area", "am": "ጥቁር ፍሬም ያላቸው የመስታወት ግድግዳዎች፣ የተንጠለጠሉ መብራቶችና የመቀመጫ ቦታ ያለው የቢሮ መተላለፊያ" }
+              },
+              "subtitle": { "en": "Workplace", "am": "የሥራ ቦታ" },
+              "title": { "en": "Glass Office", "am": "የመስታወት ቢሮ" },
+              "meta": [
+                { "en": "Bole", "am": "ቦሌ" },
+                { "en": "2024", "am": "2016 ዓ.ም." },
+                { "en": "900 m²", "am": "900 ካሬ ሜትር" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-gallery-kitchen-garden-window.webp",
+                "alt": { "en": "A warm modern kitchen with cream cabinets, an island and a large window onto a garden", "am": "ክሬም ቀለም ያላቸው ካቢኔቶች፣ ደሴት ጠረጴዛና ወደ አትክልት የሚያሳይ ትልቅ መስኮት ያለው ዘመናዊ ማብሰያ ቤት" }
+              },
+              "subtitle": { "en": "Interior", "am": "የውስጥ ዲዛይን" },
+              "title": { "en": "Garden Kitchen", "am": "የአትክልቱ ማብሰያ ቤት" },
+              "meta": [
+                { "en": "Old Airport", "am": "ኦልድ ኤርፖርት" },
+                { "en": "2023", "am": "2015 ዓ.ም." },
+                { "en": "38 m²", "am": "38 ካሬ ሜትር" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": { "en": "Contact", "am": "አድራሻ" },
+      "nav": { "en": "Contact", "am": "አድራሻ" },
+      "description": { "en": "Start a project with Meskot Architects in Addis Ababa.", "am": "በአዲስ አበባ ከመስኮት አርክቴክቶች ጋር ፕሮጀክት ይጀምሩ።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "brief",
+          "kind": "contact",
+          "eyebrow": { "en": "New project", "am": "አዲስ ፕሮጀክት" },
+          "heading": { "en": "Tell us about your project", "am": "ስለ ፕሮጀክትዎ ይንገሩን" },
+          "intro": { "en": "A few lines are enough. We answer within two working days and meet you on site.", "am": "ጥቂት መስመሮች ይበቃሉ። በሁለት የሥራ ቀናት ውስጥ እንመልሳለን፣ ቦታው ላይም እንገናኛለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "kind",
+              "label": { "en": "What is it?", "am": "ምንድን ነው?" },
+              "type": "select",
+              "options": [
+                { "en": "A house", "am": "መኖሪያ ቤት" },
+                { "en": "Apartments", "am": "አፓርትመንቶች" },
+                { "en": "A workplace", "am": "የሥራ ቦታ" },
+                { "en": "An interior", "am": "የውስጥ ዲዛይን" },
+                { "en": "Something else", "am": "ሌላ" }
+              ]
+            },
+            {
+              "name": "where",
+              "label": { "en": "Where is the site?", "am": "ቦታው የት ነው?" },
+              "type": "text"
+            },
+            {
+              "name": "message",
+              "label": { "en": "Tell us more", "am": "ተጨማሪ ይንገሩን" },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": { "en": "Send", "am": "ላክ" },
+          "successMessage": { "en": "Thank you. We will call you within two working days.", "am": "እናመሰግናለን። በሁለት የሥራ ቀናት ውስጥ እንደውልልዎታለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "office",
+          "eyebrow": { "en": "The office", "am": "ቢሮው" },
+          "heading": { "en": "Visit the studio", "am": "ስቱዲዮውን ይጎብኙ" },
+          "intro": { "en": "Call first and we will have the kettle on.", "am": "አስቀድመው ይደውሉ፤ ሻይ ይዘን እንጠብቅዎታለን።" }
+        },
+        {
+          "type": "map",
+          "id": "map",
+          "eyebrow": { "en": "Getting here", "am": "አደራረስ" },
+          "heading": { "en": "Sarbet, near the roundabout", "am": "ሳርቤት፣ አደባባዩ አጠገብ" },
+          "query": "Sarbet, Addis Ababa"
+        }
+      ]
+    }
+  ]
+}

@@ -240,3 +240,29 @@ describe("art direction (monochrome)", () => {
     });
   });
 });
+
+describe("art direction (drafting)", () => {
+  it("architect is valid and readable", () => {
+    const site = preset("architect");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("drafting");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("projects carry place, year and area for the title block, and the page has one h1", () => {
+    const site = preset("architect");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(1);
+    expect(text(out)).toMatch(/Hillside House.*Bishoftu.*2025.*420 m²/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("architect");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

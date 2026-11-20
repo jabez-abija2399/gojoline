@@ -1,8 +1,8 @@
-import { BedDouble, Gem, PenTool, Smartphone, Tag, Briefcase, Cake, Camera, Car, Dumbbell, Pill, BookOpen, Church, Coffee, GraduationCap, HardHat, HeartHandshake, House, MoonStar, Mountain, PartyPopper, Scissors, Shirt, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
+import { BedDouble, Gem, PenTool, Smartphone, Tag, Ruler, Briefcase, Cake, Camera, Car, Dumbbell, Pill, BookOpen, Church, Coffee, GraduationCap, HardHat, HeartHandshake, House, MoonStar, Mountain, PartyPopper, Scissors, Shirt, ShoppingBag, Stethoscope, UserRound } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { MarqueeToggle } from "./marquee-toggle";
 
-const ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound, business: Briefcase, salon: Scissors, fashion: Shirt, construction: HardHat, garage: Car, bakery: Cake, studio: Camera, training: BookOpen, pharmacy: Pill, gym: Dumbbell, resort: Gem, agency: PenTool, software: Smartphone, boutique: Tag } as const;
+const ICONS = { cafe: Coffee, hotel: BedDouble, clinic: Stethoscope, school: GraduationCap, shop: ShoppingBag, worship: Church, mosque: MoonStar, events: PartyPopper, ngo: HeartHandshake, "real-estate": House, tours: Mountain, personal: UserRound, business: Briefcase, salon: Scissors, fashion: Shirt, construction: HardHat, garage: Car, bakery: Cake, studio: Camera, training: BookOpen, pharmacy: Pill, gym: Dumbbell, resort: Gem, agency: PenTool, software: Smartphone, boutique: Tag, architect: Ruler } as const;
 
 /**
  * Every kind of business Gojoline has a template for, drifting by. CSS only: the list is drawn

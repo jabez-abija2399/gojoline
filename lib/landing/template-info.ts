@@ -441,6 +441,20 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  architect: {
+    category: "business",
+    designedFor: {
+      en: ["Architects", "Interior designers", "Engineering firms", "Furniture and joinery makers"],
+      am: ["አርክቴክቶች", "የውስጥ ዲዛይነሮች", "የምህንድስና ድርጅቶች", "የቤት ዕቃና የአናጢነት ሠሪዎች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Projects as numbered sheets", am: "ፕሮጀክቶች በቁጥር የተሰጣቸው ሉሆች" } },
+      { key: "contactForm", label: { en: "Project enquiries", am: "የፕሮጀክት ጥያቄዎች" } },
+      "numbers",
+      "map",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

@@ -15,6 +15,7 @@ import "./grand.css";
 import "./avant.css";
 import "./precise.css";
 import "./monochrome.css";
+import "./drafting.css";
 
 const container = document.getElementById("root")!;
 

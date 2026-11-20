@@ -313,7 +313,7 @@ const isStock = (image: unknown) => typeof (image as Json | undefined)?.src === 
 const texts = (v: unknown): string[] => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v as Json).filter((x): x is string => typeof x === "string") : []);
 
 /** Starters whose cards show work for clients: their sample project names are invented businesses. */
-const CLIENT_WORK_PRESETS = new Set<string>(["agency"]);
+const CLIENT_WORK_PRESETS = new Set<string>(["agency", "architect"]);
 
 /**
  * The reviews, quotes and people a site shows, with whether each sits beside a sample photo.
