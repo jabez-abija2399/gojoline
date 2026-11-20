@@ -105,6 +105,8 @@
 [data-style="folio"] .site-header.header-scroll {
   border-bottom: 1.5px solid var(--site-text);
   background: var(--site-background);
+  /* Opaque, so the blur would never show but would still be computed every scroll frame. */
+  backdrop-filter: none;
 }
 [data-style="folio"] .nav-link:hover {
   background: var(--site-highlight);

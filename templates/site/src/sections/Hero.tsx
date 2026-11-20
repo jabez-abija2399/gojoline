@@ -19,6 +19,8 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
   const asked = section.variant ?? "split";
   const variant = asked === "immersive" && !section.image?.src ? "banner" : asked;
   const Heading = first ? "h1" : "h2";
+  // folio narrows the portrait column (folio.css), so it asks for a smaller file on desktop.
+  const portraitSizes = site.theme.style === "folio" ? "(min-width: 1152px) 360px, (min-width: 768px) 30vw, 225px" : "(min-width: 768px) 40vw, 225px";
   const facts = section.facts?.length ? section.facts : undefined;
 
   const actions = (outline = "btn-outline") => (
@@ -201,7 +203,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           </div>
           <div className="relative mx-auto w-full max-w-sm md:max-w-none">
             <div className="zoom rounded-site">
-              <Picture image={section.image} priority={first} sizes="(min-width: 768px) 40vw, 225px" className="aspect-[4/5] w-full rounded-site" />
+              <Picture image={section.image} priority={first} sizes={portraitSizes} className="aspect-[4/5] w-full rounded-site" />
             </div>
             {section.stamp && <Stamp text={text(section.stamp)} className="absolute start-2 -bottom-8 size-28 md:-start-8 md:size-32" />}
           </div>
