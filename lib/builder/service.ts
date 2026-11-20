@@ -211,14 +211,14 @@ export async function sendOwnerMessage(
     });
     opening.then((sb) => input.onEvent({ type: "preview", url: sb.previewUrl })).catch(() => undefined);
     const lazy = new LazySiteSandbox(opening, project.id);
-    const siteJson = latest?.files["src/site.json"] ?? starterSiteJson();
+    const siteJson = latest?.files["src/site.json"] ?? null;
 
     const result = await runAgent({
       llm: deps.llm,
       workspace: lazy,
       system: agentSystemPrompt(),
       history: historyFrom(previous),
-      userContent: userTurn(input.text, siteJson, photos, input.languages),
+      userContent: userTurn(input.text, siteJson, photos, input.languages, siteJson ? undefined : starterSiteJson()),
       model: deps.model,
       usage: deps.usage,
       context: { userId: input.ownerId, projectId: project.id },

@@ -567,7 +567,7 @@ export const am: Messages = {
     tabCode: "ተጨማሪ",
     previewTitle: "የድረ-ገጽዎ ቅድመ-ዕይታ",
     previewLoading: "ቅድመ-ዕይታዎን እየከፈትኩ ነው...",
-    previewEmpty: "ከመጀመሪያው መልዕክትዎ በኋላ ድረ-ገጽዎ እዚህ ይታያል።",
+    previewEmpty: "የሚፈልጉትን በውይይቱ ሲገልጹ ድረ-ገጽዎ እዚህ ይታያል።",
     previewPhone: "ስልክ",
     previewDesktop: "ኮምፒውተር",
     previewOpen: "በአዲስ ትር ይክፈቱ",

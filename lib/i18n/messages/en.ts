@@ -570,7 +570,7 @@ export const en = {
     tabCode: "Advanced",
     previewTitle: "Preview of your site",
     previewLoading: "Opening your preview...",
-    previewEmpty: "Your site will appear here after your first message.",
+    previewEmpty: "Your site will appear here once you describe what you want in the chat.",
     previewPhone: "Phone",
     previewDesktop: "Computer",
     previewOpen: "Open in a new tab",
