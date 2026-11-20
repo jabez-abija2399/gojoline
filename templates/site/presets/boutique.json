@@ -128,8 +128,8 @@
           "heading": { "en": "Four hands, one loom, ten days", "am": "አራት እጆች፣ አንድ ሽመና፣ አሥር ቀናት" },
           "body": { "en": "Every piece starts on a handloom in Shiro Meda, where two weavers work one length of cotton for up to ten days.\n\nWe cut it in our studio in Bole into shapes you can wear to work, to a wedding and on a Sunday afternoon, and we make each one only when you order it.", "am": "እያንዳንዱ ልብስ የሚጀምረው በሽሮ ሜዳ በሚገኝ የእጅ ሽመና ላይ ነው፤ ሁለት ሸማኔዎች አንድን የጥጥ ርዝመት እስከ አሥር ቀን ይሠሩታል።\n\nበቦሌ ባለው ስቱዲዮአችን ለሥራ፣ ለሠርግና ለእሁድ ከሰዓት በሚለበሱ ቅርጾች እንቆርጠዋለን፤ እያንዳንዱንም የምንሠራው ሲያዝዙ ብቻ ነው።" },
           "image": {
-            "src": "/stock/fashion-gallery-loom-striped-threads.webp",
-            "alt": { "en": "Brightly coloured striped threads stretched across a wooden handloom under a blue sky", "am": "በሰማያዊ ሰማይ ሥር በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች" }
+            "src": "/stock/personal-gallery-pattern.webp",
+            "alt": { "en": "A geometric repeat pattern in orange, grey-blue and yellow", "am": "በብርቱካናማ፣ ግራጫ-ሰማያዊና ቢጫ የተሠራ ጂኦሜትሪክ ጥለት" }
           },
           "imageSide": "start"
         },
@@ -160,12 +160,12 @@
             },
             {
               "image": {
-                "src": "/stock/fashion-gallery-two-friends-headbands.webp",
-                "alt": { "en": "Two women with red and gold beaded headbands in white traditional dresses at dusk", "am": "ሲመሽ ቀይና ወርቃማ ዶቃ ያለው የራስ ማሰሪያና ነጭ የባህል ልብስ የለበሱ ሁለት ሴቶች" }
+                "src": "/stock/events-gallery-habesha-dress-celebration.webp",
+                "alt": { "en": "Young women in white embroidered dresses with green skirts clapping and singing at a street celebration", "am": "በጎዳና በዓል ላይ አረንጓዴ ቀሚስና ነጭ ጥልፍ ልብስ ለብሰው የሚያጨበጭቡና የሚዘምሩ ወጣት ሴቶች" }
               },
-              "subtitle": { "en": "Accessories", "am": "ተጨማሪዎች" },
-              "title": { "en": "Beaded headband", "am": "የዶቃ የራስ ማሰሪያ" },
-              "price": { "amountMinor": 95000, "currency": "ETB" },
+              "subtitle": { "en": "For the holidays", "am": "ለበዓላት" },
+              "title": { "en": "Ashenda dress", "am": "የአሸንዳ ቀሚስ" },
+              "price": { "amountMinor": 740000, "currency": "ETB" },
               "action": {
                 "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
                 "href": "/order"
@@ -231,8 +231,8 @@
             },
             {
               "image": {
-                "src": "/stock/personal-gallery-pattern.webp",
-                "alt": { "en": "A geometric repeat pattern in orange, grey-blue and yellow", "am": "በብርቱካናማ፣ ግራጫ-ሰማያዊና ቢጫ የተሠራ ጂኦሜትሪክ ጥለት" }
+                "src": "/stock/fashion-gallery-loom-striped-threads.webp",
+                "alt": { "en": "Brightly coloured striped threads stretched across a wooden handloom", "am": "በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች" }
               },
               "title": { "en": "Shawls", "am": "ነጠላና ጋቢ" },
               "subtitle": { "en": "Netela and gabi, woven by hand", "am": "በእጅ የተሸመኑ ነጠላና ጋቢ" },
@@ -363,17 +363,17 @@
             },
             {
               "image": {
-                "src": "/stock/fashion-gallery-two-friends-headbands.webp",
-                "alt": { "en": "Two women with red and gold beaded headbands in white traditional dresses at dusk", "am": "ሲመሽ ቀይና ወርቃማ ዶቃ ያለው የራስ ማሰሪያና ነጭ የባህል ልብስ የለበሱ ሁለት ሴቶች" }
+                "src": "/stock/events-gallery-habesha-dress-celebration.webp",
+                "alt": { "en": "Young women in white embroidered dresses with green skirts clapping and singing at a street celebration", "am": "በጎዳና በዓል ላይ አረንጓዴ ቀሚስና ነጭ ጥልፍ ልብስ ለብሰው የሚያጨበጭቡና የሚዘምሩ ወጣት ሴቶች" }
               },
-              "subtitle": { "en": "Accessories", "am": "ተጨማሪዎች" },
-              "title": { "en": "Beaded headband", "am": "የዶቃ የራስ ማሰሪያ" },
-              "price": { "amountMinor": 95000, "currency": "ETB" },
+              "subtitle": { "en": "For the holidays", "am": "ለበዓላት" },
+              "title": { "en": "Ashenda dress", "am": "የአሸንዳ ቀሚስ" },
+              "price": { "amountMinor": 740000, "currency": "ETB" },
               "action": {
                 "label": { "en": "Order this piece", "am": "ይህን ያዝዙ" },
                 "href": "/order"
               },
-              "badge": { "en": "Accessories", "am": "ተጨማሪዎች" }
+              "badge": { "en": "Women", "am": "ሴቶች" }
             },
             {
               "image": {
