@@ -19,9 +19,9 @@ export const CHAPTERS_TXT = `0:00  Intro
 4:44  Closing
 `;
 
-/** Length of public/guide/gojoline-guide-720.mp4, in seconds, and its size in bytes. */
+/** Length of public/guide/gojoline-guide-720.mp4, in seconds, and its size in bytes (with the pointer and music, 2026-11-20). */
 export const VIDEO_SECONDS = 288.37;
-export const VIDEO_BYTES = 5_645_679;
+export const VIDEO_BYTES = 8177902;
 
 /**
  * The English captions are burned into the picture near the bottom; a captions track turned on

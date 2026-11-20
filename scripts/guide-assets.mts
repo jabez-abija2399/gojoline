@@ -4,7 +4,7 @@
  *   - with --shots <dir>: each screenshot in lib/guide/sections.ts as AVIF and WebP at the
  *     widths listed there;
  *   - with --video <file.mp4>: a 720p H.264 copy for slow connections (needs ffmpeg) and the
- *     poster picture.
+ *     poster picture. Then run scripts/guide-video-polish.py on it for the pointer and music.
  *
  *   node --experimental-strip-types scripts/guide-assets.mts [--shots <dir>] [--video <file>]
  *
