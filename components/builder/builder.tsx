@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Eye, FileText, History, Images, MessageCircle } from "lucide-react";
+import { Eye, History, Images, MessageCircle } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { nextTimeline, startTimeline, type Timeline } from "./build-timeline";
@@ -34,14 +34,14 @@ import { replyText } from "./reply-text";
 // Opened now and then, not on every visit: their code loads the first time they are shown.
 const VersionsPanel = dynamic(() => import("./versions-panel").then((m) => m.VersionsPanel));
 const PhotosPanel = dynamic(() => import("./photos-panel").then((m) => m.PhotosPanel));
-const CodePanel = dynamic(() => import("./code-panel").then((m) => m.CodePanel));
 // Shown only when an owner runs out: loaded after the page.
 const UpgradeDialog = dynamic(() => import("@/components/billing/upgrade-dialog").then((m) => m.UpgradeDialog), { ssr: false });
 
-type Tab = "chat" | "preview" | "photos" | "versions" | "code";
+type Tab = "chat" | "preview" | "photos" | "versions";
 type SideTab = Exclude<Tab, "chat">;
-const SIDE_TABS = ["preview", "photos", "versions", "code"] as const;
-const TAB_ICONS = { chat: MessageCircle, preview: Eye, photos: Images, versions: History, code: FileText };
+// No code view: owners change their site through the chat and the dashboard (admins can see files).
+const SIDE_TABS = ["preview", "photos", "versions"] as const;
+const TAB_ICONS = { chat: MessageCircle, preview: Eye, photos: Images, versions: History };
 
 interface Props {
   /** Building is paused (no sandbox): the chat says so once; no preview is opened. */
@@ -445,10 +445,9 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
     />
   );
   const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working || paused} onRestore={restore} />;
-  const code = <CodePanel t={t} projectId={projectId} refreshKey={current ?? 0} />;
   const photosPanel = <PhotosPanel t={t} tp={photoText} projectId={projectId} photos={photos} disabled={working} onUse={handPhoto} />;
-  const panels: Record<SideTab, React.ReactNode> = { preview, photos: photosPanel, versions: versionsPanel, code };
-  const tabLabels: Record<Tab, string> = { chat: t.tabChat, preview: t.tabPreview, photos: t.tabPhotos, versions: t.tabVersions, code: t.tabCode };
+  const panels: Record<SideTab, React.ReactNode> = { preview, photos: photosPanel, versions: versionsPanel };
+  const tabLabels: Record<Tab, string> = { chat: t.tabChat, preview: t.tabPreview, photos: t.tabPhotos, versions: t.tabVersions };
 
   // Each panel renders once; CSS decides what shows (mobile: one tab, desktop: chat + one tab).
   const panelClass = (tab: Tab) =>

@@ -141,7 +141,7 @@ describe("publishSite", () => {
   it("keeps to the plan's number of live sites", async () => {
     const a = await projectWithVersion();
     const b = await projectWithVersion();
-    deps.entitlements = async () => ({ plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 50 * 1024 * 1024 });
+    deps.entitlements = async () => ({ plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 50 * 1024 * 1024, siteDownload: false });
     expect((await publishSite(deps, alice, a.id, "site-one")).ok).toBe(true);
     expect(await publishSite(deps, alice, b.id, "site-two")).toEqual({ ok: false, error: "plan_limit" });
     // Republishing the existing site is always fine.
@@ -149,7 +149,7 @@ describe("publishSite", () => {
   });
 
   it("Free sites carry the badge linking to Gojoline's own address; paid plans don't", async () => {
-    const free = { plan: "free" as const, customDomain: false, maxSites: 3, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 1 };
+    const free = { plan: "free" as const, customDomain: false, maxSites: 3, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 1, siteDownload: false };
     deps.appUrl = "https://gojoline.afridea.et";
     deps.entitlements = async () => free;
     const p = await projectWithVersion();
@@ -168,7 +168,7 @@ describe("publishSite", () => {
     expect(await publishSite(deps, alice, p.id, "selam-coffee")).toMatchObject({ ok: false, error: "blocked", issues: [{ rule: "badge-hidden" }] });
     expect(publisher.published.size).toBe(0);
     // A paid plan has no badge to protect.
-    deps.entitlements = async () => ({ plan: "starter", customDomain: true, maxSites: 1, badge: false, telegramNotify: true, telegramEdits: false, answersPerMonth: 100, storageBytes: 1 });
+    deps.entitlements = async () => ({ plan: "starter", customDomain: true, maxSites: 1, badge: false, telegramNotify: true, telegramEdits: false, answersPerMonth: 100, storageBytes: 1, siteDownload: false });
     expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
   });
 

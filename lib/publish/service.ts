@@ -167,37 +167,11 @@ async function deployLocked(
     const badgeOn = !plan || plan.badge;
     const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
     const url = deps.publisher.urlFor(slug);
-    const sandbox = await deps.sandboxes.open(projectId, latest.files);
-    const photos = deps.assets ? await deps.assets.files(user.id, projectId) : [];
-    if (deps.assets) await sandbox.writeAssets(photos);
-    const settings = deps.settings ? await deps.settings.get(user.id, projectId) : null;
-    const seo = settings ? seoEnv(settings.seo, photos.map((p) => p.path.replace(/^public\/images\//, ""))) : undefined;
-    // The owner's quick details go into the prerendered pages (no shift when the live copy loads).
-    // "Closed today" is left out: it only ever applies to one day, so it always comes at runtime.
-    const baked = publicPatch(settings?.business ?? null, infoLabels(), 0);
-    const build = await sandbox.buildForPublish({
-      VITE_SITE_URL: url,
-      VITE_SITE_ID: projectId,
-      VITE_REPORT_URL: `${deps.appUrl.replace(/\/$/, "")}/${project.locale}/report?site=${encodeURIComponent(slug)}`,
-      VITE_DATA_API_URL: apiOrigin,
-      ...(reserved?.siteKey ? { VITE_SITE_KEY: reserved.siteKey } : {}),
-      ...(seo ? { VITE_SEO: seo } : {}),
-      ...(Object.keys(baked).length ? { VITE_LIVE: JSON.stringify(baked) } : {}),
-      ...(deps.publisher.setResting ? { VITE_REST_AT_HOST: "1" } : {}),
-    });
+    const build = await buildLiveFiles(deps, { ownerId: user.id, projectId, locale: project.locale, files: latest.files, siteKey: reserved?.siteKey ?? null, url, slug });
     if (!build.ok) {
       console.warn("publish build failed", projectId, build.output.slice(-1500));
       return { ok: false, error: "build_failed" };
     }
-
-    // Sample photos are published from our own library, never from the sandbox's copy: a name
-    // that isn't in the library is dropped.
-    build.files = build.files.flatMap((f) => {
-      const name = /^stock\/([a-z0-9-]+\.webp)$/.exec(f.path)?.[1];
-      if (!f.path.startsWith("stock/")) return [f];
-      const data = name ? libraryPhoto(name) : null;
-      return data ? [{ path: f.path, data }] : [];
-    });
     const issues = [...scanBuiltSite(build.files, { allowedFormOrigins: [apiOrigin] }), ...(badgeOn ? badgeIssues(latest.files["src/styles.css"]) : [])];
     if (issues.length) return { ok: false, error: "blocked", issues };
     for (const guard of deps.guards ?? []) {
@@ -280,6 +254,46 @@ async function deployLocked(
   } finally {
     await deps.lock.release(`project:${projectId}`, token);
   }
+}
+
+/**
+ * The finished site as it goes live: the version's files built in the sandbox with the owner's
+ * photos, Google preview and quick details, and sample photos from our own library. Used to
+ * publish and for "Download your website" (the same pages, so a download matches the live site).
+ */
+export async function buildLiveFiles(
+  deps: Pick<PublishDeps, "sandboxes" | "assets" | "settings" | "appUrl" | "dataApiOrigin" | "publisher">,
+  site: { ownerId: string; projectId: string; locale: "en" | "am"; files: Record<string, string>; siteKey: string | null; url: string; slug: string },
+): Promise<{ ok: true; files: PublishFile[] } | { ok: false; output: string }> {
+  const apiOrigin = deps.dataApiOrigin ?? new URL(deps.appUrl).origin;
+  const sandbox = await deps.sandboxes.open(site.projectId, site.files);
+  const photos = deps.assets ? await deps.assets.files(site.ownerId, site.projectId) : [];
+  if (deps.assets) await sandbox.writeAssets(photos);
+  const settings = deps.settings ? await deps.settings.get(site.ownerId, site.projectId) : null;
+  const seo = settings ? seoEnv(settings.seo, photos.map((p) => p.path.replace(/^public\/images\//, ""))) : undefined;
+  // The owner's quick details go into the prerendered pages (no shift when the live copy loads).
+  // "Closed today" is left out: it only ever applies to one day, so it always comes at runtime.
+  const baked = publicPatch(settings?.business ?? null, infoLabels(), 0);
+  const build = await sandbox.buildForPublish({
+    VITE_SITE_URL: site.url,
+    VITE_SITE_ID: site.projectId,
+    VITE_REPORT_URL: `${deps.appUrl.replace(/\/$/, "")}/${site.locale}/report?site=${encodeURIComponent(site.slug)}`,
+    VITE_DATA_API_URL: apiOrigin,
+    ...(site.siteKey ? { VITE_SITE_KEY: site.siteKey } : {}),
+    ...(seo ? { VITE_SEO: seo } : {}),
+    ...(Object.keys(baked).length ? { VITE_LIVE: JSON.stringify(baked) } : {}),
+    ...(deps.publisher.setResting ? { VITE_REST_AT_HOST: "1" } : {}),
+  });
+  if (!build.ok) return { ok: false, output: build.output };
+  // Sample photos are published from our own library, never from the sandbox's copy: a name
+  // that isn't in the library is dropped.
+  const files = build.files.flatMap((f) => {
+    const name = /^stock\/([a-z0-9-]+\.webp)$/.exec(f.path)?.[1];
+    if (!f.path.startsWith("stock/")) return [f];
+    const data = name ? libraryPhoto(name) : null;
+    return data ? [{ path: f.path, data }] : [];
+  });
+  return { ok: true, files };
 }
 
 /** The showcase card from what was just published (the checked version and its built photo). */

@@ -24,7 +24,8 @@ const blockKeys = (e: React.KeyboardEvent) => {
 };
 
 /** Read-only view of the site's files (for the curious; edits happen through chat), formatted and coloured, view only. */
-export const CodePanel = memo(function CodePanel({ t, projectId, refreshKey }: { t: Messages["builder"]; projectId: string; refreshKey: number }) {
+/** `src` answers { files }. Owners no longer see this (they change sites through the chat); Gojoline staff do, in Admin → Sites. */
+export const CodePanel = memo(function CodePanel({ t, src, refreshKey = 0, viewOnly = true }: { t: Messages["builder"]; src: string; refreshKey?: number; viewOnly?: boolean }) {
   const [files, setFiles] = useState<Record<string, string> | null>(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -32,14 +33,14 @@ export const CodePanel = memo(function CodePanel({ t, projectId, refreshKey }: {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/projects/${projectId}/files`)
+    fetch(src)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("files"))))
       .then((data: { files: Record<string, string> }) => !cancelled && setFiles(data.files))
       .catch(() => !cancelled && setError(true));
     return () => {
       cancelled = true;
     };
-  }, [projectId, refreshKey, attempt]);
+  }, [src, refreshKey, attempt]);
 
   if (error) {
     return (
@@ -63,10 +64,10 @@ export const CodePanel = memo(function CodePanel({ t, projectId, refreshKey }: {
       </div>
     );
   }
-  return <FileView t={t} files={files} selected={selected} onSelect={setSelected} />;
+  return <FileView t={t} files={files} selected={selected} onSelect={setSelected} viewOnly={viewOnly} />;
 });
 
-function FileView({ t, files, selected, onSelect }: { t: Messages["builder"]; files: Record<string, string>; selected: string; onSelect: (path: string) => void }) {
+function FileView({ t, files, selected, onSelect, viewOnly }: { t: Messages["builder"]; files: Record<string, string>; selected: string; onSelect: (path: string) => void; viewOnly: boolean }) {
   const paths = useMemo(() => Object.keys(files).sort(), [files]);
   const active = files[selected] !== undefined ? selected : paths[0];
   const lines = useMemo(() => (active ? highlight(active, files[active]!) : []), [active, files]);
@@ -76,7 +77,7 @@ function FileView({ t, files, selected, onSelect }: { t: Messages["builder"]; fi
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 p-4">
-      <p className="text-ink-muted">{t.codeHint}</p>
+      {viewOnly && <p className="text-ink-muted">{t.codeHint}</p>}
       <div className="flex flex-wrap items-center gap-2">
         <label htmlFor="file-select" className="text-sm font-medium">{t.codeFile}</label>
         <select id="file-select" value={active} onChange={(e) => onSelect(e.target.value)} className="min-h-11 min-w-0 flex-1 rounded-lg border border-input bg-white px-3 lg:min-h-9">
@@ -89,13 +90,13 @@ function FileView({ t, files, selected, onSelect }: { t: Messages["builder"]; fi
       <pre
         tabIndex={0}
         aria-label={friendly(active) ?? name(active)}
-        onCopy={block}
-        onCut={block}
-        onContextMenu={block}
-        onDragStart={block}
-        onKeyDown={blockKeys}
+        onCopy={viewOnly ? block : undefined}
+        onCut={viewOnly ? block : undefined}
+        onContextMenu={viewOnly ? block : undefined}
+        onDragStart={viewOnly ? block : undefined}
+        onKeyDown={viewOnly ? blockKeys : undefined}
         translate="no"
-        className="min-h-0 flex-1 select-none overflow-auto rounded-xl border border-line bg-sunken py-3 font-mono text-[13px] leading-6 text-ink [-webkit-touch-callout:none] print:hidden"
+        className={`max-h-[70vh] min-h-0 flex-1 overflow-auto ${viewOnly ? "select-none" : ""} rounded-xl border border-line bg-sunken py-3 font-mono text-[13px] leading-6 text-ink [-webkit-touch-callout:none] print:hidden`}
       >
         <code className="grid grid-cols-[auto_1fr]">
           {lines.map((tokens, i) => (

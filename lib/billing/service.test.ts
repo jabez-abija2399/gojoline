@@ -88,7 +88,7 @@ describe("credits", () => {
     const b = new Billing(store, () => new Date("2026-11-14T10:00:00Z"));
     expect((await b.entitlements("u")).storageBytes).toBe(50 * 1024 * 1024);
     await store.setSubscription({ userId: "u", plan: "business", period: "month", currentPeriodEnd: new Date("2026-12-14T10:00:00Z") });
-    expect(await b.entitlements("u")).toEqual({ plan: "business", customDomain: true, maxSites: 3, badge: false, telegramNotify: true, telegramEdits: true, answersPerMonth: 10_000, storageBytes: 2048 * 1024 * 1024 });
+    expect(await b.entitlements("u")).toEqual({ plan: "business", customDomain: true, maxSites: 3, badge: false, telegramNotify: true, telegramEdits: true, answersPerMonth: 10_000, storageBytes: 2048 * 1024 * 1024, siteDownload: true });
   });
 });
 

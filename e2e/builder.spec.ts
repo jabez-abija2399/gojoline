@@ -34,12 +34,9 @@ test("create a site, edit it by chat, see versions and restore", async ({ page }
   await expect(page.getByText("Version 3", { exact: true }).filter({ visible: true })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 
-  await page.getByRole("tab", { name: "Advanced" }).filter({ visible: true }).click();
-  await expect(page.locator("pre:visible")).toContainText('"en": "Selam Coffee"');
-  // View only: copying and the right-click menu are blocked, and the file shows with line numbers.
-  const blocked = await page.locator("pre:visible").evaluate((el) => ["copy", "contextmenu"].map((type) => !el.dispatchEvent(new Event(type, { bubbles: true, cancelable: true }))));
-  expect(blocked).toEqual([true, true]);
-  await expect(page.locator("pre:visible")).toHaveCSS("user-select", "none");
+  // No code view for owners: they change the site through the chat and the dashboard.
+  await expect(page.getByRole("tab", { name: "Advanced" })).toHaveCount(0);
+  expect((await page.request.get(`/api/projects/${page.url().split("/").pop()}/files`)).status()).toBe(404);
 
   // The project is named after the site.
   await page.goto("/en/build");
@@ -119,7 +116,7 @@ test("projects are private to their owner", async ({ page, browser, request }) =
   await newSite(stranger);
   const res = await stranger.goto(url);
   expect(res?.status()).toBe(404);
-  const api = await other.request.get(`/api/projects/${id}/files`);
+  const api = await other.request.get(`/api/projects/${id}/publish`);
   expect([401, 404]).toContain(api.status());
   // Cross-site POSTs are refused.
   const csrf = await request.post(`/api/projects/${id}/messages`, { data: { text: "hi" }, headers: { origin: "https://evil.example" } });

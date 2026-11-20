@@ -15,11 +15,13 @@ export interface Entitlements {
   answersPerMonth: number;
   /** Photo storage across all of the owner's sites, in bytes. */
   storageBytes: number;
+  /** Download the finished site as a ZIP to host anywhere (Business). */
+  siteDownload: boolean;
 }
 
 export const MB = 1024 * 1024;
 
-export const FREE: Entitlements = { plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 50 * MB };
+export const FREE: Entitlements = { plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 50 * MB, siteDownload: false };
 
 export type EntitlementsResolver = (userId: string) => Promise<Entitlements>;
 

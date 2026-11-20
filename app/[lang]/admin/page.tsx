@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { FocusOnMount } from "@/components/admin/focus-on-mount";
+import { CodePanel } from "@/components/builder/code-panel";
 import { ModerateForm } from "@/components/admin/moderate-form";
 import { ReviewForm } from "@/components/admin/review-form";
 import { SettingsForm } from "@/components/admin/settings-form";
@@ -809,6 +810,13 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 {site.url && site.status === "published" && (
                   <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 pointer-fine:min-h-9 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>
                 )}
+                {/* For helping an owner: what the AI wrote (content and colours), read from the latest version. */}
+                <details className="group/files">
+                  <summary className="inline-flex min-h-11 pointer-fine:min-h-9 cursor-pointer items-center font-medium text-ink underline underline-offset-4">{t.admin.siteFiles}</summary>
+                  <div className="mt-2 flex min-h-0 flex-col">
+                    <CodePanel t={t.builder} src={`/api/admin/sites/${site.id}/files`} viewOnly={false} />
+                  </div>
+                </details>
                 {site.takenDownReason && (
                   <p className="text-ink-muted">
                     {t.admin.reasonShown}: <span lang={langOf(site.takenDownReason)}>{site.takenDownReason}</span>
