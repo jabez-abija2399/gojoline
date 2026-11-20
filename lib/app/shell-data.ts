@@ -8,7 +8,7 @@ import type { Site } from "@/lib/sites/types";
 export interface OwnerSite {
   project: Project;
   /** Null until the owner has chosen an address. */
-  site: Pick<Site, "status" | "slug" | "url" | "customDomain" | "customDomainVerifiedAt" | "offlineAt" | "runtimeVersion"> | null;
+  site: (Pick<Site, "status" | "slug" | "url" | "customDomain" | "customDomainVerifiedAt" | "offlineAt" | "runtimeVersion"> & { provider?: string }) | null;
 }
 
 /** The owner's sites with their publish state: two queries, shared by the sidebar and the page. */
@@ -20,7 +20,7 @@ export const ownerSites = cache(async (ownerId: string): Promise<OwnerSite[]> =>
   const byProject = new Map(sites.map((s) => [s.projectId, s]));
   return projects.map((project) => {
     const s = byProject.get(project.id);
-    return { project, site: s ? { status: s.status, slug: s.slug, url: s.url, customDomain: s.customDomain, customDomainVerifiedAt: s.customDomainVerifiedAt, offlineAt: s.offlineAt ?? null, runtimeVersion: s.runtimeVersion ?? null } : null };
+    return { project, site: s ? { status: s.status, slug: s.slug, url: s.url, customDomain: s.customDomain, customDomainVerifiedAt: s.customDomainVerifiedAt, offlineAt: s.offlineAt ?? null, runtimeVersion: s.runtimeVersion ?? null, provider: s.provider } : null };
   });
 });
 

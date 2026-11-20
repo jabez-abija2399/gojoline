@@ -32,6 +32,11 @@ export const loadHeader = cache(async (ownerId: string, projectId: string) => {
     status,
     /** Published before the live site read business info and counted visits: one more publish brings them. */
     outdated: Boolean(address && (site?.runtimeVersion ?? 0) < SITE_RUNTIME),
+    /**
+     * The site is live on a host we no longer publish to (Vercel, paused since 2026-11-19): one
+     * more publish brings it back at this address on the current host. Null when nothing to move.
+     */
+    moveTo: site && site.status === "published" && svc.publish && !svc.publish.paused && site.provider !== undefined && site.provider !== svc.publish.publisher.name ? svc.publish.publisher.urlFor(site.slug) : null,
   };
 });
 
@@ -64,6 +69,7 @@ export async function loadHome(ownerId: string, projectId: string, locale: "en" 
   return {
     status: header.status,
     outdated: header.outdated,
+    moveTo: header.moveTo,
     address,
     messages,
     visits,
