@@ -181,8 +181,8 @@
           "heading": { "en": "Evenings at the table", "am": "ምሽቶች በገበታው ዙሪያ" },
           "images": [
             {
-              "src": "/stock/studio-gallery-decorated-table.webp",
-              "alt": { "en": "A long table with a white cloth, glassware and white and pink flowers among greenery", "am": "ነጭ ልብስ፣ ብርጭቆዎችና በአረንጓዴ ተክል መካከል ነጭና ሮዝ አበቦች ያሉበት ረጅም ጠረጴዛ" }
+              "src": "/stock/cafe-about-ceremony-incense.webp",
+              "alt": { "en": "A coffee ceremony: a jebena pouring into small cups beside smoking incense", "am": "የቡና ሥነ ሥርዓት፦ ከዕጣን ጭስ አጠገብ ከጀበና ወደ ትናንሽ ስኒዎች የሚቀዳ ቡና" }
             },
             {
               "src": "/stock/cafe-gallery-cini-cups-tray.webp",
@@ -193,8 +193,8 @@
               "alt": { "en": "Coffee poured from a black clay jebena into rows of small cups set in a carved wooden chest", "am": "ከጥቁር የሸክላ ጀበና በተቀረጸ የእንጨት ሳጥን ውስጥ በተደረደሩ ትናንሽ ስኒዎች የሚቀዳ ቡና" }
             },
             {
-              "src": "/stock/events-card-decor-floral-centrepiece.webp",
-              "alt": { "en": "A tall rose centrepiece on a gold stand with round tables softly blurred behind", "am": "ከጀርባው ክብ ጠረጴዛዎች ያሉት በወርቃማ መቆሚያ ላይ ረጅም የጽጌረዳ አበባ ማስዋቢያ" }
+              "src": "/stock/cafe-gallery-bread-baskets.webp",
+              "alt": { "en": "Hands cutting round ceremonial bread in a woven basket among other baskets", "am": "በሌሎች ሰፌዶች መካከል በተሸመነ ሰፌድ ውስጥ ክብ የበዓል ዳቦ የሚቆርጡ እጆች" }
             }
           ]
         },
@@ -227,8 +227,8 @@
           "heading": { "en": "A table by the fire is waiting", "am": "በእሳቱ አጠገብ ያለ ጠረጴዛ እየጠበቀዎ ነው" },
           "body": { "en": "Book a few days ahead.", "am": "ከጥቂት ቀናት በፊት ያስይዙ።" },
           "image": {
-            "src": "/stock/events-hero-chandelier-banquet-hall.webp",
-            "alt": { "en": "A golden dining hall with chandeliers and set tables", "am": "ሻንደሊየሮችና የተዘጋጁ ጠረጴዛዎች ያሉት ወርቃማ የመመገቢያ አዳራሽ" }
+            "src": "/stock/hotel-about-coffee-ceremony-host.webp",
+            "alt": { "en": "A host in a white dress pouring coffee from a clay jebena into rows of small cups on a carved stand", "am": "ነጭ ልብስ የለበሰች አስተናጋጅ ከሸክላ ጀበና በተቀረጸ ማስቀመጫ ላይ በተደረደሩ ትናንሽ ስኒዎች ቡና ስትቀዳ" }
           },
           "primaryAction": {
             "label": { "en": "Reserve a table", "am": "ጠረጴዛ ያስይዙ" },

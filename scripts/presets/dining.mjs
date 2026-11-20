@@ -118,10 +118,10 @@ save("dining", {
           eyebrow: t("The room", "አዳራሹ"),
           heading: t("Evenings at the table", "ምሽቶች በገበታው ዙሪያ"),
           images: [
-            img("studio-gallery-decorated-table", "A long table with a white cloth, glassware and white and pink flowers among greenery", "ነጭ ልብስ፣ ብርጭቆዎችና በአረንጓዴ ተክል መካከል ነጭና ሮዝ አበቦች ያሉበት ረጅም ጠረጴዛ"),
+            img("cafe-about-ceremony-incense", "A coffee ceremony: a jebena pouring into small cups beside smoking incense", "የቡና ሥነ ሥርዓት፦ ከዕጣን ጭስ አጠገብ ከጀበና ወደ ትናንሽ ስኒዎች የሚቀዳ ቡና"),
             img("cafe-gallery-cini-cups-tray", "Small cini coffee cups on an engraved metal tray", "በተቀረጸ የብረት ትሪ ላይ ትናንሽ የሲኒ ስኒዎች"),
             img("cafe-hero-coffee-ceremony-pour", "Coffee poured from a black clay jebena into rows of small cups set in a carved wooden chest", "ከጥቁር የሸክላ ጀበና በተቀረጸ የእንጨት ሳጥን ውስጥ በተደረደሩ ትናንሽ ስኒዎች የሚቀዳ ቡና"),
-            img("events-card-decor-floral-centrepiece", "A tall rose centrepiece on a gold stand with round tables softly blurred behind", "ከጀርባው ክብ ጠረጴዛዎች ያሉት በወርቃማ መቆሚያ ላይ ረጅም የጽጌረዳ አበባ ማስዋቢያ"),
+            img("cafe-gallery-bread-baskets", "Hands cutting round ceremonial bread in a woven basket among other baskets", "በሌሎች ሰፌዶች መካከል በተሸመነ ሰፌድ ውስጥ ክብ የበዓል ዳቦ የሚቆርጡ እጆች"),
           ],
         },
         {
@@ -140,7 +140,7 @@ save("dining", {
           id: "reserve",
           heading: t("A table by the fire is waiting", "በእሳቱ አጠገብ ያለ ጠረጴዛ እየጠበቀዎ ነው"),
           body: t("Book a few days ahead.", "ከጥቂት ቀናት በፊት ያስይዙ።"),
-          image: img("events-hero-chandelier-banquet-hall", "A golden dining hall with chandeliers and set tables", "ሻንደሊየሮችና የተዘጋጁ ጠረጴዛዎች ያሉት ወርቃማ የመመገቢያ አዳራሽ"),
+          image: img("hotel-about-coffee-ceremony-host", "A host in a white dress pouring coffee from a clay jebena into rows of small cups on a carved stand", "ነጭ ልብስ የለበሰች አስተናጋጅ ከሸክላ ጀበና በተቀረጸ ማስቀመጫ ላይ በተደረደሩ ትናንሽ ስኒዎች ቡና ስትቀዳ"),
           primaryAction: reserve,
           secondaryAction: link("Call us", "ይደውሉልን", "tel:+251911000000"),
         },
