@@ -364,7 +364,11 @@ html:has([data-style="noir"]) {
     [data-style="noir"] .zoom {
       overflow: clip;
     }
-    [data-style="noir"] :is(.feature-photo, .about-photo, .gallery-grid li, main section li) img {
+    /* The rise is the only reveal here: the shared clip-path wipe would repaint every frame. */
+    [data-style="noir"] .wipe {
+      animation: none;
+    }
+    [data-style="noir"] :is(.feature-photo, .about-photo, .zoom) img {
       animation: noir-rise linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 80%;

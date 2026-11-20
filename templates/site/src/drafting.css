@@ -92,6 +92,7 @@
 [data-style="drafting"] .site-header.header-scroll {
   border-bottom: var(--draft-rule);
   background: var(--site-background);
+  backdrop-filter: none;
 }
 [data-style="drafting"] .nav-link {
   background: none;
@@ -122,6 +123,8 @@
 /* The framed hero opens from a square sheet border, not a rounded card. */
 [data-style="drafting"] .hero-frame {
   animation-name: draft-unframe;
+  /* Held only before its range: a finished clip-path would repaint on every scroll frame. */
+  animation-fill-mode: backwards;
 }
 /* No filled button in the bar: a ruled link, like the rest of the sheet. */
 [data-style="drafting"] .header-cta {
@@ -325,12 +328,12 @@
   @supports (animation-timeline: view()) {
     /* clip, not hidden: a hidden overflow makes the frame its own scroller and the reveal would
        never advance. */
-    [data-style="drafting"] .zoom {
+    [data-style="drafting"] :is(.zoom, .card-grid > li) {
       overflow: clip;
     }
     [data-style="drafting"] .wipe,
     [data-style="drafting"] .card-grid > li > .zoom {
-      animation: draft-open linear both;
+      animation: draft-open linear backwards;
       animation-timeline: view();
       animation-range: entry 0% entry 60%;
     }
