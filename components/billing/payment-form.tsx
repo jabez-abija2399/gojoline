@@ -73,6 +73,8 @@ export function PaymentForm({
   // The photo as chosen (its name), and the smaller copy that is sent.
   const [receipt, setReceipt] = useState<{ name: string; url: string; file: File } | null>(null);
   const [shrinking, setShrinking] = useState(false);
+  // Each pick or Remove bumps this, so a slower earlier shrink can't overwrite a newer choice.
+  const pickRef = useRef(0);
   const [code, setCode] = useState<CodeState>({ kind: "none" });
   const [codeOpen, setCodeOpen] = useState(false);
   const refRef = useRef<HTMLInputElement>(null);
@@ -171,9 +173,9 @@ export function PaymentForm({
             <span id="pay-product" tabIndex={-1} className="font-semibold">{productName(t.productNames, product, topupCredits)}</span>
           </div>
           {/* The plan cards are the one place to choose; this goes back to them. */}
-          <a href="#choose-title" className="inline-flex min-h-11 shrink-0 items-center font-medium text-ink underline underline-offset-4 lg:min-h-9">
+          <a href="#choose-title" className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center px-1 font-medium text-ink underline underline-offset-4 lg:min-h-9">
             {p.change}
-            <span className="sr-only">: {p.payingFor}</span>
+            <span className="sr-only">: {productName(t.productNames, product, topupCredits)}</span>
           </a>
           <input type="hidden" name="product" value={product} />
         </div>
@@ -321,9 +323,11 @@ export function PaymentForm({
                 aria-invalid={receiptError || undefined}
                 onChange={async (e) => {
                   const f = e.target.files?.[0];
-                  if (!f) return setReceipt(null);
+                  const pick = ++pickRef.current;
+                  if (!f) return (setShrinking(false), setReceipt(null));
                   setShrinking(true);
                   const small = await shrinkImage(f);
+                  if (pick !== pickRef.current) return;
                   setShrinking(false);
                   setReceipt({ name: f.name, url: URL.createObjectURL(small), file: small });
                   if (state.kind === "error" && RECEIPT_ERRORS.has(state.code)) setState({ kind: "idle" });
@@ -334,6 +338,8 @@ export function PaymentForm({
               <button
                 type="button"
                 onClick={() => {
+                  pickRef.current++;
+                  setShrinking(false);
                   setReceipt(null);
                   if (fileRef.current) fileRef.current.value = "";
                   fileRef.current?.focus();
@@ -346,12 +352,12 @@ export function PaymentForm({
               </button>
             )}
           </div>
-          <p id="pay-receipt-status" className="text-sm break-all text-ink-muted">{shrinking ? p.shrinking : receipt ? format(t.receiptSelected, { name: receipt.name }) : t.noReceiptYet}</p>
+          <p id="pay-receipt-status" aria-live="polite" className="text-sm break-all text-ink-muted">{shrinking ? p.shrinking : receipt ? format(t.receiptSelected, { name: receipt.name }) : t.noReceiptYet}</p>
           {receiptError && <p id="pay-receipt-error" role="alert" className="text-danger">{errorText}</p>}
         </div>
         {state.kind === "error" && !refError && !receiptError && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-danger">{errorText}</p>}
         <button type="submit" aria-disabled={state.kind === "sending" || shrinking} className="min-h-12 rounded-xl bg-coral px-5 text-base font-semibold text-on-coral hover:bg-coral-hover aria-disabled:opacity-50">
-          {state.kind === "sending" ? t.submitting : t.submit}
+          {state.kind === "sending" ? t.submitting : shrinking ? p.shrinking : t.submit}
         </button>
       </Step>
     </form>

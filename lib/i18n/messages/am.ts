@@ -931,7 +931,7 @@ export const am: Messages = {
       approvedTopup: "ተጨማሪ ለውጦችዎ ተጨምረዋል።",
       methodRef: "{method} · ቁጥር {reference}",
       sendAgain: "እንደገና ይላኩ",
-      compareHint: "እርግጠኛ አይደሉም? እያንዳንዱ ዕቅድ የሚያካትተውን ይመልከቱ።",
+      seeStatus: "ሁኔታውን ይመልከቱ",
     },
     youPayWas: "ከ{price} ብር ይልቅ",
     codeApplied: "ኮድ {code}፦ {amount} ብር ቅናሽ።",

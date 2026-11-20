@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
 import { AppShell } from "@/components/app/app-shell";
 import { BillingFlow } from "@/components/billing/billing-flow";
 import { Collapsible } from "@/components/billing/collapsible";
@@ -106,56 +107,57 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
         <h1 id="plan-title" className="text-2xl font-semibold tracking-tight">{b.title}</h1>
 
         {banner === "pending" && pendingPayment && (
-          <a href="#pay-title" className="flex items-start gap-3 rounded-2xl border border-line bg-white p-4 shadow-sm hover:border-faint">
+          <section aria-labelledby="banner-title" className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-4 shadow-sm sm:flex-row sm:items-center">
             <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sunken text-ink">
               <Clock className="size-5" />
             </span>
-            <span className="flex min-w-0 flex-col">
-              <span className="font-semibold">{b.pay.checkingTitle}</span>
-              <span className="text-sm text-ink-muted">{format(b.pay.pendingWhat, paymentLine(pendingPayment))}</span>
-            </span>
-          </a>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <h2 id="banner-title" className="font-semibold">{b.pay.checkingTitle}</h2>
+              <p className="text-sm text-ink-muted">{format(b.pay.pendingWhat, paymentLine(pendingPayment))}</p>
+            </div>
+            <a href="#pay-title" className="inline-flex min-h-11 shrink-0 items-center font-medium text-ink underline underline-offset-4 lg:min-h-9">{b.pay.seeStatus}</a>
+          </section>
         )}
         {banner === "rejected" && latest && (
-          <div className="flex flex-col gap-3 rounded-2xl border border-coral bg-coral-soft p-4 sm:flex-row sm:items-center">
+          <section aria-labelledby="banner-title" className="flex flex-col gap-3 rounded-2xl border border-danger bg-coral-soft p-4 sm:flex-row sm:items-center">
             <XCircle aria-hidden="true" className="size-6 shrink-0 text-destructive" />
             <div className="flex min-w-0 flex-1 flex-col">
-              <h2 className="font-semibold">{b.pay.rejectedTitle}</h2>
+              <h2 id="banner-title" className="font-semibold">{b.pay.rejectedTitle}</h2>
               <p className="text-sm text-ink">{format(b.pay.rejectedBody, paymentLine(latest))}</p>
-              {latest.note && <p className="text-sm text-ink">{format(b.pay.reason, { note: latest.note })}</p>}
+              {latest.note && <p className="text-sm break-words text-ink">{format(b.pay.reason, { note: latest.note })}</p>}
             </div>
-            <a href={`?product=${latest.product}#pay-title`} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-ink px-4 text-sm font-semibold text-paper hover:bg-ink-hover lg:min-h-10">
+            <Link href={`/${lang}/billing?product=${latest.product}#pay-title`} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-ink px-4 text-sm font-semibold text-paper hover:bg-ink-hover lg:min-h-10">
               <RotateCcw aria-hidden="true" className="size-4" />
               {b.pay.fixAgain}
-            </a>
-          </div>
+            </Link>
+          </section>
         )}
         {banner === "approved" && latest && (
-          <div role="status" className="flex items-start gap-3 rounded-2xl border border-lagoon bg-white p-4">
+          <section aria-labelledby="banner-title" className="flex items-start gap-3 rounded-2xl border border-lagoon bg-white p-4">
             <CheckCircle2 aria-hidden="true" className="size-6 shrink-0 text-lagoon" />
-            <p className="flex flex-col">
-              <span className="font-semibold">{b.pay.approvedTitle}</span>
-              <span className="text-sm text-ink-muted">
+            <div className="flex flex-col">
+              <h2 id="banner-title" className="font-semibold">{b.pay.approvedTitle}</h2>
+              <p className="text-sm text-ink-muted">
                 {latest.product === "topup" || !allowance?.until ? b.pay.approvedTopup : format(b.pay.approvedPlan, { plan: b.plans[plan], date: dateFmt.format(allowance.until) })}
-              </span>
-            </p>
-          </div>
+              </p>
+            </div>
+          </section>
         )}
 
-        <section aria-labelledby="credits-title" className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-5 shadow-sm sm:p-6">
+        <section aria-labelledby="current-plan" className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <div className="flex min-w-0 flex-col">
-              <p className="font-display text-xl font-bold">{format(b.currentPlan, { plan: b.plans[plan] })}</p>
+              <h2 id="current-plan" className="font-display text-xl font-bold">{format(b.currentPlan, { plan: b.plans[plan] })}</h2>
               {allowance?.until && <p className="text-sm text-ink-muted">{format(b.until, { date: dateFmt.format(allowance.until) })}</p>}
             </div>
             {daysLeft !== null && (
-              <span className={`rounded-full px-3 py-1 text-sm font-semibold tabular-nums ${daysLeft <= 5 ? "bg-coral-soft text-ink" : "bg-sunken text-ink"}`}>
+              <span className={`rounded-full px-3 py-1 text-sm font-semibold tabular-nums ${daysLeft <= 5 ? "border border-warning text-warning" : "bg-sunken text-ink"}`}>
                 {daysLeft === 1 ? b.pay.daysLeftOne : format(b.pay.daysLeft, { n: daysLeft })}
               </span>
             )}
           </div>
           <div className="flex flex-col gap-2 rounded-xl bg-paper p-4">
-            <h2 id="credits-title" className={`font-semibold ${left <= 3 ? "text-warning" : "text-ink"}`}>{format(b.creditsLeft, { n: left })}</h2>
+            <h3 id="credits-title" className={`font-semibold ${left <= 3 ? "text-warning" : "text-ink"}`}>{format(b.creditsLeft, { n: left })}</h3>
             <span aria-hidden="true" className="block h-2.5 overflow-hidden rounded-full bg-line">
               <span className={`block h-full rounded-full ${left <= 3 ? "bg-warning" : "bg-ink"}`} style={{ width: `${monthly > 0 ? Math.round(Math.max(0, Math.min(1, left / monthly)) * 100) : 0}%` }} />
             </span>
@@ -168,7 +170,7 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
           {/* How changes are counted: folded, it's reference, not the task. */}
           <details className="group rounded-xl border border-line">
             <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 font-medium [&::-webkit-details-marker]:hidden">
-              <span id="sizes-title">{b.sizesTitle}</span>
+              <span>{b.sizesTitle}</span>
               <ChevronDown aria-hidden="true" className="size-5 shrink-0 transition-transform group-open:rotate-180" />
             </summary>
             <div className="flex flex-col gap-3 px-4 pb-4">
@@ -227,7 +229,7 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
                       <chip.Icon aria-hidden="true" className="size-4" />
                       {b.status[p.status]}
                     </span>
-                    <span className="w-full text-sm text-ink-muted">{format(b.pay.methodRef, { method: b.methods[p.method], reference: p.reference })}</span>
+                    <span className="w-full text-sm break-all text-ink-muted">{format(b.pay.methodRef, { method: b.methods[p.method], reference: p.reference })}</span>
                     {p.note && <span className="w-full text-sm text-ink-muted">{p.status === "rejected" ? format(b.pay.reason, { note: p.note }) : p.note}</span>}
                     {p.status === "rejected" && (
                       <a href={`?product=${p.product}#pay-title`} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-ink underline underline-offset-4 lg:min-h-9">

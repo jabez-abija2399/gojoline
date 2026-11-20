@@ -344,7 +344,7 @@ export function Sidebar({
           >
             <span className="flex min-w-0 flex-1 flex-col gap-1.5">
               <span
-                id="credits-title"
+                id="side-credits-title"
                 className={`flex items-center gap-1.5 text-sm font-semibold ${low ? "text-warning" : "text-ink"}`}
               >
                 {text.creditsLeft}
@@ -359,7 +359,7 @@ export function Sidebar({
                 />
               </span>
               <span
-                id="credits-plan"
+                id="side-credits-plan"
                 className="flex items-center gap-1 text-xs text-ink-muted"
               >
                 {text.planBadge}
@@ -387,7 +387,7 @@ export function Sidebar({
         )}
 
         {recent.length > 0 && (
-          <div className="flex min-h-0 flex-1 flex-col gap-1">
+          <div className="flex flex-col gap-1 lg:min-h-0 lg:flex-1">
             <p
               id="recent-title"
               className="px-2.5 text-xs font-medium text-ink-muted"
@@ -397,12 +397,13 @@ export function Sidebar({
             {/* Its own scroll area: the rest of the sidebar stays put however many sites there are. */}
             <ul
               aria-labelledby="recent-title"
-              className="recent-scroll -mx-1 flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-1 pb-2"
+              className="recent-scroll -mx-1 flex flex-col px-1 pb-2 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain"
             >
               {recent.map((p) => (
                 <li key={p.id}>
                   <Link
                     href={`${home}/${p.id}`}
+                    prefetch={false}
                     onClick={close}
                     aria-current={
                       pathname === `${home}/${p.id}` ? "page" : undefined
@@ -590,7 +591,7 @@ function AccountMenu({
           {[...who.trim()][0]?.toUpperCase() ?? "G"}
           {/* Unread replies to feedback live in this menu now: a dot says so. */}
           {feedback.unread > 0 && (
-            <span className="absolute -top-0.5 -end-0.5 size-2.5 rounded-full bg-coral ring-2 ring-sunken" />
+            <span className="absolute -top-0.5 -end-0.5 size-2.5 rounded-full bg-ink ring-2 ring-sunken" />
           )}
         </span>
         <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">

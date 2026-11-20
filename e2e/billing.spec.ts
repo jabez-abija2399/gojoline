@@ -238,3 +238,21 @@ test("a pricing Choose button keeps the yearly choice through sign-in to the Pla
   await expect(page).toHaveURL(/\/en\/billing\?product=starter_month$/);
   await expect(page.locator("input[name=product]")).toHaveValue("starter_month");
 });
+
+test("a long transaction number wraps in the payments list; the page says the payment is being checked", async ({ page }) => {
+  await signIn(page);
+  await page.goto("/en/billing");
+  await payFor(page, "starter_month");
+  const reference = `LONG${Date.now().toString(36).toUpperCase()}${test.info().project.name.length}`.padEnd(40, "X");
+  await page.getByLabel("Transaction number").fill(reference);
+  await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
+  await expect(page.getByRole("button", { name: /^Remove/ })).toBeVisible();
+  await page.getByRole("button", { name: "Send for checking" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Thank you" })).toBeVisible();
+  await page.goto("/en/billing");
+  await expect(page.getByRole("heading", { name: "We're checking your payment", level: 2 })).toBeVisible();
+  await expect(page.getByRole("link", { name: "See status" })).toHaveAttribute("href", "#pay-title");
+  await expect(page.getByText(`No. ${reference}`)).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  await expectNoSeriousA11yIssues(page);
+});

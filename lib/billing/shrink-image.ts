@@ -7,15 +7,17 @@
 export async function shrinkImage(file: File, max = 1600, quality = 0.85): Promise<File> {
   if (!/^image\/(jpeg|png|webp)$/.test(file.type) || typeof createImageBitmap !== "function") return file;
   try {
-    const bmp = await createImageBitmap(file);
-    const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
-    if (scale === 1 && file.size <= 1_000_000) {
-      bmp.close();
-      return file;
-    }
+    // Size first (cheap), then decode straight to the smaller size: a 50 MP photo decoded whole
+    // is ~200 MB, enough to crash a tab on a low-end phone.
+    const { width, height } = await dimensions(file);
+    const scale = Math.min(1, max / Math.max(width, height));
+    if (scale === 1 && file.size <= 1_000_000) return file;
+    const w = Math.max(1, Math.round(width * scale));
+    const h = Math.max(1, Math.round(height * scale));
+    const bmp = await createImageBitmap(file, { resizeWidth: w, resizeHeight: h, resizeQuality: "high" });
     const canvas = document.createElement("canvas");
-    canvas.width = Math.round(bmp.width * scale);
-    canvas.height = Math.round(bmp.height * scale);
+    canvas.width = w;
+    canvas.height = h;
     const ctx = canvas.getContext("2d");
     if (!ctx) return file;
     // A white page under transparent PNG screenshots (JPEG has no transparency).
@@ -29,4 +31,15 @@ export async function shrinkImage(file: File, max = 1600, quality = 0.85): Promi
   } catch {
     return file;
   }
+}
+
+/** The photo's size in pixels, read without decoding every pixel up front. */
+function dimensions(file: File): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => (URL.revokeObjectURL(url), resolve({ width: img.naturalWidth, height: img.naturalHeight }));
+    img.onerror = () => (URL.revokeObjectURL(url), reject(new Error("unreadable image")));
+    img.src = url;
+  });
 }

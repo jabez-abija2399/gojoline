@@ -934,7 +934,7 @@ export const en = {
       approvedTopup: "Your extra changes have been added.",
       methodRef: "{method} · No. {reference}",
       sendAgain: "Send again",
-      compareHint: "Not sure? See everything each plan includes.",
+      seeStatus: "See status",
     },
     youPayWas: "instead of {price} Birr",
     codeApplied: "Code {code}: {amount} Birr off.",

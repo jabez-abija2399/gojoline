@@ -270,7 +270,7 @@ test("on a short window the recent sites scroll on their own; the changes-left c
     return {
       list: list.getBoundingClientRect(),
       scrolls: list.scrollHeight > list.clientHeight,
-      cardBottom: document.getElementById("credits-title")!.closest("a")!.getBoundingClientRect().bottom,
+      cardBottom: document.getElementById("side-credits-title")!.closest("a")!.getBoundingClientRect().bottom,
       accountTop: document.querySelector<HTMLElement>("[aria-controls=account-menu]")!.getBoundingClientRect().top,
     };
   });
