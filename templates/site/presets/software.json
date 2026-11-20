@@ -1,0 +1,359 @@
+{
+  "name": { "en": "Lemlem", "am": "ለምለም" },
+  "tagline": { "en": "Stock and sales for every shop, on the phone you already have", "am": "ለእያንዳንዱ ሱቅ የዕቃና የሽያጭ መከታተያ፣ ባለዎት ስልክ ላይ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#0B6E4F", "accent": "#111214", "background": "#FAFAF7", "text": "#111214", "font": "modern", "radius": "medium", "style": "precise" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Kazanchis, Addis Ababa", "am": "ካዛንቺስ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Support, Monday to Saturday", "am": "ድጋፍ፣ ከሰኞ እስከ ቅዳሜ" },
+        "time": { "en": "8:00 am to 8:00 pm", "am": "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Product", "am": "ምርቱ" },
+      "description": { "en": "Lemlem: stock, sales and reports for shops in Ethiopia, on any phone. Free for 30 days.", "am": "ለምለም፦ በኢትዮጵያ ላሉ ሱቆች የዕቃ፣ የሽያጭና የሪፖርት መከታተያ፣ በማንኛውም ስልክ። ለ30 ቀን ነጻ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "centered",
+          "eyebrow": { "en": "New: mobile money at the till", "am": "አዲስ፦ በሞባይል ገንዘብ ክፍያ" },
+          "heading": { "en": "Know what sold today, before you close", "am": "ከመዝጋትዎ በፊት ዛሬ የተሸጠውን ይወቁ" },
+          "subheading": { "en": "Lemlem counts your stock, rings up sales and tells you what to reorder. On any phone, even when the internet drops.", "am": "ለምለም ዕቃዎን ይቆጥራል፣ ሽያጭ ይመዘግባል፣ ምን እንደሚያዝዙም ይነግርዎታል። በማንኛውም ስልክ፣ ኢንተርኔት ቢቋረጥም።" },
+          "image": {
+            "art": "dashboard",
+            "alt": { "en": "The Lemlem dashboard: today's sales, a weekly chart and the latest sales", "am": "የለምለም ዳሽቦርድ፦ የዛሬ ሽያጭ፣ ሳምንታዊ ሰንጠረዥና የቅርብ ሽያጮች" }
+          },
+          "primaryAction": {
+            "label": { "en": "Start free for 30 days", "am": "ለ30 ቀን በነጻ ይጀምሩ" },
+            "href": "/contact"
+          },
+          "secondaryAction": {
+            "label": { "en": "See pricing", "am": "ዋጋዎቹን ይመልከቱ" },
+            "href": "/pricing"
+          }
+        },
+        {
+          "type": "stats",
+          "heading": { "en": "Shops across Ethiopia close the day with Lemlem", "am": "በመላው ኢትዮጵያ ያሉ ሱቆች ቀናቸውን በለምለም ይዘጋሉ" },
+          "items": [
+            {
+              "value": { "en": "1,200+", "am": "1,200+" },
+              "label": { "en": "shops", "am": "ሱቆች" }
+            },
+            {
+              "value": { "en": "38", "am": "38" },
+              "label": { "en": "towns", "am": "ከተሞች" }
+            },
+            {
+              "value": { "en": "2 min", "am": "2 ደቂቃ" },
+              "label": { "en": "to ring up the first sale", "am": "የመጀመሪያውን ሽያጭ ለመመዝገብ" }
+            }
+          ]
+        },
+        {
+          "type": "tabs",
+          "id": "product",
+          "eyebrow": { "en": "The product", "am": "ምርቱ" },
+          "heading": { "en": "Everything the counter needs. Nothing it doesn't.", "am": "ቆጣሪው የሚፈልገው ሁሉ። የማይፈልገው ምንም።" },
+          "items": [
+            {
+              "label": { "en": "Sell", "am": "ይሽጡ" },
+              "heading": { "en": "A sale in three taps", "am": "ሽያጭ በሦስት ንክኪ" },
+              "body": { "en": "Scan or search, choose how they pay, done. The receipt goes to the customer's phone and the stock count drops by itself.", "am": "ይቃኙ ወይም ይፈልጉ፣ የክፍያ መንገዱን ይምረጡ፣ ጨርሰዋል። ደረሰኙ ወደ ደንበኛው ስልክ ይሄዳል፣ የዕቃው ብዛትም በራሱ ይቀንሳል።" },
+              "image": {
+                "art": "mobile",
+                "alt": { "en": "A phone showing a completed sale with a green tick and its receipt", "am": "አረንጓዴ ምልክትና ደረሰኝ ያለው የተጠናቀቀ ሽያጭ የሚያሳይ ስልክ" }
+              },
+              "points": [
+                { "en": "Cash, mobile money or bank transfer", "am": "ጥሬ ገንዘብ፣ ሞባይል ገንዘብ ወይም የባንክ ዝውውር" },
+                { "en": "Works offline, syncs when back online", "am": "ያለ ኢንተርኔት ይሠራል፣ ሲመለስ ያመሳስላል" }
+              ]
+            },
+            {
+              "label": { "en": "Stock", "am": "ዕቃ" },
+              "heading": { "en": "Know what's on the shelf", "am": "በመደርደሪያው ያለውን ይወቁ" },
+              "body": { "en": "Every item, every branch, counted as you sell. Lemlem warns you before something runs out and drafts the order for your supplier.", "am": "እያንዳንዱ ዕቃ፣ በእያንዳንዱ ቅርንጫፍ፣ ሲሸጡ ይቆጠራል። ለምለም አንድ ነገር ከማለቁ በፊት ያስጠነቅቅዎታል፣ ለአቅራቢዎም ትዕዛዙን ያዘጋጃል።" },
+              "image": {
+                "art": "dashboard",
+                "alt": { "en": "A dashboard with stock levels, a weekly sales chart and a list of items", "am": "የዕቃ ብዛት፣ ሳምንታዊ የሽያጭ ሰንጠረዥና የዕቃ ዝርዝር ያለው ዳሽቦርድ" }
+              },
+              "points": [
+                { "en": "Low-stock alerts on Telegram", "am": "ዕቃ ሲያንስ በቴሌግራም ማስጠንቀቂያ" },
+                { "en": "Several branches in one account", "am": "በአንድ መለያ ብዙ ቅርንጫፎች" }
+              ]
+            },
+            {
+              "label": { "en": "Reports", "am": "ሪፖርቶች" },
+              "heading": { "en": "The numbers, without the notebook", "am": "ቁጥሮቹ፣ ያለ ደብተር" },
+              "body": { "en": "Sales by day, by item and by cashier. Profit after cost. One tap sends the month to your accountant.", "am": "ሽያጭ በቀን፣ በዕቃና በገንዘብ ተቀባይ። ከወጪ በኋላ ያለ ትርፍ። በአንድ ንክኪ የወሩን ሪፖርት ለሒሳብ ሠራተኛዎ ይልካሉ።" },
+              "image": {
+                "art": "chart",
+                "alt": { "en": "A chart of sales rising over the month, with the latest day marked", "am": "በወሩ ውስጥ እየጨመረ የሚሄድ የሽያጭ ሰንጠረዥ፣ የመጨረሻው ቀን ምልክት ተደርጎበት" }
+              },
+              "points": [
+                { "en": "Export to Excel", "am": "ወደ ኤክሴል ይላኩ" },
+                { "en": "Daily summary at closing time", "am": "በመዝጊያ ሰዓት ዕለታዊ ማጠቃለያ" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "about",
+          "id": "offline",
+          "eyebrow": { "en": "Built for here", "am": "ለዚህ የተሠራ" },
+          "heading": { "en": "Made for slow networks and busy counters", "am": "ለዝግተኛ ኔትወርክና ለተጨናነቀ ቆጣሪ የተሠራ" },
+          "body": { "en": "Lemlem keeps working when the connection doesn't, speaks Amharic and English, and runs on the phone already in your pocket. No new hardware, no long training.", "am": "ለምለም ግንኙነቱ ሲቋረጥም መሥራቱን ይቀጥላል፣ አማርኛና እንግሊዝኛ ይናገራል፣ በኪስዎ ባለው ስልክም ይሠራል። አዲስ መሣሪያ የለም፣ ረጅም ሥልጠና የለም።" },
+          "image": {
+            "art": "chart",
+            "alt": { "en": "A sales chart rising through the month", "am": "በወሩ ውስጥ እየጨመረ የሚሄድ የሽያጭ ሰንጠረዥ" }
+          },
+          "imageSide": "end",
+          "points": [
+            { "en": "Amharic and English, switch any time", "am": "አማርኛና እንግሊዝኛ፣ በማንኛውም ጊዜ ይቀይሩ" },
+            { "en": "Your data backed up every night", "am": "መረጃዎ በየሌሊቱ ይቀመጣል" },
+            { "en": "Each cashier with their own login", "am": "እያንዳንዱ ገንዘብ ተቀባይ የራሱ መግቢያ" }
+          ]
+        },
+        {
+          "type": "services",
+          "id": "integrations",
+          "variant": "bento",
+          "eyebrow": { "en": "Works with", "am": "አብሮ የሚሠራው" },
+          "heading": { "en": "Fits the way you already sell", "am": "አሁን በሚሸጡበት መንገድ ይገጥማል" },
+          "items": [
+            {
+              "title": { "en": "Mobile money", "am": "ሞባይል ገንዘብ" },
+              "description": { "en": "Take payments by phone and see them in the day's total.", "am": "ክፍያን በስልክ ይቀበሉ፣ በዕለቱ ድምር ውስጥም ይመልከቱት።" },
+              "icon": "phone"
+            },
+            {
+              "title": { "en": "Bank transfers", "am": "የባንክ ዝውውሮች" },
+              "description": { "en": "Match transfers to sales without retyping.", "am": "ዝውውሮችን እንደገና ሳይጽፉ ከሽያጮች ጋር ያዛምዱ።" },
+              "icon": "building"
+            },
+            {
+              "title": { "en": "Receipt printers", "am": "የደረሰኝ ማተሚያዎች" },
+              "description": { "en": "Bluetooth printers, paired in a minute.", "am": "የብሉቱዝ ማተሚያዎች፣ በአንድ ደቂቃ ይገናኛሉ።" },
+              "icon": "mail"
+            },
+            {
+              "title": { "en": "Barcode scanners", "am": "የባርኮድ መቃኛዎች" },
+              "description": { "en": "Or just the phone's camera.", "am": "ወይም የስልኩ ካሜራ ብቻ።" },
+              "icon": "camera"
+            },
+            {
+              "title": { "en": "Telegram alerts", "am": "የቴሌግራም ማሳወቂያዎች" },
+              "description": { "en": "Low stock and the day's total, sent to you.", "am": "የዕቃ ማነስና የዕለቱ ድምር ይላክልዎታል።" },
+              "icon": "message"
+            },
+            {
+              "title": { "en": "Excel export", "am": "ወደ ኤክሴል" },
+              "description": { "en": "Every report, ready for your accountant.", "am": "እያንዳንዱ ሪፖርት፣ ለሒሳብ ሠራተኛዎ ዝግጁ።" },
+              "icon": "chart"
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "id": "customers",
+          "eyebrow": { "en": "Customers", "am": "ደንበኞች" },
+          "heading": { "en": "Shop owners, in their words", "am": "የሱቅ ባለቤቶች፣ በራሳቸው ቃል" },
+          "items": [
+            {
+              "quote": { "en": "I used to count the shelves every Sunday. Now I just look at my phone.", "am": "በየእሁዱ መደርደሪያዎቹን እቆጥር ነበር። አሁን ስልኬን ብቻ አያለሁ።" },
+              "name": "Tigist M.",
+              "role": { "en": "Mini-market owner", "am": "የሚኒ ማርኬት ባለቤት" }
+            },
+            {
+              "quote": { "en": "Three branches, one screen. I finally know which one makes money.", "am": "ሦስት ቅርንጫፎች፣ አንድ ስክሪን። የትኛው ትርፍ እንደሚያስገኝ በመጨረሻ አወቅኩ።" },
+              "name": "Abel K.",
+              "role": { "en": "Pharmacy owner", "am": "የፋርማሲ ባለቤት" }
+            },
+            {
+              "quote": { "en": "It keeps working when the network goes down, which here is every afternoon.", "am": "ኔትወርኩ ሲቋረጥም መሥራቱን ይቀጥላል፤ እዚህ ደግሞ በየከሰዓቱ ይቋረጣል።" },
+              "name": "Selam T.",
+              "role": { "en": "Hardware shop", "am": "የሃርድዌር ሱቅ" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "start",
+          "heading": { "en": "Close today's books in two minutes", "am": "የዛሬውን ሒሳብ በሁለት ደቂቃ ይዝጉ" },
+          "body": { "en": "Free for 30 days. No card, no contract. We set it up with you on the phone.", "am": "ለ30 ቀን ነጻ። ካርድ የለም፣ ውል የለም። በስልክ አብረንዎ እናዘጋጃለን።" },
+          "primaryAction": {
+            "label": { "en": "Start free for 30 days", "am": "ለ30 ቀን በነጻ ይጀምሩ" },
+            "href": "/contact"
+          },
+          "secondaryAction": {
+            "label": { "en": "Talk to us", "am": "ያነጋግሩን" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/pricing",
+      "title": { "en": "Pricing", "am": "ዋጋ" },
+      "nav": { "en": "Pricing", "am": "ዋጋ" },
+      "description": { "en": "Lemlem pricing in Birr: free to start, then one price per shop. No setup fee.", "am": "የለምለም ዋጋ በብር፦ በነጻ ይጀምሩ፣ ከዚያ ለአንድ ሱቅ አንድ ዋጋ። የማስጀመሪያ ክፍያ የለም።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "plans",
+          "layout": "pricing",
+          "eyebrow": { "en": "Pricing", "am": "ዋጋ" },
+          "heading": { "en": "One price per shop. Cancel any time.", "am": "ለአንድ ሱቅ አንድ ዋጋ። በማንኛውም ጊዜ ያቋርጡ።" },
+          "intro": { "en": "Every plan starts with 30 days free.", "am": "ሁሉም ጥቅሎች በ30 ነጻ ቀናት ይጀምራሉ።" },
+          "items": [
+            {
+              "title": { "en": "Kiosk", "am": "ኪዮስክ" },
+              "subtitle": { "en": "One counter, one phone", "am": "አንድ ቆጣሪ፣ አንድ ስልክ" },
+              "price": { "amountMinor": 0, "currency": "ETB" },
+              "priceNote": { "en": "free for good", "am": "ለዘላለም ነጻ" },
+              "meta": [
+                { "en": "Up to 100 items", "am": "እስከ 100 ዕቃዎች" },
+                { "en": "Sales and receipts", "am": "ሽያጭና ደረሰኝ" },
+                { "en": "Daily summary", "am": "ዕለታዊ ማጠቃለያ" }
+              ],
+              "action": {
+                "label": { "en": "Start free for 30 days", "am": "ለ30 ቀን በነጻ ይጀምሩ" },
+                "href": "/contact"
+              }
+            },
+            {
+              "title": { "en": "Shop", "am": "ሱቅ" },
+              "subtitle": { "en": "For a busy shop", "am": "ለተጨናነቀ ሱቅ" },
+              "badge": { "en": "Most chosen", "am": "በብዛት የሚመረጥ" },
+              "price": { "amountMinor": 45000, "currency": "ETB" },
+              "priceNote": { "en": "per month", "am": "በወር" },
+              "meta": [
+                { "en": "Unlimited items", "am": "ያልተገደቡ ዕቃዎች" },
+                { "en": "3 cashiers", "am": "3 ገንዘብ ተቀባዮች" },
+                { "en": "Stock alerts on Telegram", "am": "የዕቃ ማስጠንቀቂያ በቴሌግራም" },
+                { "en": "Reports and Excel export", "am": "ሪፖርትና ወደ ኤክሴል" }
+              ],
+              "action": {
+                "label": { "en": "Start free for 30 days", "am": "ለ30 ቀን በነጻ ይጀምሩ" },
+                "href": "/contact"
+              }
+            },
+            {
+              "title": { "en": "Branches", "am": "ቅርንጫፎች" },
+              "subtitle": { "en": "Several shops, one view", "am": "ብዙ ሱቆች፣ አንድ እይታ" },
+              "price": { "amountMinor": 120000, "currency": "ETB" },
+              "priceNote": { "en": "per month, up to 5 shops", "am": "በወር፣ እስከ 5 ሱቆች" },
+              "meta": [
+                { "en": "Everything in Shop", "am": "በሱቅ ጥቅል ያለው ሁሉ" },
+                { "en": "Unlimited cashiers", "am": "ያልተገደቡ ገንዘብ ተቀባዮች" },
+                { "en": "Stock moves between branches", "am": "በቅርንጫፎች መካከል የዕቃ ዝውውር" },
+                { "en": "Accountant access", "am": "ለሒሳብ ሠራተኛ መግቢያ" }
+              ],
+              "action": {
+                "label": { "en": "Talk to us", "am": "ያነጋግሩን" },
+                "href": "/contact"
+              }
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "id": "faq",
+          "eyebrow": { "en": "Questions", "am": "ጥያቄዎች" },
+          "heading": { "en": "Before you start", "am": "ከመጀመርዎ በፊት" },
+          "items": [
+            {
+              "question": { "en": "Do I need a computer or a till?", "am": "ኮምፒውተር ወይም የገንዘብ መመዝገቢያ ያስፈልገኛል?" },
+              "answer": { "en": "No. Any Android phone or a browser is enough. Printers and scanners are optional.", "am": "አያስፈልግም። ማንኛውም አንድሮይድ ስልክ ወይም ብሮውዘር ይበቃል። ማተሚያና መቃኛ አማራጭ ናቸው።" }
+            },
+            {
+              "question": { "en": "What happens when the internet is down?", "am": "ኢንተርኔት ሲቋረጥ ምን ይሆናል?" },
+              "answer": { "en": "You keep selling. Lemlem saves everything on the phone and sends it when the connection comes back.", "am": "መሸጥዎን ይቀጥላሉ። ለምለም ሁሉንም በስልኩ ላይ ያስቀምጣል፣ ግንኙነቱ ሲመለስ ይልካል።" }
+            },
+            {
+              "question": { "en": "How do I pay?", "am": "እንዴት እከፍላለሁ?" },
+              "answer": { "en": "Monthly, by mobile money or bank transfer. You can stop at any time.", "am": "በየወሩ፣ በሞባይል ገንዘብ ወይም በባንክ ዝውውር። በማንኛውም ጊዜ ማቆም ይችላሉ።" }
+            },
+            {
+              "question": { "en": "Can I bring my existing stock list?", "am": "ያለኝን የዕቃ ዝርዝር ማስገባት እችላለሁ?" },
+              "answer": { "en": "Yes. Send us your Excel sheet or a photo of your notebook and we enter it for you.", "am": "አዎ። የኤክሴል ሰነድዎን ወይም የደብተርዎን ፎቶ ይላኩልን፣ እኛ እናስገባልዎታለን።" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": { "en": "Start", "am": "ይጀምሩ" },
+      "nav": { "en": "Start free", "am": "በነጻ ይጀምሩ" },
+      "description": { "en": "Start Lemlem free for 30 days. We call you and set it up together.", "am": "ለምለምን ለ30 ቀን በነጻ ይጀምሩ። ደውለን አብረን እናዘጋጃለን።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "start",
+          "kind": "registration",
+          "eyebrow": { "en": "30 days free", "am": "30 ቀን ነጻ" },
+          "heading": { "en": "Start with Lemlem", "am": "በለምለም ይጀምሩ" },
+          "intro": { "en": "Leave your number and we call you within a working day to set up your shop with you.", "am": "ቁጥርዎን ይተዉ፤ በአንድ የሥራ ቀን ውስጥ ደውለን ሱቅዎን አብረን እናዘጋጃለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "shop",
+              "label": { "en": "Shop name", "am": "የሱቅ ስም" },
+              "type": "text"
+            },
+            {
+              "name": "kind",
+              "label": { "en": "What do you sell?", "am": "ምን ይሸጣሉ?" },
+              "type": "select",
+              "options": [
+                { "en": "Groceries", "am": "ሸቀጣ ሸቀጥ" },
+                { "en": "Pharmacy", "am": "መድኃኒት" },
+                { "en": "Clothes and shoes", "am": "ልብስና ጫማ" },
+                { "en": "Hardware", "am": "ሃርድዌር" },
+                { "en": "Something else", "am": "ሌላ" }
+              ]
+            },
+            {
+              "name": "branches",
+              "label": { "en": "Number of branches", "am": "የቅርንጫፎች ብዛት" },
+              "type": "number"
+            }
+          ],
+          "submitLabel": { "en": "Call me back", "am": "መልሰው ይደውሉልኝ" },
+          "successMessage": { "en": "Thank you. We will call you within a working day.", "am": "እናመሰግናለን። በአንድ የሥራ ቀን ውስጥ እንደውልልዎታለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "support",
+          "eyebrow": { "en": "Support", "am": "ድጋፍ" },
+          "heading": { "en": "Questions first?", "am": "መጀመሪያ ጥያቄ አለዎት?" },
+          "intro": { "en": "Call or write on Telegram. A person answers, in Amharic or English.", "am": "ይደውሉ ወይም በቴሌግራም ይጻፉ። ሰው ይመልሳል፣ በአማርኛ ወይም በእንግሊዝኛ።" }
+        }
+      ]
+    }
+  ]
+}

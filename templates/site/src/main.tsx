@@ -13,6 +13,7 @@ import "./motion.css";
 import "./design.css";
 import "./grand.css";
 import "./avant.css";
+import "./precise.css";
 
 const container = document.getElementById("root")!;
 

@@ -1,0 +1,203 @@
+import { t, link, birr, save } from "./lib.mjs";
+
+// A software product told the Swiss way: the "precise" art direction (hairline grid, tight type,
+// one green accent) with drawings of the product in the site's colours instead of photos.
+const art = (name, en, am) => ({ art: name, alt: t(en, am) });
+const trial = link("Start free for 30 days", "ለ30 ቀን በነጻ ይጀምሩ", "/contact");
+
+save("software", {
+  name: t("Lemlem", "ለምለም"),
+  tagline: t("Stock and sales for every shop, on the phone you already have", "ለእያንዳንዱ ሱቅ የዕቃና የሽያጭ መከታተያ፣ ባለዎት ስልክ ላይ"),
+  languages: ["en", "am"],
+  theme: { primary: "#0B6E4F", accent: "#111214", background: "#FAFAF7", text: "#111214", font: "modern", radius: "medium", style: "precise" },
+  business: {
+    phone: "+251 911 000 000",
+    telegram: "yourbusiness",
+    address: t("Kazanchis, Addis Ababa", "ካዛንቺስ፣ አዲስ አበባ"),
+    hours: [{ days: t("Support, Monday to Saturday", "ድጋፍ፣ ከሰኞ እስከ ቅዳሜ"), time: t("8:00 am to 8:00 pm", "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት") }],
+  },
+  pages: [
+    {
+      path: "/",
+      title: t("Home", "መነሻ"),
+      nav: t("Product", "ምርቱ"),
+      description: t("Lemlem: stock, sales and reports for shops in Ethiopia, on any phone. Free for 30 days.", "ለምለም፦ በኢትዮጵያ ላሉ ሱቆች የዕቃ፣ የሽያጭና የሪፖርት መከታተያ፣ በማንኛውም ስልክ። ለ30 ቀን ነጻ።"),
+      sections: [
+        {
+          type: "hero",
+          id: "top",
+          variant: "centered",
+          eyebrow: t("New: mobile money at the till", "አዲስ፦ በሞባይል ገንዘብ ክፍያ"),
+          heading: t("Know what sold today, before you close", "ከመዝጋትዎ በፊት ዛሬ የተሸጠውን ይወቁ"),
+          subheading: t("Lemlem counts your stock, rings up sales and tells you what to reorder. On any phone, even when the internet drops.", "ለምለም ዕቃዎን ይቆጥራል፣ ሽያጭ ይመዘግባል፣ ምን እንደሚያዝዙም ይነግርዎታል። በማንኛውም ስልክ፣ ኢንተርኔት ቢቋረጥም።"),
+          image: art("dashboard", "The Lemlem dashboard: today's sales, a weekly chart and the latest sales", "የለምለም ዳሽቦርድ፦ የዛሬ ሽያጭ፣ ሳምንታዊ ሰንጠረዥና የቅርብ ሽያጮች"),
+          primaryAction: trial,
+          secondaryAction: link("See pricing", "ዋጋዎቹን ይመልከቱ", "/pricing"),
+        },
+        {
+          type: "stats",
+          heading: t("Shops across Ethiopia close the day with Lemlem", "በመላው ኢትዮጵያ ያሉ ሱቆች ቀናቸውን በለምለም ይዘጋሉ"),
+          items: [
+            { value: t("1,200+", "1,200+"), label: t("shops", "ሱቆች") },
+            { value: t("38", "38"), label: t("towns", "ከተሞች") },
+            { value: t("2 min", "2 ደቂቃ"), label: t("to ring up the first sale", "የመጀመሪያውን ሽያጭ ለመመዝገብ") },
+          ],
+        },
+        {
+          type: "tabs",
+          id: "product",
+          eyebrow: t("The product", "ምርቱ"),
+          heading: t("Everything the counter needs. Nothing it doesn't.", "ቆጣሪው የሚፈልገው ሁሉ። የማይፈልገው ምንም።"),
+          items: [
+            {
+              label: t("Sell", "ይሽጡ"),
+              heading: t("A sale in three taps", "ሽያጭ በሦስት ንክኪ"),
+              body: t("Scan or search, choose how they pay, done. The receipt goes to the customer's phone and the stock count drops by itself.", "ይቃኙ ወይም ይፈልጉ፣ የክፍያ መንገዱን ይምረጡ፣ ጨርሰዋል። ደረሰኙ ወደ ደንበኛው ስልክ ይሄዳል፣ የዕቃው ብዛትም በራሱ ይቀንሳል።"),
+              image: art("mobile", "A phone showing a completed sale with a green tick and its receipt", "አረንጓዴ ምልክትና ደረሰኝ ያለው የተጠናቀቀ ሽያጭ የሚያሳይ ስልክ"),
+              points: [t("Cash, mobile money or bank transfer", "ጥሬ ገንዘብ፣ ሞባይል ገንዘብ ወይም የባንክ ዝውውር"), t("Works offline, syncs when back online", "ያለ ኢንተርኔት ይሠራል፣ ሲመለስ ያመሳስላል")],
+            },
+            {
+              label: t("Stock", "ዕቃ"),
+              heading: t("Know what's on the shelf", "በመደርደሪያው ያለውን ይወቁ"),
+              body: t("Every item, every branch, counted as you sell. Lemlem warns you before something runs out and drafts the order for your supplier.", "እያንዳንዱ ዕቃ፣ በእያንዳንዱ ቅርንጫፍ፣ ሲሸጡ ይቆጠራል። ለምለም አንድ ነገር ከማለቁ በፊት ያስጠነቅቅዎታል፣ ለአቅራቢዎም ትዕዛዙን ያዘጋጃል።"),
+              image: art("dashboard", "A dashboard with stock levels, a weekly sales chart and a list of items", "የዕቃ ብዛት፣ ሳምንታዊ የሽያጭ ሰንጠረዥና የዕቃ ዝርዝር ያለው ዳሽቦርድ"),
+              points: [t("Low-stock alerts on Telegram", "ዕቃ ሲያንስ በቴሌግራም ማስጠንቀቂያ"), t("Several branches in one account", "በአንድ መለያ ብዙ ቅርንጫፎች")],
+            },
+            {
+              label: t("Reports", "ሪፖርቶች"),
+              heading: t("The numbers, without the notebook", "ቁጥሮቹ፣ ያለ ደብተር"),
+              body: t("Sales by day, by item and by cashier. Profit after cost. One tap sends the month to your accountant.", "ሽያጭ በቀን፣ በዕቃና በገንዘብ ተቀባይ። ከወጪ በኋላ ያለ ትርፍ። በአንድ ንክኪ የወሩን ሪፖርት ለሒሳብ ሠራተኛዎ ይልካሉ።"),
+              image: art("chart", "A chart of sales rising over the month, with the latest day marked", "በወሩ ውስጥ እየጨመረ የሚሄድ የሽያጭ ሰንጠረዥ፣ የመጨረሻው ቀን ምልክት ተደርጎበት"),
+              points: [t("Export to Excel", "ወደ ኤክሴል ይላኩ"), t("Daily summary at closing time", "በመዝጊያ ሰዓት ዕለታዊ ማጠቃለያ")],
+            },
+          ],
+        },
+        {
+          type: "about",
+          id: "offline",
+          eyebrow: t("Built for here", "ለዚህ የተሠራ"),
+          heading: t("Made for slow networks and busy counters", "ለዝግተኛ ኔትወርክና ለተጨናነቀ ቆጣሪ የተሠራ"),
+          body: t("Lemlem keeps working when the connection doesn't, speaks Amharic and English, and runs on the phone already in your pocket. No new hardware, no long training.", "ለምለም ግንኙነቱ ሲቋረጥም መሥራቱን ይቀጥላል፣ አማርኛና እንግሊዝኛ ይናገራል፣ በኪስዎ ባለው ስልክም ይሠራል። አዲስ መሣሪያ የለም፣ ረጅም ሥልጠና የለም።"),
+          image: art("chart", "A sales chart rising through the month", "በወሩ ውስጥ እየጨመረ የሚሄድ የሽያጭ ሰንጠረዥ"),
+          imageSide: "end",
+          points: [t("Amharic and English, switch any time", "አማርኛና እንግሊዝኛ፣ በማንኛውም ጊዜ ይቀይሩ"), t("Your data backed up every night", "መረጃዎ በየሌሊቱ ይቀመጣል"), t("Each cashier with their own login", "እያንዳንዱ ገንዘብ ተቀባይ የራሱ መግቢያ")],
+        },
+        {
+          type: "services",
+          id: "integrations",
+          variant: "bento",
+          eyebrow: t("Works with", "አብሮ የሚሠራው"),
+          heading: t("Fits the way you already sell", "አሁን በሚሸጡበት መንገድ ይገጥማል"),
+          items: [
+            { title: t("Mobile money", "ሞባይል ገንዘብ"), description: t("Take payments by phone and see them in the day's total.", "ክፍያን በስልክ ይቀበሉ፣ በዕለቱ ድምር ውስጥም ይመልከቱት።"), icon: "phone" },
+            { title: t("Bank transfers", "የባንክ ዝውውሮች"), description: t("Match transfers to sales without retyping.", "ዝውውሮችን እንደገና ሳይጽፉ ከሽያጮች ጋር ያዛምዱ።"), icon: "building" },
+            { title: t("Receipt printers", "የደረሰኝ ማተሚያዎች"), description: t("Bluetooth printers, paired in a minute.", "የብሉቱዝ ማተሚያዎች፣ በአንድ ደቂቃ ይገናኛሉ።"), icon: "mail" },
+            { title: t("Barcode scanners", "የባርኮድ መቃኛዎች"), description: t("Or just the phone's camera.", "ወይም የስልኩ ካሜራ ብቻ።"), icon: "camera" },
+            { title: t("Telegram alerts", "የቴሌግራም ማሳወቂያዎች"), description: t("Low stock and the day's total, sent to you.", "የዕቃ ማነስና የዕለቱ ድምር ይላክልዎታል።"), icon: "message" },
+            { title: t("Excel export", "ወደ ኤክሴል"), description: t("Every report, ready for your accountant.", "እያንዳንዱ ሪፖርት፣ ለሒሳብ ሠራተኛዎ ዝግጁ።"), icon: "chart" },
+          ],
+        },
+        {
+          type: "testimonials",
+          id: "customers",
+          eyebrow: t("Customers", "ደንበኞች"),
+          heading: t("Shop owners, in their words", "የሱቅ ባለቤቶች፣ በራሳቸው ቃል"),
+          items: [
+            { quote: t("I used to count the shelves every Sunday. Now I just look at my phone.", "በየእሁዱ መደርደሪያዎቹን እቆጥር ነበር። አሁን ስልኬን ብቻ አያለሁ።"), name: "Tigist M.", role: t("Mini-market owner", "የሚኒ ማርኬት ባለቤት") },
+            { quote: t("Three branches, one screen. I finally know which one makes money.", "ሦስት ቅርንጫፎች፣ አንድ ስክሪን። የትኛው ትርፍ እንደሚያስገኝ በመጨረሻ አወቅኩ።"), name: "Abel K.", role: t("Pharmacy owner", "የፋርማሲ ባለቤት") },
+            { quote: t("It keeps working when the network goes down, which here is every afternoon.", "ኔትወርኩ ሲቋረጥም መሥራቱን ይቀጥላል፤ እዚህ ደግሞ በየከሰዓቱ ይቋረጣል።"), name: "Selam T.", role: t("Hardware shop", "የሃርድዌር ሱቅ") },
+          ],
+        },
+        {
+          type: "cta",
+          id: "start",
+          heading: t("Close today's books in two minutes", "የዛሬውን ሒሳብ በሁለት ደቂቃ ይዝጉ"),
+          body: t("Free for 30 days. No card, no contract. We set it up with you on the phone.", "ለ30 ቀን ነጻ። ካርድ የለም፣ ውል የለም። በስልክ አብረንዎ እናዘጋጃለን።"),
+          primaryAction: trial,
+          secondaryAction: link("Talk to us", "ያነጋግሩን", "tel:+251911000000"),
+        },
+      ],
+    },
+    {
+      path: "/pricing",
+      title: t("Pricing", "ዋጋ"),
+      nav: t("Pricing", "ዋጋ"),
+      description: t("Lemlem pricing in Birr: free to start, then one price per shop. No setup fee.", "የለምለም ዋጋ በብር፦ በነጻ ይጀምሩ፣ ከዚያ ለአንድ ሱቅ አንድ ዋጋ። የማስጀመሪያ ክፍያ የለም።"),
+      sections: [
+        {
+          type: "cards",
+          id: "plans",
+          layout: "pricing",
+          eyebrow: t("Pricing", "ዋጋ"),
+          heading: t("One price per shop. Cancel any time.", "ለአንድ ሱቅ አንድ ዋጋ። በማንኛውም ጊዜ ያቋርጡ።"),
+          intro: t("Every plan starts with 30 days free.", "ሁሉም ጥቅሎች በ30 ነጻ ቀናት ይጀምራሉ።"),
+          items: [
+            {
+              title: t("Kiosk", "ኪዮስክ"),
+              subtitle: t("One counter, one phone", "አንድ ቆጣሪ፣ አንድ ስልክ"),
+              price: birr(0),
+              priceNote: t("free for good", "ለዘላለም ነጻ"),
+              meta: [t("Up to 100 items", "እስከ 100 ዕቃዎች"), t("Sales and receipts", "ሽያጭና ደረሰኝ"), t("Daily summary", "ዕለታዊ ማጠቃለያ")],
+              action: trial,
+            },
+            {
+              title: t("Shop", "ሱቅ"),
+              subtitle: t("For a busy shop", "ለተጨናነቀ ሱቅ"),
+              badge: t("Most chosen", "በብዛት የሚመረጥ"),
+              price: birr(450),
+              priceNote: t("per month", "በወር"),
+              meta: [t("Unlimited items", "ያልተገደቡ ዕቃዎች"), t("3 cashiers", "3 ገንዘብ ተቀባዮች"), t("Stock alerts on Telegram", "የዕቃ ማስጠንቀቂያ በቴሌግራም"), t("Reports and Excel export", "ሪፖርትና ወደ ኤክሴል")],
+              action: trial,
+            },
+            {
+              title: t("Branches", "ቅርንጫፎች"),
+              subtitle: t("Several shops, one view", "ብዙ ሱቆች፣ አንድ እይታ"),
+              price: birr(1200),
+              priceNote: t("per month, up to 5 shops", "በወር፣ እስከ 5 ሱቆች"),
+              meta: [t("Everything in Shop", "በሱቅ ጥቅል ያለው ሁሉ"), t("Unlimited cashiers", "ያልተገደቡ ገንዘብ ተቀባዮች"), t("Stock moves between branches", "በቅርንጫፎች መካከል የዕቃ ዝውውር"), t("Accountant access", "ለሒሳብ ሠራተኛ መግቢያ")],
+              action: link("Talk to us", "ያነጋግሩን", "/contact"),
+            },
+          ],
+        },
+        {
+          type: "faq",
+          id: "faq",
+          eyebrow: t("Questions", "ጥያቄዎች"),
+          heading: t("Before you start", "ከመጀመርዎ በፊት"),
+          items: [
+            { question: t("Do I need a computer or a till?", "ኮምፒውተር ወይም የገንዘብ መመዝገቢያ ያስፈልገኛል?"), answer: t("No. Any Android phone or a browser is enough. Printers and scanners are optional.", "አያስፈልግም። ማንኛውም አንድሮይድ ስልክ ወይም ብሮውዘር ይበቃል። ማተሚያና መቃኛ አማራጭ ናቸው።") },
+            { question: t("What happens when the internet is down?", "ኢንተርኔት ሲቋረጥ ምን ይሆናል?"), answer: t("You keep selling. Lemlem saves everything on the phone and sends it when the connection comes back.", "መሸጥዎን ይቀጥላሉ። ለምለም ሁሉንም በስልኩ ላይ ያስቀምጣል፣ ግንኙነቱ ሲመለስ ይልካል።") },
+            { question: t("How do I pay?", "እንዴት እከፍላለሁ?"), answer: t("Monthly, by mobile money or bank transfer. You can stop at any time.", "በየወሩ፣ በሞባይል ገንዘብ ወይም በባንክ ዝውውር። በማንኛውም ጊዜ ማቆም ይችላሉ።") },
+            { question: t("Can I bring my existing stock list?", "ያለኝን የዕቃ ዝርዝር ማስገባት እችላለሁ?"), answer: t("Yes. Send us your Excel sheet or a photo of your notebook and we enter it for you.", "አዎ። የኤክሴል ሰነድዎን ወይም የደብተርዎን ፎቶ ይላኩልን፣ እኛ እናስገባልዎታለን።") },
+          ],
+        },
+      ],
+    },
+    {
+      path: "/contact",
+      title: t("Start", "ይጀምሩ"),
+      nav: t("Start free", "በነጻ ይጀምሩ"),
+      description: t("Start Lemlem free for 30 days. We call you and set it up together.", "ለምለምን ለ30 ቀን በነጻ ይጀምሩ። ደውለን አብረን እናዘጋጃለን።"),
+      sections: [
+        {
+          type: "form",
+          id: "start",
+          kind: "registration",
+          eyebrow: t("30 days free", "30 ቀን ነጻ"),
+          heading: t("Start with Lemlem", "በለምለም ይጀምሩ"),
+          intro: t("Leave your number and we call you within a working day to set up your shop with you.", "ቁጥርዎን ይተዉ፤ በአንድ የሥራ ቀን ውስጥ ደውለን ሱቅዎን አብረን እናዘጋጃለን።"),
+          fields: [
+            { name: "name", label: t("Your name", "ስምዎ"), type: "text", required: true },
+            { name: "phone", label: t("Phone number", "ስልክ ቁጥር"), type: "tel", required: true },
+            { name: "shop", label: t("Shop name", "የሱቅ ስም"), type: "text" },
+            { name: "kind", label: t("What do you sell?", "ምን ይሸጣሉ?"), type: "select", options: [t("Groceries", "ሸቀጣ ሸቀጥ"), t("Pharmacy", "መድኃኒት"), t("Clothes and shoes", "ልብስና ጫማ"), t("Hardware", "ሃርድዌር"), t("Something else", "ሌላ")] },
+            { name: "branches", label: t("Number of branches", "የቅርንጫፎች ብዛት"), type: "number" },
+          ],
+          submitLabel: t("Call me back", "መልሰው ይደውሉልኝ"),
+          successMessage: t("Thank you. We will call you within a working day.", "እናመሰግናለን። በአንድ የሥራ ቀን ውስጥ እንደውልልዎታለን።"),
+        },
+        { type: "contact", id: "support", eyebrow: t("Support", "ድጋፍ"), heading: t("Questions first?", "መጀመሪያ ጥያቄ አለዎት?"), intro: t("Call or write on Telegram. A person answers, in Amharic or English.", "ይደውሉ ወይም በቴሌግራም ይጻፉ። ሰው ይመልሳል፣ በአማርኛ ወይም በእንግሊዝኛ።") },
+      ],
+    },
+  ],
+});

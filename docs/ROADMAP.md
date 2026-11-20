@@ -140,6 +140,19 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 ## Creative agency template (2026-11-20)
 - [x] `avant` art direction (experimental studio: black and white with one electric colour, huge grotesque words that drop in and drift apart, numbered sections, a broken grid of work with titles over grey photos that colour and bend on hover, services as a numbered index, featured work with boxes over full-width pictures, a statement band, a full-screen contact band, a cursor ring and leaning buttons) and a 24th starter, `agency` (Kebero Studio), in English and Amharic, from library photos; design, performance and security reviews run and fixed
 
+## Template collection from the founder's ten briefs (2026-11-20)
+Each brief becomes its own art direction and starter, so no two look like variations of one design. Built one slice at a time, in the founder's order, each with design, performance and security reviews before merging.
+- [x] Luxury hotel: `grand` + `resort`
+- [x] Creative agency: `avant` + `agency`
+- [x] SaaS / software product: `precise` (Swiss minimal, product interface drawings in the site's colours) + `software` ("Lemlem"); design, performance and security reviews run and fixed
+- [ ] Fashion e-commerce: a monochrome magazine direction + a shop-first fashion starter (the existing `fashion` stays as the tailor/made-to-measure site)
+- [ ] Architecture and interiors studio: a restrained grid direction + `architect` (photos: the real-estate and interior photos in the library)
+- [ ] Fine dining: a dark atmospheric direction + `dining` (photos: the café and banquet photos in the library)
+- [ ] Creative portfolio: an interactive personal direction + a second portfolio starter beside `personal`
+- [ ] Luxury real estate: a property-magazine direction beside `real-estate`
+- [ ] Immersive travel: a story-told-by-scrolling direction beside `tours`
+- [ ] Art gallery or museum: blocked on photos (the library has no artwork or gallery photos and new downloads are blocked here; see Blocked)
+
 ## User guide (2026-11-19)
 - [x] “How to use Gojoline” at `/{lang}/guide`: 720p video with captions and chapters (en, am), sticky contents on large screens and a folding one on phones that jumps the video, ten sections with steps, tips and real screenshots, questions, “Build your website”; real plan prices, change sizes and limits; links from the sidebar, the empty start screen, the dashboard Home, the public footer and the sitemap; unit tests (chapter and time parsing, WebVTT, files) and e2e (en/am at 360 and 1366, contents jump, captions, preload none, entry points, axe, no sideways scroll)
 
@@ -189,6 +202,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - Amharic in the motion-kit additions (tabs, giving boxes, ribbons, announcements, prayer and service times, stamps) needs the native-speaker review with the rest of the templates.
 - Generated-site LCP (performance review, 2026-11-20): with compressed files, Lighthouse slow 4G gives 2.1 to 2.4 s on both hotel and resort (budget 2.0 s); about 1.7 s is render delay from the blocking stylesheet and fonts. Next steps: inline the first screen's CSS and load the rest without blocking, and split every art direction into its own file the way `grand.css` is (about 4 to 5 KB gzip less blocking CSS per site). Lighthouse CI must serve files compressed or it reports about 3.9 s.
 - Resort photos are heavier than the hotel's (hero 480 px 28 KB vs 16 KB, about photo 34 KB): re-encode those stock files or pick lighter ones when real luxury-hotel photos are added to the library.
+- Amharic in the `software` template (`scripts/presets/software.mjs`, 2026-11-20) and its gallery strings (`precise` style name "ጥርት ያለ") needs the same native-speaker review.
 - Amharic in the `agency` template (`scripts/presets/agency.mjs`, 2026-11-20) and its gallery strings (`avant` style name "ሙከራዊ") needs the same native-speaker review.
 - Amharic in the `resort` template (`scripts/presets/resort.mjs`, 2026-11-20) and its gallery strings (`resort` in `lib/landing/template-info.ts`, `grand` style name "ግርማ ያለው") needs the same native-speaker review.
 - Template ideas from the writers, not built: a "from" note on service prices, an action on services and menu sections, a focal point for cropped photos, an included/not-included list for tours.
@@ -212,6 +226,7 @@ Work top to bottom. Each task is a vertical slice: build it, test it, tick it, c
 - [x] Admin → Analytics: daily, weekly and monthly activity (sign-ups, websites started and published, AI changes, visits, leads, link clicks, payments, revenue, AI cost, feedback), change vs the previous period, charts, funnel, clicks by link and page, templates and sources; privacy-friendly click counting (`/api/track`, counts only); en/am; unit and e2e tests; design and security reviews fixed
 
 ## Blocked (needs the founder)
+- **Photos for new templates (2026-11-20):** downloads from Unsplash and Pexels are blocked from the build environment, so new starters reuse the licensed library. An art gallery starter needs artwork and gallery photos, and fine dining and architecture would look better with their own. Either allow `images.unsplash.com` and `images.pexels.com` in the environment's network settings, or add photos to `scripts/stock-photos.mjs` input from another machine. AI-generated photos are not used: that is a content and licensing choice for the founder.
 - **Server workspaces, hardening left from the 2026-11-20 security review:** (1) previews on a separate registrable domain (needs a domain the founder owns; today they are under `gojoline.afridea.et`, mitigated by the pass, the host-only session cookie and `frame-ancestors`); (2) a wildcard preview certificate by DNS-01 (needs a Cloudflare DNS token) so preview names stop appearing in Certificate Transparency logs and `/ask` goes away; (3) gVisor (`runsc`) or userns-remap for the workspaces, and a disk quota per workspace; (4) check on the server that a workspace can't reach the host's gateway or resolve outside names (`docker run --rm --network gojoline-previews gojoline-sandbox node -e ...`); (5) reject Tailwind `@plugin`/`@config`/`@source`/`@import` in AI-written styles.css; (6) if deploys hit memory limits, set `SANDBOX_MAX_RUNNING` to 1.
 - **Live on the AWS server since 2026-11-19** (`deploy/server/`, Elastic IP 3.66.202.79, DNS-only A record). AI builds run on the server too (2026-11-20: Docker workspaces through `deploy/server/runner`, previews at `*.preview.gojoline.afridea.et`); the founder adds that DNS record and runs `setup.sh` once. Publishing waits for the Cloudflare setup.
 - **Vercel paused (2026-11-19, Hobby CPU limit, until 2026-12-19):** the app can run on an AWS server instead; the founder follows `deploy/server/README.md` (server, deploy key, `.env`, DNS to the server's Elastic IP, budget that stops the server when the credit ends). Until AI builds move off Vercel Sandbox, building and changing sites doesn't work there. Customer sites: do the Cloudflare setup below so they leave Vercel too.

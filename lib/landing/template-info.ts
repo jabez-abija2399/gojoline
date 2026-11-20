@@ -412,6 +412,21 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  software: {
+    category: "business",
+    designedFor: {
+      en: ["Software and apps", "Online services and platforms", "Fintech and payments", "Startups launching a product"],
+      am: ["ሶፍትዌርና መተግበሪያዎች", "የመስመር ላይ አገልግሎቶችና መድረኮች", "የፋይናንስ ቴክኖሎጂና ክፍያ", "ምርት የሚያስጀምሩ ጀማሪ ድርጅቶች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Plans side by side", am: "ጥቅሎች ጎን ለጎን" } },
+      { key: "registration", label: { en: "Free-trial sign-ups", am: "የነጻ ሙከራ ምዝገባ" } },
+      "numbers",
+      "reviews",
+      "faq",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {
