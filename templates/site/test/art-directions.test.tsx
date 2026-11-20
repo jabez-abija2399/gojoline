@@ -254,7 +254,7 @@ describe("art direction (drafting)", () => {
     const out = html(site);
     expect(out.match(/<h1/g)).toHaveLength(1);
     expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(1);
-    expect(text(out)).toMatch(/Entoto Ridge House.*Bishoftu.*2025.*420 m²/);
+    expect(text(out)).toMatch(/Entoto Ridge House.*Entoto.*2025.*420 m²/);
   });
 
   it("reads in Amharic on every page", () => {

@@ -36,12 +36,12 @@
             "alt": { "en": "The top corner of a black-and-white apartment block with large windows against a pale sky", "am": "ትልልቅ መስኮቶች ያሉት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ በፈዛዛ ሰማይ ፊት" }
           },
           "primaryAction": {
-            "label": { "en": "Selected work", "am": "የተመረጡ ሥራዎች" },
-            "href": "#work"
-          },
-          "secondaryAction": {
             "label": { "en": "Start a project", "am": "ፕሮጀክት እንጀምር" },
             "href": "/contact"
+          },
+          "secondaryAction": {
+            "label": { "en": "Selected work", "am": "የተመረጡ ሥራዎች" },
+            "href": "#work"
           }
         },
         {
@@ -71,7 +71,7 @@
               "subtitle": { "en": "House", "am": "መኖሪያ ቤት" },
               "title": { "en": "Entoto Ridge House", "am": "የእንጦጦ ሸንተረር ቤት" },
               "meta": [
-                { "en": "Bishoftu", "am": "ቢሾፍቱ" },
+                { "en": "Entoto", "am": "እንጦጦ" },
                 { "en": "2025", "am": "2017 ዓ.ም." },
                 { "en": "420 m²", "am": "420 ካሬ ሜትር" }
               ]
@@ -84,7 +84,7 @@
               "subtitle": { "en": "Housing", "am": "የጋራ መኖሪያ" },
               "title": { "en": "Kebena Curve Residences", "am": "የቀበና ከርቭ መኖሪያዎች" },
               "meta": [
-                { "en": "Bole", "am": "ቦሌ" },
+                { "en": "Kebena", "am": "ቀበና" },
                 { "en": "2024", "am": "2016 ዓ.ም." },
                 { "en": "6,800 m²", "am": "6,800 ካሬ ሜትር" }
               ]
@@ -198,7 +198,7 @@
               "subtitle": { "en": "House", "am": "መኖሪያ ቤት" },
               "title": { "en": "Entoto Ridge House", "am": "የእንጦጦ ሸንተረር ቤት" },
               "meta": [
-                { "en": "Bishoftu", "am": "ቢሾፍቱ" },
+                { "en": "Entoto", "am": "እንጦጦ" },
                 { "en": "2025", "am": "2017 ዓ.ም." },
                 { "en": "420 m²", "am": "420 ካሬ ሜትር" }
               ]
@@ -211,7 +211,7 @@
               "subtitle": { "en": "Housing", "am": "የጋራ መኖሪያ" },
               "title": { "en": "Kebena Curve Residences", "am": "የቀበና ከርቭ መኖሪያዎች" },
               "meta": [
-                { "en": "Bole", "am": "ቦሌ" },
+                { "en": "Kebena", "am": "ቀበና" },
                 { "en": "2024", "am": "2016 ዓ.ም." },
                 { "en": "6,800 m²", "am": "6,800 ካሬ ሜትር" }
               ]

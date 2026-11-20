@@ -10,13 +10,13 @@ const projects = [
     image: img("real-estate-card-modern-villa-palms", "A white flat-roofed villa with timber screens and planted terraces among palm trees", "በዘንባባ ዛፎች መካከል የእንጨት መጋረጃዎችና ተክል ያለባቸው እርከኖች ያሉት ጠፍጣፋ ጣሪያ ያለው ነጭ ቪላ"),
     subtitle: t("House", "መኖሪያ ቤት"),
     title: t("Entoto Ridge House", "የእንጦጦ ሸንተረር ቤት"),
-    meta: [place("Bishoftu", "ቢሾፍቱ"), t("2025", "2017 ዓ.ም."), t("420 m²", "420 ካሬ ሜትር")],
+    meta: [place("Entoto", "እንጦጦ"), t("2025", "2017 ዓ.ም."), t("420 m²", "420 ካሬ ሜትር")],
   },
   {
     image: img("real-estate-card-apartment-block-yellow-balconies", "A newly finished white apartment block with yellow balcony railings on a green hillside", "በአረንጓዴ ኮረብታ ላይ ቢጫ የበረንዳ መከላከያ ያለው አዲስ የተጠናቀቀ ነጭ የመኖሪያ ሕንፃ"),
     subtitle: t("Housing", "የጋራ መኖሪያ"),
     title: t("Kebena Curve Residences", "የቀበና ከርቭ መኖሪያዎች"),
-    meta: [place("Bole", "ቦሌ"), t("2024", "2016 ዓ.ም."), t("6,800 m²", "6,800 ካሬ ሜትር")],
+    meta: [place("Kebena", "ቀበና"), t("2024", "2016 ዓ.ም."), t("6,800 m²", "6,800 ካሬ ሜትር")],
   },
   {
     image: img("real-estate-card-midrise-apartments-balconies", "A mid-rise apartment building with glass balconies, large windows, pale cladding and a brick base", "የመስታወት በረንዳዎች፣ ትልልቅ መስኮቶች፣ ፈዛዛ ሽፋንና የጡብ መሠረት ያለው መካከለኛ ከፍታ ያለው ሕንፃ"),
@@ -73,8 +73,8 @@ save("architect", {
           eyebrow: t("Architecture · Addis Ababa", "ሥነ ሕንፃ · አዲስ አበባ"),
           heading: t("Buildings that hold the light", "ብርሃንን የሚይዙ ሕንፃዎች"),
           image: img("real-estate-hero-modern-apartment-corner-sky", "The top corner of a black-and-white apartment block with large windows against a pale sky", "ትልልቅ መስኮቶች ያሉት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ በፈዛዛ ሰማይ ፊት"),
-          primaryAction: link("Selected work", "የተመረጡ ሥራዎች", "#work"),
-          secondaryAction: start,
+          primaryAction: start,
+          secondaryAction: link("Selected work", "የተመረጡ ሥራዎች", "#work"),
         },
         {
           type: "about",
