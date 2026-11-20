@@ -11,6 +11,7 @@ import type { AssetStore } from "@/lib/cloud/assets";
 import { LazySiteSandbox } from "@/lib/providers/sandbox/lazy";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
 import { templateFiles } from "@/lib/template/files";
+import { isPresetId, presetName } from "@/lib/template/presets";
 import type { ChatMessage, ProjectStore } from "@/lib/projects/types";
 import { biggerSize, DEFAULT_CAP_CENTS_PER_CREDIT, DEFAULT_FIRST_BUILD_CAP_CENTS, firstBuildCapNano, MAX_TURNS_BY_SIZE, sizeRank, type RequestSize } from "@/lib/billing/credits";
 import type { LedgerMeta } from "@/lib/billing/store";
@@ -250,7 +251,9 @@ export async function sendOwnerMessage(
       versionNumber = version.number;
       if (!project.name) {
         const name = siteName(version.files["src/site.json"] ?? "", project.locale);
-        if (name) {
+        // A template's example business ("Bole Buna House") is not the owner's name: wait for theirs.
+        const example = isPresetId(project.templateId) ? presetName(project.templateId, project.locale) : null;
+        if (name && name !== example) {
           await store.renameProject(input.ownerId, project.id, name);
           siteNameNow = name;
         }

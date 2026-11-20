@@ -104,7 +104,7 @@ test.describe("landing page", () => {
     await code.fill(((await res.json()) as { code: string }).code);
     await page.getByRole("button", { name: "Continue" }).click();
     // No more clicks: the new site opens and builds from the description.
-    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
     await expect(page.getByText("Saved as version 1").first()).toBeVisible();
     expect(sent).toMatchObject({ text: "Kaldi Books in Piassa", languages: ["en", "am"] });
   });
@@ -137,7 +137,7 @@ test.describe("landing page", () => {
     await code.fill(((await res.json()) as { code: string }).code);
     await page.getByRole("button", { name: "Continue" }).click();
     // The clinic template opens as the new account's first site.
-    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
     await expect(page.getByText("Your Clinic site is ready").first()).toBeAttached();
   });
 
@@ -202,7 +202,7 @@ test("signed in: every way in leads to Your sites, never to the sign-in page", a
   // (no sites yet) starts building it at once, with no sign-in page in between.
   await page.locator("#hero-prompt").fill("Kaldi Books in Piassa");
   await page.locator("#hero-prompt").press("Control+Enter");
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   await expect(page.getByRole("log", { name: "Chat" }).getByText("Kaldi Books in Piassa")).toBeVisible();
 
   await page.goto("/en/pricing");

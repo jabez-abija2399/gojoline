@@ -27,8 +27,8 @@ export function Hero({ t, locale, sites, text, install, promptTitle, templates, 
           </span>
         </h1>
         <p className="max-w-[56ch] text-ink-muted sm:text-lg">{t.subtitle}</p>
-        {/* For visitors who'd like to see it working before signing up: the guide video. */}
-        <Link href={`/${locale}/guide`} className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 font-medium text-ink underline decoration-line underline-offset-4 hover:bg-white/60 hover:decoration-ink">
+        {/* For visitors who'd like to see it working before signing up: jumps to the video below. */}
+        <Link href="#watch" className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 font-medium text-ink underline decoration-line underline-offset-4 hover:bg-white/60 hover:decoration-ink">
           <PlayCircle aria-hidden="true" className="size-5 shrink-0" />
           {t.watchGuide}
         </Link>

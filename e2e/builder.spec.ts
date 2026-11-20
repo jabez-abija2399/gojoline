@@ -159,7 +159,7 @@ test("describe the business on Your sites: the new site opens and builds itself"
     if (r.url().endsWith("/messages") && r.method() === "POST") sent = r.postDataJSON();
   });
   await page.getByRole("button", { name: "Start a new site" }).click();
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   await expect(page.getByText("Saved as version 1").first()).toBeVisible();
   expect(sent).toMatchObject({ text: "Kaldi Books", languages: ["en", "am"] });
   await expect(page.getByText("Your site is ready!")).toBeVisible();
@@ -263,7 +263,7 @@ test("on a short window the recent sites scroll and never cover the changes-left
   for (const id of ["cafe", "hotel", "clinic", "school", "shop"]) {
     await page.goto("/en/build#templates");
     await page.locator(`form[data-preset=${id}] button`).click();
-    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   }
   await page.setViewportSize({ width: 1280, height: 560 });
   await page.goto("/en/build");
@@ -300,7 +300,7 @@ test("dark mode: chosen in the account menu, remembered, readable everywhere", a
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("tab", { name: "Templates" }).click();
   await page.locator("form[data-preset=cafe] button").click();
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   await expect(page.locator("[data-gojo-theme]").first()).toHaveAttribute("data-gojo-theme", "dark");
   await expectNoSeriousA11yIssues(page);
   await page.goto("/en/billing");

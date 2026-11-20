@@ -66,6 +66,7 @@ export const en = {
       { value: "2", label: "languages, your choice" },
     ],
     eyebrows: { how: "How it works", features: "Features", faq: "Good to know", final: "Start today" },
+    watch: { eyebrow: "Video guide", title: "See Gojoline work, start to finish", body: "From the first message to a published site, in under 5 minutes. Captions are on the screen, so no sound is needed.", guideLink: "Read the full guide" },
     pillarsLabel: "What you get",
     pillars: [
       { title: "Build by chatting", body: "Describe your business in Amharic or English. Gojoline writes the site and keeps it up to date." },
@@ -445,6 +446,9 @@ export const en = {
     },
     tlEdits: "{n} parts updated",
     tlChecking: "Checking everything works",
+    setupTitle: "Building your site from the template",
+    setupDesign: "Colours and fonts",
+    setupSkip: "Show it now",
     tlFixing: "Fixing a small problem",
     tlReady: "Preview ready",
     tlElapsed: "{s}s",

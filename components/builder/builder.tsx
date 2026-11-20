@@ -60,6 +60,8 @@ interface Props {
   initialVersions: UiVersion[];
   /** AI changes the owner has left when the page opens. */
   initialCredits: number;
+  /** Just started from a template: its home page sections, played as a build once in the preview. */
+  setup?: string[] | null;
   /** The "no changes left" dialog: prices, plans and the offer from the server. */
   upgrade: UpgradeInfo;
   upgradeText: Messages["upgrade"];
@@ -87,7 +89,7 @@ export interface PendingConfirm {
   left: number;
 }
 
-export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant, upgrade, upgradeText, installText, paused = false }: Props) {
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, setup = null, noCredits, nextGrant, upgrade, upgradeText, installText, paused = false }: Props) {
   const [credits, setCredits] = useState<number | null>(initialCredits);
   const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
@@ -439,6 +441,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       onBackToChat={backToChat}
       reloadKey={reloadKey}
       warm={firstBuildWarm}
+      setup={setup}
     />
   );
   const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working || paused} onRestore={restore} />;

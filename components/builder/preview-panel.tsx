@@ -5,6 +5,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { ExternalLink, Globe, Lock, Monitor, RotateCw, Smartphone } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { BuildPlaceholder } from "./build-placeholder";
+import { TemplateSetup } from "./template-setup";
 import type { Timeline } from "./build-timeline";
 import type { PreviewView } from "./preview-view";
 import { announcedStep } from "./timeline-label";
@@ -83,6 +84,8 @@ interface Props {
   device: Device;
   /** A first build has built successfully: load the frame now, under the placeholder, so the reveal is instant. */
   warm: boolean;
+  /** Just started from a template: its sections, played as a build once before the site shows. */
+  setup?: string[] | null;
 }
 
 type Reveal = "none" | "hold" | "fade";
@@ -90,7 +93,20 @@ type Reveal = "none" | "hold" | "fade";
 const HOLD_MAX_MS = 10_000;
 const FADE_MS = 500;
 
-export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, working, timeline, onRetry, onReload, onBackToChat, reloadKey, device, warm }: Props) {
+export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, working, timeline, onRetry, onReload, onBackToChat, reloadKey, device, warm, setup }: Props) {
+  // Template start: "run" while the parts tick off, "fade" once they have and the site has loaded.
+  const [setupState, setSetupState] = useState<"run" | "fade" | "off">(setup ? "run" : "off");
+  const [ticked, setTicked] = useState(false);
+  const onTicked = useCallback(() => setTicked(true), []);
+  const endSetup = useCallback(() => {
+    setSetupState("fade");
+    // Played once: a reload shows the site straight away.
+    const u = new URL(location.href);
+    if (u.searchParams.has("setup")) {
+      u.searchParams.delete("setup");
+      history.replaceState(history.state, "", u);
+    }
+  }, []);
   // The first build just saved: the frame loads the new site under the placeholder, which fades
   // out once it has loaded, so the starter template never flashes on screen.
   const frameKey = `${url}-${reloadKey}`;
@@ -127,6 +143,21 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
     [loaded],
   );
 
+  // The parts are ticked and the site has loaded (or it is taking long: show what there is).
+  const siteLoaded = loadedKey === frameKey;
+  useEffect(() => {
+    if (setupState !== "run" || !ticked) return;
+    const ready = siteLoaded || view === "error" || view === "paused";
+    const id = setTimeout(endSetup, ready ? 0 : HOLD_MAX_MS);
+    return () => clearTimeout(id);
+  }, [setupState, ticked, siteLoaded, view, endSetup]);
+  useEffect(() => {
+    if (setupState !== "fade") return;
+    const id = setTimeout(() => setSetupState("off"), FADE_MS);
+    return () => clearTimeout(id);
+  }, [setupState]);
+  const settingUp = setupState !== "off" && !!setup;
+
   // Phones only (on large screens the chat's progress card has the one status line): the step,
   // or what went wrong, said once when it changes.
   const shownTimeline = timeline ?? lastTimeline;
@@ -140,7 +171,7 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
   const live = view === "live" && url;
   const frame = url && (live || (view === "building" && warm));
   // Under the placeholder: loading, but out of reach of taps, keyboards and screen readers.
-  const hidden = !live || reveal === "hold";
+  const hidden = !live || reveal === "hold" || setupState === "run";
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-paper">
       <PreviewControls t={t} url={live ? url : null} liveUrl={liveUrl} onReload={onReload} className="border-b border-line bg-white px-2 py-1 lg:hidden" />
@@ -148,7 +179,7 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
         {announce}
       </p>
       <div className="flex min-h-0 flex-1 items-stretch justify-center overflow-auto bg-[radial-gradient(var(--gojo-line)_1px,transparent_1px)] bg-[size:18px_18px] p-3 lg:p-6">
-        {live || view === "building" ? (
+        {live || view === "building" || (settingUp && view === "loading") ? (
           <div className={`relative flex min-h-[480px] flex-col overflow-hidden bg-white ${shell}`}>
             {frame && (
               <iframe
@@ -173,6 +204,7 @@ export const PreviewPanel = memo(function PreviewPanel({ t, view, url, liveUrl, 
               </div>
             )}
             {(view === "building" || reveal !== "none") && <BuildPlaceholder t={t} device={device} timeline={shownTimeline} fading={reveal === "fade"} />}
+            {settingUp && <TemplateSetup t={t} device={device} sections={setup} fading={setupState === "fade"} onTicked={onTicked} onSkip={endSetup} />}
           </div>
         ) : view === "loading" ? (
           <div role="status" className="flex w-full max-w-[390px] flex-col items-center gap-4 self-center">

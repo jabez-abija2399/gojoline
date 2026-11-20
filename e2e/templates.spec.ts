@@ -8,7 +8,7 @@ test("start from an industry template in Amharic: a ready site, no AI needed", a
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("button", { name: "ይጠቀሙ: ሆቴል ወይም የእንግዳ ማረፊያ" }).click();
-  await expect(page).toHaveURL(/\/am\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/am\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   // The chat says it's a ready example to personalise; publishing waits for real details.
   await expect(page.getByText("ድረ-ገጽዎ ዝግጁ ነው").first()).toBeAttached();
   await page.getByRole("button", { name: "ያትሙ", exact: true }).click();
@@ -19,8 +19,8 @@ test("start from an industry template in Amharic: a ready site, no AI needed", a
   await expect(page.getByRole("dialog").getByRole("alert")).toContainText("የምሳሌ መረጃዎች");
   await page.keyboard.press("Escape");
   await page.goto("/am/build");
-  // Named after the kind of business, not the example's made-up name.
-  await expect(page.getByRole("main").getByRole("link", { name: "ሆቴል ወይም የእንግዳ ማረፊያ", exact: true })).toBeVisible();
+  // "New site" until the owner gives the real name: not the template's, not the example's made-up name.
+  await expect(page.getByRole("main").getByRole("link", { name: "አዲስ ድረ-ገጽ", exact: true }).first()).toBeVisible();
 });
 
 test("a template's preview runs the real site and lists every page and section before it is picked", async ({ page }) => {
@@ -47,7 +47,7 @@ test("a template's preview runs the real site and lists every page and section b
   await signIn(page);
   await page.goto("/en/templates/hotel");
   await page.getByRole("button", { name: "Use this template" }).filter({ visible: true }).click();
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   await expect(page.getByText("Your Hotel or guest house site is ready").first()).toBeAttached();
 });
 

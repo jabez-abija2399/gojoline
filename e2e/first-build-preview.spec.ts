@@ -71,15 +71,38 @@ test("a later edit keeps the live preview with the updating chip", async ({ page
   await expect(panel.getByRole("group", { name: "Building your site" })).toHaveCount(0);
 });
 
-test("a site started from a template shows it straight away", async ({ page }, info) => {
+test("a site started from a template plays the build of its own parts once, then shows it, still unnamed", async ({ page }, info) => {
   await signIn(page);
   await page.goto("/en/build#templates");
   await page.locator("form[data-preset=cafe] button").click();
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}\?setup=1$/);
   await showPreview(page, "en", info.project.name === "mobile");
   const panel = page.locator("#panel-preview");
+  // The template's real sections tick off one by one over an outline of the page.
+  const setup = panel.getByRole("group", { name: "Building your site from the template" });
+  await expect(setup).toBeVisible();
+  await expect(setup.getByRole("listitem").first()).toHaveText("Colours and fonts");
+  await expect(setup.getByRole("listitem").nth(1)).toHaveText("Top banner");
+  await expectNoSeriousA11yIssues(page);
+  // Then the site itself, and the address loses ?setup so a reload shows the site at once.
+  await expect(setup).toHaveCount(0, { timeout: 20_000 });
   await expect(panel.locator("iframe")).toBeVisible();
-  await expect(panel.getByRole("group", { name: "Building your site" })).toHaveCount(0);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  // Named "New site" until the owner gives the business's real name (not the template's or its example's).
+  await expect(page.getByRole("banner").getByText("New site", { exact: true }).first()).toBeVisible();
+  await page.reload();
+  await expect(panel.getByRole("group", { name: "Building your site from the template" })).toHaveCount(0);
+});
+
+test("the template build can be skipped", async ({ page }, info) => {
+  await signIn(page);
+  await page.goto("/en/build#templates");
+  await page.locator("form[data-preset=hotel] button").click();
+  await showPreview(page, "en", info.project.name === "mobile");
+  const panel = page.locator("#panel-preview");
+  await panel.getByRole("button", { name: "Show it now" }).click();
+  await expect(panel.getByRole("group", { name: "Building your site from the template" })).toHaveCount(0);
+  await expect(panel.locator("iframe")).toBeVisible();
 });
 
 test("a first build that fails shows the recovery message, not the template", async ({ page }, info) => {

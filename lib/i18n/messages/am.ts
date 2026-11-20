@@ -67,6 +67,7 @@ export const am: Messages = {
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
     eyebrows: { how: "እንዴት ይሠራል", features: "ባህሪያት", faq: "ማወቅ ያለብዎ", final: "ዛሬ ይጀምሩ" },
+    watch: { eyebrow: "የቪዲዮ መመሪያ", title: "ጎጆላይን ከመጀመሪያ እስከ መጨረሻ ሲሠራ ይመልከቱ", body: "ከመጀመሪያው መልዕክት እስከ ታተመ ድረ-ገጽ፣ ከ5 ደቂቃ ባነሰ ጊዜ። ጽሑፉ በስክሪኑ ላይ ስላለ ድምፅ አያስፈልግም።", guideLink: "ሙሉውን መመሪያ ያንብቡ" },
     pillarsLabel: "የሚያገኙት",
     pillars: [
       { title: "በውይይት ይገንቡ", body: "ስለ ንግድዎ በአማርኛ ወይም በእንግሊዝኛ ይግለጹ። ጎጆላይን ድረ-ገጹን ይጽፋል፤ ወቅታዊም ያደርገዋል።" },
@@ -442,6 +443,9 @@ export const am: Messages = {
     },
     tlEdits: "{n} ክፍሎች ተዘምነዋል",
     tlChecking: "ሁሉም ነገር መሥራቱን በማረጋገጥ ላይ",
+    setupTitle: "ድረ-ገጽዎን ከአብነቱ እየገነባን ነው",
+    setupDesign: "ቀለሞችና ፊደሎች",
+    setupSkip: "አሁኑኑ አሳይ",
     tlFixing: "ትንሽ ችግር በማስተካከል ላይ",
     tlReady: "ቅድመ-እይታው ዝግጁ ነው",
     tlElapsed: "{s} ሰከንድ",
