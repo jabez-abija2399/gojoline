@@ -329,7 +329,12 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
       if (s.type === "quote") for (const t of texts(s.quote)) out.push({ text: t, samplePhoto: Boolean(s.name) && isStock(s.image) });
       if (s.type === "cards" && s.layout === "people") for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: isStock(i.image) });
       // A studio's sample clients: keeping them would claim work for businesses it never had.
-      else if (s.type === "cards" && work) for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: false });
+      else if (s.type === "cards" && work)
+        for (const i of items) {
+          for (const t of texts(i.title)) out.push({ text: t, samplePhoto: false });
+          // Their facts too (place, year, area): renaming a sample project must not keep its claims.
+          if (Array.isArray(i.meta) && i.meta.length) out.push({ text: `meta:${JSON.stringify(i.meta)}`, samplePhoto: false });
+        }
       // Big numbers ("1,200+ shops", "15 years") are claims: a template's sample figures must not go live.
       if (s.type === "stats") for (const i of items) out.push({ text: `stat:${JSON.stringify(i.value)}|${JSON.stringify(i.label)}`, samplePhoto: false });
       // A giving goal is a claim about real money: the templates' sample goals must not go live.

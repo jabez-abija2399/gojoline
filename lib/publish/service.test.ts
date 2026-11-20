@@ -228,6 +228,10 @@ describe("publishSite", () => {
     architect.business = { phone: "+251 911 234 567", telegram: "realstudio" };
     for (const p of architect.pages) p.sections = p.sections.filter((s) => !["quote", "stats", "cta"].includes(s.type));
     expect(hasExampleDetails(JSON.stringify(architect))).toBe(true);
+    // Renamed projects that keep the sample's place, year and area still block.
+    const renamed = JSON.parse(JSON.stringify(architect)) as { pages: { sections: { type: string; items?: { title: unknown }[] }[] }[] };
+    for (const p of renamed.pages) for (const s of p.sections) if (s.type === "cards") s.items = s.items!.map((i, n) => ({ ...i, title: { en: `Our real project ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(renamed))).toBe(true);
   });
 
   it("blocks a template's sample numbers until the owner's own replace them", () => {

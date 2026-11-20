@@ -9,13 +9,13 @@ const projects = [
   {
     image: img("real-estate-card-modern-villa-palms", "A white flat-roofed villa with timber screens and planted terraces among palm trees", "በዘንባባ ዛፎች መካከል የእንጨት መጋረጃዎችና ተክል ያለባቸው እርከኖች ያሉት ጠፍጣፋ ጣሪያ ያለው ነጭ ቪላ"),
     subtitle: t("House", "መኖሪያ ቤት"),
-    title: t("Hillside House", "የኮረብታው ቤት"),
+    title: t("Entoto Ridge House", "የእንጦጦ ሸንተረር ቤት"),
     meta: [place("Bishoftu", "ቢሾፍቱ"), t("2025", "2017 ዓ.ም."), t("420 m²", "420 ካሬ ሜትር")],
   },
   {
-    image: img("construction-gallery-apartment-building-luanda", "A white multi-storey apartment building with curved balconies behind large green trees", "ከትልልቅ አረንጓዴ ዛፎች ጀርባ ጠመዝማዛ በረንዳዎች ያሉት ባለ ብዙ ፎቅ ነጭ የመኖሪያ ሕንፃ"),
+    image: img("real-estate-card-apartment-block-yellow-balconies", "A newly finished white apartment block with yellow balcony railings on a green hillside", "በአረንጓዴ ኮረብታ ላይ ቢጫ የበረንዳ መከላከያ ያለው አዲስ የተጠናቀቀ ነጭ የመኖሪያ ሕንፃ"),
     subtitle: t("Housing", "የጋራ መኖሪያ"),
-    title: t("Curve Residences", "የከርቭ መኖሪያዎች"),
+    title: t("Kebena Curve Residences", "የቀበና ከርቭ መኖሪያዎች"),
     meta: [place("Bole", "ቦሌ"), t("2024", "2016 ዓ.ም."), t("6,800 m²", "6,800 ካሬ ሜትር")],
   },
   {
@@ -36,13 +36,13 @@ const more = [
   {
     image: img("business-about-office", "An office corridor with black-framed glass walls, pendant lamps and a lounge area", "ጥቁር ፍሬም ያላቸው የመስታወት ግድግዳዎች፣ የተንጠለጠሉ መብራቶችና የመቀመጫ ቦታ ያለው የቢሮ መተላለፊያ"),
     subtitle: t("Workplace", "የሥራ ቦታ"),
-    title: t("Glass Office", "የመስታወት ቢሮ"),
+    title: t("Meskel Square Glass Office", "የመስቀል አደባባይ የመስታወት ቢሮ"),
     meta: [place("Bole", "ቦሌ"), t("2024", "2016 ዓ.ም."), t("900 m²", "900 ካሬ ሜትር")],
   },
   {
     image: img("real-estate-gallery-kitchen-garden-window", "A warm modern kitchen with cream cabinets, an island and a large window onto a garden", "ክሬም ቀለም ያላቸው ካቢኔቶች፣ ደሴት ጠረጴዛና ወደ አትክልት የሚያሳይ ትልቅ መስኮት ያለው ዘመናዊ ማብሰያ ቤት"),
     subtitle: t("Interior", "የውስጥ ዲዛይን"),
-    title: t("Garden Kitchen", "የአትክልቱ ማብሰያ ቤት"),
+    title: t("Old Airport Garden Kitchen", "የኦልድ ኤርፖርት የአትክልት ማብሰያ ቤት"),
     meta: [place("Old Airport", "ኦልድ ኤርፖርት"), t("2023", "2015 ዓ.ም."), t("38 m²", "38 ካሬ ሜትር")],
   },
 ];
@@ -56,7 +56,7 @@ save("architect", {
     phone: "+251 911 000 000",
     telegram: "yourbusiness",
     address: t("Sarbet, Addis Ababa", "ሳርቤት፣ አዲስ አበባ"),
-    hours: [{ days: t("Monday to Friday", "ከሰኞ እስከ ዓርብ"), time: t("8:30 am to 5:30 pm", "ከጠዋቱ 2:30 እስከ ምሽቱ 11:30") }],
+    hours: [{ days: t("Monday to Friday", "ከሰኞ እስከ ዓርብ"), time: t("8:30 am to 5:30 pm", "ከጠዋቱ 2:30 እስከ ከሰዓት በኋላ 11:30") }],
   },
   pages: [
     {
@@ -70,7 +70,7 @@ save("architect", {
           id: "top",
           variant: "immersive",
           frame: true,
-          eyebrow: t("9°01′ N · 38°45′ E · Addis Ababa", "9°01′ ሰ · 38°45′ ም · አዲስ አበባ"),
+          eyebrow: t("Architecture · Addis Ababa", "ሥነ ሕንፃ · አዲስ አበባ"),
           heading: t("Buildings that hold the light", "ብርሃንን የሚይዙ ሕንፃዎች"),
           image: img("real-estate-hero-modern-apartment-corner-sky", "The top corner of a black-and-white apartment block with large windows against a pale sky", "ትልልቅ መስኮቶች ያሉት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ በፈዛዛ ሰማይ ፊት"),
           primaryAction: link("Selected work", "የተመረጡ ሥራዎች", "#work"),
@@ -82,8 +82,8 @@ save("architect", {
           eyebrow: t("The studio", "ስቱዲዮው"),
           heading: t("Architecture and interiors, drawn by hand first", "ሥነ ሕንፃና የውስጥ ዲዛይን፣ መጀመሪያ በእጅ የሚሳሉ"),
           body: t(
-            "We design houses, housing and workplaces for the light, rain and altitude of the Ethiopian highlands.\n\nEvery project begins with a walk around the site and a pencil, and ends with us on site until the last window is in.",
-            "ለኢትዮጵያ ደጋማ ቦታዎች ብርሃን፣ ዝናብና ከፍታ የሚስማሙ መኖሪያ ቤቶችን፣ የጋራ መኖሪያዎችንና የሥራ ቦታዎችን እንነድፋለን።\n\nእያንዳንዱ ፕሮጀክት የሚጀምረው ቦታውን በመዞርና በእርሳስ ነው፤ የሚያልቀውም የመጨረሻው መስኮት እስኪገባ ድረስ ቦታው ላይ በመገኘታችን ነው።",
+            "We design houses, housing and workplaces for the light, rain and altitude of the Ethiopian highlands.\n\nEvery project begins with a walk around the site and a pencil, and we stay involved while it is built.",
+            "ለኢትዮጵያ ደጋማ ቦታዎች ብርሃን፣ ዝናብና ከፍታ የሚስማሙ መኖሪያ ቤቶችን፣ የጋራ መኖሪያዎችንና የሥራ ቦታዎችን እንነድፋለን።\n\nእያንዳንዱ ፕሮጀክት የሚጀምረው ቦታውን በመዞርና በእርሳስ ነው፤ ሲገነባም አብረን እንሳተፋለን።",
           ),
           image: img("personal-about-creative-desk", "A wooden desk with pencils, brushes, books, rolled drawings, a lamp and plants", "እርሳሶች፣ ብሩሾች፣ መጻሕፍት፣ የተጠቀለሉ ሥዕሎች፣ መብራትና ተክሎች ያሉበት የእንጨት ጠረጴዛ"),
           imageSide: "start",
@@ -106,7 +106,7 @@ save("architect", {
           items: [
             { title: t("Site first", "መጀመሪያ ቦታው"), description: t("Sun, wind, neighbours and the trees already there shape the plan before we draw a wall.", "ግድግዳ ከመሳላችን በፊት ፀሐይ፣ ነፋስ፣ ጎረቤቶችና ቀድሞ የነበሩ ዛፎች ዕቅዱን ይቀርጻሉ።") },
             { title: t("Local materials", "የአገር ውስጥ ቁሳቁሶች"), description: t("Stone, brick and timber that builders here know, used carefully and left honest.", "እዚህ ያሉ ግንበኞች የሚያውቋቸው ድንጋይ፣ ጡብና እንጨት፣ በጥንቃቄ የሚጠቀሙና ተፈጥሯቸው የሚታይ።") },
-            { title: t("On site to the end", "እስከ መጨረሻ ቦታው ላይ"), description: t("We visit every week of construction, so what is built is what was drawn.", "በግንባታው እያንዳንዱ ሳምንት እንጎበኛለን፤ የተሳለው እንዲገነባ።") },
+            { title: t("On site to the end", "እስከ መጨረሻ ቦታው ላይ"), description: t("We stay close to the build, so what is built is what was drawn.", "የተሳለው እንዲገነባ ከግንባታው አንርቅም።") },
           ],
         },
         { type: "quote", id: "statement", quote: t("A good building is quiet. It lets the light, the people and the city speak.", "ጥሩ ሕንፃ ጸጥ ያለ ነው። ብርሃኑ፣ ሰዎቹና ከተማዋ እንዲናገሩ ይፈቅዳል።") },
@@ -125,7 +125,7 @@ save("architect", {
           type: "cta",
           id: "contact",
           heading: t("A site, a brief or just a sketch?", "ቦታ፣ መመሪያ ወይም ንድፍ ብቻ አለዎት?"),
-          body: t("Tell us about it. The first conversation is free and carries no obligation.", "ስለ እሱ ይንገሩን። የመጀመሪያው ውይይት ነጻና ግዴታ የሌለበት ነው።"),
+          body: t("Tell us about it and we will reply.", "ስለ እሱ ይንገሩን፤ እንመልስልዎታለን።"),
           primaryAction: start,
         },
       ],
@@ -149,7 +149,7 @@ save("architect", {
           kind: "contact",
           eyebrow: t("New project", "አዲስ ፕሮጀክት"),
           heading: t("Tell us about your project", "ስለ ፕሮጀክትዎ ይንገሩን"),
-          intro: t("A few lines are enough. We answer within two working days and meet you on site.", "ጥቂት መስመሮች ይበቃሉ። በሁለት የሥራ ቀናት ውስጥ እንመልሳለን፣ ቦታው ላይም እንገናኛለን።"),
+          intro: t("A few lines are enough. We will reply and arrange to see the site.", "ጥቂት መስመሮች ይበቃሉ። እንመልስልዎታለን፣ ቦታውንም ለማየት እንቀጥራለን።"),
           fields: [
             { name: "name", label: t("Your name", "ስምዎ"), type: "text", required: true },
             { name: "phone", label: t("Phone number", "ስልክ ቁጥር"), type: "tel", required: true },
@@ -158,10 +158,10 @@ save("architect", {
             { name: "message", label: t("Tell us more", "ተጨማሪ ይንገሩን"), type: "textarea", required: true },
           ],
           submitLabel: t("Send", "ላክ"),
-          successMessage: t("Thank you. We will call you within two working days.", "እናመሰግናለን። በሁለት የሥራ ቀናት ውስጥ እንደውልልዎታለን።"),
+          successMessage: t("Thank you. We will be in touch.", "እናመሰግናለን። እናገኝዎታለን።"),
         },
         { type: "contact", id: "office", eyebrow: t("The office", "ቢሮው"), heading: t("Visit the studio", "ስቱዲዮውን ይጎብኙ"), intro: t("Call first and we will have the kettle on.", "አስቀድመው ይደውሉ፤ ሻይ ይዘን እንጠብቅዎታለን።") },
-        { type: "map", id: "map", eyebrow: t("Getting here", "አደራረስ"), heading: t("Sarbet, near the roundabout", "ሳርቤት፣ አደባባዩ አጠገብ"), query: "Sarbet, Addis Ababa" },
+        { type: "map", id: "map", eyebrow: t("Getting here", "አደራረስ"), heading: t("Find the studio", "ስቱዲዮውን ያግኙ") },
       ],
     },
   ],

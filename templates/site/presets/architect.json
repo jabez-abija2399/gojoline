@@ -13,7 +13,7 @@
     "hours": [
       {
         "days": { "en": "Monday to Friday", "am": "ከሰኞ እስከ ዓርብ" },
-        "time": { "en": "8:30 am to 5:30 pm", "am": "ከጠዋቱ 2:30 እስከ ምሽቱ 11:30" }
+        "time": { "en": "8:30 am to 5:30 pm", "am": "ከጠዋቱ 2:30 እስከ ከሰዓት በኋላ 11:30" }
       }
     ]
   },
@@ -29,7 +29,7 @@
           "id": "top",
           "variant": "immersive",
           "frame": true,
-          "eyebrow": { "en": "9°01′ N · 38°45′ E · Addis Ababa", "am": "9°01′ ሰ · 38°45′ ም · አዲስ አበባ" },
+          "eyebrow": { "en": "Architecture · Addis Ababa", "am": "ሥነ ሕንፃ · አዲስ አበባ" },
           "heading": { "en": "Buildings that hold the light", "am": "ብርሃንን የሚይዙ ሕንፃዎች" },
           "image": {
             "src": "/stock/real-estate-hero-modern-apartment-corner-sky.webp",
@@ -49,7 +49,7 @@
           "id": "studio",
           "eyebrow": { "en": "The studio", "am": "ስቱዲዮው" },
           "heading": { "en": "Architecture and interiors, drawn by hand first", "am": "ሥነ ሕንፃና የውስጥ ዲዛይን፣ መጀመሪያ በእጅ የሚሳሉ" },
-          "body": { "en": "We design houses, housing and workplaces for the light, rain and altitude of the Ethiopian highlands.\n\nEvery project begins with a walk around the site and a pencil, and ends with us on site until the last window is in.", "am": "ለኢትዮጵያ ደጋማ ቦታዎች ብርሃን፣ ዝናብና ከፍታ የሚስማሙ መኖሪያ ቤቶችን፣ የጋራ መኖሪያዎችንና የሥራ ቦታዎችን እንነድፋለን።\n\nእያንዳንዱ ፕሮጀክት የሚጀምረው ቦታውን በመዞርና በእርሳስ ነው፤ የሚያልቀውም የመጨረሻው መስኮት እስኪገባ ድረስ ቦታው ላይ በመገኘታችን ነው።" },
+          "body": { "en": "We design houses, housing and workplaces for the light, rain and altitude of the Ethiopian highlands.\n\nEvery project begins with a walk around the site and a pencil, and we stay involved while it is built.", "am": "ለኢትዮጵያ ደጋማ ቦታዎች ብርሃን፣ ዝናብና ከፍታ የሚስማሙ መኖሪያ ቤቶችን፣ የጋራ መኖሪያዎችንና የሥራ ቦታዎችን እንነድፋለን።\n\nእያንዳንዱ ፕሮጀክት የሚጀምረው ቦታውን በመዞርና በእርሳስ ነው፤ ሲገነባም አብረን እንሳተፋለን።" },
           "image": {
             "src": "/stock/personal-about-creative-desk.webp",
             "alt": { "en": "A wooden desk with pencils, brushes, books, rolled drawings, a lamp and plants", "am": "እርሳሶች፣ ብሩሾች፣ መጻሕፍት፣ የተጠቀለሉ ሥዕሎች፣ መብራትና ተክሎች ያሉበት የእንጨት ጠረጴዛ" }
@@ -69,7 +69,7 @@
                 "alt": { "en": "A white flat-roofed villa with timber screens and planted terraces among palm trees", "am": "በዘንባባ ዛፎች መካከል የእንጨት መጋረጃዎችና ተክል ያለባቸው እርከኖች ያሉት ጠፍጣፋ ጣሪያ ያለው ነጭ ቪላ" }
               },
               "subtitle": { "en": "House", "am": "መኖሪያ ቤት" },
-              "title": { "en": "Hillside House", "am": "የኮረብታው ቤት" },
+              "title": { "en": "Entoto Ridge House", "am": "የእንጦጦ ሸንተረር ቤት" },
               "meta": [
                 { "en": "Bishoftu", "am": "ቢሾፍቱ" },
                 { "en": "2025", "am": "2017 ዓ.ም." },
@@ -78,11 +78,11 @@
             },
             {
               "image": {
-                "src": "/stock/construction-gallery-apartment-building-luanda.webp",
-                "alt": { "en": "A white multi-storey apartment building with curved balconies behind large green trees", "am": "ከትልልቅ አረንጓዴ ዛፎች ጀርባ ጠመዝማዛ በረንዳዎች ያሉት ባለ ብዙ ፎቅ ነጭ የመኖሪያ ሕንፃ" }
+                "src": "/stock/real-estate-card-apartment-block-yellow-balconies.webp",
+                "alt": { "en": "A newly finished white apartment block with yellow balcony railings on a green hillside", "am": "በአረንጓዴ ኮረብታ ላይ ቢጫ የበረንዳ መከላከያ ያለው አዲስ የተጠናቀቀ ነጭ የመኖሪያ ሕንፃ" }
               },
               "subtitle": { "en": "Housing", "am": "የጋራ መኖሪያ" },
-              "title": { "en": "Curve Residences", "am": "የከርቭ መኖሪያዎች" },
+              "title": { "en": "Kebena Curve Residences", "am": "የቀበና ከርቭ መኖሪያዎች" },
               "meta": [
                 { "en": "Bole", "am": "ቦሌ" },
                 { "en": "2024", "am": "2016 ዓ.ም." },
@@ -136,7 +136,7 @@
             },
             {
               "title": { "en": "On site to the end", "am": "እስከ መጨረሻ ቦታው ላይ" },
-              "description": { "en": "We visit every week of construction, so what is built is what was drawn.", "am": "በግንባታው እያንዳንዱ ሳምንት እንጎበኛለን፤ የተሳለው እንዲገነባ።" }
+              "description": { "en": "We stay close to the build, so what is built is what was drawn.", "am": "የተሳለው እንዲገነባ ከግንባታው አንርቅም።" }
             }
           ]
         },
@@ -169,7 +169,7 @@
           "type": "cta",
           "id": "contact",
           "heading": { "en": "A site, a brief or just a sketch?", "am": "ቦታ፣ መመሪያ ወይም ንድፍ ብቻ አለዎት?" },
-          "body": { "en": "Tell us about it. The first conversation is free and carries no obligation.", "am": "ስለ እሱ ይንገሩን። የመጀመሪያው ውይይት ነጻና ግዴታ የሌለበት ነው።" },
+          "body": { "en": "Tell us about it and we will reply.", "am": "ስለ እሱ ይንገሩን፤ እንመልስልዎታለን።" },
           "primaryAction": {
             "label": { "en": "Start a project", "am": "ፕሮጀክት እንጀምር" },
             "href": "/contact"
@@ -196,7 +196,7 @@
                 "alt": { "en": "A white flat-roofed villa with timber screens and planted terraces among palm trees", "am": "በዘንባባ ዛፎች መካከል የእንጨት መጋረጃዎችና ተክል ያለባቸው እርከኖች ያሉት ጠፍጣፋ ጣሪያ ያለው ነጭ ቪላ" }
               },
               "subtitle": { "en": "House", "am": "መኖሪያ ቤት" },
-              "title": { "en": "Hillside House", "am": "የኮረብታው ቤት" },
+              "title": { "en": "Entoto Ridge House", "am": "የእንጦጦ ሸንተረር ቤት" },
               "meta": [
                 { "en": "Bishoftu", "am": "ቢሾፍቱ" },
                 { "en": "2025", "am": "2017 ዓ.ም." },
@@ -205,11 +205,11 @@
             },
             {
               "image": {
-                "src": "/stock/construction-gallery-apartment-building-luanda.webp",
-                "alt": { "en": "A white multi-storey apartment building with curved balconies behind large green trees", "am": "ከትልልቅ አረንጓዴ ዛፎች ጀርባ ጠመዝማዛ በረንዳዎች ያሉት ባለ ብዙ ፎቅ ነጭ የመኖሪያ ሕንፃ" }
+                "src": "/stock/real-estate-card-apartment-block-yellow-balconies.webp",
+                "alt": { "en": "A newly finished white apartment block with yellow balcony railings on a green hillside", "am": "በአረንጓዴ ኮረብታ ላይ ቢጫ የበረንዳ መከላከያ ያለው አዲስ የተጠናቀቀ ነጭ የመኖሪያ ሕንፃ" }
               },
               "subtitle": { "en": "Housing", "am": "የጋራ መኖሪያ" },
-              "title": { "en": "Curve Residences", "am": "የከርቭ መኖሪያዎች" },
+              "title": { "en": "Kebena Curve Residences", "am": "የቀበና ከርቭ መኖሪያዎች" },
               "meta": [
                 { "en": "Bole", "am": "ቦሌ" },
                 { "en": "2024", "am": "2016 ዓ.ም." },
@@ -248,7 +248,7 @@
                 "alt": { "en": "An office corridor with black-framed glass walls, pendant lamps and a lounge area", "am": "ጥቁር ፍሬም ያላቸው የመስታወት ግድግዳዎች፣ የተንጠለጠሉ መብራቶችና የመቀመጫ ቦታ ያለው የቢሮ መተላለፊያ" }
               },
               "subtitle": { "en": "Workplace", "am": "የሥራ ቦታ" },
-              "title": { "en": "Glass Office", "am": "የመስታወት ቢሮ" },
+              "title": { "en": "Meskel Square Glass Office", "am": "የመስቀል አደባባይ የመስታወት ቢሮ" },
               "meta": [
                 { "en": "Bole", "am": "ቦሌ" },
                 { "en": "2024", "am": "2016 ዓ.ም." },
@@ -261,7 +261,7 @@
                 "alt": { "en": "A warm modern kitchen with cream cabinets, an island and a large window onto a garden", "am": "ክሬም ቀለም ያላቸው ካቢኔቶች፣ ደሴት ጠረጴዛና ወደ አትክልት የሚያሳይ ትልቅ መስኮት ያለው ዘመናዊ ማብሰያ ቤት" }
               },
               "subtitle": { "en": "Interior", "am": "የውስጥ ዲዛይን" },
-              "title": { "en": "Garden Kitchen", "am": "የአትክልቱ ማብሰያ ቤት" },
+              "title": { "en": "Old Airport Garden Kitchen", "am": "የኦልድ ኤርፖርት የአትክልት ማብሰያ ቤት" },
               "meta": [
                 { "en": "Old Airport", "am": "ኦልድ ኤርፖርት" },
                 { "en": "2023", "am": "2015 ዓ.ም." },
@@ -284,7 +284,7 @@
           "kind": "contact",
           "eyebrow": { "en": "New project", "am": "አዲስ ፕሮጀክት" },
           "heading": { "en": "Tell us about your project", "am": "ስለ ፕሮጀክትዎ ይንገሩን" },
-          "intro": { "en": "A few lines are enough. We answer within two working days and meet you on site.", "am": "ጥቂት መስመሮች ይበቃሉ። በሁለት የሥራ ቀናት ውስጥ እንመልሳለን፣ ቦታው ላይም እንገናኛለን።" },
+          "intro": { "en": "A few lines are enough. We will reply and arrange to see the site.", "am": "ጥቂት መስመሮች ይበቃሉ። እንመልስልዎታለን፣ ቦታውንም ለማየት እንቀጥራለን።" },
           "fields": [
             {
               "name": "name",
@@ -323,7 +323,7 @@
             }
           ],
           "submitLabel": { "en": "Send", "am": "ላክ" },
-          "successMessage": { "en": "Thank you. We will call you within two working days.", "am": "እናመሰግናለን። በሁለት የሥራ ቀናት ውስጥ እንደውልልዎታለን።" }
+          "successMessage": { "en": "Thank you. We will be in touch.", "am": "እናመሰግናለን። እናገኝዎታለን።" }
         },
         {
           "type": "contact",
@@ -336,8 +336,7 @@
           "type": "map",
           "id": "map",
           "eyebrow": { "en": "Getting here", "am": "አደራረስ" },
-          "heading": { "en": "Sarbet, near the roundabout", "am": "ሳርቤት፣ አደባባዩ አጠገብ" },
-          "query": "Sarbet, Addis Ababa"
+          "heading": { "en": "Find the studio", "am": "ስቱዲዮውን ያግኙ" }
         }
       ]
     }
