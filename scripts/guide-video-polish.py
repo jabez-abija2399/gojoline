@@ -4,9 +4,13 @@ mention and clicks it (a coral ring on the click), and quiet classical piano und
 Prelude in C major, BWV 846: the composition is public domain and the recording is rendered
 here, note by note, so there is no recording right to clear).
 
-    python3 scripts/guide-video-polish.py <in.mp4> <out.mp4> [clicks.json]
+    python3 scripts/guide-video-polish.py <in.mp4> <out.mp4> [clicks.json] [music file]
 
 clicks.json: [[seconds, x, y, label], ...] for an edited video; without it, the list below.
+music file: a recording to use instead of the rendered piano, played back to back with
+crossfades to the video's length. Since 2026-11-20 the guide uses Kimiko Ishizaka's recording of
+the same prelude, from her Open Well-Tempered Clavier (CC0, archive.org item
+bach-well-tempered-clavier-book-1).
 
 One-off authoring tool. Needs ffmpeg, numpy and Pillow. The input is the silent 720p guide video;
 the output keeps its picture, timing and captions and adds the pointer and a music track.
@@ -166,7 +170,20 @@ def music(seconds, path, sr=44100, sixteenth=0.27):
         w.writeframes(pcm.tobytes())
 
 
-def main(src, dst, clicks_file=None):
+def recorded_bed(music, seconds, path):
+    """The recording, looped with 3 s crossfades to `seconds`, levelled quietly, faded in and out."""
+    loops = int(seconds // 150) + 2
+    inputs = sum((["-i", music] for _ in range(loops)), [])
+    steps, prev = [], "[0]"
+    for k in range(1, loops):
+        steps.append(f"{prev}[{k}]acrossfade=d=3:c1=tri:c2=tri[a{k}]")
+        prev = f"[a{k}]"
+    tail = f"atrim=0:{seconds},loudnorm=I=-21:TP=-2:LRA=11,afade=t=in:d=1.5,afade=t=out:st={seconds - 5}:d=5[m]"
+    chain = ";".join(steps + [f"{prev}{tail}"])
+    subprocess.check_call(["ffmpeg", "-v", "error", "-y", *inputs, "-filter_complex", chain, "-map", "[m]", "-ar", "48000", path])
+
+
+def main(src, dst, clicks_file=None, music_file=None):
     global CLICKS
     if clicks_file:
         import json
@@ -174,17 +191,20 @@ def main(src, dst, clicks_file=None):
         CLICKS = sorted((c[0], c[1], c[2]) for c in json.load(open(clicks_file)))
     seconds = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", src]).decode())
     wav = dst + ".music.wav"
-    music(seconds, wav)
+    if music_file:
+        recorded_bed(music_file, seconds, wav)
+    else:
+        music(seconds, wav)
     dec = subprocess.Popen(["ffmpeg", "-v", "error", "-i", src, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
     enc = subprocess.Popen(
         [
             "ffmpeg", "-v", "error", "-y",
             "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
             "-i", wav,
-            # A little room around the piano, then gentle so it never competes with reading.
-            "-filter:a", "aecho=0.8:0.6:60|120:0.25|0.15,volume=0.9",
+            # A little room around the rendered piano; a real recording already has its hall.
+            "-filter:a", "anull" if music_file else "aecho=0.8:0.6:60|120:0.25|0.15,volume=0.9",
             "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-maxrate", "450k", "-bufsize", "900k", "-profile:v", "high", "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "64k", "-ac", "1",
+            "-c:a", "aac", "-b:a", "80k" if music_file else "64k", "-ac", "2" if music_file else "1",
             "-movflags", "+faststart", "-shortest", dst,
         ],
         stdin=subprocess.PIPE,
@@ -208,4 +228,4 @@ def main(src, dst, clicks_file=None):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] != "-" else None, sys.argv[4] if len(sys.argv) > 4 else None)

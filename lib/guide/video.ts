@@ -21,7 +21,7 @@ export const CHAPTERS_TXT = `0:00  Intro
 
 /** Length of public/guide/gojoline-guide-720.mp4, in seconds, and its size in bytes (Lalibela Sky Lodge in steps 2-5, pointer and music, 2026-11-20). */
 export const VIDEO_SECONDS = 339.87;
-export const VIDEO_BYTES = 12753391;
+export const VIDEO_BYTES = 13403365;
 
 /**
  * The English captions are burned into the picture near the bottom; a captions track turned on
