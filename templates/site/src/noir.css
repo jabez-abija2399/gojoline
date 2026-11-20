@@ -291,6 +291,10 @@ body:has([data-style="noir"]) {
     transition-duration: 1600ms;
   }
   @supports (animation-timeline: view()) {
+    /* clip, not hidden, so the photo frames don't become their own scrollers. */
+    [data-style="noir"] .zoom {
+      overflow: clip;
+    }
     [data-style="noir"] :is(.feature-photo, .about-photo, .gallery-grid li, main section li) img {
       animation: noir-rise linear both;
       animation-timeline: view();
