@@ -42,11 +42,15 @@
   text-transform: none;
   color: var(--site-text);
 }
+/* A short black rule: in a gallery a red dot only ever means sold. */
 [data-style="museum"] .eyebrow::before {
-  width: 0.625rem;
-  height: 0.625rem;
-  border-radius: 50%;
-  background: var(--site-primary);
+  width: 1.5rem;
+  height: 2px;
+  border-radius: 0;
+  background: var(--site-text);
+}
+[data-style="museum"] .arrow-link {
+  text-decoration-color: var(--site-text);
 }
 [data-style="museum"] .hero-eyebrow {
   border: 0;
@@ -139,7 +143,7 @@
 }
 /* The label: the artist, then the title in italics, then medium and size. */
 [data-style="museum"] .card-grid .eyebrow {
-  order: 0;
+  order: -1;
   font-size: 1rem;
   font-weight: 700;
 }
@@ -173,8 +177,11 @@
 }
 /* Sold: a red dot, as on a gallery wall. */
 [data-style="museum"] .card-grid .badge {
-  inset: auto auto 1rem 1rem;
+  inset: auto;
+  inset-inline-start: 1rem;
+  inset-block-end: 1rem;
   display: inline-flex;
+  box-shadow: none;
   align-items: center;
   gap: 0.5rem;
   border: 0;
@@ -266,8 +273,17 @@
   line-height: 1.15;
 }
 
-/* ---- Visit: the call as a big black wall ---- */
+/* ---- Visit: the call as a big black wall, edge to edge ---- */
+[data-style="museum"] .cta-section {
+  padding-block: 0;
+}
+[data-style="museum"] .cta-section > .container-site {
+  max-width: none;
+  padding-inline: 0;
+}
 [data-style="museum"] .cta-band {
+  min-height: min(36rem, 80svh);
+  padding-inline: max(1rem, calc((100% - 72rem) / 2 + 1rem));
   border-radius: 0;
   background: var(--site-text);
   color: var(--site-background);
@@ -298,7 +314,8 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  box-shadow: none;  padding-inline: 0;
+  box-shadow: none;
+  padding-inline: 0;
 }
 [data-style="museum"] :is(input, select, textarea) {
   border: 0;
@@ -311,6 +328,21 @@
   border-top: 2px solid var(--site-text);
   background: var(--site-background);
   color: var(--site-text);
+}
+[data-style="museum"] .site-footer :focus-visible {
+  outline-color: var(--site-focus);
+}
+[data-style="museum"] .site-footer .border-on-accent\/20 {
+  border-color: var(--site-line);
+}
+[data-style="museum"] .footer-name {
+  font-size: clamp(2.5rem, 1rem + 5vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+:lang(am) [data-style="museum"] .footer-name {
+  letter-spacing: 0;
+  line-height: 1.2;
 }
 
 /* ---- Motion: the lights come up on each work as it arrives ---- */
@@ -331,7 +363,7 @@
       pointer-events: none;
       animation: museum-lights linear backwards;
       animation-timeline: --museum-work;
-      animation-range: entry 10% cover 40%;
+      animation-range: entry 0% entry 100%;
     }
   }
 }
@@ -350,4 +382,43 @@
 }
 [data-style="museum"] .card-grid .zoom:hover img {
   transform: none;
+}
+
+/* ---- Works numbered like a room guide ---- */
+[data-style="museum"] .card-grid {
+  counter-reset: museum-work;
+}
+[data-style="museum"] .card-grid > li {
+  counter-increment: museum-work;
+}
+[data-style="museum"] .card-grid > li > div:last-child::before {
+  content: counter(museum-work) / "";
+  order: -2;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--site-muted);
+}
+:lang(am) [data-style="museum"] .card-grid .item-title {
+  font-weight: 600;
+}
+
+/* ---- Inside: the rooms hung unevenly too ---- */
+@media (min-width: 768px) {
+  [data-style="museum"] .gallery-mosaic {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  [data-style="museum"] .gallery-mosaic > li {
+    grid-column: span 5;
+  }
+  [data-style="museum"] .gallery-mosaic > li:nth-child(4n + 1),
+  [data-style="museum"] .gallery-mosaic > li:nth-child(4n) {
+    grid-column: span 7;
+  }
+  [data-style="museum"] .gallery-mosaic img {
+    aspect-ratio: 3 / 2;
+  }
+}
+[data-style="museum"] .gallery-mosaic :is(li, img) {
+  border-radius: 0;
 }

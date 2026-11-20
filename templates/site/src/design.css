@@ -1007,7 +1007,9 @@
   [data-style="luxe"] .pcard > div:last-child {
     padding-inline: 0;
   }
-  [data-style="luxe"] .brand-mark,
+  [data-style="luxe"] .brand-mark {
+    display: none;
+  }
   /* The glow only: the class is also on the split, centred and portrait heroes themselves. */
   [data-style="luxe"] .hero-glow {
     background: none;

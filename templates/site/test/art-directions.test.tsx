@@ -390,7 +390,7 @@ describe("art direction (museum)", () => {
     expect(out).toContain("hero-centered");
     expect(out).toContain("card-grid");
     expect(out).toContain("schedule-list");
-    expect(text(out)).toMatch(/Selam Tadesse.*Dry season, Afar.*Oil on canvas, 2025.*180,000/);
+    expect(text(out)).toMatch(/Dry season, Afar.*Selam Tadesse.*Oil on canvas, 2025.*180,000/);
     expect(text(out)).toMatch(/Sold/);
   });
 

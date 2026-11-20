@@ -15,4 +15,11 @@ describe("hero glow", () => {
       .map(([, selector]) => selector.trim());
     expect(hiding).toEqual([]);
   });
+
+  // The same fix must not bring back the brand mark these styles hide.
+  it.each([["design.css", "luxe"], ["grand.css", "grand"], ["monochrome.css", "monochrome"], ["drafting.css", "drafting"], ["noir.css", "noir"], ["estate.css", "estate"], ["voyage.css", "voyage"]])("%s still hides the %s brand mark", (file, style) => {
+    const css = readFileSync(new URL(file, dir), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].filter(([, selector, body]) => selector.includes(`[data-style="${style}"] .brand-mark`) && /display\s*:\s*none/.test(body));
+    expect(rules.length).toBeGreaterThan(0);
+  });
 });

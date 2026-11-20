@@ -138,7 +138,7 @@
             {
               "image": {
                 "src": "/stock/art-card-gold-figure-installation.webp",
-                "alt": { "en": "A tall gold figure on a white plinth in a skylit gallery", "am": "በሰማይ ብርሃን በሚገባበት ማሳያ ውስጥ በነጭ መቆሚያ ላይ ያለ ረጅም የወርቅ ቀለም ምስል" }
+                "alt": { "en": "A tall gold figure on a white plinth in a skylit gallery, large colourful paintings on the walls behind", "am": "በሰማይ ብርሃን በሚገባበት ማሳያ ውስጥ በነጭ መቆሚያ ላይ ያለ ረጅም የወርቅ ቀለም ምስል፣ ከኋላው በግድግዳዎቹ ላይ ትልልቅ ባለቀለም ሥዕሎች" }
               },
               "title": { "en": "The one who waits", "am": "የሚጠብቀው" },
               "subtitle": { "en": "Dawit Bekele", "am": "ዳዊት በቀለ" },
@@ -155,7 +155,7 @@
             {
               "image": {
                 "src": "/stock/art-card-abstract-pink-yellow.webp",
-                "alt": { "en": "Soft pink, yellow and red brushstrokes on an abstract canvas", "am": "በረቂቅ ሥዕል ላይ ለስላሳ ሮዝ፣ ቢጫና ቀይ የብሩሽ ምቶች" }
+                "alt": { "en": "A brush laying soft pink, yellow and red strokes on an abstract canvas", "am": "በረቂቅ ሥዕል ላይ ለስላሳ ሮዝ፣ ቢጫና ቀይ ቀለም የሚቀባ ብሩሽ" }
               },
               "title": { "en": "Morning, Entoto", "am": "ጠዋት፣ እንጦጦ" },
               "subtitle": { "en": "Meron Assefa", "am": "ሜሮን አሰፋ" },

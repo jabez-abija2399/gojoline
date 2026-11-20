@@ -245,11 +245,15 @@ function PriceLine({ item }: { item: CardItem }) {
 }
 
 function Body({ item, large = false, quiet = false }: { item: CardItem; large?: boolean; /** A link, not a filled button: for cards that repeat the page's main action. */ quiet?: boolean }) {
-  const { text, href } = useSite();
+  const { text, href, site } = useSite();
+  // A wall label (museum): the title first for screen readers moving by heading, the artist shown above it.
+  const label = site.theme.style === "museum";
+  const subtitle = item.subtitle && <p className="eyebrow">{text(item.subtitle)}</p>;
   return (
     <>
-      {item.subtitle && <p className="eyebrow">{text(item.subtitle)}</p>}
+      {!label && subtitle}
       <ItemTitle className={large ? "font-heading text-3xl leading-tight md:text-4xl" : "text-xl leading-snug"}>{text(item.title)}</ItemTitle>
+      {label && subtitle}
       {item.meta && item.meta.length > 0 && (
         <ul className="meta flex flex-wrap gap-x-3 gap-y-1 text-muted">
           {item.meta.map((m, i) => (
