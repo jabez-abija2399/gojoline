@@ -613,7 +613,7 @@ export const siteShowcase = pgTable(
 
 /**
  * Admin analytics counters per Addis Ababa day: clicks on key builder links (`click`, key = the
- * link's name from lib/analytics/events.ts) and publishes (`publish`, key `first` or `update`).
+ * link's name from lib/analytics/clicks.ts) and publishes (`publish`, key `first` or `update`).
  * Counts only: no user ids, no IPs (migration 0021).
  */
 export const analyticsDaily = pgTable(

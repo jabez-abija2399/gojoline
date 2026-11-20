@@ -14,16 +14,21 @@ const CARDS: Metric[] = ["signups", "sitesStarted", "aiChanges", "published", "r
 /** Charts for the measures that tell the story over time. */
 const CHARTS: Metric[] = ["signups", "sitesStarted", "published", "clicks", "visits", "revenue"];
 
-const usd = (nano: number) => `$${(nano / 1e9).toFixed(nano > 0 && nano < 1e7 ? 4 : 2)}`;
+/** Measures where a rise is bad news (shown without the good-news colour). */
+const LOWER_IS_BETTER: Metric[] = ["aiCost"];
 
 /**
  * Admin → Analytics: day, week or month (Addis Ababa time). Cards compare the current period with
  * the one before; charts show the last 14 days, 12 weeks or 12 months; then the sign-up funnel,
  * which links were clicked (and on which pages), templates started from and where owners came from.
  */
-export function AnalyticsView({ r, t, locale, templateName, sourceName, birr }: { r: AnalyticsReport; t: T; locale: Locale; templateName: (id: string | null) => string; sourceName: (s: string) => string; birr: (minor: number) => string }) {
-  const value = (m: Metric, v: number) => (m === "revenue" ? birr(v) : m === "aiCost" ? usd(v) : v.toLocaleString(locale === "am" ? "am-ET" : "en-GB"));
-  const dayFmt = new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", r.period === "month" ? { month: "short", year: "numeric", timeZone: "UTC" } : { day: "numeric", month: "short", timeZone: "UTC" });
+export function AnalyticsView({ r, t, locale, templateName, sourceName, birr, usd }: { r: AnalyticsReport; t: T; locale: Locale; templateName: (id: string | null) => string; sourceName: (s: string) => string; birr: (minor: number) => string; usd: (nano: number) => string }) {
+  const tag = locale === "am" ? "am-ET" : "en-GB";
+  const num = (v: number) => v.toLocaleString(tag);
+  const value = (m: Metric, v: number) => (m === "revenue" ? birr(v) : m === "aiCost" ? usd(v) : num(v));
+  // Gregorian dates in both languages (the app's dates are Gregorian), with full month names in Amharic.
+  const month = locale === "am" ? "long" : "short";
+  const dayFmt = new Intl.DateTimeFormat(tag, r.period === "month" ? { month, year: "numeric", timeZone: "UTC" } : { day: "numeric", month, timeZone: "UTC" });
   const label = (day: string) => (r.period === "week" ? format(t.weekOf, { date: dayFmt.format(new Date(`${day}T00:00:00Z`)) }) : dayFmt.format(new Date(`${day}T00:00:00Z`)));
   const now = r.buckets.length - 1;
   const f = r.funnel;
@@ -55,15 +60,16 @@ export function AnalyticsView({ r, t, locale, templateName, sourceName, birr }: 
             const cur = s[now]!.value;
             const prev = s[now - 1]?.value ?? 0;
             const d = change(cur, prev);
-            const up = d !== null && d > 0;
-            const down = d !== null && d < 0;
+            const good = LOWER_IS_BETTER.includes(m) ? (d ?? 0) < 0 : (d ?? 0) > 0;
+            const bad = d !== null && d !== 0 && !good;
+            const tone = good ? "text-lagoon" : bad ? "text-danger" : "";
             return (
               <li key={m} className="flex flex-col gap-1 rounded-xl border border-line bg-white p-3">
                 <span className="text-sm text-ink-muted">{t.metrics[m]}</span>
                 <span className="font-display text-2xl font-bold tabular-nums">{value(m, cur)}</span>
                 <span className="flex items-center gap-1 text-xs text-ink-muted tabular-nums">
-                  {up && <TrendingUp aria-hidden="true" className="size-3.5 text-lagoon" />}
-                  {down && <TrendingDown aria-hidden="true" className="size-3.5 text-danger" />}
+                  {d !== null && d > 0 && <TrendingUp aria-hidden="true" className={`size-3.5 ${tone}`} />}
+                  {d !== null && d < 0 && <TrendingDown aria-hidden="true" className={`size-3.5 ${tone}`} />}
                   {format(t.previous[r.period], { value: value(m, prev) })}
                   {d !== null && ` · ${d > 0 ? "+" : ""}${d}%`}
                 </span>
@@ -72,12 +78,6 @@ export function AnalyticsView({ r, t, locale, templateName, sourceName, birr }: 
           })}
         </ul>
       </section>
-
-      <div className="grid gap-3 lg:grid-cols-2">
-        {CHARTS.map((m) => (
-          <BarChart key={m} title={t.metrics[m]} data={r.series[m]} format={(v) => value(m, v)} formatDay={label} tableLabel={t.showTable} dayLabel={t.periodCol[r.period]} valueLabel={t.value} emptyLabel={t.noData} />
-        ))}
-      </div>
 
       <div className="grid gap-3 lg:grid-cols-2">
         <section aria-labelledby="an-funnel" className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
@@ -89,7 +89,7 @@ export function AnalyticsView({ r, t, locale, templateName, sourceName, birr }: 
                 <span className="flex justify-between gap-2 text-sm">
                   <span>{t.funnel[k]}</span>
                   <span className="font-semibold tabular-nums">
-                    {f[k]}
+                    {num(f[k])}
                     {k !== "signedUp" && f.signedUp > 0 && <span className="font-normal text-ink-muted"> · {pct(f[k])}%</span>}
                   </span>
                 </span>
@@ -102,7 +102,7 @@ export function AnalyticsView({ r, t, locale, templateName, sourceName, birr }: 
         </section>
 
         <section aria-labelledby="an-clicks" className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
-          <h2 id="an-clicks" className="text-base font-semibold">{format(t.clicksTitle, { n: clicksTotal })}</h2>
+          <h2 id="an-clicks" className="text-base font-semibold">{format(t.clicksTitle, { n: num(clicksTotal) })}</h2>
           <p className="text-xs text-ink-muted">{t.clicksIntro}</p>
           {r.clicks.length === 0 ? (
             <p className="text-ink-muted">{t.noData}</p>
@@ -119,8 +119,8 @@ export function AnalyticsView({ r, t, locale, templateName, sourceName, birr }: 
                 {r.clicks.map((c) => (
                   <tr key={c.name} className="border-t border-line align-top">
                     <th scope="row" className="py-2 pe-2 text-start font-medium">{t.links[c.name]}</th>
-                    <td className="py-2 pe-2 text-xs text-ink-muted">{c.pages.map((p) => `${t.pages[p.page]} ${p.n}`).join(" · ")}</td>
-                    <td className="py-2 text-end font-semibold tabular-nums">{c.total}</td>
+                    <td className="py-2 pe-2 text-xs text-ink-muted">{c.pages.map((p) => `${t.pages[p.page]} ${num(p.n)}`).join(" · ")}</td>
+                    <td className="py-2 text-end font-semibold tabular-nums">{num(c.total)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -137,7 +137,7 @@ export function AnalyticsView({ r, t, locale, templateName, sourceName, birr }: 
               {r.templates.map((x) => (
                 <li key={x.id ?? "chat"} className="flex justify-between gap-2 border-t border-line py-2 text-sm first:border-0">
                   <span>{templateName(x.id)}</span>
-                  <span className="font-semibold tabular-nums">{x.n}</span>
+                  <span className="font-semibold tabular-nums">{num(x.n)}</span>
                 </li>
               ))}
             </ul>
@@ -153,13 +153,22 @@ export function AnalyticsView({ r, t, locale, templateName, sourceName, birr }: 
               {r.sources.map((x) => (
                 <li key={x.source} className="flex justify-between gap-2 border-t border-line py-2 text-sm first:border-0">
                   <span>{sourceName(x.source)}</span>
-                  <span className="font-semibold tabular-nums">{x.n}</span>
+                  <span className="font-semibold tabular-nums">{num(x.n)}</span>
                 </li>
               ))}
             </ul>
           )}
         </section>
       </div>
+
+      <section aria-labelledby="an-trend" className="flex flex-col gap-2">
+        <h2 id="an-trend" className="text-base font-semibold">{t.trendTitle[r.period]}</h2>
+        <div className="grid gap-3 lg:grid-cols-2">
+          {CHARTS.map((m) => (
+            <BarChart key={m} compact title={t.metrics[m]} data={r.series[m]} format={(v) => value(m, v)} totalText={(v) => format(t.total, { value: v })} formatDay={label} tableLabel={t.showTable} dayLabel={t.periodCol[r.period]} valueLabel={t.value} emptyLabel={t.noDataTrend} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

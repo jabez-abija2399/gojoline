@@ -69,7 +69,8 @@ export class DbAnalytics implements AnalyticsSource {
     const cur = all.at(-1)!;
     const curFrom = addisStart(cur);
     const curTo = addisStart(bucketEnd(cur, period));
-    const unit = sql.raw(`'${period}'`);
+    // A bound parameter (date_trunc takes text), never spliced into the SQL.
+    const unit = sql`${period}::text`;
     // The bucket's first day, in Addis Ababa time.
     const b = (col: AnyColumn) => sql<string>`to_char(date_trunc(${unit}, ${col} at time zone ${ZONE}), 'YYYY-MM-DD')`;
     const filled = (q: PromiseLike<{ bucket: string; value: number | string | null }[]>) => Promise.resolve(q).then((r) => fill(r, all));

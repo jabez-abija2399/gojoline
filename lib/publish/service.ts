@@ -234,7 +234,8 @@ async function deployLocked(
       publishedAt: new Date(),
       runtimeVersion: SITE_RUNTIME,
     });
-    await deps.countPublish?.(existing?.publishedAt ? "update" : "first").catch(() => undefined);
+    // Counted in the background: a slow analytics write never holds up a publish.
+    void deps.countPublish?.(existing?.publishedAt ? "update" : "first").catch(() => undefined);
     // Resting sites stay resting: the new deployment replaced the host's flag.
     if (site.offlineAt) await deps.publisher.setResting?.(result.providerProjectId, true, result.deploymentId).catch((e: unknown) => reportError("resting switch failed", e, { projectId }));
     if (legacyProjectId && deps.legacy) {

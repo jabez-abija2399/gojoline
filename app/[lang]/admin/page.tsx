@@ -168,8 +168,18 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
 
   async function AnalyticsTab() {
     const period: Period = PERIODS.includes(sp.period as Period) ? (sp.period as Period) : "day";
-    const report = await analytics().report(period);
     const a = t.admin.analytics;
+    const report = await analytics().report(period).catch((e: unknown) => {
+      reportError("admin analytics failed", e);
+      return null;
+    });
+    if (!report)
+      return (
+        <p role="alert" className="flex flex-wrap items-center gap-3 rounded-xl border border-line bg-white p-4 text-ink-muted">
+          {a.failed}
+          <Link href={`/${lang}/admin?tab=analytics&period=${period}`} className="inline-flex min-h-11 pointer-fine:min-h-9 items-center font-medium text-ink underline underline-offset-4">{a.retry}</Link>
+        </p>
+      );
     const src = t.growth.sources.names as Record<string, string>;
     return (
       <AnalyticsView
@@ -177,6 +187,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         t={a}
         locale={lang === "am" ? "am" : "en"}
         birr={(minor) => format(t.billing.price, { price: amount(minor) })}
+        usd={usd}
         templateName={(id) => (id === null ? a.fromChat : isPresetId(id) ? t.builder.templates[id] : id)}
         sourceName={(s) => src[s] ?? s}
       />
