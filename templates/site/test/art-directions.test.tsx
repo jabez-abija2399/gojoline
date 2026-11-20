@@ -173,3 +173,39 @@ describe("art direction (avant)", () => {
     });
   });
 });
+
+describe("art direction (precise)", () => {
+  it("software is valid and readable", () => {
+    const site = preset("software");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("precise");
+    expect(themeWarnings(site.theme)).toEqual([]);
+    expect(themeWarnings({ ...site.theme, primary: "#7FD1B5" }).join(" ")).toMatch(/small text on theme.background \(precise\)/);
+  });
+
+  it("shows the product as drawings in the site's colours, hidden from screen readers", () => {
+    const out = html(preset("software"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    // The hero's product picture is a drawing, not a photo.
+    expect(out).toMatch(/class="hero-centered[^"]*"(?:(?!<\/section>).)*<div aria-hidden="true" class="placeholder/s);
+    expect(out).toContain("app-bar");
+    expect(out).toContain("services-bento");
+    expect(out).not.toContain("<img");
+  });
+
+  it("puts plans side by side with one chosen, and FAQ on the pricing page", () => {
+    const site = preset("software");
+    const out = html(site, "en", site.pages.findIndex((p) => p.path === "/pricing"));
+    expect(out.match(/tier-featured/g)).toHaveLength(1);
+    expect(text(out)).toMatch(/Shop.*Most chosen.*450/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("software");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

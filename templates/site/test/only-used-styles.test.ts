@@ -20,7 +20,7 @@ describe("styles that ship only to the sites that use them", () => {
     expect(load(fileURLToPath(new URL("../src/design.css", import.meta.url)))).toBeNull();
   });
 
-  it.each(["grand", "avant"])("every %s rule is scoped to the style, so dropping the file changes no other site", (name) => {
+  it.each(["grand", "avant", "precise"])("every %s rule is scoped to the style, so dropping the file changes no other site", (name) => {
     const css = readFileSync(fileURLToPath(new URL(`../src/${name}.css`, import.meta.url)), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
     const selectors = [...css.matchAll(/(^|})\s*([^@{}][^{}]*)\{/g)].map((m) => m[2]!.trim()).filter((s) => !/^(@|from\b|to\b|\d+%)/.test(s));
     expect(selectors.length).toBeGreaterThan(50);
@@ -31,5 +31,12 @@ describe("styles that ship only to the sites that use them", () => {
     const out = load(fileURLToPath(new URL("../src/avant.css", import.meta.url)));
     if (style === "avant") expect(out).toContain('[data-style="avant"]');
     else expect(out).toBe("");
+  });
+
+  it("the software drawings are built only into a site that shows one", () => {
+    const out = load(fileURLToPath(new URL("../src/components/art-app.tsx", import.meta.url)));
+    const site = readFileSync(new URL("../src/site.json", import.meta.url), "utf8");
+    if (/"art"\s*:\s*"(dashboard|mobile|chart)"/.test(site)) expect(out).toBeNull();
+    else expect(out).toBe("export const appScenes = {};");
   });
 });

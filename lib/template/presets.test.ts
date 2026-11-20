@@ -25,11 +25,14 @@ describe("industry presets", () => {
     expect(Object.keys(presetVersionFiles(id)).every(isVersionedPath)).toBe(true);
   });
 
-  it.each(PRESET_IDS)("%s uses real photos from the library, none twice on a page", (id) => {
+  const DRAWN = new Set<string>(["software"]);
+  it.each(PRESET_IDS)("%s uses real photos from the library (or drawings of its product), none twice on a page", (id) => {
     const json = presetSiteJson(id);
     const site = JSON.parse(json) as { pages: { path: string; sections: unknown[] }[] };
     const refs = [...json.matchAll(/"src": "([^"]+)"/g)].map((m) => m[1]!);
-    expect(refs.length).toBeGreaterThanOrEqual(6);
+    // A software product is shown in drawings of its screens (art), not in stock photos.
+    if (DRAWN.has(id)) expect([...json.matchAll(/"art": "(dashboard|mobile|chart)"/g)].length).toBeGreaterThanOrEqual(4);
+    else expect(refs.length).toBeGreaterThanOrEqual(6);
     for (const src of refs) {
       expect(src).toMatch(/^\/stock\/[a-z0-9-]+\.webp$/);
       expect(existsSync(join(TEMPLATE_ROOT, "public", src)), src).toBe(true);

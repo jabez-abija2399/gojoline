@@ -576,5 +576,27 @@
         "height": 933
       }
     }
+  },
+  "software": {
+    "en": {
+      "src": "/showcase/software-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/software-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/software-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/software-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }

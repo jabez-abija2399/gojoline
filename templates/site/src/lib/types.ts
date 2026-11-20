@@ -24,7 +24,11 @@ export type ArtName =
   | "home"
   | "mountains"
   | "portrait"
-  | "work";
+  | "work"
+  /** A software product: a desktop dashboard, a phone screen, a rising sales chart. */
+  | "dashboard"
+  | "mobile"
+  | "chart";
 
 export interface Image {
   /**
@@ -492,8 +496,11 @@ export interface Theme {
    * grotesque words that move apart as the page scrolls, a broken grid of grey photos that colour
    * and bend on hover, overlapping titles, a cursor ring and buttons that lean towards the pointer
    * (creative agencies, design and architecture studios, artists).
+   * precise: a software product in the Swiss manner: a strict grid drawn in hairlines, tight
+   * neutral type with one accent, product drawings that come alive, quiet cards with fine borders
+   * (apps, software, online services, fintech).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise";
 }
 
 export interface Business {

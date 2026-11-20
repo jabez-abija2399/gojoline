@@ -41,7 +41,7 @@ export const am: Messages = {
       picked: "{name} እየታየ ነው። የምሳሌ መግለጫ ከታች ባለው ሳጥን ተጨምሯል።",
       build: "ድረ-ገጼን ሥራልኝ",
     },
-    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", darkMode: "ጨለማ ገጽታ", seeTemplates: "24ቱንም አብነቶች ይመልከቱ" },
+    nav: { label: "ዋና ማውጫ", templates: "አብነቶች", how: "እንዴት ይሠራል", prices: "ዋጋ", signIn: "ይግቡ", start: "በነጻ ይጀምሩ", mySites: "ድረ-ገጾችዎ", menu: "ማውጫ", darkMode: "ጨለማ ገጽታ", seeTemplates: "25ቱንም አብነቶች ይመልከቱ" },
     demo: {
       pick: "የንግድ ዓይነት ይምረጡ",
       prompts: {
@@ -63,7 +63,7 @@ export const am: Messages = {
     proof: [
       { value: "~40 ሰከንድ", label: "እስከ መጀመሪያው ድረ-ገጽ" },
       { value: "30 ከ30", label: "የሙከራ ድረ-ገጾች በመጀመሪያ ሙከራ በትክክል ተሠርተዋል" },
-      { value: "24", label: "ዝግጁ አብነቶች" },
+      { value: "25", label: "ዝግጁ አብነቶች" },
       { value: "2", label: "ቋንቋዎች፣ እርስዎ ይመርጣሉ" },
     ],
     eyebrows: { how: "እንዴት ይሠራል", features: "ባህሪያት", faq: "ማወቅ ያለብዎ", final: "ዛሬ ይጀምሩ" },
@@ -137,7 +137,7 @@ export const am: Messages = {
         events: "ሠርግና ዝግጅቶች",
         business: "ንግድና የግል",
       },
-      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ", organic: "ለስላሳ", cinematic: "ፊልማዊ", brutal: "ደማቅ ሳጥኖች", calm: "ረጋ ያለ", kinetic: "ብርቱ", grand: "ግርማ ያለው", avant: "ሙከራዊ" },
+      styles: { editorial: "ውብ", bold: "ደማቅ", clean: "ንጹሕ", warm: "ሞቅ ያለ", luxe: "ቅንጡ", swiss: "ጠንካራ", bento: "ሰሌዳ", organic: "ለስላሳ", cinematic: "ፊልማዊ", brutal: "ደማቅ ሳጥኖች", calm: "ረጋ ያለ", kinetic: "ብርቱ", grand: "ግርማ ያለው", avant: "ሙከራዊ", precise: "ጥርት ያለ" },
       features: { prices: "ዋጋ ወይም ምናሌ", booking: "የቀጠሮ ወይም የትዕዛዝ ቅጽ", gallery: "የፎቶ ማዕከል", team: "ቡድን ወይም ሠራተኞች", times: "የሥራ፣ የአገልግሎት ወይም የሶላት ሰዓት", reviews: "አስተያየቶች", map: "ካርታ" },
       about: {
         cafe: "ተወዳጅ ምግቦች፣ ሙሉ ምናሌና የጠረጴዛ ቀጠሮ",
@@ -164,6 +164,7 @@ export const am: Messages = {
         gym: "አባልነት፣ የክፍሎች ሰሌዳና ነጻ የመጀመሪያ ጉብኝት",
         resort: "ልዩ ስዊቶች በትልልቅ ፎቶዎች፣ ልምዶችና የግል ቦታ ማስያዣ",
         agency: "ሥራዎች ባልተስተካከለ ፍርግርግ፣ አገልግሎቶች እንደ ማውጫ እና ጎልቶ የሚታይ የመገናኛ ገጽ",
+        software: "የምርቱ ሥዕሎች፣ ባህሪያት በትሮች፣ ጥቅሎች ጎን ለጎን እና የነጻ ሙከራ ምዝገባ",
       },
     },
     templatePreview: {
@@ -491,6 +492,7 @@ export const am: Messages = {
       gym: "ጂም ወይም የአካል ብቃት",
       resort: "ቅንጡ ሆቴል ወይም ሪዞርት",
       agency: "የፈጠራ ኤጀንሲ ወይም የዲዛይን ስቱዲዮ",
+      software: "ሶፍትዌር፣ መተግበሪያ ወይም የመስመር ላይ አገልግሎት",
     },
     empty: "እስካሁን ድረ-ገጽ የለዎትም። አንድ ይጀምሩ፤ ጥቂት ደቂቃዎች ብቻ ይወስዳል።",
     untitled: "አዲስ ድረ-ገጽ",

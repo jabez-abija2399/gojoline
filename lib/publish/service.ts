@@ -330,6 +330,8 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
       if (s.type === "cards" && s.layout === "people") for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: isStock(i.image) });
       // A studio's sample clients: keeping them would claim work for businesses it never had.
       else if (s.type === "cards" && work) for (const i of items) for (const t of texts(i.title)) out.push({ text: t, samplePhoto: false });
+      // Big numbers ("1,200+ shops", "15 years") are claims: a template's sample figures must not go live.
+      if (s.type === "stats") for (const i of items) out.push({ text: `stat:${JSON.stringify(i.value)}|${JSON.stringify(i.label)}`, samplePhoto: false });
       // A giving goal is a claim about real money: the templates' sample goals must not go live.
       const goal = (s.type === "give" ? (s as { goal?: { raised?: { amountMinor?: number }; target?: { amountMinor?: number } } }).goal : undefined);
       if (goal) out.push({ text: `goal:${goal.raised?.amountMinor}/${goal.target?.amountMinor}`, samplePhoto: false });
@@ -347,7 +349,7 @@ function templateSamples(): Set<string> {
 
 /**
  * True while a site still shows a template's examples: the placeholder phone or Telegram name,
- * [bracketed] text, a template's invented reviews, quotes, staff, sample clients or giving goal, or a named person shown
+ * [bracketed] text, a template's invented reviews, quotes, staff, sample clients, numbers or giving goal, or a named person shown
  * with a sample photo (a stranger's face must never stand for someone at the business).
  */
 export function hasExampleDetails(siteJson: string): boolean {

@@ -41,7 +41,7 @@ variant === "list" ? (
           </ol>
         ) : (
           // Bento: with 4+ items the first one is a feature tile, sized so the grid has no holes.
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="services-bento grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {section.items.map((item, i) => (
               <li key={i} style={{ "--i": i % 3 } as React.CSSProperties} className={`card tilt reveal relative flex flex-col gap-3 overflow-hidden p-6 ${i === 0 ? featureClass(section.items.length) : ""}`}>
                 {/* The large tile carries its icon again, big and faint, so it never looks empty. */}

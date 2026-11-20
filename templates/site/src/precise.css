@@ -1,0 +1,381 @@
+/*
+ * precise: a software product in the Swiss manner. A strict grid drawn in hairlines, tight neutral
+ * type with one accent (the theme's primary), quiet surfaces with fine borders, and product drawings
+ * (components/art-app.tsx) that come alive as they scroll in. Outside the cascade layers so its grid
+ * wins over the utility classes; every rule is scoped to [data-style="precise"]. Built only into
+ * precise sites (scripts/only-used-styles.ts).
+ */
+
+/* ---- Type: tight, medium weight, tabular figures ---- */
+[data-style="precise"] :is(.headline, .section-title, .item-title, .stat-value, .tier-price, .wordmark) {
+  font-weight: 600;
+}
+[data-style="precise"] .headline {
+  font-size: clamp(2.75rem, 1.4rem + 5vw, 5.75rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+[data-style="precise"] .section-title {
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+:lang(am) [data-style="precise"] :is(.headline, .section-title) {
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+[data-style="precise"] :is(.stat-value, .tier-price, .fact-value, .numeral) {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+[data-style="precise"] .section-title::before {
+  display: none;
+}
+/* Labels: small, in the accent, after a small square. */
+[data-style="precise"] .eyebrow {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--site-primary);
+}
+[data-style="precise"] .eyebrow::before {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 2px;
+}
+[data-style="precise"] :is(.on-dark, .bg-accent) .eyebrow {
+  color: inherit;
+}
+[data-style="precise"] .hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--site-line);
+  background: var(--site-surface);
+  padding: 0.375rem 0.875rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+[data-style="precise"] .hero-eyebrow::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--site-primary);
+  box-shadow: 0 0 0 4px var(--site-primary-soft);
+}
+[data-style="precise"] :is(.brand-mark) {
+  border-radius: 8px;
+}
+
+/* ---- Structure: hairlines, quiet surfaces ---- */
+[data-style="precise"] main > section + section:not(.bg-accent, .on-dark) {
+  border-top: 1px solid var(--site-line);
+}
+[data-style="precise"] .site-header.header-scroll {
+  background: color-mix(in oklab, var(--site-background) 85%, transparent);
+}
+[data-style="precise"] .nav-link:hover {
+  background: color-mix(in oklab, var(--site-text) 6%, transparent);
+}
+[data-style="precise"] :is(.card, .pcard) {
+  border: 1px solid var(--site-line);
+  background: var(--site-surface);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--site-text) 4%, transparent);
+}
+[data-style="precise"] .btn {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+[data-style="precise"] .btn-primary {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.18),
+    0 1px 2px color-mix(in oklab, var(--site-text) 25%, transparent);
+}
+[data-style="precise"] .btn-outline {
+  border-width: 1px;
+  background: var(--site-surface);
+}
+[data-style="precise"] .badge {
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* ---- Hero: a headline over a faint grid, the product beneath it ---- */
+[data-style="precise"] .hero-centered {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background: none;
+}
+/* Twelve columns drawn in hairlines, fading out towards the bottom. */
+[data-style="precise"] .hero-centered::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to bottom, transparent, var(--site-background) 85%),
+    repeating-linear-gradient(to right, var(--site-line) 0 1px, transparent 1px calc(100% / 12));
+  opacity: 0.7;
+  pointer-events: none;
+}
+[data-style="precise"] .hero-centered .headline {
+  max-width: 16ch;
+}
+:lang(am) [data-style="precise"] .hero-centered .headline {
+  max-width: 20ch;
+}
+/* The product: a framed window with a soft, layered shadow. */
+[data-style="precise"] .hero-centered .zoom {
+  border: 1px solid var(--site-line);
+  border-radius: calc(var(--site-radius) + 6px);
+  background: var(--site-surface);
+  padding: 6px;
+  box-shadow:
+    0 2px 4px color-mix(in oklab, var(--site-text) 6%, transparent),
+    0 24px 60px -24px color-mix(in oklab, var(--site-text) 30%, transparent);
+}
+[data-style="precise"] .hero-centered .zoom > * {
+  border-radius: var(--site-radius);
+}
+
+/* ---- Numbers: a row of figures between hairlines, on the page itself ---- */
+[data-style="precise"] .stats-band:not(.on-dark) {
+  background: var(--site-background);
+}
+[data-style="precise"] .stats-band:not(.on-dark) dl > div {
+  border-inline-start: 1px solid var(--site-line);
+}
+[data-style="precise"] .stat-value {
+  font-size: clamp(2.25rem, 1.6rem + 2vw, 3.5rem);
+}
+
+/* ---- Features as tabs: a segmented control, the screen framed ---- */
+[data-style="precise"] .menu-tabs {
+  margin-inline: 0;
+  width: fit-content;
+  max-width: 100%;
+  gap: 0.25rem;
+  border: 1px solid var(--site-line);
+  border-radius: 999px;
+  background: var(--site-surface);
+  padding: 0.25rem;
+}
+[data-style="precise"] .menu-tab {
+  border: 0;
+  background: none;
+}
+[data-style="precise"] .menu-tab:is([aria-pressed="true"], [aria-selected="true"]) {
+  background: var(--site-text);
+  color: var(--site-background);
+}
+[data-style="precise"] .tab-panel .zoom {
+  border: 1px solid var(--site-line);
+  background: var(--site-surface);
+  padding: 6px;
+}
+[data-style="precise"] .tab-panel :is(img, .placeholder) {
+  aspect-ratio: 4 / 3;
+}
+
+/* ---- Integrations: a grid of tiles sharing their borders ---- */
+/* Each cell rules its own top and left edge inside itself; the frame draws the right and bottom.
+   Nothing overlaps, so no line is lost when a cell is animated or lands on a half pixel. */
+[data-style="precise"] .services-bento {
+  gap: 0;
+  border: solid var(--site-line);
+  border-width: 0 1px 1px 0;
+  border-radius: var(--site-radius);
+  overflow: hidden;
+}
+/* Six equal cells. */
+[data-style="precise"] .services-bento > li {
+  grid-column: auto;
+  grid-row: auto;
+  border: 0;
+  border-radius: 0;
+  background: var(--site-surface);
+  box-shadow:
+    inset 1px 0 0 var(--site-line),
+    inset 0 1px 0 var(--site-line);
+  padding: 1.5rem;
+  justify-content: flex-start;
+  transform: none;
+}
+[data-style="precise"] .services-bento > li :is(h2, h3) {
+  font-size: 1.125rem;
+}
+[data-style="precise"] .services-bento > li p {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+[data-style="precise"] .services-bento > li > span[aria-hidden] {
+  display: none;
+}
+[data-style="precise"] .services-bento > li > span:has(svg) {
+  border-radius: 8px;
+}
+
+/* ---- Pricing: the chosen plan outlined in the accent, not inverted ---- */
+[data-style="precise"] .tier-featured {
+  border: 1.5px solid var(--site-primary);
+  background: var(--site-surface);
+  color: var(--site-text);
+  box-shadow: 0 0 0 4px var(--site-primary-soft);
+}
+[data-style="precise"] .tier-featured :is(.text-muted, .small-label) {
+  color: var(--site-muted);
+}
+[data-style="precise"] .tier-featured .btn-primary {
+  background: var(--site-primary);
+  color: var(--site-on-primary);
+}
+
+/* ---- The closing call: a dark panel with the grid in it ---- */
+[data-style="precise"] .cta-band {
+  background-color: var(--site-accent);
+  background-image: repeating-linear-gradient(to right, rgb(255 255 255 / 0.06) 0 1px, transparent 1px calc(100% / 12));
+}
+[data-style="precise"] .cta-band > svg {
+  display: none;
+}
+[data-style="precise"] :is(.on-dark, .bg-accent) .btn-outline {
+  border-color: rgb(255 255 255 / 0.5);
+  background: transparent;
+  color: inherit;
+}
+
+/* ---- Customers' words: quiet bordered cards on the page, not another dark band ---- */
+[data-style="precise"] main > section:has(.testimonial) {
+  border-top: 1px solid var(--site-line);
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="precise"] .testimonial {
+  border: 1px solid var(--site-line);
+  background: var(--site-surface);
+}
+[data-style="precise"] .testimonial figcaption > :last-child {
+  color: var(--site-muted);
+  opacity: 1;
+}
+[data-style="precise"] main > section:has(.testimonial) .eyebrow {
+  color: var(--site-primary);
+}
+
+/* ---- Motion ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @media (hover: hover) and (pointer: fine) {
+    [data-style="precise"] :is(.card, .pcard) {
+      transition:
+        border-color 200ms,
+        box-shadow 200ms,
+        transform 200ms;
+    }
+    [data-style="precise"] :is(.card, .pcard):hover {
+      border-color: color-mix(in oklab, var(--site-primary) 45%, var(--site-line));
+    }
+    [data-style="precise"] .arrow-link::after {
+      transition: translate 200ms;
+    }
+    [data-style="precise"] .arrow-link:hover::after {
+      translate: 3px 0;
+    }
+  }
+  /* The product drawings come alive as they scroll in: bars rise, rows arrive, the line draws itself. */
+  @supports (animation-timeline: view()) {
+    /* clip, not hidden: a hidden overflow would make the frame its own (never scrolling) scroller,
+       and the drawing's timeline would stand still. */
+    [data-style="precise"] .zoom {
+      overflow: clip;
+    }
+    [data-style="precise"] .placeholder {
+      view-timeline-name: --app;
+    }
+    [data-style="precise"] .app-bar {
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: precise-rise linear both;
+      animation-timeline: --app;
+      animation-range: entry calc(10% + var(--i, 0) * 4%) cover calc(35% + var(--i, 0) * 4%);
+    }
+    [data-style="precise"] :is(.app-row, .app-tile) {
+      animation: precise-arrive linear both;
+      animation-timeline: --app;
+      animation-range: entry calc(15% + var(--i, 0) * 6%) cover calc(35% + var(--i, 0) * 6%);
+    }
+    [data-style="precise"] .app-line {
+      stroke-dasharray: 1;
+      animation: precise-draw linear both;
+      animation-timeline: --app;
+      animation-range: entry 20% cover 50%;
+    }
+    [data-style="precise"] .app-tick {
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
+      animation: precise-pop linear both;
+      animation-timeline: --app;
+      animation-range: entry 20% cover 40%;
+    }
+  }
+  /* The product at the top is already on screen: it builds itself once, on a clock. */
+  [data-style="precise"] .hero-centered :is(.app-bar, .app-row, .app-tile) {
+    animation-timeline: auto;
+    animation-range: normal;
+    animation-duration: 700ms;
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+    animation-delay: calc(300ms + var(--i, 0) * 70ms);
+  }
+  /* The latest point pulses a few times, like live data (an SVG transform runs on the main thread,
+     so it stops). */
+  [data-style="precise"] .app-dot {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: precise-pulse 2.4s ease-in-out 3;
+  }
+}
+@keyframes precise-rise {
+  from {
+    transform: scaleY(0.15);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes precise-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes precise-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes precise-pop {
+  from {
+    transform: scale(0.4);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes precise-pulse {
+  50% {
+    transform: scale(1.35);
+  }
+}
+/* Light surfaces inside sections that are dark in other styles: the focus ring follows. */
+[data-style="precise"] :is(main > section:has(.testimonial), .tier-featured) :focus-visible {
+  outline-color: var(--site-focus);
+}
