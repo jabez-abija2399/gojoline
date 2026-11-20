@@ -511,8 +511,11 @@ export interface Theme {
    * folio: a creative developer's notebook: a dot grid, labels in monospace like code comments, a
    * huge name that moves as the page scrolls, work as an index whose picture follows the pointer,
    * a cursor ring and leaning buttons (developers, designers, illustrators, freelancers).
+   * estate: a luxury property magazine: sand paper, deep forest ink (the accent), a heavy serif with
+   * large prices, the month's listing as a spread, listings in an uneven grid, filters as one search
+   * bar (property agencies, developers, holiday rentals, serviced apartments).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio" | "estate";
 }
 
 export interface Business {

@@ -322,3 +322,30 @@ describe("art direction (folio)", () => {
     });
   });
 });
+
+describe("art direction (estate)", () => {
+  it("estate is valid and readable", () => {
+    const site = preset("estate");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("estate");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("shows the listing of the month, homes with prices and a sale/rent filter", () => {
+    const out = html(preset("estate"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="feature-row /g)).toHaveLength(1);
+    expect(out).toContain("card-grid");
+    expect(out).toContain('class="menu-tabs"');
+    expect(text(out)).toMatch(/The Ridge Villa.*48,500,000/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("estate");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

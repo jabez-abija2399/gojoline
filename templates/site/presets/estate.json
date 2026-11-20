@@ -1,0 +1,330 @@
+{
+  "name": { "en": "Gara House Properties", "am": "ጋራ ሃውስ ፕሮፐርቲስ" },
+  "tagline": { "en": "Homes of character in Addis Ababa, for sale and to rent", "am": "በአዲስ አበባ ለሽያጭና ለኪራይ ልዩ ቤቶች" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#1F3A33", "accent": "#1F3A33", "background": "#F1ECE3", "text": "#1B1F1D", "font": "classic", "radius": "none", "style": "estate" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Bole, Addis Ababa", "am": "ቦሌ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Monday to Saturday", "am": "ከሰኞ እስከ ቅዳሜ" },
+        "time": { "en": "9:00 am to 6:00 pm", "am": "ከጠዋቱ 3 እስከ ምሽቱ 12 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Homes", "am": "ቤቶች" },
+      "description": { "en": "Gara House Properties: homes of character for sale and to rent in Addis Ababa. Private viewings by appointment.", "am": "ጋራ ሃውስ ፕሮፐርቲስ፦ በአዲስ አበባ ለሽያጭና ለኪራይ ልዩ ቤቶች። የግል ጉብኝት በቀጠሮ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "immersive",
+          "eyebrow": { "en": "Addis Ababa · For sale and to rent", "am": "አዲስ አበባ · ለሽያጭና ለኪራይ" },
+          "heading": { "en": "Homes worth coming home to", "am": "ወደ ቤት መመለስ የሚያስመኙ ቤቶች" },
+          "image": {
+            "src": "/stock/real-estate-hero-addis-skyline-trees.webp",
+            "alt": { "en": "The Addis Ababa skyline with a tall glass tower above a band of trees under a calm sky", "am": "የአዲስ አበባ ሰማይ መስመር፣ ከዛፎች መስመር በላይ ረጅም የመስታወት ሕንፃ በረጋ ሰማይ ሥር" }
+          },
+          "primaryAction": {
+            "label": { "en": "See the homes", "am": "ቤቶቹን ይመልከቱ" },
+            "href": "#homes"
+          },
+          "secondaryAction": {
+            "label": { "en": "Book a private viewing", "am": "የግል ጉብኝት ያስይዙ" },
+            "href": "/viewing"
+          }
+        },
+        {
+          "type": "cards",
+          "id": "listing-of-the-month",
+          "layout": "feature",
+          "eyebrow": { "en": "Listing of the month", "am": "የወሩ ምርጥ ቤት" },
+          "heading": { "en": "A penthouse above Bole", "am": "ከቦሌ በላይ ያለ የጣሪያ ቤት" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/business-card-addis-towers.webp",
+                "alt": { "en": "Glass high-rise towers above green trees under a blue sky", "am": "በሰማያዊ ሰማይ ሥር ከአረንጓዴ ዛፎች በላይ የመስታወት ረጃጅም ሕንፃዎች" }
+              },
+              "badge": { "en": "For sale", "am": "ለሽያጭ" },
+              "title": { "en": "The Skyline Penthouse", "am": "የሰማይ መስመሩ የጣሪያ ቤት" },
+              "subtitle": { "en": "Top floor, views on three sides", "am": "የላይኛው ፎቅ፣ በሦስት በኩል እይታ" },
+              "meta": [
+                { "en": "4 beds", "am": "4 መኝታ" },
+                { "en": "3 baths", "am": "3 መታጠቢያ" },
+                { "en": "260 m²", "am": "260 ካሬ ሜትር" },
+                { "en": "Roof terrace", "am": "የጣሪያ እርከን" }
+              ],
+              "description": { "en": "Light all day, a terrace for evenings over the city, and a lift that opens into the hall.", "am": "ቀኑን ሙሉ ብርሃን፣ በከተማዋ ላይ ለምሽት የሚሆን እርከን፣ እና ወደ አዳራሹ በቀጥታ የሚከፈት ሊፍት።" },
+              "price": { "amountMinor": 5600000000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Book a private viewing", "am": "የግል ጉብኝት ያስይዙ" },
+                "href": "/viewing"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "homes",
+          "layout": "grid",
+          "eyebrow": { "en": "Homes", "am": "ቤቶች" },
+          "heading": { "en": "Now available", "am": "አሁን የሚገኙ" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/real-estate-card-modern-villa-palms.webp",
+                "alt": { "en": "A modern white villa with timber screens and planted terraces among palm trees", "am": "በዘንባባ ዛፎች መካከል የእንጨት መጋረጃዎችና ተክል ያለባቸው እርከኖች ያሉት ዘመናዊ ነጭ ቪላ" }
+              },
+              "badge": { "en": "For sale", "am": "ለሽያጭ" },
+              "title": { "en": "The Ridge Villa", "am": "የሸንተረሩ ቪላ" },
+              "subtitle": { "en": "Five bedrooms with a garden terrace", "am": "የአትክልት እርከን ያለው ባለ አምስት መኝታ" },
+              "meta": [
+                { "en": "5 beds", "am": "5 መኝታ" },
+                { "en": "4 baths", "am": "4 መታጠቢያ" },
+                { "en": "420 m²", "am": "420 ካሬ ሜትር" }
+              ],
+              "price": { "amountMinor": 4850000000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Ask about this home", "am": "ስለዚህ ቤት ይጠይቁ" },
+                "href": "/viewing"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-card-bright-living-room.webp",
+                "alt": { "en": "A bright living room with two grey sofas, a pale rug and sliding glass doors", "am": "ሁለት ግራጫ ሶፋዎች፣ ፈዛዛ ምንጣፍና ተንሸራታች የመስታወት በሮች ያሉት ብሩህ ሳሎን" }
+              },
+              "badge": { "en": "For rent", "am": "ለኪራይ" },
+              "title": { "en": "Garden Apartment", "am": "የአትክልቱ አፓርትመንት" },
+              "subtitle": { "en": "Furnished, with a private garden", "am": "የተሟላ፣ የግል አትክልት ያለው" },
+              "meta": [
+                { "en": "3 beds", "am": "3 መኝታ" },
+                { "en": "2 baths", "am": "2 መታጠቢያ" },
+                { "en": "160 m²", "am": "160 ካሬ ሜትር" }
+              ],
+              "price": { "amountMinor": 8500000, "currency": "ETB" },
+              "priceNote": { "en": "per month", "am": "በወር" },
+              "action": {
+                "label": { "en": "Ask about this home", "am": "ስለዚህ ቤት ይጠይቁ" },
+                "href": "/viewing"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-card-midrise-apartments-balconies.webp",
+                "alt": { "en": "A mid-rise apartment building with glass balconies and large windows", "am": "የመስታወት በረንዳዎችና ትልልቅ መስኮቶች ያሉት መካከለኛ ከፍታ ያለው የመኖሪያ ሕንፃ" }
+              },
+              "badge": { "en": "For sale", "am": "ለሽያጭ" },
+              "title": { "en": "Glass Terrace Flats", "am": "የመስታወት እርከን አፓርትመንቶች" },
+              "subtitle": { "en": "Two-bedroom flats with terraces", "am": "እርከን ያላቸው ባለ ሁለት መኝታ አፓርትመንቶች" },
+              "meta": [
+                { "en": "2 beds", "am": "2 መኝታ" },
+                { "en": "2 baths", "am": "2 መታጠቢያ" },
+                { "en": "118 m²", "am": "118 ካሬ ሜትር" }
+              ],
+              "price": { "amountMinor": 1480000000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Ask about this home", "am": "ስለዚህ ቤት ይጠይቁ" },
+                "href": "/viewing"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-gallery-kitchen-garden-window.webp",
+                "alt": { "en": "A warm modern kitchen with cream cabinets and a large window onto a garden", "am": "ክሬም ቀለም ያላቸው ካቢኔቶችና ወደ አትክልት የሚያሳይ ትልቅ መስኮት ያለው ዘመናዊ ማብሰያ ቤት" }
+              },
+              "badge": { "en": "For sale", "am": "ለሽያጭ" },
+              "title": { "en": "Courtyard House", "am": "የግቢው ቤት" },
+              "subtitle": { "en": "A family house around a courtyard", "am": "በግቢ ዙሪያ የተሠራ የቤተሰብ ቤት" },
+              "meta": [
+                { "en": "4 beds", "am": "4 መኝታ" },
+                { "en": "3 baths", "am": "3 መታጠቢያ" },
+                { "en": "310 m²", "am": "310 ካሬ ሜትር" }
+              ],
+              "price": { "amountMinor": 3200000000, "currency": "ETB" },
+              "action": {
+                "label": { "en": "Ask about this home", "am": "ስለዚህ ቤት ይጠይቁ" },
+                "href": "/viewing"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-card-apartment-block-yellow-balconies.webp",
+                "alt": { "en": "A newly finished white apartment block with yellow balcony railings on a green hillside", "am": "በአረንጓዴ ኮረብታ ላይ ቢጫ የበረንዳ መከላከያ ያለው አዲስ የተጠናቀቀ ነጭ የመኖሪያ ሕንፃ" }
+              },
+              "badge": { "en": "For sale", "am": "ለሽያጭ" },
+              "title": { "en": "Hillside Residences", "am": "የኮረብታው መኖሪያዎች" },
+              "subtitle": { "en": "New flats, ready to move in", "am": "አዲስ አፓርትመንቶች፣ ለመግባት ዝግጁ" },
+              "meta": [
+                { "en": "1–3 beds", "am": "1–3 መኝታ" },
+                { "en": "From 74 m²", "am": "ከ74 ካሬ ሜትር" }
+              ],
+              "price": { "amountMinor": 960000000, "currency": "ETB" },
+              "priceNote": { "en": "from", "am": "ጀምሮ" },
+              "action": {
+                "label": { "en": "Ask about this home", "am": "ስለዚህ ቤት ይጠይቁ" },
+                "href": "/viewing"
+              }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "neighbourhoods",
+          "layout": "scroll",
+          "eyebrow": { "en": "Neighbourhoods", "am": "ሰፈሮች" },
+          "heading": { "en": "Where our homes are", "am": "ቤቶቻችን ያሉበት" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/business-hero-addis-street.webp",
+                "alt": { "en": "A busy avenue lined with modern glass buildings at dusk", "am": "ሲመሽ በዘመናዊ የመስታወት ሕንፃዎች የተከበበ የተጨናነቀ ጎዳና" }
+              },
+              "title": { "en": "Bole", "am": "ቦሌ" },
+              "subtitle": { "en": "Close to everything", "am": "ለሁሉም ቅርብ" }
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-about-addis-neighbourhood.webp",
+                "alt": { "en": "A district of white and blue mid-rise blocks among dense green trees", "am": "በጥቅጥቅ አረንጓዴ ዛፎች መካከል ነጭና ሰማያዊ መካከለኛ ሕንፃዎች ያሉበት ሰፈር" }
+              },
+              "title": { "en": "Old Airport", "am": "ኦልድ ኤርፖርት" },
+              "subtitle": { "en": "Quiet and green", "am": "ጸጥ ያለና አረንጓዴ" }
+            },
+            {
+              "image": {
+                "src": "/stock/real-estate-hero-modern-apartment-corner-sky.webp",
+                "alt": { "en": "The top corner of a black-and-white apartment block against a pale sky", "am": "በፈዛዛ ሰማይ ፊት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ" }
+              },
+              "title": { "en": "CMC", "am": "ሲኤምሲ" },
+              "subtitle": { "en": "New buildings, wide roads", "am": "አዳዲስ ሕንፃዎች፣ ሰፋፊ መንገዶች" }
+            },
+            {
+              "image": {
+                "src": "/stock/hotel-hero-infinity-pool-hills.webp",
+                "alt": { "en": "An infinity pool on a terrace overlooking acacia-covered hills", "am": "በግራር የተሸፈኑ ኮረብታዎችን የሚመለከት በእርከን ላይ ያለ መዋኛ" }
+              },
+              "title": { "en": "Bishoftu", "am": "ቢሾፍቱ" },
+              "subtitle": { "en": "Weekend houses by the lakes", "am": "በሐይቆቹ ዳር የዕረፍት ቤቶች" }
+            }
+          ]
+        },
+        {
+          "type": "stats",
+          "id": "agency",
+          "tone": "soft",
+          "heading": { "en": "The agency", "am": "ኤጀንሲው" },
+          "items": [
+            {
+              "value": { "en": "14", "am": "14" },
+              "label": { "en": "years in Addis Ababa", "am": "ዓመታት በአዲስ አበባ" }
+            },
+            {
+              "value": { "en": "600+", "am": "600+" },
+              "label": { "en": "homes sold and let", "am": "የተሸጡና የተከራዩ ቤቶች" }
+            },
+            {
+              "value": { "en": "48 h", "am": "48 ሰዓት" },
+              "label": { "en": "to arrange a viewing", "am": "ጉብኝት ለማዘጋጀት" }
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "id": "clients",
+          "eyebrow": { "en": "Clients", "am": "ደንበኞች" },
+          "heading": { "en": "In their words", "am": "በራሳቸው ቃል" },
+          "items": [
+            {
+              "quote": { "en": "They showed us four houses, not forty, and the second one was ours.", "am": "አርባ ሳይሆን አራት ቤቶች አሳዩን፤ ሁለተኛው የእኛ ሆነ።" },
+              "name": "Selam & Dawit",
+              "role": { "en": "Bought a family house", "am": "የቤተሰብ ቤት የገዙ" }
+            },
+            {
+              "quote": { "en": "Calm, honest and on time, from the first visit to the keys.", "am": "ከመጀመሪያው ጉብኝት እስከ ቁልፉ ድረስ ረጋ ያሉ፣ ታማኝና በሰዓቱ።" },
+              "name": "Martha G.",
+              "role": { "en": "Rented an apartment", "am": "አፓርትመንት የተከራየች" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "visit",
+          "heading": { "en": "See a home in person", "am": "ቤቱን በአካል ይመልከቱ" },
+          "body": { "en": "Tell us what you are looking for and when you are free.", "am": "የሚፈልጉትንና ነጻ የሆኑበትን ጊዜ ይንገሩን።" },
+          "primaryAction": {
+            "label": { "en": "Book a private viewing", "am": "የግል ጉብኝት ያስይዙ" },
+            "href": "/viewing"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/viewing",
+      "title": { "en": "Viewing", "am": "ጉብኝት" },
+      "nav": { "en": "Book a viewing", "am": "ጉብኝት ያስይዙ" },
+      "description": { "en": "Book a private viewing with Gara House Properties in Addis Ababa.", "am": "በአዲስ አበባ ከጋራ ሃውስ ፕሮፐርቲስ ጋር የግል ጉብኝት ያስይዙ።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "viewing",
+          "kind": "booking",
+          "eyebrow": { "en": "Private viewing", "am": "የግል ጉብኝት" },
+          "heading": { "en": "Book a viewing", "am": "ጉብኝት ያስይዙ" },
+          "intro": { "en": "Tell us which home and when suits you. We will call to confirm.", "am": "የትኛውን ቤትና መቼ እንደሚመችዎ ይንገሩን። ለማረጋገጥ እንደውላለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "home",
+              "label": { "en": "Which home?", "am": "የትኛው ቤት?" },
+              "type": "text"
+            },
+            {
+              "name": "looking",
+              "label": { "en": "Buying or renting?", "am": "መግዛት ወይስ መከራየት?" },
+              "type": "select",
+              "options": [
+                { "en": "Buying", "am": "መግዛት" },
+                { "en": "Renting", "am": "መከራየት" }
+              ]
+            },
+            {
+              "name": "date",
+              "label": { "en": "A day that suits you", "am": "የሚመችዎ ቀን" },
+              "type": "date"
+            }
+          ],
+          "submitLabel": { "en": "Request the viewing", "am": "ጉብኝቱን ጠይቅ" },
+          "successMessage": { "en": "Thank you. We will call you to confirm the viewing.", "am": "እናመሰግናለን። ጉብኝቱን ለማረጋገጥ እንደውልልዎታለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "office",
+          "eyebrow": { "en": "The office", "am": "ቢሮው" },
+          "heading": { "en": "Or call us", "am": "ወይም ይደውሉልን" }
+        }
+      ]
+    }
+  ]
+}

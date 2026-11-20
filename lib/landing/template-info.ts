@@ -476,6 +476,20 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  estate: {
+    category: "business",
+    designedFor: {
+      en: ["Luxury property agencies", "Property developers", "Serviced apartments", "Holiday and weekend homes"],
+      am: ["የቅንጡ ቤቶች ኤጀንሲዎች", "የቤት አልሚዎች", "አገልግሎት ያላቸው አፓርትመንቶች", "የዕረፍትና የሳምንት መጨረሻ ቤቶች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Homes with prices", am: "ቤቶች ከዋጋ ጋር" } },
+      { key: "booking", label: { en: "Private viewings", am: "የግል ጉብኝት" } },
+      "numbers",
+      "reviews",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

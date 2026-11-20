@@ -149,7 +149,7 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - [x] Architecture and interiors studio: `drafting` (a drawing sheet) + `architect` ("Meskot Architects", photos from the real-estate and interior library); design, performance and security reviews run and fixed
 - [x] Fine dining: `noir` (the page turned dark from the theme's own colours) + `dining` ("ESAT", photos from the café and banquet library); design, performance and security reviews run and fixed
 - [x] Creative portfolio: `folio` (a developer's notebook, kinetic name, interactive index, cursor) + `folio` starter beside `personal`; design, performance and security reviews run and fixed
-- [ ] Luxury real estate: a property-magazine direction beside `real-estate`
+- [x] Luxury real estate: `estate` (a property magazine) + `estate` starter ("Gara House Properties") beside `real-estate`; design, performance and security reviews run and fixed
 - [ ] Immersive travel: a story-told-by-scrolling direction beside `tours`
 - [ ] Art gallery or museum: blocked on photos (the library has no artwork or gallery photos and new downloads are blocked here; see Blocked)
 
@@ -203,6 +203,7 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - Generated-site LCP (performance review, 2026-11-20): with compressed files, Lighthouse slow 4G gives 2.1 to 2.4 s on both hotel and resort (budget 2.0 s); about 1.7 s is render delay from the blocking stylesheet and fonts. Next steps: inline the first screen's CSS and load the rest without blocking, and split every art direction into its own file the way `grand.css` is (about 4 to 5 KB gzip less blocking CSS per site). Lighthouse CI must serve files compressed or it reports about 3.9 s.
 - Resort photos are heavier than the hotel's (hero 480 px 28 KB vs 16 KB, about photo 34 KB): re-encode those stock files or pick lighter ones when real luxury-hotel photos are added to the library.
 - Form `number` fields have no minimum or maximum: a booking can ask for 0, -3 or 999999999 guests (`lib/cloud/forms.ts` checks the format only). Add optional `min`/`max` to `formFieldSchema`, render them, enforce them in `checkSubmission`, and set 1 to 20 on booking guest fields (security review, 2026-11-20).
+- Amharic in the `estate` template (`scripts/presets/estate.mjs`, 2026-11-20) and its gallery strings (`estate` style name "መጽሔት") needs the same native-speaker review.
 - Amharic in the `folio` template (`scripts/presets/folio.mjs`, 2026-11-20) and its gallery strings (`folio` style name "ማስታወሻ ደብተር") needs the same native-speaker review.
 - Amharic in the `dining` template (`scripts/presets/dining.mjs`, 2026-11-20) and its gallery strings (`noir` style name "የሻማ ብርሃን") needs the same native-speaker review.
 - Amharic in the `architect` template (`scripts/presets/architect.mjs`, 2026-11-20) and its gallery strings (`drafting` style name "የሥነ ሕንፃ") needs the same native-speaker review.
