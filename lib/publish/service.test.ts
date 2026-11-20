@@ -234,6 +234,19 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify(renamed))).toBe(true);
   });
 
+  it("blocks the dining starter's sample dishes, renamed or not", () => {
+    const dining = JSON.parse(presetSiteJson("dining")) as { business: Record<string, unknown>; pages: { sections: { type: string; categories?: { items: { name: unknown }[] }[] }[] }[] };
+    dining.business = { phone: "+251 911 234 567", telegram: "realplace" };
+    for (const p of dining.pages) p.sections = p.sections.filter((s) => !["testimonials", "quote", "cards", "cta"].includes(s.type));
+    expect(hasExampleDetails(JSON.stringify(dining))).toBe(true);
+    // Renamed dishes that keep the sample's description still block.
+    for (const p of dining.pages) for (const s of p.sections) if (s.type === "menu") for (const c of s.categories!) c.items = c.items.map((i, n) => ({ ...i, name: { en: `Our dish ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(dining))).toBe(true);
+    // A café keeping its own sample menu is judged as before (only these starters' menus are compared).
+    const cafe = JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "menu", categories: [{ name: { en: "Drinks" }, items: [{ name: { en: "Macchiato" }, price: { amountMinor: 4000, currency: "ETB" } }] }] }] }] });
+    expect(hasExampleDetails(cafe)).toBe(false);
+  });
+
   it("blocks a template's sample numbers until the owner's own replace them", () => {
     const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
     const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;

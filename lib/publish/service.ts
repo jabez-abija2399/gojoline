@@ -313,7 +313,7 @@ const isStock = (image: unknown) => typeof (image as Json | undefined)?.src === 
 const texts = (v: unknown): string[] => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v as Json).filter((x): x is string => typeof x === "string") : []);
 
 /** Starters whose cards are invented: a studio's sample clients and projects, a shop's sample products (shown in strangers' photos, at made-up prices). */
-const CLIENT_WORK_PRESETS = new Set<string>(["agency", "boutique", "architect"]);
+const CLIENT_WORK_PRESETS = new Set<string>(["agency", "boutique", "architect", "dining"]);
 
 /**
  * The reviews, quotes and people a site shows, with whether each sits beside a sample photo.
@@ -337,6 +337,13 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
         }
       // Big numbers ("1,200+ shops", "15 years") are claims: a template's sample figures must not go live.
       if (s.type === "stats") for (const i of items) out.push({ text: `stat:${JSON.stringify(i.value)}|${JSON.stringify(i.label)}`, samplePhoto: false });
+      // A restaurant's sample dishes and prices (only compared with CLIENT_WORK_PRESETS' menus).
+      if (s.type === "menu" && work)
+        for (const c of (Array.isArray(s.categories) ? s.categories : []) as Json[])
+          for (const i of (Array.isArray(c.items) ? c.items : []) as Json[]) {
+            for (const t of texts(i.name)) out.push({ text: `dish:${t}`, samplePhoto: false });
+            for (const t of texts(i.description)) out.push({ text: `dish:${t}`, samplePhoto: false });
+          }
       // A giving goal is a claim about real money: the templates' sample goals must not go live.
       const goal = (s.type === "give" ? (s as { goal?: { raised?: { amountMinor?: number }; target?: { amountMinor?: number } } }).goal : undefined);
       if (goal) out.push({ text: `goal:${goal.raised?.amountMinor}/${goal.target?.amountMinor}`, samplePhoto: false });

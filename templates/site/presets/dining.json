@@ -9,7 +9,7 @@
   "business": {
     "phone": "+251 911 000 000",
     "telegram": "yourbusiness",
-    "address": { "en": "Off Bole Road, behind the Friendship building, Addis Ababa", "am": "ከቦሌ መንገድ ገባ ብሎ፣ ከፍሬንድሺፕ ሕንፃ ጀርባ፣ አዲስ አበባ" },
+    "address": { "en": "Off Bole Road, Addis Ababa", "am": "ከቦሌ መንገድ ገባ ብሎ፣ አዲስ አበባ" },
     "hours": [
       {
         "days": { "en": "Tuesday to Saturday", "am": "ከማክሰኞ እስከ ቅዳሜ" },
@@ -34,7 +34,7 @@
           "variant": "immersive",
           "eyebrow": { "en": "Bole · Addis Ababa", "am": "ቦሌ · አዲስ አበባ" },
           "heading": { "en": "Fire, smoke and time", "am": "እሳት፣ ጭስና ጊዜ" },
-          "subheading": { "en": "Eight tables, one wood fire, and a menu that changes with the highland seasons.", "am": "ስምንት ጠረጴዛዎች፣ አንድ የእንጨት እሳት፣ እና ከደጋው ወቅቶች ጋር የሚቀየር ምግብ።" },
+          "subheading": { "en": "A small room, one wood fire, and a menu that changes with the highland seasons.", "am": "ትንሽ አዳራሽ፣ አንድ የእንጨት እሳት፣ እና ከደጋው ወቅቶች ጋር የሚቀየር ምግብ።" },
           "image": {
             "src": "/stock/cafe-hero-clay-pot-dish.webp",
             "alt": { "en": "A row of black clay pots of food with green herbs against a dark background", "am": "በጨለማ ዳራ ፊት አረንጓዴ ቅጠል የተደረገባቸው በምግብ የተሞሉ ጥቁር የሸክላ ድስቶች" }
@@ -67,7 +67,7 @@
               },
               "subtitle": { "en": "Highland beef", "am": "የደጋ የበሬ ሥጋ" },
               "title": { "en": "Ember tibs", "am": "የፍም ጥብስ" },
-              "description": { "en": "Beef from Debre Berhan, seared on the embers, with aged butter, rosemary and teff injera from the morning bake.", "am": "ከደብረ ብርሃን የመጣ የበሬ ሥጋ በፍም ላይ ተጠብሶ፣ ከቆየ ቅቤ፣ ከጥብስ ቅጠልና ከጠዋቱ የጤፍ እንጀራ ጋር።" }
+              "description": { "en": "Highland beef seared on the embers, with aged butter, rosemary and teff injera.", "am": "የደጋ የበሬ ሥጋ በፍም ላይ ተጠብሶ፣ ከቆየ ቅቤ፣ ከጥብስ ቅጠልና ከጤፍ እንጀራ ጋር።" }
             },
             {
               "image": {
@@ -94,7 +94,7 @@
           "id": "kitchen",
           "eyebrow": { "en": "The kitchen", "am": "ወጥ ቤቱ" },
           "heading": { "en": "A kitchen built around one fire", "am": "በአንድ እሳት ዙሪያ የተገነባ ወጥ ቤት" },
-          "body": { "en": "There is no gas in our kitchen. Everything is cooked over eucalyptus and olive wood, the way the cooks who taught us cooked at home.\n\nThe menu is written on Tuesday morning, after the market, and it ends when the week's produce does.", "am": "በወጥ ቤታችን ውስጥ ጋዝ የለም። ያስተማሩን ምግብ አብሳዮች በቤታቸው እንደሚያበስሉት ሁሉም ነገር በባሕር ዛፍና በወይራ እንጨት ይበስላል።\n\nምግቡ የሚጻፈው ማክሰኞ ጠዋት ከገበያ በኋላ ነው፤ የሚያልቀውም የሳምንቱ ምርት ሲያልቅ ነው።" },
+          "body": { "en": "Almost everything we serve is cooked over wood, the way the cooks who taught us cooked at home.\n\nThe menu is written on Tuesday morning, after the market, and it ends when the week's produce does.", "am": "ያስተማሩን ምግብ አብሳዮች በቤታቸው እንደሚያበስሉት የምናቀርበው አብዛኛው ነገር በእንጨት እሳት ይበስላል።\n\nምግቡ የሚጻፈው ማክሰኞ ጠዋት ከገበያ በኋላ ነው፤ የሚያልቀውም የሳምንቱ ምርት ሲያልቅ ነው።" },
           "image": {
             "src": "/stock/cafe-about-roasted-beans-pan.webp",
             "alt": { "en": "Hands holding a clay pan of freshly roasted coffee beans with a metal stirrer", "am": "አዲስ የተቆላ ቡና ያለበትን የሸክላ መጥበሻ ከብረት ማማሰያ ጋር የያዙ እጆች" }
@@ -129,12 +129,12 @@
               "items": [
                 {
                   "name": { "en": "Ember tibs", "am": "የፍም ጥብስ" },
-                  "description": { "en": "Debre Berhan beef, aged butter, rosemary", "am": "የደብረ ብርሃን የበሬ ሥጋ፣ የቆየ ቅቤ፣ ጥብስ ቅጠል" },
+                  "description": { "en": "Highland beef, aged butter, rosemary", "am": "የደጋ የበሬ ሥጋ፣ የቆየ ቅቤ፣ ጥብስ ቅጠል" },
                   "price": { "amountMinor": 145000, "currency": "ETB" }
                 },
                 {
                   "name": { "en": "Lake fish in banana leaf", "am": "በእንሰት ቅጠል የተጠቀለለ የሐይቅ ዓሣ" },
-                  "description": { "en": "Tilapia from Lake Ziway, green chilli, lemon", "am": "ከዝዋይ ሐይቅ የመጣ ቆሮሶ፣ አረንጓዴ ቃሪያ፣ ሎሚ" },
+                  "description": { "en": "Lake tilapia, green chilli, lemon", "am": "የሐይቅ ቆሮሶ፣ አረንጓዴ ቃሪያ፣ ሎሚ" },
                   "price": { "amountMinor": 125000, "currency": "ETB" }
                 },
                 {
@@ -178,7 +178,7 @@
           "id": "room",
           "layout": "mosaic",
           "eyebrow": { "en": "The room", "am": "አዳራሹ" },
-          "heading": { "en": "Candlelight and wood smoke", "am": "የሻማ ብርሃንና የእንጨት ጭስ" },
+          "heading": { "en": "Evenings at the table", "am": "ምሽቶች በገበታው ዙሪያ" },
           "images": [
             {
               "src": "/stock/studio-gallery-decorated-table.webp",
@@ -189,8 +189,8 @@
               "alt": { "en": "Small cini coffee cups on an engraved metal tray", "am": "በተቀረጸ የብረት ትሪ ላይ ትናንሽ የሲኒ ስኒዎች" }
             },
             {
-              "src": "/stock/hotel-gallery-veranda-dusk.webp",
-              "alt": { "en": "A colonnaded veranda with soft lights above a lawn at dusk", "am": "ሲመሽ በመስኩ ላይ ለስላሳ መብራቶች ያሉት ምሰሶዎች ያሉት በረንዳ" }
+              "src": "/stock/cafe-hero-coffee-ceremony-pour.webp",
+              "alt": { "en": "Coffee poured from a black clay jebena into rows of small cups set in a carved wooden chest", "am": "ከጥቁር የሸክላ ጀበና በተቀረጸ የእንጨት ሳጥን ውስጥ በተደረደሩ ትናንሽ ስኒዎች የሚቀዳ ቡና" }
             },
             {
               "src": "/stock/events-card-decor-floral-centrepiece.webp",
@@ -225,10 +225,10 @@
           "type": "cta",
           "id": "reserve",
           "heading": { "en": "A table by the fire is waiting", "am": "በእሳቱ አጠገብ ያለ ጠረጴዛ እየጠበቀዎ ነው" },
-          "body": { "en": "Eight tables, five evenings a week. Book a few days ahead.", "am": "ስምንት ጠረጴዛዎች፣ በሳምንት አምስት ምሽቶች። ከጥቂት ቀናት በፊት ያስይዙ።" },
+          "body": { "en": "Book a few days ahead.", "am": "ከጥቂት ቀናት በፊት ያስይዙ።" },
           "image": {
-            "src": "/stock/hotel-hero-lodge-pool-dusk.webp",
-            "alt": { "en": "A thatched building lit by lanterns at dusk, reflected in dark water", "am": "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሕንፃ፣ በጨለማ ውኃ ውስጥ ሲንጸባረቅ" }
+            "src": "/stock/events-hero-chandelier-banquet-hall.webp",
+            "alt": { "en": "A golden dining hall with chandeliers and set tables", "am": "ሻንደሊየሮችና የተዘጋጁ ጠረጴዛዎች ያሉት ወርቃማ የመመገቢያ አዳራሽ" }
           },
           "primaryAction": {
             "label": { "en": "Reserve a table", "am": "ጠረጴዛ ያስይዙ" },
@@ -304,8 +304,7 @@
         {
           "type": "map",
           "id": "map",
-          "heading": { "en": "Behind the Friendship building", "am": "ከፍሬንድሺፕ ሕንፃ ጀርባ" },
-          "query": "Bole Road, Addis Ababa"
+          "heading": { "en": "Find us", "am": "ያግኙን" }
         }
       ]
     }
