@@ -151,7 +151,7 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - [x] Creative portfolio: `folio` (a developer's notebook, kinetic name, interactive index, cursor) + `folio` starter beside `personal`; design, performance and security reviews run and fixed
 - [x] Luxury real estate: `estate` (a property magazine) + `estate` starter ("Gara House Properties") beside `real-estate`; design, performance and security reviews run and fixed
 - [x] Immersive travel: `voyage` (chapters as full-screen photos) + `voyage` starter ("Meda Journeys") beside `tours`; design, performance and security reviews run and fixed
-- [ ] Art gallery or museum: `museum` (white walls, works with wall labels, an uneven hang) + `exhibit` ("Gize Contemporary"); reviews to run
+- [x] Art gallery or museum: `museum` (white walls, works shown whole with wall labels, an uneven hang, a red dot for sold, the lights coming up on each work) + `exhibit` ("Gize Contemporary", 12 new Pexels photos); design, performance and security reviews run and fixed. Also fixed on the way: seven styles hid split, centred and portrait heroes
 
 ## User guide (2026-11-19)
 - [x] “How to use Gojoline” at `/{lang}/guide`: 720p video with captions and chapters (en, am), sticky contents on large screens and a folding one on phones that jumps the video, ten sections with steps, tips and real screenshots, questions, “Build your website”; real plan prices, change sizes and limits; links from the sidebar, the empty start screen, the dashboard Home, the public footer and the sitemap; unit tests (chapter and time parsing, WebVTT, files) and e2e (en/am at 360 and 1366, contents jump, captions, preload none, entry points, axe, no sideways scroll)
