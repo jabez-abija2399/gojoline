@@ -9,16 +9,19 @@ import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
-import { adminStats, services } from "@/lib/server/services";
+import { adminStats, analytics, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgePercent, ChartColumn, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
 import { FeedbackReplyForm } from "@/components/admin/feedback-reply-form";
 import { TYPE_ICONS } from "@/components/feedback/type-icons";
 import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
 import { shortAgent } from "@/lib/feedback/agent";
 import { reportError } from "@/lib/observability/report";
 import { BarChart } from "@/components/admin/bar-chart";
+import { AnalyticsView } from "@/components/admin/analytics-view";
+import { PERIODS, type Period } from "@/lib/analytics/periods";
+import { isPresetId } from "@/lib/template/presets";
 import { setAdminTheme, setShowcaseHidden, toggleDiscountCode } from "./actions";
 import { offerEndsAt, offerUntilLabel } from "@/lib/billing/discounts";
 import { offerProductsText } from "@/lib/billing/offer-text";
@@ -44,7 +47,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["overview", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "settings"] as const;
+const TABS = ["overview", "analytics", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 type AdminUserPlan = (typeof PLAN_IDS)[number];
 
@@ -72,7 +75,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     svc.feedback.countByStatus().catch((e: unknown) => (reportError("feedback count failed", e), emptyCounts())),
   ]);
   const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports, feedback: fbCounts.new };
-  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, analytics: ChartColumn, discounts: BadgePercent, settings: Settings2 };
   const navItem = (x: Tab, compact: boolean) => {
     const Icon = icons[x];
     return (
@@ -125,6 +128,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             </FocusOnMount>
           )}
           {tab === "overview" && <Overview />}
+          {tab === "analytics" && <AnalyticsTab />}
           {tab === "payments" && <Payments />}
           {tab === "reports" && <Reports />}
           {tab === "feedback" && <FeedbackTab />}
@@ -159,6 +163,34 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           ))}
         </div>
       </form>
+    );
+  }
+
+  async function AnalyticsTab() {
+    const period: Period = PERIODS.includes(sp.period as Period) ? (sp.period as Period) : "day";
+    const a = t.admin.analytics;
+    const report = await analytics().report(period).catch((e: unknown) => {
+      reportError("admin analytics failed", e);
+      return null;
+    });
+    if (!report)
+      return (
+        <p role="alert" className="flex flex-wrap items-center gap-3 rounded-xl border border-line bg-white p-4 text-ink-muted">
+          {a.failed}
+          <Link href={`/${lang}/admin?tab=analytics&period=${period}`} className="inline-flex min-h-11 pointer-fine:min-h-9 items-center font-medium text-ink underline underline-offset-4">{a.retry}</Link>
+        </p>
+      );
+    const src = t.growth.sources.names as Record<string, string>;
+    return (
+      <AnalyticsView
+        r={report}
+        t={a}
+        locale={lang === "am" ? "am" : "en"}
+        birr={(minor) => format(t.billing.price, { price: amount(minor) })}
+        usd={usd}
+        templateName={(id) => (id === null ? a.fromChat : isPresetId(id) ? t.builder.templates[id] : id)}
+        sourceName={(s) => src[s] ?? s}
+      />
     );
   }
 

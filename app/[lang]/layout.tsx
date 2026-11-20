@@ -1,3 +1,4 @@
+import { ClickTracker } from "@/components/analytics/click-tracker";
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
@@ -74,6 +75,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
         </a>
         {children}
         <RegisterServiceWorker />
+        <ClickTracker />
       </body>
     </html>
   );

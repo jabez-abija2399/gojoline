@@ -74,7 +74,7 @@ export default async function ProjectsPage({
               <span className="flex flex-1 items-center gap-2 px-3 pt-3 text-sm font-medium">{b.templates[site.id]}</span>
             </Link>
             {!paused && (
-            <form action={createProject} data-preset={site.id} className="p-2 pt-1 sm:p-3 sm:pt-1">
+            <form action={createProject} data-preset={site.id} data-track="use_template" className="p-2 pt-1 sm:p-3 sm:pt-1">
               <input type="hidden" name="lang" value={lang} />
               <input type="hidden" name="preset" value={site.id} />
               <PendingButton aria-label={`${b.useTemplate}: ${b.templates[site.id]}`} className="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-full border border-line px-3 text-sm font-medium whitespace-nowrap hover:border-faint">

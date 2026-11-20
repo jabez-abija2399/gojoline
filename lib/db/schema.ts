@@ -610,3 +610,19 @@ export const siteShowcase = pgTable(
   },
   (t) => [index("site_showcase_thumb_idx").on(t.thumbKey)],
 );
+
+/**
+ * Admin analytics counters per Addis Ababa day: clicks on key builder links (`click`, key = the
+ * link's name from lib/analytics/clicks.ts) and publishes (`publish`, key `first` or `update`).
+ * Counts only: no user ids, no IPs (migration 0021).
+ */
+export const analyticsDaily = pgTable(
+  "analytics_daily",
+  {
+    day: date("day").notNull(),
+    event: text("event", { enum: ["click", "publish"] }).notNull(),
+    key: text("key").notNull(),
+    n: integer("n").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.event, t.key] })],
+);
