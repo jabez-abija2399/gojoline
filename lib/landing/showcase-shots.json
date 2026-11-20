@@ -664,5 +664,27 @@
         "height": 933
       }
     }
+  },
+  "folio": {
+    "en": {
+      "src": "/showcase/folio-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/folio-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/folio-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/folio-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }

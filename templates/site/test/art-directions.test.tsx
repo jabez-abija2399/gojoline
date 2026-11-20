@@ -294,3 +294,31 @@ describe("art direction (noir)", () => {
     });
   });
 });
+
+describe("art direction (folio)", () => {
+  it("folio is valid and readable", () => {
+    const site = preset("folio");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("folio");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("puts the statement first, then work as an index, case studies, skills and experience", () => {
+    const site = preset("folio");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain("hero-portrait");
+    expect(out).toContain("index-list");
+    expect(out.match(/class="feature-row /g)).toHaveLength(2);
+    expect(text(out)).toMatch(/Front-end lead/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("folio");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

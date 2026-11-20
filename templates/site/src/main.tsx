@@ -17,6 +17,7 @@ import "./precise.css";
 import "./monochrome.css";
 import "./drafting.css";
 import "./noir.css";
+import "./folio.css";
 
 const container = document.getElementById("root")!;
 

@@ -183,7 +183,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
 
   if (variant === "portrait") {
     return (
-      <section id={section.id} className="section hero-glow md:py-20">
+      <section id={section.id} className="hero-portrait section hero-glow md:py-20">
         <div className="container-site grid items-end gap-10 md:grid-cols-[1.25fr_1fr] md:gap-14">
           <div className="flex flex-col gap-6 md:pb-6">
             {section.eyebrow && (

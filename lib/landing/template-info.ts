@@ -463,6 +463,19 @@ export const TEMPLATE_INFO = {
     },
     highlights: ["menu", { key: "booking", label: { en: "Table reservations", am: "የጠረጴዛ ቦታ ማስያዝ" } }, "gallery", "reviews", "hours", "map", "languages"],
   },
+  folio: {
+    category: "business",
+    designedFor: {
+      en: ["Developers and engineers", "Product and UI designers", "Illustrators and motion designers", "Freelancers looking for clients"],
+      am: ["ገንቢዎችና መሐንዲሶች", "የምርትና የበይነገጽ ዲዛይነሮች", "ሠዓሊዎችና የእንቅስቃሴ ዲዛይነሮች", "ደንበኛ የሚፈልጉ ራሳቸውን የቻሉ ባለሙያዎች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Work as an index", am: "ሥራዎች እንደ ማውጫ" } },
+      "timeline",
+      { key: "contactForm", label: { en: "Project enquiries", am: "የፕሮጀክት ጥያቄዎች" } },
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

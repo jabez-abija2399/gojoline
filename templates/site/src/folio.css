@@ -1,0 +1,328 @@
+/*
+ * folio: a creative developer's notebook. Off-white paper with a dot grid, black ink, one bright
+ * marker colour (the theme's highlight), labels in monospace like code comments, a huge name that
+ * drifts as the page scrolls, work as an index whose picture follows the pointer, and the cursor
+ * ring and leaning buttons from components/pointer.ts. Outside the cascade layers so it wins over
+ * the utility classes; every rule is scoped to [data-style="folio"]. Built only into folio sites
+ * (scripts/only-used-styles.ts).
+ */
+[data-style="folio"] {
+  --folio-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+}
+
+/* ---- Paper: a dot grid ---- */
+[data-style="folio"] .site-root {
+  background-image: radial-gradient(color-mix(in oklab, var(--site-text) 16%, transparent) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+[data-style="folio"] :is(.bg-surface, .bg-primary-soft, .section, .hero-glow) {
+  background-color: transparent;
+}
+[data-style="folio"] .hero-glow {
+  background-image: none;
+}
+
+/* ---- Type: a heavy grotesque for words, monospace for labels ---- */
+[data-style="folio"] :is(.headline, .section-title, .item-title, .index-title) {
+  font-weight: 800;
+}
+[data-style="folio"] .headline {
+  font-size: clamp(3.25rem, 0.8rem + 10vw, 11rem);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+}
+[data-style="folio"] .section-title {
+  font-size: clamp(2.5rem, 1.2rem + 4.4vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+}
+:lang(am) [data-style="folio"] :is(.headline, .section-title) {
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+:lang(am) [data-style="folio"] .headline {
+  font-size: clamp(2.75rem, 1rem + 6.5vw, 7rem);
+}
+[data-style="folio"] :is(.section-title, .depth-frame)::before {
+  display: none;
+}
+/* Labels read like comments in code: // selected work */
+[data-style="folio"] :is(.eyebrow, .hero-eyebrow, .badge, .meta, .small-label, .nav-link, .numeral) {
+  font-family: var(--folio-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+:lang(am) [data-style="folio"] :is(.eyebrow, .hero-eyebrow, .badge, .meta, .small-label, .nav-link) {
+  font-family: var(--site-font-body);
+  font-size: 1rem;
+}
+[data-style="folio"] .eyebrow::before {
+  content: "//";
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--site-text);
+  opacity: 0.55;
+}
+[data-style="folio"] .hero-eyebrow {
+  border: 1px solid var(--site-text);
+  border-radius: 999px;
+  background: var(--site-background);
+  padding: 0.35rem 0.9rem;
+}
+/* A marker swipe behind a word: the highlight colour, under the text. */
+[data-style="folio"] .headline .w:nth-of-type(2) {
+  background: linear-gradient(var(--site-highlight), var(--site-highlight)) 0 88% / 100% 0.32em no-repeat;
+}
+[data-style="folio"] :is(.brand-mark) {
+  border-radius: 6px;
+  background: var(--site-text);
+  color: var(--site-background);
+}
+
+/* ---- Structure: ink, a few rules, small radius ---- */
+[data-style="folio"] main > section + section {
+  border-top: 1px dashed color-mix(in oklab, var(--site-text) 35%, transparent);
+}
+[data-style="folio"] :is(.card, .pcard) {
+  border: 1.5px solid var(--site-text);
+  background: var(--site-background);
+  box-shadow: none;
+}
+[data-style="folio"] .btn {
+  border: 1.5px solid var(--site-text);
+  font-family: var(--folio-mono);
+  font-weight: 600;
+}
+:lang(am) [data-style="folio"] .btn {
+  font-family: var(--site-font-body);
+}
+[data-style="folio"] .btn-primary {
+  background: var(--site-text);
+  color: var(--site-background);
+}
+[data-style="folio"] .site-header.header-scroll {
+  border-bottom: 1.5px solid var(--site-text);
+  background: var(--site-background);
+}
+[data-style="folio"] .nav-link:hover {
+  background: var(--site-highlight);
+  color: var(--site-on-highlight);
+}
+
+/* ---- Hero: the name, huge; the portrait small, tilted, with its stamp ---- */
+[data-style="folio"] .hero-portrait {
+  overflow-x: clip;
+}
+@media (min-width: 768px) {
+  [data-style="folio"] .hero-portrait > .container-site {
+    grid-template-columns: 1.6fr 0.8fr;
+  }
+}
+[data-style="folio"] .hero-portrait .zoom {
+  border: 1.5px solid var(--site-text);
+  rotate: 2deg;
+}
+[data-style="folio"] .hero-portrait .headline .w {
+  display: inline-block;
+}
+
+/* ---- Work: an index; each row fills with the marker colour ---- */
+[data-style="folio"] .index-list {
+  counter-reset: folio-work;
+}
+[data-style="folio"] .index-row {
+  counter-increment: folio-work;
+  border-color: var(--site-text);
+}
+[data-style="folio"] .index-inner::before {
+  content: counter(folio-work, decimal-leading-zero) / "";
+  flex: none;
+  width: 3rem;
+  font-family: var(--folio-mono);
+  font-size: 0.875rem;
+}
+[data-style="folio"] .index-title {
+  font-size: clamp(2rem, 1rem + 4vw, 4.5rem);
+  letter-spacing: -0.04em;
+}
+[data-style="folio"] .index-preview {
+  border: 1.5px solid var(--site-text);
+  rotate: -3deg;
+}
+
+/* ---- Case studies: the picture in a frame, a tilted label ---- */
+[data-style="folio"] .feature-photo {
+  border: 1.5px solid var(--site-text);
+}
+[data-style="folio"] .feature-text .eyebrow {
+  width: fit-content;
+  background: var(--site-highlight);
+  color: var(--site-on-highlight);
+  padding: 0.1rem 0.5rem;
+}
+[data-style="folio"] .feature-text .eyebrow::before {
+  display: none;
+}
+[data-style="folio"] .feature-text .item-title {
+  font-size: clamp(2rem, 1.2rem + 2.4vw, 3.5rem);
+  letter-spacing: -0.035em;
+}
+
+/* ---- Skills: numbered like lines of code ---- */
+[data-style="folio"] .service-row {
+  border-top: 1.5px solid var(--site-text);
+}
+[data-style="folio"] .service-row .numeral {
+  font-size: 0.875rem;
+  color: var(--site-text);
+}
+
+/* ---- Experience: a list of years and places ---- */
+[data-style="folio"] :is(.timeline, ol, ul) .item-title {
+  letter-spacing: -0.02em;
+}
+
+/* ---- Philosophy: the sentence, large, a marker under it ---- */
+[data-style="folio"] .quote-section .quote-mark {
+  display: none;
+}
+[data-style="folio"] .quote-section .pull-quote {
+  font-size: clamp(2rem, 1rem + 3.6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+[data-style="folio"] .quote-section figure > div {
+  align-items: flex-start;
+  text-align: start;
+}
+
+/* ---- Contact: a big black panel ---- */
+[data-style="folio"] .cta-band {
+  border-radius: 1rem;
+  background: var(--site-text);
+  color: var(--site-background);
+}
+[data-style="folio"] .cta-band > svg {
+  display: none;
+}
+[data-style="folio"] .cta-band :is(h1, h2) {
+  font-size: clamp(2.5rem, 1rem + 5vw, 6rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+}
+[data-style="folio"] .cta-band .btn-primary {
+  border-color: var(--site-highlight);
+  background: var(--site-highlight);
+  color: var(--site-on-highlight);
+}
+[data-style="folio"] .cta-band .btn-outline {
+  border-color: currentColor;
+  color: inherit;
+}
+
+/* ---- Footer: ink on paper ---- */
+[data-style="folio"] .site-footer {
+  border-top: 1.5px solid var(--site-text);
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="folio"] .site-footer :focus-visible {
+  outline-color: var(--site-focus);
+}
+[data-style="folio"] .footer-wordmark::before {
+  font-weight: 800;
+  opacity: 1;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.5px currentColor;
+}
+:lang(am) [data-style="folio"] .footer-wordmark::before {
+  -webkit-text-fill-color: currentColor;
+  -webkit-text-stroke: 0;
+  opacity: 0.15;
+}
+
+/* ---- The cursor ring (components/pointer.ts) ---- */
+[data-style="folio"] .cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: 6rem;
+  height: 6rem;
+  margin: -3rem 0 0 -3rem;
+  border-radius: 50%;
+  pointer-events: none;
+}
+[data-style="folio"] .cursor-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--site-highlight);
+  mix-blend-mode: multiply;
+  scale: 0.16;
+  transition:
+    scale 250ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 200ms;
+}
+[data-style="folio"] .cursor-ring:not([data-over])::before,
+[data-style="folio"] .cursor-ring[data-over="gone"]::before {
+  opacity: 0;
+}
+[data-style="folio"] .cursor-ring[data-over="link"]::before {
+  scale: 0.5;
+}
+[data-style="folio"] .cursor-ring[data-over="picture"]::before {
+  scale: 1;
+  opacity: 0.7;
+}
+
+/* ---- Motion ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-style="folio"] .btn {
+    transition:
+      translate 300ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      background-color 200ms,
+      color 200ms;
+  }
+  [data-style="folio"] .index-row {
+    transition: background-color 250ms;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    [data-style="folio"] .index-row:hover {
+      background: var(--site-highlight);
+      color: var(--site-on-highlight);
+    }
+    [data-style="folio"] .index-row:hover :is(.text-muted) {
+      color: inherit;
+    }
+  }
+  /* The name drifts apart as the page scrolls: odd words left, even words right. */
+  @supports (animation-timeline: scroll()) {
+    [data-style="folio"] .hero-portrait .headline.split .w {
+      animation:
+        site-word 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both,
+        folio-left linear both;
+      animation-delay: calc(80ms + var(--w, 0) * 70ms), 0s;
+      animation-timeline: auto, scroll(root);
+      animation-range: normal, 0 80vh;
+    }
+    [data-style="folio"] .hero-portrait .headline.split .w:nth-of-type(even) {
+      animation-name: site-word, folio-right;
+    }
+  }
+}
+@keyframes folio-left {
+  to {
+    translate: -5vw 0;
+  }
+}
+@keyframes folio-right {
+  to {
+    translate: 5vw 0;
+  }
+}

@@ -82,7 +82,7 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
   // The avant style's cursor ring and leaning buttons. Other sites are built with an empty
   // stand-in for this script (scripts/only-used-styles.ts).
   const style = site.theme.style;
-  useEffect(() => (style === "avant" ? startPointer() : undefined), [style]);
+  useEffect(() => (style === "avant" || style === "folio" ? startPointer() : undefined), [style]);
   return (
     <SiteProvider site={site} page={page} lang={lang}>
       {/* The style wraps the page and the phone call bar alike. */}

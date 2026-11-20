@@ -508,8 +508,11 @@ export interface Theme {
    * noir: fine dining by candlelight: the page turns dark (the accent becomes the room, the
    * background colour the ink, the primary the brass details), photos rise out of the dark, centred
    * serif titles, a menu like a printed card (restaurants, bars, chef's tables, wine and coffee rooms).
+   * folio: a creative developer's notebook: a dot grid, labels in monospace like code comments, a
+   * huge name that moves as the page scrolls, work as an index whose picture follows the pointer,
+   * a cursor ring and leaning buttons (developers, designers, illustrators, freelancers).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio";
 }
 
 export interface Business {
