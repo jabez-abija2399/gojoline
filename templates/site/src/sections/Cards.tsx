@@ -14,6 +14,8 @@ export function Cards({ section }: { section: CardsSection }) {
   const layout = section.layout ?? "grid";
   // avant lays featured work across the page and grid tiles up to 7 of 12 columns: fetch photos to match.
   const avant = site.theme.style === "avant";
+  // monochrome shows the first of exactly three pieces large (7 of 12 columns).
+  const bigFirst = site.theme.style === "monochrome" && section.items.length === 3;
   // Pills by badge ("For sale", "For rent", "Trek") when cards carry two or more kinds.
   const kinds = [...new Set(section.items.map((it) => (it.badge ? text(it.badge) : "")).filter(Boolean))];
   const filterable = section.filters !== false && kinds.length >= 2 && section.items.length >= 4 && layout !== "stack" && layout !== "index" && layout !== "pricing";
@@ -199,7 +201,7 @@ export function Cards({ section }: { section: CardsSection }) {
                   {item.photos && item.photos.length > 0 && item.image ? (
                     <CardPhotos title={text(item.title)} photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
                   ) : (
-                    <Picture image={item.image} sizes={avant ? "(min-width: 768px) 55vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px"} className="aspect-[4/3] w-full" />
+                    <Picture image={item.image} sizes={avant ? "(min-width: 768px) 55vw, 160px" : bigFirst && i === 0 ? "(min-width: 1024px) 58vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px"} className="aspect-[4/3] w-full" />
                   )}
                   <Badge item={item} />
                 </div>

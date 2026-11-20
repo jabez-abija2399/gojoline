@@ -52,10 +52,10 @@ const featured = [
     action: order,
   },
   {
-    image: img("fashion-gallery-two-friends-headbands", "Two women with red and gold beaded headbands in white traditional dresses at dusk", "ሲመሽ ቀይና ወርቃማ ዶቃ ያለው የራስ ማሰሪያና ነጭ የባህል ልብስ የለበሱ ሁለት ሴቶች"),
-    subtitle: t("Accessories", "ተጨማሪዎች"),
-    title: t("Beaded headband", "የዶቃ የራስ ማሰሪያ"),
-    price: birr(950),
+    image: img("events-gallery-habesha-dress-celebration", "Young women in white embroidered dresses with green skirts clapping and singing at a street celebration", "በጎዳና በዓል ላይ አረንጓዴ ቀሚስና ነጭ ጥልፍ ልብስ ለብሰው የሚያጨበጭቡና የሚዘምሩ ወጣት ሴቶች"),
+    subtitle: t("For the holidays", "ለበዓላት"),
+    title: t("Ashenda dress", "የአሸንዳ ቀሚስ"),
+    price: birr(7400),
     action: order,
   },
   {
@@ -71,7 +71,7 @@ const categories = [
   { image: img("personal-hero-woman-orange-blazer", "A woman with natural hair in an orange blazer, arms crossed", "ብርቱካናማ ኮት የለበሰችና እጆቿን ያጣመረች ሴት"), title: t("Women", "ሴቶች"), subtitle: t("Dresses, kemis, tailoring", "ቀሚሶች፣ የሀበሻ ቀሚስ፣ ስፌት"), action: link("Shop women", "የሴቶች", "/shop") },
   { image: img("fashion-card-tailor-measuring-client", "A tailor measuring a young man in a white shirt and black waistcoat", "ነጭ ሸሚዝና ጥቁር ሰደርያ የለበሰን ወጣት የሚለካ ልብስ ሰፊ"), title: t("Men", "ወንዶች"), subtitle: t("Gabi, shirts, made to measure", "ጋቢ፣ ሸሚዝ፣ በልክ የሚሠራ"), action: link("Shop men", "የወንዶች", "/shop") },
   { image: img("studio-card-couple-portrait-addis", "A couple dressed all in white, the woman holding white flowers", "ሙሉ ነጭ የለበሱ ጥንዶች፣ ሴቷ ነጭ አበባ ይዛለች"), title: t("Weddings", "ሠርግ"), subtitle: t("Matching sets for two", "ለሁለት ተመሳሳይ ልብሶች"), action: link("Shop weddings", "የሠርግ", "/shop") },
-  { image: img("personal-gallery-pattern", "A geometric repeat pattern in orange, grey-blue and yellow", "በብርቱካናማ፣ ግራጫ-ሰማያዊና ቢጫ የተሠራ ጂኦሜትሪክ ጥለት"), title: t("Shawls", "ነጠላና ጋቢ"), subtitle: t("Netela and gabi, woven by hand", "በእጅ የተሸመኑ ነጠላና ጋቢ"), action: link("Shop shawls", "ነጠላና ጋቢ", "/shop") },
+  { image: img("fashion-gallery-loom-striped-threads", "Brightly coloured striped threads stretched across a wooden handloom", "በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች"), title: t("Shawls", "ነጠላና ጋቢ"), subtitle: t("Netela and gabi, woven by hand", "በእጅ የተሸመኑ ነጠላና ጋቢ"), action: link("Shop shawls", "ነጠላና ጋቢ", "/shop") },
 ];
 
 save("boutique", {
@@ -112,7 +112,7 @@ save("boutique", {
             "Every piece starts on a handloom in Shiro Meda, where two weavers work one length of cotton for up to ten days.\n\nWe cut it in our studio in Bole into shapes you can wear to work, to a wedding and on a Sunday afternoon, and we make each one only when you order it.",
             "እያንዳንዱ ልብስ የሚጀምረው በሽሮ ሜዳ በሚገኝ የእጅ ሽመና ላይ ነው፤ ሁለት ሸማኔዎች አንድን የጥጥ ርዝመት እስከ አሥር ቀን ይሠሩታል።\n\nበቦሌ ባለው ስቱዲዮአችን ለሥራ፣ ለሠርግና ለእሁድ ከሰዓት በሚለበሱ ቅርጾች እንቆርጠዋለን፤ እያንዳንዱንም የምንሠራው ሲያዝዙ ብቻ ነው።",
           ),
-          image: img("fashion-gallery-loom-striped-threads", "Brightly coloured striped threads stretched across a wooden handloom under a blue sky", "በሰማያዊ ሰማይ ሥር በእንጨት ሽመና ላይ የተወጠሩ ደማቅ ቀለም ያላቸው ሸንተረር ክሮች"),
+          image: img("personal-gallery-pattern", "A geometric repeat pattern in orange, grey-blue and yellow", "በብርቱካናማ፣ ግራጫ-ሰማያዊና ቢጫ የተሠራ ጂኦሜትሪክ ጥለት"),
           imageSide: "start",
         },
         { type: "quote", id: "promise", quote: t("We make fewer things, and we make them to be kept.", "ጥቂት ነገሮችን እንሠራለን፤ የምንሠራቸውም እንዲቆዩ ነው።") },
@@ -144,7 +144,7 @@ save("boutique", {
           eyebrow: t("Shop", "ሱቅ"),
           heading: t("Everything, made to order", "ሁሉም፣ ሲታዘዝ የሚሠራ"),
           intro: t("Each piece takes two to three weeks. We send within Ethiopia and abroad.", "እያንዳንዱ ልብስ ከሁለት እስከ ሦስት ሳምንት ይወስዳል። በኢትዮጵያ ውስጥና ወደ ውጭ እንልካለን።"),
-          items: [...season, ...featured].map((item, i) => ({ ...item, badge: [t("Women", "ሴቶች"), t("Shawls", "ነጠላና ጋቢ"), t("Men", "ወንዶች"), t("Couples", "ጥንዶች"), t("Women", "ሴቶች"), t("Women", "ሴቶች"), t("Accessories", "ተጨማሪዎች"), t("Men", "ወንዶች")][i] })),
+          items: [...season, ...featured].map((item, i) => ({ ...item, badge: [t("Women", "ሴቶች"), t("Shawls", "ነጠላና ጋቢ"), t("Men", "ወንዶች"), t("Couples", "ጥንዶች"), t("Women", "ሴቶች"), t("Women", "ሴቶች"), t("Women", "ሴቶች"), t("Men", "ወንዶች")][i] })),
         },
       ],
     },
