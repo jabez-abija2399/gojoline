@@ -11,6 +11,7 @@ describe("publish error messages", () => {
     it(`has a message for every publish error (${lang})`, () => {
       const t = getMessages(lang).builder.publishErrors as Record<string, string>;
       for (const code of CODES) expect(t[code], code).toBeTruthy();
+      expect(t.planLimitLink).toBeTruthy();
     });
   }
 });

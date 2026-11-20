@@ -458,6 +458,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         projectId={projectId}
         hasVersion={versions.length > 0}
         disabled={working || paused}
+        planHref={`/${locale}/billing`}
         onLive={onLive}
         feedback={{ href: `/${locale}/feedback?from=${encodeURIComponent(`/${locale}/build/${projectId}`)}`, label: chrome.feedbackAfterPublish }}
       >

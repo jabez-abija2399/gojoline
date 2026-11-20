@@ -168,6 +168,8 @@ export const dashboardEn = {
   publishing: "Publishing...",
   publishedNow: "Published. Your live site is up to date.",
   publishFailed: "Publishing didn't work. Open the editor to try again.",
+  moveTitle: "Your site needs one more publish",
+  moveBody: "We moved Gojoline sites to a new, faster home. Press Publish now once and your site is back online at {address}. Nothing else changes.",
   publishPaused: "Publishing is paused for a short while. If your site is already online, it stays online.",
   versionsTitle: "Earlier versions",
   versionsIntro: "Go back to an earlier version of your site. Restoring is free and doesn't use AI changes.",
