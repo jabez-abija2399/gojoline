@@ -310,6 +310,24 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
   });
 
+  it("blocks the gallery starter's sample works and artists, but not a real gallery's own works", () => {
+    type Site = { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; layout?: string; items?: Record<string, unknown>[] }[] }[] };
+    const owner = (edit: (items: Record<string, unknown>[]) => Record<string, unknown>[]) => {
+      const site = JSON.parse(presetSiteJson("exhibit")) as Site;
+      site.name = { en: "Addis Art Space" };
+      site.business = { phone: "+251 912 345 678", telegram: "addisartspace" };
+      for (const p of site.pages) p.sections = p.sections.filter((s) => s.type === "cards").map((s) => ({ ...s, items: edit(s.items!) }));
+      return site;
+    };
+    // Renamed works that keep a library photo and its sample price.
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Work ${n}` } })))))).toBe(true);
+    // The sample artist and title kept, with the photo removed.
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map(({ image: _image, ...rest }) => rest))))).toBe(true);
+    // A real gallery's own work, with its own photo, artist and price, publishes.
+    const real = { name: { en: "Addis Art Space" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "grid", items: [{ image: { src: "/uploads/work-1.webp", alt: { en: "A painting" } }, title: { en: "Blue hour" }, subtitle: { en: "Tigist Haile" }, meta: [{ en: "Oil on canvas, 2024" }], price: { amountMinor: 6000000, currency: "ETB" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
+  });
+
   it("blocks a template's sample numbers until the owner's own replace them", () => {
     const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
     const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;

@@ -40,7 +40,7 @@ export const en = {
       picked: "Showing {name}. An example description was added to the box below.",
       build: "Build my site",
     },
-    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", darkMode: "Dark mode", seeTemplates: "See all 31 templates" },
+    nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", darkMode: "Dark mode", seeTemplates: "See all 32 templates" },
     demo: {
       pick: "Choose a kind of business",
       prompts: {
@@ -62,7 +62,7 @@ export const en = {
     proof: [
       { value: "~40 s", label: "to a first site" },
       { value: "30 of 30", label: "test sites built right the first time" },
-      { value: "31", label: "ready templates" },
+      { value: "32", label: "ready templates" },
       { value: "2", label: "languages, your choice" },
     ],
     eyebrows: { how: "How it works", features: "Features", faq: "Good to know", final: "Start today" },
@@ -136,7 +136,7 @@ export const en = {
         events: "Weddings and events",
         business: "Business and personal",
       },
-      styles: { editorial: "Elegant", bold: "Bold", clean: "Clean", warm: "Warm", luxe: "Luxe", swiss: "Industrial", bento: "Tiles", organic: "Soft", cinematic: "Cinematic", brutal: "Bold blocks", calm: "Calm", kinetic: "Energetic", grand: "Grand", avant: "Experimental", precise: "Precise", monochrome: "Monochrome", drafting: "Architectural", noir: "Candlelit", folio: "Notebook", estate: "Magazine", voyage: "Storytelling" },
+      styles: { editorial: "Elegant", bold: "Bold", clean: "Clean", warm: "Warm", luxe: "Luxe", swiss: "Industrial", bento: "Tiles", organic: "Soft", cinematic: "Cinematic", brutal: "Bold blocks", calm: "Calm", kinetic: "Energetic", grand: "Grand", avant: "Experimental", precise: "Precise", monochrome: "Monochrome", drafting: "Architectural", noir: "Candlelit", folio: "Notebook", estate: "Magazine", voyage: "Storytelling", museum: "Gallery" },
       features: { prices: "Prices or menu", booking: "Booking or order form", gallery: "Photo gallery", team: "Team or staff", times: "Opening, service or prayer times", reviews: "Reviews", map: "Map" },
       about: {
         cafe: "Signature dishes, the full menu and table bookings",
@@ -170,6 +170,7 @@ export const en = {
         folio: "A kinetic name, work as an index, case studies, skills, experience and a contact form",
         estate: "The listing of the month, homes with prices and filters, neighbourhoods and private viewings",
         voyage: "A journey told in full-screen chapters, destinations, journeys with prices and enquiries",
+        exhibit: "An exhibition title, works hung with wall labels and prices, events and enquiries",
       },
     },
     templatePreview: {
@@ -508,6 +509,7 @@ export const en = {
       folio: "Developer or designer portfolio",
       estate: "Luxury real estate agency",
       voyage: "Travel company or expeditions",
+      exhibit: "Art gallery or museum",
     },
     empty: "You have no sites yet. Start one: it takes a few minutes.",
     untitled: "New site",

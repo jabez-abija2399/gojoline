@@ -1,0 +1,353 @@
+/*
+ * museum: a gallery's white walls. A huge exhibition title set flush left, the installation photo
+ * running edge to edge, works hung on a pale wall with a wall label beneath (artist, the title in
+ * italics, medium and size, the price), an uneven hang, a red dot for sold works, events as a
+ * printed programme, and the lights coming up on each work as it scrolls in. Black, white and one
+ * red (the primary). Outside the cascade layers so it wins over the utility classes; every rule is
+ * scoped to [data-style="museum"]. Built only into museum sites (scripts/only-used-styles.ts).
+ */
+[data-style="museum"] {
+  --museum-wall: color-mix(in srgb, var(--site-text) 5%, var(--site-background));
+  --site-line: color-mix(in srgb, var(--site-text) 18%, var(--site-background));
+}
+
+/* ---- Type: a heavy grotesque for titles, small plain labels ---- */
+[data-style="museum"] :is(.headline, .section-title, .item-title) {
+  font-weight: 700;
+}
+[data-style="museum"] .headline {
+  font-size: clamp(3.25rem, 0.6rem + 11vw, 12rem);
+  line-height: 0.88;
+  letter-spacing: -0.055em;
+}
+[data-style="museum"] .section-title {
+  font-size: clamp(2.25rem, 1.1rem + 4vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+:lang(am) [data-style="museum"] :is(.headline, .section-title) {
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+:lang(am) [data-style="museum"] .headline {
+  font-size: clamp(2.75rem, 0.8rem + 7.5vw, 8rem);
+}
+[data-style="museum"] :is(.section-title, .depth-frame)::before {
+  display: none;
+}
+[data-style="museum"] :is(.eyebrow, .hero-eyebrow) {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--site-text);
+}
+[data-style="museum"] .eyebrow::before {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--site-primary);
+}
+[data-style="museum"] .hero-eyebrow {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+[data-style="museum"] :is(.brand-mark, .quote-mark) {
+  display: none;
+}
+[data-style="museum"] .hero-glow {
+  background-image: none;
+}
+
+/* ---- Surfaces: no boxes, no shadows, square corners ---- */
+[data-style="museum"] :is(.card, .pcard) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+[data-style="museum"] :is(.btn, .badge, input, select, textarea) {
+  border-radius: 0;
+}
+[data-style="museum"] :is(.bg-surface, .bg-primary-soft):is(section) {
+  background: transparent;
+}
+[data-style="museum"] main > section + section {
+  border-top: 1px solid var(--site-line);
+}
+[data-style="museum"] .site-header.header-scroll {
+  border-bottom: 1px solid var(--site-line);
+  background: var(--site-background);
+  backdrop-filter: none;
+}
+[data-style="museum"] :is(.nav-link, .nav-lang) {
+  border: 0;
+  background: none;
+}
+[data-style="museum"] .nav-link[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35em;
+}
+[data-style="museum"] .btn-primary {
+  background: var(--site-text);
+  color: var(--site-background);
+}
+
+/* ---- The opening: the exhibition title flush left, the room edge to edge ---- */
+[data-style="museum"] .hero-centered > .container-site {
+  align-items: flex-start;
+  text-align: start;
+}
+[data-style="museum"] .hero-centered .headline {
+  max-width: 11ch;
+}
+[data-style="museum"] .hero-centered .zoom {
+  width: 100vw;
+  max-width: none;
+  margin-inline: calc(50% - 50vw);
+  border-radius: 0;
+  box-shadow: none;
+}
+[data-style="museum"] .hero-centered .zoom img {
+  border-radius: 0;
+}
+[data-style="museum"] .hero-centered .hero-facts,
+[data-style="museum"] .hero-centered > .container-site > :last-child {
+  justify-content: flex-start;
+}
+
+/* ---- Works: hung on a pale wall, the wall label beneath ---- */
+[data-style="museum"] .card-grid > li {
+  overflow: clip;
+  gap: 0;
+}
+[data-style="museum"] .card-grid .zoom {
+  overflow: clip;
+  background: var(--museum-wall);
+}
+[data-style="museum"] .card-grid .zoom img {
+  aspect-ratio: 1;
+  object-fit: contain;
+  padding: 10%;
+  background: var(--museum-wall);
+}
+[data-style="museum"] .card-grid > li > div:last-child {
+  padding: 1rem 0 0;
+  gap: 0.25rem;
+}
+/* The label: the artist, then the title in italics, then medium and size. */
+[data-style="museum"] .card-grid .eyebrow {
+  order: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+[data-style="museum"] .card-grid .eyebrow::before {
+  display: none;
+}
+[data-style="museum"] .card-grid .item-title {
+  font-size: 1.125rem;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0;
+}
+:lang(am) [data-style="museum"] .card-grid .item-title {
+  font-style: normal;
+}
+[data-style="museum"] .card-grid .meta {
+  flex-direction: column;
+  gap: 0;
+  font-size: 0.9375rem;
+}
+[data-style="museum"] .meta-item {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+[data-style="museum"] .card-grid li > div:last-child > div:last-child {
+  margin-top: 0.5rem;
+  border-top: 0;
+  padding-top: 0;
+}
+/* Sold: a red dot, as on a gallery wall. */
+[data-style="museum"] .card-grid .badge {
+  inset: auto auto 1rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 0;
+  background: none;
+  color: var(--site-text);
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-style="museum"] .card-grid .badge::before {
+  content: "";
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  background: var(--site-primary);
+}
+/* An uneven hang on wide screens: large and small works in turn, some hung lower. */
+@media (min-width: 1024px) {
+  [data-style="museum"] .card-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 3rem;
+    row-gap: 5rem;
+    align-items: start;
+  }
+  [data-style="museum"] .card-grid > li {
+    grid-column: span 5;
+  }
+  [data-style="museum"] .card-grid > li:nth-child(4n + 1) {
+    grid-column: 1 / span 7;
+  }
+  [data-style="museum"] .card-grid > li:nth-child(4n + 2) {
+    grid-column: 9 / span 4;
+    margin-top: 10rem;
+  }
+  [data-style="museum"] .card-grid > li:nth-child(4n + 3) {
+    grid-column: 2 / span 4;
+  }
+  [data-style="museum"] .card-grid > li:nth-child(4n) {
+    grid-column: 7 / span 6;
+    margin-top: 6rem;
+  }
+}
+
+/* ---- The artist's words, large and plain ---- */
+[data-style="museum"] .quote-section figure > div {
+  align-items: flex-start;
+  max-width: 64rem;
+  margin-inline: 0;
+  text-align: start;
+}
+[data-style="museum"] .quote-section .pull-quote {
+  font-size: clamp(1.875rem, 1rem + 3.2vw, 4rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+:lang(am) [data-style="museum"] .quote-section .pull-quote {
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+/* ---- Events: a printed programme ---- */
+[data-style="museum"] .schedule-list {
+  border-top: 2px solid var(--site-text);
+}
+[data-style="museum"] .schedule-list > li {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem;
+  padding-block: 1.5rem;
+}
+@media (min-width: 640px) {
+  [data-style="museum"] .schedule-list > li {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+[data-style="museum"] .schedule-list .time-value {
+  font-family: var(--site-font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--site-text);
+}
+[data-style="museum"] .schedule-list .text-lg {
+  font-family: var(--site-font-heading);
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+/* ---- Visit: the call as a big black wall ---- */
+[data-style="museum"] .cta-band {
+  border-radius: 0;
+  background: var(--site-text);
+  color: var(--site-background);
+}
+[data-style="museum"] .cta-band > svg {
+  display: none;
+}
+[data-style="museum"] .cta-band :is(h1, h2) {
+  font-size: clamp(2.25rem, 1rem + 4.4vw, 5.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+:lang(am) [data-style="museum"] .cta-band :is(h1, h2) {
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+[data-style="museum"] .cta-band > div:first-of-type {
+  max-width: 40rem;
+}
+[data-style="museum"] .cta-band .btn-primary {
+  background: var(--site-primary);
+  color: var(--site-on-primary);
+}
+
+/* ---- Forms: underlined fields on the white ---- */
+[data-style="museum"] main section :is(form, dl) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;  padding-inline: 0;
+}
+[data-style="museum"] :is(input, select, textarea) {
+  border: 0;
+  border-bottom: 1px solid var(--site-text);
+  background: transparent;
+}
+
+/* ---- Footer: the name large ---- */
+[data-style="museum"] .site-footer {
+  border-top: 2px solid var(--site-text);
+  background: var(--site-background);
+  color: var(--site-text);
+}
+
+/* ---- Motion: the lights come up on each work as it arrives ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-style="museum"] .card-grid .zoom img {
+    transition: none;
+  }
+  [data-style="museum"] .card-grid > li {
+    view-timeline: --museum-work block;
+  }
+  @supports (animation-timeline: view()) {
+    [data-style="museum"] .card-grid .zoom::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      animation: museum-lights linear backwards;
+      animation-timeline: --museum-work;
+      animation-range: entry 10% cover 40%;
+    }
+  }
+}
+@keyframes museum-lights {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 0;
+  }
+}
+/* Works are not cards: no lift and no zoom on hover (a painting is shown whole and still). */
+[data-style="museum"] .card-grid > li:hover {
+  transform: none;
+  box-shadow: none;
+}
+[data-style="museum"] .card-grid .zoom:hover img {
+  transform: none;
+}

@@ -1,4 +1,112 @@
 {
+  "art-about-painter-at-easel": {
+    "src": "/stock/art-about-painter-at-easel.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A young Black painter in a white apron holds a palette and brush, studying a canvas on an easel by a bright window.",
+    "by": "FaustFoto",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/a-man-holding-a-palette-and-paintbrush-while-looking-at-the-canvas-on-an-easel-stand-7446847/"
+  },
+  "art-card-abstract-blue-violet": {
+    "src": "/stock/art-card-abstract-blue-violet.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "Close-up of an abstract painting in deep blue and violet with orange spots and rough, layered paint.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/close-up-of-a-colorful-abstract-painting-16470407/"
+  },
+  "art-card-abstract-orange-teal": {
+    "src": "/stock/art-card-abstract-orange-teal.webp",
+    "width": 800,
+    "height": 600,
+    "shows": "Close-up of a thickly painted abstract canvas in ochre, orange, red and teal with scraped, cracked texture.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/abstract-painting-1050822/"
+  },
+  "art-card-abstract-pink-yellow": {
+    "src": "/stock/art-card-abstract-pink-yellow.webp",
+    "width": 800,
+    "height": 910,
+    "shows": "A brush laying soft pink, yellow and red strokes on an abstract canvas, close up.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/close-up-photo-of-painting-4111839/"
+  },
+  "art-card-abstract-rainbow-impasto": {
+    "src": "/stock/art-card-abstract-rainbow-impasto.webp",
+    "width": 800,
+    "height": 528,
+    "shows": "Close-up of bright streaks of pink, blue, green and yellow paint dragged across woven canvas.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/pink-blue-green-and-yellow-abstract-painting-2007087/"
+  },
+  "art-card-gold-figure-installation": {
+    "src": "/stock/art-card-gold-figure-installation.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A tall gold figure sculpture on a white plinth in a skylit gallery, with large colourful paintings on the walls behind.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/contemporary-art-installation-in-modern-gallery-30021722/"
+  },
+  "art-card-white-ring-sculpture": {
+    "src": "/stock/art-card-white-ring-sculpture.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A tall white sculpture shaped like an open ring standing on a wooden plinth against a pale wall.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/minimalist-white-sculpture-in-art-gallery-40212145/"
+  },
+  "art-gallery-painter-studio-table": {
+    "src": "/stock/art-gallery-painter-studio-table.webp",
+    "width": 800,
+    "height": 533,
+    "shows": "A painter leans over a large white table working on a canvas in a bright studio hung with colourful works.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/man-painting-on-a-canvas-in-a-studio-20511250/"
+  },
+  "art-gallery-skylit-hall-paintings": {
+    "src": "/stock/art-gallery-skylit-hall-paintings.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A large skylit exhibition hall with a glossy floor and a row of colourful paintings along a white wall.",
+    "by": "@matthewsvianna",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/colorful-arts-hanging-on-wall-2372978/"
+  },
+  "art-gallery-two-visitors-talking": {
+    "src": "/stock/art-gallery-two-visitors-talking.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "Two young men talk in front of paintings at an exhibition with a pale curtain behind.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/two-people-observing-art-in-gallery-setting-34507151/"
+  },
+  "art-gallery-visitor-curved-wall": {
+    "src": "/stock/art-gallery-visitor-curved-wall.webp",
+    "width": 800,
+    "height": 1000,
+    "shows": "A visitor stands before a curved wall of large, brightly lit paintings in a dark gallery.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/woman-standing-near-paintings-1671014/"
+  },
+  "art-hero-spotlit-white-gallery": {
+    "src": "/stock/art-hero-spotlit-white-gallery.webp",
+    "width": 800,
+    "height": 600,
+    "shows": "A long white gallery with a dark floor and track spotlights, framed photographs and a red artwork glowing at the far end.",
+    "by": "Pexels contributor (see source page)",
+    "licence": "Pexels",
+    "source": "https://www.pexels.com/photo/art-exhibit-1604991/"
+  },
   "bakery-about-baker-shaping-dough": {
     "src": "/stock/bakery-about-baker-shaping-dough.webp",
     "width": 800,

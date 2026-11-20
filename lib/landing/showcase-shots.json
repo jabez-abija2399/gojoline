@@ -730,5 +730,27 @@
         "height": 933
       }
     }
+  },
+  "exhibit": {
+    "en": {
+      "src": "/showcase/exhibit-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/exhibit-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/exhibit-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/exhibit-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }
