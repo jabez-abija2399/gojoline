@@ -138,13 +138,6 @@
   font-weight: 600;
   letter-spacing: -0.03em;
 }
-[data-style="estate"] .feature-text .font-heading.text-xl,
-[data-style="estate"] .feature-text :is(.flex-wrap > span:first-child) {
-  font-size: clamp(2rem, 1.3rem + 2vw, 3.25rem);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  color: var(--site-accent);
-}
 [data-style="estate"] .meta-item {
   border-radius: 0;
   border: 1px solid var(--site-line);
@@ -278,5 +271,101 @@
     [data-style="estate"] .card-grid > li:hover .zoom {
       outline-width: 6px;
     }
+  }
+}
+
+/* ---- Review fixes ---- */
+/* Filter tabs: the focus ring inside each tab, visible on both states. */
+[data-style="estate"] .menu-tab:focus-visible {
+  outline: 2px solid var(--site-accent);
+  outline-offset: -5px;
+}
+[data-style="estate"] .menu-tab:is([aria-pressed="true"], [aria-selected="true"]):focus-visible {
+  outline-color: var(--site-on-accent);
+}
+[data-style="estate"] .menu-tab {
+  border-inline-end-color: color-mix(in oklab, var(--site-text) 55%, transparent);
+}
+/* Fields: borders that read (3:1); the form and contact panels without white boxes. */
+[data-style="estate"] :is(input, select, textarea) {
+  border-color: color-mix(in oklab, var(--site-text) 55%, transparent);
+}
+[data-style="estate"] main section :is(form, .card) {
+  border: 0;
+  border-top: 1px solid var(--site-text);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+/* A listing is one link: the whole card opens it. */
+[data-style="estate"] .card-grid > li {
+  position: relative;
+}
+[data-style="estate"] .card-grid .arrow-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+/* Neighbourhood tiles are not links: no hover zoom. */
+[data-style="estate"] .rail .zoom:hover img {
+  transform: none;
+}
+/* Prices never break before the currency. */
+[data-style="estate"] :is(.feature-text, .card-grid) .font-heading.text-xl {
+  white-space: nowrap;
+}
+[data-style="estate"] .feature-text .font-heading.text-xl {
+  font-size: clamp(2rem, 1.3rem + 1.6vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--site-accent);
+}
+@media (min-width: 1024px) {
+  [data-style="estate"] .feature-row {
+    grid-template-columns: 7fr 5fr;
+    align-items: start;
+  }
+  /* The wide and the narrow listing share one photo height, so captions line up. */
+  [data-style="estate"] .card-grid > li:nth-child(5n + 1) .zoom :is(img, .placeholder),
+  [data-style="estate"] .card-grid > li:nth-child(5n + 2) .zoom :is(img, .placeholder) {
+    aspect-ratio: auto;
+    height: clamp(26rem, 34vw, 30rem);
+  }
+  [data-style="estate"] .card-grid > li:not(:nth-child(5n + 1)) .arrow-link {
+    flex-basis: 100%;
+  }
+}
+/* Tablets: the listing of the month stacked; listings one wide then pairs. */
+@media (max-width: 1023px) {
+  [data-style="estate"] .feature-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  [data-style="estate"] .card-grid > li:nth-child(5n + 1) {
+    grid-column: 1 / -1;
+  }
+  [data-style="estate"] .card-grid > li:nth-child(5n + 1) .zoom :is(img, .placeholder) {
+    aspect-ratio: 16 / 9;
+  }
+}
+/* Smaller things: a lighter header button, square rail arrows, sand badges, no circles. */
+[data-style="estate"] .header-cta {
+  padding: 0.625rem 1.25rem;
+}
+[data-style="estate"] .rail-arrow {
+  border-radius: 0;
+}
+[data-style="estate"] :is(.card-grid, .feature-photo) .badge {
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="estate"] .cta-band > svg {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  [data-style="estate"] .card-grid > li:hover .zoom {
+    outline: 6px solid var(--site-accent);
+    outline-offset: -1px;
   }
 }
