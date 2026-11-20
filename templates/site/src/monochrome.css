@@ -328,7 +328,7 @@
   outline-color: var(--site-focus);
 }
 
-/* ---- Motion: slow zooms and reveals ---- */
+/* ---- Motion: slow zooms, an underline drawn under a piece's name ---- */
 @media screen and (prefers-reduced-motion: no-preference) {
   [data-style="monochrome"] .zoom img {
     transition-duration: 1200ms;
@@ -341,23 +341,5 @@
     [data-style="monochrome"] .rail > li > :is(a, div):hover > span.bottom-0 > :first-child {
       background-size: 100% 1px;
     }
-  }
-  @supports (animation-timeline: view()) {
-    [data-style="monochrome"] .rail > li img,
-    [data-style="monochrome"] .card-grid img {
-      animation: mono-reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 70%;
-    }
-  }
-}
-@keyframes mono-reveal {
-  from {
-    clip-path: inset(0 0 22% 0);
-    scale: 1.08;
-  }
-  to {
-    clip-path: inset(0);
-    scale: 1;
   }
 }
