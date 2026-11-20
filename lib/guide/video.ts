@@ -8,20 +8,20 @@
 export const CHAPTERS_TXT = `0:00  Intro
 0:03  1. Start
 0:17.53  2. Describe what you want
-0:31.97  3. Watch it build
-0:53.50  4. Look around
-1:33.33  5. Change anything by chatting
-3:01.52  6. Your photos
-3:25.52  7. Versions
-3:53.52  8. Publish
-4:10.52  9. Your site dashboard
-5:04.52  10. Plan and payments
-5:35.52  Closing
+0:32.20  3. Watch it build
+0:53.57  4. Look around
+1:33.53  5. Change anything by chatting
+3:01.72  6. Your photos
+3:25.72  7. Versions
+3:53.72  8. Publish
+4:10.72  9. Your site dashboard
+5:04.72  10. Plan and payments
+5:35.72  Closing
 `;
 
 /** Length of public/guide/gojoline-guide-720.mp4, in seconds, and its size in bytes (Lalibela Sky Lodge in steps 2-5, pointer and music, 2026-11-20). */
-export const VIDEO_SECONDS = 339.87;
-export const VIDEO_BYTES = 13398434;
+export const VIDEO_SECONDS = 340.07;
+export const VIDEO_BYTES = 13428023;
 
 /**
  * The English captions are burned into the picture near the bottom; a captions track turned on
@@ -37,35 +37,35 @@ export const CAPTION_TIMES: readonly (readonly [number, number])[] = [
   [4.8, 12.1],
   [12.1, 14.8],
   [14.8, 17.5],
-  [19.33, 28.06],
-  [28.06, 31.94],
-  [33.8, 49.96],
-  [49.96, 53.46],
-  [55.3, 75.83],
-  [75.83, 93.33],
-  [95.13, 110.09],
-  [110.09, 113.23],
-  [113.23, 132.68],
-  [132.68, 155.43],
-  [155.43, 178.03],
-  [183.37, 194.87],
-  [194.87, 198.8],
-  [198.8, 205.9],
-  [207.7, 226.1],
-  [226.1, 234.45],
-  [236.25, 240.75],
-  [240.75, 244.85],
-  [244.85, 250.95],
-  [252.75, 260.95],
-  [260.95, 270.55],
-  [270.55, 281.45],
-  [281.45, 286.65],
-  [286.65, 300.95],
-  [300.95, 304.75],
-  [306.55, 318.95],
-  [318.95, 329.05],
-  [329.05, 331.65],
-  [331.65, 336.65],
+  [19.33, 28.3],
+  [28.3, 32.2],
+  [34.03, 50.02],
+  [50.02, 53.52],
+  [55.37, 75.96],
+  [75.96, 93.5],
+  [95.33, 110.44],
+  [110.44, 113.56],
+  [113.56, 132.93],
+  [132.93, 155.67],
+  [155.67, 178.25],
+  [183.57, 195.07],
+  [195.07, 199.0],
+  [199.0, 206.1],
+  [207.9, 226.3],
+  [226.3, 234.65],
+  [236.45, 240.95],
+  [240.95, 245.05],
+  [245.05, 251.15],
+  [252.95, 261.15],
+  [261.15, 270.75],
+  [270.75, 281.65],
+  [281.65, 286.85],
+  [286.85, 301.15],
+  [301.15, 304.95],
+  [306.75, 319.15],
+  [319.15, 329.25],
+  [329.25, 331.85],
+  [331.85, 336.85],
 ];
 
 export interface Chapter {

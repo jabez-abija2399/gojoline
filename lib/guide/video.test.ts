@@ -30,9 +30,9 @@ describe("parseChapters", () => {
     expect(c).toHaveLength(12);
     expect(c[0]).toEqual({ start: 0, n: null, title: "Intro" });
     expect(c[1]).toEqual({ start: 3, n: 1, title: "Start" });
-    expect(c[5]).toEqual({ start: 93.33, n: 5, title: "Change anything by chatting" });
-    expect(c[10]).toEqual({ start: 304.52, n: 10, title: "Plan and payments" });
-    expect(c[11]).toEqual({ start: 335.52, n: null, title: "Closing" });
+    expect(c[5]).toEqual({ start: 93.53, n: 5, title: "Change anything by chatting" });
+    expect(c[10]).toEqual({ start: 304.72, n: 10, title: "Plan and payments" });
+    expect(c[11]).toEqual({ start: 335.72, n: null, title: "Closing" });
     expect(c.map((x) => x.n).filter((n) => n !== null)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
   it("skips blank and broken lines, keeps titles with dots and sorts by time", () => {
@@ -46,7 +46,7 @@ describe("parseChapters", () => {
     const starts = sectionStarts(parseChapters(CHAPTERS_TXT));
     expect([...starts.keys()]).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(starts.get(2)).toBe(17.53);
-    expect(starts.get(9)).toBe(250.52);
+    expect(starts.get(9)).toBe(250.72);
     // Every chapter starts inside the video, in order.
     const times = [...starts.values()];
     expect(times.every((t, i) => t < VIDEO_SECONDS && (i === 0 || t > (times[i - 1] ?? 0)))).toBe(true);
@@ -77,7 +77,7 @@ describe("WebVTT", () => {
   it("runs each chapter until the next and the last until the end", () => {
     const cues = chapterCues(parseChapters(CHAPTERS_TXT), VIDEO_SECONDS, (c) => c.title);
     expect(cues[0]).toEqual({ start: 0, end: 3, text: "Intro" });
-    expect(cues.at(-1)).toEqual({ start: 335.52, end: VIDEO_SECONDS, text: "Closing" });
+    expect(cues.at(-1)).toEqual({ start: 335.72, end: VIDEO_SECONDS, text: "Closing" });
     expect(cues.every((c) => c.end > c.start)).toBe(true);
   });
   it("has one caption per time, in order, in both languages", () => {
