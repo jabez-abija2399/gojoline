@@ -1008,8 +1008,9 @@
     padding-inline: 0;
   }
   [data-style="luxe"] .brand-mark,
+  /* The glow only: the class is also on the split, centred and portrait heroes themselves. */
   [data-style="luxe"] .hero-glow {
-    display: none;
+    background: none;
   }
   [data-style="luxe"] main > section + section:not(.bg-accent) {
     border-top: 1px solid var(--site-line);

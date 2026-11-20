@@ -57,8 +57,12 @@
   background: none;
   padding: 0;
 }
-[data-style="drafting"] :is(.brand-mark, .hero-glow) {
+[data-style="drafting"] .brand-mark {
   display: none;
+}
+/* The glow only: the class is also on the split, centred and portrait heroes themselves. */
+[data-style="drafting"] .hero-glow {
+  background-image: none;
 }
 
 /* ---- The sheet: a faint grid, ink rules, square corners ---- */

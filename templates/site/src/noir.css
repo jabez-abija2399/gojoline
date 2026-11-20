@@ -81,8 +81,12 @@ body:has([data-style="noir"]) {
   background: none;
   padding: 0;
 }
-[data-style="noir"] :is(.brand-mark, .hero-glow) {
+[data-style="noir"] .brand-mark {
   display: none;
+}
+/* The glow only: the class is also on the split, centred and portrait heroes themselves. */
+[data-style="noir"] .hero-glow {
+  background-image: none;
 }
 
 /* ---- The room: no boxes, fine lines, brass details ---- */

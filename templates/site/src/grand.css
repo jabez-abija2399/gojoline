@@ -55,8 +55,12 @@
   background: none;
   padding: 0;
 }
-[data-style="grand"] :is(.brand-mark, .hero-glow) {
+[data-style="grand"] .brand-mark {
   display: none;
+}
+/* The glow only: the class is also on the split, centred and portrait heroes themselves. */
+[data-style="grand"] .hero-glow {
+  background-image: none;
 }
 [data-style="grand"] .wordmark {
   font-family: var(--site-font-heading);
