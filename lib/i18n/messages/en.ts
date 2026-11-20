@@ -29,7 +29,7 @@ export const en = {
       titleEnd: "home online",
       subtitle: "Create a website for your business by chatting, in Amharic or English. Bookings reach you on Telegram. Paid in Birr.",
       note: "Free to start. No card needed.",
-      watchGuide: "Watch how it works (5 min)",
+      watchGuide: "Watch how it works (6 min)",
       promptLabel: "Describe your business",
       placeholder: "Ask Gojoline to build a website for your café, shop, clinic…",
       chipsLabel: "Gojoline for",
@@ -66,7 +66,7 @@ export const en = {
       { value: "2", label: "languages, your choice" },
     ],
     eyebrows: { how: "How it works", features: "Features", faq: "Good to know", final: "Start today" },
-    watch: { eyebrow: "Video guide", title: "See Gojoline work, start to finish", body: "From the first message to a published site, in under 5 minutes. Captions are on the screen, so no sound is needed.", guideLink: "Read the full guide" },
+    watch: { eyebrow: "Video guide", title: "See Gojoline work, start to finish", body: "From the first message to a published site, in under 6 minutes. Captions are on the screen, so no sound is needed.", guideLink: "Read the full guide" },
     pillarsLabel: "What you get",
     pillars: [
       { title: "Build by chatting", body: "Describe your business in Amharic or English. Gojoline writes the site and keeps it up to date." },
