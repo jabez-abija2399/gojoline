@@ -10,6 +10,7 @@ const work = [
     title: t("Kuraz Studio site", "የኩራዝ ስቱዲዮ ድረ-ገጽ"),
     subtitle: t("Website and 3D", "ድረ-ገጽና 3D"),
     meta: [t("2026", "2018 ዓ.ም."), t("React, WebGL", "React፣ WebGL")],
+    action: link("See the project", "ፕሮጀክቱን ይመልከቱ", "/work"),
     description: t("A portfolio site that loads in under a second on a 3G phone.", "በ3G ስልክ ከአንድ ሰከንድ ባነሰ ጊዜ የሚከፈት የሥራ ማሳያ ድረ-ገጽ።"),
   },
   {
@@ -17,6 +18,7 @@ const work = [
     title: t("Gebeta brand system", "የገበታ ብራንድ ሥርዓት"),
     subtitle: t("Identity and design system", "መለያና የዲዛይን ሥርዓት"),
     meta: [t("2025", "2017 ዓ.ም."), t("Figma, tokens", "Figma፣ ቶክኖች")],
+    action: link("See the project", "ፕሮጀክቱን ይመልከቱ", "/work"),
     description: t("One set of design tokens for an app, a website and the shop window.", "ለመተግበሪያ፣ ለድረ-ገጽና ለሱቅ መስኮት አንድ የዲዛይን ቶክኖች ስብስብ።"),
   },
   {
@@ -24,6 +26,7 @@ const work = [
     title: t("Mesob dashboard", "የመሶብ ዳሽቦርድ"),
     subtitle: t("Product design", "የምርት ዲዛይን"),
     meta: [t("2025", "2017 ዓ.ም."), t("TypeScript, D3", "TypeScript፣ D3")],
+    action: link("See the project", "ፕሮጀክቱን ይመልከቱ", "/work"),
     description: t("Sales data for 300 shops, readable at a glance in Amharic or English.", "ለ300 ሱቆች የሽያጭ መረጃ፣ በአማርኛ ወይም በእንግሊዝኛ በአንድ እይታ የሚነበብ።"),
   },
   {
@@ -31,6 +34,7 @@ const work = [
     title: t("Lomi annual report", "የሎሚ ዓመታዊ ሪፖርት"),
     subtitle: t("Print and web", "ኅትመትና ድረ-ገጽ"),
     meta: [t("2024", "2016 ዓ.ም."), t("InDesign, Astro", "InDesign፣ Astro")],
+    action: link("See the project", "ፕሮጀክቱን ይመልከቱ", "/work"),
     description: t("A report people actually read, in print and as a scrolling story.", "ሰዎች በእርግጥ የሚያነቡት ሪፖርት፣ በኅትመትና እንደ ተሸብላይ ታሪክ።"),
   },
 ];
@@ -60,8 +64,8 @@ save("folio", {
           heading: t("I build interfaces people remember", "ሰዎች የሚያስታውሷቸውን በይነገጾች እገነባለሁ"),
           subheading: t("Creative developer in Addis Ababa. I design and build websites, products and the small details that make them feel alive.", "በአዲስ አበባ የፈጠራ ገንቢ። ድረ-ገጾችን፣ ምርቶችንና ሕያው የሚያደርጓቸውን ትናንሽ ዝርዝሮች እነድፋለሁ፣ እገነባለሁም።"),
           image: img("personal-hero-woman-orange-blazer", "A smiling young woman with natural hair in an orange blazer against a pale teal wall", "ብርቱካናማ ኮት የለበሰች፣ ፈገግ ያለች ወጣት ሴት በፈዛዛ አረንጓዴ-ሰማያዊ ግድግዳ ፊት"),
-          stamp: t("Creative developer · Addis Ababa ·", "የፈጠራ ገንቢ · አዲስ አበባ ·"),
-          primaryAction: link("See the work", "ሥራዎቹን ይመልከቱ", "#work"),
+          stamp: t("Creative developer", "የፈጠራ ገንቢ · አዲስ አበባ"),
+          primaryAction: link("See the work", "ሥራዎቹን ይመልከቱ", "/work"),
           secondaryAction: hello,
         },
         { type: "cards", id: "work", layout: "index", eyebrow: t("selected work", "የተመረጡ ሥራዎች"), heading: t("Work", "ሥራዎች"), items: work },
@@ -115,7 +119,10 @@ save("folio", {
       title: t("Work", "ሥራዎች"),
       nav: t("Work", "ሥራዎች"),
       description: t("Websites, products and design systems by Ruth Mekonnen.", "በሩት መኮንን የተሠሩ ድረ-ገጾች፣ ምርቶችና የዲዛይን ሥርዓቶች።"),
-      sections: [{ type: "cards", id: "all", layout: "grid", eyebrow: t("all work", "ሁሉም ሥራዎች"), heading: t("Everything, newest first", "ሁሉም፣ አዲሱ በመጀመሪያ"), items: work }],
+      sections: [
+        { type: "cards", id: "all", layout: "index", eyebrow: t("all work", "ሁሉም ሥራዎች"), heading: t("Everything, newest first", "ሁሉም፣ አዲሱ በመጀመሪያ"), items: work.map(({ action, ...item }) => item) },
+        { type: "cta", id: "next", heading: t("Have something to build?", "የሚገነባ ነገር አለዎት?"), primaryAction: hello },
+      ],
     },
     {
       path: "/contact",

@@ -202,10 +202,14 @@ Each brief becomes its own art direction and starter, so no two look like variat
 - Amharic in the motion-kit additions (tabs, giving boxes, ribbons, announcements, prayer and service times, stamps) needs the native-speaker review with the rest of the templates.
 - Generated-site LCP (performance review, 2026-11-20): with compressed files, Lighthouse slow 4G gives 2.1 to 2.4 s on both hotel and resort (budget 2.0 s); about 1.7 s is render delay from the blocking stylesheet and fonts. Next steps: inline the first screen's CSS and load the rest without blocking, and split every art direction into its own file the way `grand.css` is (about 4 to 5 KB gzip less blocking CSS per site). Lighthouse CI must serve files compressed or it reports about 3.9 s.
 - Resort photos are heavier than the hotel's (hero 480 px 28 KB vs 16 KB, about photo 34 KB): re-encode those stock files or pick lighter ones when real luxury-hotel photos are added to the library.
+<<<<<<< HEAD
 - Form `number` fields have no minimum or maximum: a booking can ask for 0, -3 or 999999999 guests (`lib/cloud/forms.ts` checks the format only). Add optional `min`/`max` to `formFieldSchema`, render them, enforce them in `checkSubmission`, and set 1 to 20 on booking guest fields (security review, 2026-11-20).
 - Amharic in the `estate` template (`scripts/presets/estate.mjs`, 2026-11-20) and its gallery strings (`estate` style name "መጽሔት") needs the same native-speaker review.
 - Amharic in the `folio` template (`scripts/presets/folio.mjs`, 2026-11-20) and its gallery strings (`folio` style name "ማስታወሻ ደብተር") needs the same native-speaker review.
 - Amharic in the `dining` template (`scripts/presets/dining.mjs`, 2026-11-20) and its gallery strings (`noir` style name "የሻማ ብርሃን") needs the same native-speaker review.
+=======
+- A page whose first section is a cards grid (no hero) loads its first card photo lazily, though it is the largest paint (architect /projects, LCP 2.0 s): give that photo priority like a hero (performance review, 2026-11-20).
+>>>>>>> build/architect-template
 - Amharic in the `architect` template (`scripts/presets/architect.mjs`, 2026-11-20) and its gallery strings (`drafting` style name "የሥነ ሕንፃ") needs the same native-speaker review.
 - Newsletter forms (boutique, 2026-11-20) store the address and notify the owner; there is no double opt-in yet, so a visitor can enter someone else's address. Add a confirmation email before owners send to these lists.
 - Demo sites carry the placeholder phone (`+251 911 000 000`) and Telegram (`yourbusiness`) in their call buttons and structured data; a demo visitor who taps them could reach a stranger. Consider leaving them out of demo builds.

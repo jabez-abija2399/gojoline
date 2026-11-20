@@ -58,7 +58,7 @@
   font-size: 1rem;
 }
 [data-style="folio"] .eyebrow::before {
-  content: "//";
+  content: "//" / "";
   width: auto;
   height: auto;
   background: none;
@@ -152,6 +152,23 @@
   rotate: -3deg;
 }
 
+[data-style="folio"] .index-row:has(a:focus-visible) {
+  background: var(--site-highlight);
+  color: var(--site-on-highlight);
+}
+/* Phones: the number above the title, no thumbnail, so titles get the width. */
+@media (max-width: 639px) {
+  [data-style="folio"] .index-inner {
+    flex-wrap: wrap;
+  }
+  [data-style="folio"] .index-inner::before {
+    width: 100%;
+  }
+  [data-style="folio"] .index-thumb {
+    display: none;
+  }
+}
+
 /* ---- Case studies: the picture in a frame, a tilted label ---- */
 [data-style="folio"] .feature-photo {
   border: 1.5px solid var(--site-text);
@@ -179,12 +196,16 @@
   color: var(--site-text);
 }
 
-/* ---- Experience: a list of years and places ---- */
-[data-style="folio"] :is(.timeline, ol, ul) .item-title {
-  letter-spacing: -0.02em;
+/* ---- Experience: entries between dashed rules, no boxes ---- */
+[data-style="folio"] main section:has(> .container-site > ol) :is(li > div, .card) {
+  border: 0;
+  border-top: 1px dashed color-mix(in oklab, var(--site-text) 45%, transparent);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 
-/* ---- Philosophy: the sentence, large, a marker under it ---- */
+/* ---- Philosophy: the sentence, large ---- */
 [data-style="folio"] .quote-section .quote-mark {
   display: none;
 }
@@ -293,11 +314,11 @@
     transition: background-color 250ms;
   }
   @media (hover: hover) and (pointer: fine) {
-    [data-style="folio"] .index-row:hover {
+    [data-style="folio"] .index-row:has(a):hover {
       background: var(--site-highlight);
       color: var(--site-on-highlight);
     }
-    [data-style="folio"] .index-row:hover :is(.text-muted) {
+    [data-style="folio"] .index-row:has(a):hover :is(.text-muted) {
       color: inherit;
     }
   }

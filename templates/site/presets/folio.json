@@ -29,10 +29,10 @@
             "src": "/stock/personal-hero-woman-orange-blazer.webp",
             "alt": { "en": "A smiling young woman with natural hair in an orange blazer against a pale teal wall", "am": "ብርቱካናማ ኮት የለበሰች፣ ፈገግ ያለች ወጣት ሴት በፈዛዛ አረንጓዴ-ሰማያዊ ግድግዳ ፊት" }
           },
-          "stamp": { "en": "Creative developer · Addis Ababa ·", "am": "የፈጠራ ገንቢ · አዲስ አበባ ·" },
+          "stamp": { "en": "Creative developer", "am": "የፈጠራ ገንቢ · አዲስ አበባ" },
           "primaryAction": {
             "label": { "en": "See the work", "am": "ሥራዎቹን ይመልከቱ" },
-            "href": "#work"
+            "href": "/work"
           },
           "secondaryAction": {
             "label": { "en": "Say hello", "am": "ሰላም ይበሉ" },
@@ -57,6 +57,10 @@
                 { "en": "2026", "am": "2018 ዓ.ም." },
                 { "en": "React, WebGL", "am": "React፣ WebGL" }
               ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
               "description": { "en": "A portfolio site that loads in under a second on a 3G phone.", "am": "በ3G ስልክ ከአንድ ሰከንድ ባነሰ ጊዜ የሚከፈት የሥራ ማሳያ ድረ-ገጽ።" }
             },
             {
@@ -70,6 +74,10 @@
                 { "en": "2025", "am": "2017 ዓ.ም." },
                 { "en": "Figma, tokens", "am": "Figma፣ ቶክኖች" }
               ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
               "description": { "en": "One set of design tokens for an app, a website and the shop window.", "am": "ለመተግበሪያ፣ ለድረ-ገጽና ለሱቅ መስኮት አንድ የዲዛይን ቶክኖች ስብስብ።" }
             },
             {
@@ -83,6 +91,10 @@
                 { "en": "2025", "am": "2017 ዓ.ም." },
                 { "en": "TypeScript, D3", "am": "TypeScript፣ D3" }
               ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
               "description": { "en": "Sales data for 300 shops, readable at a glance in Amharic or English.", "am": "ለ300 ሱቆች የሽያጭ መረጃ፣ በአማርኛ ወይም በእንግሊዝኛ በአንድ እይታ የሚነበብ።" }
             },
             {
@@ -96,6 +108,10 @@
                 { "en": "2024", "am": "2016 ዓ.ም." },
                 { "en": "InDesign, Astro", "am": "InDesign፣ Astro" }
               ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
               "description": { "en": "A report people actually read, in print and as a scrolling story.", "am": "ሰዎች በእርግጥ የሚያነቡት ሪፖርት፣ በኅትመትና እንደ ተሸብላይ ታሪክ።" }
             }
           ]
@@ -118,6 +134,10 @@
                 { "en": "2026", "am": "2018 ዓ.ም." },
                 { "en": "React, WebGL", "am": "React፣ WebGL" }
               ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
               "description": { "en": "The brief: show heavy 3D work without a heavy page. I built a viewer that streams each model only when you reach it, and a fallback image for slow phones. The site went from 9 MB to 600 KB on first load.", "am": "መመሪያው፦ ከባድ የ3D ሥራን ከባድ ባልሆነ ገጽ ማሳየት። እያንዳንዱን ሞዴል ሲደርሱበት ብቻ የሚያወርድ ማሳያና ለዝግተኛ ስልኮች ምትክ ምስል ሠራሁ። የመጀመሪያው ጭነት ከ9 MB ወደ 600 KB ወረደ።" }
             },
             {
@@ -131,6 +151,10 @@
                 { "en": "2025", "am": "2017 ዓ.ም." },
                 { "en": "TypeScript, D3", "am": "TypeScript፣ D3" }
               ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
               "description": { "en": "Shop owners checked sales in a notebook. I sat with six of them for a week, then designed a dashboard that answers their three real questions on one screen.", "am": "የሱቅ ባለቤቶች ሽያጭን በደብተር ይከታተሉ ነበር። ከስድስቱ ጋር ለአንድ ሳምንት ተቀምጬ፣ ሦስቱን እውነተኛ ጥያቄዎቻቸውን በአንድ ስክሪን የሚመልስ ዳሽቦርድ ነደፍኩ።" }
             }
           ]
@@ -209,7 +233,7 @@
         {
           "type": "cards",
           "id": "all",
-          "layout": "grid",
+          "layout": "index",
           "eyebrow": { "en": "all work", "am": "ሁሉም ሥራዎች" },
           "heading": { "en": "Everything, newest first", "am": "ሁሉም፣ አዲሱ በመጀመሪያ" },
           "items": [
@@ -266,6 +290,15 @@
               "description": { "en": "A report people actually read, in print and as a scrolling story.", "am": "ሰዎች በእርግጥ የሚያነቡት ሪፖርት፣ በኅትመትና እንደ ተሸብላይ ታሪክ።" }
             }
           ]
+        },
+        {
+          "type": "cta",
+          "id": "next",
+          "heading": { "en": "Have something to build?", "am": "የሚገነባ ነገር አለዎት?" },
+          "primaryAction": {
+            "label": { "en": "Say hello", "am": "ሰላም ይበሉ" },
+            "href": "/contact"
+          }
         }
       ]
     },
