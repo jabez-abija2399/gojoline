@@ -8,7 +8,7 @@ export function Quote({ section }: { section: QuoteSection }) {
   const { text } = useSite();
   const name = section.name ? text(section.name) : "";
   return (
-    <section id={section.id} className="section bg-primary-soft">
+    <section id={section.id} className="quote-section section bg-primary-soft">
       <figure className={`container-site reveal grid items-center gap-8 ${section.image ? "md:grid-cols-[1fr_2fr] md:gap-14" : ""}`}>
         {section.image && (
           <div className="zoom wipe mx-auto w-full max-w-xs rounded-site md:max-w-none">

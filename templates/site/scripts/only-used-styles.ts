@@ -6,7 +6,7 @@ const siteJson = fileURLToPath(new URL("../src/site.json", import.meta.url));
 
 /** Styles that ship in their own file: only a site that uses one gets its CSS (it blocks the first paint). */
 export function onlyUsedStyles(): Plugin {
-  const own = /\/src\/(grand)\.css$/;
+  const own = /\/src\/(grand|avant)\.css$/;
   const style = () => {
     try {
       return (JSON.parse(readFileSync(siteJson, "utf8")) as { theme?: { style?: string } }).theme?.style;

@@ -113,7 +113,7 @@ export const siteSchema = z
     tagline: text.optional(),
     announcement: z.array(text).min(1).max(6).optional(),
     languages: z.array(z.enum(["en", "am"])).min(1).max(2).refine((l) => new Set(l).size === l.length, "Languages must be unique"),
-    theme: z.object({ primary: hex, accent: hex, background: hex, text: hex, highlight: hex.optional(), font: z.enum(["modern", "classic", "friendly", "elegant", "grotesk", "condensed", "editorial"]), radius: z.enum(["none", "small", "medium", "large"]), style: z.enum(["warm", "editorial", "bold", "clean", "luxe", "swiss", "bento", "organic", "cinematic", "brutal", "calm", "kinetic", "grand"]).optional() }).strict(),
+    theme: z.object({ primary: hex, accent: hex, background: hex, text: hex, highlight: hex.optional(), font: z.enum(["modern", "classic", "friendly", "elegant", "grotesk", "condensed", "editorial"]), radius: z.enum(["none", "small", "medium", "large"]), style: z.enum(["warm", "editorial", "bold", "clean", "luxe", "swiss", "bento", "organic", "cinematic", "brutal", "calm", "kinetic", "grand", "avant"]).optional() }).strict(),
     business: z
       .object({
         phone: z.string().max(40).optional(),
@@ -168,8 +168,8 @@ export function themeWarnings(theme: { primary: string; accent: string; backgrou
   check(readableOn(theme.accent), theme.accent, "text on theme.accent (footer, banners)");
   // The highlight fills tags and tiles that carry text.
   if (theme.highlight) check(readableOn(theme.highlight), theme.highlight, "text on theme.highlight (tags, tiles)");
-  // luxe, swiss and grand set small labels and section numbers in the primary colour: it must read as text.
-  if (theme.style === "luxe" || theme.style === "swiss" || theme.style === "grand") {
+  // luxe, swiss, grand and avant set small labels and section numbers in the primary colour: it must read as text.
+  if (theme.style === "luxe" || theme.style === "swiss" || theme.style === "grand" || theme.style === "avant") {
     check(theme.primary, theme.background, `theme.primary as small text on theme.background (${theme.style})`);
     check(theme.primary, "#ffffff", `theme.primary as small text on white (${theme.style})`);
   }

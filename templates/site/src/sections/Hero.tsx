@@ -162,7 +162,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
 
   if (variant === "centered") {
     return (
-      <section id={section.id} className="section hero-glow md:py-24">
+      <section id={section.id} className="hero-centered section hero-glow md:py-24">
         <div className="container-site flex flex-col items-center gap-6 text-center">
           {section.eyebrow && <p className="hero-eyebrow enter">{text(section.eyebrow)}</p>}
           <Heading className="headline split max-w-4xl">

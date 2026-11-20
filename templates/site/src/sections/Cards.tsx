@@ -190,7 +190,7 @@ export function Cards({ section }: { section: CardsSection }) {
             ))}
           </ul>
         ) : (
-          <ul className={`dim-others grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
+          <ul className={`card-grid dim-others grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
             {items.map((item, i) => (
               <li key={section.items.indexOf(item)} style={{ "--i": i % 3 } as React.CSSProperties} className="card pcard reveal lift flex flex-col overflow-hidden">
                 <div className="zoom relative">

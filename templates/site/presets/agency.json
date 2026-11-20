@@ -1,0 +1,410 @@
+{
+  "name": { "en": "Kebero Studio", "am": "ከበሮ ስቱዲዮ" },
+  "tagline": { "en": "A creative studio in Addis Ababa for brands that refuse to whisper", "am": "ለማያንሾካሹኩ ብራንዶች፣ በአዲስ አበባ የሚገኝ የፈጠራ ስቱዲዮ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#2B2BEE", "accent": "#0B0B0B", "background": "#F4F4F0", "text": "#0B0B0B", "highlight": "#2B2BEE", "font": "grotesk", "radius": "none", "style": "avant" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Bole, Addis Ababa", "am": "ቦሌ፣ አዲስ አበባ" },
+    "hours": [
+      {
+        "days": { "en": "Monday to Friday", "am": "ከሰኞ እስከ ዓርብ" },
+        "time": { "en": "9:00 am to 6:00 pm", "am": "ከጠዋቱ 3 እስከ ምሽቱ 12 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Studio", "am": "ስቱዲዮ" },
+      "description": { "en": "Kebero Studio: brand identity, campaigns, websites and film for brands that refuse to whisper. Addis Ababa.", "am": "ከበሮ ስቱዲዮ፦ ለማያንሾካሹኩ ብራንዶች የብራንድ መለያ፣ ዘመቻ፣ ድረ-ገጽና ፊልም። አዲስ አበባ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "centered",
+          "eyebrow": { "en": "Creative studio · Addis Ababa", "am": "የፈጠራ ስቱዲዮ · አዲስ አበባ" },
+          "heading": { "en": "We build loud, unforgettable brands", "am": "ደማቅና የማይረሱ ብራንዶችን እንገነባለን" },
+          "subheading": { "en": "Identity, campaigns, websites and film for people who would rather be remembered than liked.", "am": "ከመወደድ ይልቅ መታወስን ለሚመርጡ፦ መለያ፣ ዘመቻ፣ ድረ-ገጽና ፊልም።" },
+          "primaryAction": {
+            "label": { "en": "Start a project", "am": "ፕሮጀክት እንጀምር" },
+            "href": "/contact"
+          },
+          "secondaryAction": {
+            "label": { "en": "See the work", "am": "ሥራዎቹን ይመልከቱ" },
+            "href": "#work"
+          }
+        },
+        {
+          "type": "about",
+          "id": "studio",
+          "eyebrow": { "en": "The studio", "am": "ስቱዲዮው" },
+          "heading": { "en": "Small team. Big voice.", "am": "ትንሽ ቡድን። ትልቅ ድምፅ።" },
+          "body": { "en": "We are designers, writers and filmmakers who think a brand should have an opinion.\n\nWe work with a few clients at a time, from the first sketch to the last frame, and we tell you the truth about your ideas.", "am": "ብራንድ የራሱ አቋም ሊኖረው ይገባል ብለን የምናምን ዲዛይነሮች፣ ጸሐፊዎችና ፊልም ሠሪዎች ነን።\n\nበአንድ ጊዜ ከጥቂት ደንበኞች ጋር ብቻ፣ ከመጀመሪያው ንድፍ እስከ መጨረሻው ምስል እንሠራለን፤ ስለ ሐሳቦችዎም እውነቱን እንነግርዎታለን።" },
+          "image": {
+            "src": "/stock/personal-gallery-lettering-sketches.webp",
+            "alt": { "en": "Hand-drawn logo and lettering sketches spread across a wooden desk", "am": "በእጅ የተሳሉ የአርማና የፊደል ንድፎች በእንጨት ጠረጴዛ ላይ ተበትነው" }
+          },
+          "imageSide": "start"
+        },
+        {
+          "type": "cards",
+          "id": "work",
+          "layout": "grid",
+          "eyebrow": { "en": "Selected work", "am": "የተመረጡ ሥራዎች" },
+          "heading": { "en": "Work that talks back", "am": "መልስ የሚሰጡ ሥራዎች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-card-logo-tablet.webp",
+                "alt": { "en": "A hand with a stylus drawing a bear-head logo on a black tablet", "am": "በጥቁር ታብሌት ላይ የድብ ራስ አርማ በብዕር የሚስል እጅ" }
+              },
+              "subtitle": { "en": "Brand identity", "am": "የብራንድ መለያ" },
+              "title": { "en": "Gelada Outdoor", "am": "ገላዳ አውትዶር" },
+              "meta": [
+                { "en": "2026", "am": "2018 ዓ.ም." },
+                { "en": "Logo, type, signage", "am": "አርማ፣ ፊደል፣ ምልክቶች" }
+              ],
+              "description": { "en": "A mark as stubborn as the mountains the brand climbs.", "am": "ብራንዱ እንደሚወጣቸው ተራሮች ጽኑ የሆነ አርማ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-editorial-portrait.webp",
+                "alt": { "en": "A woman in a red hat and red patterned dress holding a woven bag", "am": "ቀይ ባርኔጣና ቀይ ጥለት ያለው ቀሚስ የለበሰች፣ የተሸመነ ቦርሳ የያዘች ሴት" }
+              },
+              "subtitle": { "en": "Campaign", "am": "ዘመቻ" },
+              "title": { "en": "Red Season", "am": "ቀዩ ወቅት" },
+              "meta": [
+                { "en": "2026", "am": "2018 ዓ.ም." },
+                { "en": "Photography, film", "am": "ፎቶግራፍ፣ ፊልም" }
+              ],
+              "description": { "en": "One colour, one city, thirty days of posters.", "am": "አንድ ቀለም፣ አንድ ከተማ፣ ሠላሳ ቀን ፖስተሮች።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-brochure-layout.webp",
+                "alt": { "en": "An open printed brochure with a pink editorial layout on a wooden table", "am": "በእንጨት ጠረጴዛ ላይ የተከፈተ ሮዝ ገጽታ ያለው የታተመ ብሮሸር" }
+              },
+              "subtitle": { "en": "Editorial", "am": "ኅትመት" },
+              "title": { "en": "The Teff Paper", "am": "ዘ ጤፍ ፔፐር" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "Magazine, print", "am": "መጽሔት፣ ኅትመት" }
+              ],
+              "description": { "en": "A food magazine that reads like a family recipe book.", "am": "እንደ ቤተሰብ የምግብ አዘገጃጀት መጽሐፍ የሚነበብ የምግብ መጽሔት።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-website-laptop.webp",
+                "alt": { "en": "A laptop on a desk showing a teal architecture website", "am": "አረንጓዴ-ሰማያዊ የሥነ ሕንፃ ድረ-ገጽ የሚያሳይ ላፕቶፕ በጠረጴዛ ላይ" }
+              },
+              "subtitle": { "en": "Website", "am": "ድረ-ገጽ" },
+              "title": { "en": "Bole Build Co.", "am": "ቦሌ ቢልድ" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "Web, 3D, copy", "am": "ድረ-ገጽ፣ 3D፣ ጽሑፍ" }
+              ],
+              "description": { "en": "An architecture firm's work, finally as bold online as on site.", "am": "የሥነ ሕንፃ ድርጅቱ ሥራ፣ በግንባታ ቦታው እንዳለው ሁሉ በመስመር ላይም ደማቅ።" }
+            }
+          ],
+          "action": {
+            "label": { "en": "All projects", "am": "ሁሉም ፕሮጀክቶች" },
+            "href": "/work"
+          }
+        },
+        {
+          "type": "services",
+          "id": "services",
+          "variant": "numbered",
+          "eyebrow": { "en": "What we do", "am": "የምንሠራው" },
+          "heading": { "en": "Four ways to get noticed", "am": "ለመታየት አራት መንገዶች" },
+          "items": [
+            {
+              "title": { "en": "Brand identity", "am": "የብራንድ መለያ" },
+              "description": { "en": "Names, logos, type and the rules that hold them together.", "am": "ስሞች፣ አርማዎች፣ ፊደሎችና አንድ ላይ የሚያቆሟቸው ደንቦች።" }
+            },
+            {
+              "title": { "en": "Campaigns", "am": "ዘመቻዎች" },
+              "description": { "en": "Ideas big enough for a billboard and sharp enough for a phone.", "am": "ለትልቅ ማስታወቂያ ሰሌዳ የሚበቁ፣ ለስልክ ስክሪን የሚስማሙ ሐሳቦች።" }
+            },
+            {
+              "title": { "en": "Websites", "am": "ድረ-ገጾች" },
+              "description": { "en": "Sites that move, load fast and still work on a cheap phone.", "am": "የሚንቀሳቀሱ፣ ፈጥነው የሚከፈቱ፣ በርካሽ ስልክም የሚሠሩ ድረ-ገጾች።" }
+            },
+            {
+              "title": { "en": "Motion & film", "am": "እንቅስቃሴና ፊልም" },
+              "description": { "en": "Short films, animated logos and everything that plays.", "am": "አጫጭር ፊልሞች፣ የሚንቀሳቀሱ አርማዎችና የሚጫወት ሁሉ።" }
+            }
+          ]
+        },
+        {
+          "type": "marquee",
+          "tone": "primary",
+          "items": [
+            { "en": "Identity", "am": "መለያ" },
+            { "en": "Campaigns", "am": "ዘመቻ" },
+            { "en": "Web", "am": "ድረ-ገጽ" },
+            { "en": "Motion", "am": "እንቅስቃሴ" },
+            { "en": "Type", "am": "ፊደል" },
+            { "en": "Film", "am": "ፊልም" }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "featured",
+          "layout": "feature",
+          "eyebrow": { "en": "In focus", "am": "በትኩረት" },
+          "heading": { "en": "Featured projects", "am": "ጎላ ያሉ ፕሮጀክቶች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/cafe-hero-coffee-ceremony-pour.webp",
+                "alt": { "en": "A woman in a white habesha dress pouring coffee from a black clay jebena into rows of small cups", "am": "ነጭ የሀበሻ ቀሚስ የለበሰች ሴት ከጥቁር ሸክላ ጀበና በተደረደሩ ትናንሽ ስኒዎች ቡና ስትቀዳ" }
+              },
+              "subtitle": { "en": "Rebrand · 2026", "am": "አዲስ መለያ · 2018 ዓ.ም." },
+              "title": { "en": "Abol Roasters", "am": "አቦል ቆይዎች" },
+              "description": { "en": "A coffee roaster that sounded like everyone else. We gave it the voice of the ceremony itself: slow, warm and impossible to rush. New name, new packs, new shop.", "am": "እንደ ሌሎቹ ይሰማ የነበረ የቡና ቆይ። የሥነ ሥርዓቱን ራሱ ድምፅ ሰጠነው፦ ቀስ ያለ፣ ሞቅ ያለ፣ የማይቸኮል። አዲስ ስም፣ አዲስ ማሸጊያ፣ አዲስ ሱቅ።" },
+              "meta": [
+                { "en": "Identity", "am": "መለያ" },
+                { "en": "Packaging", "am": "ማሸጊያ" },
+                { "en": "Interior", "am": "የውስጥ ዲዛይን" }
+              ],
+              "action": {
+                "label": { "en": "Start something similar", "am": "ተመሳሳይ ነገር እንጀምር" },
+                "href": "/contact"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-gallery-loom-striped-threads.webp",
+                "alt": { "en": "A wooden handloom with brightly coloured striped threads stretched across it under a blue sky", "am": "በሰማያዊ ሰማይ ሥር ደማቅ ቀለም ያላቸው ሸንተረር ክሮች የተወጠሩበት የእንጨት ሽመና" }
+              },
+              "subtitle": { "en": "Campaign · 2025", "am": "ዘመቻ · 2017 ዓ.ም." },
+              "title": { "en": "Tibeb Atelier", "am": "ጥበብ አቴሊየር" },
+              "description": { "en": "A weaving house going abroad for the first time. One loom, one thread colour a week, and a film shot entirely at hand height.", "am": "ለመጀመሪያ ጊዜ ወደ ውጭ የሚወጣ የሽመና ቤት። አንድ ሽመና፣ በሳምንት አንድ የክር ቀለም፣ እና ሙሉ በሙሉ በእጅ ከፍታ የተቀረጸ ፊልም።" },
+              "meta": [
+                { "en": "Campaign", "am": "ዘመቻ" },
+                { "en": "Film", "am": "ፊልም" },
+                { "en": "Online shop", "am": "የመስመር ላይ ሱቅ" }
+              ],
+              "action": {
+                "label": { "en": "Start something similar", "am": "ተመሳሳይ ነገር እንጀምር" },
+                "href": "/contact"
+              }
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "id": "philosophy",
+          "quote": { "en": "Good work makes you feel something before you understand why.", "am": "ጥሩ ሥራ ለምን እንደሆነ ከመረዳትዎ በፊት አንድ ነገር እንዲሰማዎ ያደርጋል።" }
+        },
+        {
+          "type": "testimonials",
+          "id": "clients",
+          "eyebrow": { "en": "Clients", "am": "ደንበኞች" },
+          "heading": { "en": "Who we've made noise with", "am": "አብረን ድምፅ ያሰማናቸው" },
+          "items": [
+            {
+              "quote": { "en": "They threw out our brief in the first meeting and gave us something far better. Sales doubled in a season.", "am": "በመጀመሪያው ስብሰባ የሰጠናቸውን መመሪያ ትተው እጅግ የተሻለ ነገር ሰጡን። በአንድ ወቅት ሽያጫችን እጥፍ ሆነ።" },
+              "name": "Meron A.",
+              "role": { "en": "Founder, Abol Roasters", "am": "መሥራች፣ አቦል ቆይዎች" }
+            },
+            {
+              "quote": { "en": "Honest, fast and never boring.", "am": "ታማኝ፣ ፈጣን፣ ፈጽሞ አሰልቺ ያልሆኑ።" },
+              "name": "Daniel G.",
+              "role": { "en": "Marketing lead, Gelada Outdoor", "am": "የገበያ ኃላፊ፣ ገላዳ አውትዶር" }
+            },
+            {
+              "quote": { "en": "Our site finally looks like the buildings we make.", "am": "ድረ-ገጻችን በመጨረሻ የምንሠራቸውን ሕንፃዎች መሰለ።" },
+              "name": "Hiwot B.",
+              "role": { "en": "Partner, Bole Build Co.", "am": "አጋር፣ ቦሌ ቢልድ" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "contact",
+          "heading": { "en": "Got something to say? Let's make it loud.", "am": "የሚሉት ነገር አለዎት? ድምፁን እናጉላው።" },
+          "primaryAction": {
+            "label": { "en": "Start a project", "am": "ፕሮጀክት እንጀምር" },
+            "href": "/contact"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call the studio", "am": "ወደ ስቱዲዮው ይደውሉ" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/work",
+      "title": { "en": "Work", "am": "ሥራዎች" },
+      "nav": { "en": "Work", "am": "ሥራዎች" },
+      "description": { "en": "Projects by Kebero Studio: identities, campaigns, magazines, websites and packaging.", "am": "የከበሮ ስቱዲዮ ፕሮጀክቶች፦ መለያዎች፣ ዘመቻዎች፣ መጽሔቶች፣ ድረ-ገጾችና ማሸጊያዎች።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "projects",
+          "layout": "index",
+          "eyebrow": { "en": "Index", "am": "ማውጫ" },
+          "heading": { "en": "Every project", "am": "ሁሉም ፕሮጀክቶች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-card-logo-tablet.webp",
+                "alt": { "en": "A hand with a stylus drawing a bear-head logo on a black tablet", "am": "በጥቁር ታብሌት ላይ የድብ ራስ አርማ በብዕር የሚስል እጅ" }
+              },
+              "subtitle": { "en": "Brand identity", "am": "የብራንድ መለያ" },
+              "title": { "en": "Gelada Outdoor", "am": "ገላዳ አውትዶር" },
+              "meta": [
+                { "en": "2026", "am": "2018 ዓ.ም." },
+                { "en": "Logo, type, signage", "am": "አርማ፣ ፊደል፣ ምልክቶች" }
+              ],
+              "description": { "en": "A mark as stubborn as the mountains the brand climbs.", "am": "ብራንዱ እንደሚወጣቸው ተራሮች ጽኑ የሆነ አርማ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-editorial-portrait.webp",
+                "alt": { "en": "A woman in a red hat and red patterned dress holding a woven bag", "am": "ቀይ ባርኔጣና ቀይ ጥለት ያለው ቀሚስ የለበሰች፣ የተሸመነ ቦርሳ የያዘች ሴት" }
+              },
+              "subtitle": { "en": "Campaign", "am": "ዘመቻ" },
+              "title": { "en": "Red Season", "am": "ቀዩ ወቅት" },
+              "meta": [
+                { "en": "2026", "am": "2018 ዓ.ም." },
+                { "en": "Photography, film", "am": "ፎቶግራፍ፣ ፊልም" }
+              ],
+              "description": { "en": "One colour, one city, thirty days of posters.", "am": "አንድ ቀለም፣ አንድ ከተማ፣ ሠላሳ ቀን ፖስተሮች።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-brochure-layout.webp",
+                "alt": { "en": "An open printed brochure with a pink editorial layout on a wooden table", "am": "በእንጨት ጠረጴዛ ላይ የተከፈተ ሮዝ ገጽታ ያለው የታተመ ብሮሸር" }
+              },
+              "subtitle": { "en": "Editorial", "am": "ኅትመት" },
+              "title": { "en": "The Teff Paper", "am": "ዘ ጤፍ ፔፐር" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "Magazine, print", "am": "መጽሔት፣ ኅትመት" }
+              ],
+              "description": { "en": "A food magazine that reads like a family recipe book.", "am": "እንደ ቤተሰብ የምግብ አዘገጃጀት መጽሐፍ የሚነበብ የምግብ መጽሔት።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-website-laptop.webp",
+                "alt": { "en": "A laptop on a desk showing a teal architecture website", "am": "አረንጓዴ-ሰማያዊ የሥነ ሕንፃ ድረ-ገጽ የሚያሳይ ላፕቶፕ በጠረጴዛ ላይ" }
+              },
+              "subtitle": { "en": "Website", "am": "ድረ-ገጽ" },
+              "title": { "en": "Bole Build Co.", "am": "ቦሌ ቢልድ" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "Web, 3D, copy", "am": "ድረ-ገጽ፣ 3D፣ ጽሑፍ" }
+              ],
+              "description": { "en": "An architecture firm's work, finally as bold online as on site.", "am": "የሥነ ሕንፃ ድርጅቱ ሥራ፣ በግንባታ ቦታው እንዳለው ሁሉ በመስመር ላይም ደማቅ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/fashion-card-man-gabi-orange-wall.webp",
+                "alt": { "en": "A young man wrapped in a white striped cotton shawl against an orange shutter", "am": "በብርቱካናማ መዝጊያ ፊት ባለ ሸንተረር ነጭ ጋቢ የተጠቀለለ ወጣት" }
+              },
+              "subtitle": { "en": "Campaign", "am": "ዘመቻ" },
+              "title": { "en": "Gabi Season", "am": "የጋቢ ወቅት" },
+              "meta": [
+                { "en": "2024", "am": "2016 ዓ.ም." },
+                { "en": "Photography", "am": "ፎቶግራፍ" }
+              ]
+            },
+            {
+              "image": {
+                "src": "/stock/personal-gallery-pattern.webp",
+                "alt": { "en": "A vintage geometric repeat pattern in orange, grey-blue and yellow", "am": "በብርቱካናማ፣ ግራጫ-ሰማያዊና ቢጫ የተሠራ የድሮ ጂኦሜትሪክ ጥለት" }
+              },
+              "subtitle": { "en": "Packaging", "am": "ማሸጊያ" },
+              "title": { "en": "Shema Textiles", "am": "ሸማ ጨርቃጨርቅ" },
+              "meta": [
+                { "en": "2024", "am": "2016 ዓ.ም." },
+                { "en": "Pattern, packaging", "am": "ጥለት፣ ማሸጊያ" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "next",
+          "heading": { "en": "Yours could be next.", "am": "የእርስዎ ቀጣዩ ሊሆን ይችላል።" },
+          "primaryAction": {
+            "label": { "en": "Start a project", "am": "ፕሮጀክት እንጀምር" },
+            "href": "/contact"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": { "en": "Contact", "am": "አድራሻ" },
+      "nav": { "en": "Contact", "am": "አድራሻ" },
+      "description": { "en": "Start a project with Kebero Studio in Addis Ababa. We answer within two working days.", "am": "በአዲስ አበባ ከከበሮ ስቱዲዮ ጋር ፕሮጀክት ይጀምሩ። በሁለት የሥራ ቀናት ውስጥ እንመልሳለን።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "project",
+          "kind": "contact",
+          "eyebrow": { "en": "New project", "am": "አዲስ ፕሮጀክት" },
+          "heading": { "en": "Tell us what you're making", "am": "ምን እየሠሩ እንደሆነ ይንገሩን" },
+          "intro": { "en": "A few lines are enough. We answer within two working days, with questions or a first idea.", "am": "ጥቂት መስመሮች ይበቃሉ። በሁለት የሥራ ቀናት ውስጥ በጥያቄ ወይም በመጀመሪያ ሐሳብ እንመልሳለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "company",
+              "label": { "en": "Company or project", "am": "ድርጅት ወይም ፕሮጀክት" },
+              "type": "text"
+            },
+            {
+              "name": "need",
+              "label": { "en": "What do you need?", "am": "ምን ያስፈልግዎታል?" },
+              "type": "select",
+              "options": [
+                { "en": "Brand identity", "am": "የብራንድ መለያ" },
+                { "en": "Campaign", "am": "ዘመቻ" },
+                { "en": "Website", "am": "ድረ-ገጽ" },
+                { "en": "Motion or film", "am": "እንቅስቃሴ ወይም ፊልም" },
+                { "en": "Not sure yet", "am": "ገና እርግጠኛ አይደለሁም" }
+              ]
+            },
+            {
+              "name": "message",
+              "label": { "en": "Tell us more", "am": "ተጨማሪ ይንገሩን" },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": { "en": "Send it", "am": "ላክ" },
+          "successMessage": { "en": "Got it. We'll be in touch within two working days.", "am": "ደርሶናል። በሁለት የሥራ ቀናት ውስጥ እናገኝዎታለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "studio",
+          "eyebrow": { "en": "The studio", "am": "ስቱዲዮው" },
+          "heading": { "en": "Or just come by", "am": "ወይም ዝም ብለው ይምጡ" },
+          "intro": { "en": "Call or write on Telegram. Coffee is always on.", "am": "ይደውሉ ወይም በቴሌግራም ይጻፉ። ቡና ሁሌም አለ።" }
+        }
+      ]
+    }
+  ]
+}

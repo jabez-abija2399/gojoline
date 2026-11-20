@@ -554,5 +554,27 @@
         "height": 933
       }
     }
+  },
+  "agency": {
+    "en": {
+      "src": "/showcase/agency-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/agency-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/agency-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/agency-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }

@@ -12,6 +12,7 @@ import "./styles.css";
 import "./motion.css";
 import "./design.css";
 import "./grand.css";
+import "./avant.css";
 
 const container = document.getElementById("root")!;
 

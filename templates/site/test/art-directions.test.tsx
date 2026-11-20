@@ -132,3 +132,44 @@ describe("art direction (grand)", () => {
     });
   });
 });
+
+describe("art direction (avant)", () => {
+  it("agency is valid and readable, with the electric colour readable as small text", () => {
+    const site = preset("agency");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("avant");
+    expect(themeWarnings(site.theme)).toEqual([]);
+    expect(themeWarnings({ ...site.theme, primary: "#7B7BFF" }).join(" ")).toMatch(/small text on theme.background \(avant\)/);
+  });
+
+  it("the home page carries the hooks the style composes: words-only hero, broken grid, index, showcase, statement", () => {
+    const out = html(preset("agency"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain('class="hero-centered section');
+    expect(out).not.toMatch(/class="hero-centered[^"]*"[^>]*>(?:(?!<\/section>).)*<img/s);
+    expect(out.match(/class="card pcard/g)).toHaveLength(4);
+    expect(out).toContain("card-grid");
+    expect(out.match(/class="service-row /g)).toHaveLength(4);
+    expect(out.match(/class="feature-row /g)).toHaveLength(2);
+    expect(out).toContain('class="quote-section section');
+    expect(out).toContain("footer-wordmark");
+  });
+
+  it("names no client in the ribbon, and the philosophy quote names no person", () => {
+    const site = preset("agency");
+    const home = site.pages[0]!.sections;
+    const ribbon = home.find((s) => s.type === "marquee");
+    expect(ribbon && "items" in ribbon && ribbon.items.map((i) => i.en)).toEqual(["Identity", "Campaigns", "Web", "Motion", "Type", "Film"]);
+    const quote = home.find((s) => s.type === "quote");
+    expect(quote && "name" in quote ? quote.name : undefined).toBeUndefined();
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("agency");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});

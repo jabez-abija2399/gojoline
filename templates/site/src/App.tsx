@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Announcement } from "./components/Announcement";
 import { HeadingLevel } from "./components/SectionTitle";
 import { SiteProvider } from "./lib/context";
@@ -77,6 +78,20 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
   const firstIsHero = top?.type === "hero";
   // A full-screen photo hero carries the header on top of the photo.
   const overlay = top?.type === "hero" && top.variant === "immersive" && Boolean(top.image?.src);
+  // The avant style's cursor ring and leaning buttons: a small script of its own, fetched only by avant sites.
+  const style = site.theme.style;
+  useEffect(() => {
+    if (style !== "avant") return;
+    let stop = () => {};
+    let gone = false;
+    void import("./components/pointer").then((m) => {
+      if (!gone) stop = m.startPointer();
+    });
+    return () => {
+      gone = true;
+      stop();
+    };
+  }, [style]);
   return (
     <SiteProvider site={site} page={page} lang={lang}>
       {/* The style wraps the page and the phone call bar alike. */}

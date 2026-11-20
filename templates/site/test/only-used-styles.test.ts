@@ -20,10 +20,16 @@ describe("styles that ship only to the sites that use them", () => {
     expect(load(fileURLToPath(new URL("../src/design.css", import.meta.url)))).toBeNull();
   });
 
-  it("every grand rule is scoped to the style, so dropping the file changes no other site", () => {
-    const css = readFileSync(grandCss, "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  it.each(["grand", "avant"])("every %s rule is scoped to the style, so dropping the file changes no other site", (name) => {
+    const css = readFileSync(fileURLToPath(new URL(`../src/${name}.css`, import.meta.url)), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
     const selectors = [...css.matchAll(/(^|})\s*([^@{}][^{}]*)\{/g)].map((m) => m[2]!.trim()).filter((s) => !/^(@|from\b|to\b|\d+%)/.test(s));
     expect(selectors.length).toBeGreaterThan(50);
-    for (const sel of selectors) for (const part of sel.split(/,(?![^(]*\))/)) expect(part, part).toContain('[data-style="grand"]');
+    for (const sel of selectors) for (const part of sel.split(/,(?![^(]*\))/)) expect(part, part).toContain(`[data-style="${name}"]`);
+  });
+
+  it("avant.css is empty unless site.json asks for avant", () => {
+    const out = load(fileURLToPath(new URL("../src/avant.css", import.meta.url)));
+    if (style === "avant") expect(out).toContain('[data-style="avant"]');
+    else expect(out).toBe("");
   });
 });
