@@ -237,13 +237,14 @@ function Field({ id, label, hint, children }: { id: string; label: string; hint?
 }
 
 function Check({ id, checked, onChange, label, hint }: { id: string; checked: boolean; onChange: (on: boolean) => void; label: string; hint: string }) {
+  // The whole bordered row is the target, so it's easy to hit on a phone.
   return (
-    <div className="flex flex-col">
-      <label htmlFor={id} className="flex min-h-11 cursor-pointer items-center gap-3 font-medium">
-        <input id={id} type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} aria-describedby={`${id}-hint`} className="size-6 shrink-0 accent-ink" />
-        {label}
-      </label>
-      <p id={`${id}-hint`} className="ps-9 text-sm text-ink-muted">{hint}</p>
-    </div>
+    <label htmlFor={id} className="flex min-h-14 cursor-pointer items-start gap-3 rounded-xl border border-line bg-white p-3 transition-colors hover:border-faint has-[:checked]:border-ink has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-link">
+      <input id={id} type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} aria-labelledby={`${id}-label`} aria-describedby={`${id}-hint`} className="mt-0.5 size-6 shrink-0 accent-ink focus-visible:outline-none" />
+      <span className="flex flex-col gap-0.5">
+        <span id={`${id}-label`} className="font-medium">{label}</span>
+        <span id={`${id}-hint`} className="text-sm text-ink-muted">{hint}</span>
+      </span>
+    </label>
   );
 }

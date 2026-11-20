@@ -42,7 +42,7 @@ export function PhoneMenu({ label, children }: { label: React.ReactNode; childre
   }, []);
   return (
     <details ref={ref} className="group relative md:hidden">
-      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full bg-ink px-4 font-medium text-white [&::-webkit-details-marker]:hidden">{label}</summary>
+      <summary className="flex size-11 cursor-pointer list-none items-center justify-center rounded-full border border-line bg-white font-medium text-ink hover:bg-sunken [&::-webkit-details-marker]:hidden">{label}</summary>
       {children}
     </details>
   );

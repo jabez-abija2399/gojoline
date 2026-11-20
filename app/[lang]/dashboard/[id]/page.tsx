@@ -5,7 +5,6 @@ import { z } from "zod";
 import { ArrowLeft, House, Inbox, Settings, Sparkles, Store } from "lucide-react";
 import dynamic from "next/dynamic";
 import { HomePanel } from "@/components/dashboard/home-panel";
-import { ActiveTabInView } from "@/components/dashboard/active-tab";
 import { loadHeader, loadHome } from "@/lib/dashboard/overview";
 import { AppShell } from "@/components/app/app-shell";
 // Each section's client code loads only with its own tab.
@@ -88,7 +87,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
             {d.editWithAi}
           </Link>
         </div>
-        <nav id="dashboard-tabs" aria-label={d.title} className="chips-scroll -mx-4 flex gap-1 overflow-x-auto border-b border-line px-4 [mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] sm:mx-0 sm:px-0 sm:[mask-image:none]">
+        <nav id="dashboard-tabs" aria-label={d.title} className="grid grid-cols-4 border-b border-line sm:flex sm:gap-1">
           {TABS.map((x) => {
             const Icon = TAB_ICONS[x];
             const count = x === "messages" ? header.counts.waiting : 0;
@@ -97,12 +96,12 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
                 key={x}
                 href={`/${lang}/dashboard/${id}?tab=${x}`}
                 aria-current={x === tab ? "page" : undefined}
-                className="relative -mb-px inline-flex min-h-12 shrink-0 items-center gap-2 whitespace-nowrap border-b-2 border-transparent px-3 text-sm font-medium text-ink-muted transition-colors hover:text-ink aria-[current=page]:border-ink aria-[current=page]:text-ink lg:min-h-11"
+                className="relative -mb-px flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 border-b-2 border-transparent px-1 text-center text-sm font-medium leading-tight text-ink-muted transition-colors hover:text-ink aria-[current=page]:border-ink aria-[current=page]:text-ink sm:min-h-12 sm:shrink-0 sm:flex-row sm:gap-2 sm:whitespace-nowrap sm:px-3 lg:min-h-11"
               >
                 <Icon aria-hidden="true" className="size-4" />
-                {labels[x]}
+                <span className="max-w-full">{labels[x]}</span>
                 {count > 0 && (
-                  <span className="rounded-full bg-ink px-1.5 text-xs font-semibold tabular-nums text-white">
+                  <span className="absolute end-1 top-1 rounded-full sm:static bg-ink px-1.5 text-xs font-semibold tabular-nums text-white">
                     {count}
                     <span className="sr-only"> {d.kpiWaiting}</span>
                   </span>
@@ -111,7 +110,6 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
             );
           })}
         </nav>
-        <ActiveTabInView navId="dashboard-tabs" />
         {home && <HomePanel o={home} t={d} locale={lang} projectId={id} siteName={name} supportBot={bot} scan={scan} guideLabel={t.guide.dashboardLink} />}
         {tab === "messages" && (
           <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">

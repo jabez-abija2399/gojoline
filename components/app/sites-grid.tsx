@@ -71,8 +71,12 @@ export function SitesGrid({ locale, sites, t }: { locale: string; sites: SiteCar
                     <span className="truncate">{s.address?.text ?? (s.status === "taken_down" ? t.takenDown : t.draft)}</span>
                   </span>
                 </div>
-                <div className="flex flex-1 items-center justify-center">
-                  <span className="font-display text-3xl font-bold text-ink sm:text-5xl">{[...s.name.trim()][0]?.toUpperCase() ?? "+"}</span>
+                {/* A sketch of a page: the site's name as its headline, a few lines, its one button. */}
+                <div className="flex flex-1 flex-col justify-center gap-1.5 px-3 sm:gap-2 sm:px-6">
+                  <span className="line-clamp-2 break-words font-display text-sm leading-tight font-bold text-ink sm:text-xl">{s.name}</span>
+                  <span className="h-1.5 w-11/12 rounded-full bg-ink/15 sm:h-2" />
+                  <span className="h-1.5 w-2/3 rounded-full bg-ink/15 sm:h-2" />
+                  <span className="mt-1 h-3 w-12 rounded-full bg-ink/80 sm:h-5 sm:w-20" />
                 </div>
               </div>
               <div className="flex min-w-0 flex-1 flex-col gap-2 p-3 sm:p-4">

@@ -70,7 +70,13 @@ The logo follows the palette: a coral globe, the gojo cut out in paper, an ink d
 - **Inter 400/500/600**: interface and body text
 - **Noto Sans Ethiopic**: Amharic, Tigrinya and other Ge'ez-script text
 
-All are free on Google Fonts.
+All are free on Google Fonts. In short: Fraunces on public marketing headlines, Outfit for headings inside the app, Inter and Noto Sans Ethiopic for everything else. No other faces in the builder.
+
+Type sizes: 14 (notes and labels only), 16 (body), 18, 22, 28, 36, 48 px (`--gojo-text-*` in `tokens.css`).
+
+## Spacing
+
+One 4 px-based scale: 4, 8, 12, 16, 24, 32, 48, 72 px (`--gojo-space-*`; Tailwind steps 1, 2, 3, 4, 6, 8, 12, 18). Side margins are 16 px on phones and 24 px from tablets up; 24 px between cards; 48 to 72 px between page sections. Anything tappable is at least 44 px tall on phones and 36 px on desktop.
 
 ## Rules
 

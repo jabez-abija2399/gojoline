@@ -34,7 +34,7 @@ test("create a site, edit it by chat, see versions and restore", async ({ page }
   await expect(page.getByText("Version 3", { exact: true }).filter({ visible: true })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 
-  await page.getByRole("tab", { name: "Files" }).filter({ visible: true }).click();
+  await page.getByRole("tab", { name: "Advanced" }).filter({ visible: true }).click();
   await expect(page.locator("pre:visible")).toContainText('"en": "Selam Coffee"');
 
   // The project is named after the site.

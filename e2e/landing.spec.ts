@@ -63,7 +63,7 @@ test.describe("landing page", () => {
     await expect(page.getByText(/send the transaction number/i)).toBeVisible();
     // Templates and prices have their own pages, reached from the menu (behind "Menu" on phones).
     const openMenu = async () => {
-      if (test.info().project.name === "mobile") await page.getByText("Menu", { exact: true }).click();
+      if (test.info().project.name === "mobile") await page.locator("summary", { hasText: "Menu" }).click();
     };
     await openMenu();
     await page.getByRole("navigation", { name: "Main" }).filter({ visible: true }).getByRole("link", { name: "Templates" }).click();

@@ -48,7 +48,6 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
   return (
     <div data-gojo-theme={theme} className="flex h-dvh flex-col overflow-hidden bg-paper leading-normal text-ink">
       <div className="flex min-h-0 flex-1 flex-col">
-        <h1 className="sr-only">{project.name || t.builder.untitled}</h1>
         <Builder
           paused={builder.paused}
           locale={lang}

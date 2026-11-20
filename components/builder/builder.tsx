@@ -464,19 +464,20 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       >
         {({ status, button }) => <TopBar locale={locale} projectId={projectId} text={chrome} siteName={name} status={status} publish={button} />}
       </PublishBar>
-      <TabList
-        tabs={["chat", ...SIDE_TABS] as const}
-        labels={tabLabels}
-        icons={TAB_ICONS}
-        badges={{ preview: previewFresh && mobileTab !== "preview" }}
-        badgeLabel={t.tabNew}
-        active={mobileTab}
-        onChange={showTab}
-        label={t.viewsLabel}
-        idPrefix="tab-m"
-        className="flex overflow-x-auto border-b border-line bg-white p-1.5 lg:hidden"
-      />
       <main id="main" className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <h1 className="sr-only">{name}</h1>
+        <TabList
+          tabs={["chat", ...SIDE_TABS] as const}
+          labels={tabLabels}
+          icons={TAB_ICONS}
+          badges={{ preview: previewFresh && mobileTab !== "preview" }}
+          badgeLabel={t.tabNew}
+          active={mobileTab}
+          onChange={showTab}
+          label={t.viewsLabel}
+          idPrefix="tab-m"
+          className="flex overflow-x-auto border-b border-line bg-white p-1.5 lg:hidden"
+        />
         <section id="panel-chat" role="tabpanel" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-e lg:border-line xl:w-[460px]`}>
           {chat}
         </section>

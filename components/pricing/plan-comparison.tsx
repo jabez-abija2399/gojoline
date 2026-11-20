@@ -46,7 +46,7 @@ export function PlanComparison({ t, planNames, headingLevel = 2, id = "compare",
   const rows = planComparison(features);
   const H = headingLevel === 2 ? "h2" : "h3";
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="flex scroll-mt-24 flex-col gap-3">
+    <section id={id} className="flex scroll-mt-24 flex-col gap-3">
       <H id={`${id}-title`} className={headingLevel === 2 ? "text-2xl font-semibold tracking-tight sm:text-3xl" : "text-lg font-semibold"}>{t.title}</H>
       <div role="region" aria-labelledby={`${id}-title`} tabIndex={0} className="relative max-w-full overflow-x-auto rounded-2xl border border-line bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
         <table className="w-full min-w-[20rem] table-fixed border-collapse text-start text-sm sm:text-base">
