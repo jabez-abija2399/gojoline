@@ -93,7 +93,7 @@ save("estate", {
           heading: t("A penthouse above Bole", "ከቦሌ በላይ ያለ የጣሪያ ቤት"),
           items: [
             {
-              image: img("business-card-addis-towers", "Glass high-rise towers above green trees under a blue sky", "በሰማያዊ ሰማይ ሥር ከአረንጓዴ ዛፎች በላይ የመስታወት ረጃጅም ሕንፃዎች"),
+              image: img("real-estate-gallery-master-bedroom", "A calm bedroom with a grey upholstered bed, oak panelling, globe lights and sheer curtains", "ግራጫ አልጋ፣ የኦክ እንጨት ግድግዳ፣ ክብ መብራቶችና ስስ መጋረጃዎች ያሉት ረጋ ያለ መኝታ ቤት"),
               badge: sale,
               title: t("The Skyline Penthouse", "የሰማይ መስመሩ የጣሪያ ቤት"),
               subtitle: t("Top floor, views on three sides", "የላይኛው ፎቅ፣ በሦስት በኩል እይታ"),

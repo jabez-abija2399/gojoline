@@ -148,8 +148,9 @@
 [data-style="estate"] .card-grid {
   gap: 3rem 1.5rem;
 }
+/* Phones and tablets: 3:2, the shape of the photos (a tall crop would blow them up). */
 [data-style="estate"] .card-grid .zoom :is(img, .placeholder) {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 2;
 }
 @media (min-width: 1024px) {
   [data-style="estate"] .card-grid {
@@ -262,15 +263,8 @@
   [data-style="estate"] .zoom img {
     transition-duration: 1400ms;
   }
-  [data-style="estate"] .card-grid .zoom {
-    outline: 0 solid var(--site-accent);
-    outline-offset: -1px;
-    transition: outline-width 300ms;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    [data-style="estate"] .card-grid > li:hover .zoom {
-      outline-width: 6px;
-    }
+  [data-style="estate"] .card-grid .zoom::after {
+    transition: opacity 300ms;
   }
 }
 
@@ -363,9 +357,25 @@
 [data-style="estate"] .cta-band > svg {
   display: none;
 }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
-  [data-style="estate"] .card-grid > li:hover .zoom {
-    outline: 6px solid var(--site-accent);
-    outline-offset: -1px;
+/* A frame of the forest ink over a listing's photo on hover: an overlay that fades (composited). */
+[data-style="estate"] .card-grid .zoom::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 6px solid var(--site-accent);
+  opacity: 0;
+  pointer-events: none;
+}
+[data-style="estate"] .card-grid .badge {
+  z-index: 2;
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-style="estate"] .card-grid > li:hover .zoom::after {
+    opacity: 1;
   }
+}
+/* The listing of the month needs no clip-path wipe (it repaints while running). */
+[data-style="estate"] .wipe {
+  animation: none;
 }

@@ -52,8 +52,8 @@
           "items": [
             {
               "image": {
-                "src": "/stock/business-card-addis-towers.webp",
-                "alt": { "en": "Glass high-rise towers above green trees under a blue sky", "am": "በሰማያዊ ሰማይ ሥር ከአረንጓዴ ዛፎች በላይ የመስታወት ረጃጅም ሕንፃዎች" }
+                "src": "/stock/real-estate-gallery-master-bedroom.webp",
+                "alt": { "en": "A calm bedroom with a grey upholstered bed, oak panelling, globe lights and sheer curtains", "am": "ግራጫ አልጋ፣ የኦክ እንጨት ግድግዳ፣ ክብ መብራቶችና ስስ መጋረጃዎች ያሉት ረጋ ያለ መኝታ ቤት" }
               },
               "badge": { "en": "For sale", "am": "ለሽያጭ" },
               "title": { "en": "The Skyline Penthouse", "am": "የሰማይ መስመሩ የጣሪያ ቤት" },

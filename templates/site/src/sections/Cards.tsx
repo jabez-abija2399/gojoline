@@ -14,6 +14,9 @@ export function Cards({ section }: { section: CardsSection }) {
   const layout = section.layout ?? "grid";
   // avant lays featured work across the page and grid tiles up to 7 of 12 columns: fetch photos to match.
   const avant = site.theme.style === "avant";
+  // estate: one wide (4 of 6 columns) and one narrow, then three across, repeating.
+  const estate = site.theme.style === "estate";
+  const estateSizes = (i: number) => (i % 5 === 0 ? "(min-width: 1280px) 720px, (min-width: 1024px) 62vw, (min-width: 640px) 92vw, 160px" : i % 5 === 1 ? "(min-width: 1024px) 34vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px");
   // monochrome shows the first of exactly three pieces large (7 of 12 columns).
   const bigFirst = site.theme.style === "monochrome" && section.items.length === 3;
   // Pills by badge ("For sale", "For rent", "Trek") when cards carry two or more kinds.
@@ -98,7 +101,7 @@ export function Cards({ section }: { section: CardsSection }) {
             {items.map((item, i) => (
               <li key={section.items.indexOf(item)} className="feature-row reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
                 <div className={`feature-photo zoom wipe relative rounded-site ${arch} ${i % 2 === 1 ? "md:order-last" : ""}`}>
-                  <Picture image={item.image} sizes={avant ? "(min-width: 768px) 92vw, 225px" : "(min-width: 768px) 50vw, 160px"} className="aspect-[4/3] w-full rounded-site" />
+                  <Picture image={item.image} sizes={avant ? "(min-width: 768px) 92vw, 225px" : estate ? "(min-width: 1024px) 50vw, (min-width: 768px) 92vw, 160px" : "(min-width: 768px) 50vw, 160px"} className="aspect-[4/3] w-full rounded-site" />
                   <Badge item={item} />
                 </div>
                 <div className="feature-text flex flex-col gap-3">
@@ -201,7 +204,7 @@ export function Cards({ section }: { section: CardsSection }) {
                   {item.photos && item.photos.length > 0 && item.image ? (
                     <CardPhotos title={text(item.title)} photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
                   ) : (
-                    <Picture image={item.image} sizes={avant ? "(min-width: 768px) 55vw, 160px" : bigFirst && i === 0 ? "(min-width: 1024px) 58vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px"} className="aspect-[4/3] w-full" />
+                    <Picture image={item.image} sizes={estate ? estateSizes(i) : avant ? "(min-width: 768px) 55vw, 160px" : bigFirst && i === 0 ? "(min-width: 1024px) 58vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px"} className="aspect-[4/3] w-full" />
                   )}
                   <Badge item={item} />
                 </div>
