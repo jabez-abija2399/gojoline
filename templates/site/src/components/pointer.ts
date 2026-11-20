@@ -4,7 +4,8 @@
  * the visitor asks for less motion. The system cursor stays: the ring is decoration.
  */
 export function startPointer(): () => void {
-  if (!matchMedia("(pointer: fine) and (prefers-reduced-motion: no-preference)").matches) return () => {};
+  const query = matchMedia("(pointer: fine) and (prefers-reduced-motion: no-preference)");
+  if (!query.matches) return () => {};
   const ring = document.createElement("div");
   ring.className = "cursor-ring";
   ring.setAttribute("aria-hidden", "true");
@@ -27,6 +28,8 @@ export function startPointer(): () => void {
     frame = Math.abs(x - rx) + Math.abs(y - ry) > 0.2 ? requestAnimationFrame(tick) : 0;
   };
   const move = (e: PointerEvent) => {
+    // A finger on a touch-screen laptop moves nothing.
+    if (e.pointerType !== "mouse") return;
     x = e.clientX;
     y = e.clientY;
     if (!frame) frame = requestAnimationFrame(tick);
@@ -45,13 +48,21 @@ export function startPointer(): () => void {
     ring.dataset.over = "gone";
     release();
   };
+  let stop = () => {};
+  // Turning on "reduce motion" (or unplugging the mouse) later stops it at once.
+  const changed = () => {
+    if (!query.matches) stop();
+  };
   document.addEventListener("pointermove", move, { passive: true });
   document.documentElement.addEventListener("pointerleave", leave);
-  return () => {
+  query.addEventListener("change", changed);
+  stop = () => {
+    query.removeEventListener("change", changed);
     document.removeEventListener("pointermove", move);
     document.documentElement.removeEventListener("pointerleave", leave);
     cancelAnimationFrame(frame);
     release();
     ring.remove();
   };
+  return () => stop();
 }

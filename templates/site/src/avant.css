@@ -13,6 +13,11 @@
 [data-style="avant"] :is(.headline, .section-title, .item-title, .pull-quote, .wordmark, .numeral, .stat-value) {
   font-weight: 800;
 }
+/* Words the owner writes can be long: they break rather than run off the screen. */
+[data-style="avant"] :is(.headline, .section-title, .cta-band h1, .cta-band h2, .item-title) {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
 [data-style="avant"] .headline {
   font-size: clamp(3.25rem, 0.5rem + 12.5vw, 13.5rem);
   line-height: 0.84;
@@ -146,6 +151,9 @@
   padding: 1rem 1.75rem;
   box-shadow: 5px 5px 0 var(--site-text);
 }
+[data-style="avant"] .btn:focus-visible {
+  outline-offset: 9px;
+}
 [data-style="avant"] .btn:active {
   box-shadow: 0 0 0 var(--site-text);
   transform: translate(5px, 5px);
@@ -184,10 +192,11 @@
 }
 [data-style="avant"] .hero-centered .headline .w:nth-of-type(3):not(:lang(am)) {
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0.025em currentColor;
+  -webkit-text-stroke: max(2px, 0.03em) currentColor;
 }
 [data-style="avant"] .hero-centered .headline .w {
   display: inline-block;
+  max-width: 100%;
 }
 @media (min-width: 768px) {
   [data-style="avant"] .hero-centered {
@@ -252,6 +261,9 @@
   inset-inline-start: 0;
   font-weight: 800;
   font-size: 0.9375rem;
+}
+:lang(am) [data-style="avant"] .card-grid > li::before {
+  content: counter(avant-work, ethiopic-numeric) / "";
 }
 [data-style="avant"] .card-grid .pcard > div:last-child,
 [data-style="avant"] .card-grid > li > div:last-child {
@@ -335,8 +347,9 @@
   grid-row: span 2;
   font-size: clamp(2.5rem, 1rem + 5vw, 6.5rem);
   line-height: 0.85;
-  color: transparent;
-  -webkit-text-stroke: 2px var(--site-text);
+  color: var(--site-text);
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px currentColor;
 }
 [data-style="avant"] .service-row .item-title {
   font-size: clamp(1.75rem, 1rem + 2.6vw, 3.75rem);
@@ -365,7 +378,7 @@
     color: inherit;
   }
   [data-style="avant"] .service-row:hover .numeral {
-    -webkit-text-stroke-color: currentColor;
+    color: inherit;
   }
 }
 
@@ -489,6 +502,11 @@
   background: var(--site-primary);
   color: var(--site-on-primary, #fff);
   padding: 6rem max(1rem, calc((100% - 72rem) / 2)) 4rem;
+}
+@media (max-width: 767px) {
+  [data-style="avant"] .cta-band {
+    min-height: min(36rem, 70svh);
+  }
 }
 [data-style="avant"] .cta-band > svg {
   display: none;

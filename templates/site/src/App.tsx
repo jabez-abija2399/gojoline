@@ -81,7 +81,8 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
   // The avant style's cursor ring and leaning buttons: a small script of its own, fetched only by avant sites.
   const style = site.theme.style;
   useEffect(() => {
-    if (style !== "avant") return;
+    // Checked here too, so phones and visitors who ask for less motion never download it.
+    if (style !== "avant" || !matchMedia("(pointer: fine) and (prefers-reduced-motion: no-preference)").matches) return;
     let stop = () => {};
     let gone = false;
     void import("./components/pointer").then((m) => {
