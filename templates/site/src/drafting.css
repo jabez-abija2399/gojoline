@@ -32,7 +32,7 @@
   display: none;
 }
 /* Data and labels: small capitals with tabular figures, like a title block. */
-[data-style="drafting"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .meta, .small-label, .wordmark) {
+[data-style="drafting"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .small-label, .wordmark) {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-size: 0.875rem;
@@ -113,14 +113,27 @@
 [data-style="drafting"] .hero-immersive > .container-site {
   min-height: min(56rem, calc(100svh - 1px));
 }
+/* A dark band at the top for the menu, a deep shade at the foot for the words. */
 [data-style="drafting"] .hero-immersive .hero-shade {
-  background: linear-gradient(to top, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.2) 50%, transparent 75%);
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.7), transparent 26%),
+    linear-gradient(to top, rgb(0 0 0 / 0.8), rgb(0 0 0 / 0.6) 45%, rgb(0 0 0 / 0.3) 70%, transparent 85%);
+}
+/* The framed hero opens from a square sheet border, not a rounded card. */
+[data-style="drafting"] .hero-frame {
+  animation-name: draft-unframe;
+}
+/* No filled button in the bar: a ruled link, like the rest of the sheet. */
+[data-style="drafting"] .header-cta {
+  border: 1px solid currentColor;
+  background: none;
+  color: inherit;
 }
 [data-style="drafting"] .hero-immersive .headline {
   max-width: 13ch;
 }
 /* A full-screen photo further down holds still (the page-top drift would leave it misplaced). */
-[data-style="drafting"] .hero-later :is(.hero-parallax, .hero-photo) {
+[data-style="drafting"] .hero-immersive.hero-later :is(.hero-parallax, .hero-photo) {
   animation: none;
 }
 
@@ -179,10 +192,17 @@
 }
 /* Place, year and area in columns, like a title block. */
 [data-style="drafting"] .card-grid .meta {
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  justify-content: start;
-  gap: 0 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+[data-style="drafting"] .card-grid .meta-item {
+  white-space: nowrap;
+}
+[data-style="drafting"] .card-grid ~ .btn {
+  align-self: flex-start;
 }
 [data-style="drafting"] .meta-item {
   border-radius: 0;
@@ -201,7 +221,6 @@
   }
   [data-style="drafting"] .card-grid > li:nth-child(3n + 2) {
     grid-column: 9 / span 4;
-    align-self: end;
   }
   [data-style="drafting"] .card-grid > li:nth-child(3n + 2) :is(img, .placeholder) {
     aspect-ratio: 3 / 4;
@@ -265,6 +284,9 @@
   background: var(--site-background);
   color: var(--site-text);
 }
+[data-style="drafting"] .site-footer .footer-name {
+  font-weight: 500;
+}
 [data-style="drafting"] .site-footer p.font-semibold {
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -298,7 +320,7 @@
   color: inherit;
 }
 
-/* ---- Motion: images open from a line; titles rise ---- */
+/* ---- Motion: images open from a vertical line ---- */
 @media screen and (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     [data-style="drafting"] .wipe,
@@ -310,6 +332,14 @@
   }
   [data-style="drafting"] .zoom img {
     transition-duration: 1500ms;
+  }
+}
+@keyframes draft-unframe {
+  from {
+    clip-path: inset(1.25rem 1.25rem 0);
+  }
+  to {
+    clip-path: inset(0);
   }
 }
 @keyframes draft-open {
