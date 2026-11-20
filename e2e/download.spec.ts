@@ -14,7 +14,10 @@ test("download your website: Business only, the live site as a ZIP; staff see th
   await page.getByRole("button", { name: "Publish", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Publish your site" });
   const slug = `dl-${project.name}-${Date.now().toString(36)}`;
-  await dialog.getByLabel("Your site's address").fill(slug);
+  // The dialog suggests an address a moment after opening: wait for it, then replace it.
+  const address = dialog.getByLabel("Your site's address");
+  await expect(address).not.toHaveValue("");
+  await address.fill(slug);
   await dialog.getByRole("button", { name: "Publish now" }).click();
   await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeVisible();
 

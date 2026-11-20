@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Announcement } from "./components/Announcement";
+import { startPointer } from "./components/pointer";
 import { HeadingLevel } from "./components/SectionTitle";
 import { SiteProvider } from "./lib/context";
 import type { Lang, Page, Section, Site } from "./lib/types";
@@ -27,12 +28,12 @@ import { StickyActions, hasStickyActions } from "./sections/StickyActions";
 import { Testimonials } from "./sections/Testimonials";
 import { Timeline } from "./sections/Timeline";
 
-function renderSection(section: Section, index: number) {
+function renderSection(section: Section, index: number, eager = false) {
   switch (section.type) {
     case "hero":
       return <Hero key={index} section={section} first={index === 0} />;
     case "about":
-      return <About key={index} section={section} />;
+      return <About key={index} section={section} eager={eager} />;
     case "menu":
       return <Menu key={index} section={section} />;
     case "services":
@@ -78,21 +79,10 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
   const firstIsHero = top?.type === "hero";
   // A full-screen photo hero carries the header on top of the photo.
   const overlay = top?.type === "hero" && top.variant === "immersive" && Boolean(top.image?.src);
-  // The avant style's cursor ring and leaning buttons: a small script of its own, fetched only by avant sites.
+  // The avant style's cursor ring and leaning buttons. Other sites are built with an empty
+  // stand-in for this script (scripts/only-used-styles.ts).
   const style = site.theme.style;
-  useEffect(() => {
-    // Checked here too, so phones and visitors who ask for less motion never download it.
-    if (style !== "avant" || !matchMedia("(pointer: fine) and (prefers-reduced-motion: no-preference)").matches) return;
-    let stop = () => {};
-    let gone = false;
-    void import("./components/pointer").then((m) => {
-      if (!gone) stop = m.startPointer();
-    });
-    return () => {
-      gone = true;
-      stop();
-    };
-  }, [style]);
+  useEffect(() => (style === "avant" ? startPointer() : undefined), [style]);
   return (
     <SiteProvider site={site} page={page} lang={lang}>
       {/* The style wraps the page and the phone call bar alike. */}
@@ -110,7 +100,8 @@ export function App({ site, page, lang }: { site: Site; page: Page; lang: Lang }
                 {renderSection(section, i)}
               </HeadingLevel.Provider>
             ) : (
-              renderSection(section, i)
+              // After a hero with no photo, the next section's picture is likely the largest thing on the first screen.
+              renderSection(section, i, i === 1 && top?.type === "hero" && !top.image?.src)
             ),
           )}
         </main>

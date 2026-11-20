@@ -17,9 +17,13 @@ export function startPointer(): () => void {
     ry = y,
     frame = 0;
   let pulled: HTMLElement | null = null;
+  // Measured once, before it moves: measuring the moved button would make it wobble.
+  let rest: DOMRect | null = null;
+  let over = "";
   const release = () => {
     if (pulled) pulled.style.translate = "";
     pulled = null;
+    rest = null;
   };
   const tick = () => {
     rx += (x - rx) * 0.2;
@@ -34,18 +38,20 @@ export function startPointer(): () => void {
     y = e.clientY;
     if (!frame) frame = requestAnimationFrame(tick);
     const target = e.target instanceof Element ? e.target : null;
-    ring.dataset.over = target?.closest("img, .placeholder") ? "picture" : target?.closest("a, button, summary, input, select, textarea, label") ? "link" : "";
+    const now = target?.closest("img, .placeholder") ? "picture" : target?.closest("a, button, summary, input, select, textarea, label") ? "link" : "";
+    if (now !== over || ring.dataset.over === undefined) ring.dataset.over = over = now;
     // Buttons lean a little towards the pointer while it is over them.
     const btn = target?.closest<HTMLElement>(".btn") ?? null;
     if (btn !== pulled) release();
     if (btn) {
-      const r = btn.getBoundingClientRect();
+      if (btn !== pulled) rest = btn.getBoundingClientRect();
+      const r = rest!;
       btn.style.translate = `${(x - r.left - r.width / 2) * 0.25}px ${(y - r.top - r.height / 2) * 0.35}px`;
       pulled = btn;
     }
   };
   const leave = () => {
-    ring.dataset.over = "gone";
+    ring.dataset.over = over = "gone";
     release();
   };
   let stop = () => {};

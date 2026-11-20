@@ -164,10 +164,11 @@
 }
 
 /* ---- Photos: grey and hard until pointed at, then colour and a bend ---- */
-[data-style="avant"] main img {
-  filter: grayscale(1) contrast(1.12);
-}
+/* Only where a mouse can bring the colour back: on phones the photos stay in colour. */
 @media (hover: hover) and (pointer: fine) {
+  [data-style="avant"] main img {
+    filter: grayscale(1);
+  }
   [data-style="avant"] :is(li, figure, .zoom, a):hover > :is(img, .zoom img, div img),
   [data-style="avant"] :is(.zoom, .feature-photo, .about-photo):hover img {
     filter: none;
@@ -559,33 +560,37 @@
   top: 0;
   left: 0;
   z-index: 60;
-  width: 2.25rem;
-  height: 2.25rem;
-  margin: -1.125rem 0 0 -1.125rem;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  pointer-events: none;
-  mix-blend-mode: difference;
-  transition:
-    width 250ms,
-    height 250ms,
-    margin 250ms,
-    background-color 250ms,
-    opacity 200ms;
-}
-[data-style="avant"] .cursor-ring:not([data-over]),
-[data-style="avant"] .cursor-ring[data-over="gone"] {
-  opacity: 0;
-}
-[data-style="avant"] .cursor-ring[data-over="link"] {
-  width: 4rem;
-  height: 4rem;
-  margin: -2rem 0 0 -2rem;
-}
-[data-style="avant"] .cursor-ring[data-over="picture"] {
   width: 7rem;
   height: 7rem;
   margin: -3.5rem 0 0 -3.5rem;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+/* The circle itself scales (composited), inside the box the script moves. */
+[data-style="avant"] .cursor-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 6px solid #fff;
+  border-radius: 50%;
+  scale: 0.32;
+  transition:
+    scale 250ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    background-color 250ms,
+    opacity 200ms;
+}
+[data-style="avant"] .cursor-ring:not([data-over])::before,
+[data-style="avant"] .cursor-ring[data-over="gone"]::before {
+  opacity: 0;
+}
+[data-style="avant"] .cursor-ring[data-over="link"]::before {
+  scale: 0.57;
+  border-width: 3.5px;
+}
+[data-style="avant"] .cursor-ring[data-over="picture"]::before {
+  scale: 1;
+  border-width: 2px;
   background: #fff;
 }
 
@@ -686,11 +691,11 @@
 }
 @keyframes avant-slot {
   from {
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(0.4em);
+    opacity: 0;
+    transform: translateY(0.45em);
   }
   to {
-    clip-path: inset(0 0 -0.2em 0);
+    opacity: 1;
     transform: none;
   }
 }

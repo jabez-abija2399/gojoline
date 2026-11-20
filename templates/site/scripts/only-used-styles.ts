@@ -4,7 +4,7 @@ import type { Plugin } from "vite";
 
 const siteJson = fileURLToPath(new URL("../src/site.json", import.meta.url));
 
-/** Styles that ship in their own file: only a site that uses one gets its CSS (it blocks the first paint). */
+/** Styles that ship in their own file: only a site that uses one gets its CSS (it blocks the first paint), and only avant sites get the pointer script. */
 export function onlyUsedStyles(): Plugin {
   const own = /\/src\/(grand|avant)\.css$/;
   const style = () => {
@@ -18,6 +18,11 @@ export function onlyUsedStyles(): Plugin {
     name: "gojoline-only-used-styles",
     enforce: "pre",
     load(id) {
+      // The avant pointer: other sites get an empty stand-in, so its code costs them nothing.
+      if (/\/src\/components\/pointer\.ts$/.test(id.split("?")[0]!)) {
+        this.addWatchFile(siteJson);
+        return style() === "avant" ? null : "export function startPointer() { return () => {}; }";
+      }
       const m = own.exec(id.split("?")[0]!);
       if (!m) return null;
       this.addWatchFile(siteJson);
