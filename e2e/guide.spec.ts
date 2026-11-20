@@ -7,8 +7,8 @@ async function sizeFor(page: Page, project: string) {
 }
 
 const TEXT = {
-  en: { h1: "How to use Gojoline", toc: "On this page", describe: "Describe your business", play: "0:17: play part 2, Describe your business", faq: "Questions" },
-  am: { h1: "ጎጆላይንን እንዴት መጠቀም እንደሚቻል", toc: "በዚህ ገጽ ላይ", describe: "ንግድዎን ይግለጹ", play: "0:17 ፦ ክፍል 2፣ ንግድዎን ይግለጹ፣ ከዚህ ጀምሮ አጫውት", faq: "ጥያቄዎች" },
+  en: { h1: "How to use Gojoline", toc: "On this page", describe: "Describe what you want", play: "0:17: play part 2, Describe what you want", faq: "Questions" },
+  am: { h1: "ጎጆላይንን እንዴት መጠቀም እንደሚቻል", toc: "በዚህ ገጽ ላይ", describe: "የሚፈልጉትን ይግለጹ", play: "0:17 ፦ ክፍል 2፣ የሚፈልጉትን ይግለጹ፣ ከዚህ ጀምሮ አጫውት", faq: "ጥያቄዎች" },
 } as const;
 
 for (const lang of ["en", "am"] as const) {

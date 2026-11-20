@@ -10,9 +10,9 @@ import { growthEn } from "./growth-en";
  */
 export const en = {
   meta: {
-    title: "Gojoline: your business online in minutes",
+    title: "Gojoline: build your website by chatting",
     description:
-      "Describe your business in Amharic or English and get a real website with forms and Telegram alerts. Pay in Birr.",
+      "Describe what you want in Amharic or English and get a real website with forms and Telegram alerts. Pay in Birr.",
   },
   common: {
     skipToContent: "Skip to content",
@@ -27,22 +27,22 @@ export const en = {
       eyebrow: "The website builder that speaks Amharic",
       titleStart: "Build your",
       titleEnd: "home online",
-      subtitle: "Create a website for your business by chatting, in Amharic or English. Bookings reach you on Telegram. Paid in Birr.",
+      subtitle: "Create your website by chatting, in Amharic or English. Messages and bookings reach you on Telegram. Paid in Birr.",
       note: "Free to start. No card needed.",
       watchGuide: "Watch how it works (6 min)",
-      promptLabel: "Describe your business",
+      promptLabel: "Describe your website",
       placeholder: "Ask Gojoline to build a website for your café, shop, clinic…",
       chipsLabel: "Gojoline for",
       moreChip: "More",
-      choose: "Choose your business",
-      promptTitle: "What does your business need?",
+      choose: "Choose a kind of site",
+      promptTitle: "What should your website have?",
       showcaseLabel: "The Gojoline builder with the site it made for {name}",
       picked: "Showing {name}. An example description was added to the box below.",
       build: "Build my site",
     },
     nav: { label: "Main", templates: "Templates", how: "How it works", prices: "Prices", signIn: "Sign in", start: "Start free", mySites: "Your sites", menu: "Menu", darkMode: "Dark mode", seeTemplates: "See all 31 templates" },
     demo: {
-      pick: "Choose a kind of business",
+      pick: "Choose a kind of site",
       prompts: {
         cafe: "We're a café in Bole: buna, macchiato and breakfast, open 7 am to 9 pm.",
         hotel: "A small hotel by Lake Tana with 20 rooms and airport pickup.",
@@ -69,9 +69,9 @@ export const en = {
     watch: { eyebrow: "Video guide", title: "See Gojoline work, start to finish", body: "From the first message to a published site, in under 6 minutes. Captions are on the screen, so no sound is needed.", guideLink: "Read the full guide" },
     pillarsLabel: "What you get",
     pillars: [
-      { title: "Build by chatting", body: "Describe your business in Amharic or English. Gojoline writes the site and keeps it up to date." },
+      { title: "Build by chatting", body: "Describe what you want in Amharic or English. Gojoline writes the site and keeps it up to date." },
       { title: "Bookings on Telegram", body: "Every booking, order and question reaches your phone the moment it is sent." },
-      { title: "Paid in Birr", body: "Start free. Pay by Telebirr or bank transfer when your business grows." },
+      { title: "Paid in Birr", body: "Start free. Pay by Telebirr or bank transfer when you need more." },
     ],
     live: {
       reply: "Here's your site for {name}: a warm home page, your prices, a booking form, in English and Amharic.",
@@ -82,7 +82,7 @@ export const en = {
       readyIn: "Ready in about 40 s",
       thinking: "Thinking",
     },
-    marquee: { title: "Made for every kind of business and community", pause: "Pause the moving list" },
+    marquee: { title: "Made for businesses, communities and people", pause: "Pause the moving list" },
     proofTitle: "Gojoline in numbers",
     proofNote: "Measured on our own test builds, November 2026.",
     steps: {
@@ -94,7 +94,7 @@ export const en = {
       three: { title: "Publish it", body: "Go live on your own link. Bookings and orders reach you on Telegram." },
     },
     features: {
-      title: "Everything your business needs",
+      title: "Everything your website needs",
       language: { title: "Amharic and English", body: "Choose Amharic, English or both. Clear Ge'ez fonts and a language switch.", names: { en: "English", am: "አማርኛ" } },
       forms: { title: "Forms that reach you", body: "Contact, booking and order forms. Every new answer reaches you on Telegram." },
       edits: { title: "Edit by chatting", body: "Change prices, photos and text from the builder or straight from Telegram." },
@@ -108,7 +108,7 @@ export const en = {
     },
     gallery: {
       title: "Start from a real site",
-      intro: "Pick the one closest to your business. Make it yours by chatting.",
+      intro: "Pick the one closest to what you need. Make it yours by chatting.",
       start: "Start from this",
       preview: "See every section",
       listLabel: "Example sites",
@@ -201,7 +201,7 @@ export const en = {
       example: "Example: {name}",
       metaDescription: "{about}. Designed for: {list}.",
       listSeparator: ", ",
-      usedBy: "Used by {n} businesses",
+      usedBy: "Used by {n} sites",
       address: "Example address",
       highlights: {
         menu: "Menu with prices",
@@ -248,7 +248,7 @@ export const en = {
     },
     pricing: {
       title: "Simple prices in Birr",
-      intro: "Start free. Upgrade when your business grows.",
+      intro: "Start free. Upgrade when you need more.",
       free: "Free",
       birr: "Birr",
       perMonth: "/ month",
@@ -258,7 +258,7 @@ export const en = {
     faq: {
       title: "Questions",
       items: [
-        { q: "Do I need to know anything about websites?", a: "No. You describe your business in your own words, and Gojoline builds the site. You change it the same way, by chatting." },
+        { q: "Do I need to know anything about websites?", a: "No. You describe what you want in your own words, and Gojoline builds the site. You change it the same way, by chatting." },
         { q: "Can my site be in Amharic and English?", a: "Yes. Before your first build you choose Amharic, English or both, and you can add a language later by asking. Gojoline writes natural Amharic, not word-for-word translation." },
         { q: "How do I pay?", a: "In Birr, by Telebirr or bank transfer. Send the transaction number and a photo of the receipt; we switch your plan on, usually within a day." },
         { q: "How do customers reach me?", a: "Through the booking, order and contact forms on your site. Every answer appears in your dashboard and, on paid plans, on your Telegram." },
@@ -362,12 +362,12 @@ export const en = {
   },
   waitlist: {
     title: "Be among the first",
-    body: "We are opening Gojoline to a small group of businesses first. Leave your details and we will contact you.",
+    body: "We are opening Gojoline to a small group of people first. Leave your details and we will contact you.",
     nameLabel: "Your name",
     contactLabel: "Phone or email",
     contactHint: "For example 0911 234 567 or you@example.com",
-    businessLabel: "Type of business (optional)",
-    businessPlaceholder: "Café, shop, clinic...",
+    businessLabel: "What is your site for? (optional)",
+    businessPlaceholder: "Café, shop, church, portfolio...",
     submit: "Join the waitlist",
     submitting: "Sending...",
     successTitle: "You're on the list",
@@ -475,7 +475,7 @@ export const en = {
     welcomeTemplate: "Your {industry} site is ready: have a look at the preview. Then tell me your real business name, phone, address and prices, and what you'd like to change. Everything in it now is an example.",
     versionFromTemplate: "Started from the {industry} template",
     useTemplate: "Use",
-    templatesHint: "A ready site for your kind of business, in English and Amharic. Then tell Gojoline what to change.",
+    templatesHint: "A ready-made site to start from, in English and Amharic. Then tell Gojoline what to change.",
     templates: {
       cafe: "Café or restaurant",
       hotel: "Hotel or guest house",
@@ -514,7 +514,7 @@ export const en = {
     updated: "Last change {date}",
     back: "All sites",
     accessTitle: "Enter your access code",
-    accessBody: "Gojoline is open to a small group of businesses first. Enter the code we sent you.",
+    accessBody: "Gojoline is open to a small group of people first. Enter the code we sent you.",
     accessLabel: "Access code",
     accessSubmit: "Continue",
     accessWrong: "That code is not right. Please check it and try again.",
@@ -522,10 +522,10 @@ export const en = {
     paused: "Building and changing sites is paused for a short while. Your sites stay online, and you can still see messages from customers, visits and your business info. Nothing is taken from your changes left.",
     previewPaused: "The preview is paused for a short while. Your site is safe.",
     chatLabel: "Your message",
-    chatPlaceholder: "Describe your business, or the change you want",
+    chatPlaceholder: "Describe your website, or the change you want",
     send: "Send",
     welcome:
-      "Tell me about your business: its name, what you offer, where you are and how customers reach you. You can write in Amharic or English.",
+      "Tell me what your website is for: its name, what you offer, where you are and how people reach you. You can write in Amharic or English.",
     you: "You",
     assistant: "Gojoline",
     working: "Working on your site...",
@@ -558,7 +558,7 @@ export const en = {
     tooBigPartial: "This request was big, so I stopped part-way. What's done is saved; ask for the rest in smaller steps.",
     tooBigFailed: "This request was too big to finish in one go, so I kept your site as it was. The AI work still used its changes. Please ask for one part at a time.",
     failed: "I couldn't make that change, so your site is as it was. Send your message again, or ask for a smaller change.",
-    blocked: "Gojoline can't help with that. Sites that try to steal passwords or money, scams, adult content and illegal goods aren't allowed. Tell me about your business and I'll gladly build it.",
+    blocked: "Gojoline can't help with that. Sites that try to steal passwords or money, scams, adult content and illegal goods aren't allowed. Tell me what your site is for and I'll gladly build it.",
     busy: "I'm still working on your last request. Please wait a moment.",
     tooMany: "You've sent many requests. Please wait a little and try again.",
     versionSaved: "Saved as version {n}",
@@ -642,7 +642,7 @@ export const en = {
       failed: "We couldn't connect the address. Please try again.",
     },
     startTitle: "What would you like to build?",
-    startBody: "Describe your business in a few words. Gojoline builds the site, you check it, then you publish it.",
+    startBody: "Describe what you want in a few words. Gojoline builds the site, you check it, then you publish it.",
     startAgainTitle: "Build another site",
     startPlaceholder: "Example: Selam Coffee in Bole. We serve macchiato, juice and breakfast, every day from 7 am to 9 pm.",
     startLang: "Site language",
@@ -724,7 +724,7 @@ export const en = {
     homeTabs: "Sites and templates",
     searchSites: "Search your sites",
     noMatch: "No site with that name.",
-    sitesEmpty: "You have no sites yet. Describe your business above, or start from a template.",
+    sitesEmpty: "You have no sites yet. Describe what you want above, or start from a template.",
     seeTemplates: "See the templates",
     live: "Live",
     draft: "Not published",
@@ -751,7 +751,7 @@ export const en = {
     seeAll: "See all",
     setupDone: "Done",
     steps: {
-      build: { title: "Build your site", hint: "Describe your business in the chat." },
+      build: { title: "Build your site", hint: "Describe what you want in the chat." },
       publish: { title: "Publish it", hint: "Choose an address so customers can visit." },
       photos: { title: "Ask the AI to add your photos", hint: "Send real photos of your place, food or work in the chat." },
       info: { title: "Add your phone and opening hours", hint: "Customers see them on your site within a minute." },

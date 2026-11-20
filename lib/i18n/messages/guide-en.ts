@@ -4,7 +4,7 @@
  */
 export const guideEn = {
   metaTitle: "How to use Gojoline",
-  metaDescription: "A friendly step-by-step guide: describe your business, watch your website build, change it by chatting, publish it and get bookings. With a 6-minute video.",
+  metaDescription: "A friendly step-by-step guide: describe what you want, watch your website build, change it by chatting, publish it and get bookings. With a 6-minute video.",
   eyebrow: "Guide",
   title: "How to use Gojoline",
   intro: "Everything a first-time owner needs, from signing up to your first booking. Watch the 6-minute video, or read the steps below at your own pace.",
@@ -29,7 +29,7 @@ export const guideEn = {
       "Go to Gojoline and press Start free.",
       "Sign in with your phone or email. We send you a 6-digit code.",
       "You're in. Every new site starts here.",
-      "Describe your business: rooms, prices and what guests can do.",
+      "Describe what you want. This one: a hotel with rooms and prices.",
       "Choose the site language, then start.",
       "Gojoline plans your pages and writes your site. About a minute.",
       "Your site is ready to check.",
@@ -85,10 +85,10 @@ export const guideEn = {
       shots: ["The Gojoline home page with the Start free button", "The sign-in page: Phone or email, and Send me a code"],
     },
     describe: {
-      title: "Describe your business",
-      intro: "Write a few sentences, the way you would tell a friend about your business. The more Gojoline knows, the better your first site.",
+      title: "Describe what you want",
+      intro: "Write a few sentences, the way you would tell a friend about it. The more Gojoline knows, the better your first site.",
       steps: [
-        "Write your business name and the area you're in.",
+        "Write the name and the area you're in.",
         "Say what you sell or do, with prices in Birr.",
         "Add your opening hours and how customers reach you (phone, Telegram, WhatsApp).",
         "Say what customers should be able to do: book, order or send a message.",
@@ -99,7 +99,7 @@ export const guideEn = {
       vagueTitle: "Too vague",
       vague: "Make me a website for my salon.",
       tip: "Not sure where to begin? Press one of the ideas under the box, or start from a ready template and change it.",
-      shots: ["What will you build today? A business description typed in the box, with the language choice"],
+      shots: ["What will you build today? A description typed in the box, with the language choice"],
     },
     build: {
       title: "Watch it build",
@@ -107,7 +107,7 @@ export const guideEn = {
       steps: [
         "Wait while the outline on the left shows what is being done.",
         "Understanding your request: Gojoline reads what you wrote.",
-        "Planning your pages: it chooses the sections your business needs.",
+        "Planning your pages: it chooses the sections your site needs.",
         "Writing your site: it writes the text, prices and forms, in your language.",
         "When it says {ready}, have a look.",
       ],
@@ -209,7 +209,7 @@ export const guideEn = {
     },
     plan: {
       title: "Plans and payments",
-      intro: "Start free. Upgrade when your business grows, paying in Birr with Telebirr or a bank transfer.",
+      intro: "Start free. Upgrade when you need more, paying in Birr with Telebirr or a bank transfer.",
       plansTitle: "The plans",
       priceMonth: "{price} Birr a month",
       priceFree: "0 Birr",
@@ -242,7 +242,7 @@ export const guideEn = {
   sitesAnswer: "{list}.",
   sitesPlan: "{plan}: {n}",
   ctaTitle: "Ready to build yours?",
-  ctaBody: "Describe your business and see your website in about a minute. Free to start.",
+  ctaBody: "Describe what you want and see your website in about a minute. Free to start.",
   ctaBuild: "Build your website",
   ctaFeedback: "Send feedback",
   ctaTelegram: "Ask us on Telegram",

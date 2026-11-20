@@ -7,7 +7,7 @@
 /** The video's chapter list as the editor wrote it (m:ss, then the title). */
 export const CHAPTERS_TXT = `0:00  Intro
 0:03  1. Start
-0:17.53  2. Describe your business
+0:17.53  2. Describe what you want
 0:31.97  3. Watch it build
 0:53.50  4. Look around
 1:33.33  5. Change anything by chatting
@@ -21,7 +21,7 @@ export const CHAPTERS_TXT = `0:00  Intro
 
 /** Length of public/guide/gojoline-guide-720.mp4, in seconds, and its size in bytes (Lalibela Sky Lodge in steps 2-5, pointer and music, 2026-11-20). */
 export const VIDEO_SECONDS = 339.87;
-export const VIDEO_BYTES = 13403365;
+export const VIDEO_BYTES = 13398434;
 
 /**
  * The English captions are burned into the picture near the bottom; a captions track turned on
@@ -86,7 +86,7 @@ export function parseTimestamp(raw: string): number | null {
   return Number(h) * 3600 + Number(min) * 60 + Number(sec) + (frac ? Number(`0.${frac}`) : 0);
 }
 
-/** Reads a chapter list ("0:17  2. Describe your business" per line), sorted by time. Lines that don't parse are skipped. */
+/** Reads a chapter list ("0:17  2. Describe what you want" per line), sorted by time. Lines that don't parse are skipped. */
 export function parseChapters(text: string): Chapter[] {
   const out: Chapter[] = [];
   for (const line of text.split(/\r?\n/)) {
