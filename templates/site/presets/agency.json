@@ -213,17 +213,17 @@
             {
               "quote": { "en": "They threw out our brief in the first meeting and gave us something far better. Sales doubled in a season.", "am": "በመጀመሪያው ስብሰባ የሰጠናቸውን መመሪያ ትተው እጅግ የተሻለ ነገር ሰጡን። በአንድ ወቅት ሽያጫችን እጥፍ ሆነ።" },
               "name": "Meron A.",
-              "role": { "en": "Founder, Abol Roasters", "am": "መሥራች፣ አቦል ቆይዎች" }
+              "role": { "en": "Founder, coffee roaster", "am": "መሥራች፣ የቡና ቆይ ድርጅት" }
             },
             {
               "quote": { "en": "Honest, fast and never boring.", "am": "ታማኝ፣ ፈጣን፣ ፈጽሞ አሰልቺ ያልሆኑ።" },
               "name": "Daniel G.",
-              "role": { "en": "Marketing lead, Gelada Outdoor", "am": "የገበያ ኃላፊ፣ ገላዳ አውትዶር" }
+              "role": { "en": "Marketing lead, outdoor brand", "am": "የገበያ ኃላፊ፣ የውጪ ስፖርት ብራንድ" }
             },
             {
               "quote": { "en": "Our site finally looks like the buildings we make.", "am": "ድረ-ገጻችን በመጨረሻ የምንሠራቸውን ሕንፃዎች መሰለ።" },
               "name": "Hiwot B.",
-              "role": { "en": "Partner, Bole Build Co.", "am": "አጋር፣ ቦሌ ቢልድ" }
+              "role": { "en": "Partner, architecture firm", "am": "አጋር፣ የሥነ ሕንፃ ድርጅት" }
             }
           ]
         },

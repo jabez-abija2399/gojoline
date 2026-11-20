@@ -153,9 +153,9 @@ save("agency", {
           eyebrow: t("Clients", "ደንበኞች"),
           heading: t("Who we've made noise with", "አብረን ድምፅ ያሰማናቸው"),
           items: [
-            { quote: t("They threw out our brief in the first meeting and gave us something far better. Sales doubled in a season.", "በመጀመሪያው ስብሰባ የሰጠናቸውን መመሪያ ትተው እጅግ የተሻለ ነገር ሰጡን። በአንድ ወቅት ሽያጫችን እጥፍ ሆነ።"), name: "Meron A.", role: t("Founder, Abol Roasters", "መሥራች፣ አቦል ቆይዎች") },
-            { quote: t("Honest, fast and never boring.", "ታማኝ፣ ፈጣን፣ ፈጽሞ አሰልቺ ያልሆኑ።"), name: "Daniel G.", role: t("Marketing lead, Gelada Outdoor", "የገበያ ኃላፊ፣ ገላዳ አውትዶር") },
-            { quote: t("Our site finally looks like the buildings we make.", "ድረ-ገጻችን በመጨረሻ የምንሠራቸውን ሕንፃዎች መሰለ።"), name: "Hiwot B.", role: t("Partner, Bole Build Co.", "አጋር፣ ቦሌ ቢልድ") },
+            { quote: t("They threw out our brief in the first meeting and gave us something far better. Sales doubled in a season.", "በመጀመሪያው ስብሰባ የሰጠናቸውን መመሪያ ትተው እጅግ የተሻለ ነገር ሰጡን። በአንድ ወቅት ሽያጫችን እጥፍ ሆነ።"), name: "Meron A.", role: t("Founder, coffee roaster", "መሥራች፣ የቡና ቆይ ድርጅት") },
+            { quote: t("Honest, fast and never boring.", "ታማኝ፣ ፈጣን፣ ፈጽሞ አሰልቺ ያልሆኑ።"), name: "Daniel G.", role: t("Marketing lead, outdoor brand", "የገበያ ኃላፊ፣ የውጪ ስፖርት ብራንድ") },
+            { quote: t("Our site finally looks like the buildings we make.", "ድረ-ገጻችን በመጨረሻ የምንሠራቸውን ሕንፃዎች መሰለ።"), name: "Hiwot B.", role: t("Partner, architecture firm", "አጋር፣ የሥነ ሕንፃ ድርጅት") },
           ],
         },
         {

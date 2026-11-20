@@ -216,6 +216,19 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify({ business: { telegram: "selamcoffee" } }))).toBe(false);
     expect(hasExampleDetails(JSON.stringify({ a: { label: { en: "Call 0911 000 000" } } }))).toBe(true);
   });
+  it("blocks the agency starter's sample clients until the owner's own work replaces them", () => {
+    const agency = JSON.parse(presetSiteJson("agency")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    // The owner's own phone and Telegram, and no reviews left: the sample projects still block.
+    agency.business = { phone: "+251 911 234 567", telegram: "realstudio" };
+    for (const p of agency.pages) p.sections = p.sections.filter((s) => s.type !== "testimonials" && s.type !== "quote");
+    expect(hasExampleDetails(JSON.stringify(agency))).toBe(true);
+    // With the work replaced, it publishes; a café keeping its sample dish names is unaffected.
+    for (const p of agency.pages) p.sections = p.sections.filter((s) => s.type !== "cards");
+    expect(hasExampleDetails(JSON.stringify(agency).replaceAll("+251911000000", "+251911234567"))).toBe(false);
+    const hotel = JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "grid", items: [{ title: { en: "Garden Room" } }] }] }] });
+    expect(hasExampleDetails(hotel)).toBe(false);
+  });
+
   it("blocks a template's reviews and people, and named people on sample photos", () => {
     const site = (sections: unknown[]) => JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections }] });
     const clinic = JSON.parse(presetSiteJson("clinic")) as { pages: { sections: { type: string; layout?: string; items?: { quote?: { en: string }; title?: { en: string } }[] }[] }[] };
