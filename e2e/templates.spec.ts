@@ -116,7 +116,7 @@ test("the gallery in Amharic: category chips, accessible, no sideways scroll", a
   await page.goto("/am/templates?category=food");
   const chips = page.getByRole("navigation", { name: "ምድብ" });
   await expect(chips.getByRole("link", { name: "ምግብና መጠጥ" })).toHaveAttribute("aria-current", "page");
-  await expect(page.getByRole("list", { name: "የምሳሌ ድረ-ገጾች" }).getByRole("listitem")).toHaveCount(2);
+  await expect(page.getByRole("list", { name: "የምሳሌ ድረ-ገጾች" }).getByRole("listitem")).toHaveCount(3);
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
 });
