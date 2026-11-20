@@ -334,9 +334,9 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
       else if (s.type === "cards" && work)
         for (const i of items) {
           const price = i.price as { amountMinor?: number; currency?: string } | undefined;
-          // A place tile (a name and a line, nothing else) is compared as the pair, so a real
-          // "Bole" card with the owner's own words is never mistaken for the sample.
-          if (!price && !i.meta && !i.description) {
+          // A place tile (a name, a line, maybe a fact like "3 days"; no price or story) is compared
+          // as the name with its line, so a real "Bole" or "Lalibela" card is never mistaken for the sample.
+          if (!price && !i.description) {
             out.push({ text: `place:${JSON.stringify([i.title, i.subtitle])}`, samplePhoto: false });
             continue;
           }
