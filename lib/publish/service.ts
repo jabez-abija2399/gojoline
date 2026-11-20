@@ -321,6 +321,8 @@ const CLIENT_WORK_PRESETS = new Set<string>(["agency", "boutique", "architect", 
  */
 function peopleAndQuotes(site: unknown, work = false): { text: string; samplePhoto: boolean }[] {
   const out: { text: string; samplePhoto: boolean }[] = [];
+  // A studio's or person's sample name ("Kebero Studio", "Ruth Mekonnen").
+  if (work) for (const t of texts((site as Json | null)?.name)) out.push({ text: `name:${t}`, samplePhoto: false });
   const pages = (site as Json | null)?.pages;
   for (const page of Array.isArray(pages) ? pages : []) {
     for (const s of (Array.isArray((page as Json).sections) ? (page as Json).sections : []) as Json[]) {
@@ -332,6 +334,7 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
       else if (s.type === "cards" && work)
         for (const i of items) {
           for (const t of texts(i.title)) out.push({ text: t, samplePhoto: false });
+          for (const t of texts(i.description)) out.push({ text: `about:${t}`, samplePhoto: false });
           // Their facts too (place, year, area): renaming a sample project must not keep its claims.
           if (Array.isArray(i.meta) && i.meta.length) out.push({ text: `meta:${JSON.stringify(i.meta)}`, samplePhoto: false });
         }
@@ -344,6 +347,10 @@ function peopleAndQuotes(site: unknown, work = false): { text: string; samplePho
             for (const t of texts(i.name)) out.push({ text: `dish:${t}`, samplePhoto: false });
             for (const t of texts(i.description)) out.push({ text: `dish:${t}`, samplePhoto: false });
           }
+      // A portrait hero is the person the site is about: a library photo there is a stranger's face.
+      if (s.type === "hero" && s.variant === "portrait" && isStock(s.image)) out.push({ text: "hero:portrait", samplePhoto: true });
+      // A sample work history (only compared with CLIENT_WORK_PRESETS' timelines).
+      if (s.type === "timeline" && work) for (const i of items) out.push({ text: `timeline:${JSON.stringify([i.period, i.title])}`, samplePhoto: false });
       // A giving goal is a claim about real money: the templates' sample goals must not go live.
       const goal = (s.type === "give" ? (s as { goal?: { raised?: { amountMinor?: number }; target?: { amountMinor?: number } } }).goal : undefined);
       if (goal) out.push({ text: `goal:${goal.raised?.amountMinor}/${goal.target?.amountMinor}`, samplePhoto: false });

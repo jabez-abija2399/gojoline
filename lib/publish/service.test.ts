@@ -247,6 +247,28 @@ describe("publishSite", () => {
     expect(hasExampleDetails(cafe)).toBe(false);
   });
 
+  it("blocks the folio starter's stand-in person: portrait photo, work history, projects and name", () => {
+    const folio = () => JSON.parse(presetSiteJson("folio")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; image?: unknown; items?: { title?: unknown; meta?: unknown; description?: unknown }[] }[] }[] };
+    const strip = (site: ReturnType<typeof folio>, keep: string[]) => {
+      site.business = { phone: "+251 911 234 567", telegram: "realperson" };
+      site.name = { en: "Abebe Kebede" };
+      for (const p of site.pages) p.sections = p.sections.filter((s) => keep.includes(s.type));
+      return JSON.stringify(site);
+    };
+    // The stock portrait under the owner's own name still blocks.
+    expect(hasExampleDetails(strip(folio(), ["hero"]))).toBe(true);
+    // The sample work history blocks.
+    expect(hasExampleDetails(strip(folio(), ["timeline"]))).toBe(true);
+    // Renamed projects that keep the sample's descriptions block.
+    const renamed = folio();
+    for (const p of renamed.pages) for (const s of p.sections) if (s.type === "cards") s.items = s.items!.map((i, n) => ({ ...i, title: { en: `My project ${n}` }, meta: undefined }));
+    expect(hasExampleDetails(strip(renamed, ["cards"]))).toBe(true);
+    // The sample person's name blocks on its own.
+    expect(hasExampleDetails(JSON.stringify({ name: { en: "Ruth Mekonnen" }, business: { phone: "+251 911 234 567" }, pages: [] }))).toBe(true);
+    // The owner's own portrait (not from the library) publishes.
+    expect(hasExampleDetails(JSON.stringify({ name: { en: "Abebe Kebede" }, business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "hero", variant: "portrait", image: { src: "/images/me.webp" } }] }] }))).toBe(false);
+  });
+
   it("blocks a template's sample numbers until the owner's own replace them", () => {
     const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
     const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;
@@ -257,9 +279,10 @@ describe("publishSite", () => {
   });
 
   it("blocks the agency starter's sample clients until the owner's own work replaces them", () => {
-    const agency = JSON.parse(presetSiteJson("agency")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    const agency = JSON.parse(presetSiteJson("agency")) as { name?: unknown; business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
     // The owner's own phone and Telegram, and no reviews left: the sample projects still block.
     agency.business = { phone: "+251 911 234 567", telegram: "realstudio" };
+    (agency as { name?: unknown }).name = { en: "Real Studio" };
     for (const p of agency.pages) p.sections = p.sections.filter((s) => s.type !== "testimonials" && s.type !== "quote");
     expect(hasExampleDetails(JSON.stringify(agency))).toBe(true);
     // With the work replaced, it publishes; a café keeping its sample dish names is unaffected.
