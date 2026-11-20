@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { withBase } from "../lib/base";
 import { languageNames, localePath, uiText } from "../lib/i18n";
 import { useSite } from "../lib/context";
@@ -5,6 +6,16 @@ import { useSite } from "../lib/context";
 /** `overlay`: the page opens with a full-screen photo, so the header sits on it in white. */
 export function Header({ overlay = false, framed = false }: { overlay?: boolean; /** The home hero opens from a frame: the header sits inside it. */ framed?: boolean }) {
   const { site, page, lang, text, href } = useSite();
+  // The phone menu closes when a tap lands elsewhere on the page.
+  const menu = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const close = (e: PointerEvent) => {
+      const el = menu.current;
+      if (el?.open && !el.contains(e.target as Node)) el.open = false;
+    };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, []);
   const navPages = site.pages.filter((p) => p.nav);
   const otherLangs = site.languages.filter((l) => l !== lang);
   // The home page's main action (book, order, give) stays one click away on computers.
@@ -58,7 +69,12 @@ export function Header({ overlay = false, framed = false }: { overlay?: boolean;
         </nav>
         {(navPages.length > 0 || otherLangs.length > 0) && (
           <details
+            ref={menu}
             className="group relative md:hidden"
+            // Tabbing past the last link closes it, so the menu never covers what has focus.
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node | null)) e.currentTarget.open = false;
+            }}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
                 e.currentTarget.open = false;

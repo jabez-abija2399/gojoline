@@ -485,8 +485,11 @@ export interface Theme {
    * brutal: thick ink borders and hard offset shadows, bold labels on the highlight (training centres, tutors, youth).
    * calm: quiet and spacious: hairlines, generous space, no decoration (pharmacies, counselling, clinics).
    * kinetic: condensed capitals, huge stacked headlines with an outlined word, dark bands (gyms, sports, events).
+   * grand: luxury hospitality: oversized light serif titles with an italic turn, champagne hairlines and
+   * frames, asymmetric photos that open like curtains and drift as the page scrolls, quotes in large
+   * italic type (resorts, boutique hotels, fine dining, spas).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand";
 }
 
 export interface Business {

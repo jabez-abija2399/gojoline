@@ -90,14 +90,14 @@ export function Cards({ section }: { section: CardsSection }) {
             ))}
           </ul>
         ) : layout === "feature" ? (
-          <ul className="flex flex-col gap-12 md:gap-20">
+          <ul className="feature-list flex flex-col gap-12 md:gap-20">
             {items.map((item, i) => (
-              <li key={section.items.indexOf(item)} className="reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
-                <div className={`zoom wipe relative rounded-site ${arch} ${i % 2 === 1 ? "md:order-last" : ""}`}>
+              <li key={section.items.indexOf(item)} className="feature-row reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
+                <div className={`feature-photo zoom wipe relative rounded-site ${arch} ${i % 2 === 1 ? "md:order-last" : ""}`}>
                   <Picture image={item.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
                   <Badge item={item} />
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="feature-text flex flex-col gap-3">
                   <Body item={item} large />
                 </div>
               </li>

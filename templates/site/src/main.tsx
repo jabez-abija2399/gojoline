@@ -11,6 +11,7 @@ import "./styles.css";
 // Locked (not owner-editable): motion and depth shared by every site, old and new.
 import "./motion.css";
 import "./design.css";
+import "./grand.css";
 
 const container = document.getElementById("root")!;
 

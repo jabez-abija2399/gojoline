@@ -56,7 +56,8 @@ for (const lang of ["en", "am"] as const) {
     // Nothing of the video has loaded yet; a chapter click starts it there.
     expect(media).toEqual([]);
     await toc.getByRole("link", { name: t.play }).click();
-    await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBe(17);
+    // The video plays on after the jump, so it is at 17 s or a moment past it.
+    await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime >= 17 && v.currentTime < 18.5)).toBe(true);
     await expect.poll(() => media.length).toBeGreaterThan(0);
     await expect(video).toBeFocused();
     await expect(video).toBeInViewport();

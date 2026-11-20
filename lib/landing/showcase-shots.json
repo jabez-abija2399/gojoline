@@ -532,5 +532,27 @@
         "height": 933
       }
     }
+  },
+  "resort": {
+    "en": {
+      "src": "/showcase/resort-en.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/resort-en-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    },
+    "am": {
+      "src": "/showcase/resort-am.webp",
+      "width": 780,
+      "height": 7200,
+      "top": {
+        "src": "/showcase/resort-am-top.webp",
+        "width": 520,
+        "height": 933
+      }
+    }
   }
 }

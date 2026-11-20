@@ -1,0 +1,506 @@
+{
+  "name": { "en": "Wanza Hill Retreat", "am": "ዋንዛ ሂል ሪትሪት" },
+  "tagline": { "en": "A small luxury retreat in the hills above Bishoftu", "am": "ከቢሾፍቱ በላይ ባሉ ኮረብታዎች ላይ ያለ ትንሽ ቅንጡ ማረፊያ" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#7E6136", "accent": "#1E1C19", "background": "#F6F1E8", "text": "#23201C", "highlight": "#D8C3A0", "font": "elegant", "radius": "none", "style": "grand" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Wanza Hill road, Bishoftu", "am": "ዋንዛ ሂል መንገድ፣ ቢሾፍቱ" },
+    "hours": [
+      {
+        "days": { "en": "Reception", "am": "እንግዳ መቀበያ" },
+        "time": { "en": "Open day and night", "am": "ቀንና ሌሊት ክፍት" }
+      },
+      {
+        "days": { "en": "Spa, every day", "am": "ስፓ፣ በየቀኑ" },
+        "time": { "en": "8:00 am to 8:00 pm", "am": "ከጠዋቱ 2 እስከ ምሽቱ 2 ሰዓት" }
+      }
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "The house", "am": "ቤቱ" },
+      "description": { "en": "Wanza Hill Retreat: twelve suites, a spa and a long table under the acacias, in the hills above Bishoftu.", "am": "ዋንዛ ሂል ሪትሪት፦ አሥራ ሁለት ስዊቶች፣ ስፓ እና በግራሮች ሥር ረጅም ገበታ፣ ከቢሾፍቱ በላይ ባሉ ኮረብታዎች።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "immersive",
+          "eyebrow": { "en": "Bishoftu · Ethiopia", "am": "ቢሾፍቱ · ኢትዮጵያ" },
+          "heading": { "en": "Stillness, above the hills", "am": "ከኮረብታዎቹ በላይ ያለ ጸጥታ" },
+          "subheading": { "en": "Twelve suites among the acacias, a spa, a long table under the trees, and nothing that must be done before sunset.", "am": "በግራሮች መካከል አሥራ ሁለት ስዊቶች፣ ስፓ፣ በዛፎች ሥር ረጅም ገበታ፤ ፀሐይ ከመጥለቋ በፊት መሠራት ያለበት ምንም ነገር የለም።" },
+          "image": {
+            "src": "/stock/hotel-hero-infinity-pool-hills.webp",
+            "alt": { "en": "A curved infinity pool with loungers on a terrace overlooking acacia-covered hills", "am": "በግራር የተሸፈኑ ኮረብታዎችን የሚመለከት፣ ማረፊያ ወንበሮች ያሉት ጠርዝ የሌለው መዋኛ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Reserve your stay", "am": "ቆይታዎን ያስይዙ" },
+            "href": "/reserve"
+          },
+          "secondaryAction": {
+            "label": { "en": "Discover the suites", "am": "ስዊቶቹን ይመልከቱ" },
+            "href": "#suites"
+          }
+        },
+        {
+          "type": "about",
+          "id": "house",
+          "eyebrow": { "en": "The house", "am": "ቤቱ" },
+          "heading": { "en": "A private house, kept for a few guests at a time", "am": "ለጥቂት እንግዶች ብቻ የሚዘጋጅ የግል ቤት" },
+          "body": { "en": "Wanza Hill began as a family house on the ridge. We kept its high thatched roofs, its cane chairs and its view, and made room for no more than twenty-four guests.\n\nThere is no lobby and no queue. Someone who knows your name meets you at the door, and the rest of the day is yours.", "am": "ዋንዛ ሂል በኮረብታው ጫፍ ላይ ያለ የቤተሰብ ቤት ሆኖ ነው የጀመረው። ከፍ ያሉ የሳር ክዳኖቹን፣ የሸምበቆ ወንበሮቹንና እይታውን ጠብቀን፣ ከሃያ አራት ለማይበልጡ እንግዶች ቦታ አዘጋጀን።\n\nእዚህ ሰልፍም ትልቅ አዳራሽም የለም። ስምዎን የሚያውቅ ሰው በሩ ላይ ይቀበልዎታል፤ የቀረው ቀን የእርስዎ ነው።" },
+          "image": {
+            "src": "/stock/hotel-about-thatched-lounge.webp",
+            "alt": { "en": "An open-air lounge under a high thatched roof with cane armchairs and a leather sofa, garden beyond", "am": "ከፍ ባለ የሳር ክዳን ሥር ያለ ክፍት የመቀመጫ ቦታ፣ የሸምበቆ ወንበሮችና የቆዳ ሶፋ፣ ከኋላ አትክልት" }
+          },
+          "imageSide": "start",
+          "action": {
+            "label": { "en": "Our suites and rates", "am": "ስዊቶችና ዋጋዎች" },
+            "href": "/suites"
+          }
+        },
+        {
+          "type": "cards",
+          "id": "suites",
+          "layout": "feature",
+          "eyebrow": { "en": "Rooms & suites", "am": "ክፍሎችና ስዊቶች" },
+          "heading": { "en": "Signature suites", "am": "ልዩ ስዊቶቻችን" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/hotel-card-thatched-suite.webp",
+                "alt": { "en": "A suite under a high thatched roof with a draped four-poster bed and two cream armchairs", "am": "ከፍ ያለ የሳር ክዳን ያለው ስዊት፣ መጋረጃ የተንጠለጠለበት አልጋና ሁለት ነጭ ወንበሮች" }
+              },
+              "subtitle": { "en": "Our largest suite", "am": "ትልቁ ስዊታችን" },
+              "title": { "en": "The Acacia Suite", "am": "የግራር ስዊት" },
+              "badge": { "en": "Most requested", "am": "በብዛት የሚጠየቅ" },
+              "meta": [
+                { "en": "2 guests", "am": "2 እንግዶች" },
+                { "en": "64 m²", "am": "64 ካሬ ሜትር" },
+                { "en": "Private terrace", "am": "የግል በረንዳ" }
+              ],
+              "description": { "en": "A four-poster bed under a thatched roof, a deep bath, and a terrace that faces the hills at sunrise.", "am": "በሳር ክዳን ሥር ባለ መጋረጃ አልጋ፣ ጥልቅ የገላ መታጠቢያ፣ እና ፀሐይ ስትወጣ ኮረብታዎቹን የሚመለከት በረንዳ።" },
+              "price": { "amountMinor": 2800000, "currency": "ETB" },
+              "priceNote": { "en": "per night for two, breakfast and spa included", "am": "ለሁለት በአዳር፣ ቁርስና ስፓ ተካትቶ" },
+              "action": {
+                "label": { "en": "Reserve this suite", "am": "ይህን ስዊት ያስይዙ" },
+                "href": "/reserve"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/hotel-card-wooden-cabin-room.webp",
+                "alt": { "en": "A warm wood-panelled bedroom with a double bed and two round wicker chairs", "am": "በእንጨት የተለበጠ ሞቅ ያለ መኝታ ክፍል፣ ድርብ አልጋና ሁለት ክብ የሸምበቆ ወንበሮች" }
+              },
+              "subtitle": { "en": "Among the trees", "am": "በዛፎቹ መካከል" },
+              "title": { "en": "The Cedar Room", "am": "የጽድ ክፍል" },
+              "meta": [
+                { "en": "2 guests", "am": "2 እንግዶች" },
+                { "en": "38 m²", "am": "38 ካሬ ሜትር" },
+                { "en": "Reading corner", "am": "የንባብ ጥግ" }
+              ],
+              "description": { "en": "Panelled in warm wood, with wicker chairs by the window and the sound of the garden at night.", "am": "በሞቀ እንጨት የተለበጠ፣ በመስኮቱ አጠገብ የሸምበቆ ወንበሮች፣ ማታ የአትክልቱ ድምፅ የሚሰማበት።" },
+              "price": { "amountMinor": 1950000, "currency": "ETB" },
+              "priceNote": { "en": "per night for two, breakfast and spa included", "am": "ለሁለት በአዳር፣ ቁርስና ስፓ ተካትቶ" },
+              "action": {
+                "label": { "en": "Reserve this suite", "am": "ይህን ስዊት ያስይዙ" },
+                "href": "/reserve"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/hotel-card-standard-room.webp",
+                "alt": { "en": "A bright room with a white bed, ochre cushions and an arched niche above the headboard", "am": "ነጭ አልጋ፣ ቢጫ ትራሶችና ከራስጌው በላይ ቅስት ያለው ብሩህ ክፍል" }
+              },
+              "subtitle": { "en": "Opening onto the lawn", "am": "ወደ መስኩ የሚከፈት" },
+              "title": { "en": "The Garden Room", "am": "የአትክልት ክፍል" },
+              "meta": [
+                { "en": "2 guests", "am": "2 እንግዶች" },
+                { "en": "32 m²", "am": "32 ካሬ ሜትር" },
+                { "en": "Garden door", "am": "ወደ አትክልቱ በር" }
+              ],
+              "description": { "en": "Light from morning to evening, a door straight onto the lawn, and breakfast brought to you outside.", "am": "ከጠዋት እስከ ማታ ብርሃን፣ በቀጥታ ወደ መስኩ የሚያወጣ በር፣ እና ቁርስ ውጭ ይቀርብልዎታል።" },
+              "price": { "amountMinor": 1500000, "currency": "ETB" },
+              "priceNote": { "en": "per night for two, breakfast and spa included", "am": "ለሁለት በአዳር፣ ቁርስና ስፓ ተካትቶ" },
+              "action": {
+                "label": { "en": "Reserve this suite", "am": "ይህን ስዊት ያስይዙ" },
+                "href": "/reserve"
+              }
+            }
+          ]
+        },
+        {
+          "type": "tabs",
+          "id": "experiences",
+          "eyebrow": { "en": "Experiences", "am": "ልምዶች" },
+          "heading": { "en": "Days shaped around you", "am": "በእርስዎ ልክ የተቀረጹ ቀናት" },
+          "intro": { "en": "Nothing is scheduled unless you ask. These are the things guests come back for.", "am": "እርስዎ ካልጠየቁ ምንም ቀጠሮ የለም። እንግዶች ተመልሰው የሚመጡባቸው ነገሮች እነዚህ ናቸው።" },
+          "items": [
+            {
+              "label": { "en": "The spa", "am": "ስፓው" },
+              "heading": { "en": "An afternoon in the spa", "am": "ከሰዓት በስፓው" },
+              "body": { "en": "Massages with oils pressed from Ethiopian herbs, a steam room of eucalyptus, and a quiet garden to rest in after.", "am": "በኢትዮጵያ ዕፅዋት ዘይት የሚደረግ ማሳጅ፣ የባሕር ዛፍ የእንፋሎት ክፍል፣ ከዚያም የሚያርፉበት ጸጥ ያለ አትክልት።" },
+              "image": {
+                "src": "/stock/hotel-card-spa-massage.webp",
+                "alt": { "en": "A guest with eyes closed receiving a back massage on a white table", "am": "ዓይኗን ጨፍና በነጭ አልጋ ላይ የጀርባ ማሳጅ የምትወስድ እንግዳ" }
+              },
+              "points": [
+                { "en": "One treatment a day, included", "am": "በቀን አንድ ሕክምና፣ ተካትቶ" },
+                { "en": "Open every day until 8 pm", "am": "በየቀኑ እስከ ምሽቱ 2 ሰዓት ክፍት" }
+              ]
+            },
+            {
+              "label": { "en": "The long table", "am": "ረጅሙ ገበታ" },
+              "heading": { "en": "Dinner under the acacia", "am": "በግራሩ ሥር እራት" },
+              "body": { "en": "On clear evenings we lay one long table in the open, and the kitchen cooks over fire from what the farm brought that morning.", "am": "ጥርት ባሉ ምሽቶች ሜዳ ላይ አንድ ረጅም ገበታ እናዘጋጃለን፤ ወጥ ቤቱ በዚያው ጠዋት ከእርሻው በመጣው በእሳት ያበስላል።" },
+              "image": {
+                "src": "/stock/hotel-gallery-bush-dining-acacia.webp",
+                "alt": { "en": "A long table with a red cloth set in open grassland beside a lone acacia under a wide sky", "am": "ሰፊ ሰማይ ሥር ከብቸኛ ግራር አጠገብ ቀይ ልብስ የለበሰ ረጅም ገበታ" }
+              },
+              "points": [
+                { "en": "Every Friday and Saturday", "am": "በየዓርብና ቅዳሜ" },
+                { "en": "Tell us what you don't eat", "am": "የማይመገቡትን ይንገሩን" }
+              ]
+            },
+            {
+              "label": { "en": "Coffee", "am": "ቡና" },
+              "heading": { "en": "The coffee ceremony", "am": "የቡና ሥነ ሥርዓት" },
+              "body": { "en": "Every afternoon at four, beans are roasted, ground and poured from the jebena on the terrace. Stay for all three rounds.", "am": "በየቀኑ ከሰዓት በ10 ሰዓት ቡናው በበረንዳው ላይ ይቆላል፣ ይወቀጣል፣ ከጀበናው ይቀዳል። ሦስቱንም ዙር ይቆዩ።" },
+              "image": {
+                "src": "/stock/hotel-gallery-jebena-coffee-pour.webp",
+                "alt": { "en": "A hand pouring coffee from a clay jebena into a white cup on a tray of coffee beans", "am": "ቡና በተበተነበት ትሪ ላይ ከሸክላ ጀበና ወደ ነጭ ስኒ ቡና የሚቀዳ እጅ" }
+              }
+            },
+            {
+              "label": { "en": "Evenings", "am": "ምሽቶች" },
+              "heading": { "en": "Evenings on the veranda", "am": "ምሽት በበረንዳው" },
+              "body": { "en": "Lanterns on the stone veranda, a fire when the hills turn cold, and the quiet of a house with very few guests.", "am": "በድንጋዩ በረንዳ ላይ ፋኖሶች፣ ኮረብታው ሲቀዘቅዝ እሳት፣ እና በጣም ጥቂት እንግዶች ያሉበት ቤት ጸጥታ።" },
+              "image": {
+                "src": "/stock/hotel-gallery-veranda-dusk.webp",
+                "alt": { "en": "A colonnaded veranda with a stone base and soft lights above a lawn at dusk", "am": "ሲመሽ በመስኩ ላይ ለስላሳ መብራቶች ያሉት፣ የድንጋይ መሠረትና ምሰሶዎች ያሉት በረንዳ" }
+              }
+            }
+          ]
+        },
+        {
+          "type": "hero",
+          "id": "destination",
+          "variant": "immersive",
+          "eyebrow": { "en": "The destination", "am": "መዳረሻው" },
+          "heading": { "en": "The oldest highlands in Africa, a short flight away", "am": "የአፍሪካ ጥንታዊ ደጋማ ቦታዎች፣ በአጭር በረራ" },
+          "subheading": { "en": "From the house, our concierge arranges private journeys north: rock churches, castles, waterfalls and the roof of Ethiopia.", "am": "ከቤቱ ሆኖ የእንግዶች አስተባባሪያችን ወደ ሰሜን የግል ጉዞዎችን ያዘጋጃል፦ ውቅር አብያተ ክርስቲያናት፣ ግንቦች፣ ፏፏቴዎችና የኢትዮጵያ ጣሪያ።" },
+          "image": {
+            "src": "/stock/tours-hero-highlands-sunset.webp",
+            "alt": { "en": "Sunset over Ethiopian highland ridges with a road winding through the valley", "am": "በሸለቆው ውስጥ የሚጠመዘዝ መንገድ ያለበት የኢትዮጵያ ደጋማ ሸንተረሮች ላይ የፀሐይ መጥለቅ" }
+          }
+        },
+        {
+          "type": "cards",
+          "id": "journeys",
+          "layout": "scroll",
+          "eyebrow": { "en": "Beyond the house", "am": "ከቤቱ ባሻገር" },
+          "heading": { "en": "Journeys we arrange", "am": "የምናዘጋጃቸው ጉዞዎች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/tours-card-lalibela-monk.webp",
+                "alt": { "en": "A monk in a yellow robe reading beside a carved cross-shaped window in rock", "am": "በዓለት በተቀረጸ የመስቀል ቅርጽ መስኮት አጠገብ ቢጫ ልብስ የለበሱ መነኩሴ ሲያነቡ" }
+              },
+              "title": { "en": "Lalibela", "am": "ላሊበላ" },
+              "subtitle": { "en": "Two days · by air", "am": "ሁለት ቀን · በአውሮፕላን" }
+            },
+            {
+              "image": {
+                "src": "/stock/tours-card-simien-escarpment.webp",
+                "alt": { "en": "Sunlit green terraced escarpments and deep valleys of the Simien Mountains", "am": "በፀሐይ የበሩ አረንጓዴ የሰሜን ተራሮች ገደሎችና ጥልቅ ሸለቆዎች" }
+              },
+              "title": { "en": "The Simien Mountains", "am": "የሰሜን ተራሮች" },
+              "subtitle": { "en": "Three days · by air and road", "am": "ሦስት ቀን · በአውሮፕላንና በመኪና" }
+            },
+            {
+              "image": {
+                "src": "/stock/tours-card-blue-nile-falls.webp",
+                "alt": { "en": "The Blue Nile Falls in full flow surrounded by green forest", "am": "በአረንጓዴ ደን የተከበበው የዓባይ ፏፏቴ በሙላት ሲፈስ" }
+              },
+              "title": { "en": "The Blue Nile Falls", "am": "የዓባይ ፏፏቴ" },
+              "subtitle": { "en": "One day · by air", "am": "አንድ ቀን · በአውሮፕላን" }
+            },
+            {
+              "image": {
+                "src": "/stock/tours-gallery-gondar-castle.webp",
+                "alt": { "en": "The castle of Fasilides in Gondar framed by two tall trees", "am": "በሁለት ረጃጅም ዛፎች መካከል የሚታየው የጎንደር የፋሲለደስ ግንብ" }
+              },
+              "title": { "en": "Gondar", "am": "ጎንደር" },
+              "subtitle": { "en": "One day · by air", "am": "አንድ ቀን · በአውሮፕላን" }
+            }
+          ]
+        },
+        {
+          "type": "testimonials",
+          "id": "guests",
+          "eyebrow": { "en": "Guests", "am": "እንግዶች" },
+          "heading": { "en": "In their words", "am": "በራሳቸው ቃል" },
+          "items": [
+            {
+              "quote": { "en": "It felt less like a hotel than being the guest of a family with impeccable taste.", "am": "ሆቴል ከመሆን ይልቅ ውብ ምርጫ ያለው ቤተሰብ እንግዳ የሆንን ያህል ተሰማን።" },
+              "name": "Hanna & Yonas",
+              "role": { "en": "Anniversary, three nights", "am": "የጋብቻ በዓል፣ ሦስት አዳር" }
+            },
+            {
+              "quote": { "en": "Dinner under the acacia is the most beautiful evening I have spent anywhere.", "am": "በግራሩ ሥር የበላነው እራት ከመቼውም ያሳለፍኩት እጅግ ውብ ምሽት ነው።" },
+              "name": "Claire D.",
+              "role": { "en": "Travelling from Paris", "am": "ከፓሪስ የመጣች" }
+            },
+            {
+              "quote": { "en": "They remembered how I take my coffee on the second morning. That is the whole place in one detail.", "am": "በሁለተኛው ጠዋት ቡናዬን እንዴት እንደምጠጣ አስታወሱ። ቦታው በሙሉ በዚያች አንድ ነገር ይገለጻል።" },
+              "name": "Samuel K.",
+              "role": { "en": "Returning guest", "am": "ተመላሽ እንግዳ" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "reserve",
+          "heading": { "en": "Your evening is already set", "am": "ምሽትዎ ተዘጋጅቷል" },
+          "body": { "en": "Reserve directly with the house for our best rate, a spa treatment each day and a car from the airport.", "am": "በቀጥታ ከእኛ ሲያስይዙ ምርጡን ዋጋ፣ በየቀኑ አንድ የስፓ ሕክምና እና ከአየር ማረፊያ መኪና ያገኛሉ።" },
+          "image": {
+            "src": "/stock/hotel-hero-lodge-pool-dusk.webp",
+            "alt": { "en": "A thatched lodge lit by lanterns at dusk, reflected in a dark pool", "am": "ሲመሽ በፋኖሶች የበራ የሳር ክዳን ሎጅ፣ በጨለማው መዋኛ ውስጥ ሲንጸባረቅ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Reserve your stay", "am": "ቆይታዎን ያስይዙ" },
+            "href": "/reserve"
+          },
+          "secondaryAction": {
+            "label": { "en": "Call the house", "am": "ወደ ቤቱ ይደውሉ" },
+            "href": "tel:+251911000000"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/suites",
+      "title": { "en": "Suites", "am": "ስዊቶች" },
+      "nav": { "en": "Suites", "am": "ስዊቶች" },
+      "description": { "en": "The Acacia Suite, the Cedar Room and the Garden Room at Wanza Hill Retreat, with rates per night.", "am": "በዋንዛ ሂል ሪትሪት የግራር ስዊት፣ የጽድ ክፍልና የአትክልት ክፍል፣ ከአዳር ዋጋ ጋር።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "rates",
+          "layout": "grid",
+          "eyebrow": { "en": "Suites & rates", "am": "ስዊቶችና ዋጋዎች" },
+          "heading": { "en": "Choose your suite", "am": "ስዊትዎን ይምረጡ" },
+          "intro": { "en": "Rates are per night for two guests and include breakfast, one spa treatment a day and the airport car.", "am": "ዋጋዎቹ ለሁለት እንግዶች በአዳር ሲሆኑ ቁርስ፣ በቀን አንድ የስፓ ሕክምና እና የአየር ማረፊያ መኪናን ያካትታሉ።" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/hotel-card-thatched-suite.webp",
+                "alt": { "en": "A suite under a high thatched roof with a draped four-poster bed and two cream armchairs", "am": "ከፍ ያለ የሳር ክዳን ያለው ስዊት፣ መጋረጃ የተንጠለጠለበት አልጋና ሁለት ነጭ ወንበሮች" }
+              },
+              "subtitle": { "en": "Our largest suite", "am": "ትልቁ ስዊታችን" },
+              "title": { "en": "The Acacia Suite", "am": "የግራር ስዊት" },
+              "badge": { "en": "Most requested", "am": "በብዛት የሚጠየቅ" },
+              "meta": [
+                { "en": "2 guests", "am": "2 እንግዶች" },
+                { "en": "64 m²", "am": "64 ካሬ ሜትር" },
+                { "en": "Private terrace", "am": "የግል በረንዳ" }
+              ],
+              "description": { "en": "A four-poster bed under a thatched roof, a deep bath, and a terrace that faces the hills at sunrise.", "am": "በሳር ክዳን ሥር ባለ መጋረጃ አልጋ፣ ጥልቅ የገላ መታጠቢያ፣ እና ፀሐይ ስትወጣ ኮረብታዎቹን የሚመለከት በረንዳ።" },
+              "price": { "amountMinor": 2800000, "currency": "ETB" },
+              "priceNote": { "en": "per night for two, breakfast and spa included", "am": "ለሁለት በአዳር፣ ቁርስና ስፓ ተካትቶ" },
+              "action": {
+                "label": { "en": "Reserve this suite", "am": "ይህን ስዊት ያስይዙ" },
+                "href": "/reserve"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/hotel-card-wooden-cabin-room.webp",
+                "alt": { "en": "A warm wood-panelled bedroom with a double bed and two round wicker chairs", "am": "በእንጨት የተለበጠ ሞቅ ያለ መኝታ ክፍል፣ ድርብ አልጋና ሁለት ክብ የሸምበቆ ወንበሮች" }
+              },
+              "subtitle": { "en": "Among the trees", "am": "በዛፎቹ መካከል" },
+              "title": { "en": "The Cedar Room", "am": "የጽድ ክፍል" },
+              "meta": [
+                { "en": "2 guests", "am": "2 እንግዶች" },
+                { "en": "38 m²", "am": "38 ካሬ ሜትር" },
+                { "en": "Reading corner", "am": "የንባብ ጥግ" }
+              ],
+              "description": { "en": "Panelled in warm wood, with wicker chairs by the window and the sound of the garden at night.", "am": "በሞቀ እንጨት የተለበጠ፣ በመስኮቱ አጠገብ የሸምበቆ ወንበሮች፣ ማታ የአትክልቱ ድምፅ የሚሰማበት።" },
+              "price": { "amountMinor": 1950000, "currency": "ETB" },
+              "priceNote": { "en": "per night for two, breakfast and spa included", "am": "ለሁለት በአዳር፣ ቁርስና ስፓ ተካትቶ" },
+              "action": {
+                "label": { "en": "Reserve this suite", "am": "ይህን ስዊት ያስይዙ" },
+                "href": "/reserve"
+              }
+            },
+            {
+              "image": {
+                "src": "/stock/hotel-card-standard-room.webp",
+                "alt": { "en": "A bright room with a white bed, ochre cushions and an arched niche above the headboard", "am": "ነጭ አልጋ፣ ቢጫ ትራሶችና ከራስጌው በላይ ቅስት ያለው ብሩህ ክፍል" }
+              },
+              "subtitle": { "en": "Opening onto the lawn", "am": "ወደ መስኩ የሚከፈት" },
+              "title": { "en": "The Garden Room", "am": "የአትክልት ክፍል" },
+              "meta": [
+                { "en": "2 guests", "am": "2 እንግዶች" },
+                { "en": "32 m²", "am": "32 ካሬ ሜትር" },
+                { "en": "Garden door", "am": "ወደ አትክልቱ በር" }
+              ],
+              "description": { "en": "Light from morning to evening, a door straight onto the lawn, and breakfast brought to you outside.", "am": "ከጠዋት እስከ ማታ ብርሃን፣ በቀጥታ ወደ መስኩ የሚያወጣ በር፣ እና ቁርስ ውጭ ይቀርብልዎታል።" },
+              "price": { "amountMinor": 1500000, "currency": "ETB" },
+              "priceNote": { "en": "per night for two, breakfast and spa included", "am": "ለሁለት በአዳር፣ ቁርስና ስፓ ተካትቶ" },
+              "action": {
+                "label": { "en": "Reserve this suite", "am": "ይህን ስዊት ያስይዙ" },
+                "href": "/reserve"
+              }
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "id": "every-suite",
+          "variant": "numbered",
+          "eyebrow": { "en": "In every suite", "am": "በእያንዳንዱ ስዊት" },
+          "heading": { "en": "The details we never leave out", "am": "ፈጽሞ የማንዘነጋቸው ዝርዝሮች" },
+          "image": {
+            "src": "/stock/hotel-about-coffee-ceremony-host.webp",
+            "alt": { "en": "A host in a white habesha dress pouring coffee from a clay jebena into rows of small cups", "am": "ነጭ የሀበሻ ቀሚስ የለበሰች አስተናጋጅ ከሸክላ ጀበና በተደረደሩ ትናንሽ ስኒዎች ቡና ስትቀዳ" }
+          },
+          "items": [
+            {
+              "title": { "en": "Linen and quiet", "am": "ንጹሕ አልጋ ልብስና ጸጥታ" },
+              "description": { "en": "Cotton sheets woven in Ethiopia, heavy curtains and no television unless you ask for one.", "am": "በኢትዮጵያ የተሸመነ የጥጥ አንሶላ፣ ወፍራም መጋረጃዎች፣ ካልጠየቁ በስተቀር ቴሌቪዥን የለም።" },
+              "icon": "bed"
+            },
+            {
+              "title": { "en": "Breakfast where you like", "am": "ቁርስ በፈለጉበት" },
+              "description": { "en": "In bed, on your terrace or at the long table. Served until late morning.", "am": "በአልጋዎ፣ በበረንዳዎ ወይም በረጅሙ ገበታ። እስከ ረፋድ ይቀርባል።" },
+              "icon": "coffee"
+            },
+            {
+              "title": { "en": "A car from the airport", "am": "ከአየር ማረፊያ መኪና" },
+              "description": { "en": "We meet you at Bole and drive you to the house, about an hour away.", "am": "ቦሌ ላይ ተቀብለን አንድ ሰዓት ገደማ ወደሚርቀው ቤቱ እናደርስዎታለን።" },
+              "icon": "car"
+            },
+            {
+              "title": { "en": "Someone to ask", "am": "የሚጠይቁት ሰው" },
+              "description": { "en": "One host looks after you for your whole stay, by phone or Telegram.", "am": "በቆይታዎ ሙሉ አንድ አስተናጋጅ በስልክ ወይም በቴሌግራም ይንከባከብዎታል።" },
+              "icon": "key"
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "id": "faq",
+          "eyebrow": { "en": "Before you come", "am": "ከመምጣትዎ በፊት" },
+          "heading": { "en": "Good to know", "am": "ማወቅ ያለብዎ" },
+          "items": [
+            {
+              "question": { "en": "When can I arrive and leave?", "am": "መቼ መድረስና መውጣት እችላለሁ?" },
+              "answer": { "en": "Your suite is ready from 2 pm and yours until noon on the day you leave. Ask us for earlier or later.", "am": "ስዊትዎ ከቀኑ 8 ሰዓት ጀምሮ ዝግጁ ሲሆን በሚወጡበት ቀን እስከ ቀኑ 6 ሰዓት የእርስዎ ነው። ቀደም ወይም ዘግየት ብለው ከፈለጉ ይጠይቁን።" }
+            },
+            {
+              "question": { "en": "How do I pay?", "am": "ክፍያ እንዴት ነው?" },
+              "answer": { "en": "We confirm your stay first. You pay at the house by bank transfer, Telebirr or card.", "am": "መጀመሪያ ቆይታዎን እናረጋግጣለን። ክፍያው በቤቱ በባንክ ዝውውር፣ በቴሌብር ወይም በካርድ ይፈጸማል።" }
+            },
+            {
+              "question": { "en": "Are children welcome?", "am": "ልጆች መምጣት ይችላሉ?" },
+              "answer": { "en": "Yes, children of every age. The Acacia Suite takes an extra bed.", "am": "አዎ፣ በማንኛውም ዕድሜ ያሉ ልጆች። የግራር ስዊት ተጨማሪ አልጋ ይይዛል።" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "reserve",
+          "heading": { "en": "Come and stay", "am": "መጥተው ይቆዩ" },
+          "body": { "en": "Tell us your dates and the house will do the rest.", "am": "ቀኖችዎን ይንገሩን፤ የቀረውን ቤቱ ያደርጋል።" },
+          "image": {
+            "src": "/stock/hotel-gallery-veranda-dusk.webp",
+            "alt": { "en": "A colonnaded veranda with soft lights above a lawn at dusk", "am": "ሲመሽ በመስኩ ላይ ለስላሳ መብራቶች ያሉት ምሰሶዎች ያሉት በረንዳ" }
+          },
+          "primaryAction": {
+            "label": { "en": "Reserve your stay", "am": "ቆይታዎን ያስይዙ" },
+            "href": "/reserve"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/reserve",
+      "title": { "en": "Reserve", "am": "ያስይዙ" },
+      "nav": { "en": "Reserve", "am": "ያስይዙ" },
+      "description": { "en": "Reserve a suite at Wanza Hill Retreat in Bishoftu. We answer within a few hours.", "am": "በቢሾፍቱ ዋንዛ ሂል ሪትሪት ስዊት ያስይዙ። በጥቂት ሰዓታት ውስጥ እንመልሳለን።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "booking",
+          "kind": "booking",
+          "eyebrow": { "en": "Reservations", "am": "ቦታ ማስያዝ" },
+          "heading": { "en": "Reserve your stay", "am": "ቆይታዎን ያስይዙ" },
+          "intro": { "en": "Tell us when you would like to come. The house answers personally within a few hours, by phone or Telegram.", "am": "መቼ መምጣት እንደሚፈልጉ ይንገሩን። በጥቂት ሰዓታት ውስጥ በስልክ ወይም በቴሌግራም በግል እንመልስልዎታለን።" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "phone",
+              "label": { "en": "Phone number", "am": "ስልክ ቁጥር" },
+              "type": "tel",
+              "required": true
+            },
+            {
+              "name": "arrival",
+              "label": { "en": "Arrival date", "am": "የሚደርሱበት ቀን" },
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "nights",
+              "label": { "en": "Nights", "am": "የአዳር ብዛት" },
+              "type": "number",
+              "required": true
+            },
+            {
+              "name": "suite",
+              "label": { "en": "Suite", "am": "ስዊት" },
+              "type": "select",
+              "options": [
+                { "en": "The Acacia Suite", "am": "የግራር ስዊት" },
+                { "en": "The Cedar Room", "am": "የጽድ ክፍል" },
+                { "en": "The Garden Room", "am": "የአትክልት ክፍል" }
+              ]
+            },
+            {
+              "name": "wishes",
+              "label": { "en": "Anything we should prepare?", "am": "የምናዘጋጅልዎ ነገር አለ?" },
+              "type": "textarea"
+            }
+          ],
+          "submitLabel": { "en": "Send my request", "am": "ጥያቄዬን ላክ" },
+          "successMessage": { "en": "Thank you. We will be in touch within a few hours to confirm your stay.", "am": "እናመሰግናለን። ቆይታዎን ለማረጋገጥ በጥቂት ሰዓታት ውስጥ እናገኝዎታለን።" }
+        },
+        {
+          "type": "contact",
+          "id": "contact",
+          "eyebrow": { "en": "The house", "am": "ቤቱ" },
+          "heading": { "en": "Speak to us directly", "am": "በቀጥታ ያነጋግሩን" },
+          "intro": { "en": "Call or write on Telegram. A person answers, day and night.", "am": "ይደውሉ ወይም በቴሌግራም ይጻፉ። ቀንና ሌሊት ሰው ይመልሳል።" }
+        },
+        {
+          "type": "map",
+          "id": "map",
+          "eyebrow": { "en": "Getting here", "am": "አደራረስ" },
+          "heading": { "en": "An hour from Bole airport", "am": "ከቦሌ አየር ማረፊያ አንድ ሰዓት" },
+          "query": "Bishoftu, Ethiopia"
+        }
+      ]
+    }
+  ]
+}
