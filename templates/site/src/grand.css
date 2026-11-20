@@ -1,7 +1,9 @@
 /*
  * grand: luxury hospitality (resorts, boutique hotels, spas). Kept outside the cascade layers on
  * purpose: its column widths and heights must win over the utility classes in the components.
- * Locked like design.css and motion.css; every rule is scoped to [data-style="grand"].
+ * Locked like design.css and motion.css; every rule is scoped to [data-style="grand"]. Its motion
+ * is here too, so a site in another style gets none of it: the build leaves this file empty unless
+ * site.json asks for "grand" (vite.config.ts).
  */
 /* ---- grand: luxury hospitality: oversized light serif, champagne hairlines, asymmetric photos ---- */
 [data-style="grand"] .headline {
@@ -191,7 +193,7 @@
   pointer-events: none;
 }
 [data-style="grand"] .hero-immersive > .container-site {
-  min-height: min(60rem, 100svh);
+  min-height: min(60rem, calc(100svh - 1px));
   padding-bottom: 4.5rem;
 }
 [data-style="grand"] .hero-later > .container-site {
@@ -420,4 +422,139 @@
 }
 [data-style="grand"] main > section.bg-surface {
 background: var(--site-background);
+}
+
+/* ---- grand: slow curtains, photos that drift inside their frames, hairlines that draw ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-style="grand"] .nav-link::after {
+    transition: transform 450ms cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  [data-style="grand"] .btn {
+    transition:
+      background-color 400ms cubic-bezier(0.65, 0, 0.35, 1),
+      color 400ms cubic-bezier(0.65, 0, 0.35, 1),
+      border-color 400ms;
+  }
+  [data-style="grand"] .zoom img,
+  [data-style="grand"] .zoom .placeholder {
+    transition-duration: 1400ms;
+  }
+  [data-style="grand"] .headline.split .w {
+    animation-duration: 1300ms;
+    animation-delay: calc(150ms + var(--w, 0) * 110ms);
+  }
+  [data-style="grand"] .scroll-cue::after {
+    animation: grand-drop 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+  [data-style="grand"] .site-header details[open] > nav > * {
+    animation: site-enter 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  [data-style="grand"] .site-header details[open] > nav > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+  [data-style="grand"] .site-header details[open] > nav > :nth-child(3) {
+    animation-delay: 120ms;
+  }
+  [data-style="grand"] .site-header details[open] > nav > :nth-child(n + 4) {
+    animation-delay: 180ms;
+  }
+  @supports (animation-timeline: view()) {
+    /* Photos open like a curtain drawn upwards, slower than elsewhere… */
+    [data-style="grand"] .wipe {
+      animation-name: grand-curtain;
+      animation-range: entry 0% entry 55%;
+    }
+    /* …and drift a little inside their frame as the page moves (separate translate and scale,
+       so the hover zoom still applies on top). */
+    [data-style="grand"] .about-photo img {
+      scale: 1.12;
+      animation: grand-drift linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+    /* The offset hairline frame slides into place behind the photo. */
+    [data-style="grand"] .depth-frame::before {
+      animation: grand-frame linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+    /* Titles and labels rise and draw in as they arrive. */
+    [data-style="grand"] .eyebrow::before {
+      transform-origin: 0 50%;
+      animation: site-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 30%;
+    }
+    [data-style="grand"] .testimonial {
+      animation-name: grand-rule;
+    }
+    /* A full-screen photo further down the page drifts while it crosses the screen. */
+    [data-style="grand"] .hero-later .hero-parallax {
+      inset: -12% 0;
+      animation: grand-band linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+    [data-style="grand"] .hero-later .hero-photo {
+      animation: none;
+    }
+    [data-style="grand"] .cta-band > img {
+      scale: 1.15;
+      animation: grand-drift linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+  }
+}
+@keyframes grand-curtain {
+  from {
+    clip-path: inset(18% 8% 18% 8%);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes grand-drift {
+  from {
+    translate: 0 -5%;
+  }
+  to {
+    translate: 0 5%;
+  }
+}
+@keyframes grand-band {
+  from {
+    translate: 0 -8%;
+  }
+  to {
+    translate: 0 8%;
+  }
+}
+@keyframes grand-frame {
+  from {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate(18px, 18px);
+    opacity: 1;
+  }
+}
+@keyframes grand-rule {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes grand-drop {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(260%);
+  }
 }

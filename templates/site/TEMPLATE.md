@@ -10,6 +10,7 @@ Every Gojoline site is this Vite + React + Tailwind project. **Every change is a
 | `src/site.ts` | Loads site.json with its type | No |
 | `src/lib/types.ts` | The content model (`Site`, `Page`, `Section`, `Text`, `Price`) | Read only |
 | `src/sections/*.tsx` | Section components (Hero, About, Cards, Menu, Services, Gallery, Stats, Steps, Schedule, Quote, Contact, MapEmbed, Testimonials, Timeline, Faq, Cta, Form, Header, Footer) | No (read them to see what each field does) |
+| `src/design.css`, `src/motion.css`, `src/grand.css` | The site styles and motion (`grand.css` is only built into sites whose `theme.style` is `grand`) | No |
 | `src/styles.css` | Tailwind setup, theme utilities, `.btn`, `.section`, `.container-site` | Rarely, for small style tweaks |
 | `public/images/` | Photos the owner uploaded | Reference them as `/images/<name>` |
 | `/stock/<name>.webp` | Sample photos from Gojoline's library (see Sample photos below) | Reference only; you can't add to it |
