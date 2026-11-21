@@ -12,5 +12,6 @@ export async function GET() {
   const state = randomBytes(24).toString("base64url");
   (await cookies()).set("gojo_tiktok_state", state, { httpOnly: true, secure: true, sameSite: "lax", maxAge: 600, path: "/api/admin/tiktok" });
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+  if (!appUrl) return new Response(null, { status: 404 });
   return Response.redirect(tiktokAuthorizeUrl(key, appUrl, state), 302);
 }

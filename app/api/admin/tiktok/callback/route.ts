@@ -13,6 +13,7 @@ export async function GET(request: Request) {
   const secret = process.env.TIKTOK_CLIENT_SECRET;
   if (!me || !isAdmin(me) || !key || !secret) return new Response(null, { status: 404 });
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+  if (!appUrl) return new Response(null, { status: 404 });
   const back = (done: string) => Response.redirect(`${appUrl}/en/admin?tab=posts&pd=${done}`, 302);
   const q = new URL(request.url).searchParams;
   const jar = await cookies();

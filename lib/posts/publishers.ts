@@ -99,7 +99,8 @@ export class InstagramPublisher implements ChannelPublisher {
     // A video is processed first: wait until it is ready (up to about two minutes).
     if (media.kind === "video") {
       for (let i = 0; ; i++) {
-        const s = await graph<{ status_code?: string }>(this.fetchImpl, `https://graph.facebook.com/${this.version}/${made.id}?fields=status_code&access_token=${encodeURIComponent(this.token)}`, { method: "GET" });
+        // The token in a header, never in the address (addresses end up in logs).
+        const s = await graph<{ status_code?: string }>(this.fetchImpl, `https://graph.facebook.com/${this.version}/${made.id}?fields=status_code`, { method: "GET", headers: { Authorization: `Bearer ${this.token}` } });
         if (s.status_code === "FINISHED") break;
         if (s.status_code === "ERROR" || i >= 40) throw new Error(`Instagram couldn't process the video (${s.status_code ?? "timeout"})`);
         await this.wait(3000);

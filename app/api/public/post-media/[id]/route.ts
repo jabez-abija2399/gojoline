@@ -12,7 +12,9 @@ export async function GET(request: Request, ctx: RouteContext<"/api/public/post-
   if (!id.success || !verifyMediaUrl(process.env.CRON_SECRET ?? "", id.data, q.get("exp"), q.get("sig"))) return new Response(null, { status: 404 });
   const deps = services().posts;
   const post = await deps.store.get(id.data);
-  const file = post && post.status !== "skipped" ? await deps.media(post.media).catch(() => null) : null;
+  // A site's media only while its owner still shows it (they may have opted out since the link was made).
+  const allowed = post && post.status !== "skipped" && (post.kind !== "site" || (await deps.context()).sites.some((s) => s.siteId === post.subject));
+  const file = allowed ? await deps.media(post.media).catch(() => null) : null;
   if (!file) return new Response(null, { status: 404 });
   return new Response(new Uint8Array(file.data), {
     headers: { "Content-Type": file.kind === "video" ? "video/mp4" : "image/jpeg", "Content-Length": String(file.data.length), "Cache-Control": "private, max-age=600", "X-Content-Type-Options": "nosniff", "X-Robots-Tag": "noindex" },
