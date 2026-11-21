@@ -1,0 +1,10 @@
+[Unit]
+Description=Gojoline: send due social posts (Admin → Posts)
+After=docker.service network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/gojoline-posts
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict

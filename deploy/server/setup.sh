@@ -84,11 +84,12 @@ echo "== 6/6 Build, start, then automatic updates (every 5 minutes), weekly refr
 # The scripts that run as root are copied out of the repo: a commit can't change them.
 install -m 0755 update.sh /usr/local/sbin/gojoline-update
 install -m 0755 daily.sh /usr/local/sbin/gojoline-daily
-install -m 0644 gojoline-update.service gojoline-update.timer gojoline-daily.service gojoline-daily.timer gojoline-refresh.service gojoline-refresh.timer /etc/systemd/system/
+install -m 0755 posts.sh /usr/local/sbin/gojoline-posts
+install -m 0644 gojoline-update.service gojoline-update.timer gojoline-daily.service gojoline-daily.timer gojoline-refresh.service gojoline-refresh.timer gojoline-posts.service gojoline-posts.timer /etc/systemd/system/
 systemctl daemon-reload
 echo "Building and starting (the first build takes 5 to 10 minutes)..."
 /usr/local/sbin/gojoline-update --force
 # Timers only after the first deploy, so two builds never overlap.
-systemctl enable --now gojoline-update.timer gojoline-daily.timer gojoline-refresh.timer
+systemctl enable --now gojoline-update.timer gojoline-daily.timer gojoline-refresh.timer gojoline-posts.timer
 echo
 echo "Done. Once DNS points here, check: curl -s https://$(grep ^APP_DOMAIN= .env | cut -d= -f2-)/api/health"

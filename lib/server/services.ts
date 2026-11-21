@@ -42,6 +42,13 @@ import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { VercelPublishProvider } from "@/lib/providers/publish/vercel";
 import { CloudflarePublishProvider } from "@/lib/providers/publish/cloudflare";
 import { R2StorageProvider } from "@/lib/providers/storage/r2";
+import sharp from "sharp";
+import { MemoryStorageProvider } from "@/lib/providers/storage/memory";
+import type { StorageProvider } from "@/lib/providers/storage/types";
+import { LLMCaptionWriter, PlainCaptionWriter } from "@/lib/posts/captions";
+import { templatePicture, type PostDeps } from "@/lib/posts/service";
+import { DbPostStore, MemoryPostStore, type PostStore } from "@/lib/posts/store";
+import { PRESET_IDS, presetName } from "@/lib/template/presets";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
 import { DbCloudStore } from "@/lib/cloud/db-store";
@@ -210,6 +217,8 @@ interface Services {
   analyticsEvents: EventStore;
   /** Growth loops: sign-up sources, referrals, and the public showcase (null without publishing or a database). */
   growth: { sources: SignupSourceStore; referrals: Referrals; showcase: ShowcaseStore | null };
+  /** Gojoline's own daily social posts (Admin → Posts). */
+  posts: PostDeps;
 }
 
 /** `ownerOf` serves the memory store only (the database joins projects instead). */
@@ -245,6 +254,7 @@ export function services(): Services {
       analyticsEvents: db ? new DbEventStore(db) : new MemoryEventStore(),
       checkText: (texts, ctx) => checkOwnerText(texts, null, ctx),
       publicSites: new PublicSiteCache(async () => null),
+      posts: null as unknown as PostDeps,
       growth: {
         sources,
         referrals: new Referrals(
@@ -321,9 +331,43 @@ export function services(): Services {
       };
     }
     svc.telegram = pickTelegram(process.env);
+    svc.posts = pickPosts(process.env, svc, db ? new DbPostStore(db) : new MemoryPostStore(), usage);
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);
   }
   return globalForServices.gojoServices;
+}
+
+/** Admin → Posts: captions by Claude Haiku when a key is set (plain ones otherwise), our Telegram channel when set. */
+function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger): PostDeps {
+  const key = env.SAYSITE_ANTHROPIC_API_KEY;
+  const channelId = isE2E(env) ? "@gojoline_e2e" : (env.TELEGRAM_CHANNEL_ID ?? "").trim();
+  // Rendered post videos (Step 3) live in R2 under posts/; memory without R2 (dev, e2e).
+  const files: StorageProvider =
+    !isE2E(env) && env.R2_ACCOUNT_ID && env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY
+      ? new R2StorageProvider({ accountId: env.R2_ACCOUNT_ID, accessKeyId: env.R2_ACCESS_KEY_ID, secretAccessKey: env.R2_SECRET_ACCESS_KEY, bucket: env.R2_BUCKET || "gojoline" })
+      : new MemoryStorageProvider();
+  return {
+    store,
+    files,
+    captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
+    telegram: svc.telegram && channelId ? { client: svc.telegram.client, channelId } : null,
+    appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+    context: async () => ({
+      templates: PRESET_IDS.map((id) => ({ id, name: presetName(id, "en") })),
+      sites: ((await svc.growth.showcase?.list(60)) ?? []).map((e) => ({ siteId: e.siteId, name: e.name, url: e.url })),
+    }),
+    media: async (m) => {
+      if (!m) return null;
+      if (m.type === "template") return templatePicture(m.id);
+      if (m.type === "site") {
+        const entry = ((await svc.growth.showcase?.list(60)) ?? []).find((e) => e.siteId === m.siteId);
+        const thumb = entry?.thumb ? await svc.growth.showcase?.thumb(entry.thumb.key) : null;
+        return thumb ? { kind: "photo", data: await sharp(thumb).jpeg({ quality: 88 }).toBuffer(), name: "site.jpg" } : null;
+      }
+      const data = /^posts\/[\w/-]+\.mp4$/.test(m.key) ? await files.get(m.key) : null;
+      return data ? { kind: "video", data, name: "gojoline.mp4" } : null;
+    },
+  };
 }
 
 /** Who to tell about payments, and how (email via Resend, Telegram when linked). */

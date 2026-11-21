@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { FocusOnMount } from "@/components/admin/focus-on-mount";
 import { SiteFiles } from "@/components/admin/site-files";
+import { PostsTab } from "@/components/admin/posts-tab";
 import { ModerateForm } from "@/components/admin/moderate-form";
 import { ReviewForm } from "@/components/admin/review-form";
 import { SettingsForm } from "@/components/admin/settings-form";
@@ -13,7 +14,7 @@ import { format, getMessages } from "@/lib/i18n";
 import { adminStats, analytics, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, BadgePercent, ChartColumn, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgePercent, ChartColumn, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Megaphone, MessageSquareHeart, Monitor, Moon, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
 import { FeedbackReplyForm } from "@/components/admin/feedback-reply-form";
 import { TYPE_ICONS } from "@/components/feedback/type-icons";
 import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
@@ -48,7 +49,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["overview", "analytics", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "settings"] as const;
+const TABS = ["overview", "analytics", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "posts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 type AdminUserPlan = (typeof PLAN_IDS)[number];
 
@@ -76,7 +77,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     svc.feedback.countByStatus().catch((e: unknown) => (reportError("feedback count failed", e), emptyCounts())),
   ]);
   const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports, feedback: fbCounts.new };
-  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, analytics: ChartColumn, discounts: BadgePercent, settings: Settings2 };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, analytics: ChartColumn, discounts: BadgePercent, posts: Megaphone, settings: Settings2 };
   const navItem = (x: Tab, compact: boolean) => {
     const Icon = icons[x];
     return (
@@ -138,6 +139,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           {tab === "growth" && <GrowthTab />}
           {tab === "costs" && <Costs />}
           {tab === "discounts" && <Discounts />}
+          {tab === "posts" && <PostsTab lang={lang} t={t.admin.posts} sp={sp} />}
           {tab === "settings" && <Settings />}
         </main>
       </div>

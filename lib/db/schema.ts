@@ -645,3 +645,29 @@ export const analyticsDaily = pgTable(
   },
   (t) => [primaryKey({ columns: [t.day, t.event, t.key] })],
 );
+
+/**
+ * Gojoline's own daily social posts (Admin → Posts): planned per Addis day, captioned in both
+ * languages, approved by an admin, then sent to our channels. Results per network in `results`.
+ */
+export const socialPosts = pgTable(
+  "social_posts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    day: text("day").notNull(),
+    time: text("time").notNull(),
+    kind: text("kind").notNull(),
+    subject: text("subject"),
+    status: text("status").notNull().default("draft"),
+    captionEn: text("caption_en").notNull().default(""),
+    captionAm: text("caption_am").notNull().default(""),
+    hashtags: text("hashtags").notNull().default(""),
+    media: jsonb("media").$type<Record<string, string> | null>(),
+    channels: jsonb("channels").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
+    results: jsonb("results").$type<Record<string, unknown>>().notNull().default(sql`'{}'::jsonb`),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    postedAt: timestamp("posted_at", { withTimezone: true }),
+  },
+  (t) => [index("social_posts_day_idx").on(t.day), index("social_posts_due_idx").on(t.status, t.day)],
+);
