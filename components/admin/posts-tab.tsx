@@ -1,10 +1,11 @@
 import { CalendarPlus, CheckCircle2, Download, Send, SkipForward, Sparkles, Undo2, XCircle } from "lucide-react";
+import Link from "next/link";
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import { services } from "@/lib/server/services";
 import { makePostVideo, savePost, planWeek, postAction } from "@/app/[lang]/admin/posts-actions";
 import { addDays, postText } from "@/lib/posts/plan";
-import { addisToday, AUTO_CHANNELS, readyChannels } from "@/lib/posts/service";
+import { addisToday, AUTO_CHANNELS, CONNECT_HINT, readyChannels } from "@/lib/posts/service";
 import { CHANNELS, type Channel, type SocialPost } from "@/lib/posts/types";
 import { CopyButton } from "@/components/billing/copy-button";
 import { FocusOnMount } from "./focus-on-mount";
@@ -50,10 +51,20 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
       <section aria-labelledby="posts-setup" className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
         <h2 id="posts-setup" className="sr-only">{t.setup}</h2>
         <p className="text-ink-muted">{t.intro}</p>
-        <p className={`flex items-start gap-2 ${deps.telegram ? "text-ink" : "text-warning"}`}>
-          {deps.telegram ? <CheckCircle2 aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-lagoon" /> : <XCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />}
-          {deps.telegram ? format(t.telegramReady, { channel: deps.telegram.channelId }) : t.telegramMissing}
-        </p>
+        <ul aria-label={t.networks} className="flex flex-col gap-1">
+          {AUTO_CHANNELS.map((c) => {
+            const p = deps.publishers[c];
+            return (
+              <li key={c} className={`flex items-start gap-2 ${p ? "text-ink" : "text-ink-muted"}`}>
+                {p ? <CheckCircle2 aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-lagoon" /> : <XCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />}
+                <span>{p ? format(t.connected, { channel: t.channels[c], label: p.label }) : format(t.disconnected, { channel: t.channels[c], hint: CONNECT_HINT[c] })}</span>
+              </li>
+            );
+          })}
+        </ul>
+        {deps.saveTikTokToken && (
+          <Link href="/api/admin/tiktok/start" prefetch={false} className="inline-flex min-h-11 w-fit items-center font-medium text-ink underline underline-offset-4 pointer-fine:min-h-9">{t.connectTikTok}</Link>
+        )}
         <p className="text-xs text-ink-muted">{t.kitNote}</p>
         <form action={planWeek}>
           <input type="hidden" name="lang" value={lang} />

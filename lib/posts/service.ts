@@ -1,20 +1,22 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import sharp from "sharp";
-import type { TelegramClient } from "@/lib/telegram/client";
-import { escapeHtml } from "@/lib/telegram/client";
 import type { CaptionWriter } from "./captions";
 import { addDays, planDays, postFacts, postText, type PlanContext } from "./plan";
 import type { PostStore } from "./store";
 import { CHANNELS, type Channel, type ChannelResult, type PostMedia, type SocialPost } from "./types";
 import type { StorageProvider } from "@/lib/providers/storage/types";
 import type { VideoRenderer, VideoStyle } from "./video";
+import type { ChannelPublisher, MediaFile } from "./publishers";
 import { getMessages } from "@/lib/i18n";
 
-/** The networks Gojoline can post to by itself today (the others get the posting kit). */
-export const AUTO_CHANNELS: readonly Channel[] = ["telegram"];
+/** The networks Gojoline can post to by itself once connected (YouTube uses the posting kit). */
+export const AUTO_CHANNELS: readonly Channel[] = ["telegram", "facebook", "instagram", "tiktok"];
 
-export type MediaFile = { kind: "photo" | "video"; data: Buffer; name: string };
+/** Networks that take only a picture or video (no text-only posts), and those that take only video. */
+const NEEDS_MEDIA: readonly Channel[] = ["instagram", "tiktok"];
+
+export type { MediaFile };
 
 /** One post at a time: a double click, or "Post now" during the timed run, never posts twice. */
 export interface PostLock {
@@ -25,8 +27,12 @@ export interface PostLock {
 export interface PostDeps {
   store: PostStore;
   captions: CaptionWriter;
-  /** Our Telegram channel (TELEGRAM_CHANNEL_ID, e.g. @gojoline) through the bot; null when not set. */
-  telegram: { client: TelegramClient; channelId: string } | null;
+  /** The networks that are connected (Telegram channel, Facebook Page, Instagram, TikTok inbox). */
+  publishers: Partial<Record<Channel, ChannelPublisher>>;
+  /** A short-lived public address of a post's media (for networks that fetch it); null when not possible. */
+  mediaUrl(postId: string): string | null;
+  /** Keeps TikTok's refresh token after "Connect TikTok"; absent when TikTok isn't set up. */
+  saveTikTokToken?: (token: string, adminId: string) => Promise<void>;
   appUrl: string;
   /** What posts can be about, read fresh (templates; sites whose owners opted in). */
   context(): Promise<PlanContext>;
@@ -39,9 +45,9 @@ export interface PostDeps {
   video: VideoRenderer | null;
 }
 
-/** Which automatic networks are ready (configured), for the admin page. */
-export function readyChannels(deps: Pick<PostDeps, "telegram">): Channel[] {
-  return deps.telegram ? ["telegram"] : [];
+/** Which automatic networks are ready (connected), for planning and the admin page. */
+export function readyChannels(deps: Pick<PostDeps, "publishers">): Channel[] {
+  return AUTO_CHANNELS.filter((c) => !!deps.publishers[c]);
 }
 
 /** Draft posts, with captions, for each of the next `days` days (from `today`) that has none. */
@@ -60,7 +66,9 @@ async function planLocked(deps: PostDeps, adminId: string, today: string, days: 
   const [existing, recentPosts, ctx] = await Promise.all([deps.store.between(today, addDays(today, days - 1)), deps.store.between(addDays(today, -60), addDays(today, -1)), deps.context()]);
   const taken = new Set(existing.filter((p) => p.status !== "skipped").map((p) => p.day));
   const recent = recentPosts.map((p) => p.subject).filter((s): s is string => !!s);
-  const drafts = planDays({ from: today, days, taken, recent, ctx, channels: [...readyChannels(deps)] });
+  const ready = readyChannels(deps);
+  // Text-only days skip the networks that need a picture or video.
+  const drafts = planDays({ from: today, days, taken, recent, ctx, channels: ready }).map((d) => (d.media ? d : { ...d, channels: d.channels.filter((c) => !NEEDS_MEDIA.includes(c)) }));
   const written = await Promise.all(drafts.map(async (d) => ({ ...d, ...(await caption(deps, adminId, d, ctx)) })));
   return (await deps.store.createMany(written)).length;
 }
@@ -128,12 +136,19 @@ async function publishLocked(deps: PostDeps, id: string): Promise<SocialPost | n
 }
 
 async function sendTo(deps: PostDeps, channel: Channel, post: SocialPost, media: MediaFile | null): Promise<string> {
-  if (channel === "telegram") {
-    if (!deps.telegram) throw new Error("Telegram channel not set (TELEGRAM_CHANNEL_ID)");
-    return deps.telegram.client.post(deps.telegram.channelId, { html: escapeHtml(postText(post, "telegram", deps.appUrl)), media });
-  }
-  throw new Error(`${channel}: not connected yet`);
+  const publisher = deps.publishers[channel];
+  if (!publisher) throw new Error(`${channel} not connected (${CONNECT_HINT[channel]})`);
+  return publisher.publish({ text: postText(post, channel, deps.appUrl), media, mediaUrl: media && NEEDS_MEDIA.includes(channel) ? deps.mediaUrl(post.id) : null });
 }
+
+/** What connects each network (server settings), for the error saved on a post. */
+export const CONNECT_HINT: Record<Channel, string> = {
+  telegram: "TELEGRAM_CHANNEL_ID",
+  facebook: "FACEBOOK_PAGE_ID, FACEBOOK_PAGE_TOKEN",
+  instagram: "INSTAGRAM_USER_ID, FACEBOOK_PAGE_TOKEN",
+  tiktok: "TIKTOK_CLIENT_KEY, TIKTOK_CLIENT_SECRET, TIKTOK_REFRESH_TOKEN",
+  youtube: "posting kit",
+};
 
 
 /**

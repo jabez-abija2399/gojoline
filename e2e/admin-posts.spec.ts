@@ -6,7 +6,8 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await signIn(page, { contact: `admin-e2e-posts-${info.project.name}@example.com` });
   await page.goto("/en/admin?tab=posts");
   await expect(page.getByRole("heading", { name: "Posts", level: 1 })).toBeVisible();
-  await expect(page.getByText("Telegram channel: @gojoline_e2e")).toBeVisible();
+  await expect(page.getByText("Telegram: connected (@gojoline_e2e)")).toBeVisible();
+  await expect(page.getByText(/Facebook: not connected yet/)).toBeVisible();
   if (info.project.name === "mobile") {
     // Phones, in Amharic, with the cards (planned by the desktop run or here) and their sections open.
     await page.goto("/am/admin?tab=posts");

@@ -1,0 +1,60 @@
+# Connecting Gojoline's social accounts (Admin → Posts)
+
+Admin → Posts plans one post a day, makes videos, and sends approved posts by itself to each
+network that is connected. Until a network is connected, use the post's **Posting kit** (copy the
+text, download the picture or video). Everything below goes into `/opt/gojoline/deploy/server/.env`
+on the server (never into the code); the app picks it up on the next deploy (or restart).
+
+## 1. Telegram channel (5 minutes)
+
+1. In Telegram, open your channel (for example `@gojoline`) → Administrators → **Add admin** →
+   search `@gojoline_bot` → allow **Post messages**.
+2. Set `TELEGRAM_CHANNEL_ID=@gojoline` (the channel's public name).
+3. Optional: the Monday summary to you. Send any message to `@gojoline_bot`, then ask us for your
+   chat id, and set `TELEGRAM_ADMIN_CHAT_ID=<that number>`.
+
+## 2. Facebook Page and Instagram (about 20 minutes)
+
+You need a Facebook **Page** for Gojoline, and an Instagram **professional** account linked to
+that Page (Instagram → Settings → Account type → Professional; then Page settings → Linked
+accounts → Instagram).
+
+1. Go to developers.facebook.com → **My Apps** → **Create app** → type **Business**. The app can
+   stay in Development mode: it only posts to your own Page and Instagram, and you are its admin.
+2. Open **Graph API Explorer** (Tools menu). Choose your app, then **Get User Access Token** with
+   these permissions: `pages_show_list`, `pages_read_engagement`, `pages_manage_posts`,
+   `instagram_basic`, `instagram_content_publish`, `business_management`.
+3. Make the token long-lived: Tools → **Access Token Debugger** → paste it → **Extend Access Token**.
+4. In Graph API Explorer, with the long-lived token, run `me/accounts`. Copy your Page's `id` and
+   its `access_token` (a Page token made from a long-lived user token does not expire).
+5. Run `<page-id>?fields=instagram_business_account`. Copy the `instagram_business_account.id`.
+6. Set:
+   ```
+   FACEBOOK_PAGE_ID=<page id>
+   FACEBOOK_PAGE_TOKEN=<page access token>
+   INSTAGRAM_USER_ID=<instagram business account id>
+   ```
+
+Instagram takes only posts with a picture or video (Reels for videos); text-only days go to
+Telegram and Facebook. Instagram fetches the media from a link that works for one hour.
+
+## 3. TikTok (about 15 minutes, plus TikTok's app review)
+
+1. Go to developers.tiktok.com → **Manage apps** → **Connect an app**. Add the products **Login Kit**
+   and **Content Posting API**, with the scopes `user.info.basic` and `video.upload`.
+2. Redirect URI: `https://gojoline.afridea.et/api/admin/tiktok/callback`.
+3. Set `TIKTOK_CLIENT_KEY` and `TIKTOK_CLIENT_SECRET` from the app's page.
+4. In Admin → Posts, press **Connect TikTok** and sign in with Gojoline's TikTok account once.
+
+Videos then arrive in that account's TikTok **inbox** as drafts (TikTok allows direct public
+posting only after it audits the app): open TikTok, add a sound if you like, and post.
+
+## 4. YouTube
+
+Use the posting kit for now: upload the video as a Short from the YouTube app. (Uploads from an
+API project stay private until Google audits the project.)
+
+## Check
+
+Admin → Posts lists each network as connected or not. "Post now" on a post shows each network's
+result under the post (sent, or the network's reason).

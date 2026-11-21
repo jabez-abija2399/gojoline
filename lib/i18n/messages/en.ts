@@ -955,9 +955,11 @@ export const en = {
   admin: {
     posts: {
       intro: "One post a day for Gojoline's own channels. Plan a week, check each caption, approve it, and it goes out at its time.",
-      telegramReady: "Telegram channel: {channel}. Approved posts go out there by themselves.",
-      telegramMissing: "Telegram channel not connected. Make @gojoline_bot an admin of your channel and set TELEGRAM_CHANNEL_ID (for example @gojoline) on the server.",
-      kitNote: "Facebook, Instagram, TikTok and YouTube: use each post's posting kit until they are connected.",
+      kitNote: "Approved posts go out by themselves to the connected networks. TikTok posts arrive in your TikTok inbox as drafts to finish there. YouTube, and any network not connected yet: use each post's posting kit.",
+      networks: "Networks",
+      connectTikTok: "Connect TikTok (sign in once)",
+      connected: "{channel}: connected ({label})",
+      disconnected: "{channel}: not connected yet. On the server, set {hint}.",
       plan: "Plan the next 7 days",
       planned: "{n} new posts planned. Check and approve them below.",
       plannedOne: "1 new post planned. Check and approve it below.",

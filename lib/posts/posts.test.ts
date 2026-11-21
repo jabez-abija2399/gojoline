@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MemoryTelegramClient } from "@/lib/telegram/client";
+import { TelegramPublisher } from "./publishers";
 import { MemoryStorageProvider } from "@/lib/providers/storage/memory";
 import { MemoryLock } from "@/lib/lock";
 import { cleanHashtags, PlainCaptionWriter, type CaptionWriter } from "./captions";
@@ -17,7 +18,8 @@ function deps(over: Partial<PostDeps> = {}): PostDeps & { tg: MemoryTelegramClie
   return {
     store: new MemoryPostStore(),
     captions: new PlainCaptionWriter(),
-    telegram: { client: tg, channelId: "@gojoline" },
+    publishers: { telegram: new TelegramPublisher(tg, "@gojoline") },
+    mediaUrl: (id) => `https://gojoline.afridea.et/api/public/post-media/${id}?exp=1&sig=x`,
     appUrl: "https://gojoline.afridea.et",
     context: async () => ctx,
     media: async (m) => (m ? { kind: "photo", data: Buffer.from("jpg"), name: "x.jpg" } : null),
@@ -74,6 +76,15 @@ describe("planAhead and publishing", () => {
     expect(await planAhead(d, "admin", "2026-11-23")).toBe(0);
   });
 
+  it("text-only days skip the networks that need a picture or video", async () => {
+    const fake = { channel: "instagram" as const, label: "x", publish: async () => "1" };
+    const d = deps({ publishers: { telegram: new TelegramPublisher(new MemoryTelegramClient(), "@g"), instagram: fake, tiktok: { ...fake, channel: "tiktok" as const } } });
+    await planAhead(d, "admin", "2026-11-23");
+    const posts = await d.store.between("2026-11-23", "2026-11-29");
+    expect(posts.find((p) => p.kind === "tip")?.channels).toEqual(["telegram"]);
+    expect(posts.find((p) => p.kind === "template")?.channels).toEqual(["telegram", "instagram", "tiktok"]);
+  });
+
   it("falls back to a plain caption when the AI fails", async () => {
     const failing: CaptionWriter = { write: async () => Promise.reject(new Error("down")) };
     const d = deps({ captions: failing });
@@ -100,7 +111,7 @@ describe("planAhead and publishing", () => {
   });
 
   it("saves a failure (no channel set) and runs only what is due at its Addis time", async () => {
-    const d = deps({ telegram: null });
+    const d = deps({ publishers: {} });
     await planAhead(d, "admin", "2026-11-23", 2);
     const [a, b] = await d.store.between("2026-11-23", "2026-11-24");
     await d.store.update(a.id, { status: "approved", channels: ["telegram"] });

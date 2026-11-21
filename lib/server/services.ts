@@ -49,6 +49,8 @@ import { LLMCaptionWriter, PlainCaptionWriter } from "@/lib/posts/captions";
 import { templatePicture, type PostDeps } from "@/lib/posts/service";
 import { DbPostStore, MemoryPostStore, type PostStore } from "@/lib/posts/store";
 import { FakeVideoRenderer, HttpVideoRenderer } from "@/lib/posts/video";
+import { FacebookPagePublisher, InstagramPublisher, TelegramPublisher, TikTokInboxPublisher } from "@/lib/posts/publishers";
+import { signedMediaUrl } from "@/lib/posts/media-url";
 import { PRESET_IDS, presetName } from "@/lib/template/presets";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
@@ -338,6 +340,32 @@ export function services(): Services {
   return globalForServices.gojoServices;
 }
 
+/** Where TikTok's refresh token lives (it changes each time it is used). */
+function tiktokTokens(env: Env) {
+  const db = getDb(env);
+  const settings = db ? new DbSettingsStore(db) : new MemorySettingsStore();
+  return {
+    get: async () => ((await settings.get("posts.tiktok"))?.refreshToken as string | undefined) ?? env.TIKTOK_REFRESH_TOKEN ?? null,
+    set: (token: string, by = "system") => settings.set("posts.tiktok", { refreshToken: token }, by),
+  };
+}
+
+/** The networks Admin → Posts sends to by itself: each only when its settings are there. */
+function pickPublishers(env: Env, svc: Services, channelId: string): PostDeps["publishers"] {
+  const out: PostDeps["publishers"] = {};
+  if (svc.telegram && channelId) out.telegram = new TelegramPublisher(svc.telegram.client, channelId);
+  if (isE2E(env)) return out;
+  const version = env.META_GRAPH_VERSION || "v23.0";
+  const pageToken = env.FACEBOOK_PAGE_TOKEN ?? "";
+  if (env.FACEBOOK_PAGE_ID && pageToken) out.facebook = new FacebookPagePublisher(env.FACEBOOK_PAGE_ID, pageToken, version);
+  if (env.INSTAGRAM_USER_ID && pageToken) out.instagram = new InstagramPublisher(env.INSTAGRAM_USER_ID, pageToken, version);
+  if (env.TIKTOK_CLIENT_KEY && env.TIKTOK_CLIENT_SECRET) {
+    // Connected with "Connect TikTok" (or TIKTOK_REFRESH_TOKEN): the newest refresh token is kept in the database.
+    out.tiktok = new TikTokInboxPublisher(env.TIKTOK_CLIENT_KEY, env.TIKTOK_CLIENT_SECRET, tiktokTokens(env));
+  }
+  return out;
+}
+
 /** Admin → Posts: captions by Claude Haiku when a key is set (plain ones otherwise), our Telegram channel when set. */
 function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger): PostDeps {
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
@@ -355,7 +383,9 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     // The renderer service on our server; a stand-in in e2e; none elsewhere.
     video: isE2E(env) ? new FakeVideoRenderer() : env.RENDERER_URL && env.RENDERER_SECRET ? new HttpVideoRenderer(env.RENDERER_URL, env.RENDERER_SECRET) : null,
     captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
-    telegram: svc.telegram && channelId ? { client: svc.telegram.client, channelId } : null,
+    publishers: pickPublishers(env, svc, channelId),
+    ...(env.TIKTOK_CLIENT_KEY && env.TIKTOK_CLIENT_SECRET && !isE2E(env) ? { saveTikTokToken: (token: string, adminId: string) => tiktokTokens(env).set(token, adminId) } : {}),
+    mediaUrl: (id) => (env.CRON_SECRET ? signedMediaUrl((env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""), env.CRON_SECRET, id) : null),
     appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     context: async () => ({
       templates: PRESET_IDS.map((id) => ({ id, name: presetName(id, "en"), nameAm: presetName(id, "am") })),
