@@ -6,6 +6,10 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await signIn(page, { contact: `admin-e2e-posts-${info.project.name}@example.com` });
   await page.goto("/en/admin?tab=posts");
   await expect(page.getByRole("heading", { name: "Posts", level: 1 })).toBeVisible();
+  // One view at a time: To review, Scheduled, Sent, Connections.
+  await expect(page.getByRole("navigation", { name: "Posts" }).getByRole("link")).toHaveCount(4);
+  await page.getByRole("navigation", { name: "Posts" }).getByRole("link", { name: /^Connections/ }).click();
+  await expect(page).toHaveURL(/view=connections/);
   const tgCard = page.locator("#connect-telegram");
   await expect(tgCard).toContainText("Connected");
   await expect(tgCard).toContainText("@gojoline_e2e");
@@ -13,6 +17,8 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
     // Phones, in Amharic, with the cards (planned by the desktop run or here) and their sections open.
     await page.goto("/am/admin?tab=posts");
     await page.getByRole("button", { name: "የሚቀጥሉትን 7 ቀናት ያቅዱ" }).click();
+    await expect(page.getByRole("list", { name: "የሚቀጥሉት 7 ቀናት" }).getByRole("listitem")).toHaveCount(7);
+    await page.goto("/am/admin?tab=posts&view=review");
     const first = page.locator("li[id^=post-]").first();
     await expect(first).toBeVisible();
     for (const s of await first.locator("summary").all()) await s.click();
@@ -39,13 +45,17 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   // A crafted link can't put its own words in the error box: only our own messages show.
   await page.goto("/en/admin?tab=posts&pd=failed&cn=facebook&why=Paste%20your%20token%20at%20evil.example#connect-facebook");
   await expect(page.locator("#connect-facebook").getByRole("alert")).toHaveText("That didn't work. Check the details and try again.");
-  await page.goto("/en/admin?tab=posts");
+  await page.goto("/en/admin?tab=posts&view=connections");
   // Disconnect (asks first).
   page.once("dialog", (d) => d.accept());
   await page.locator("#connect-facebook").getByRole("button", { name: /^Disconnect/ }).click();
   await expect(page.locator("#connect-facebook")).toContainText("Not connected");
 
   await page.getByRole("button", { name: "Plan the next 7 days" }).click();
+  // The week strip shows seven days, each with its post's kind and state; drafts open in To review.
+  const week = page.getByRole("list", { name: "The next 7 days" });
+  await expect(week.getByRole("listitem")).toHaveCount(7);
+  await expect(page.getByRole("navigation", { name: "Posts" }).getByRole("link", { name: /^To review/ })).toHaveAttribute("aria-current", "page");
   await expect(page.locator("main").getByRole("status").filter({ hasText: /new posts planned|already has a post/ })).toBeVisible();
   const card = page.locator("li[id^=post-]").filter({ has: page.locator("img") }).first();
   await expect(card).toBeVisible();
@@ -80,9 +90,16 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   page.once("dialog", (d) => d.accept());
   await same.getByRole("button", { name: /^Post now/ }).click();
   await expect(page.locator("main").getByRole("status").filter({ hasText: /^Done\.$/ })).toBeVisible();
-  // The sent list is folded away under "Sent".
-  await page.locator("summary").filter({ hasText: /^Sent/ }).click();
-  await expect(page.locator("details").filter({ has: page.locator("summary", { hasText: /^Sent/ }) })).toContainText("Sent to Telegram");
+  // It moves to the Sent tab, with each network's result.
+  await page.getByRole("navigation", { name: "Posts" }).getByRole("link", { name: /^Sent/ }).click();
+  await expect(page.locator(`li#${id}`)).toContainText("Sent to Telegram");
+
+  // Approve all: the rest of the drafts move to Scheduled.
+  await page.getByRole("navigation", { name: "Posts" }).getByRole("link", { name: /^To review/ }).click();
+  page.once("dialog", (d) => d.accept());
+  await page.getByRole("button", { name: /^Approve all/ }).click();
+  await expect(page).toHaveURL(/view=scheduled/);
+  await expect(page.locator("main").getByRole("status").filter({ hasText: /posts approved/ })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 });

@@ -1,8 +1,8 @@
-import { CalendarPlus, CheckCircle2, ChevronDown, Clapperboard, Download, Send, SkipForward, Sparkles, Undo2 } from "lucide-react";
+import { CalendarPlus, CheckCheck, CheckCircle2, ChevronDown, Clapperboard, Download, Send, SkipForward, Sparkles, Undo2 } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import { services } from "@/lib/server/services";
-import { makePostVideo, savePost, planWeek, postAction } from "@/app/[lang]/admin/posts-actions";
+import { approveAllDrafts, makePostVideo, savePost, planWeek, postAction } from "@/app/[lang]/admin/posts-actions";
 import { addDays, postText } from "@/lib/posts/plan";
 import { addisToday, AUTO_CHANNELS, readyChannels } from "@/lib/posts/service";
 import { CHANNELS, type Channel, type SocialPost } from "@/lib/posts/types";
@@ -26,94 +26,199 @@ const chip: Record<SocialPost["status"], string> = {
 const button = "inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-line bg-white px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9";
 const solid = "inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-ink px-3.5 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9";
 
-/** Admin → Posts: plan a week, check and approve each post, connect the networks. */
+const VIEWS = ["review", "scheduled", "sent", "connections"] as const;
+type View = (typeof VIEWS)[number];
+
+/** A day's dot in the week strip: what state its post is in. */
+const DOT: Record<SocialPost["status"] | "none", string> = {
+  draft: "bg-faint",
+  approved: "bg-ink",
+  posted: "bg-lagoon",
+  failed: "bg-coral",
+  skipped: "bg-line",
+  none: "border border-dashed border-faint bg-transparent",
+};
+
+/**
+ * Admin → Posts: a week strip (every day's post and its state at a glance), then one view at a
+ * time: To review (drafts, with Approve all), Scheduled (approved), Sent, and Connections.
+ */
 export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: Record<string, string | string[] | undefined> }) {
   const deps = services().posts;
   const today = addisToday();
-  const loaded = await Promise.all([deps.store.between(today, addDays(today, 13)), deps.store.history(20), readyChannels(deps), deps.connections?.view()]).catch((e: unknown) => (reportError("posts load failed", e), null));
+  const loaded = await Promise.all([deps.store.between(today, addDays(today, 13)), deps.store.history(30), readyChannels(deps), deps.connections?.view()]).catch((e: unknown) => (reportError("posts load failed", e), null));
   if (!loaded) return <p role="alert" className="rounded-xl bg-coral-soft p-4 text-destructive">{t.loadFailed}</p>;
-  const [upcoming, sent, ready, views] = loaded;
+  const [upcoming, history, ready, views] = loaded;
   const done = DONE.find((d) => d === sp.pd) ?? null;
   const planned = typeof sp.planned === "string" ? Number(sp.planned) : null;
+  const approvedN = typeof sp.approved === "string" ? Number(sp.approved) : null;
   const dayFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
-  const shown = upcoming.filter((p) => p.status !== "posted");
-  const drafts = shown.filter((p) => p.status === "draft").length;
-  const approved = shown.filter((p) => p.status === "approved").length;
-  // A connection message goes on its card; any other message goes at the top.
+  const shortDay = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { weekday: "short", timeZone: "UTC" });
+  const dateNum = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { day: "numeric", timeZone: "UTC" });
+  const drafts = upcoming.filter((p) => p.status === "draft");
+  const scheduled = upcoming.filter((p) => p.status === "approved" || p.status === "failed" || p.status === "skipped");
+  const sent = history.filter((p) => p.status === "posted");
   const network = typeof sp.cn === "string" ? sp.cn : null;
+  // Where to land: the view asked for; Connections after connecting; drafts first when there are any.
+  const view: View = VIEWS.find((v) => v === sp.view) ?? (network ? "connections" : drafts.length > 0 ? "review" : "scheduled");
   const message = network && done ? { network, ok: done === "ok", why: typeof sp.why === "string" ? sp.why : done === "invalid" ? "invalid" : null } : null;
+  const connected = views ? Object.values(views).filter((v) => v.connected).length : 0;
+  const counts: Record<View, string> = { review: String(drafts.length), scheduled: String(scheduled.length), sent: String(sent.length), connections: `${connected}/4` };
+  const href = (v: View) => `/${lang}/admin?tab=posts&view=${v}`;
+  const viewOf = (p: SocialPost): View => (p.status === "draft" ? "review" : p.status === "posted" ? "sent" : "scheduled");
+  const week = Array.from({ length: 7 }, (_, i) => addDays(today, i));
+  const card = (p: SocialPost) => <PostCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} canFilm={!!deps.video} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
       {done && !network && (
         <FocusOnMount>
           <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-2 font-medium ${done === "ok" ? "border border-lagoon bg-white text-lagoon" : "bg-coral-soft text-destructive"}`}>
-            {done === "ok" && planned !== null ? (planned > 1 ? format(t.planned, { n: planned }) : planned === 1 ? t.plannedOne : t.plannedNone) : done === "ok" && sp.ps === "saved" ? t.saved : t.done[done]}
+            {done === "ok" && planned !== null
+              ? planned > 1
+                ? format(t.planned, { n: planned })
+                : planned === 1
+                  ? t.plannedOne
+                  : t.plannedNone
+              : done === "ok" && approvedN !== null
+                ? format(t.approvedAll, { n: approvedN })
+                : done === "ok" && sp.ps === "saved"
+                  ? t.saved
+                  : t.done[done]}
           </p>
         </FocusOnMount>
       )}
 
-      <section aria-labelledby="posts-head" className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-5 sm:flex-row sm:items-center">
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <h2 id="posts-head" className="text-lg font-semibold">{t.headTitle}</h2>
-          <p className="text-ink-muted">{t.headBody}</p>
-          <ul className="mt-2 flex flex-wrap gap-2 text-sm">
-            <li className="rounded-full bg-sunken px-3 py-1">{format(t.stats.drafts, { n: drafts })}</li>
-            <li className="rounded-full bg-sunken px-3 py-1">{format(t.stats.approved, { n: approved })}</li>
-            <li className="rounded-full bg-sunken px-3 py-1">{format(t.stats.sent, { n: sent.filter((p) => p.status === "posted").length })}</li>
-          </ul>
+      <section aria-labelledby="posts-head" className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex min-w-0 flex-1 flex-col">
+            <h2 id="posts-head" className="text-lg font-semibold">{t.headTitle}</h2>
+            <p className="text-sm text-ink-muted">{t.headBody}</p>
+          </div>
+          <form action={planWeek}>
+            <input type="hidden" name="lang" value={lang} />
+            <PostSubmit working={t.working} className={`${solid} w-full justify-center px-4 sm:w-auto`}>
+              <CalendarPlus aria-hidden="true" className="size-4" />
+              {t.plan}
+            </PostSubmit>
+          </form>
         </div>
-        <form action={planWeek} className="shrink-0">
-          <input type="hidden" name="lang" value={lang} />
-          <PostSubmit working={t.working} className={`${solid} px-5`}>
-            <CalendarPlus aria-hidden="true" className="size-4" />
-            {t.plan}
-          </PostSubmit>
-        </form>
-      </section>
-
-      {views && <PostConnections lang={lang} t={t} views={views} appUrl={deps.appUrl} message={message} />}
-
-      <section aria-labelledby="posts-upcoming" className="flex flex-col gap-3">
-        <h2 id="posts-upcoming" className="text-base font-semibold">{t.upcoming}</h2>
-        {shown.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-line bg-white p-6 text-center text-ink-muted">{t.upcomingEmpty}</p>
-        ) : (
-          <ul className="flex flex-col gap-3">
-            {shown.map((p) => (
-              <PostCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} canFilm={!!deps.video} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <details className="group rounded-xl border border-line bg-white">
-        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-2 px-4 font-semibold [&::-webkit-details-marker]:hidden">
-          <span>
-            {t.sent} <span className="font-normal text-ink-muted">({sent.length})</span>
-          </span>
-          <ChevronDown aria-hidden="true" className="size-4 transition-transform group-open:rotate-180" />
-        </summary>
-        {sent.length === 0 ? (
-          <p className="px-4 pb-4 text-ink-muted">{t.sentEmpty}</p>
-        ) : (
-          <ul className="flex flex-col border-t border-line">
-            {sent.map((p) => (
-              <li key={p.id} className="flex flex-col gap-1 border-t border-line p-4 first:border-0">
-                <span className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium">{dayFmt.format(new Date(`${p.day}T00:00:00Z`))}</span>
-                  <span className="text-xs text-ink-muted">{t.kinds[p.kind]}</span>
-                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${chip[p.status]}`}>{t.statuses[p.status]}</span>
-                </span>
-                <Results post={p} t={t} />
-                <span lang="en" className="line-clamp-2 text-ink-muted">{p.captionEn}</span>
+        {/* The week at a glance: each day's post and its state; tap a day to open it. */}
+        <ol aria-label={t.weekLabel} className="grid grid-cols-7 gap-1.5">
+          {week.map((day) => {
+            const p = upcoming.find((x) => x.day === day && x.status !== "skipped") ?? upcoming.find((x) => x.day === day);
+            const status = p?.status ?? "none";
+            const inner = (
+              <>
+                <span className="text-[11px] font-medium text-ink-muted uppercase">{shortDay.format(new Date(`${day}T00:00:00Z`))}</span>
+                <span className="font-display text-lg font-bold tabular-nums">{dateNum.format(new Date(`${day}T00:00:00Z`))}</span>
+                <span aria-hidden="true" className={`size-2.5 rounded-full ${DOT[status]}`} />
+                <span className="w-full truncate text-center text-[11px] text-ink-muted max-sm:sr-only">{p ? t.kinds[p.kind] : "—"}</span>
+                <span className="sr-only">{p ? `, ${t.statuses[p.status]}` : `, ${t.nothingPlanned}`}</span>
+              </>
+            );
+            const cls = `flex min-h-[4.75rem] flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 ${day === today ? "bg-paper ring-1 ring-ink" : "bg-paper"}`;
+            return (
+              <li key={day}>
+                {p ? (
+                  <a href={`${href(viewOf(p))}#post-${p.id}`} className={`${cls} hover:ring-1 hover:ring-faint`}>
+                    {inner}
+                  </a>
+                ) : (
+                  <span className={cls}>
+                    {inner}
+                  </span>
+                )}
               </li>
-            ))}
-          </ul>
-        )}
-      </details>
+            );
+          })}
+        </ol>
+        <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-muted" aria-label={t.legendLabel}>
+          {(["draft", "approved", "posted", "failed"] as const).map((k) => (
+            <li key={k} className="flex items-center gap-1.5">
+              <span aria-hidden="true" className={`size-2 rounded-full ${DOT[k]}`} />
+              {t.statuses[k]}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <nav aria-label={t.viewsLabel} className="chips-scroll -mx-4 flex gap-1 overflow-x-auto border-b border-line px-4 sm:mx-0 sm:px-0">
+        {VIEWS.map((v) => (
+          <a
+            key={v}
+            href={href(v)}
+            aria-current={v === view ? "page" : undefined}
+            className="relative flex min-h-12 shrink-0 items-center gap-2 px-3 text-sm font-medium whitespace-nowrap text-ink-muted hover:text-ink aria-[current=page]:font-semibold aria-[current=page]:text-ink aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-2 aria-[current=page]:after:bottom-0 aria-[current=page]:after:h-0.5 aria-[current=page]:after:rounded-full aria-[current=page]:after:bg-ink"
+          >
+            {t.views[v]}
+            <span className={`rounded-full px-2 py-0.5 text-xs tabular-nums ${v === "review" && drafts.length > 0 ? "bg-coral-soft text-ink" : "bg-sunken"}`}>{counts[v]}</span>
+          </a>
+        ))}
+      </nav>
+
+      {view === "review" && (
+        <section aria-label={t.views.review} className="flex flex-col gap-3">
+          {drafts.length === 0 ? (
+            <Empty text={t.emptyReview} />
+          ) : (
+            <>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-sm text-ink-muted">{t.reviewHint}</p>
+                <form action={approveAllDrafts}>
+                  <input type="hidden" name="lang" value={lang} />
+                  <PostSubmit working={t.working} confirm={format(t.approveAllConfirm, { n: drafts.length })} className={button}>
+                    <CheckCheck aria-hidden="true" className="size-4" />
+                    {format(t.approveAll, { n: drafts.length })}
+                  </PostSubmit>
+                </form>
+              </div>
+              <ul className="flex flex-col gap-3">{drafts.map(card)}</ul>
+            </>
+          )}
+        </section>
+      )}
+
+      {view === "scheduled" && (
+        <section aria-label={t.views.scheduled} className="flex flex-col gap-3">
+          {scheduled.length === 0 ? <Empty text={t.emptyScheduled} /> : <ul className="flex flex-col gap-3">{scheduled.map(card)}</ul>}
+        </section>
+      )}
+
+      {view === "sent" && (
+        <section aria-label={t.views.sent} className="flex flex-col gap-3">
+          {sent.length === 0 ? (
+            <Empty text={t.sentEmpty} />
+          ) : (
+            <ul className="flex flex-col rounded-2xl border border-line bg-white">
+              {sent.map((p) => (
+                <li key={p.id} id={`post-${p.id}`} className="flex scroll-mt-28 gap-3 border-t border-line p-4 first:border-0">
+                  {p.media && p.media.type !== "video" && (
+                    // eslint-disable-next-line @next/next/no-img-element -- an admin-only picture from our own route
+                    <img src={`/api/admin/posts/${p.id}/media`} alt="" loading="lazy" className="aspect-[4/5] w-14 shrink-0 rounded-lg border border-line object-cover object-top" />
+                  )}
+                  <span className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="font-medium">{dayFmt.format(new Date(`${p.day}T00:00:00Z`))}</span>
+                      <span className="text-xs text-ink-muted">{t.kinds[p.kind]}</span>
+                    </span>
+                    <span lang="en" className="line-clamp-2 text-sm text-ink-muted">{p.captionEn}</span>
+                    <Results post={p} t={t} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      {view === "connections" && views && <PostConnections lang={lang} t={t} views={views} appUrl={deps.appUrl} message={message} />}
     </div>
   );
+}
+
+function Empty({ text }: { text: string }) {
+  return <p className="rounded-2xl border border-dashed border-line bg-white p-8 text-center text-ink-muted">{text}</p>;
 }
 
 function Results({ post, t }: { post: SocialPost; t: T }) {

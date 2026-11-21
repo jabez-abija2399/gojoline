@@ -187,3 +187,16 @@ function connectProblem(network: string, message: string): ConnectProblem {
   if (/does not exist|unsupported get request|cannot be loaded|not found/i.test(message)) return "not_found";
   return "other";
 }
+
+/** "Approve all": every draft in the next two weeks, after the admin has read them in the To review tab. */
+export async function approveAllDrafts(form: FormData) {
+  await admin();
+  const l = lang(form);
+  const store = services().posts.store;
+  const today = addisNow(Date.now()).day;
+  const end = new Date(Date.parse(`${today}T00:00:00Z`) + 13 * 86_400_000).toISOString().slice(0, 10);
+  const drafts = (await store.between(today, end)).filter((p) => p.status === "draft");
+  for (const p of drafts) await store.update(p.id, { status: "approved" });
+  revalidatePath(`/${l}/admin`);
+  redirect(`/${l}/admin?tab=posts&view=scheduled&pd=ok&approved=${drafts.length}`);
+}
