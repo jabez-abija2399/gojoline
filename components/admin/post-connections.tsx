@@ -62,7 +62,7 @@ function NetworkCard({ network: n, lang, t, view, appUrl, facebookReady, message
 
       {message && (
         <p role={message.ok ? "status" : "alert"} className={`rounded-lg px-3 py-2 text-sm ${message.ok ? "bg-paper text-ink" : "bg-coral-soft text-destructive [overflow-wrap:anywhere]"}`}>
-          {message.ok ? c.saved : message.why === "invalid" ? t.done.invalid : message.why === "facebook_first" ? c.facebookFirst : message.why === "bot" ? c.noBot : message.why ? format(c.failedWhy, { why: message.why }) : c.failed}
+          {message.ok ? c.saved : message.why === "invalid" ? t.done.invalid : (c.errors as Record<string, string>)[message.why ?? ""] ?? c.failed}
         </p>
       )}
 

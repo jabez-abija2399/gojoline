@@ -154,8 +154,8 @@ export async function saveConnection(form: FormData) {
     return back(l, "failed", `&cn=${v.network}${anchor}`);
   }
   revalidatePath(`/${l}/admin`);
-  // The network's own reason (never a token) goes back to the page for the admin to read.
-  if (problem) return back(l, "failed", `&cn=${v.network}&why=${encodeURIComponent(String(problem).slice(0, 160))}${anchor}`);
+  // Only a fixed reason code goes back in the address (the page words it): never the network's text.
+  if (problem) return back(l, "failed", `&cn=${v.network}&why=${connectProblem(v.network, String(problem))}${anchor}`);
   back(l, "ok", `&cn=${v.network}&connected=1${anchor}`);
 }
 
@@ -170,4 +170,20 @@ export async function disconnectNetwork(form: FormData) {
   await services().posts.connections?.remove(parsed.data.network, me.id);
   revalidatePath(`/${l}/admin`);
   back(l, "ok", `&cn=${parsed.data.network}#connect-${parsed.data.network}`);
+}
+
+/** The reasons a connection can fail, as codes the page words in its own language. */
+export type ConnectProblem = "facebook_first" | "bot" | "chat_not_found" | "bot_not_admin" | "token" | "permission" | "not_found" | "other";
+
+function connectProblem(network: string, message: string): ConnectProblem {
+  if (message === "facebook_first" || message === "bot") return message;
+  if (network === "telegram") {
+    if (/chat not found/i.test(message)) return "chat_not_found";
+    if (/not enough rights|administrator|not a member|forbidden|kicked/i.test(message)) return "bot_not_admin";
+    return "other";
+  }
+  if (/oauth|access token|session|expired|invalid token/i.test(message)) return "token";
+  if (/permission|does not have|requires|not authorized/i.test(message)) return "permission";
+  if (/does not exist|unsupported get request|cannot be loaded|not found/i.test(message)) return "not_found";
+  return "other";
 }

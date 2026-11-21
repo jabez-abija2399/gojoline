@@ -365,7 +365,7 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
   const db = getDb(env);
   // Admin-saved connections (tokens sealed with the server secret); the server's settings as a fallback.
-  const connections = new ConnectionStore(db ? new DbSettingsStore(db) : new MemorySettingsStore(), env.BETTER_AUTH_SECRET || (isE2E(env) || env.NODE_ENV !== "production" ? "dev-only-secret-not-for-production" : ""), isE2E(env) ? { TELEGRAM_CHANNEL_ID: "@gojoline_e2e" } : env);
+  const connections = new ConnectionStore(db ? new DbSettingsStore(db) : new MemorySettingsStore(), env.BETTER_AUTH_SECRET || (env.NODE_ENV !== "production" || (isE2E(env) && !env.APP_DOMAIN) ? "dev-only-secret-not-for-production-0123456789" : ""), isE2E(env) ? { TELEGRAM_CHANNEL_ID: "@gojoline_e2e" } : env);
   // Rendered post videos (Step 3) live in R2 under posts/; memory without R2 (dev, e2e).
   const files: StorageProvider =
     !isE2E(env) && env.R2_ACCOUNT_ID && env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY

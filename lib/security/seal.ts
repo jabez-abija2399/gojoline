@@ -5,7 +5,7 @@ import { createCipheriv, createDecipheriv, hkdfSync, randomBytes } from "node:cr
  * key derived from the server's secret. Stored as "v1.<iv>.<tag>.<data>" (base64url).
  */
 function key(secret: string): Buffer {
-  if (secret.length < 16) throw new Error("server secret missing");
+  if (secret.length < 32) throw new Error("server secret missing or too short");
   return Buffer.from(hkdfSync("sha256", secret, "gojoline", "sealed-settings-v1", 32));
 }
 

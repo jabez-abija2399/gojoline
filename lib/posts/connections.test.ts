@@ -3,7 +3,7 @@ import { MemorySettingsStore } from "@/lib/billing/settings";
 import { seal, unseal } from "@/lib/security/seal";
 import { ConnectionStore } from "./connections";
 
-const SECRET = "test-server-secret-0123456789";
+const SECRET = "test-server-secret-0123456789abcdefghij";
 
 describe("seal", () => {
   it("opens only with the same secret, and never stores the plain text", () => {
@@ -11,7 +11,7 @@ describe("seal", () => {
     expect(s.startsWith("v1.")).toBe(true);
     expect(s).not.toContain("EAAB");
     expect(unseal(s, SECRET)).toBe("EAAB-page-token");
-    expect(unseal(s, "another-secret-0123456789")).toBeNull();
+    expect(unseal(s, "another-secret-0123456789abcdefghijklmn")).toBeNull();
     expect(unseal(s.replace(/.$/, s.endsWith("A") ? "B" : "A"), SECRET)).toBeNull();
     expect(unseal("plain", SECRET)).toBeNull();
   });

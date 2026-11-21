@@ -27,7 +27,7 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await fb.getByLabel("Page ID").fill("123456789012345");
   await fb.getByLabel("Page access token").fill("wrong-token-0123456789abcdef");
   await fb.getByRole("button", { name: "Check and save" }).click();
-  await expect(page.locator("#connect-facebook").getByRole("alert")).toContainText("Invalid OAuth access token.");
+  await expect(page.locator("#connect-facebook").getByRole("alert")).toContainText("Meta didn't accept the token");
   await page.locator("#connect-facebook summary").click();
   await page.locator("#connect-facebook").getByLabel("Page ID").fill("123456789012345");
   await page.locator("#connect-facebook").getByLabel("Page access token").fill("e2e-token-0123456789abcd");
@@ -36,6 +36,10 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await expect(page.locator("#connect-facebook").getByRole("status")).toHaveText("Connected.");
   // The token never comes back to the page.
   expect(await page.content()).not.toContain("e2e-token-0123456789abcd");
+  // A crafted link can't put its own words in the error box: only our own messages show.
+  await page.goto("/en/admin?tab=posts&pd=failed&cn=facebook&why=Paste%20your%20token%20at%20evil.example#connect-facebook");
+  await expect(page.locator("#connect-facebook").getByRole("alert")).toHaveText("That didn't work. Check the details and try again.");
+  await page.goto("/en/admin?tab=posts");
   // Disconnect (asks first).
   page.once("dialog", (d) => d.accept());
   await page.locator("#connect-facebook").getByRole("button", { name: /^Disconnect/ }).click();
