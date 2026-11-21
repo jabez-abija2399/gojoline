@@ -1,6 +1,6 @@
 import { and, eq, inArray } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
-import { projectCards } from "@/lib/db/schema";
+import { projectCards, projects } from "@/lib/db/schema";
 import { makeThumb } from "@/lib/growth/showcase";
 import { libraryPhoto } from "@/lib/template/files";
 import type { AssetStore } from "@/lib/cloud/assets";
@@ -134,7 +134,9 @@ export class DbCardStore implements CardStore {
       thumbKey: c.thumbKey,
       updatedAt: new Date(),
     };
-    // The project must be the owner's: the insert names both, and the conflict update checks it.
+    // The project must be the owner's: checked before the first insert, and again by the conflict update.
+    const [mine] = await this.db.select({ id: projects.id }).from(projects).where(and(eq(projects.id, c.projectId), eq(projects.ownerId, ownerId))).limit(1);
+    if (!mine) return;
     await this.db
       .insert(projectCards)
       .values({ projectId: c.projectId, ...values })

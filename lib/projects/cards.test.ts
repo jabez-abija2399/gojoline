@@ -82,6 +82,11 @@ describe("DbCardStore", () => {
     expect((await cards.forOwner("ann", [p.id])).get(p.id)).toMatchObject({ versionNumber: 1, heading: "Hello", thumbKey: "k1" });
     expect(Buffer.from((await cards.thumb("ann", p.id))!.data).toString()).toBe("one");
     expect(await cards.thumb("bob", p.id)).toBeNull();
+    // Nor can another owner claim a project that has no card yet.
+    const q = await store.createProject("ann", { name: "Second", locale: "en" });
+    await cards.save("bob", { projectId: q.id, versionNumber: 1, heading: "Mine now", colors: null, thumbKey: "k3" }, Buffer.from("three"));
+    await cards.save("ann", { projectId: q.id, versionNumber: 1, heading: "Ann's", colors: null, thumbKey: "k4" }, Buffer.from("four"));
+    expect((await cards.forOwner("ann", [q.id])).get(q.id)?.heading).toBe("Ann's");
     await cards.save("ann", { projectId: p.id, versionNumber: 2, heading: "New", colors: { primary: "#111111", background: "#ffffff", text: "#000000" }, thumbKey: null }, null);
     expect((await cards.forOwner("ann", [p.id])).get(p.id)).toMatchObject({ versionNumber: 2, colors: { primary: "#111111" }, thumbKey: null });
   }, 30_000);
