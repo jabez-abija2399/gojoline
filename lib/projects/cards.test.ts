@@ -30,8 +30,11 @@ describe("ownerCards", () => {
     const p = await store.createProject("ann", { name: "Selam", locale: "en" });
     await store.addVersion("ann", { projectId: p.id, summary: "v1", files: { "src/site.json": site({ image: { src: "/stock/art-card-abstract-blue-violet.webp" } }) } });
     const [proj] = await store.listProjects("ann");
-    const got = await ownerCards(deps, "ann", [proj]);
-    const card = got.get(p.id)!;
+    // A site from before cards existed: none yet, made after the page is sent.
+    const first = await ownerCards(deps, "ann", [proj]);
+    expect(first.cards.size).toBe(0);
+    await first.fill();
+    const card = (await ownerCards(deps, "ann", [proj])).cards.get(p.id)!;
     expect(card.versionNumber).toBe(1);
     expect(card.thumbKey).toMatch(/^[0-9a-f]{32}$/);
     expect((await cards.thumb("ann", p.id))?.data.length).toBeGreaterThan(100);
@@ -39,13 +42,23 @@ describe("ownerCards", () => {
     expect((await cards.forOwner("bob", [p.id])).size).toBe(0);
     expect(await cards.thumb("bob", p.id)).toBeNull();
 
-    // A new version without a photo: the card follows once the project has changed.
+    // A new version without a photo: the card follows the newest version number.
     await store.addVersion("ann", { projectId: p.id, summary: "v2", files: { "src/site.json": site() } });
-    const later = { ...proj, updatedAt: new Date(Date.now() + 1000) };
-    const again = (await ownerCards(deps, "ann", [later])).get(p.id)!;
+    await (await ownerCards(deps, "ann", [proj])).fill();
+    const again = (await ownerCards(deps, "ann", [proj])).cards.get(p.id)!;
     expect(again.versionNumber).toBe(2);
     expect(again.thumbKey).toBeNull();
     expect(again.colors?.primary).toBe("#8A4B24");
+  });
+
+  it("an unreadable site still gets a card (no retry on every view) until its next version", async () => {
+    const store = new MemoryProjectStore();
+    const deps = { store, cards: new MemoryCardStore() };
+    const p = await store.createProject("ann", { name: "Broken", locale: "en" });
+    await store.addVersion("ann", { projectId: p.id, summary: "v1", files: { "src/site.json": "{oops" } });
+    await (await ownerCards(deps, "ann", [p])).fill();
+    const again = await ownerCards(deps, "ann", [p]);
+    expect(again.cards.get(p.id)).toMatchObject({ versionNumber: 1, thumbKey: null, colors: null });
   });
 
   it("makes at most a few cards per view and skips projects without a version", async () => {
@@ -59,8 +72,10 @@ describe("ownerCards", () => {
     }
     const empty = await store.createProject("ann", { name: "Empty", locale: "en" });
     const list = await store.listProjects("ann");
-    expect((await ownerCards(deps, "ann", list)).size).toBe(CARDS_PER_VIEW);
-    const all = await ownerCards(deps, "ann", list);
+    await (await ownerCards(deps, "ann", list)).fill();
+    expect((await ownerCards(deps, "ann", list)).cards.size).toBe(CARDS_PER_VIEW);
+    await (await ownerCards(deps, "ann", list)).fill();
+    const all = (await ownerCards(deps, "ann", list)).cards;
     expect(all.size).toBe(made.length);
     expect(all.has(empty.id)).toBe(false);
   });

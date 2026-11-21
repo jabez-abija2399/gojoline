@@ -5,6 +5,7 @@ import { makeThumb } from "@/lib/growth/showcase";
 import { libraryPhoto } from "@/lib/template/files";
 import type { AssetStore } from "@/lib/cloud/assets";
 import type { ProjectStore } from "./types";
+import { reportError } from "@/lib/observability/report";
 
 /**
  * The picture on a site's card in "Your sites" (2026-11-21): its home page photo, colours and
@@ -63,28 +64,39 @@ async function photoFile(assets: AssetStore | undefined, ownerId: string, projec
 }
 
 /** Makes (or remakes) a project's card from its newest version. */
-export async function refreshCard(deps: { store: ProjectStore; assets?: AssetStore; cards: CardStore }, ownerId: string, project: { id: string; locale: "en" | "am" }) {
+export async function refreshCard(deps: CardDeps, ownerId: string, project: { id: string; locale: "en" | "am" }) {
   const version = await deps.store.latestVersion(ownerId, project.id);
   if (!version) return;
   const src = cardSource(version.files["src/site.json"], project.locale);
-  if (!src) return;
-  const thumb = await makeThumb(await photoFile(deps.assets, ownerId, project.id, src.hero), src.hero);
-  await deps.cards.save(ownerId, { projectId: project.id, versionNumber: version.number, heading: src.heading, colors: src.colors, thumbKey: thumb?.key ?? null }, thumb?.data ?? null);
+  const thumb = src ? await makeThumb(await photoFile(deps.assets, ownerId, project.id, src.hero), src.hero).catch(() => null) : null;
+  // Saved even when nothing could be read: the card then shows the sketch, and isn't retried until a new version.
+  await deps.cards.save(ownerId, { projectId: project.id, versionNumber: version.number, heading: src?.heading ?? null, colors: src?.colors ?? null, thumbKey: thumb?.key ?? null }, thumb?.data ?? null);
 }
 
-/** How many cards one page view may (re)make: the rest follow on the next visit. */
+/** Remakes a card after a new version is saved; never fails the caller. */
+export function refreshCardSoon(deps: { store: ProjectStore; assets?: AssetStore; cards?: CardStore }, ownerId: string, project: { id: string; locale: "en" | "am" }) {
+  const cards = deps.cards;
+  if (!cards) return;
+  void refreshCard({ ...deps, cards }, ownerId, project).catch((e: unknown) => reportError("site card failed", e));
+}
+
+type CardDeps = { store: ProjectStore; assets?: AssetStore; cards: CardStore };
+
+/** How many older cards one page view fills in afterwards (new versions make their own). */
 export const CARDS_PER_VIEW = 6;
 
-/** The owner's cards, remaking those older than their project (or missing), a few per view. */
-export async function ownerCards(deps: { store: ProjectStore; assets?: AssetStore; cards: CardStore }, ownerId: string, projects: { id: string; locale: "en" | "am"; updatedAt: Date }[]) {
-  const have = await deps.cards.forOwner(ownerId, projects.map((p) => p.id));
+/**
+ * The owner's cards as they are now, and the projects whose card is missing or older than their
+ * newest version (sites from before cards existed): the page fills those in after it has been sent.
+ */
+export async function ownerCards(deps: CardDeps, ownerId: string, projects: { id: string; locale: "en" | "am" }[]) {
+  const ids = projects.map((p) => p.id);
+  const [have, latest] = await Promise.all([deps.cards.forOwner(ownerId, ids), deps.store.latestNumbers(ownerId)]);
   const stale = projects.filter((p) => {
-    const c = have.get(p.id);
-    return !c || c.updatedAt < p.updatedAt;
+    const n = latest.get(p.id);
+    return n !== undefined && (have.get(p.id)?.versionNumber ?? 0) < n;
   });
-  if (stale.length === 0) return have;
-  await Promise.all(stale.slice(0, CARDS_PER_VIEW).map((p) => refreshCard(deps, ownerId, p).catch(() => undefined)));
-  return deps.cards.forOwner(ownerId, projects.map((p) => p.id));
+  return { cards: have, fill: () => Promise.all(stale.slice(0, CARDS_PER_VIEW).map((p) => refreshCard(deps, ownerId, p).catch(() => undefined))) };
 }
 
 const cols = {

@@ -125,6 +125,15 @@ export class DbProjectStore implements ProjectStore {
       .limit(1);
     return (row as Version | undefined) ?? null;
   }
+
+  async latestNumbers(ownerId: string) {
+    const rows = await this.db
+      .select({ projectId: projectVersions.projectId, n: sql<number>`max(${projectVersions.number})`.mapWith(Number) })
+      .from(projectVersions)
+      .where(eq(projectVersions.ownerId, ownerId))
+      .groupBy(projectVersions.projectId);
+    return new Map(rows.map((r) => [r.projectId, r.n]));
+  }
 }
 
 function toMessage(row: typeof messages.$inferSelect): ChatMessage {

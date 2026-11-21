@@ -1,5 +1,6 @@
 "use server";
 
+import { refreshCardSoon } from "@/lib/projects/cards";
 import { redirect } from "next/navigation";
 import { ownerId } from "@/lib/builder/access";
 import { isLocale } from "@/lib/i18n/config";
@@ -30,7 +31,11 @@ export async function createProject(form: FormData) {
     // Recorded so the templates page can say how many businesses use each one.
     templateId: isPresetId(preset) ? preset : null,
   });
-  if (isPresetId(preset)) await builder.store.addVersion(owner, { projectId: project.id, summary: `template:${preset}`, files: presetVersionFiles(preset) });
+  if (isPresetId(preset)) {
+    await builder.store.addVersion(owner, { projectId: project.id, summary: `template:${preset}`, files: presetVersionFiles(preset) });
+    // Its card in "Your sites" (from the template's photo), made while the owner looks at the site.
+    refreshCardSoon(builder, owner, project);
+  }
   // From a template: the editor plays the build of its sections once, then shows the site.
   redirect(`/${lang}/build/${project.id}${isPresetId(preset) ? "?setup=1" : ""}`);
 }

@@ -7,7 +7,7 @@ import { agentSystemPrompt, userTurn } from "@/lib/agent/prompt";
 import type { LLMProvider, MessageParam } from "@/lib/providers/llm/types";
 import type { UsageLogger } from "@/lib/providers/llm/usage-log";
 import type { Lock } from "@/lib/lock";
-import type { CardStore } from "@/lib/projects/cards";
+import { refreshCardSoon, type CardStore } from "@/lib/projects/cards";
 import type { AssetStore } from "@/lib/cloud/assets";
 import { LazySiteSandbox } from "@/lib/providers/sandbox/lazy";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
@@ -252,6 +252,7 @@ export async function sendOwnerMessage(
         files: await sandbox.snapshotFiles(),
       });
       versionNumber = version.number;
+      refreshCardSoon(deps, input.ownerId, project);
       if (!project.name) {
         const name = siteName(version.files["src/site.json"] ?? "", project.locale);
         // A template's example business ("Bole Buna House") is not the owner's name: wait for theirs.
@@ -345,11 +346,14 @@ export async function restoreVersion(deps: BuilderDeps, input: { ownerId: string
     const sandbox = await deps.sandboxes.open(input.projectId, version.files);
     const build = await sandbox.runBuild();
     if (!build.ok) return null;
-    return await deps.store.addVersion(input.ownerId, {
+    const restored = await deps.store.addVersion(input.ownerId, {
       projectId: input.projectId,
       summary: `restore:${version.number}`,
       files: version.files,
     });
+    const project = await deps.store.getProject(input.ownerId, input.projectId);
+    if (project) refreshCardSoon(deps, input.ownerId, project);
+    return restored;
   } finally {
     await deps.lock.release(`project:${input.projectId}`, token);
   }

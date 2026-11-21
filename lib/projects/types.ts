@@ -52,4 +52,6 @@ export interface ProjectStore {
   versionStats(ownerId: string, projectId: string): Promise<{ count: number; lastAt: Date | null }>;
   getVersion(ownerId: string, projectId: string, number: number): Promise<Version | null>;
   latestVersion(ownerId: string, projectId: string): Promise<Version | null>;
+  /** Each of the owner's projects with a version: its newest version number (one query). */
+  latestNumbers(ownerId: string): Promise<Map<string, number>>;
 }

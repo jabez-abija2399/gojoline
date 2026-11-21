@@ -122,6 +122,8 @@ export function SitesGrid({
                     {/* eslint-disable-next-line @next/next/no-img-element -- a private, owner-only picture from our own route */}
                     <img
                       src={s.picture.src}
+                      srcSet={`${s.picture.src}&w=192 192w, ${s.picture.src} 640w`}
+                      sizes="(min-width: 640px) 360px, 96px"
                       alt=""
                       loading="lazy"
                       decoding="async"
