@@ -48,6 +48,7 @@ import type { StorageProvider } from "@/lib/providers/storage/types";
 import { LLMCaptionWriter, PlainCaptionWriter } from "@/lib/posts/captions";
 import { templatePicture, type PostDeps } from "@/lib/posts/service";
 import { DbPostStore, MemoryPostStore, type PostStore } from "@/lib/posts/store";
+import { FakeVideoRenderer, HttpVideoRenderer } from "@/lib/posts/video";
 import { PRESET_IDS, presetName } from "@/lib/template/presets";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
@@ -351,11 +352,13 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     files,
     // Shared with the builder (Redis on the server): one post, and one plan, at a time.
     lock: svc.builder?.lock ?? new MemoryLock(),
+    // The renderer service on our server; a stand-in in e2e; none elsewhere.
+    video: isE2E(env) ? new FakeVideoRenderer() : env.RENDERER_URL && env.RENDERER_SECRET ? new HttpVideoRenderer(env.RENDERER_URL, env.RENDERER_SECRET) : null,
     captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
     telegram: svc.telegram && channelId ? { client: svc.telegram.client, channelId } : null,
     appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     context: async () => ({
-      templates: PRESET_IDS.map((id) => ({ id, name: presetName(id, "en") })),
+      templates: PRESET_IDS.map((id) => ({ id, name: presetName(id, "en"), nameAm: presetName(id, "am") })),
       sites: ((await svc.growth.showcase?.list(60)) ?? []).map((e) => ({ siteId: e.siteId, name: e.name, url: e.url })),
     }),
     media: async (m) => {

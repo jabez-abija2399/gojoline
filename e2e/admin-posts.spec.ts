@@ -39,6 +39,13 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await expect(same.getByLabel("Text for TikTok")).toHaveValue(/utm_source=tiktok/);
   await expect(same.getByRole("link", { name: "Download the picture or video" })).toHaveAttribute("href", /\/api\/admin\/posts\/.+\/media\?download=1/);
 
+  // A video of the template (the e2e stand-in renderer), kept as the post's media.
+  await same.getByLabel("Language of the video").selectOption("am");
+  await same.getByRole("button", { name: /^Make video/ }).click();
+  await expect(page.locator("main").getByRole("status").filter({ hasText: /^Done\.$/ })).toBeVisible();
+  await expect(page.locator(`li#${id} video`)).toBeVisible();
+  await expect(page.locator(`li#${id}`).getByRole("button", { name: /^Make the video again/ })).toBeVisible();
+
   // Post now: approved and sent to the channel.
   // Posting to the public channel asks first.
   page.once("dialog", (d) => d.accept());

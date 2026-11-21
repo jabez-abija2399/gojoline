@@ -41,7 +41,8 @@ export interface SocialPost {
   media: PostMedia;
   /** The networks this post is sent to automatically (the others use the kit). */
   channels: Channel[];
-  results: Partial<Record<Channel, ChannelResult>>;
+  /** Per network, plus "video" when making the post's video failed (the picture is used then). */
+  results: Partial<Record<Channel | "video", ChannelResult>>;
   createdAt: Date;
   updatedAt: Date;
   postedAt: Date | null;

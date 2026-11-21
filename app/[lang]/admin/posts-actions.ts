@@ -7,7 +7,7 @@ import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { reportError } from "@/lib/observability/report";
 import { services } from "@/lib/server/services";
-import { addisNow, planAhead, publishPost, rewriteCaption } from "@/lib/posts/service";
+import { addisNow, makeVideo, planAhead, publishPost, rewriteCaption } from "@/lib/posts/service";
 import { cleanHashtags } from "@/lib/posts/captions";
 import { CHANNELS } from "@/lib/posts/types";
 
@@ -89,4 +89,23 @@ export async function postAction(form: FormData) {
   }
   revalidatePath(`/${l}/admin`);
   back(l, done, `#post-${id}`);
+}
+
+const videoInput = z.object({ id: z.uuid(), style: z.enum(["tour", "spotlight"]), videoLang: z.enum(["en", "am"]) });
+
+/** Films the post's template or site into its video (about a minute). */
+export async function makePostVideo(form: FormData) {
+  await admin();
+  const l = lang(form);
+  const parsed = videoInput.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return back(l, "invalid");
+  let done: Done = "ok";
+  try {
+    done = (await makeVideo(services().posts, parsed.data.id, parsed.data.style, parsed.data.videoLang)) ? "ok" : "not_found";
+  } catch (e) {
+    reportError("post video failed", e);
+    done = "failed";
+  }
+  revalidatePath(`/${l}/admin`);
+  back(l, done, `#post-${parsed.data.id}`);
 }

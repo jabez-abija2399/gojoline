@@ -59,6 +59,14 @@ test("the Made with Gojoline badge links home on a Free site and is gone on a pa
   await page.getByRole("button", { name: "Publish", exact: true }).click();
   await page.getByRole("button", { name: "Publish my latest changes" }).click();
   await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeVisible();
+  // The showcase-and-posts choice is offered here, off by default, and saves.
+  const share = page.getByRole("dialog").getByRole("checkbox", { name: /Show my site in the Gojoline showcase and posts/ });
+  await expect(share).not.toBeChecked();
+  await share.check();
+  await expect(page.getByRole("dialog").getByText("Saved", { exact: false })).toBeVisible();
+  expect((await (await page.request.get(`/api/projects/${projectId}/showcase`)).json()).on).toBe(true);
+  await share.uncheck();
+  await expect.poll(async () => (await (await page.request.get(`/api/projects/${projectId}/showcase`)).json()).on).toBe(false);
   const paid = await (await page.request.get(`/api/test/published?projectId=${projectId}`)).text();
   expect(paid).not.toContain("data-gojoline-badge");
 });

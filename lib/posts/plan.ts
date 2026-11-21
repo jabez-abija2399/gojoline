@@ -3,7 +3,7 @@ import { DEFAULT_TIME, type Channel, type NewPost, type PostKind, type SocialPos
 
 /** What a post can be about: our templates and the live sites whose owners opted in. */
 export interface PlanContext {
-  templates: { id: string; name: string }[];
+  templates: { id: string; name: string; nameAm?: string }[];
   sites: { siteId: string; name: string; url: string }[];
 }
 

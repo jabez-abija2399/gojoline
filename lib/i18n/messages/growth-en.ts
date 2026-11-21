@@ -56,8 +56,8 @@ export const growthEn = {
   },
   showcase: {
     settingTitle: "Gojoline showcase",
-    settingLabel: "Show my site in the Gojoline showcase",
-    settingHint: "Your site's name, home page photo, kind of business and web address appear on Gojoline's public showcase page, so other businesses can see what you made. You can switch it off at any time.",
+    settingLabel: "Show my site in the Gojoline showcase and posts",
+    settingHint: "Your site's name, home page photo, kind of business and web address appear on Gojoline's public showcase page, and Gojoline may share your site (a short video of it scrolling) on its Telegram, Facebook, Instagram, TikTok and YouTube. You can switch it off at any time; nothing new is posted after that.",
     settingNeedsLive: "Publish your site first to show it in the showcase.",
     saved: "Saved.",
     savedOff: "Saved. Your site is no longer in the showcase.",

@@ -2,7 +2,7 @@ import { CalendarPlus, CheckCircle2, Download, Send, SkipForward, Sparkles, Undo
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import { services } from "@/lib/server/services";
-import { savePost, planWeek, postAction } from "@/app/[lang]/admin/posts-actions";
+import { makePostVideo, savePost, planWeek, postAction } from "@/app/[lang]/admin/posts-actions";
 import { addDays, postText } from "@/lib/posts/plan";
 import { addisToday, AUTO_CHANNELS, readyChannels } from "@/lib/posts/service";
 import { CHANNELS, type Channel, type SocialPost } from "@/lib/posts/types";
@@ -10,7 +10,7 @@ import { CopyButton } from "@/components/billing/copy-button";
 import { FocusOnMount } from "./focus-on-mount";
 import { PostSubmit } from "./post-submit";
 import { reportError } from "@/lib/observability/report";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Clapperboard } from "lucide-react";
 
 type T = Messages["admin"]["posts"];
 const DONE = ["ok", "invalid", "failed", "not_found"] as const;
@@ -71,7 +71,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
         ) : (
           <ul className="flex flex-col gap-3">
             {shown.map((p) => (
-              <PostCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />
+              <PostCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} canFilm={!!deps.video} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />
             ))}
           </ul>
         )}
@@ -102,7 +102,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
 }
 
 function Results({ post, t }: { post: SocialPost; t: T }) {
-  const entries = Object.entries(post.results) as [Channel, NonNullable<SocialPost["results"][Channel]>][];
+  const entries = Object.entries(post.results) as [Channel | "video", NonNullable<SocialPost["results"][Channel]>][];
   if (entries.length === 0) return null;
   return (
     <ul className="flex flex-col gap-0.5 text-xs">
@@ -115,7 +115,7 @@ function Results({ post, t }: { post: SocialPost; t: T }) {
   );
 }
 
-function PostCard({ post: p, lang, t, ready, appUrl, title }: { post: SocialPost; lang: "en" | "am"; t: T; ready: Channel[]; appUrl: string; title: string }) {
+function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: SocialPost; lang: "en" | "am"; t: T; ready: Channel[]; appUrl: string; title: string; canFilm: boolean }) {
   const hidden = (
     <>
       <input type="hidden" name="lang" value={lang} />
@@ -165,6 +165,29 @@ function PostCard({ post: p, lang, t, ready, appUrl, title }: { post: SocialPost
         {action("rewrite", t.rewrite, Sparkles)}
         {p.status !== "skipped" && action("skip", t.skip, SkipForward)}
       </div>
+      {canFilm && (p.kind === "template" || p.kind === "site") && (
+        <form action={makePostVideo} className="flex flex-wrap items-end gap-2 rounded-lg border border-line p-3">
+          {hidden}
+          <label className="flex flex-col gap-1">
+            <span className="text-sm font-medium">{t.videoStyle}</span>
+            <select name="style" defaultValue="tour" className="min-h-11 rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
+              <option value="tour">{t.videoStyles.tour}</option>
+              <option value="spotlight">{t.videoStyles.spotlight}</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-sm font-medium">{t.videoLang}</span>
+            <select name="videoLang" defaultValue="am" className="min-h-11 rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
+              <option value="am">አማርኛ</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+          <PostSubmit label={`${p.media?.type === "video" ? t.remakeVideo : t.makeVideo}: ${title}`} working={t.makingVideo} className={button}>
+            <Clapperboard aria-hidden="true" className="size-4" />
+            {p.media?.type === "video" ? t.remakeVideo : t.makeVideo}
+          </PostSubmit>
+        </form>
+      )}
       <details className="group rounded-lg border border-line">
         <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-3 font-medium pointer-fine:min-h-9 [&::-webkit-details-marker]:hidden">
           <span>

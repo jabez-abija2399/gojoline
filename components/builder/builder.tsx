@@ -66,6 +66,8 @@ interface Props {
   upgrade: UpgradeInfo;
   upgradeText: Messages["upgrade"];
   installText: InstallSheetText;
+  /** "Show my site in the showcase and posts", offered after publishing. */
+  showcaseText?: { label: string; hint: string; saved: string; failed: string };
 }
 
 /** The month the owner last closed the upgrade dialog; null when unknown or storage is blocked. */
@@ -89,7 +91,7 @@ export interface PendingConfirm {
   left: number;
 }
 
-export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, setup = null, noCredits, nextGrant, upgrade, upgradeText, installText, paused = false }: Props) {
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, setup = null, noCredits, nextGrant, upgrade, upgradeText, installText, showcaseText, paused = false }: Props) {
   const [credits, setCredits] = useState<number | null>(initialCredits);
   const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
@@ -462,6 +464,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         disabled={working || paused}
         planHref={`/${locale}/billing`}
         onLive={onLive}
+        showcase={showcaseText}
         feedback={{ href: `/${locale}/feedback?from=${encodeURIComponent(`/${locale}/build/${projectId}`)}`, label: chrome.feedbackAfterPublish }}
       >
         {({ status, button }) => <TopBar locale={locale} projectId={projectId} text={chrome} siteName={name} status={status} publish={button} />}

@@ -14,7 +14,7 @@ export interface PostStore {
   createMany(posts: NewPost[]): Promise<SocialPost[]>;
   update(id: string, patch: PostPatch): Promise<SocialPost | null>;
   /** Saves one network's result; the post is "posted" once a network took it, "failed" if all tried failed. */
-  saveResult(id: string, channel: Channel, result: ChannelResult): Promise<SocialPost | null>;
+  saveResult(id: string, channel: Channel | "video", result: ChannelResult): Promise<SocialPost | null>;
   /** Approved posts due by this Addis day (the caller checks the time). */
   due(day: string): Promise<SocialPost[]>;
 }
@@ -86,7 +86,7 @@ export class DbPostStore implements PostStore {
     return r ? toPost(r) : null;
   }
 
-  async saveResult(id: string, channel: Channel, result: ChannelResult) {
+  async saveResult(id: string, channel: Channel | "video", result: ChannelResult) {
     const post = await this.get(id);
     if (!post) return null;
     const next = { ...post, results: { ...post.results, [channel]: result } };
@@ -129,7 +129,7 @@ export class MemoryPostStore implements PostStore {
     Object.assign(p, patch, { updatedAt: new Date() });
     return p;
   }
-  async saveResult(id: string, channel: Channel, result: ChannelResult) {
+  async saveResult(id: string, channel: Channel | "video", result: ChannelResult) {
     const p = await this.get(id);
     if (!p) return null;
     p.results = { ...p.results, [channel]: result };

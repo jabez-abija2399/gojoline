@@ -137,3 +137,10 @@ Otherwise it keeps using credit, and later your card:
 2. EC2 → **Elastic IPs** → select it → **Actions → Release**. (An address with no server still costs money.)
 3. EC2 → **Volumes** and **Snapshots**: delete any left over.
 4. GitHub → Deploy keys: delete `aws server`.
+
+## Post videos (renderer)
+
+`renderer` (deploy/server/renderer) films public pages into 1080×1920 videos for Admin → Posts.
+It needs no setup: compose builds it, and it shares the runner's secret until `RENDERER_SECRET`
+(24+ characters) is added to `.env`. It is reachable only from the app on the private network.
+Social posts are sent by `gojoline-posts.timer` every 15 minutes (`/api/cron/posts`, `CRON_SECRET`).

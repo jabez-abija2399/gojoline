@@ -12,8 +12,11 @@ services:
       # Site workspaces run in Docker through the runner; their previews live on their own origin.
       SANDBOX_RUNNER_URL: http://runner:7070
       CSP_FRAME_ORIGINS: https://*.preview.${APP_DOMAIN}
+      # Admin → Posts videos (deploy/server/renderer); its own secret, or the runner's until one is set.
+      RENDERER_URL: http://renderer:7071
+      RENDERER_SECRET: ${RENDERER_SECRET:-${SANDBOX_RUNNER_SECRET:-}}
     restart: unless-stopped
-    depends_on: [runner]
+    depends_on: [runner, renderer]
     expose:
       - "3000"
     # Room for builds and site workspaces on the same 4 GB server.
@@ -46,6 +49,26 @@ services:
     cap_drop: [ALL]
     read_only: true
     tmpfs: [/tmp, /root]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+  # Films public pages into post videos (Admin → Posts): Chromium + ffmpeg, one video at a time.
+  # No Docker access; every page request is checked against private addresses (server.ts).
+  renderer:
+    build: ./renderer
+    image: gojoline-renderer
+    restart: unless-stopped
+    environment:
+      RENDERER_SECRET: ${RENDERER_SECRET:-${SANDBOX_RUNNER_SECRET:-}}
+    expose:
+      - "7071"
+    # Room for Chromium and ffmpeg while a video is made; idle it uses little.
+    mem_limit: 900m
+    shm_size: 256m
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    tmpfs: [/tmp]
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "5" }

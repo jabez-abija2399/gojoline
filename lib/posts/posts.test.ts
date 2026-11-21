@@ -5,7 +5,8 @@ import { MemoryLock } from "@/lib/lock";
 import { cleanHashtags, PlainCaptionWriter, type CaptionWriter } from "./captions";
 import { isDigestTime, weeklyDigest } from "./digest";
 import { addDays, planDays, postText, trackedLink, type PlanContext } from "./plan";
-import { addisNow, planAhead, publishPost, runDue, type PostDeps } from "./service";
+import { addisNow, makeVideo, planAhead, publishPost, runDue, type PostDeps } from "./service";
+import { FakeVideoRenderer, type VideoRenderer } from "./video";
 import { MemoryPostStore } from "./store";
 import type { AnalyticsReport } from "@/lib/analytics/report";
 
@@ -22,6 +23,7 @@ function deps(over: Partial<PostDeps> = {}): PostDeps & { tg: MemoryTelegramClie
     media: async (m) => (m ? { kind: "photo", data: Buffer.from("jpg"), name: "x.jpg" } : null),
     files: new MemoryStorageProvider(),
     lock: new MemoryLock(),
+    video: null,
     tg,
     ...over,
   };
@@ -189,4 +191,54 @@ describe("DbPostStore", () => {
     expect(sent?.postedAt).toBeInstanceOf(Date);
     expect((await store.history(5)).map((p) => p.id)).toEqual([a.id]);
   }, 30_000);
+});
+
+describe("post videos", () => {
+  it("films a template's demo in the chosen language, keeps the video with the post, and Telegram sends it", async () => {
+    const video = new FakeVideoRenderer();
+    const d = deps({ video, media: async (m) => (m?.type === "video" ? { kind: "video", data: (await d.files.get(m.key))!, name: "v.mp4" } : null) });
+    const [p] = await d.store.createMany([{ day: "2026-11-23", time: "18:30", kind: "template", subject: "cafe", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "#Gojoline", media: { type: "template", id: "cafe" }, channels: ["telegram"] }]);
+    const after = await makeVideo(d, p.id, "tour", "am");
+    expect(after?.media).toEqual({ type: "video", key: `posts/${p.id}-tour-am.mp4` });
+    expect(video.requests[0]).toMatchObject({ url: "https://gojoline.afridea.et/demo/cafe/am/", style: "template", lang: "am", text: { kicker: "የዕለቱ አብነት", footer: "gojoline.afridea.et" } });
+    expect((await d.files.get(`posts/${p.id}-tour-am.mp4`))?.length).toBe(2000);
+    await d.store.update(p.id, { status: "approved" });
+    await publishPost(d, p.id);
+    expect(d.tg.posts[0].media).toMatchObject({ kind: "video" });
+  });
+
+  it("films a site only while it is in the showcase, and tips have no page", async () => {
+    let sites = [{ siteId: "s1", name: "Selam", url: "https://selam.gojoline.site/" }];
+    const video = new FakeVideoRenderer();
+    const d = deps({ video, context: async () => ({ ...ctx, sites }) });
+    const [site, tip] = await d.store.createMany([
+      { day: "2026-11-25", time: "18:30", kind: "site", subject: "s1", captionEn: "Site", captionAm: "ሰላም", hashtags: "", media: { type: "site", siteId: "s1" }, channels: ["telegram"] },
+      { day: "2026-11-26", time: "18:30", kind: "tip", subject: "tip-photos", captionEn: "Tip", captionAm: "ምክር", hashtags: "", media: null, channels: ["telegram"] },
+    ]);
+    expect((await makeVideo(d, site.id, "spotlight", "en"))?.media?.type).toBe("video");
+    expect(video.requests[0]).toMatchObject({ url: "https://selam.gojoline.site/", style: "spotlight", text: { kicker: "Site of the week", title: "Selam" } });
+    expect(await makeVideo(d, tip.id, "tour", "en")).toBeNull();
+    sites = [];
+    expect(await makeVideo(d, site.id, "tour", "en")).toBeNull();
+  });
+
+  it("the timed run makes the next approved post's video, and remembers a failure instead of retrying", async () => {
+    const failing: VideoRenderer = { render: async () => Promise.reject(new Error("renderer 502")) };
+    const ok = new FakeVideoRenderer();
+    const d = deps({ video: ok });
+    const [p] = await d.store.createMany([{ day: "2026-11-24", time: "18:30", kind: "template", subject: "hotel", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "hotel" }, channels: ["telegram"] }]);
+    await d.store.update(p.id, { status: "approved" });
+    // 23 Nov, 10:00 Addis: due tomorrow, so its video is made now (the post itself isn't sent yet).
+    expect(await runDue(d, Date.parse("2026-11-23T07:00:00Z"))).toMatchObject({ videos: 1, sent: 0 });
+    expect((await d.store.get(p.id))?.media?.type).toBe("video");
+
+    const e = deps({ video: failing });
+    const [q] = await e.store.createMany([{ day: "2026-11-24", time: "18:30", kind: "template", subject: "hotel", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "hotel" }, channels: ["telegram"] }]);
+    await e.store.update(q.id, { status: "approved" });
+    await runDue(e, Date.parse("2026-11-23T07:00:00Z"));
+    const after = await e.store.get(q.id);
+    expect(after?.results.video).toMatchObject({ ok: false, error: "renderer 502" });
+    expect(after?.status).toBe("approved");
+    expect(after?.media?.type).toBe("template");
+  });
 });

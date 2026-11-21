@@ -8,6 +8,7 @@ import { addDays, planDays, postFacts, postText, type PlanContext } from "./plan
 import type { PostStore } from "./store";
 import { CHANNELS, type Channel, type ChannelResult, type PostMedia, type SocialPost } from "./types";
 import type { StorageProvider } from "@/lib/providers/storage/types";
+import type { VideoRenderer, VideoStyle } from "./video";
 
 /** The networks Gojoline can post to by itself today (the others get the posting kit). */
 export const AUTO_CHANNELS: readonly Channel[] = ["telegram"];
@@ -33,6 +34,8 @@ export interface PostDeps {
   /** Where rendered videos are kept (posts/<id>.mp4). */
   files: StorageProvider;
   lock: PostLock;
+  /** Films pages into post videos; null when the renderer isn't set up. */
+  video: VideoRenderer | null;
 }
 
 /** Which automatic networks are ready (configured), for the admin page. */
@@ -131,6 +134,43 @@ async function sendTo(deps: PostDeps, channel: Channel, post: SocialPost, media:
   throw new Error(`${channel}: not connected yet`);
 }
 
+/** What a video says, in the language asked for (the renderer only draws it). */
+const VIDEO_TEXT = {
+  en: { template: "Template of the day", site: "Site of the week", outroTitle: "Build your website by chatting.", outroSub: "Start free. Pay in Birr." },
+  am: { template: "የዕለቱ አብነት", site: "የሳምንቱ ድረ-ገጽ", outroTitle: "ድረ-ገጽዎን በመጻፍ ይሥሩ።", outroSub: "በነጻ ይጀምሩ፣ በብር ይክፈሉ።" },
+} as const;
+
+/**
+ * Films the post's template demo or opted-in site into a video, keeps it as the post's media
+ * (posts/<id>-<style>-<lang>.mp4) and returns the post. Only template and site posts have a page.
+ */
+export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, lang: "en" | "am"): Promise<SocialPost | null> {
+  if (!deps.video) throw new Error("video renderer not set up (RENDERER_URL)");
+  const post = await deps.store.get(id);
+  if (!post || post.status === "posted" || !post.subject) return null;
+  const ctx = await deps.context();
+  const words = VIDEO_TEXT[lang];
+  let url: string;
+  let title: string;
+  if (post.kind === "template") {
+    const t = ctx.templates.find((x) => x.id === post.subject);
+    if (!t) return null;
+    url = `${deps.appUrl}/demo/${t.id}/${lang === "am" ? "am/" : ""}`;
+    title = (lang === "am" ? t.nameAm : t.name) ?? t.name;
+  } else if (post.kind === "site") {
+    // Only while the owner still shows it in the showcase.
+    const s = ctx.sites.find((x) => x.siteId === post.subject);
+    if (!s) return null;
+    url = s.url;
+    title = s.name;
+  } else return null;
+  const footer = new URL(deps.appUrl).host;
+  const data = await deps.video.render({ url, style: post.kind === "template" && style === "tour" ? "template" : style, lang, text: { kicker: post.kind === "template" ? words.template : words.site, title, outroTitle: words.outroTitle, outroSub: words.outroSub, site: title, footer } });
+  const key = `posts/${post.id}-${style}-${lang}.mp4`;
+  await deps.files.put(key, data, { contentType: "video/mp4" });
+  return deps.store.update(id, { media: { type: "video", key } });
+}
+
 /** Addis Ababa "now" as day and HH:MM. */
 export function addisNow(now: number): { day: string; time: string } {
   const iso = new Date(now + 3 * 3_600_000).toISOString();
@@ -141,8 +181,20 @@ export function addisNow(now: number): { day: string; time: string } {
 export const addisToday = () => addisNow(Date.now()).day;
 
 /** The timed run (every 15 minutes): sends approved posts whose day and time have come. */
-export async function runDue(deps: PostDeps, now: number): Promise<{ sent: number; failed: number }> {
+export async function runDue(deps: PostDeps, now: number): Promise<{ sent: number; failed: number; videos?: number }> {
   const { day, time } = addisNow(now);
+  // A video for the next approved template or site post that has only a picture (one per run: they take a minute).
+  let videos = 0;
+  if (deps.video) {
+    const soon = (await deps.store.due(addDays(day, 1))).find((p) => (p.kind === "template" || p.kind === "site") && p.media?.type !== "video" && !p.results.video);
+    if (soon) {
+      await makeVideo(deps, soon.id, "tour", "am").then(
+        () => videos++,
+        // Remembered so the run doesn't retry it every 15 minutes; the picture is used instead.
+        (e: unknown) => deps.store.saveResult(soon.id, "video", { ok: false, at: new Date(now).toISOString(), error: e instanceof Error ? e.message.slice(0, 200) : "failed" }),
+      );
+    }
+  }
   const due = (await deps.store.due(day)).filter((p) => p.day < day || p.time <= time);
   let sent = 0;
   let failed = 0;
@@ -151,7 +203,7 @@ export async function runDue(deps: PostDeps, now: number): Promise<{ sent: numbe
     if (after?.status === "posted") sent++;
     else failed++;
   }
-  return { sent, failed };
+  return { sent, failed, ...(videos ? { videos } : {}) };
 }
 
 /** A template's screenshot as it is stored (WebP), for the admin's preview: no re-encoding. */
