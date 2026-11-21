@@ -18,7 +18,7 @@ function deps(over: Partial<PostDeps> = {}): PostDeps & { tg: MemoryTelegramClie
   return {
     store: new MemoryPostStore(),
     captions: new PlainCaptionWriter(),
-    publishers: { telegram: new TelegramPublisher(tg, "@gojoline") },
+    publishers: async () => ({ telegram: new TelegramPublisher(tg, "@gojoline") }),
     mediaUrl: (id) => `https://gojoline.afridea.et/api/public/post-media/${id}?exp=1&sig=x`,
     appUrl: "https://gojoline.afridea.et",
     context: async () => ctx,
@@ -93,7 +93,7 @@ describe("planAhead and publishing", () => {
 
   it("text-only days skip the networks that need a picture or video", async () => {
     const fake = { channel: "instagram" as const, label: "x", publish: async () => "1" };
-    const d = deps({ publishers: { telegram: new TelegramPublisher(new MemoryTelegramClient(), "@g"), instagram: fake, tiktok: { ...fake, channel: "tiktok" as const } } });
+    const d = deps({ publishers: async () => ({ telegram: new TelegramPublisher(new MemoryTelegramClient(), "@g"), instagram: fake, tiktok: { ...fake, channel: "tiktok" as const } }) });
     await planAhead(d, "admin", "2026-11-23");
     const posts = await d.store.between("2026-11-23", "2026-11-29");
     expect(posts.find((p) => p.kind === "tip")?.channels).toEqual(["telegram"]);
@@ -126,7 +126,7 @@ describe("planAhead and publishing", () => {
   });
 
   it("saves a failure (no channel set) and runs only what is due at its Addis time", async () => {
-    const d = deps({ publishers: {} });
+    const d = deps({ publishers: async () => ({}) });
     await planAhead(d, "admin", "2026-11-23", 2);
     const [a, b] = await d.store.between("2026-11-23", "2026-11-24");
     await d.store.update(a.id, { status: "approved", channels: ["telegram"] });
@@ -136,7 +136,7 @@ describe("planAhead and publishing", () => {
     const r = await runDue(d, Date.parse("2026-11-23T15:45:00Z"));
     expect(r).toEqual({ sent: 0, failed: 1 });
     expect((await d.store.get(a.id))?.status).toBe("failed");
-    expect((await d.store.get(a.id))?.results.telegram?.error).toContain("TELEGRAM_CHANNEL_ID");
+    expect((await d.store.get(a.id))?.results.telegram?.error).toContain("not connected");
     expect((await d.store.get(b.id))?.status).toBe("approved");
   });
 

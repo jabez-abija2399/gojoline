@@ -108,3 +108,66 @@ export async function makePostVideo(form: FormData) {
   revalidatePath(`/${l}/admin`);
   back(l, done, `#post-${parsed.data.id}`);
 }
+
+const connectInput = z.discriminatedUnion("network", [
+  // A public channel name (@name) or a private channel's numeric id (-100…).
+  z.object({ network: z.literal("telegram"), channelId: z.string().trim().regex(/^(@[A-Za-z0-9_]{5,32}|-100\d{5,15})$/) }),
+  z.object({ network: z.literal("facebook"), pageId: z.string().trim().regex(/^\d{5,25}$/), token: z.string().trim().min(20).max(1000) }),
+  z.object({ network: z.literal("instagram"), userId: z.string().trim().regex(/^\d{5,25}$/) }),
+  z.object({ network: z.literal("tiktok"), clientKey: z.string().trim().min(5).max(100), clientSecret: z.string().trim().min(10).max(200) }),
+]);
+
+/** Admin → Posts → Connections: checks the details with the network, then saves them (tokens sealed). */
+export async function saveConnection(form: FormData) {
+  const me = await admin();
+  const l = lang(form);
+  const parsed = connectInput.safeParse(Object.fromEntries(form));
+  const network = String(form.get("network") ?? "");
+  const anchor = `#connect-${network.replace(/[^a-z]/g, "")}`;
+  if (!parsed.success) return back(l, "invalid", `&cn=${network}${anchor}`);
+  const deps = services().posts;
+  const connections = deps.connections;
+  if (!connections) return back(l, "failed", anchor);
+  const v = parsed.data;
+  let problem: string | null = null;
+  try {
+    if (v.network === "telegram") {
+      // A short message in the channel proves the bot can post there.
+      const tg = services().telegram;
+      if (!tg) problem = "bot";
+      else await tg.client.post(v.channelId, { html: "✅ Gojoline is connected to this channel. Daily posts will appear here." }).then(() => connections.saveTelegram(v.channelId, me.id), (e: Error) => void (problem = e.message));
+    } else if (v.network === "facebook") {
+      const name = await deps.verify!.facebook(v.pageId, v.token).catch((e: Error) => void (problem = e.message));
+      if (!problem) await connections.saveFacebook({ pageId: v.pageId, token: v.token, name: name ?? undefined }, me.id);
+    } else if (v.network === "instagram") {
+      const fb = (await connections.load()).facebook;
+      if (!fb) problem = "facebook_first";
+      else {
+        const username = await deps.verify!.instagram(v.userId, fb.token).catch((e: Error) => void (problem = e.message));
+        if (!problem) await connections.saveInstagram({ userId: v.userId, username: username ?? undefined }, me.id);
+      }
+    } else {
+      await connections.saveTikTokApp({ clientKey: v.clientKey, clientSecret: v.clientSecret }, me.id);
+    }
+  } catch (e) {
+    reportError(`connect ${v.network} failed`, e);
+    return back(l, "failed", `&cn=${v.network}${anchor}`);
+  }
+  revalidatePath(`/${l}/admin`);
+  // The network's own reason (never a token) goes back to the page for the admin to read.
+  if (problem) return back(l, "failed", `&cn=${v.network}&why=${encodeURIComponent(String(problem).slice(0, 160))}${anchor}`);
+  back(l, "ok", `&cn=${v.network}&connected=1${anchor}`);
+}
+
+const disconnectInput = z.object({ network: z.enum(["telegram", "facebook", "instagram", "tiktok"]) });
+
+/** Removes a connection saved in Admin (server settings, if any, still apply). */
+export async function disconnectNetwork(form: FormData) {
+  const me = await admin();
+  const l = lang(form);
+  const parsed = disconnectInput.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return back(l, "invalid");
+  await services().posts.connections?.remove(parsed.data.network, me.id);
+  revalidatePath(`/${l}/admin`);
+  back(l, "ok", `&cn=${parsed.data.network}#connect-${parsed.data.network}`);
+}

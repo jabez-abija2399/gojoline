@@ -51,6 +51,8 @@ import { DbPostStore, MemoryPostStore, type PostStore } from "@/lib/posts/store"
 import { FakeVideoRenderer, HttpVideoRenderer } from "@/lib/posts/video";
 import { FacebookPagePublisher, InstagramPublisher, TelegramPublisher, TikTokInboxPublisher } from "@/lib/posts/publishers";
 import { signedMediaUrl } from "@/lib/posts/media-url";
+import { ConnectionStore, type Resolved } from "@/lib/posts/connections";
+import { FakeVerifier, GraphVerifier } from "@/lib/posts/verify";
 import { PRESET_IDS, presetName } from "@/lib/template/presets";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
@@ -340,28 +342,20 @@ export function services(): Services {
   return globalForServices.gojoServices;
 }
 
-/** Where TikTok's refresh token lives (it changes each time it is used). */
-function tiktokTokens(env: Env) {
-  const db = getDb(env);
-  const settings = db ? new DbSettingsStore(db) : new MemorySettingsStore();
-  return {
-    get: async () => ((await settings.get("posts.tiktok"))?.refreshToken as string | undefined) ?? env.TIKTOK_REFRESH_TOKEN ?? null,
-    set: (token: string, by = "system") => settings.set("posts.tiktok", { refreshToken: token }, by),
-  };
-}
-
-/** The networks Admin → Posts sends to by itself: each only when its settings are there. */
-function pickPublishers(env: Env, svc: Services, channelId: string): PostDeps["publishers"] {
-  const out: PostDeps["publishers"] = {};
-  if (svc.telegram && channelId) out.telegram = new TelegramPublisher(svc.telegram.client, channelId);
+/** The networks Admin → Posts sends to by itself, from the connections saved in Admin (or on the server). */
+function buildPublishers(r: Resolved, svc: Services, env: Env, connections: ConnectionStore): Awaited<ReturnType<PostDeps["publishers"]>> {
+  const out: Awaited<ReturnType<PostDeps["publishers"]>> = {};
+  if (svc.telegram && r.telegram) out.telegram = new TelegramPublisher(svc.telegram.client, r.telegram.channelId);
+  // Tests and dev never post to real networks.
   if (isE2E(env)) return out;
   const version = env.META_GRAPH_VERSION || "v23.0";
-  const pageToken = env.FACEBOOK_PAGE_TOKEN ?? "";
-  if (env.FACEBOOK_PAGE_ID && pageToken) out.facebook = new FacebookPagePublisher(env.FACEBOOK_PAGE_ID, pageToken, version);
-  if (env.INSTAGRAM_USER_ID && pageToken) out.instagram = new InstagramPublisher(env.INSTAGRAM_USER_ID, pageToken, version);
-  if (env.TIKTOK_CLIENT_KEY && env.TIKTOK_CLIENT_SECRET) {
-    // Connected with "Connect TikTok" (or TIKTOK_REFRESH_TOKEN): the newest refresh token is kept in the database.
-    out.tiktok = new TikTokInboxPublisher(env.TIKTOK_CLIENT_KEY, env.TIKTOK_CLIENT_SECRET, tiktokTokens(env));
+  if (r.facebook) out.facebook = new FacebookPagePublisher(r.facebook.pageId, r.facebook.token, version);
+  if (r.instagram && r.facebook) out.instagram = new InstagramPublisher(r.instagram.userId, r.facebook.token, version);
+  if (r.tiktok?.refreshToken) {
+    out.tiktok = new TikTokInboxPublisher(r.tiktok.clientKey, r.tiktok.clientSecret, {
+      get: async () => (await connections.load()).tiktok?.refreshToken ?? null,
+      set: (token) => connections.saveTikTokToken(token, "system"),
+    });
   }
   return out;
 }
@@ -369,7 +363,9 @@ function pickPublishers(env: Env, svc: Services, channelId: string): PostDeps["p
 /** Admin → Posts: captions by Claude Haiku when a key is set (plain ones otherwise), our Telegram channel when set. */
 function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger): PostDeps {
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
-  const channelId = isE2E(env) ? "@gojoline_e2e" : (env.TELEGRAM_CHANNEL_ID ?? "").trim();
+  const db = getDb(env);
+  // Admin-saved connections (tokens sealed with the server secret); the server's settings as a fallback.
+  const connections = new ConnectionStore(db ? new DbSettingsStore(db) : new MemorySettingsStore(), env.BETTER_AUTH_SECRET || (isE2E(env) || env.NODE_ENV !== "production" ? "dev-only-secret-not-for-production" : ""), isE2E(env) ? { TELEGRAM_CHANNEL_ID: "@gojoline_e2e" } : env);
   // Rendered post videos (Step 3) live in R2 under posts/; memory without R2 (dev, e2e).
   const files: StorageProvider =
     !isE2E(env) && env.R2_ACCOUNT_ID && env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY
@@ -383,8 +379,9 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     // The renderer service on our server; a stand-in in e2e; none elsewhere.
     video: isE2E(env) ? new FakeVideoRenderer() : env.RENDERER_URL && env.RENDERER_SECRET ? new HttpVideoRenderer(env.RENDERER_URL, env.RENDERER_SECRET) : null,
     captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
-    publishers: pickPublishers(env, svc, channelId),
-    ...(env.TIKTOK_CLIENT_KEY && env.TIKTOK_CLIENT_SECRET && !isE2E(env) ? { saveTikTokToken: (token: string, adminId: string) => tiktokTokens(env).set(token, adminId) } : {}),
+    publishers: async () => buildPublishers(await connections.load(), svc, env, connections),
+    connections,
+    verify: isE2E(env) ? new FakeVerifier() : new GraphVerifier(env.META_GRAPH_VERSION || "v23.0"),
     mediaUrl: (id) => (env.CRON_SECRET ? signedMediaUrl((env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""), env.CRON_SECRET, id) : null),
     appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     context: async () => ({

@@ -8,6 +8,8 @@ import { CHANNELS, type Channel, type ChannelResult, type PostMedia, type Social
 import type { StorageProvider } from "@/lib/providers/storage/types";
 import type { VideoRenderer, VideoStyle } from "./video";
 import type { ChannelPublisher, MediaFile } from "./publishers";
+import type { ConnectionStore } from "./connections";
+import type { ConnectionVerifier } from "./verify";
 import { getMessages } from "@/lib/i18n";
 
 /** The networks Gojoline can post to by itself once connected (YouTube uses the posting kit). */
@@ -28,11 +30,13 @@ export interface PostDeps {
   store: PostStore;
   captions: CaptionWriter;
   /** The networks that are connected (Telegram channel, Facebook Page, Instagram, TikTok inbox). */
-  publishers: Partial<Record<Channel, ChannelPublisher>>;
+  publishers(): Promise<Partial<Record<Channel, ChannelPublisher>>>;
   /** A short-lived public address of a post's media (for networks that fetch it); null when not possible. */
   mediaUrl(postId: string): string | null;
-  /** Keeps TikTok's refresh token after "Connect TikTok"; absent when TikTok isn't set up. */
-  saveTikTokToken?: (token: string, adminId: string) => Promise<void>;
+  /** Gojoline's own accounts, connected from Admin (tokens sealed); null in unit tests. */
+  connections?: ConnectionStore;
+  /** Checks a Facebook or Instagram connection before it is saved. */
+  verify?: ConnectionVerifier;
   appUrl: string;
   /** What posts can be about, read fresh (templates; sites whose owners opted in). */
   context(): Promise<PlanContext>;
@@ -46,8 +50,9 @@ export interface PostDeps {
 }
 
 /** Which automatic networks are ready (connected), for planning and the admin page. */
-export function readyChannels(deps: Pick<PostDeps, "publishers">): Channel[] {
-  return AUTO_CHANNELS.filter((c) => !!deps.publishers[c]);
+export async function readyChannels(deps: Pick<PostDeps, "publishers">): Promise<Channel[]> {
+  const p = await deps.publishers();
+  return AUTO_CHANNELS.filter((c) => !!p[c]);
 }
 
 /** Draft posts, with captions, for each of the next `days` days (from `today`) that has none. */
@@ -66,7 +71,7 @@ async function planLocked(deps: PostDeps, adminId: string, today: string, days: 
   const [existing, recentPosts, ctx] = await Promise.all([deps.store.between(today, addDays(today, days - 1)), deps.store.between(addDays(today, -60), addDays(today, -1)), deps.context()]);
   const taken = new Set(existing.filter((p) => p.status !== "skipped").map((p) => p.day));
   const recent = recentPosts.map((p) => p.subject).filter((s): s is string => !!s);
-  const ready = readyChannels(deps);
+  const ready = await readyChannels(deps);
   // Text-only days skip the networks that need a picture or video.
   const drafts = planDays({ from: today, days, taken, recent, ctx, channels: ready }).map((d) => (d.media ? d : { ...d, channels: d.channels.filter((c) => !NEEDS_MEDIA.includes(c)) }));
   const written = await Promise.all(drafts.map(async (d) => ({ ...d, ...(await caption(deps, adminId, d, ctx)) })));
@@ -136,17 +141,17 @@ async function publishLocked(deps: PostDeps, id: string): Promise<SocialPost | n
 }
 
 async function sendTo(deps: PostDeps, channel: Channel, post: SocialPost, media: MediaFile | null): Promise<string> {
-  const publisher = deps.publishers[channel];
+  const publisher = (await deps.publishers())[channel];
   if (!publisher) throw new Error(`${channel} not connected (${CONNECT_HINT[channel]})`);
   return publisher.publish({ text: postText(post, channel, deps.appUrl), media, mediaUrl: media && NEEDS_MEDIA.includes(channel) ? deps.mediaUrl(post.id) : null });
 }
 
 /** What connects each network (server settings), for the error saved on a post. */
 export const CONNECT_HINT: Record<Channel, string> = {
-  telegram: "TELEGRAM_CHANNEL_ID",
-  facebook: "FACEBOOK_PAGE_ID, FACEBOOK_PAGE_TOKEN",
-  instagram: "INSTAGRAM_USER_ID, FACEBOOK_PAGE_TOKEN",
-  tiktok: "TIKTOK_CLIENT_KEY, TIKTOK_CLIENT_SECRET, TIKTOK_REFRESH_TOKEN",
+  telegram: "Admin → Posts → Connections",
+  facebook: "Admin → Posts → Connections",
+  instagram: "Admin → Posts → Connections",
+  tiktok: "Admin → Posts → Connections",
   youtube: "posting kit",
 };
 
