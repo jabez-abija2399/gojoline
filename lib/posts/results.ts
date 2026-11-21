@@ -7,11 +7,28 @@ export type VisitSource = (typeof VISIT_SOURCES)[number];
 
 const CAMPAIGN = /^post-\d{4}-\d{2}-\d{2}$/;
 
-/** The counted key for a visit from a post link ("post-2026-11-23|telegram"), or null for anything else. */
-export function postVisitKey(campaign: unknown, source: unknown): string | null {
+/** One of VISIT_SOURCES ("Telegram" → "telegram"; anything unknown → "other"), for visits and sign-ups alike. */
+export function visitSource(source: unknown): VisitSource {
+  const s = String(source ?? "").toLowerCase();
+  return (VISIT_SOURCES as readonly string[]).includes(s) ? (s as VisitSource) : "other";
+}
+
+/** How far back a post's link still counts visits (days). */
+export const VISIT_WINDOW_DAYS = 45;
+
+/**
+ * The counted key for a visit from a post link ("post-2026-11-23|telegram"), or null for anything
+ * else: only real calendar days from the last VISIT_WINDOW_DAYS up to today (Addis), so made-up
+ * dates can't create endless keys.
+ */
+export function postVisitKey(campaign: unknown, source: unknown, today: string): string | null {
   if (typeof campaign !== "string" || !CAMPAIGN.test(campaign)) return null;
-  const s = (VISIT_SOURCES as readonly string[]).includes(String(source)) ? String(source) : "other";
-  return `${campaign}|${s}`;
+  const day = campaign.slice(5);
+  const t = Date.parse(`${day}T00:00:00Z`);
+  if (Number.isNaN(t) || new Date(t).toISOString().slice(0, 10) !== day) return null;
+  const age = (Date.parse(`${today}T00:00:00Z`) - t) / 86_400_000;
+  if (age < 0 || age > VISIT_WINDOW_DAYS) return null;
+  return `${campaign}|${visitSource(source)}`;
 }
 
 export interface PostResult {
@@ -52,8 +69,8 @@ export function summarize(visitRows: EventRow[], signups: PostSignups[]): Result
   for (const r of visitRows) {
     if (r.event !== "post_visit") continue;
     const [campaign, source = "other"] = r.key.split("|");
-    add(campaign, source, { visits: r.n });
+    add(campaign, visitSource(source), { visits: r.n });
   }
-  for (const s of signups) add(s.campaign, s.source, { signups: s.signups, paid: s.paid });
+  for (const s of signups) add(s.campaign, visitSource(s.source), { signups: s.signups, paid: s.paid });
   return { byDay, byNetwork, total };
 }

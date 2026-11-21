@@ -1,4 +1,4 @@
-import { and, gte, lte, sql } from "drizzle-orm";
+import { and, eq, gte, lte, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
 import { analyticsDaily } from "@/lib/db/schema";
 import { reportError } from "@/lib/observability/report";
@@ -15,8 +15,8 @@ export interface EventRow {
 /** Daily counters for admin analytics (clicks, publishes). Counts only, nothing about who. */
 export interface EventStore {
   bump(day: string, event: AnalyticsEvent, key: string): Promise<void>;
-  /** Rows from `from` to `to` (inclusive days). */
-  rows(from: string, to: string): Promise<EventRow[]>;
+  /** Rows from `from` to `to` (inclusive days), optionally of one event only. */
+  rows(from: string, to: string, event?: AnalyticsEvent): Promise<EventRow[]>;
 }
 
 /** Postgres error for a table that doesn't exist (migration 0021 not applied yet). */
@@ -40,9 +40,12 @@ export class DbEventStore implements EventStore {
     }
   }
 
-  async rows(from: string, to: string): Promise<EventRow[]> {
+  async rows(from: string, to: string, event?: AnalyticsEvent): Promise<EventRow[]> {
     try {
-      const rows = await this.db.select().from(analyticsDaily).where(and(gte(analyticsDaily.day, from), lte(analyticsDaily.day, to)));
+      const rows = await this.db
+        .select()
+        .from(analyticsDaily)
+        .where(and(gte(analyticsDaily.day, from), lte(analyticsDaily.day, to), event ? eq(analyticsDaily.event, event) : undefined));
       return rows.map((r) => ({ ...r, n: Number(r.n) }));
     } catch (e) {
       if (missingTable(e)) return [];
@@ -61,7 +64,7 @@ export class MemoryEventStore implements EventStore {
     this.counts.set(k, cur);
   }
 
-  async rows(from: string, to: string) {
-    return [...this.counts.values()].filter((r) => r.day >= from && r.day <= to).map((r) => ({ ...r }));
+  async rows(from: string, to: string, event?: AnalyticsEvent) {
+    return [...this.counts.values()].filter((r) => r.day >= from && r.day <= to && (!event || r.event === event)).map((r) => ({ ...r }));
   }
 }

@@ -11,6 +11,7 @@ import { FocusOnMount } from "./focus-on-mount";
 import { PostSubmit } from "./post-submit";
 import { PostConnections } from "./post-connections";
 import { reportError } from "@/lib/observability/report";
+import { cache, Suspense } from "react";
 import { summarize, type PostResult, type Results as Reach } from "@/lib/posts/results";
 
 type T = Messages["admin"]["posts"];
@@ -68,8 +69,6 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
   const href = (v: View) => `/${lang}/admin?tab=posts&view=${v}`;
   const viewOf = (p: SocialPost): View => (p.status === "draft" ? "review" : p.status === "posted" ? "sent" : "scheduled");
   const week = Array.from({ length: 7 }, (_, i) => addDays(today, i));
-  // What posts brought in: only loaded for the Sent view.
-  const reach = view === "sent" ? await loadReach(today) : null;
   const card = (p: SocialPost) => <PostCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} canFilm={!!deps.video} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />;
 
   return (
@@ -190,7 +189,9 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
 
       {view === "sent" && (
         <section aria-label={t.views.sent} className="flex flex-col gap-3">
-          {reach && <ReachSummary reach={reach} t={t} />}
+          <Suspense fallback={<ReachSkeleton t={t} />}>
+            <ReachSummary today={today} lang={lang} t={t} />
+          </Suspense>
           {sent.length === 0 ? (
             <Empty text={t.sentEmpty} />
           ) : (
@@ -208,7 +209,9 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
                     </span>
                     <span lang="en" className="line-clamp-2 text-sm text-ink-muted">{p.captionEn}</span>
                     <Results post={p} t={t} />
-                    {reach?.byDay.get(p.day) && <ReachLine r={reach.byDay.get(p.day)!} t={t} />}
+                    <Suspense>
+                      <ReachLine today={today} day={p.day} lang={lang} t={t} />
+                    </Suspense>
                   </span>
                 </li>
               ))}
@@ -381,63 +384,100 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
   );
 }
 
-async function loadReach(today: string): Promise<Reach | null> {
+/** Visits (last 30 days, by visit day) and sign-ups (joined in the same days) from post links; once per request. */
+const loadReach = cache(async (today: string): Promise<Reach | null> => {
   const svc = services();
-  const from = addDays(today, -30);
+  const from = addDays(today, -29);
   try {
-    const [rows, signups] = await Promise.all([svc.analyticsEvents.rows(from, today), svc.growth.sources.fromPosts(new Date(`${from}T00:00:00+03:00`))]);
+    const [rows, signups] = await Promise.all([svc.analyticsEvents.rows(from, today, "post_visit"), svc.growth.sources.fromPosts(new Date(`${from}T00:00:00+03:00`))]);
     return summarize(rows, signups);
   } catch (e) {
     reportError("post results load failed", e);
     return null;
   }
+});
+
+const numbers = (lang: "en" | "am") => new Intl.NumberFormat(lang === "am" ? "am-ET" : "en-US");
+
+async function ReachLine({ today, day, lang, t }: { today: string; day: string; lang: "en" | "am"; t: T }) {
+  const reach = await loadReach(today);
+  if (!reach) return null;
+  const r: PostResult = reach.byDay.get(day) ?? { visits: 0, signups: 0, paid: 0 };
+  const n = numbers(lang);
+  return <span className="text-sm font-medium text-ink">{format(t.reach.line, { visits: n.format(r.visits), signups: n.format(r.signups), paid: n.format(r.paid) })}</span>;
 }
 
-function ReachLine({ r, t }: { r: PostResult; t: T }) {
-  return <span className="text-xs font-medium text-ink">{format(t.reach.line, { visits: r.visits, signups: r.signups, paid: r.paid })}</span>;
+function ReachBox({ t, children }: { t: T; children: React.ReactNode }) {
+  return (
+    <section aria-labelledby="reach-title" className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-4">
+      <h2 id="reach-title" className="text-lg font-semibold">{t.reach.title}</h2>
+      {children}
+    </section>
+  );
+}
+
+function ReachSkeleton({ t }: { t: T }) {
+  return (
+    <ReachBox t={t}>
+      <div aria-hidden="true" className="grid grid-cols-3 gap-2">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="h-[60px] animate-pulse rounded-xl bg-sunken motion-reduce:animate-none" />
+        ))}
+      </div>
+      <p className="sr-only" role="status">{t.reach.loading}</p>
+    </ReachBox>
+  );
 }
 
 /** Visits, sign-ups and payments from post links in the last 30 days, in total and per network. */
-function ReachSummary({ reach, t }: { reach: Reach; t: T }) {
+async function ReachSummary({ today, lang, t }: { today: string; lang: "en" | "am"; t: T }) {
+  const reach = await loadReach(today);
   const r = t.reach;
+  if (!reach)
+    return (
+      <ReachBox t={t}>
+        <p role="alert" className="text-sm text-ink-muted">{r.failed}</p>
+      </ReachBox>
+    );
+  const n = numbers(lang);
   const networks = [...reach.byNetwork.entries()].sort((a, b) => b[1].visits + b[1].signups * 10 - (a[1].visits + a[1].signups * 10));
-  const name = (n: string) => (t.channels as Record<string, string>)[n] ?? r.other;
+  const name = (k: string) => (k === "other" ? r.other : ((t.channels as Record<string, string>)[k] ?? r.other));
+  const num = "py-1.5 ps-3 text-end tabular-nums";
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-4">
-      <h2 className="text-base font-semibold">{r.title}</h2>
+    <ReachBox t={t}>
       <dl className="grid grid-cols-3 gap-2">
         {(["visits", "signups", "paid"] as const).map((k) => (
           <div key={k} className="flex flex-col rounded-xl bg-paper px-3 py-2">
             <dt className="text-xs text-ink-muted">{r[k]}</dt>
-            <dd className="text-xl font-semibold tabular-nums">{reach.total[k]}</dd>
+            <dd className="text-xl font-semibold tabular-nums">{n.format(reach.total[k])}</dd>
           </div>
         ))}
       </dl>
       {networks.length === 0 ? (
         <p className="text-sm text-ink-muted">{r.none}</p>
       ) : (
-        <table className="w-full text-sm">
+        <table aria-labelledby="reach-title" className="w-full text-sm sm:max-w-lg">
           <thead>
-            <tr className="text-start text-xs text-ink-muted">
+            <tr className="text-xs text-ink-muted">
               <th scope="col" className="py-1 text-start font-medium">{r.network}</th>
-              <th scope="col" className="py-1 text-end font-medium">{r.visits}</th>
-              <th scope="col" className="py-1 text-end font-medium">{r.signups}</th>
-              <th scope="col" className="py-1 text-end font-medium">{r.paid}</th>
+              <th scope="col" className="py-1 ps-3 text-end font-medium">{r.visits}</th>
+              <th scope="col" className="py-1 ps-3 text-end font-medium">{r.signups}</th>
+              <th scope="col" className="py-1 ps-3 text-end font-medium">{r.paid}</th>
             </tr>
           </thead>
           <tbody>
-            {networks.map(([n, v]) => (
-              <tr key={n} className="border-t border-line">
-                <th scope="row" className="py-1.5 text-start font-medium">{name(n)}</th>
-                <td className="py-1.5 text-end tabular-nums">{v.visits}</td>
-                <td className="py-1.5 text-end tabular-nums">{v.signups}</td>
-                <td className="py-1.5 text-end tabular-nums">{v.paid}</td>
+            {networks.map(([k, v]) => (
+              <tr key={k} className="border-t border-line">
+                <th scope="row" className="py-1.5 text-start font-medium">{name(k)}</th>
+                <td className={num}>{n.format(v.visits)}</td>
+                <td className={num}>{n.format(v.signups)}</td>
+                <td className={num}>{n.format(v.paid)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
       <p className="text-xs text-ink-muted">{r.note}</p>
-    </div>
+    </ReachBox>
   );
 }

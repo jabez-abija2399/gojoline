@@ -20,7 +20,9 @@ import { postVisitKey } from "@/lib/posts/results";
  */
 const click = z.object({ n: z.enum(CLICK_NAMES), p: z.enum(CLICK_PAGES) }).strict();
 /** A visit from one of our posts' links: the post's day (post-YYYY-MM-DD) and the network. */
-const visit = z.object({ v: z.string().max(20), s: z.string().max(20) }).strict();
+const visit = z.object({ v: z.string().regex(/^post-\d{4}-\d{2}-\d{2}$/), s: z.string().max(20) }).strict();
+/** Post visits a network can add a day, whatever days and sources it names. */
+const VISITS_PER_NETWORK_DAY = 10;
 const done = () => new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
 
 export async function POST(request: Request) {
@@ -41,10 +43,14 @@ export async function POST(request: Request) {
   const asClick = click.safeParse(value);
   const asVisit = asClick.success ? null : visit.safeParse(value);
   const event = asClick.success ? "click" : "post_visit";
-  const key = asClick.success ? clickKey(asClick.data.n, asClick.data.p) : asVisit?.success ? postVisitKey(asVisit.data.v, asVisit.data.s) : null;
-  if (!key) return done();
   const day = addisDay(Date.now());
+  const key = asClick.success ? clickKey(asClick.data.n, asClick.data.p) : asVisit?.success ? postVisitKey(asVisit.data.v, asVisit.data.s, day) : null;
+  if (!key) return done();
   const network = createHash("sha256").update(`gojo-track:${ipBucket(ip)}`).digest("hex").slice(0, 24);
+  if (event === "post_visit") {
+    const cap = await svc.rateLimiter.hit(`track-pv:${network}:${day}`, VISITS_PER_NETWORK_DAY, 86_400_000).catch(() => ({ allowed: false }));
+    if (!cap.allowed) return done();
+  }
   const first = await svc.rateLimiter.hit(`track-once:${network}:${day}:${key}`, 1, 86_400_000).catch(() => ({ allowed: false }));
   if (!first.allowed) return done();
   await svc.analyticsEvents.bump(day, event, key).catch((e: unknown) => reportError(`${event} count failed`, e));

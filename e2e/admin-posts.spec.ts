@@ -1,7 +1,20 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
 // One shared memory store serves both projects: the full flow runs on desktop only.
+/** The phone and desktop runs share one server: a plan refused because the other run is planning (one at a time) is tried again. */
+async function planWeek(page: Page, name: string) {
+  const start = new URL(page.url());
+  start.search = "?tab=posts";
+  start.hash = "";
+  await expect(async () => {
+    if (page.url() !== start.href) await page.goto(start.href);
+    await page.getByRole("button", { name }).click();
+    await page.waitForURL(/pd=/);
+    expect(new URL(page.url()).searchParams.get("pd")).toBe("ok");
+  }).toPass({ timeout: 30_000 });
+}
+
 test("admin plans a week of posts, edits one, posts it to Telegram, and has a posting kit", async ({ page }, info) => {
   await signIn(page, { contact: `admin-e2e-posts-${info.project.name}@example.com` });
   await page.goto("/en/admin?tab=posts");
@@ -16,7 +29,7 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   if (info.project.name === "mobile") {
     // Phones, in Amharic, with the cards (planned by the desktop run or here) and their sections open.
     await page.goto("/am/admin?tab=posts");
-    await page.getByRole("button", { name: "የሚቀጥሉትን 7 ቀናት ያቅዱ" }).click();
+    await planWeek(page, "የሚቀጥሉትን 7 ቀናት ያቅዱ");
     await expect(page.getByRole("list", { name: "የሚቀጥሉት 7 ቀናት" }).getByRole("listitem")).toHaveCount(7);
     await page.goto("/am/admin?tab=posts&view=review");
     const first = page.locator("li[id^=post-]").first();
@@ -51,7 +64,7 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await page.locator("#connect-facebook").getByRole("button", { name: /^Disconnect/ }).click();
   await expect(page.locator("#connect-facebook")).toContainText("Not connected");
 
-  await page.getByRole("button", { name: "Plan the next 7 days" }).click();
+  await planWeek(page, "Plan the next 7 days");
   // The week strip shows seven days, each with its post's kind and state; drafts open in To review.
   const week = page.getByRole("list", { name: "The next 7 days" });
   await expect(week.getByRole("listitem")).toHaveCount(7);
@@ -118,7 +131,7 @@ test("a visit from a post link shows in the Sent tab's results", async ({ page, 
   // The listener is part of the page's code; the server counts each network once a day, so a repeat answers 204 too.
   await expect(async () => {
     const counted = visitor.waitForResponse((r) => r.url().endsWith("/api/track") && r.request().method() === "POST", { timeout: 6000 });
-    await visitor.goto(`/en?utm_source=telegram&utm_medium=social&utm_campaign=post-2026-11-20&x=${Date.now()}`);
+    await visitor.goto(`/en?utm_source=telegram&utm_medium=social&utm_campaign=post-${new Date(Date.now() + 3 * 3_600_000).toISOString().slice(0, 10)}&x=${Date.now()}`);
     expect((await counted).status()).toBe(204);
   }).toPass({ timeout: 30_000 });
   await ctx.close();
