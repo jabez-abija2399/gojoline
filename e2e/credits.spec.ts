@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, payFor, signIn, unfold } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, billingTab, payFor, signIn, unfold } from "./helpers";
 
 // Runs against the deterministic demo AI (E2E=1); request sizes come from the word list there.
 async function newSite(page: Page, lang: "en" | "am" = "en") {
@@ -85,7 +85,7 @@ test("a bigger request asks first, then uses its changes; low and zero changes a
   await expectNoHorizontalScroll(page);
 
   // The Plan page lists every movement, newest first.
-  await page.goto("/en/billing");
+  await page.goto("/en/billing?tab=history");
   // Phones fold the history away.
   await unfold(page, /History of your changes/);
   const history = page.getByRole("list", { name: "Changes added and used" });
@@ -94,6 +94,7 @@ test("a bigger request asks first, then uses its changes; low and zero changes a
   await expect(history.getByRole("listitem").filter({ hasText: "Change to your site, medium" })).toContainText("−2");
   await expect(history.getByRole("listitem").filter({ hasText: "First build of a site (free)" })).toHaveCount(1);
   await expect(history.getByRole("listitem").filter({ hasText: "Monthly changes" })).toContainText("+10");
+  await billingTab(page, "Your plan");
   await expect(page.getByText(/10 new monthly changes arrive on/)).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
@@ -112,6 +113,7 @@ test("Amharic: the bigger-change question and the Plan page's changes", async ({
   // How changes are counted folds out of the plan card.
   await page.getByText("አንድ ጥያቄ ስንት ለውጥ ይወስዳል").click();
   await expect(page.getByText("ትልቅ (ብዙ አዲስ ገጾች፣ አዲስ ዲዛይን)")).toBeVisible();
+  await billingTab(page, "ታሪክ");
   await expect(page.getByRole("heading", { name: "የለውጦችዎ ታሪክ" })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);

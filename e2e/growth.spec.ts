@@ -1,5 +1,5 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAccountMenu, payFor, signIn, unfold } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAccountMenu, billingTab, payFor, signIn, unfold } from "./helpers";
 
 /** A second browser on the same device as the test's own page. */
 async function newPage(browser: Browser, opts: { userAgent?: string } = {}) {
@@ -113,13 +113,14 @@ test("a business joins through an invite link; when the admin approves its first
 
   // Both see the thank-you in their history of changes.
   for (const p of [page, invited.page]) {
-    await p.goto("/en/billing");
+    await p.goto("/en/billing?tab=history");
     // Folded on phones; unfold again if a late render folded it back.
     await expect(async () => {
       await unfold(p, /History of your changes/);
       await expect(p.getByText("Thank-you for an invite")).toBeVisible({ timeout: 1000 });
     }).toPass();
   }
+  await billingTab(page, "Invite");
   await expect(page.getByText(/1 invited · 1 thanked so far/)).toBeVisible();
   await invited.close();
 });

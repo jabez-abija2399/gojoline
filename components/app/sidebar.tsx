@@ -79,7 +79,7 @@ interface Props {
 }
 
 const item =
-  "relative flex min-h-11 items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium text-ink lg:min-h-9 transition-colors hover:bg-white aria-[current=page]:bg-white aria-[current=page]:font-semibold aria-[current=page]:shadow-sm aria-[current=page]:ring-1 aria-[current=page]:ring-line aria-[current=page]:before:absolute aria-[current=page]:before:inset-y-2 aria-[current=page]:before:start-0 aria-[current=page]:before:w-[3px] aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-ink";
+  "relative flex min-h-11 items-center gap-2.5 rounded-lg px-2.5 text-[13px] font-medium text-ink lg:min-h-9 transition-colors hover:bg-white aria-[current=page]:bg-white aria-[current=page]:font-semibold aria-[current=page]:shadow-sm aria-[current=page]:ring-1 aria-[current=page]:ring-line aria-[current=page]:before:absolute aria-[current=page]:before:inset-y-2 aria-[current=page]:before:start-0 aria-[current=page]:before:w-[3px] aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-ink";
 
 /**
  * The signed-in area's navigation: a column beside the page on large screens, a drawer
@@ -226,7 +226,7 @@ export function Sidebar({
         {credits !== null && (
           <Link
             href={billing}
-            className={`ms-auto inline-flex min-h-11 min-w-0 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold ${low ? "border-warning text-warning" : "border-line text-ink"} bg-white`}
+            className={`ms-auto inline-flex min-h-11 min-w-0 items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold ${low ? "border-warning text-warning" : "border-line text-ink"} bg-white`}
           >
             <Sparkles aria-hidden="true" className="size-4 shrink-0" />
             {/* The same words as the sidebar ("1 change left", "No changes left"). */}
@@ -317,15 +317,6 @@ export function Sidebar({
             {text.templates}
           </Link>
           <Link
-            href={billing}
-            onClick={close}
-            aria-current={current(billing)}
-            className={item}
-          >
-            <CreditCard aria-hidden="true" className="size-4 shrink-0" />
-            {text.plan}
-          </Link>
-          <Link
             href={guidePath}
             onClick={close}
             aria-current={current(guidePath)}
@@ -345,7 +336,7 @@ export function Sidebar({
             <span className="flex min-w-0 flex-1 flex-col gap-1.5">
               <span
                 id="side-credits-title"
-                className={`flex items-center gap-1.5 text-sm font-semibold ${low ? "text-warning" : "text-ink"}`}
+                className={`flex items-center gap-1.5 text-[13px] font-semibold ${low ? "text-warning" : "text-ink"}`}
               >
                 {text.creditsLeft}
               </span>
@@ -458,7 +449,7 @@ export function Sidebar({
 }
 
 const menuRow =
-  "flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium text-ink transition-colors hover:bg-sunken lg:min-h-9";
+  "flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 text-[13px] font-medium text-ink transition-colors hover:bg-sunken lg:min-h-9";
 
 /** The account row: who is signed in. Plan, app, language and sign out open from it. */
 function AccountMenu({
@@ -532,7 +523,7 @@ function AccountMenu({
           {text.plan}
         </Link>
         <Link
-          href={`${billing}#invite-title`}
+          href={`${billing}?tab=invite`}
           onClick={onNavigate}
           className={menuRow}
         >
@@ -586,7 +577,7 @@ function AccountMenu({
       >
         <span
           aria-hidden="true"
-          className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-ink font-display text-sm font-bold text-white"
+          className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-ink font-display text-[13px] font-bold text-white"
         >
           {[...who.trim()][0]?.toUpperCase() ?? "G"}
           {/* Unread replies to feedback live in this menu now: a dot says so. */}
@@ -594,7 +585,7 @@ function AccountMenu({
             <span className="absolute -top-0.5 -end-0.5 size-2.5 rounded-full bg-ink ring-2 ring-sunken" />
           )}
         </span>
-        <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">
+        <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">
           {who}
         </span>
         <ChevronsUpDown

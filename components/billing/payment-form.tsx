@@ -7,6 +7,7 @@ import { format } from "@/lib/i18n/format";
 import { productName } from "@/lib/billing/plans";
 import { shrinkImage } from "@/lib/billing/shrink-image";
 import { CopyButton } from "./copy-button";
+import { useBillingTabs } from "./billing-tabs";
 
 export const PAY_PRODUCTS = ["starter_month", "starter_year", "business_month", "business_year", "topup"] as const;
 export type ProductId = (typeof PAY_PRODUCTS)[number];
@@ -67,6 +68,7 @@ export function PaymentForm({
   onSent: () => void;
 }) {
   const p = t.pay;
+  const tabs = useBillingTabs();
   const methods: Method[] = [...(accounts.telebirrNumber ? (["telebirr"] as const) : []), ...(accounts.cbeAccount ? (["cbe", "other"] as const) : [])];
   const [method, setMethod] = useState<Method>(methods[0] ?? "telebirr");
   const [state, setState] = useState<State>({ kind: "idle" });
@@ -173,7 +175,7 @@ export function PaymentForm({
             <span id="pay-product" tabIndex={-1} className="font-semibold">{productName(t.productNames, product, topupCredits)}</span>
           </div>
           {/* The plan cards are the one place to choose; this goes back to them. */}
-          <a href="#choose-title" className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center px-1 font-medium text-ink underline underline-offset-4 lg:min-h-9">
+          <a href="?tab=plan" onClick={(e) => (e.preventDefault(), tabs.show("plan", "choose-title"))} className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center px-1 font-medium text-ink underline underline-offset-4 lg:min-h-9">
             {p.change}
             <span className="sr-only">: {productName(t.productNames, product, topupCredits)}</span>
           </a>

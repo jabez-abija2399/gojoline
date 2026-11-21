@@ -97,12 +97,21 @@ const PAY_NAMES = { starter_month: "Starter, 1 month", starter_year: "Starter, 1
 /** Chooses what to pay for on the Plan page, the way an owner does: on the plan cards (English). */
 export async function payFor(page: Page, product: keyof typeof PAY_NAMES | "topup") {
   if (product === "topup") {
+    await billingTab(page, "Your plan");
     await page.getByRole("link", { name: /^Buy \d+ changes$/ }).click();
     await expect(page.locator("#pay-product")).toHaveText(/extra changes/);
     return;
   }
+  await billingTab(page, "Your plan");
   const [plan, period] = product.split("_");
   await page.getByRole("button", { name: period === "month" ? /^Monthly/ : /^Yearly/ }).click();
   await page.getByRole("link", { name: new RegExp(`^(Choose|Renew) ${plan === "starter" ? "Starter" : "Business"}$`) }).click();
   await expect(page.locator("#pay-product")).toHaveText(PAY_NAMES[product]);
+}
+
+/** Opens a tab on the Plan page ("Your plan", "Pay", "History", "Invite"). */
+export async function billingTab(page: Page, name: string) {
+  const tab = page.getByRole("tab", { name, exact: true });
+  await tab.click();
+  await expect(tab).toHaveAttribute("aria-selected", "true");
 }

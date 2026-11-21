@@ -810,6 +810,8 @@ export const en = {
     topup: "Extra changes",
     topupDesc: "{n} more changes for {price} Birr",
     payLink: "Pay or upgrade",
+    tabsLabel: "Plan and payments sections",
+    tabs: { plan: "Your plan", pay: "Pay", history: "History", invite: "Invite" },
     payTitle: "Pay with Telebirr or bank transfer",
     payHow: ["Send the amount to the account below.", "Enter the transaction number and add a photo of your receipt or SMS.", "We check it and switch on your plan, usually within a day."],
     currentBadge: "Your plan",
