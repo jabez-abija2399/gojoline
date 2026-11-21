@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { and, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import sharp from "sharp";
 import type { Database } from "@/lib/db/client";
-import { abuseReports, projects, sites, siteShowcase } from "@/lib/db/schema";
+import { abuseReports, projects, sites, siteShowcase, telegramLinks, user } from "@/lib/db/schema";
 import type { ProjectStore } from "@/lib/projects/types";
 import type { Site, SiteAdminStore, SiteStore } from "@/lib/sites/types";
 
@@ -46,6 +46,10 @@ export interface InviteCandidate {
   ownerId: string;
   name: string;
   url: string;
+  /** The site's own language (for the link and the message when the owner has no Telegram). */
+  locale: "en" | "am";
+  /** The owner has a linked Telegram or a verified email: an invitation can reach them. */
+  reachable: boolean;
 }
 
 export interface ShowcaseStore {
@@ -175,8 +179,18 @@ export class DbShowcaseStore implements ShowcaseStore {
 
   async invitable(limit: number) {
     const rows = await this.db
-      .select({ siteId: sites.id, projectId: sites.projectId, ownerId: sites.ownerId, url: sites.url, card: siteShowcase.name })
+      .select({
+        siteId: sites.id,
+        projectId: sites.projectId,
+        ownerId: sites.ownerId,
+        url: sites.url,
+        card: siteShowcase.name,
+        locale: projects.locale,
+        reachable: sql<boolean>`(exists (select 1 from ${telegramLinks} where ${telegramLinks.userId} = ${sites.ownerId}) or (${user.emailVerified} and ${user.email} not like '%@phone.gojoline.invalid'))`,
+      })
       .from(sites)
+      .innerJoin(projects, eq(projects.id, sites.projectId))
+      .innerJoin(user, eq(user.id, sites.ownerId))
       .leftJoin(siteShowcase, eq(siteShowcase.siteId, sites.id))
       .where(
         and(
@@ -193,7 +207,7 @@ export class DbShowcaseStore implements ShowcaseStore {
       .orderBy(desc(sites.publishedAt))
       .limit(limit);
     // The name only from the published card (never the draft project's name); else the address is used.
-    return rows.map((r) => ({ siteId: r.siteId, projectId: r.projectId, ownerId: r.ownerId, url: r.url ?? "", name: r.card ?? "" }));
+    return rows.map((r) => ({ siteId: r.siteId, projectId: r.projectId, ownerId: r.ownerId, url: r.url ?? "", name: r.card ?? "", locale: r.locale, reachable: !!r.reachable }));
   }
 
   async claimInvite(siteIds: string[]) {
@@ -270,7 +284,8 @@ export class MemoryShowcaseStore implements ShowcaseStore {
   }
   async invitable(limit: number) {
     const all = (await this.sites.recent(1000)).filter((s) => s.status === "published" && !s.offlineAt && !!s.url && !this.hidden.has(s.id) && !this.on.has(s.id) && !this.invited.has(s.id));
-    return all.slice(0, limit).map((s) => ({ siteId: s.id, projectId: s.projectId, ownerId: s.ownerId, url: s.url ?? "", name: this.cards.get(s.id)?.name ?? "" }));
+    // Development and e2e have no real contacts: every owner counts as reachable here.
+    return all.slice(0, limit).map((s) => ({ siteId: s.id, projectId: s.projectId, ownerId: s.ownerId, url: s.url ?? "", name: this.cards.get(s.id)?.name ?? "", locale: "en" as const, reachable: true }));
   }
   async claimInvite(siteIds: string[]) {
     const fresh = siteIds.filter((id) => !this.invited.has(id));

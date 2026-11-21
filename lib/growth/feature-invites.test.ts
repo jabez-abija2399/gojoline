@@ -20,11 +20,11 @@ function fakeShowcase(list: InviteCandidate[]) {
   };
 }
 
-const site = (siteId: string, ownerId: string, name: string): InviteCandidate => ({ siteId, projectId: `p-${siteId}`, ownerId, name, url: `https://${siteId}.example` });
+const site = (siteId: string, ownerId: string, name: string, more: Partial<InviteCandidate> = {}): InviteCandidate => ({ siteId, projectId: `p-${siteId}`, ownerId, name, url: `https://${siteId}.example`, locale: "en", reachable: true, ...more });
 
 describe("feature invitations", () => {
   it("asks each owner once: Telegram in their language when linked, else email, else later", async () => {
-    const sc = fakeShowcase([site("s1", "tg-user", "Selam"), site("s2", "tg-user", "Selam 2"), site("s3", "mail-user", "Abebe"), site("s4", "phone-user", "Lulit")]);
+    const sc = fakeShowcase([site("s1", "tg-user", "Selam"), site("s2", "tg-user", "Selam 2"), site("s3", "mail-user", "", { locale: "am" }), site("s4", "phone-user", "Lulit"), site("s5", "nobody", "Hana", { reachable: false })]);
     const client = new MemoryTelegramClient();
     const email = new MemoryEmailSender();
     const audits: { ownerId: string; siteIds: string[]; channel: string }[] = [];
@@ -36,22 +36,30 @@ describe("feature invitations", () => {
       appUrl: "https://gojoline.example",
       audit: async (e: { ownerId: string; siteIds: string[]; channel: string }) => void audits.push(e),
     };
-    expect(await invitable(deps)).toBe(3);
+    expect(await invitable(deps)).toEqual({ reachable: 3, unreachable: 1 });
     expect(await inviteOwners(deps)).toEqual({ sent: 2, unreachable: 1 });
-    // Telegram: one message for both of the owner's sites, in Amharic, linking to the setting.
+    // Telegram: one message about the owner's newest site, in Amharic, quoting the real switch and linking to it.
     expect(client.sent).toHaveLength(1);
     expect(client.sent[0].chatId).toBe("42");
-    expect(client.sent[0].html).toContain("ድረ-ገጽዎ");
+    expect(client.sent[0].html).toContain("«Selam» (https://s1.example)");
+    expect(client.sent[0].html).toContain("ድረ-ገጼን በጎጆላይን ማሳያ ገጽና ልጥፎች ላይ አሳይ");
     expect(client.sent[0].html).toContain("https://gojoline.example/am/dashboard/p-s1?tab=settings#showcase");
+    // Email: both languages, each with its own link; no published name, so the address is named.
     expect(email.sent.map((m) => m.to)).toEqual(["owner@example.com"]);
-    expect([...sc.invited].sort()).toEqual(["s1", "s2", "s3"]);
+    expect(email.sent[0].subject).toBe("ድረ-ገጽዎን በጎጆላይን እናሳይ? · Feature your website on Gojoline?");
+    expect(email.sent[0].text).toContain("Your website at https://s3.example is live");
+    expect(email.sent[0].text).toContain("/en/dashboard/p-s3?tab=settings#showcase");
+    expect(email.sent[0].text).toContain("/am/dashboard/p-s3?tab=settings#showcase");
+    expect([...sc.invited].sort()).toEqual(["s1", "s3"]);
     expect(audits).toEqual([
-      { ownerId: "tg-user", siteIds: ["s1", "s2"], channel: "telegram" },
+      { ownerId: "tg-user", siteIds: ["s1"], channel: "telegram" },
       { ownerId: "mail-user", siteIds: ["s3"], channel: "email" },
     ]);
-    // Nobody is asked twice; the owner we couldn't reach is tried next time.
+    // Nobody is asked twice about a site; a later click may ask about the owner's other site.
+    expect(await inviteOwners(deps)).toEqual({ sent: 1, unreachable: 1 });
+    expect(client.sent).toHaveLength(2);
+    expect(client.sent[1].html).toContain("«Selam 2»");
     expect(await inviteOwners(deps)).toEqual({ sent: 0, unreachable: 1 });
-    expect(client.sent).toHaveLength(1);
   });
 
   it("never asks twice when two runs overlap, and doesn't email after a Telegram timeout", async () => {
