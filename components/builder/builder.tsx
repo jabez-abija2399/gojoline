@@ -67,7 +67,7 @@ interface Props {
   upgradeText: Messages["upgrade"];
   installText: InstallSheetText;
   /** "Show my site in the showcase and posts", offered after publishing. */
-  showcaseText?: { label: string; hint: string; saved: string; failed: string };
+  showcaseText?: { label: string; hint: string; saved: string; savedOff: string; failed: string };
 }
 
 /** The month the owner last closed the upgrade dialog; null when unknown or storage is blocked. */

@@ -21,7 +21,7 @@ interface Props {
   /** The Plan page, linked when the plan's live sites are all in use. */
   planHref?: string;
   /** "Show my site in the showcase and posts", offered once the site is live. */
-  showcase?: { label: string; hint: string; saved: string; failed: string };
+  showcase?: { label: string; hint: string; saved: string; savedOff: string; failed: string };
   /** Places the status line and the Publish button in the top bar. */
   children: (parts: { status: React.ReactNode; button: React.ReactNode }) => React.ReactNode;
 }

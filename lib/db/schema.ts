@@ -203,6 +203,11 @@ export const sites = pgTable(
     showcase: boolean("showcase").notNull().default(false),
     /** An admin hid it from the showcase (null = not hidden). */
     showcaseHiddenAt: timestamp("showcase_hidden_at", { withTimezone: true }),
+    /**
+     * When the owner opted in under the wording that includes Gojoline's social posts and videos
+     * (2026-11-21); null = not, or only to the showcase page under the earlier wording.
+     */
+    postsConsentAt: timestamp("posts_consent_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

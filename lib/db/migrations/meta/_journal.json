@@ -169,6 +169,13 @@
       "when": 1795232831467,
       "tag": "0023_social_posts",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1795237716534,
+      "tag": "0024_posts_consent",
+      "breakpoints": true
     }
   ]
 }

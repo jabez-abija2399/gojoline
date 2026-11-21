@@ -11,15 +11,25 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import http, { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import https from "node:https";
 import { chromium, type Browser } from "playwright-core";
 import sharp from "sharp";
+
+// One render at a time: no image cache kept between videos, no thread per core.
+sharp.cache(false);
+sharp.concurrency(1);
 import { allowedUrl, cardHtml, FPS, H, isPrivateAddress, pickStops, timeline, W, WINDOW, type RenderRequest, type Style } from "./lib.ts";
 
 const SECRET = process.env.RENDERER_SECRET ?? "";
 const PORT = Number(process.env.PORT) || 7071;
 const CHROMIUM = process.env.CHROMIUM_PATH ?? "/usr/bin/chromium";
-const LOGO = `data:image/svg+xml;base64,${readFileSync(new URL("./logo.svg", import.meta.url)).toString("base64")}`;
+const asset = (file: string, type: string) => `data:${type};base64,${readFileSync(new URL(file, import.meta.url)).toString("base64")}`;
+/** The logo in the video's language, and the brand's fonts (embedded in the cards). */
+const ASSETS = {
+  en: { logo: asset("./logo.svg", "image/svg+xml"), outfit: asset("./fonts/outfit-latin.woff2", "font/woff2"), ethiopic: asset("./fonts/noto-sans-ethiopic-core.woff2", "font/woff2") },
+  am: { logo: asset("./logo-am.svg", "image/svg+xml"), outfit: asset("./fonts/outfit-latin.woff2", "font/woff2"), ethiopic: asset("./fonts/noto-sans-ethiopic-core.woff2", "font/woff2") },
+};
 const MUSIC = new URL("./music.m4a", import.meta.url).pathname;
 /** Pages longer than this (CSS px) are cut: a video shows the top of a very long page. */
 const MAX_PAGE = 7000;
@@ -31,6 +41,54 @@ if (SECRET.length < 24) {
   console.error("RENDERER_SECRET is not set (24+ characters). Idle until then.");
   setInterval(() => undefined, 1 << 30);
   await new Promise(() => undefined);
+}
+
+/** Resolves a host and refuses private, loopback and metadata addresses; the connection then uses exactly the address checked. */
+function checkedLookup(host: string, opts: { all?: boolean } | number, cb: (err: Error | null, address: string | { address: string; family: number }[], family?: number) => void) {
+  // Node asks for every address (happy eyeballs) or for one: answer the way it asked.
+  const answer = (address: string, family: number) => (typeof opts === "object" && opts.all ? cb(null, [{ address, family }]) : cb(null, address, family));
+  if (DEV && (host === "localhost" || host === "127.0.0.1")) return answer("127.0.0.1", 4);
+  lookup(host, { all: true }).then(
+    (addrs) => {
+      const ok = addrs.length > 0 && addrs.every((a) => !isPrivateAddress(a.address));
+      if (!ok) return cb(new Error(`blocked address for ${host}`), "", 4);
+      answer(addrs[0].address, addrs[0].family);
+    },
+    (e: Error) => cb(e, "", 4),
+  );
+}
+
+const MAX_RESOURCE = 15 * 1024 * 1024;
+
+/**
+ * Fetches one browser request in Node (the browser never connects by itself): DNS pinned to the
+ * checked address, no redirects followed here (the browser asks again for the new address, which
+ * comes back through this same check), plain encoding, size and time limits.
+ */
+function pinnedFetch(url: URL, method: string, headers: Record<string, string>, body: Buffer | null, signal: AbortSignal): Promise<{ status: number; headers: Record<string, string>; body: Buffer }> {
+  return new Promise((resolve, reject) => {
+    const mod = url.protocol === "https:" ? https : http;
+    const h = { ...headers, "accept-encoding": "identity" };
+    delete (h as Record<string, string>).host;
+    const req = mod.request(url, { method, headers: h, lookup: checkedLookup as never, timeout: 20_000, signal }, (res) => {
+      const chunks: Buffer[] = [];
+      let size = 0;
+      res.on("data", (c: Buffer) => {
+        size += c.length;
+        if (size > MAX_RESOURCE) req.destroy(new Error("resource too large"));
+        else chunks.push(c);
+      });
+      res.on("end", () => {
+        const out: Record<string, string> = {};
+        for (const [k, v] of Object.entries(res.headers)) if (v !== undefined && k !== "content-encoding" && k !== "transfer-encoding" && k !== "content-length") out[k] = Array.isArray(v) ? v.join(", ") : v;
+        resolve({ status: res.statusCode ?? 502, headers: out, body: Buffer.concat(chunks) });
+      });
+      res.on("error", reject);
+    });
+    req.on("timeout", () => req.destroy(new Error("timeout")));
+    req.on("error", reject);
+    req.end(body ?? undefined);
+  });
 }
 
 const hostChecks = new Map<string, Promise<boolean>>();
@@ -48,22 +106,35 @@ function publicHost(host: string): Promise<boolean> {
   return p;
 }
 
-let browser: Browser | null = null;
-async function getBrowser() {
-  if (!browser?.isConnected()) browser = await chromium.launch({ executablePath: CHROMIUM, args: ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"] });
-  return browser;
+/** A fresh browser per video (closed as soon as the page is captured): no secrets in its environment, no WebRTC or DNS prefetch of its own. */
+function launchBrowser(): Promise<Browser> {
+  return chromium.launch({
+    executablePath: CHROMIUM,
+    env: { HOME: "/tmp", PATH: "/usr/bin:/bin", FONTCONFIG_PATH: "/etc/fonts" },
+    args: ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu", "--dns-prefetch-disable", "--force-webrtc-ip-handling-policy", "--webrtc-ip-handling-policy=disable_non_proxied_udp", "--disable-background-networking"],
+  });
 }
 
 /** The page as one tall screenshot at phone size (2× pixels), scaled to the window width, and where its sections start. */
-async function capture(req: RenderRequest): Promise<{ page: Buffer; height: number; stops: number[]; cards: Record<"intro" | "outro" | "chrome", Buffer> }> {
-  const b = await getBrowser();
-  const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, reducedMotion: "reduce", locale: req.lang === "am" ? "am-ET" : "en-US", serviceWorkers: "block" });
+async function capture(req: RenderRequest, signal: AbortSignal): Promise<{ page: Buffer; width: number; height: number; stops: number[]; cards: Record<"intro" | "outro" | "chrome", Buffer> }> {
+  const b = await launchBrowser();
+  const stop = () => void b.close().catch(() => undefined);
+  signal.addEventListener("abort", stop, { once: true });
+  // Captured at the window's own width (900 px = 390 CSS px × 2.31): no resizing, sharper text.
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: WINDOW.w / 390, reducedMotion: "reduce", locale: req.lang === "am" ? "am-ET" : "en-US", serviceWorkers: "block" });
   try {
+    await ctx.routeWebSocket(/.*/, (ws) => ws.close());
     await ctx.route("**/*", async (route) => {
-      const u = new URL(route.request().url());
+      const r = route.request();
+      const u = new URL(r.url());
       if (u.protocol === "data:" || u.protocol === "blob:") return route.continue();
-      const ok = (u.protocol === "https:" || u.protocol === "http:") && (!u.port || DEV) && (await publicHost(u.hostname));
-      return ok ? route.continue() : route.abort();
+      if ((u.protocol !== "https:" && u.protocol !== "http:") || (u.port && !DEV)) return route.abort();
+      try {
+        const res = await pinnedFetch(u, r.method(), await r.allHeaders(), r.postDataBuffer(), signal);
+        return route.fulfill({ status: res.status, headers: res.headers, body: res.body });
+      } catch {
+        return route.abort();
+      }
     });
     const page = await ctx.newPage();
     await page.goto(req.url, { waitUntil: "load", timeout: 45_000 });
@@ -80,38 +151,40 @@ async function capture(req: RenderRequest): Promise<{ page: Buffer; height: numb
     const height = Math.min(await page.evaluate(() => document.documentElement.scrollHeight), MAX_PAGE);
     const shot = await page.screenshot({ fullPage: true, clip: { x: 0, y: 0, width: 390, height }, type: "png" });
     const scale = WINDOW.w / 390;
-    const scaled = await sharp(shot).resize({ width: WINDOW.w }).png().toBuffer();
-    const meta = await sharp(scaled).metadata();
+    const meta = await sharp(shot).metadata();
     // The title cards and the frame, drawn by the same browser (real Amharic text shaping).
     const cardPage = await ctx.newPage();
     await cardPage.setViewportSize({ width: W, height: H });
     const cards = {} as Record<"intro" | "outro" | "chrome", Buffer>;
     for (const c of ["intro", "outro", "chrome"] as const) {
-      await cardPage.setContent(cardHtml(c, req, LOGO), { waitUntil: "load" });
+      await cardPage.setContent(cardHtml(c, req, ASSETS[req.lang]), { waitUntil: "load" });
+      await cardPage.evaluate(() => document.fonts.ready);
       cards[c] = await cardPage.screenshot({ type: "png", omitBackground: c === "chrome" });
     }
-    return { page: scaled, height: meta.height ?? Math.round(height * scale), stops: pickStops(sections, scale), cards };
+    return { page: shot, width: meta.width ?? WINDOW.w, height: meta.height ?? Math.round(height * scale), stops: pickStops(sections, scale), cards };
   } finally {
-    await ctx.close();
+    signal.removeEventListener("abort", stop);
+    await b.close().catch(() => undefined);
   }
 }
 
 /** Draws every frame and pipes them into ffmpeg (H.264, music under it, faded in and out). */
-async function render(req: RenderRequest): Promise<Buffer> {
+async function render(req: RenderRequest, signal: AbortSignal): Promise<Buffer> {
   const t0 = Date.now();
-  const { page, height, stops, cards } = await capture(req);
+  const { page, width, height, stops, cards } = await capture(req, signal);
   console.log(`captured in ${Date.now() - t0} ms (page ${height} px, ${stops.length} stops)`);
   const shots = timeline(req.style, height, stops);
   const seconds = shots.length / FPS;
   const raw = async (png: Buffer) => sharp(png).resize(W, H).removeAlpha().raw().toBuffer();
   const intro = await raw(cards.intro);
   const outro = await raw(cards.outro);
-  const bg = { create: { width: W, height: H, channels: 3 as const, background: "#FAF8F4" } };
+  const bg = { create: { width: W, height: H, channels: 3 as const, background: "#FBF9F6" } };
   const pageImg = sharp(page);
   // MP4 with its index at the front (plays while downloading) needs a seekable file.
   const dir = await mkdtemp(join(tmpdir(), "render-"));
   const outFile = join(dir, "video.mp4");
-  const ff = spawn("ffmpeg", [
+  // At low priority and two threads: the app and site builds share these two CPUs.
+  const ff = spawn("nice", ["-n", "10", "ffmpeg", "-threads", "2",
     "-v", "error", "-y",
     "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", `${W}x${H}`, "-r", String(FPS), "-i", "-",
     "-stream_loop", "-1", "-i", MUSIC,
@@ -119,7 +192,7 @@ async function render(req: RenderRequest): Promise<Buffer> {
     "-map", "[v]", "-map", "[a]",
     "-c:v", "libx264", "-preset", "veryfast", "-crf", "27", "-maxrate", "3M", "-bufsize", "6M", "-pix_fmt", "yuv420p", "-profile:v", "high",
     "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", "-shortest", outFile,
-  ], { stdio: ["pipe", "ignore", "pipe"] });
+  ], { stdio: ["pipe", "ignore", "pipe"], signal });
   const err: Buffer[] = [];
   ff.stderr.on("data", (d: Buffer) => err.push(d));
   const done = new Promise<void>((resolve, reject) => ff.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`ffmpeg ${code}: ${Buffer.concat(err).toString().slice(-400)}`)))));
@@ -131,7 +204,8 @@ async function render(req: RenderRequest): Promise<Buffer> {
       ff.stdin.write(buf, (e) => (e ? reject(e) : resolve()));
     });
   // Decode once: the page as raw rows, the frame (title, line, rounded window) drawn over the background.
-  const pageRaw = await pageImg.removeAlpha().raw().toBuffer();
+  // The capture is the window's width already; a rounding pixel is trimmed or padded here.
+  const pageRaw = await (width === WINDOW.w ? pageImg : pageImg.resize({ width: WINDOW.w })).removeAlpha().raw().toBuffer();
   const chrome = await sharp(cards.chrome).resize(W, H).png().toBuffer();
   const base = await sharp(bg).composite([{ input: chrome, left: 0, top: 0 }]).removeAlpha().raw().toBuffer();
   const spans = windowSpans();
@@ -200,6 +274,8 @@ function parse(body: string): RenderRequest | null {
   }
 }
 
+let running = 0;
+let waiting = 0;
 let queue: Promise<unknown> = Promise.resolve();
 
 createServer(async (req: IncomingMessage, res: ServerResponse) => {
@@ -215,16 +291,32 @@ createServer(async (req: IncomingMessage, res: ServerResponse) => {
   }
   const input = parse(Buffer.concat(chunks).toString());
   if (!input || !(await publicHost(new URL(input.url).hostname))) return void res.writeHead(400).end("bad request");
-  // One video at a time: Chromium and ffmpeg share a small server with the app.
-  const job = queue.then(() => render(input));
+  // One video at a time and at most one waiting: Chromium and ffmpeg share a small server with the app.
+  if (running + waiting >= 2) return void res.writeHead(503).end("busy");
+  const ac = new AbortController();
+  // The caller gave up: stop the work, never finish a video nobody receives.
+  res.on("close", () => !res.writableFinished && ac.abort());
+  waiting++;
+  const job = queue.then(async () => {
+    waiting--;
+    running++;
+    // The time limit counts from when this video starts, not while it waits.
+    const timer = setTimeout(() => ac.abort(new Error("render timed out")), 180_000);
+    try {
+      if (ac.signal.aborted) throw new Error("cancelled");
+      return await render(input, ac.signal);
+    } finally {
+      clearTimeout(timer);
+      running--;
+      hostChecks.clear();
+    }
+  });
   queue = job.catch(() => undefined);
   try {
-    const video = await Promise.race([job, new Promise<never>((_, reject) => setTimeout(() => reject(new Error("render timed out")), 240_000))]);
-    hostChecks.clear();
+    const video = await job;
     res.writeHead(200, { "Content-Type": "video/mp4", "Content-Length": video.length }).end(video);
   } catch (e) {
-    hostChecks.clear();
     console.error("render failed:", e instanceof Error ? e.message : e);
-    res.writeHead(502).end(e instanceof Error ? e.message.slice(0, 300) : "render failed");
+    if (!res.headersSent) res.writeHead(502).end(ac.signal.aborted ? "render stopped" : "render failed");
   }
 }).listen(PORT, () => console.log(`renderer on ${PORT}`));

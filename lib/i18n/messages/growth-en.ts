@@ -60,7 +60,7 @@ export const growthEn = {
     settingHint: "Your site's name, home page photo, kind of business and web address appear on Gojoline's public showcase page, and Gojoline may share your site (a short video of it scrolling) on its Telegram, Facebook, Instagram, TikTok and YouTube. You can switch it off at any time; nothing new is posted after that.",
     settingNeedsLive: "Publish your site first to show it in the showcase.",
     saved: "Saved.",
-    savedOff: "Saved. Your site is no longer in the showcase.",
+    savedOff: "Saved. Your site is no longer in the showcase, and nothing new will be posted about it.",
     failed: "Couldn't save. Please try again.",
     view: "See the showcase",
     metaTitle: "Showcase: sites made with Gojoline",

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, sql } from "drizzle-orm";
 import sharp from "sharp";
 import type { Database } from "@/lib/db/client";
 import { projects, sites, siteShowcase } from "@/lib/db/schema";
@@ -48,6 +48,8 @@ export interface ShowcaseStore {
   savePublished(ownerId: string, projectId: string, card: PublishedCard): Promise<void>;
   /** What the public page lists, newest first. */
   list(limit: number): Promise<ShowcaseEntry[]>;
+  /** Of those, the sites whose owners also agreed to Gojoline's posts and videos (current wording). */
+  postable(limit: number): Promise<ShowcaseEntry[]>;
   /** A thumbnail's bytes, only while a listed site uses it. */
   thumb(key: string): Promise<Buffer | null>;
   /** Every opted-in live site, hidden ones too (admin). */
@@ -99,7 +101,8 @@ export class DbShowcaseStore implements ShowcaseStore {
   }
 
   async setOptIn(ownerId: string, projectId: string, on: boolean) {
-    const rows = await this.db.update(sites).set({ showcase: on }).where(and(eq(sites.ownerId, ownerId), eq(sites.projectId, projectId))).returning({ id: sites.id });
+    // Opting in now agrees to the current wording (showcase and posts); opting out ends both.
+    const rows = await this.db.update(sites).set({ showcase: on, postsConsentAt: on ? new Date() : null }).where(and(eq(sites.ownerId, ownerId), eq(sites.projectId, projectId))).returning({ id: sites.id });
     return rows.length > 0;
   }
 
@@ -124,6 +127,11 @@ export class DbShowcaseStore implements ShowcaseStore {
 
   async list(limit: number) {
     const rows = await this.select().where(listed).orderBy(desc(sites.publishedAt)).limit(limit);
+    return rows.map((r) => this.toEntry(r));
+  }
+
+  async postable(limit: number) {
+    const rows = await this.select().where(and(listed, isNotNull(sites.postsConsentAt))).orderBy(desc(sites.publishedAt)).limit(limit);
     return rows.map((r) => this.toEntry(r));
   }
 
@@ -193,6 +201,10 @@ export class MemoryShowcaseStore implements ShowcaseStore {
   }
   async list(limit: number) {
     return (await this.entries()).filter((e) => this.isListed(e)).slice(0, limit).map(({ siteId, name, url, templateId, thumb, publishedAt }) => ({ siteId, name, url, templateId, thumb, publishedAt }));
+  }
+  async postable(limit: number) {
+    // Every opt-in here was made under the current wording.
+    return this.list(limit);
   }
   async thumb(key: string) {
     return (await this.entries()).find((e) => this.isListed(e) && e.thumb?.key === key)?.data ?? null;

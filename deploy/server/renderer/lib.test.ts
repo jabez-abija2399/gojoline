@@ -19,8 +19,8 @@ describe("timeline", () => {
   it("a spotlight stops at each section, and a short page never scrolls past its end", () => {
     const shots = timeline("spotlight", 6000, [1500, 3000, 9000]);
     const ys = new Set(shots.flatMap((s) => (s.kind === "page" ? [s.y] : [])));
-    expect(ys.has(1420)).toBe(true);
-    expect(ys.has(2920)).toBe(true);
+    expect(ys.has(1476)).toBe(true);
+    expect(ys.has(2976)).toBe(true);
     expect(ys.has(6000 - WINDOW.h)).toBe(true);
     expect(Math.max(...ys)).toBe(6000 - WINDOW.h);
     expect(timeline("tour", 800).filter((s) => s.kind === "page").every((s) => s.kind === "page" && s.y === 0)).toBe(true);
@@ -41,10 +41,13 @@ describe("addresses", () => {
 
 describe("cards and stops", () => {
   it("escapes the texts and sets the language", () => {
-    const html = cardHtml("intro", req, "data:image/svg+xml;base64,AA==");
+    const assets = { logo: "data:image/svg+xml;base64,AA==", outfit: "data:font/woff2;base64,AA==", ethiopic: "data:font/woff2;base64,AA==" };
+    const html = cardHtml("intro", req, assets);
     expect(html).toContain('lang="am"');
     expect(html).toContain("የዕለቱ &lt;አብነት&gt;");
-    expect(cardHtml("chrome", req, "")).toContain("gojoline.afridea.et");
+    expect(cardHtml("chrome", req, assets)).toContain("gojoline.afridea.et");
+    expect(html).toContain("#FBF9F6");
+    expect(html).toContain("font-family:Outfit");
   });
 
   it("prefers the useful sections (menu, booking, map) after the top", () => {

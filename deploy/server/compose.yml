@@ -12,11 +12,12 @@ services:
       # Site workspaces run in Docker through the runner; their previews live on their own origin.
       SANDBOX_RUNNER_URL: http://runner:7070
       CSP_FRAME_ORIGINS: https://*.preview.${APP_DOMAIN}
-      # Admin → Posts videos (deploy/server/renderer); its own secret, or the runner's until one is set.
+      # Admin → Posts videos (deploy/server/renderer), with their own secret (setup.sh makes it).
       RENDERER_URL: http://renderer:7071
-      RENDERER_SECRET: ${RENDERER_SECRET:-${SANDBOX_RUNNER_SECRET:-}}
+      RENDERER_SECRET: ${RENDERER_SECRET:-}
     restart: unless-stopped
     depends_on: [runner, renderer]
+    networks: [default, render]
     expose:
       - "3000"
     # Room for builds and site workspaces on the same 4 GB server.
@@ -54,20 +55,25 @@ services:
       options: { max-size: "10m", max-file: "5" }
 
   # Films public pages into post videos (Admin → Posts): Chromium + ffmpeg, one video at a time.
-  # No Docker access; every page request is checked against private addresses (server.ts).
+  # On its own network: only the app reaches it, never the runner (Docker) or the site workspaces.
+  # Every page request is fetched by Node with its address checked and pinned (server.ts), and
+  # the host firewall drops this network's traffic to private ranges (setup.sh).
   renderer:
     build: ./renderer
     image: gojoline-renderer
     restart: unless-stopped
+    networks: [render]
     environment:
-      RENDERER_SECRET: ${RENDERER_SECRET:-${SANDBOX_RUNNER_SECRET:-}}
+      RENDERER_SECRET: ${RENDERER_SECRET:-}
     expose:
       - "7071"
-    # Room for Chromium and ffmpeg while a video is made; idle it uses little.
-    mem_limit: 900m
-    shm_size: 256m
+    # One CPU at most and room for Chromium and ffmpeg while a video is made.
+    cpus: "1.0"
+    mem_limit: 700m
+    pids_limit: 512
     security_opt: ["no-new-privileges:true"]
     cap_drop: [ALL]
+    read_only: true
     tmpfs: [/tmp]
     logging:
       driver: json-file
@@ -97,6 +103,13 @@ services:
       options: { max-size: "10m", max-file: "5" }
 
 networks:
+  # The renderer's network: internet access for filming public pages, a fixed range so the host
+  # firewall can refuse its traffic to private addresses (setup.sh).
+  render:
+    name: gojoline-render
+    ipam:
+      config:
+        - subnet: 172.30.250.0/24
   # Site workspaces live here: no internet (internal), reachable only by Caddy for their previews.
   previews:
     name: gojoline-previews

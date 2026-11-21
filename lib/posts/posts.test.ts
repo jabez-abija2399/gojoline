@@ -222,23 +222,27 @@ describe("post videos", () => {
     expect(await makeVideo(d, site.id, "tour", "en")).toBeNull();
   });
 
-  it("the timed run makes the next approved post's video, and remembers a failure instead of retrying", async () => {
+  it("the timed run makes the next draft's video (seen before approval), never changes an approved post, and remembers a failure", async () => {
     const failing: VideoRenderer = { render: async () => Promise.reject(new Error("renderer 502")) };
-    const ok = new FakeVideoRenderer();
-    const d = deps({ video: ok });
-    const [p] = await d.store.createMany([{ day: "2026-11-24", time: "18:30", kind: "template", subject: "hotel", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "hotel" }, channels: ["telegram"] }]);
-    await d.store.update(p.id, { status: "approved" });
-    // 23 Nov, 10:00 Addis: due tomorrow, so its video is made now (the post itself isn't sent yet).
+    const d = deps({ video: new FakeVideoRenderer() });
+    const [approved, draft] = await d.store.createMany([
+      { day: "2026-11-24", time: "18:30", kind: "template", subject: "cafe", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "cafe" }, channels: ["telegram"] },
+      { day: "2026-11-25", time: "18:30", kind: "template", subject: "hotel", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "hotel" }, channels: ["telegram"] },
+    ]);
+    await d.store.update(approved.id, { status: "approved" });
+    // 23 Nov, 10:00 Addis: the draft due in two days gets its video; the approved post keeps its picture.
     expect(await runDue(d, Date.parse("2026-11-23T07:00:00Z"))).toMatchObject({ videos: 1, sent: 0 });
-    expect((await d.store.get(p.id))?.media?.type).toBe("video");
+    expect((await d.store.get(draft.id))?.media?.type).toBe("video");
+    expect((await d.store.get(approved.id))?.media?.type).toBe("template");
 
     const e = deps({ video: failing });
     const [q] = await e.store.createMany([{ day: "2026-11-24", time: "18:30", kind: "template", subject: "hotel", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "hotel" }, channels: ["telegram"] }]);
-    await e.store.update(q.id, { status: "approved" });
     await runDue(e, Date.parse("2026-11-23T07:00:00Z"));
     const after = await e.store.get(q.id);
     expect(after?.results.video).toMatchObject({ ok: false, error: "renderer 502" });
-    expect(after?.status).toBe("approved");
+    expect(after?.status).toBe("draft");
     expect(after?.media?.type).toBe("template");
+    // Not retried every 15 minutes.
+    expect(await runDue(e, Date.parse("2026-11-23T07:15:00Z"))).not.toHaveProperty("videos");
   });
 });

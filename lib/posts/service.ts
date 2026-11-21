@@ -9,6 +9,7 @@ import type { PostStore } from "./store";
 import { CHANNELS, type Channel, type ChannelResult, type PostMedia, type SocialPost } from "./types";
 import type { StorageProvider } from "@/lib/providers/storage/types";
 import type { VideoRenderer, VideoStyle } from "./video";
+import { getMessages } from "@/lib/i18n";
 
 /** The networks Gojoline can post to by itself today (the others get the posting kit). */
 export const AUTO_CHANNELS: readonly Channel[] = ["telegram"];
@@ -134,11 +135,6 @@ async function sendTo(deps: PostDeps, channel: Channel, post: SocialPost, media:
   throw new Error(`${channel}: not connected yet`);
 }
 
-/** What a video says, in the language asked for (the renderer only draws it). */
-const VIDEO_TEXT = {
-  en: { template: "Template of the day", site: "Site of the week", outroTitle: "Build your website by chatting.", outroSub: "Start free. Pay in Birr." },
-  am: { template: "የዕለቱ አብነት", site: "የሳምንቱ ድረ-ገጽ", outroTitle: "ድረ-ገጽዎን በመጻፍ ይሥሩ።", outroSub: "በነጻ ይጀምሩ፣ በብር ይክፈሉ።" },
-} as const;
 
 /**
  * Films the post's template demo or opted-in site into a video, keeps it as the post's media
@@ -149,7 +145,8 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
   const post = await deps.store.get(id);
   if (!post || post.status === "posted" || !post.subject) return null;
   const ctx = await deps.context();
-  const words = VIDEO_TEXT[lang];
+  // What the video says, in its language (the renderer only draws it).
+  const words = getMessages(lang).admin.posts.videoText;
   let url: string;
   let title: string;
   if (post.kind === "template") {
@@ -183,18 +180,7 @@ export const addisToday = () => addisNow(Date.now()).day;
 /** The timed run (every 15 minutes): sends approved posts whose day and time have come. */
 export async function runDue(deps: PostDeps, now: number): Promise<{ sent: number; failed: number; videos?: number }> {
   const { day, time } = addisNow(now);
-  // A video for the next approved template or site post that has only a picture (one per run: they take a minute).
-  let videos = 0;
-  if (deps.video) {
-    const soon = (await deps.store.due(addDays(day, 1))).find((p) => (p.kind === "template" || p.kind === "site") && p.media?.type !== "video" && !p.results.video);
-    if (soon) {
-      await makeVideo(deps, soon.id, "tour", "am").then(
-        () => videos++,
-        // Remembered so the run doesn't retry it every 15 minutes; the picture is used instead.
-        (e: unknown) => deps.store.saveResult(soon.id, "video", { ok: false, at: new Date(now).toISOString(), error: e instanceof Error ? e.message.slice(0, 200) : "failed" }),
-      );
-    }
-  }
+  // Posts whose time has come go first: a video can wait, a 09:00 post can't.
   const due = (await deps.store.due(day)).filter((p) => p.day < day || p.time <= time);
   let sent = 0;
   let failed = 0;
@@ -202,6 +188,19 @@ export async function runDue(deps: PostDeps, now: number): Promise<{ sent: numbe
     const after = await publishPost(deps, p.id);
     if (after?.status === "posted") sent++;
     else failed++;
+  }
+  // Then one video (they take a minute): for the next draft template or site post of the coming
+  // two days, so the admin sees the video before approving it. Approved posts keep what was approved.
+  let videos = 0;
+  if (deps.video) {
+    const soon = (await deps.store.between(day, addDays(day, 2))).find((p) => p.status === "draft" && (p.kind === "template" || p.kind === "site") && p.media?.type !== "video" && !p.results.video);
+    if (soon) {
+      await makeVideo(deps, soon.id, "tour", "am").then(
+        () => videos++,
+        // Remembered so the run doesn't retry it every 15 minutes; the picture is used instead.
+        (e: unknown) => deps.store.saveResult(soon.id, "video", { ok: false, at: new Date(now).toISOString(), error: e instanceof Error ? e.message.slice(0, 200) : "failed" }),
+      );
+    }
   }
   return { sent, failed, ...(videos ? { videos } : {}) };
 }

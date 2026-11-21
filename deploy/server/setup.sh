@@ -69,6 +69,11 @@ if ! grep -q '^SANDBOX_RUNNER_SECRET=.\+' .env; then
   sed -i '/^SANDBOX_RUNNER_SECRET=/d' .env
   echo "SANDBOX_RUNNER_SECRET=$(openssl rand -hex 32)" >> .env
 fi
+# The app and the video renderer have their own secret (never the runner's: the runner controls Docker).
+if ! grep -q '^RENDERER_SECRET=.\+' .env; then
+  sed -i '/^RENDERER_SECRET=/d' .env
+  echo "RENDERER_SECRET=$(openssl rand -hex 32)" >> .env
+fi
 # Without these the site can't start or (rate limits fail closed) nobody can sign in.
 missing=""
 for k in APP_DOMAIN DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL NEXT_PUBLIC_APP_URL UPSTASH_REDIS_REST_URL UPSTASH_REDIS_REST_TOKEN CRON_SECRET; do
@@ -85,11 +90,12 @@ echo "== 6/6 Build, start, then automatic updates (every 5 minutes), weekly refr
 install -m 0755 update.sh /usr/local/sbin/gojoline-update
 install -m 0755 daily.sh /usr/local/sbin/gojoline-daily
 install -m 0755 posts.sh /usr/local/sbin/gojoline-posts
-install -m 0644 gojoline-update.service gojoline-update.timer gojoline-daily.service gojoline-daily.timer gojoline-refresh.service gojoline-refresh.timer gojoline-posts.service gojoline-posts.timer /etc/systemd/system/
+install -m 0755 render-firewall.sh /usr/local/sbin/gojoline-render-firewall
+install -m 0644 gojoline-update.service gojoline-update.timer gojoline-daily.service gojoline-daily.timer gojoline-refresh.service gojoline-refresh.timer gojoline-posts.service gojoline-posts.timer gojoline-render-firewall.service /etc/systemd/system/
 systemctl daemon-reload
 echo "Building and starting (the first build takes 5 to 10 minutes)..."
 /usr/local/sbin/gojoline-update --force
 # Timers only after the first deploy, so two builds never overlap.
-systemctl enable --now gojoline-update.timer gojoline-daily.timer gojoline-refresh.timer gojoline-posts.timer
+systemctl enable --now gojoline-render-firewall.service gojoline-update.timer gojoline-daily.timer gojoline-refresh.timer gojoline-posts.timer
 echo
 echo "Done. Once DNS points here, check: curl -s https://$(grep ^APP_DOMAIN= .env | cut -d= -f2-)/api/health"

@@ -59,7 +59,7 @@ export default async function ProjectPage({ params, searchParams }: PageProps<"/
           locale={lang}
           projectId={id}
           t={t.builder}
-          showcaseText={{ label: t.growth.showcase.settingLabel, hint: t.growth.showcase.settingHint, saved: t.growth.showcase.saved, failed: t.growth.showcase.failed }}
+          showcaseText={{ label: t.growth.showcase.settingLabel, hint: t.growth.showcase.settingHint, saved: t.growth.showcase.saved, savedOff: t.growth.showcase.savedOff, failed: t.growth.showcase.failed }}
           siteName={project.name || t.builder.untitled}
           chrome={{
             home: t.common.homeLink,

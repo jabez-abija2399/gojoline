@@ -45,7 +45,7 @@ export function timeline(style: Style, pageH: number, stops: number[] = []): Sho
     let y = 0;
     hold({ kind: "page", y: 0 }, 1.6);
     for (const stop of stops.slice(0, 3)) {
-      const to = Math.min(maxY, Math.max(0, stop - 80));
+      const to = Math.min(maxY, Math.max(0, stop - 24));
       move(y, to, 0.9);
       hold({ kind: "page", y: to }, 2.4);
       y = to;
@@ -89,21 +89,34 @@ export function allowedUrl(raw: string): URL | null {
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-const BASE_CSS = `*{margin:0;box-sizing:border-box}html,body{width:${W}px;height:${H}px}body{font-family:"Noto Sans","Noto Sans Ethiopic",sans-serif;background:#FAF8F4;color:#121212;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 90px}`;
+/** Brand paper and muted ink (brand/tokens.css). */
+const PAPER = "#FBF9F6";
+const MUTED = "#5F5A53";
+
+/** The brand's fonts, embedded: Outfit for headings, Inter for text, Noto Sans Ethiopic for Amharic. */
+export interface CardAssets {
+  logo: string;
+  outfit: string;
+  ethiopic: string;
+}
+
+const baseCss = (a: CardAssets) =>
+  `@font-face{font-family:Outfit;src:url(${a.outfit}) format("woff2");font-weight:100 900}@font-face{font-family:GojoEthiopic;src:url(${a.ethiopic}) format("woff2");font-weight:400 700}*{margin:0;box-sizing:border-box}html,body{width:${W}px;height:${H}px}body{font-family:Inter,GojoEthiopic,"Noto Sans Ethiopic",sans-serif;background:${PAPER};color:#121212;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 90px}h1,b{font-family:Outfit,GojoEthiopic,"Noto Sans Ethiopic",sans-serif;font-weight:700}`;
 
 /** The opening and closing cards, and the frame around the scrolling site, as HTML pages. */
-export function cardHtml(card: "intro" | "outro" | "chrome", req: RenderRequest, logo: string): string {
+export function cardHtml(card: "intro" | "outro" | "chrome", req: RenderRequest, assets: CardAssets): string {
   const t = req.text;
-  const head = `<!doctype html><html lang="${req.lang}"><head><meta charset="utf-8"><style>${BASE_CSS}`;
+  const logo = assets.logo;
+  const head = `<!doctype html><html lang="${req.lang}"><head><meta charset="utf-8"><style>${baseCss(assets)}`;
   if (card === "intro") {
-    return `${head}.k{font-size:44px;font-weight:600;color:#5F5A53;margin-bottom:36px}.t{font-size:104px;line-height:1.08;font-weight:800;letter-spacing:-1px}.bar{width:96px;height:10px;border-radius:5px;background:#FF5B35;margin:56px auto 0}.logo{position:absolute;bottom:150px;width:380px}</style></head><body><p class="k">${esc(t.kicker)}</p><h1 class="t">${esc(t.title)}</h1><div class="bar"></div><img class="logo" src="${logo}" alt=""></body></html>`;
+    return `${head}.k{font-size:50px;font-weight:600;color:${MUTED};margin-bottom:36px}.t{font-size:104px;line-height:1.12;letter-spacing:-1px}.bar{width:96px;height:10px;border-radius:5px;background:#FF5B35;margin:56px auto 0}.logo{position:absolute;bottom:150px;width:380px}</style></head><body><p class="k">${esc(t.kicker)}</p><h1 class="t">${esc(t.title)}</h1><div class="bar"></div><img class="logo" src="${logo}" alt=""></body></html>`;
   }
   if (card === "outro") {
-    return `${head}.logo{width:520px;margin-bottom:90px}.t{font-size:84px;line-height:1.12;font-weight:800}.s{font-size:46px;color:#5F5A53;margin-top:40px}.u{margin-top:90px;background:#FF5B35;color:#121212;font-size:48px;font-weight:700;padding:30px 64px;border-radius:999px}</style></head><body><img class="logo" src="${logo}" alt=""><h1 class="t">${esc(t.outroTitle)}</h1><p class="s">${esc(t.outroSub)}</p><p class="u">${esc(t.footer)}</p></body></html>`;
+    return `${head}.logo{width:520px;margin-bottom:90px}.t{font-size:84px;line-height:1.15}.s{font-size:50px;color:${MUTED};margin-top:40px}.u{margin-top:90px;background:#FF5B35;color:#121212;font-size:48px;font-weight:700;padding:30px 64px;border-radius:999px}</style></head><body><img class="logo" src="${logo}" alt=""><h1 class="t">${esc(t.outroTitle)}</h1><p class="s">${esc(t.outroSub)}</p><p class="u">${esc(t.footer)}</p></body></html>`;
   }
   // The frame: a title above the window, a line below, and a transparent rounded window.
   const w = WINDOW;
-  return `${head}body{background:transparent;padding:0;display:block}.top{position:absolute;top:0;left:0;right:0;height:${w.y}px;background:#FAF8F4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}.top b{font-size:58px;font-weight:800;max-width:960px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.top span{font-size:34px;color:#5F5A53}.bottom{position:absolute;left:0;right:0;top:${w.y + w.h}px;bottom:0;background:#FAF8F4;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:600;color:#5F5A53}.win{position:absolute;left:${w.x - 1}px;top:${w.y - 1}px;width:${w.w + 2}px;height:${w.h + 2}px;border-radius:${w.radius}px;box-shadow:0 0 0 400px #FAF8F4, 0 0 0 2px #E9E4DC inset}</style></head><body><div class="win"></div><div class="top"><b>${esc(t.site)}</b><span>${esc(t.kicker)}</span></div><div class="bottom">${esc(t.footer)}</div></body></html>`;
+  return `${head}body{background:transparent;padding:0;display:block}.top{position:absolute;top:0;left:0;right:0;height:${w.y}px;background:${PAPER};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:0 60px}.top b{font-size:56px;line-height:1.1;max-width:960px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.top span{font-size:46px;font-weight:600;color:${MUTED}}.bottom{position:absolute;left:0;right:0;top:${w.y + w.h}px;bottom:0;background:${PAPER};display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:600;color:${MUTED}}.win{position:absolute;left:${w.x - 1}px;top:${w.y - 1}px;width:${w.w + 2}px;height:${w.h + 2}px;border-radius:${w.radius}px;box-shadow:0 0 0 400px ${PAPER}, 0 0 0 2px #E9E4DC inset}</style></head><body><div class="win"></div><div class="top"><b>${esc(t.site)}</b><span>${esc(t.kicker)}</span></div><div class="bottom">${esc(t.footer)}</div></body></html>`;
 }
 
 /** Sections worth stopping at in a spotlight: the useful ones first (menu, prices, booking, map). */

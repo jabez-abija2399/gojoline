@@ -170,7 +170,7 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
           {hidden}
           <label className="flex flex-col gap-1">
             <span className="text-sm font-medium">{t.videoStyle}</span>
-            <select name="style" defaultValue="tour" className="min-h-11 rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
+            <select name="style" defaultValue="tour" className="min-h-11 max-w-full rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
               <option value="tour">{t.videoStyles.tour}</option>
               <option value="spotlight">{t.videoStyles.spotlight}</option>
             </select>
@@ -178,8 +178,8 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
           <label className="flex flex-col gap-1">
             <span className="text-sm font-medium">{t.videoLang}</span>
             <select name="videoLang" defaultValue="am" className="min-h-11 rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
-              <option value="am">አማርኛ</option>
-              <option value="en">English</option>
+              <option value="am" lang="am">አማርኛ</option>
+              <option value="en" lang="en">English</option>
             </select>
           </label>
           <PostSubmit label={`${p.media?.type === "video" ? t.remakeVideo : t.makeVideo}: ${title}`} working={t.makingVideo} className={button}>

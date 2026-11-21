@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Database } from "@/lib/db/client";
 import { makeUser, testDb } from "@/test/db";
+import { eq } from "drizzle-orm";
+import { sites as sitesTable } from "@/lib/db/schema";
 import { DbProjectStore } from "@/lib/projects/db-store";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemoryProjectStore } from "@/lib/projects/memory-store";
@@ -85,6 +87,26 @@ describe("DbShowcaseStore (PGlite)", () => {
   });
   it("lists only opted-in, live, unhidden sites", async () => {
     await scenario(new DbShowcaseStore(db), new DbSiteStore(db), new DbProjectStore(db));
+  });
+
+  it("posts only sites opted in under the wording that includes posts; an older showcase-only yes is not enough", async () => {
+    const store = new DbShowcaseStore(db);
+    const sites = new DbSiteStore(db);
+    const projects = new DbProjectStore(db);
+    const p = await projects.createProject("alice", { name: "Selam", locale: "en" });
+    await sites.reserve("alice", p.id, "selam", "memory");
+    await sites.savePublished("alice", { projectId: p.id, slug: "selam", provider: "memory", providerProjectId: "prj", url: "https://selam.sites.example", publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+    await store.savePublished("alice", p.id, { name: "Selam", thumb: null });
+    // An opt-in from before the posts wording: showcase yes, posts no.
+    await db.update(sitesTable).set({ showcase: true, postsConsentAt: null }).where(eq(sitesTable.projectId, p.id));
+    expect(await store.list(10)).toHaveLength(1);
+    expect(await store.postable(10)).toEqual([]);
+    // Opting in now agrees to both; opting out ends both.
+    await store.setOptIn("alice", p.id, true);
+    expect(await store.postable(10)).toHaveLength(1);
+    await store.setOptIn("alice", p.id, false);
+    expect(await store.postable(10)).toEqual([]);
+    expect(await store.list(10)).toEqual([]);
   });
 });
 

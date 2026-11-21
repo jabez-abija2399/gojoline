@@ -359,13 +359,13 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     context: async () => ({
       templates: PRESET_IDS.map((id) => ({ id, name: presetName(id, "en"), nameAm: presetName(id, "am") })),
-      sites: ((await svc.growth.showcase?.list(60)) ?? []).map((e) => ({ siteId: e.siteId, name: e.name, url: e.url })),
+      sites: ((await svc.growth.showcase?.postable(60)) ?? []).map((e) => ({ siteId: e.siteId, name: e.name, url: e.url })),
     }),
     media: async (m) => {
       if (!m) return null;
       if (m.type === "template") return templatePicture(m.id);
       if (m.type === "site") {
-        const entry = ((await svc.growth.showcase?.list(60)) ?? []).find((e) => e.siteId === m.siteId);
+        const entry = ((await svc.growth.showcase?.postable(60)) ?? []).find((e) => e.siteId === m.siteId);
         const thumb = entry?.thumb ? await svc.growth.showcase?.thumb(entry.thumb.key) : null;
         return thumb ? { kind: "photo", data: await sharp(thumb).jpeg({ quality: 88 }).toBuffer(), name: "site.jpg" } : null;
       }
