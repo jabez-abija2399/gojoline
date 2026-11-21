@@ -349,6 +349,8 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
   return {
     store,
     files,
+    // Shared with the builder (Redis on the server): one post, and one plan, at a time.
+    lock: svc.builder?.lock ?? new MemoryLock(),
     captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
     telegram: svc.telegram && channelId ? { client: svc.telegram.client, channelId } : null,
     appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),

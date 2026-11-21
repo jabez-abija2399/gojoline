@@ -2,6 +2,7 @@ import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { services } from "@/lib/server/services";
+import { templatePreview } from "@/lib/posts/service";
 
 /** A post's picture or video, for the admin's preview and the posting kit (?download=1 saves it). */
 export async function GET(request: Request, ctx: RouteContext<"/api/admin/posts/[id]/media">) {
@@ -11,9 +12,14 @@ export async function GET(request: Request, ctx: RouteContext<"/api/admin/posts/
   if (!id.success) return new Response(null, { status: 404 });
   const deps = services().posts;
   const post = await deps.store.get(id.data);
+  const download = new URL(request.url).searchParams.get("download") === "1";
+  // The preview of a template post: the stored WebP as it is (small, no re-encoding).
+  if (post?.media?.type === "template" && !download) {
+    const webp = await templatePreview(post.media.id);
+    if (webp) return new Response(new Uint8Array(webp), { headers: { "Content-Type": "image/webp", "Cache-Control": "private, max-age=86400", "X-Content-Type-Options": "nosniff" } });
+  }
   const file = post ? await deps.media(post.media).catch(() => null) : null;
   if (!file) return new Response(null, { status: 404 });
-  const download = new URL(request.url).searchParams.get("download") === "1";
   return new Response(new Uint8Array(file.data), {
     headers: {
       "Content-Type": file.kind === "video" ? "video/mp4" : "image/jpeg",

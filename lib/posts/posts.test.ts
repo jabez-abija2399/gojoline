@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { MemoryTelegramClient } from "@/lib/telegram/client";
 import { MemoryStorageProvider } from "@/lib/providers/storage/memory";
+import { MemoryLock } from "@/lib/lock";
 import { cleanHashtags, PlainCaptionWriter, type CaptionWriter } from "./captions";
 import { isDigestTime, weeklyDigest } from "./digest";
 import { addDays, planDays, postText, trackedLink, type PlanContext } from "./plan";
@@ -20,6 +21,7 @@ function deps(over: Partial<PostDeps> = {}): PostDeps & { tg: MemoryTelegramClie
     context: async () => ctx,
     media: async (m) => (m ? { kind: "photo", data: Buffer.from("jpg"), name: "x.jpg" } : null),
     files: new MemoryStorageProvider(),
+    lock: new MemoryLock(),
     tg,
     ...over,
   };
@@ -108,6 +110,33 @@ describe("planAhead and publishing", () => {
     expect((await d.store.get(a.id))?.status).toBe("failed");
     expect((await d.store.get(a.id))?.results.telegram?.error).toContain("TELEGRAM_CHANNEL_ID");
     expect((await d.store.get(b.id))?.status).toBe("approved");
+  });
+
+  it("never sends a site of the week whose owner stopped showing it, and never sends a post twice at once", async () => {
+    let sites = [{ siteId: "s1", name: "Selam", url: "https://selam.example" }];
+    const d = deps({ context: async () => ({ ...ctx, sites }) });
+    const [p] = await d.store.createMany([{ day: "2026-11-25", time: "18:30", kind: "site", subject: "s1", captionEn: "Site of the week: Selam", captionAm: "ሰላም", hashtags: "#Gojoline", media: { type: "site", siteId: "s1" }, channels: ["telegram"] }]);
+    await d.store.update(p.id, { status: "approved" });
+    sites = [];
+    const after = await publishPost(d, p.id);
+    expect(d.tg.posts).toHaveLength(0);
+    expect(after).toMatchObject({ status: "failed", results: { telegram: { ok: false, error: "site no longer in the showcase" } } });
+
+    // Two sends at the same moment: one message.
+    sites = [{ siteId: "s1", name: "Selam", url: "https://selam.example" }];
+    const [q] = await d.store.createMany([{ day: "2026-11-25", time: "18:30", kind: "tip", subject: "tip-photos", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "#Gojoline", media: null, channels: ["telegram"] }]);
+    await d.store.update(q.id, { status: "approved" });
+    await Promise.all([publishPost(d, q.id), publishPost(d, q.id)]);
+    expect(d.tg.posts).toHaveLength(1);
+  });
+
+  it("an approved post with no automatic network fails once instead of staying due", async () => {
+    const d = deps();
+    const [p] = await d.store.createMany([{ day: "2026-11-23", time: "09:00", kind: "tip", subject: "tip-photos", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "#Gojoline", media: null, channels: [] }]);
+    await d.store.update(p.id, { status: "approved" });
+    await runDue(d, Date.parse("2026-11-23T08:00:00Z"));
+    expect((await d.store.get(p.id))?.status).toBe("failed");
+    expect(await d.store.due("2026-11-23")).toHaveLength(0);
   });
 
   it("knows Addis time and the Monday summary window", () => {

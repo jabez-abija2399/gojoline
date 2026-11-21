@@ -56,7 +56,7 @@ export async function savePost(form: FormData) {
   const { id, hashtags, ...rest } = parsed.data;
   await store.update(id, { ...rest, hashtags: hashtags ? cleanHashtags(hashtags) : "", channels });
   revalidatePath(`/${l}/admin`);
-  back(l, "ok", `#post-${id}`);
+  back(l, "ok", `&ps=saved#post-${id}`);
 }
 
 const act = z.object({ id: z.uuid(), action: z.enum(["approve", "unapprove", "skip", "post", "rewrite"]) });

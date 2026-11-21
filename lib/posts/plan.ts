@@ -63,7 +63,7 @@ export function planDays(input: { from: string; days: number; taken: Set<string>
 export function postFacts(post: Pick<SocialPost, "kind" | "subject">, ctx: PlanContext): { en: string; am: string } {
   if (post.kind === "template") {
     const t = ctx.templates.find((x) => x.id === post.subject);
-    return { en: `A ready-made design: "${t?.name ?? "Gojoline template"}". Start from it, then change anything by chatting.`, am: `የተዘጋጀ ዲዛይን፦ «${t?.name ?? "የጎጆላይን ቴምፕሌት"}»። ከሱ ይጀምሩ፣ ከዚያ ማንኛውንም ነገር በመጻፍ ይቀይሩ።` };
+    return { en: `A ready-made design: "${t?.name ?? "Gojoline template"}". Start from it, then change anything by chatting.`, am: `የተዘጋጀ ዲዛይን፦ «${t?.name ?? "የጎጆላይን አብነት"}»። ከሱ ይጀምሩ፣ ከዚያ ማንኛውንም ነገር በመጻፍ ይቀይሩ።` };
   }
   if (post.kind === "site") {
     const s = ctx.sites.find((x) => x.siteId === post.subject);

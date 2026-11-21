@@ -8,6 +8,9 @@ import { addisToday, AUTO_CHANNELS, readyChannels } from "@/lib/posts/service";
 import { CHANNELS, type Channel, type SocialPost } from "@/lib/posts/types";
 import { CopyButton } from "@/components/billing/copy-button";
 import { FocusOnMount } from "./focus-on-mount";
+import { PostSubmit } from "./post-submit";
+import { reportError } from "@/lib/observability/report";
+import { ChevronDown } from "lucide-react";
 
 type T = Messages["admin"]["posts"];
 const DONE = ["ok", "invalid", "failed", "not_found"] as const;
@@ -26,7 +29,9 @@ const button = "inline-flex min-h-11 items-center gap-1.5 rounded-lg border bord
 export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: Record<string, string | string[] | undefined> }) {
   const deps = services().posts;
   const today = addisToday();
-  const [upcoming, sent] = await Promise.all([deps.store.between(today, addDays(today, 13)), deps.store.history(20)]);
+  const loaded = await Promise.all([deps.store.between(today, addDays(today, 13)), deps.store.history(20)]).catch((e: unknown) => (reportError("posts load failed", e), null));
+  if (!loaded) return <p role="alert" className="rounded-xl bg-coral-soft p-4 text-destructive">{t.loadFailed}</p>;
+  const [upcoming, sent] = loaded;
   const ready = readyChannels(deps);
   const done = DONE.find((d) => d === sp.pd) ?? null;
   const planned = typeof sp.planned === "string" ? Number(sp.planned) : null;
@@ -38,12 +43,12 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
       {done && (
         <FocusOnMount>
           <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-2 font-medium ${done === "ok" ? "border border-lagoon bg-white text-lagoon" : "bg-coral-soft text-destructive"}`}>
-            {done === "ok" && planned !== null ? (planned > 0 ? format(t.planned, { n: planned }) : t.plannedNone) : t.done[done]}
+            {done === "ok" && planned !== null ? (planned > 1 ? format(t.planned, { n: planned }) : planned === 1 ? t.plannedOne : t.plannedNone) : done === "ok" && sp.ps === "saved" ? t.saved : t.done[done]}
           </p>
         </FocusOnMount>
       )}
       <section aria-labelledby="posts-setup" className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
-        <h2 id="posts-setup" className="sr-only">{t.plan}</h2>
+        <h2 id="posts-setup" className="sr-only">{t.setup}</h2>
         <p className="text-ink-muted">{t.intro}</p>
         <p className={`flex items-start gap-2 ${deps.telegram ? "text-ink" : "text-warning"}`}>
           {deps.telegram ? <CheckCircle2 aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-lagoon" /> : <XCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />}
@@ -52,10 +57,10 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
         <p className="text-xs text-ink-muted">{t.kitNote}</p>
         <form action={planWeek}>
           <input type="hidden" name="lang" value={lang} />
-          <button className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-ink px-4 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9">
+          <PostSubmit working={t.working} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-ink px-4 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9">
             <CalendarPlus aria-hidden="true" className="size-4" />
             {t.plan}
-          </button>
+          </PostSubmit>
         </form>
       </section>
 
@@ -86,7 +91,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${chip[p.status]}`}>{t.statuses[p.status]}</span>
                 </span>
                 <Results post={p} t={t} />
-                <span className="line-clamp-2 text-ink-muted">{p.captionEn}</span>
+                <span lang="en" className="line-clamp-2 text-ink-muted">{p.captionEn}</span>
               </li>
             ))}
           </ul>
@@ -117,14 +122,14 @@ function PostCard({ post: p, lang, t, ready, appUrl, title }: { post: SocialPost
       <input type="hidden" name="id" value={p.id} />
     </>
   );
-  const action = (name: string, label: string, Icon: typeof Send, primary = false) => (
+  const action = (name: string, label: string, Icon: typeof Send, opts: { strong?: boolean; confirm?: string } = {}) => (
     <form action={postAction}>
       {hidden}
       <input type="hidden" name="action" value={name} />
-      <button aria-label={`${label}: ${title}`} className={primary ? "inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-ink px-3 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9" : button}>
+      <PostSubmit label={`${label}: ${title}`} working={t.working} confirm={opts.confirm} className={opts.strong ? `${button} border-ink font-semibold` : button}>
         <Icon aria-hidden="true" className="size-4" />
         {label}
-      </button>
+      </PostSubmit>
     </form>
   );
   const manual = CHANNELS.filter((c) => !ready.includes(c));
@@ -140,28 +145,34 @@ function PostCard({ post: p, lang, t, ready, appUrl, title }: { post: SocialPost
       <div className="grid gap-3 sm:grid-cols-[8rem_1fr]">
         {mediaSrc && p.media?.type !== "video" ? (
           // eslint-disable-next-line @next/next/no-img-element -- an admin-only picture from our own route
-          <img src={mediaSrc} alt="" loading="lazy" className="aspect-[4/5] w-32 rounded-lg border border-line object-cover object-top" />
+          <img src={mediaSrc} alt={format(t.pictureFor, { day: title })} loading="lazy" className="aspect-[4/5] w-32 rounded-lg border border-line object-cover object-top" />
         ) : mediaSrc ? (
-          <video src={mediaSrc} controls preload="none" className="aspect-[9/16] w-32 rounded-lg border border-line bg-ink" />
+          <video src={mediaSrc} controls preload="none" aria-label={format(t.pictureFor, { day: title })} className="aspect-[9/16] w-full max-w-xs rounded-lg border border-line bg-ink sm:w-32" />
         ) : (
           <span className="flex aspect-[4/5] w-32 items-center justify-center rounded-lg border border-dashed border-line text-center text-xs text-ink-muted">{t.noMedia}</span>
         )}
         <div className="flex min-w-0 flex-col gap-2">
           <p lang="am" className="whitespace-pre-line">{p.captionAm}</p>
           <p lang="en" className="whitespace-pre-line text-ink-muted">{p.captionEn}</p>
-          <p className="text-xs text-ink-muted">{p.hashtags}</p>
+          <p lang="en" className="text-sm text-ink-muted">{p.hashtags}</p>
           <Results post={p} t={t} />
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
-        {p.status === "draft" && action("approve", t.approve, CheckCircle2, true)}
-        {p.status === "approved" && action("unapprove", t.unapprove, Undo2)}
-        {ready.length > 0 && p.channels.some((c) => AUTO_CHANNELS.includes(c)) && action("post", t.postNow, Send)}
+        {p.status === "draft" && action("approve", t.approve, CheckCircle2, { strong: true })}
+        {(p.status === "approved" || p.status === "skipped" || p.status === "failed") && action("unapprove", t.unapprove, Undo2)}
+        {ready.length > 0 && p.channels.some((c) => AUTO_CHANNELS.includes(c)) && action("post", t.postNow, Send, { confirm: t.postConfirm })}
         {action("rewrite", t.rewrite, Sparkles)}
         {p.status !== "skipped" && action("skip", t.skip, SkipForward)}
       </div>
-      <details className="rounded-lg border border-line">
-        <summary className="flex min-h-11 cursor-pointer items-center px-3 font-medium pointer-fine:min-h-9">{t.edit}</summary>
+      <details className="group rounded-lg border border-line">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-3 font-medium pointer-fine:min-h-9 [&::-webkit-details-marker]:hidden">
+          <span>
+            {t.edit}
+            <span className="sr-only">: {title}</span>
+          </span>
+          <ChevronDown aria-hidden="true" className="size-4 transition-transform group-open:rotate-180" />
+        </summary>
         <form action={savePost} className="flex flex-col gap-3 p-3">
           {hidden}
           <label className="flex flex-col gap-1">
@@ -194,11 +205,19 @@ function PostCard({ post: p, lang, t, ready, appUrl, title }: { post: SocialPost
               ))}
             </fieldset>
           )}
-          <button className="min-h-11 w-fit rounded-lg bg-ink px-4 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9">{t.save}</button>
+          <PostSubmit working={t.working} className="min-h-11 w-fit rounded-lg bg-ink px-4 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9">
+            {t.save}
+          </PostSubmit>
         </form>
       </details>
-      <details className="rounded-lg border border-line">
-        <summary className="flex min-h-11 cursor-pointer items-center px-3 font-medium pointer-fine:min-h-9">{t.kit}</summary>
+      <details className="group rounded-lg border border-line">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-3 font-medium pointer-fine:min-h-9 [&::-webkit-details-marker]:hidden">
+          <span>
+            {t.kit}
+            <span className="sr-only">: {title}</span>
+          </span>
+          <ChevronDown aria-hidden="true" className="size-4 transition-transform group-open:rotate-180" />
+        </summary>
         <div className="flex flex-col gap-3 p-3">
           {mediaSrc && (
             <a href={`${mediaSrc}?download=1`} className={`${button} w-fit`}>

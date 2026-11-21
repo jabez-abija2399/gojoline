@@ -14,6 +14,12 @@ export const AUTO_CHANNELS: readonly Channel[] = ["telegram"];
 
 export type MediaFile = { kind: "photo" | "video"; data: Buffer; name: string };
 
+/** One post at a time: a double click, or "Post now" during the timed run, never posts twice. */
+export interface PostLock {
+  acquire(key: string, ttlMs: number): Promise<string | null>;
+  release(key: string, token: string): Promise<void>;
+}
+
 export interface PostDeps {
   store: PostStore;
   captions: CaptionWriter;
@@ -26,6 +32,7 @@ export interface PostDeps {
   media(media: PostMedia): Promise<MediaFile | null>;
   /** Where rendered videos are kept (posts/<id>.mp4). */
   files: StorageProvider;
+  lock: PostLock;
 }
 
 /** Which automatic networks are ready (configured), for the admin page. */
@@ -35,6 +42,17 @@ export function readyChannels(deps: Pick<PostDeps, "telegram">): Channel[] {
 
 /** Draft posts, with captions, for each of the next `days` days (from `today`) that has none. */
 export async function planAhead(deps: PostDeps, adminId: string, today: string, days = 7): Promise<number> {
+  // One plan at a time (a double click or two admins): no duplicate days, no paying twice for captions.
+  const token = await deps.lock.acquire("posts:plan", 120_000);
+  if (!token) return 0;
+  try {
+    return await planLocked(deps, adminId, today, days);
+  } finally {
+    await deps.lock.release("posts:plan", token);
+  }
+}
+
+async function planLocked(deps: PostDeps, adminId: string, today: string, days: number): Promise<number> {
   const [existing, recentPosts, ctx] = await Promise.all([deps.store.between(today, addDays(today, days - 1)), deps.store.between(addDays(today, -60), addDays(today, -1)), deps.context()]);
   const taken = new Set(existing.filter((p) => p.status !== "skipped").map((p) => p.day));
   const recent = recentPosts.map((p) => p.subject).filter((s): s is string => !!s);
@@ -66,10 +84,34 @@ export async function rewriteCaption(deps: PostDeps, adminId: string, id: string
  * Never throws: a network's failure is saved as its result.
  */
 export async function publishPost(deps: PostDeps, id: string): Promise<SocialPost | null> {
+  const key = `post:${id}`;
+  const token = await deps.lock.acquire(key, 5 * 60_000);
+  if (!token) return deps.store.get(id);
+  try {
+    return await publishLocked(deps, id);
+  } finally {
+    await deps.lock.release(key, token);
+  }
+}
+
+async function publishLocked(deps: PostDeps, id: string): Promise<SocialPost | null> {
+  // Read again under the lock: another run may have just sent it.
   let post = await deps.store.get(id);
   if (!post || post.status === "skipped" || post.status === "draft") return post;
   const pending = post.channels.filter((c) => AUTO_CHANNELS.includes(c) && !post!.results[c]?.ok);
-  if (pending.length === 0) return post;
+  if (pending.length === 0) {
+    // Approved but nowhere to send it by itself (no automatic network ticked): not due forever.
+    if (post.status === "approved" && !Object.values(post.results).some((r) => r?.ok)) return deps.store.update(id, { status: "failed" });
+    return post;
+  }
+  // A site of the week only while its owner still shows it (opt-out, takedown or hide since planning).
+  if (post.kind === "site") {
+    const listed = (await deps.context()).sites.some((s) => s.siteId === post!.subject);
+    if (!listed) {
+      for (const channel of pending) post = (await deps.store.saveResult(id, channel, { ok: false, at: new Date().toISOString(), error: "site no longer in the showcase" })) ?? post;
+      return post;
+    }
+  }
   const media = await deps.media(post.media).catch(() => null);
   for (const channel of pending) {
     const result: ChannelResult = await sendTo(deps, channel, post, media).then(
@@ -112,12 +154,24 @@ export async function runDue(deps: PostDeps, now: number): Promise<{ sent: numbe
   return { sent, failed };
 }
 
-/** A template's phone screenshot (from the landing page's showcase shots) as JPEG for the networks. */
+/** A template's screenshot as it is stored (WebP), for the admin's preview: no re-encoding. */
+export async function templatePreview(id: string): Promise<Buffer | null> {
+  if (!/^[a-z-]+$/.test(id)) return null;
+  return readFile(join(process.cwd(), "public", "showcase", `${id}-en-top.webp`)).catch(() => null);
+}
+
+const jpegs = new Map<string, Buffer>();
+
+/** A template's phone screenshot (from the landing page's showcase shots), as JPEG for the networks (made once per template). */
 export async function templatePicture(id: string): Promise<MediaFile | null> {
   if (!/^[a-z-]+$/.test(id)) return null;
-  const file = await readFile(join(process.cwd(), "public", "showcase", `${id}-en-top.webp`)).catch(() => null);
-  if (!file) return null;
-  const data = await sharp(file).jpeg({ quality: 85 }).toBuffer();
+  let data = jpegs.get(id);
+  if (!data) {
+    const file = await readFile(join(process.cwd(), "public", "showcase", `${id}-en-top.webp`)).catch(() => null);
+    if (!file) return null;
+    data = await sharp(file).jpeg({ quality: 85 }).toBuffer();
+    jpegs.set(id, data);
+  }
   return { kind: "photo", data, name: `${id}.jpg` };
 }
 

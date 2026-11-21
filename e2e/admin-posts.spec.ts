@@ -8,6 +8,12 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await expect(page.getByRole("heading", { name: "Posts", level: 1 })).toBeVisible();
   await expect(page.getByText("Telegram channel: @gojoline_e2e")).toBeVisible();
   if (info.project.name === "mobile") {
+    // Phones, in Amharic, with the cards (planned by the desktop run or here) and their sections open.
+    await page.goto("/am/admin?tab=posts");
+    await page.getByRole("button", { name: "የሚቀጥሉትን 7 ቀናት ያቅዱ" }).click();
+    const first = page.locator("li[id^=post-]").first();
+    await expect(first).toBeVisible();
+    for (const s of await first.locator("summary").all()) await s.click();
     await expectNoHorizontalScroll(page);
     await expectNoSeriousA11yIssues(page);
     return;
@@ -20,19 +26,22 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await expect(page.locator("li[id^=post-] img").first()).toBeVisible();
 
   // Edit the Amharic caption and save.
-  await card.getByText("Edit", { exact: true }).click();
+  await card.locator("summary").filter({ hasText: "Edit" }).click();
   await card.getByLabel("Caption in Amharic").fill("ድረ-ገጽዎን በመጻፍ ይሥሩ።");
   await card.getByRole("button", { name: "Save" }).click();
+  await expect(page.locator("main").getByRole("status").filter({ hasText: /^Saved\.$/ })).toBeVisible();
   const id = await card.getAttribute("id");
   const same = page.locator(`li#${id}`);
   await expect(same).toContainText("ድረ-ገጽዎን በመጻፍ ይሥሩ።");
 
   // The posting kit has each network's text with its tracked link.
-  await same.getByText("Posting kit").click();
+  await same.locator("summary").filter({ hasText: "Posting kit" }).click();
   await expect(same.getByLabel("Text for TikTok")).toHaveValue(/utm_source=tiktok/);
   await expect(same.getByRole("link", { name: "Download the picture or video" })).toHaveAttribute("href", /\/api\/admin\/posts\/.+\/media\?download=1/);
 
   // Post now: approved and sent to the channel.
+  // Posting to the public channel asks first.
+  page.once("dialog", (d) => d.accept());
   await same.getByRole("button", { name: /^Post now/ }).click();
   await expect(page.locator("main").getByRole("status").filter({ hasText: /^Done\.$/ })).toBeVisible();
   await expect(page.getByRole("region", { name: "Sent" }).or(page.locator("section[aria-labelledby=posts-sent]"))).toContainText("Sent to Telegram");
