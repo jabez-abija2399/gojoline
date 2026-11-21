@@ -301,6 +301,25 @@ export const projectAssets = pgTable(
   (t) => [uniqueIndex("project_assets_name_uq").on(t.projectId, t.name)],
 );
 
+/**
+ * The picture on a site's card in the owner's "Your sites" list, from the newest version: the home
+ * page photo (~640 px WebP), colours and headline. Remade when the project changes.
+ */
+export const projectCards = pgTable("project_cards", {
+  projectId: uuid("project_id")
+    .primaryKey()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  ownerId: text("owner_id").notNull(),
+  versionNumber: integer("version_number").notNull(),
+  heading: text("heading"),
+  primaryColor: text("primary_color"),
+  backgroundColor: text("background_color"),
+  textColor: text("text_color"),
+  thumb: bytea("thumb"),
+  thumbKey: text("thumb_key"),
+  updatedAt: updatedAt(),
+});
+
 /** An owner's Telegram chat, linked through a one-time code from the dashboard. */
 export const telegramLinks = pgTable("telegram_links", {
   userId: text("user_id")

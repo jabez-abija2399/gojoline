@@ -48,6 +48,7 @@ import { DbCloudStore } from "@/lib/cloud/db-store";
 import { MemoryCloudStore } from "@/lib/cloud/memory-store";
 import type { CloudStore, SubmissionNotifier } from "@/lib/cloud/types";
 import { DbAssetStore, MemoryAssetStore } from "@/lib/cloud/assets";
+import { DbCardStore, MemoryCardStore } from "@/lib/projects/cards";
 import { BotApiClient, MemoryTelegramClient, type TelegramClient } from "@/lib/telegram/client";
 import { DbSiteSettingsStore, MemorySiteSettingsStore, type SiteSettingsStore } from "@/lib/site-info/store";
 import { MemoryVisitCounter, RedisVisitCounter } from "@/lib/visits/counter";
@@ -100,18 +101,19 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
   const db = getDb(env);
   const store = db ? new DbProjectStore(db) : new MemoryProjectStore();
   const assets = db ? new DbAssetStore(db) : new MemoryAssetStore();
+  const cards = db ? new DbCardStore(db) : new MemoryCardStore();
   if (isE2E(env)) {
-    return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock(), assets };
+    return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock(), assets, cards };
   }
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
   // Our own server (deploy/server): workspaces run in Docker through the runner.
   if (key && db && env.SANDBOX_RUNNER_URL && env.SANDBOX_RUNNER_SECRET) {
-    return { store, sandboxes: new DockerSandboxProvider({ url: env.SANDBOX_RUNNER_URL, secret: env.SANDBOX_RUNNER_SECRET }), llm: new AnthropicLLMProvider(key), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets };
+    return { store, sandboxes: new DockerSandboxProvider({ url: env.SANDBOX_RUNNER_URL, secret: env.SANDBOX_RUNNER_SECRET }), llm: new AnthropicLLMProvider(key), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets, cards };
   }
   if (!key || !env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID || !env.VERCEL_PROJECT_ID) {
     // With a database, owners still see their sites, dashboards and messages; building waits.
     if (!db) return null;
-    return { paused: true, store, sandboxes: new PausedSandboxProvider(), llm: new PausedLLMProvider(), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets };
+    return { paused: true, store, sandboxes: new PausedSandboxProvider(), llm: new PausedLLMProvider(), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets, cards };
   }
   return {
     store,
@@ -126,6 +128,7 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
     model: env.AGENT_MODEL || DEFAULT_MODEL,
     lock: pickLock(env),
     assets,
+    cards,
   };
 }
 

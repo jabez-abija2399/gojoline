@@ -15,6 +15,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
 import { showcaseSites } from "@/lib/landing/showcase";
 import { services } from "@/lib/server/services";
+import { ownerCards } from "@/lib/projects/cards";
 import { createProject } from "./actions";
 
 export async function generateMetadata({
@@ -44,12 +45,21 @@ export default async function ProjectsPage({
   const tooMany = (await searchParams).error === "too_many";
   const name = greetingName(user.name);
 
+  // The pictures on the cards: from each site's newest version, remade when it changes.
+  const pictures =
+    builder?.cards && owned.length > 0
+      ? await ownerCards({ store: builder.store, assets: builder.assets, cards: builder.cards }, user.id, owned.map(({ project }) => project)).catch(() => new Map())
+      : new Map();
   const cards: SiteCard[] = owned.map(({ project, site }) => ({
     id: project.id,
     name: project.name || b.untitled,
     status: site?.status === "taken_down" ? "taken_down" : liveAddress(site) ? "live" : "draft",
     address: liveAddress(site),
     changed: format(a.edited, { when: ago(project.updatedAt, lang) }),
+    picture: (() => {
+      const c = pictures.get(project.id);
+      return c ? { src: c.thumbKey ? `/api/projects/${project.id}/card?k=${c.thumbKey}` : null, heading: c.heading, colors: c.colors } : null;
+    })(),
   }));
 
   const sitesPanel =

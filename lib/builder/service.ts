@@ -7,6 +7,7 @@ import { agentSystemPrompt, userTurn } from "@/lib/agent/prompt";
 import type { LLMProvider, MessageParam } from "@/lib/providers/llm/types";
 import type { UsageLogger } from "@/lib/providers/llm/usage-log";
 import type { Lock } from "@/lib/lock";
+import type { CardStore } from "@/lib/projects/cards";
 import type { AssetStore } from "@/lib/cloud/assets";
 import { LazySiteSandbox } from "@/lib/providers/sandbox/lazy";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
@@ -36,6 +37,8 @@ export interface BuilderDeps {
   model: string;
   lock: Lock;
   assets?: AssetStore;
+  /** The pictures on the owner's site cards. */
+  cards?: CardStore;
   /**
    * AI changes (credits); when set, each request costs the changes for its size, given back
    * if the change fails on our side.

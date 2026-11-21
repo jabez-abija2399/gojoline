@@ -155,6 +155,13 @@
       "when": 1795080796163,
       "tag": "0021_analytics_daily",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1795230975271,
+      "tag": "0022_project_cards",
+      "breakpoints": true
     }
   ]
 }
