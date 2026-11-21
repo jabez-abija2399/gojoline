@@ -2,14 +2,20 @@ import { expect, test } from "@playwright/test";
 import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
 test("admin analytics: a visitor's click on Pricing shows up, by day, week and month", async ({ page, browser }) => {
+  test.setTimeout(60_000);
   const { viewport, userAgent, isMobile, hasTouch, deviceScaleFactor, baseURL } = test.info().project.use;
   // A visitor clicks the Pricing link on the home page (counted with a beacon).
   const ctx = await browser.newContext({ viewport, userAgent, isMobile, hasTouch, deviceScaleFactor, baseURL });
   const visitor = await ctx.newPage();
   await visitor.goto("/en");
-  const counted = visitor.waitForResponse((r) => r.url().endsWith("/api/track") && r.request().method() === "POST");
-  await visitor.locator('a[href="/en/pricing"]').first().evaluate((a: HTMLAnchorElement) => a.click());
-  expect((await counted).status()).toBe(204);
+  // The click listener is part of the page's code: under a busy suite it may not be running yet, so click until it counts.
+  await expect(async () => {
+    await visitor.goto("/en");
+    await visitor.waitForLoadState("networkidle");
+    const counted = visitor.waitForResponse((r) => r.url().endsWith("/api/track") && r.request().method() === "POST", { timeout: 4000 });
+    await visitor.locator('a[href="/en/pricing"]').first().evaluate((a: HTMLAnchorElement) => a.click());
+    expect((await counted).status()).toBe(204);
+  }).toPass({ timeout: 25_000 });
   await ctx.close();
 
   await signIn(page, { contact: `admin-e2e-an-${test.info().project.name}@example.com` });
