@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { AppShell } from "@/components/app/app-shell";
 import { BillingFlow } from "@/components/billing/billing-flow";
 import { Collapsible } from "@/components/billing/collapsible";
@@ -241,13 +240,13 @@ export default async function BillingPage({
                 </p>
               )}
             </div>
-            <Link
+            <a
               href={`/${lang}/billing?tab=pay&product=${latest.product}`}
               className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-ink px-4 text-sm font-semibold text-paper hover:bg-ink-hover lg:min-h-10"
             >
               <RotateCcw aria-hidden="true" className="size-4" />
               {b.pay.fixAgain}
-            </Link>
+            </a>
           </section>
         )}
         {banner === "approved" && latest && (

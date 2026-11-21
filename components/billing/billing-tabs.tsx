@@ -24,6 +24,8 @@ export function BillingTabs({ initial, label, names, children }: { initial: Bill
     setTab(next);
     const url = new URL(location.href);
     url.searchParams.set("tab", next);
+    // A product only means something on the Pay tab; don't carry a stale one in a shared link.
+    if (next !== "pay") url.searchParams.delete("product");
     url.hash = "";
     history.replaceState(null, "", url);
     // After React shows the panel: move focus (and the view) to what the person asked for.
@@ -31,7 +33,7 @@ export function BillingTabs({ initial, label, names, children }: { initial: Bill
       const el = focus ? document.getElementById(focus) : null;
       if (el) {
         el.focus({ preventScroll: true });
-        el.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+        el.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
       } else listRef.current?.scrollIntoView({ block: "nearest" });
     });
   };
@@ -49,7 +51,7 @@ export function BillingTabs({ initial, label, names, children }: { initial: Bill
 
   return (
     <Ctx.Provider value={{ tab, show }}>
-      <div ref={listRef} role="tablist" aria-label={label} onKeyDown={onKey} className="chips-scroll sticky top-0 z-10 -mx-4 flex gap-1 overflow-x-auto border-b border-line bg-paper/95 px-4 backdrop-blur sm:mx-0 sm:px-0">
+      <div ref={listRef} role="tablist" aria-label={label} onKeyDown={onKey} className="chips-scroll sticky top-[57px] z-10 -mx-4 flex gap-1 overflow-x-auto border-b border-line bg-paper px-4 sm:mx-0 sm:px-0 lg:top-0">
         {BILLING_TABS.map((x) => (
           <button
             key={x}
