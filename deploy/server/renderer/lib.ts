@@ -128,7 +128,7 @@ export function pickStops(sections: { top: number; text: string }[], scale: numb
 }
 
 /** Holiday greeting videos (Admin → Posts, holiday days): a drawn card, no web page involved. */
-export const MOTIFS = ["meskel", "flowers", "star", "water", "dawn", "crescent", "stripes", "sparkle"] as const;
+export const MOTIFS = ["meskel", "flowers", "star", "water", "dawn", "crescent", "mountains", "sparkle"] as const;
 export type Motif = (typeof MOTIFS)[number];
 export const GREETING_SECONDS = 8;
 
@@ -139,40 +139,62 @@ export interface GreetingRequest {
   text: { kicker: string; title: string; sub: string; footer: string };
 }
 
-const YELLOW = "#F6B91B";
-const daisy = (x: number, y: number, r: number, spin: string) =>
-  `<g transform="translate(${x} ${y})"><g style="transform:rotate(${spin});transform-box:fill-box;transform-origin:center">${Array.from({ length: 12 }, (_, i) => `<ellipse cx="0" cy="${-r * 0.62}" rx="${r * 0.2}" ry="${r * 0.42}" fill="${YELLOW}" transform="rotate(${i * 30})"/>`).join("")}</g><circle r="${r * 0.28}" fill="#C26A00"/></g>`;
+/**
+ * The illustration palette (docs/DECISIONS.md 2026-11-21): the brand's sun, coral and ink, plus
+ * one water blue and one wood brown for the pictures that need them. Never green, yellow and red
+ * together (brand/README.md).
+ */
+const SUN = "#FFD23F";
+const SUN_DEEP = "#D99A00";
+const CORAL = "#FF5B35";
+const INK = "#121212";
+const WATER = "#2F80C9";
+const WATER_LIGHT = "#8DC3EC";
+const WOOD = "#8A5A2B";
 
-/** Each holiday's picture, as SVG in a 900×900 box; `--e` (0→1, eased) grows it in. */
+const daisy = (x: number, y: number, r: number, spin: string) =>
+  `<g transform="translate(${x} ${y})"><g style="transform:rotate(${spin});transform-box:fill-box;transform-origin:center">${Array.from({ length: 12 }, (_, i) => `<ellipse cx="0" cy="${-r * 0.62}" rx="${r * 0.2}" ry="${r * 0.42}" fill="${SUN}" transform="rotate(${i * 30})"/>`).join("")}</g><circle r="${r * 0.28}" fill="${SUN_DEEP}"/></g>`;
+
+const flame = (x: number, y: number, h: number) => `<path d="M${x} ${y - h} C${x + h * 0.45} ${y - h * 0.45} ${x + h * 0.42} ${y} ${x} ${y} C${x - h * 0.42} ${y} ${x - h * 0.45} ${y - h * 0.45} ${x} ${y - h}Z" fill="${CORAL}"/><path d="M${x} ${y - h * 0.55} C${x + h * 0.2} ${y - h * 0.3} ${x + h * 0.2} ${y} ${x} ${y} C${x - h * 0.2} ${y} ${x - h * 0.2} ${y - h * 0.3} ${x} ${y - h * 0.55}Z" fill="${SUN}"/>`;
+
+/**
+ * Each holiday's picture, as SVG in a 900×900 box. It is there from the first frame (which
+ * networks use as the cover); `--e` (0→1, eased) only lets it settle.
+ */
 export function motifSvg(m: Motif): string {
-  const grow = (i: number) => `style="opacity:calc(min(1, max(0, var(--e) * 3 - ${i * 0.35})));transform:scale(calc(.8 + .2 * var(--e)));transform-box:fill-box;transform-origin:center"`;
+  const grow = (i: number) => `style="transform:scale(calc(${0.9 + i * 0.02} + ${0.1 - i * 0.02} * var(--e)));transform-box:fill-box;transform-origin:center"`;
   const spin = "calc(var(--t) * 40deg)";
   const parts: Record<Motif, string> = {
-    // Demera: the bonfire of sticks with its flame, and Meskel daisies around it.
-    meskel: `<g ${grow(0)}>${[-150, -90, -30, 30, 90, 150].map((x) => `<line x1="${450 + x * 1.6}" y1="760" x2="${450 + x * 0.15}" y2="300" stroke="#8A5A2B" stroke-width="22" stroke-linecap="round"/>`).join("")}<path d="M450 120 C520 220 590 260 560 360 C545 410 500 430 450 430 C400 430 355 410 340 360 C310 260 380 220 450 120Z" fill="#FF5B35"/><path d="M450 230 C485 290 515 310 500 360 C490 390 470 400 450 400 C430 400 410 390 400 360 C385 310 415 290 450 230Z" fill="${YELLOW}"/></g><g ${grow(1)}>${daisy(140, 790, 90, spin)}${daisy(760, 790, 90, spin)}${daisy(450, 840, 70, spin)}</g>`,
+    // Demera: the cone of poles topped by the cross (Meskel means cross), fire rising from the pile, Meskel daisies around.
+    meskel: `<g ${grow(0)}>${[-150, -90, -30, 30, 90, 150].map((x) => `<line x1="${450 + x * 1.5}" y1="740" x2="${450 + x * 0.1}" y2="260" stroke="${WOOD}" stroke-width="20" stroke-linecap="round"/>`).join("")}<g fill="${INK}"><rect x="438" y="110" width="24" height="170" rx="8"/><rect x="390" y="150" width="120" height="24" rx="8"/></g>${flame(360, 740, 170)}${flame(450, 745, 230)}${flame(540, 740, 170)}</g><g ${grow(1)}>${daisy(130, 780, 90, spin)}${daisy(770, 780, 90, spin)}${daisy(450, 810, 62, spin)}</g>`,
     // Adey Abeba, the New Year's yellow daisies.
     flowers: `<g ${grow(0)}>${daisy(450, 420, 230, spin)}</g><g ${grow(1)}>${daisy(170, 690, 130, spin)}${daisy(730, 690, 130, spin)}</g><g ${grow(2)}>${daisy(250, 200, 80, spin)}${daisy(680, 180, 90, spin)}</g>`,
     // A star of eight points with a soft glow.
-    star: `<g ${grow(0)}><circle cx="450" cy="450" r="330" fill="${YELLOW}" opacity=".18"/><circle cx="450" cy="450" r="220" fill="${YELLOW}" opacity=".22"/></g><g ${grow(1)}><path d="${Array.from({ length: 16 }, (_, i) => { const a = (Math.PI / 8) * i - Math.PI / 2; const r = i % 2 ? 140 : 300; return `${i ? "L" : "M"}${(450 + r * Math.cos(a)).toFixed(1)} ${(450 + r * Math.sin(a)).toFixed(1)}`; }).join(" ")}Z" fill="${YELLOW}" stroke="#C26A00" stroke-width="8" stroke-linejoin="round" style="transform:rotate(calc((1 - var(--e)) * -30deg));transform-box:fill-box;transform-origin:center"/></g>`,
+    star: `<g ${grow(0)}><circle cx="450" cy="450" r="330" fill="${SUN}" opacity=".18"/><circle cx="450" cy="450" r="220" fill="${SUN}" opacity=".22"/></g><g ${grow(1)}><path d="${Array.from({ length: 16 }, (_, i) => { const a = (Math.PI / 8) * i - Math.PI / 2; const r = i % 2 ? 140 : 300; return `${i ? "L" : "M"}${(450 + r * Math.cos(a)).toFixed(1)} ${(450 + r * Math.sin(a)).toFixed(1)}`; }).join(" ")}Z" fill="${SUN}" stroke="${SUN_DEEP}" stroke-width="8" stroke-linejoin="round" style="transform:rotate(calc((1 - var(--e)) * -30deg));transform-box:fill-box;transform-origin:center"/></g>`,
     // Water: waves and drops.
-    water: `${[0, 1, 2].map((i) => `<path ${grow(i)} d="M60 ${520 + i * 110} q97.5 -70 195 0 t195 0 t195 0 t195 0" fill="none" stroke="${["#1E88E5", "#42A5F5", "#90CAF9"][i]}" stroke-width="34" stroke-linecap="round"/>`).join("")}<g ${grow(1)}>${[[300, 240, 60], [470, 160, 80], [640, 270, 55]].map(([x, y, r]) => `<path d="M${x} ${y - r * 1.6} C${x + r} ${y - r * 0.4} ${x + r} ${y + r} ${x} ${y + r} C${x - r} ${y + r} ${x - r} ${y - r * 0.4} ${x} ${y - r * 1.6}Z" fill="#42A5F5"/>`).join("")}</g>`,
+    water: `${[0, 1, 2].map((i) => `<path ${grow(i)} d="M60 ${520 + i * 110} q97.5 -70 195 0 t195 0 t195 0 t195 0" fill="none" stroke="${[WATER, WATER, WATER_LIGHT][i]}" stroke-width="34" stroke-linecap="round" opacity="${[1, 0.75, 1][i]}"/>`).join("")}<g ${grow(1)}>${[[300, 240, 60], [470, 160, 80], [640, 270, 55]].map(([x, y, r]) => `<path d="M${x} ${y - r * 1.6} C${x + r} ${y - r * 0.4} ${x + r} ${y + r} ${x} ${y + r} C${x - r} ${y + r} ${x - r} ${y - r * 0.4} ${x} ${y - r * 1.6}Z" fill="${WATER}"/>`).join("")}</g>`,
     // A sun rising at dawn.
-    dawn: `<g ${grow(1)} style="transform:rotate(calc(var(--t) * 15deg));transform-box:fill-box;transform-origin:center">${Array.from({ length: 12 }, (_, i) => `<rect x="440" y="80" width="20" height="120" rx="10" fill="${YELLOW}" transform="rotate(${i * 30} 450 520)"/>`).join("")}</g><g ${grow(0)}><circle cx="450" cy="520" r="210" fill="${YELLOW}"/><circle cx="450" cy="520" r="210" fill="#FF5B35" opacity=".25"/></g><rect x="0" y="700" width="900" height="200" fill="${PAPER}"/><line x1="80" y1="700" x2="820" y2="700" stroke="#121212" stroke-width="10" stroke-linecap="round"/>`,
+    dawn: `<g ${grow(1)} style="transform:rotate(calc(var(--t) * 15deg));transform-box:fill-box;transform-origin:center">${Array.from({ length: 12 }, (_, i) => `<rect x="440" y="80" width="20" height="120" rx="10" fill="${SUN}" transform="rotate(${i * 30} 450 520)"/>`).join("")}</g><g ${grow(0)}><circle cx="450" cy="520" r="210" fill="${SUN}"/><circle cx="450" cy="520" r="210" fill="${CORAL}" opacity=".25"/></g><rect x="0" y="700" width="900" height="200" fill="${PAPER}"/><line x1="80" y1="700" x2="820" y2="700" stroke="${INK}" stroke-width="10" stroke-linecap="round"/>`,
     // A crescent moon and stars.
-    crescent: `<g ${grow(0)}><circle cx="420" cy="450" r="290" fill="${YELLOW}"/><circle cx="530" cy="390" r="250" fill="${PAPER}"/></g><g ${grow(1)}>${[[690, 250, 40], [760, 470, 28], [620, 640, 34]].map(([x, y, r]) => `<path d="M${x} ${y - r} L${x + r * 0.3} ${y - r * 0.3} L${x + r} ${y} L${x + r * 0.3} ${y + r * 0.3} L${x} ${y + r} L${x - r * 0.3} ${y + r * 0.3} L${x - r} ${y} L${x - r * 0.3} ${y - r * 0.3}Z" fill="${YELLOW}"/>`).join("")}</g>`,
-    // Green, yellow and red bands.
-    stripes: ["#078930", "#FCDD09", "#DA121A"].map((c, i) => `<path ${grow(i)} d="M40 ${340 + i * 130} C300 ${240 + i * 130} 600 ${440 + i * 130} 860 ${340 + i * 130}" fill="none" stroke="${c}" stroke-width="110" stroke-linecap="round"/>`).join(""),
+    crescent: `<g ${grow(0)}><circle cx="420" cy="450" r="290" fill="${SUN}"/><circle cx="530" cy="390" r="250" fill="${PAPER}"/></g><g ${grow(1)}>${[[690, 250, 40], [770, 460, 28], [730, 720, 30]].map(([x, y, r]) => `<path d="M${x} ${y - r} L${x + r * 0.3} ${y - r * 0.3} L${x + r} ${y} L${x + r * 0.3} ${y + r * 0.3} L${x} ${y + r} L${x - r * 0.3} ${y + r * 0.3} L${x - r} ${y} L${x - r * 0.3} ${y - r * 0.3}Z" fill="${SUN}"/>`).join("")}</g>`,
+    // The mountains of Adwa with the sun behind the ridge: remembrance, no flag.
+    mountains: `<g ${grow(0)}><circle cx="560" cy="430" r="150" fill="${SUN}"/></g><g ${grow(1)}><path d="M40 760 L230 400 L330 540 L470 300 L620 560 L700 450 L860 760Z" fill="${INK}"/></g><line x1="40" y1="760" x2="860" y2="760" stroke="${INK}" stroke-width="10" stroke-linecap="round"/>`,
     // Confetti for the new year.
-    sparkle: `<g ${grow(0)}>${Array.from({ length: 28 }, (_, i) => { const a = i * 2.39996; const r = 60 + (i * 13) % 330; const c = ["#FF5B35", YELLOW, "#1E88E5", "#078930"][i % 4]; return `<rect x="${(450 + r * Math.cos(a)).toFixed(0)}" y="${(450 + r * Math.sin(a)).toFixed(0)}" width="${18 + (i % 3) * 8}" height="${34 + (i % 4) * 8}" rx="6" fill="${c}" transform="rotate(${(i * 47) % 360} ${(450 + r * Math.cos(a)).toFixed(0)} ${(450 + r * Math.sin(a)).toFixed(0)})"/>`; }).join("")}</g>`,
+    sparkle: `<g ${grow(0)}>${Array.from({ length: 28 }, (_, i) => { const a = i * 2.39996; const r = 60 + (i * 13) % 330; const c = [CORAL, SUN, WATER, INK][i % 4]; return `<rect x="${(450 + r * Math.cos(a)).toFixed(0)}" y="${(450 + r * Math.sin(a)).toFixed(0)}" width="${18 + (i % 3) * 8}" height="${34 + (i % 4) * 8}" rx="6" fill="${c}" transform="rotate(${(i * 47) % 360} ${(450 + r * Math.cos(a)).toFixed(0)} ${(450 + r * Math.sin(a)).toFixed(0)})"/>`; }).join("")}</g>`,
   };
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900" aria-hidden="true">${parts[m]}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="600" height="600" overflow="visible" aria-hidden="true">${parts[m]}</svg>`;
 }
 
-/** The greeting card at time `--t` (0→1): the holiday's picture grows in, then the words. */
+/**
+ * The greeting card at time `--t` (0→1). Everything sits in one column that ends above the
+ * bottom fifth and keeps clear of the right edge (where Reels and TikTok put their captions and
+ * buttons); long titles get a smaller size so nothing runs into the logo.
+ */
 export function greetingHtml(req: GreetingRequest, assets: CardAssets): string {
   const t = req.text;
   const words = (from: number) => `opacity:calc(min(1, max(0, (var(--t) - ${from}) * 6)));transform:translateY(calc(max(0, 1 - (var(--t) - ${from}) * 6) * 40px))`;
-  return `<!doctype html><html lang="${req.lang}"><head><meta charset="utf-8"><style>${baseCss(assets)}:root{--t:0;--e:0}body{justify-content:flex-start;padding-top:170px}.m{width:900px;height:900px}.k{font-size:46px;font-weight:600;color:${MUTED};margin-top:30px;${words(0.18)}}.t{font-size:112px;line-height:1.08;letter-spacing:-1px;margin-top:22px;${words(0.24)}}.s{font-size:48px;line-height:1.3;color:${MUTED};margin-top:34px;max-width:880px;${words(0.32)}}.bar{width:96px;height:10px;border-radius:5px;background:#FF5B35;margin:48px auto 0;${words(0.36)}}.logo{position:absolute;bottom:120px;width:360px}.u{position:absolute;bottom:70px;font-size:36px;font-weight:600;color:${MUTED}}</style></head><body><div class="m">${motifSvg(req.motif)}</div><p class="k">${esc(t.kicker)}</p><h1 class="t">${esc(t.title)}</h1><p class="s">${esc(t.sub)}</p><div class="bar"></div><img class="logo" src="${assets.logo}" alt=""><p class="u">${esc(t.footer)}</p></body></html>`;
+  const size = t.title.length > 26 ? 76 : t.title.length > 16 ? 92 : 108;
+  return `<!doctype html><html lang="${req.lang}"><head><meta charset="utf-8"><style>${baseCss(assets)}:root{--t:0;--e:0}body{justify-content:flex-start;padding:120px 150px 0 90px}.m{width:600px;height:600px;flex:none}.k{font-size:44px;font-weight:600;color:${MUTED};margin-top:28px;${words(0.12)}}.t{font-size:${size}px;line-height:1.08;letter-spacing:-1px;margin-top:18px;max-width:840px;${words(0.18)}}.s{font-size:44px;line-height:1.3;color:${MUTED};margin-top:28px;max-width:800px;${words(0.26)}}.bar{width:96px;height:10px;border-radius:5px;background:${CORAL};margin:40px auto 0;flex:none;${words(0.3)}}.logo{width:300px;margin-top:64px}.u{font-size:34px;font-weight:600;color:${MUTED};margin-top:10px}</style></head><body><div class="m">${motifSvg(req.motif)}</div><p class="k">${esc(t.kicker)}</p><h1 class="t">${esc(t.title)}</h1><p class="s">${esc(t.sub)}</p><div class="bar"></div><img class="logo" src="${assets.logo}" alt=""><p class="u">${esc(t.footer)}</p></body></html>`;
 }
 
 /** Checks a greeting request from the app: a known picture, a language, short texts. */

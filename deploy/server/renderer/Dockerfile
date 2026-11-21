@@ -12,4 +12,5 @@ COPY fonts ./fonts
 ENV NODE_ENV=production CHROMIUM_PATH=/usr/bin/chromium
 USER node
 EXPOSE 7071
-CMD ["node", "server.ts"]
+# Low priority, inherited by Chromium and ffmpeg: the app and site builds share this server.
+CMD ["nice", "-n", "10", "node", "server.ts"]

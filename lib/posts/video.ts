@@ -13,7 +13,7 @@ export interface VideoRequest {
 }
 
 /** The holiday pictures the renderer can draw (deploy/server/renderer/lib.ts MOTIFS). */
-export type GreetingMotif = "meskel" | "flowers" | "star" | "water" | "dawn" | "crescent" | "stripes" | "sparkle";
+export type GreetingMotif = "meskel" | "flowers" | "star" | "water" | "dawn" | "crescent" | "mountains" | "sparkle";
 
 /** A holiday greeting video: a drawn card (the holiday's picture, then the words), no web page. */
 export interface GreetingRequest {

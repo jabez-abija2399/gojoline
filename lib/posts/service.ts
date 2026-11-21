@@ -191,7 +191,7 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
     // A holiday: the renderer draws the greeting card (no page to film).
     const m = MOMENTS.find((x) => x.id === post.subject);
     if (!m) return null;
-    const data = await deps.video.greeting({ lang, motif: m.motif, text: { kicker: words.greeting, title: m.title, sub: m.sub, footer: new URL(deps.appUrl).host } });
+    const data = await deps.video.greeting({ lang, motif: m.motif, text: { kicker: words.greeting, title: lang === "am" ? m.titleAm : m.title, sub: lang === "am" ? m.subAm : m.sub, footer: new URL(deps.appUrl).host } });
     const key = `posts/${post.id}-greeting-${lang}.mp4`;
     await deps.files.put(key, data, { contentType: "video/mp4" });
     return deps.store.update(id, { media: { type: "video", key } });

@@ -258,7 +258,7 @@ describe("post videos", () => {
     expect(meskel).toMatchObject({ kind: "moment", subject: "moment-meskel", media: null, channels: ["telegram", "instagram"] });
     // The timed run two days before makes its video.
     expect(await runDue(d, Date.parse("2026-09-25T07:00:00Z"))).toMatchObject({ videos: 1 });
-    expect(video.greetings[0]).toEqual({ lang: "en", motif: "meskel", text: { kicker: "From all of us at Gojoline", title: "Melkam Meskel!", sub: "Greetings to everyone celebrating.", footer: "gojoline.afridea.et" } });
+    expect(video.greetings[0]).toEqual({ lang: "en", motif: "meskel", text: { kicker: "From all of us at Gojoline", title: "Melkam Meskel!", sub: "Wishing everyone a bright and peaceful Meskel.", footer: "gojoline.afridea.et" } });
     expect((await d.store.get(meskel.id))?.media).toEqual({ type: "video", key: `posts/${meskel.id}-greeting-en.mp4` });
     // Without a renderer, a holiday is text only: no Instagram.
     const e = deps({ publishers: d.publishers });

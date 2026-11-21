@@ -120,6 +120,8 @@ async function capture(req: RenderRequest, signal: AbortSignal): Promise<{ page:
   const b = await launchBrowser();
   const stop = () => void b.close().catch(() => undefined);
   signal.addEventListener("abort", stop, { once: true });
+  // Cancelled while Chromium was starting: stop here.
+  if (signal.aborted) stop();
   // Captured at the window's own width (900 px = 390 CSS px × 2.31): no resizing, sharper text.
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: WINDOW.w / 390, reducedMotion: "reduce", locale: req.lang === "am" ? "am-ET" : "en-US", serviceWorkers: "block" });
   try {
@@ -195,7 +197,10 @@ async function render(req: RenderRequest, signal: AbortSignal): Promise<Buffer> 
   ], { stdio: ["pipe", "ignore", "pipe"], signal });
   const err: Buffer[] = [];
   ff.stderr.on("data", (d: Buffer) => err.push(d));
+  // An abort kills ffmpeg and emits "error": reported through "close", never an uncaught exception.
+  ff.on("error", () => undefined);
   const done = new Promise<void>((resolve, reject) => ff.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`ffmpeg ${code}: ${Buffer.concat(err).toString().slice(-400)}`)))));
+  done.catch(() => undefined);
   // ffmpeg stopping early shows up as a broken pipe here: report ffmpeg's reason, never crash.
   ff.stdin.on("error", () => undefined);
   const write = (buf: Buffer) =>
@@ -247,7 +252,9 @@ async function render(req: RenderRequest, signal: AbortSignal): Promise<Buffer> 
 
 /**
  * A holiday greeting: the card drawn in a browser with no network at all (every request is
- * refused), filmed frame by frame as its picture grows in and the words appear, then held.
+ * refused), filmed as its picture settles and the words appear, then held. Only the JPEG
+ * screenshots are kept (about 7 MB); ffmpeg doubles them to 30 fps and holds the last one after
+ * the browser has closed, so Chromium and ffmpeg never share the container's memory.
  */
 async function greeting(req: GreetingRequest, signal: AbortSignal): Promise<Buffer> {
   const t0 = Date.now();
@@ -255,58 +262,60 @@ async function greeting(req: GreetingRequest, signal: AbortSignal): Promise<Buff
   const stop = () => void b.close().catch(() => undefined);
   signal.addEventListener("abort", stop, { once: true });
   const frames: Buffer[] = [];
-  // Drawn at 15 frames a second for the first 4.5 s (each used twice), then the last one held.
-  const moving = Math.round(4.5 * 15);
+  const DRAWN_FPS = 15;
+  const moving = Math.round(4.5 * DRAWN_FPS);
   try {
+    if (signal.aborted) throw new Error("cancelled");
     const ctx = await b.newContext({ viewport: { width: W, height: H }, reducedMotion: "reduce", serviceWorkers: "block" });
     await ctx.routeWebSocket(/.*/, (ws) => ws.close());
     await ctx.route("**/*", (route) => (route.request().url().startsWith("data:") ? route.continue() : route.abort()));
     const page = await ctx.newPage();
     await page.setContent(greetingHtml(req, ASSETS[req.lang]), { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
-    for (let i = 0; i <= moving; i++) {
-      const t = i / moving;
+    for (let i = 0; i < moving; i++) {
+      if (signal.aborted) throw new Error("cancelled");
+      const t = i / (moving - 1);
       const e = 1 - (1 - Math.min(1, t * 1.6)) ** 3;
       await page.evaluate(([tt, ee]) => {
         document.documentElement.style.setProperty("--t", String(tt));
         document.documentElement.style.setProperty("--e", String(ee));
       }, [t, e] as const);
-      frames.push(await sharp(await page.screenshot({ type: "jpeg", quality: 92 })).removeAlpha().raw().toBuffer());
+      frames.push(await page.screenshot({ type: "jpeg", quality: 92 }));
     }
   } finally {
     signal.removeEventListener("abort", stop);
     await b.close().catch(() => undefined);
   }
   console.log(`greeting drawn in ${Date.now() - t0} ms`);
-  const total = GREETING_SECONDS * FPS;
-  const order: Buffer[] = [];
-  for (let i = 0; i < total; i++) order.push(frames[Math.min(frames.length - 1, Math.floor(i / 2))]);
-  return encode(order, signal);
+  if (signal.aborted) throw new Error("cancelled");
+  const hold = GREETING_SECONDS - frames.length / DRAWN_FPS;
+  return encode(["-f", "image2pipe", "-c:v", "mjpeg", "-framerate", String(DRAWN_FPS), "-i", "-"], `[0:v]tpad=stop_mode=clone:stop_duration=${hold.toFixed(2)},fps=${FPS},format=yuv420p`, GREETING_SECONDS, frames, signal);
 }
 
-/** Raw frames (rgb24, W×H, FPS) to an MP4 with the music under it, faded in and out. */
-async function encode(frames: Iterable<Buffer>, signal: AbortSignal): Promise<Buffer> {
-  const list = [...frames];
-  const seconds = list.length / FPS;
+/** Frames into an MP4 with the music under it, faded in and out; never crashes the process on an abort or a dead ffmpeg. */
+async function encode(input: string[], video: string, seconds: number, frames: Buffer[], signal: AbortSignal): Promise<Buffer> {
   const dir = await mkdtemp(join(tmpdir(), "render-"));
   const outFile = join(dir, "video.mp4");
-  const ff = spawn("nice", ["-n", "10", "ffmpeg", "-threads", "2",
+  const ff = spawn("nice", ["-n", "10", "ffmpeg", "-threads", "1",
     "-v", "error", "-y",
-    "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", `${W}x${H}`, "-r", String(FPS), "-i", "-",
+    ...input,
     "-stream_loop", "-1", "-i", MUSIC,
-    "-filter_complex", `[0:v]fade=t=out:st=${(seconds - 0.5).toFixed(2)}:d=0.5[v];[1:a]atrim=0:${seconds.toFixed(2)},afade=t=in:d=1,afade=t=out:st=${(seconds - 2).toFixed(2)}:d=2,volume=0.8[a]`,
+    "-filter_complex", `${video},fade=t=out:st=${(seconds - 0.5).toFixed(2)}:d=0.5[v];[1:a]atrim=0:${seconds.toFixed(2)},afade=t=in:d=1,afade=t=out:st=${(seconds - 2).toFixed(2)}:d=2,volume=0.8[a]`,
     "-map", "[v]", "-map", "[a]",
     "-c:v", "libx264", "-preset", "veryfast", "-crf", "27", "-maxrate", "3M", "-bufsize", "6M", "-pix_fmt", "yuv420p", "-profile:v", "high",
-    "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", "-shortest", outFile,
+    "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", "-t", seconds.toFixed(2), outFile,
   ], { stdio: ["pipe", "ignore", "pipe"], signal });
   const err: Buffer[] = [];
   ff.stderr.on("data", (d: Buffer) => err.push(d));
-  const done = new Promise<void>((resolve, reject) => ff.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`ffmpeg ${code}: ${Buffer.concat(err).toString().slice(-400)}`)))));
+  // An abort kills ffmpeg and emits "error": reported through "close" below, never an uncaught exception.
+  ff.on("error", () => undefined);
   ff.stdin.on("error", () => undefined);
+  const done = new Promise<void>((resolve, reject) => ff.on("close", (code) => (code === 0 ? resolve() : reject(new Error(signal.aborted ? "cancelled" : `ffmpeg ${code}: ${Buffer.concat(err).toString().slice(-400)}`)))));
+  done.catch(() => undefined);
   try {
-    for (const f of list) {
+    for (const f of frames) {
       if (ff.exitCode !== null || ff.stdin.destroyed) break;
-      await new Promise<void>((resolve, reject) => ff.stdin.write(f, (e) => (e ? reject(e) : resolve())));
+      await new Promise<void>((resolve) => ff.stdin.write(f, () => resolve()));
     }
     ff.stdin.end();
     await done;

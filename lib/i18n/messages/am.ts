@@ -1052,7 +1052,7 @@ export const am: Messages = {
       makeVideo: "ቪዲዮ ሥራ",
       remakeVideo: "ቪዲዮውን እንደገና ሥራ",
       makingVideo: "ቪዲዮው እየተሠራ ነው… አንድ ደቂቃ ያህል",
-      videoText: { greeting: "ከሁላችንም በጎጆላይን", demo: "አንድ መልእክት። አንድ ድረ-ገጽ።", template: "የዕለቱ አብነት", site: "የሳምንቱ ድረ-ገጽ", outroTitle: "ድረ-ገጽዎን በውይይት ይሥሩ።", outroSub: "በነጻ ይጀምሩ፣ በብር ይክፈሉ።" },
+      videoText: { greeting: "ከጎጆላይን ቤተሰብ", demo: "አንድ መልእክት። አንድ ድረ-ገጽ።", template: "የዕለቱ አብነት", site: "የሳምንቱ ድረ-ገጽ", outroTitle: "ድረ-ገጽዎን በውይይት ይሥሩ።", outroSub: "በነጻ ይጀምሩ፣ በብር ይክፈሉ።" },
       result: { ok: "ወደ {channel} ተልኳል", failed: "ወደ {channel} መላክ አልተሳካም፦ {error}" },
       channels: { telegram: "ቴሌግራም", facebook: "ፌስቡክ", instagram: "ኢንስታግራም", tiktok: "ቲክቶክ", youtube: "ዩቲዩብ", video: "ቪዲዮ" },
       done: { ok: "ተከናውኗል።", invalid: "እባክዎ መስኮቹን ይፈትሹ።", failed: "አልሰራም። እባክዎ እንደገና ይሞክሩ።", not_found: "ይህ ልጥፍ ከአሁን በኋላ የለም።" },
