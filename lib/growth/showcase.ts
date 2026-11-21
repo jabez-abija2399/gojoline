@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { and, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import sharp from "sharp";
 import type { Database } from "@/lib/db/client";
-import { projects, sites, siteShowcase } from "@/lib/db/schema";
+import { abuseReports, projects, sites, siteShowcase } from "@/lib/db/schema";
 import type { ProjectStore } from "@/lib/projects/types";
 import type { Site, SiteAdminStore, SiteStore } from "@/lib/sites/types";
 
@@ -67,8 +67,10 @@ export interface ShowcaseStore {
   setHidden(siteId: string, hidden: boolean): Promise<boolean>;
   /** Live, online, not hidden sites without posts consent whose owner was never invited, newest first. */
   invitable(limit: number): Promise<InviteCandidate[]>;
-  /** Records that these sites' owners were asked (so nobody is asked twice). */
-  markInvited(siteIds: string[]): Promise<void>;
+  /** Marks these sites as asked, before the message goes out; returns only those this call marked (a parallel run gets none). */
+  claimInvite(siteIds: string[]): Promise<string[]>;
+  /** Undoes a claim when the message couldn't be sent, so a later click tries again. */
+  releaseInvite(siteIds: string[]): Promise<void>;
 }
 
 type Text = string | { en?: string; am?: string } | undefined;
@@ -173,19 +175,36 @@ export class DbShowcaseStore implements ShowcaseStore {
 
   async invitable(limit: number) {
     const rows = await this.db
-      .select({ siteId: sites.id, projectId: sites.projectId, ownerId: sites.ownerId, url: sites.url, card: siteShowcase.name, project: projects.name })
+      .select({ siteId: sites.id, projectId: sites.projectId, ownerId: sites.ownerId, url: sites.url, card: siteShowcase.name })
       .from(sites)
-      .innerJoin(projects, eq(projects.id, sites.projectId))
       .leftJoin(siteShowcase, eq(siteShowcase.siteId, sites.id))
-      .where(and(eq(sites.status, "published"), isNull(sites.offlineAt), isNull(sites.showcaseHiddenAt), isNull(sites.postsConsentAt), isNull(sites.featureInvitedAt), isNotNull(sites.url)))
+      .where(
+        and(
+          eq(sites.status, "published"),
+          isNull(sites.offlineAt),
+          isNull(sites.showcaseHiddenAt),
+          isNull(sites.postsConsentAt),
+          isNull(sites.featureInvitedAt),
+          isNotNull(sites.url),
+          // Not while a report about the site is waiting for review.
+          sql`not exists (select 1 from ${abuseReports} where ${abuseReports.siteId} = ${sites.id} and ${abuseReports.status} = 'open')`,
+        ),
+      )
       .orderBy(desc(sites.publishedAt))
       .limit(limit);
-    return rows.map((r) => ({ siteId: r.siteId, projectId: r.projectId, ownerId: r.ownerId, url: r.url ?? "", name: r.card ?? r.project }));
+    // The name only from the published card (never the draft project's name); else the address is used.
+    return rows.map((r) => ({ siteId: r.siteId, projectId: r.projectId, ownerId: r.ownerId, url: r.url ?? "", name: r.card ?? "" }));
   }
 
-  async markInvited(siteIds: string[]) {
+  async claimInvite(siteIds: string[]) {
+    if (siteIds.length === 0) return [];
+    const rows = await this.db.update(sites).set({ featureInvitedAt: new Date() }).where(and(inArray(sites.id, siteIds), isNull(sites.featureInvitedAt))).returning({ id: sites.id });
+    return rows.map((r) => r.id);
+  }
+
+  async releaseInvite(siteIds: string[]) {
     if (siteIds.length === 0) return;
-    await this.db.update(sites).set({ featureInvitedAt: new Date() }).where(and(inArray(sites.id, siteIds), isNull(sites.featureInvitedAt)));
+    await this.db.update(sites).set({ featureInvitedAt: null }).where(inArray(sites.id, siteIds));
   }
 }
 
@@ -251,10 +270,14 @@ export class MemoryShowcaseStore implements ShowcaseStore {
   }
   async invitable(limit: number) {
     const all = (await this.sites.recent(1000)).filter((s) => s.status === "published" && !s.offlineAt && !!s.url && !this.hidden.has(s.id) && !this.on.has(s.id) && !this.invited.has(s.id));
-    const out = await Promise.all(all.map(async (s) => ({ siteId: s.id, projectId: s.projectId, ownerId: s.ownerId, url: s.url ?? "", name: this.cards.get(s.id)?.name ?? (await this.projects.getProject(s.ownerId, s.projectId))?.name ?? "" })));
-    return out.slice(0, limit);
+    return all.slice(0, limit).map((s) => ({ siteId: s.id, projectId: s.projectId, ownerId: s.ownerId, url: s.url ?? "", name: this.cards.get(s.id)?.name ?? "" }));
   }
-  async markInvited(siteIds: string[]) {
-    for (const id of siteIds) this.invited.add(id);
+  async claimInvite(siteIds: string[]) {
+    const fresh = siteIds.filter((id) => !this.invited.has(id));
+    for (const id of fresh) this.invited.add(id);
+    return fresh;
+  }
+  async releaseInvite(siteIds: string[]) {
+    for (const id of siteIds) this.invited.delete(id);
   }
 }

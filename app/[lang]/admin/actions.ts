@@ -394,8 +394,16 @@ export async function inviteOwnersToFeature(form: FormData) {
   if (showcase) {
     try {
       const { email, telegram, appUrl } = paymentNotices();
-      const r = await inviteOwners({ showcase, email, telegram: telegram ?? null, contactFor: (id) => svc.billing.store().contactFor(id), appUrl });
-      await svc.billing.store().audit({ actorId: me.id, action: "showcase.invited", targetType: "showcase", targetId: "invites", data: { ...r } });
+      const store = svc.billing.store();
+      const r = await inviteOwners({
+        showcase,
+        email,
+        telegram: telegram ?? null,
+        contactFor: (id) => store.contactFor(id),
+        appUrl,
+        // One row per owner messaged, written as it happens (a later failure can't lose it).
+        audit: ({ ownerId, siteIds, channel }) => store.audit({ actorId: me.id, action: "showcase.invited", targetType: "user", targetId: ownerId, data: { siteIds, channel } }),
+      });
       query = `fi=ok&sent=${r.sent}&unreachable=${r.unreachable}`;
     } catch (error) {
       reportError("feature invites failed", error);

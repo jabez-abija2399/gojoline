@@ -15,6 +15,8 @@ export interface InviteDeps {
   telegram: { store: TelegramStore; client: TelegramClient } | null;
   contactFor(userId: string): Promise<{ email: string | null } | null>;
   appUrl: string;
+  /** One audit row per owner messaged (which sites, which channel). */
+  audit?(entry: { ownerId: string; siteIds: string[]; channel: "telegram" | "email" }): Promise<void>;
 }
 
 export interface InviteResult {
@@ -24,8 +26,12 @@ export interface InviteResult {
   unreachable: number;
 }
 
-/** At most this many owners per click, so a click stays quick and Telegram's limits are respected. */
+/** At most this many messages, and owners tried, per click: a click stays quick and within Telegram's limits. */
 export const INVITE_BATCH = 40;
+const TRY_LIMIT = 100;
+
+/** Telegram said the chat is gone (bot blocked, chat deleted): email is the way then. A timeout may have delivered. */
+const telegramGone = (e: unknown) => /blocked|chat not found|deactivated|forbidden|kicked/i.test(e instanceof Error ? e.message : String(e));
 
 export function inviteText(name: string, link: string) {
   return {
@@ -45,34 +51,43 @@ export async function inviteOwners(deps: InviteDeps): Promise<InviteResult> {
   for (const c of candidates) byOwner.set(c.ownerId, [...(byOwner.get(c.ownerId) ?? []), c]);
   let sent = 0;
   let unreachable = 0;
+  let tried = 0;
   for (const [ownerId, sites] of byOwner) {
-    if (sent >= INVITE_BATCH) break;
+    if (sent >= INVITE_BATCH || tried >= TRY_LIMIT) break;
+    tried++;
+    // Claimed before sending: a second click or a second admin running now can't ask the same owner again.
+    const claimed = await deps.showcase.claimInvite(sites.map((s) => s.siteId));
+    if (claimed.length === 0) continue;
     const site = sites[0];
-    const tg = deps.telegram ? await deps.telegram.store.byUser(ownerId).catch(() => null) : null;
-    const locale = tg?.locale ?? "en";
-    const link = `${deps.appUrl}/${locale}/dashboard/${site.projectId}?tab=settings#showcase`;
-    const text = inviteText(site.name || site.url, link);
-    let ok = false;
-    if (tg && deps.telegram) {
-      ok = await deps.telegram.client.sendMessage(tg.chatId, (locale === "am" ? text.am : text.en).map(escapeHtml).join("\n\n")).then(
-        () => true,
-        () => false,
-      );
+    const channel = await send(deps, ownerId, site).catch(() => null);
+    if (!channel) {
+      await deps.showcase.releaseInvite(claimed);
+      unreachable++;
+      continue;
     }
-    if (!ok && deps.email) {
-      const contact = await deps.contactFor(ownerId).catch(() => null);
-      if (contact?.email) {
-        ok = await deps.email.send({ to: contact.email, subject: "Feature your website on Gojoline? · ድረ-ገጽዎን እናሳይ?", ...simpleEmail(text) }).then(
-          () => true,
-          () => false,
-        );
-      }
-    }
-    if (ok) {
-      sent++;
-      // Every site of this owner counts as asked: they get one question, not one per site.
-      await deps.showcase.markInvited(sites.map((s) => s.siteId));
-    } else unreachable++;
+    sent++;
+    await deps.audit?.({ ownerId, siteIds: claimed, channel }).catch(() => undefined);
   }
   return { sent, unreachable };
+}
+
+/** Sends one owner's invitation; the channel used, or null when there is no way to reach them. */
+async function send(deps: InviteDeps, ownerId: string, site: InviteCandidate): Promise<"telegram" | "email" | null> {
+  const tg = deps.telegram ? await deps.telegram.store.byUser(ownerId) : null;
+  const locale = tg?.locale ?? "en";
+  const link = `${deps.appUrl}/${locale}/dashboard/${site.projectId}?tab=settings#showcase`;
+  const text = inviteText(site.name || site.url, link);
+  if (tg && deps.telegram) {
+    try {
+      await deps.telegram.client.sendMessage(tg.chatId, (locale === "am" ? text.am : text.en).map(escapeHtml).join("\n\n"));
+      return "telegram";
+    } catch (e) {
+      if (!telegramGone(e)) return null;
+    }
+  }
+  if (!deps.email) return null;
+  const contact = await deps.contactFor(ownerId);
+  if (!contact?.email) return null;
+  await deps.email.send({ to: contact.email, subject: "Feature your website on Gojoline? · ድረ-ገጽዎን እናሳይ?", ...simpleEmail(text) });
+  return "email";
 }

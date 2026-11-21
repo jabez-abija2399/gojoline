@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import type { Database } from "@/lib/db/client";
 import { makeUser, testDb } from "@/test/db";
 import { eq } from "drizzle-orm";
-import { sites as sitesTable } from "@/lib/db/schema";
+import { abuseReports, sites as sitesTable } from "@/lib/db/schema";
 import { DbProjectStore } from "@/lib/projects/db-store";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemoryProjectStore } from "@/lib/projects/memory-store";
@@ -125,9 +125,17 @@ describe("DbShowcaseStore (PGlite)", () => {
     await db.update(sitesTable).set({ offlineAt: new Date() }).where(eq(sitesTable.projectId, c));
     await store.setOptIn("bob", b, true); // already said yes
     const list = await store.invitable(10);
-    expect(list.map((x) => x.name)).toEqual(["Selam Cafe"]);
-    expect(list[0]).toMatchObject({ projectId: a, ownerId: "alice", url: "https://selam.sites.example" });
-    await store.markInvited([list[0].siteId]);
+    // No published card yet: no name (never the draft project's), the address is used instead.
+    expect(list.map((x) => x.url)).toEqual(["https://selam.sites.example"]);
+    expect(list[0]).toMatchObject({ projectId: a, ownerId: "alice", name: "" });
+    // A claim is taken once: a parallel run gets nothing; a release offers the site again.
+    expect(await store.claimInvite([list[0].siteId])).toEqual([list[0].siteId]);
+    expect(await store.claimInvite([list[0].siteId])).toEqual([]);
+    expect(await store.invitable(10)).toEqual([]);
+    await store.releaseInvite([list[0].siteId]);
+    expect(await store.invitable(10)).toHaveLength(1);
+    // Not while a report about the site waits for review.
+    await db.insert(abuseReports).values({ siteId: list[0].siteId, reason: "scam", reporterKey: "k", status: "open" });
     expect(await store.invitable(10)).toEqual([]);
   });
 });

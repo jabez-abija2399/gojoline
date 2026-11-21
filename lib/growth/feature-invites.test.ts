@@ -10,7 +10,12 @@ function fakeShowcase(list: InviteCandidate[]) {
     invited,
     store: {
       invitable: async (limit: number) => list.filter((c) => !invited.has(c.siteId)).slice(0, limit),
-      markInvited: async (ids: string[]) => void ids.forEach((id) => invited.add(id)),
+      claimInvite: async (ids: string[]) => {
+        const fresh = ids.filter((id) => !invited.has(id));
+        fresh.forEach((id) => invited.add(id));
+        return fresh;
+      },
+      releaseInvite: async (ids: string[]) => void ids.forEach((id) => invited.delete(id)),
     } as unknown as ShowcaseStore,
   };
 }
@@ -22,12 +27,14 @@ describe("feature invitations", () => {
     const sc = fakeShowcase([site("s1", "tg-user", "Selam"), site("s2", "tg-user", "Selam 2"), site("s3", "mail-user", "Abebe"), site("s4", "phone-user", "Lulit")]);
     const client = new MemoryTelegramClient();
     const email = new MemoryEmailSender();
+    const audits: { ownerId: string; siteIds: string[]; channel: string }[] = [];
     const deps = {
       showcase: sc.store,
       email,
       telegram: { client, store: { byUser: async (id: string) => (id === "tg-user" ? { chatId: "42", locale: "am" } : null) } as never },
       contactFor: async (id: string) => ({ email: id === "mail-user" ? "owner@example.com" : null }),
       appUrl: "https://gojoline.example",
+      audit: async (e: { ownerId: string; siteIds: string[]; channel: string }) => void audits.push(e),
     };
     expect(await invitable(deps)).toBe(3);
     expect(await inviteOwners(deps)).toEqual({ sent: 2, unreachable: 1 });
@@ -38,9 +45,31 @@ describe("feature invitations", () => {
     expect(client.sent[0].html).toContain("https://gojoline.example/am/dashboard/p-s1?tab=settings#showcase");
     expect(email.sent.map((m) => m.to)).toEqual(["owner@example.com"]);
     expect([...sc.invited].sort()).toEqual(["s1", "s2", "s3"]);
+    expect(audits).toEqual([
+      { ownerId: "tg-user", siteIds: ["s1", "s2"], channel: "telegram" },
+      { ownerId: "mail-user", siteIds: ["s3"], channel: "email" },
+    ]);
     // Nobody is asked twice; the owner we couldn't reach is tried next time.
     expect(await inviteOwners(deps)).toEqual({ sent: 0, unreachable: 1 });
     expect(client.sent).toHaveLength(1);
+  });
+
+  it("never asks twice when two runs overlap, and doesn't email after a Telegram timeout", async () => {
+    const sc = fakeShowcase([site("s1", "u", "Selam")]);
+    const email = new MemoryEmailSender();
+    let calls = 0;
+    const client = { sendMessage: async () => { calls++; throw new Error("timeout"); } };
+    const deps = { showcase: sc.store, email, telegram: { client, store: { byUser: async () => ({ chatId: "1", locale: "en" }) } } as never, contactFor: async () => ({ email: "o@example.com" }), appUrl: "https://x" };
+    expect(await inviteOwners(deps)).toEqual({ sent: 0, unreachable: 1 });
+    expect(email.sent).toEqual([]);
+    expect(sc.invited.size).toBe(0); // released: tried again next time
+    // Two runs at once: only one sends.
+    const ok = new MemoryTelegramClient();
+    const both = { ...deps, telegram: { client: ok, store: { byUser: async () => ({ chatId: "1", locale: "en" }) } } as never };
+    const [a, b] = await Promise.all([inviteOwners(both), inviteOwners(both)]);
+    expect(a.sent + b.sent).toBe(1);
+    expect(ok.sent).toHaveLength(1);
+    expect(calls).toBe(1);
   });
 
   it("keeps a site name from becoming Telegram markup", async () => {
