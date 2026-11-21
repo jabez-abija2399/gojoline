@@ -208,6 +208,8 @@ export const sites = pgTable(
      * (2026-11-21); null = not, or only to the showcase page under the earlier wording.
      */
     postsConsentAt: timestamp("posts_consent_at", { withTimezone: true }),
+    /** When an admin's "Invite owners to be featured" asked this site's owner (once per site). */
+    featureInvitedAt: timestamp("feature_invited_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

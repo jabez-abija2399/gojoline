@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { and, desc, eq, isNotNull, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import sharp from "sharp";
 import type { Database } from "@/lib/db/client";
 import { projects, sites, siteShowcase } from "@/lib/db/schema";
@@ -39,6 +39,15 @@ export interface PublishedCard {
   thumb: (ShowcaseThumb & { data: Buffer }) | null;
 }
 
+/** A live site whose owner could be asked to be featured (never agreed to posts, never asked). */
+export interface InviteCandidate {
+  siteId: string;
+  projectId: string;
+  ownerId: string;
+  name: string;
+  url: string;
+}
+
 export interface ShowcaseStore {
   /** The owner's choice for one of their sites; null when the project has no site. */
   optedIn(ownerId: string, projectId: string): Promise<boolean | null>;
@@ -56,6 +65,10 @@ export interface ShowcaseStore {
   adminList(limit: number): Promise<AdminShowcaseEntry[]>;
   /** Admin: hide or show again. False when the site doesn't exist. */
   setHidden(siteId: string, hidden: boolean): Promise<boolean>;
+  /** Live, online, not hidden sites without posts consent whose owner was never invited, newest first. */
+  invitable(limit: number): Promise<InviteCandidate[]>;
+  /** Records that these sites' owners were asked (so nobody is asked twice). */
+  markInvited(siteIds: string[]): Promise<void>;
 }
 
 type Text = string | { en?: string; am?: string } | undefined;
@@ -157,12 +170,30 @@ export class DbShowcaseStore implements ShowcaseStore {
     const rows = await this.db.update(sites).set({ showcaseHiddenAt: hidden ? new Date() : null }).where(eq(sites.id, siteId)).returning({ id: sites.id });
     return rows.length > 0;
   }
+
+  async invitable(limit: number) {
+    const rows = await this.db
+      .select({ siteId: sites.id, projectId: sites.projectId, ownerId: sites.ownerId, url: sites.url, card: siteShowcase.name, project: projects.name })
+      .from(sites)
+      .innerJoin(projects, eq(projects.id, sites.projectId))
+      .leftJoin(siteShowcase, eq(siteShowcase.siteId, sites.id))
+      .where(and(eq(sites.status, "published"), isNull(sites.offlineAt), isNull(sites.showcaseHiddenAt), isNull(sites.postsConsentAt), isNull(sites.featureInvitedAt), isNotNull(sites.url)))
+      .orderBy(desc(sites.publishedAt))
+      .limit(limit);
+    return rows.map((r) => ({ siteId: r.siteId, projectId: r.projectId, ownerId: r.ownerId, url: r.url ?? "", name: r.card ?? r.project }));
+  }
+
+  async markInvited(siteIds: string[]) {
+    if (siteIds.length === 0) return;
+    await this.db.update(sites).set({ featureInvitedAt: new Date() }).where(and(inArray(sites.id, siteIds), isNull(sites.featureInvitedAt)));
+  }
 }
 
 /** Development and e2e: keeps the showcase fields beside the in-memory sites. */
 export class MemoryShowcaseStore implements ShowcaseStore {
   private on = new Set<string>();
   private hidden = new Set<string>();
+  private invited = new Set<string>();
   private cards = new Map<string, PublishedCard>();
   constructor(
     private sites: SiteStore & SiteAdminStore,
@@ -217,5 +248,13 @@ export class MemoryShowcaseStore implements ShowcaseStore {
     if (hidden) this.hidden.add(siteId);
     else this.hidden.delete(siteId);
     return true;
+  }
+  async invitable(limit: number) {
+    const all = (await this.sites.recent(1000)).filter((s) => s.status === "published" && !s.offlineAt && !!s.url && !this.hidden.has(s.id) && !this.on.has(s.id) && !this.invited.has(s.id));
+    const out = await Promise.all(all.map(async (s) => ({ siteId: s.id, projectId: s.projectId, ownerId: s.ownerId, url: s.url ?? "", name: this.cards.get(s.id)?.name ?? (await this.projects.getProject(s.ownerId, s.projectId))?.name ?? "" })));
+    return out.slice(0, limit);
+  }
+  async markInvited(siteIds: string[]) {
+    for (const id of siteIds) this.invited.add(id);
   }
 }

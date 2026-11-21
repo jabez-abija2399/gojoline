@@ -24,7 +24,9 @@ import { BarChart } from "@/components/admin/bar-chart";
 import { AnalyticsView } from "@/components/admin/analytics-view";
 import { PERIODS, type Period } from "@/lib/analytics/periods";
 import { isPresetId } from "@/lib/template/presets";
-import { setAdminTheme, setShowcaseHidden, toggleDiscountCode } from "./actions";
+import { inviteOwnersToFeature, setAdminTheme, setShowcaseHidden, toggleDiscountCode } from "./actions";
+import { INVITE_BATCH, invitable } from "@/lib/growth/feature-invites";
+import { PostSubmit } from "@/components/admin/post-submit";
 import { offerEndsAt, offerUntilLabel } from "@/lib/billing/discounts";
 import { offerProductsText } from "@/lib/billing/offer-text";
 import { CreditsForm } from "@/components/admin/credits-form";
@@ -348,7 +350,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
 
   async function GrowthTab() {
     const g = t.growth.referralsAdmin;
-    const [list, show] = await Promise.all([svc.growth.referrals.store.recent(100), svc.growth.showcase?.adminList(200) ?? []]);
+    const showcase = svc.growth.showcase;
+    const [list, show, canInvite] = await Promise.all([svc.growth.referrals.store.recent(100), showcase?.adminList(200) ?? [], showcase ? invitable({ showcase }).catch(() => null) : null]);
+    const invited = sp.fi === "ok" ? { sent: Number(sp.sent) || 0, unreachable: Number(sp.unreachable) || 0 } : null;
     const sc = t.growth.showcase;
     const joinedFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
     const who = (p: { name: string; contact: string }) => (
@@ -391,6 +395,27 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             </ul>
           )}
         </section>
+        {showcase && (
+          <section aria-labelledby="invite-title" className="flex scroll-mt-28 flex-col gap-3 rounded-xl border border-line bg-white p-4">
+            <h2 id="invite-title" className="text-base font-semibold">{sc.inviteTitle}</h2>
+            <p className="text-xs text-ink-muted">{sc.inviteIntro}</p>
+            {invited && <p role="status" className="rounded-lg bg-paper px-3 py-2 text-sm">{format(sc.inviteDone, invited)}</p>}
+            {sp.fi === "failed" && <p role="alert" className="rounded-lg bg-coral-soft px-3 py-2 text-sm text-destructive">{sc.inviteFailed}</p>}
+            {canInvite === null ? (
+              <p className="text-sm text-ink-muted">{sc.inviteFailed}</p>
+            ) : canInvite === 0 ? (
+              <p className="text-sm text-ink-muted">{sc.inviteNone}</p>
+            ) : (
+              <form action={inviteOwnersToFeature} className="flex flex-wrap items-center gap-3">
+                <input type="hidden" name="lang" value={lang} />
+                <span className="text-sm font-medium tabular-nums">{format(sc.inviteCount, { n: canInvite })}</span>
+                <PostSubmit working={t.admin.posts.working} confirm={format(sc.inviteConfirm, { n: Math.min(canInvite, INVITE_BATCH) })} className="inline-flex min-h-11 items-center rounded-lg bg-ink px-4 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9">
+                  {sc.inviteButton}
+                </PostSubmit>
+              </form>
+            )}
+          </section>
+        )}
         <section aria-labelledby="showcase-title" className="flex scroll-mt-28 flex-col gap-3 rounded-xl border border-line bg-white p-4">
           <h2 id="showcase-title" className="text-base font-semibold">{sc.adminTitle}</h2>
           <p className="text-xs text-ink-muted">{sc.adminIntro} <Link href={`/${lang}/showcase`} className="font-medium text-ink underline underline-offset-4">{sc.view}</Link></p>

@@ -108,6 +108,28 @@ describe("DbShowcaseStore (PGlite)", () => {
     expect(await store.postable(10)).toEqual([]);
     expect(await store.list(10)).toEqual([]);
   });
+
+  it("offers each live site without posts consent for one invitation, never twice", async () => {
+    const store = new DbShowcaseStore(db);
+    const sites = new DbSiteStore(db);
+    const projects = new DbProjectStore(db);
+    const live = async (owner: string, name: string, slug: string) => {
+      const p = await projects.createProject(owner, { name, locale: "en" });
+      await sites.reserve(owner, p.id, slug, "memory");
+      await sites.savePublished(owner, { projectId: p.id, slug, provider: "memory", providerProjectId: "prj", url: `https://${slug}.sites.example`, publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+      return p.id;
+    };
+    const a = await live("alice", "Selam Cafe", "selam");
+    const b = await live("bob", "Abebe Shop", "abebe");
+    const c = await live("bob", "Resting", "resting");
+    await db.update(sitesTable).set({ offlineAt: new Date() }).where(eq(sitesTable.projectId, c));
+    await store.setOptIn("bob", b, true); // already said yes
+    const list = await store.invitable(10);
+    expect(list.map((x) => x.name)).toEqual(["Selam Cafe"]);
+    expect(list[0]).toMatchObject({ projectId: a, ownerId: "alice", url: "https://selam.sites.example" });
+    await store.markInvited([list[0].siteId]);
+    expect(await store.invitable(10)).toEqual([]);
+  });
 });
 
 describe("MemoryShowcaseStore", () => {

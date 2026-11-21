@@ -192,3 +192,22 @@ test("sector pages render in English and Amharic, accessible and without sideway
   await expect(page).toHaveURL(/\/am\/website-for\/cafe$/);
   expect((await page.goto("/en/website-for/casino"))?.status()).toBe(404);
 });
+
+test("an admin invites owners of live sites to be featured, once", async ({ page, browser }) => {
+  await signIn(page);
+  await publishNewSite(page, `Invite Cafe ${Date.now().toString(36)}`);
+
+  const admin = await newPage(browser);
+  await signIn(admin.page, { contact: `admin-e2e-invite-${test.info().project.name}@example.com` });
+  await admin.page.goto("/en/admin?tab=growth");
+  const box = admin.page.getByRole("region", { name: "Invite owners to be featured" });
+  await expect(box.getByText(/owners can be invited/)).toBeVisible();
+  admin.page.once("dialog", (d) => d.accept());
+  await box.getByRole("button", { name: "Send invitations" }).click();
+  await expect(admin.page).toHaveURL(/fi=ok/);
+  // Without a linked Telegram or verified email here, owners are counted as not reached (and tried again later).
+  await expect(admin.page.getByRole("region", { name: "Invite owners to be featured" }).getByRole("status")).toContainText(/Sent \d+ invitations/);
+  await expectNoSeriousA11yIssues(admin.page);
+  await expectNoHorizontalScroll(admin.page);
+  await admin.close();
+});
