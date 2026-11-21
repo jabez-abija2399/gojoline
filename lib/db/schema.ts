@@ -644,7 +644,7 @@ export const analyticsDaily = pgTable(
   "analytics_daily",
   {
     day: date("day").notNull(),
-    event: text("event", { enum: ["click", "publish"] }).notNull(),
+    event: text("event", { enum: ["click", "publish", "post_visit"] }).notNull(),
     key: text("key").notNull(),
     n: integer("n").notNull().default(0),
   },

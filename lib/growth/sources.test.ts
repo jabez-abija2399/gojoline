@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
-import { user } from "@/lib/db/schema";
+import { payments, user } from "@/lib/db/schema";
 import { makeUser, testDb } from "@/test/db";
 import { DbSignupSourceStore, MemorySignupSourceStore } from "./sources";
 
@@ -38,5 +38,25 @@ describe("DbSignupSourceStore (PGlite)", () => {
     const b = await mem.breakdown(new Date("2026-11-18T00:00:00Z"));
     expect(b.d7).toMatchObject({ direct: 1, linkedin: 0 });
     expect(b.d30).toMatchObject({ direct: 1, linkedin: 1 });
+  });
+
+  it("counts sign-ups and paid customers from our own posts, per post and network", async () => {
+    for (const id of ["p1", "p2", "p3", "x"]) await makeUser(db, id);
+    await store.record("p1", { s: "telegram", m: "social", c: "post-2026-11-20", t: 1 });
+    await store.record("p2", { s: "telegram", m: "social", c: "post-2026-11-20", t: 1 });
+    await store.record("p3", { s: "facebook", m: "social", c: "post-2026-11-21", t: 1 });
+    await store.record("x", { s: "telegram", c: "launch", t: 1 });
+    const pay = { product: "starter_month", amountMinor: 50000, currency: "ETB", method: "telebirr" } as const;
+    await db.insert(payments).values([
+      { ...pay, userId: "p1", reference: "R1", status: "approved" },
+      { ...pay, userId: "p1", reference: "R2", status: "approved" },
+      { ...pay, userId: "p2", reference: "R3", status: "pending" },
+    ]);
+    const rows = await store.fromPosts(new Date(Date.now() - 86_400_000));
+    const by = Object.fromEntries(rows.map((r) => [`${r.campaign}|${r.source}`, r]));
+    expect(Object.keys(by).sort()).toEqual(["post-2026-11-20|telegram", "post-2026-11-21|facebook"]);
+    expect(by["post-2026-11-20|telegram"]).toMatchObject({ signups: 2, paid: 1 });
+    expect(by["post-2026-11-21|facebook"]).toMatchObject({ signups: 1, paid: 0 });
+    expect(await store.fromPosts(new Date(Date.now() + 86_400_000))).toEqual([]);
   });
 });

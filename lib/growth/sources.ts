@@ -1,6 +1,6 @@
-import { eq, gte, sql } from "drizzle-orm";
+import { and, eq, gte, like, sql } from "drizzle-orm";
 import type { Database } from "@/lib/db/client";
-import { signupSources, user } from "@/lib/db/schema";
+import { payments, signupSources, user } from "@/lib/db/schema";
 import { classifySource, SOURCES, type Attribution, type Source } from "./attribution";
 
 export type SourceCounts = Record<Source, number>;
@@ -17,6 +17,17 @@ export interface SignupSourceStore {
   hashes(userId: string): Promise<SignupHashes | null>;
   /** Sign-ups in the last 7 and 30 days by source (accounts without a record count as direct). */
   breakdown(now?: Date): Promise<SourceBreakdown>;
+  /** Sign-ups that came from Gojoline's own posts (utm_campaign post-<day>) since a date, with how many of them paid. */
+  fromPosts(since: Date): Promise<PostSignups[]>;
+}
+
+export interface PostSignups {
+  /** "post-2026-11-23" */
+  campaign: string;
+  /** The network (utm_source). */
+  source: string;
+  signups: number;
+  paid: number;
 }
 
 export interface SignupHashes {
@@ -53,6 +64,21 @@ export class DbSignupSourceStore implements SignupSourceStore {
     return r ?? null;
   }
 
+  async fromPosts(since: Date): Promise<PostSignups[]> {
+    const rows = await this.db
+      .select({
+        campaign: signupSources.utmCampaign,
+        source: signupSources.utmSource,
+        signups: sql<number>`count(*)`.mapWith(Number),
+        paid: sql<number>`count(*) filter (where exists (select 1 from ${payments} where ${payments.userId} = ${signupSources.userId} and ${payments.status} = 'approved'))`.mapWith(Number),
+      })
+      .from(signupSources)
+      .innerJoin(user, eq(user.id, signupSources.userId))
+      .where(and(like(signupSources.utmCampaign, "post-%"), gte(user.createdAt, since)))
+      .groupBy(signupSources.utmCampaign, signupSources.utmSource);
+    return rows.map((r) => ({ campaign: r.campaign ?? "", source: r.source ?? "other", signups: r.signups, paid: r.paid }));
+  }
+
   async breakdown(now = new Date()): Promise<SourceBreakdown> {
     const d7 = new Date(now.getTime() - 7 * 86_400_000);
     const d30 = new Date(now.getTime() - 30 * 86_400_000);
@@ -85,6 +111,18 @@ export class MemorySignupSourceStore implements SignupSourceStore {
   async hashes(userId: string): Promise<SignupHashes | null> {
     const r = this.rows.get(userId);
     return r ? { ipHash: r.ipHash, deviceHash: r.deviceHash } : null;
+  }
+
+  async fromPosts(since: Date): Promise<PostSignups[]> {
+    const out = new Map<string, PostSignups>();
+    for (const r of this.rows.values()) {
+      if (!r.utmCampaign?.startsWith("post-") || r.createdAt < since) continue;
+      const k = `${r.utmCampaign}|${r.utmSource ?? "other"}`;
+      const e = out.get(k) ?? { campaign: r.utmCampaign, source: r.utmSource ?? "other", signups: 0, paid: 0 };
+      e.signups++;
+      out.set(k, e);
+    }
+    return [...out.values()];
   }
 
   async breakdown(now = new Date()): Promise<SourceBreakdown> {

@@ -9,14 +9,18 @@ import { addisDay } from "@/lib/dashboard/stats";
 import { reportError } from "@/lib/observability/report";
 import { clientIp } from "@/lib/server/request";
 import { services } from "@/lib/server/services";
+import { postVisitKey } from "@/lib/posts/results";
 
 /**
  * One click on a counted link (lib/analytics/clicks.ts), sent by the page's listener with
  * sendBeacon. Only a name and a kind of page from fixed lists are accepted and only a daily count
  * is kept: no URL, no user, no address. Each network (hashed, in Redis for a day) counts once per
- * link and day, so repeating requests can't inflate the numbers. Always answers 204.
+ * link and day, so repeating requests can't inflate the numbers. A visit from a post link
+ * ({v: "post-YYYY-MM-DD", s: network}) is counted the same way. Always answers 204.
  */
-const body = z.object({ n: z.enum(CLICK_NAMES), p: z.enum(CLICK_PAGES) }).strict();
+const click = z.object({ n: z.enum(CLICK_NAMES), p: z.enum(CLICK_PAGES) }).strict();
+/** A visit from one of our posts' links: the post's day (post-YYYY-MM-DD) and the network. */
+const visit = z.object({ v: z.string().max(20), s: z.string().max(20) }).strict();
 const done = () => new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
 
 export async function POST(request: Request) {
@@ -34,13 +38,15 @@ export async function POST(request: Request) {
   } catch {
     return done();
   }
-  const parsed = body.safeParse(value);
-  if (!parsed.success) return done();
+  const asClick = click.safeParse(value);
+  const asVisit = asClick.success ? null : visit.safeParse(value);
+  const event = asClick.success ? "click" : "post_visit";
+  const key = asClick.success ? clickKey(asClick.data.n, asClick.data.p) : asVisit?.success ? postVisitKey(asVisit.data.v, asVisit.data.s) : null;
+  if (!key) return done();
   const day = addisDay(Date.now());
-  const key = clickKey(parsed.data.n, parsed.data.p);
   const network = createHash("sha256").update(`gojo-track:${ipBucket(ip)}`).digest("hex").slice(0, 24);
   const first = await svc.rateLimiter.hit(`track-once:${network}:${day}:${key}`, 1, 86_400_000).catch(() => ({ allowed: false }));
   if (!first.allowed) return done();
-  await svc.analyticsEvents.bump(day, "click", key).catch((e: unknown) => reportError("click count failed", e));
+  await svc.analyticsEvents.bump(day, event, key).catch((e: unknown) => reportError(`${event} count failed`, e));
   return done();
 }

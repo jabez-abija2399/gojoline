@@ -109,3 +109,24 @@ test("only admins can see post media", async ({ page }) => {
   expect((await page.request.get("/api/admin/posts/00000000-0000-4000-8000-000000000000/media")).status()).toBe(404);
   expect((await page.goto("/en/admin?tab=posts"))?.status()).toBe(404);
 });
+
+test("a visit from a post link shows in the Sent tab's results", async ({ page, browser }, info) => {
+  test.setTimeout(60_000);
+  const { viewport, userAgent, isMobile, hasTouch, deviceScaleFactor, baseURL } = info.project.use;
+  const ctx = await browser.newContext({ viewport, userAgent, isMobile, hasTouch, deviceScaleFactor, baseURL });
+  const visitor = await ctx.newPage();
+  // The listener is part of the page's code; the server counts each network once a day, so a repeat answers 204 too.
+  await expect(async () => {
+    const counted = visitor.waitForResponse((r) => r.url().endsWith("/api/track") && r.request().method() === "POST", { timeout: 6000 });
+    await visitor.goto(`/en?utm_source=telegram&utm_medium=social&utm_campaign=post-2026-11-20&x=${Date.now()}`);
+    expect((await counted).status()).toBe(204);
+  }).toPass({ timeout: 30_000 });
+  await ctx.close();
+
+  await signIn(page, { contact: `admin-e2e-posts-reach-${info.project.name}@example.com` });
+  await page.goto("/en/admin?tab=posts&view=sent");
+  const box = page.getByRole("heading", { name: /What posts brought in/ }).locator("..");
+  await expect(box.getByRole("rowheader", { name: "Telegram" })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+});

@@ -11,6 +11,7 @@ import { FocusOnMount } from "./focus-on-mount";
 import { PostSubmit } from "./post-submit";
 import { PostConnections } from "./post-connections";
 import { reportError } from "@/lib/observability/report";
+import { summarize, type PostResult, type Results as Reach } from "@/lib/posts/results";
 
 type T = Messages["admin"]["posts"];
 const DONE = ["ok", "invalid", "failed", "not_found"] as const;
@@ -67,6 +68,8 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
   const href = (v: View) => `/${lang}/admin?tab=posts&view=${v}`;
   const viewOf = (p: SocialPost): View => (p.status === "draft" ? "review" : p.status === "posted" ? "sent" : "scheduled");
   const week = Array.from({ length: 7 }, (_, i) => addDays(today, i));
+  // What posts brought in: only loaded for the Sent view.
+  const reach = view === "sent" ? await loadReach(today) : null;
   const card = (p: SocialPost) => <PostCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} canFilm={!!deps.video} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />;
 
   return (
@@ -187,6 +190,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
 
       {view === "sent" && (
         <section aria-label={t.views.sent} className="flex flex-col gap-3">
+          {reach && <ReachSummary reach={reach} t={t} />}
           {sent.length === 0 ? (
             <Empty text={t.sentEmpty} />
           ) : (
@@ -204,6 +208,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
                     </span>
                     <span lang="en" className="line-clamp-2 text-sm text-ink-muted">{p.captionEn}</span>
                     <Results post={p} t={t} />
+                    {reach?.byDay.get(p.day) && <ReachLine r={reach.byDay.get(p.day)!} t={t} />}
                   </span>
                 </li>
               ))}
@@ -373,5 +378,66 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
         </div>
       </details>
     </li>
+  );
+}
+
+async function loadReach(today: string): Promise<Reach | null> {
+  const svc = services();
+  const from = addDays(today, -30);
+  try {
+    const [rows, signups] = await Promise.all([svc.analyticsEvents.rows(from, today), svc.growth.sources.fromPosts(new Date(`${from}T00:00:00+03:00`))]);
+    return summarize(rows, signups);
+  } catch (e) {
+    reportError("post results load failed", e);
+    return null;
+  }
+}
+
+function ReachLine({ r, t }: { r: PostResult; t: T }) {
+  return <span className="text-xs font-medium text-ink">{format(t.reach.line, { visits: r.visits, signups: r.signups, paid: r.paid })}</span>;
+}
+
+/** Visits, sign-ups and payments from post links in the last 30 days, in total and per network. */
+function ReachSummary({ reach, t }: { reach: Reach; t: T }) {
+  const r = t.reach;
+  const networks = [...reach.byNetwork.entries()].sort((a, b) => b[1].visits + b[1].signups * 10 - (a[1].visits + a[1].signups * 10));
+  const name = (n: string) => (t.channels as Record<string, string>)[n] ?? r.other;
+  return (
+    <div className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-4">
+      <h2 className="text-base font-semibold">{r.title}</h2>
+      <dl className="grid grid-cols-3 gap-2">
+        {(["visits", "signups", "paid"] as const).map((k) => (
+          <div key={k} className="flex flex-col rounded-xl bg-paper px-3 py-2">
+            <dt className="text-xs text-ink-muted">{r[k]}</dt>
+            <dd className="text-xl font-semibold tabular-nums">{reach.total[k]}</dd>
+          </div>
+        ))}
+      </dl>
+      {networks.length === 0 ? (
+        <p className="text-sm text-ink-muted">{r.none}</p>
+      ) : (
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-start text-xs text-ink-muted">
+              <th scope="col" className="py-1 text-start font-medium">{r.network}</th>
+              <th scope="col" className="py-1 text-end font-medium">{r.visits}</th>
+              <th scope="col" className="py-1 text-end font-medium">{r.signups}</th>
+              <th scope="col" className="py-1 text-end font-medium">{r.paid}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {networks.map(([n, v]) => (
+              <tr key={n} className="border-t border-line">
+                <th scope="row" className="py-1.5 text-start font-medium">{name(n)}</th>
+                <td className="py-1.5 text-end tabular-nums">{v.visits}</td>
+                <td className="py-1.5 text-end tabular-nums">{v.signups}</td>
+                <td className="py-1.5 text-end tabular-nums">{v.paid}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <p className="text-xs text-ink-muted">{r.note}</p>
+    </div>
   );
 }
