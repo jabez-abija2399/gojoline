@@ -970,7 +970,7 @@ export const am: Messages = {
       upcomingEmpty: "እስካሁን ምንም አልታቀደም። ለመጀመር የሚቀጥሉትን 7 ቀናት ያቅዱ።",
       sent: "የተላኩ ልጥፎች",
       sentEmpty: "እስካሁን ምንም አልተላከም።",
-      kinds: { template: "አብነት", site: "የሳምንቱ ድረ-ገጽ", demo: "ማሳያ፦ አንድ መልእክት፣ አንድ ድረ-ገጽ", tip: "ምክር", howto: "እንዴት እንደሚሠራ", myth: "ተረት ወይስ እውነት", question: "ጥያቄ", feature: "ባህሪ", idea: "ሐሳብ", story: "የእኛ ታሪክ", moment: "በዓል", custom: "ልጥፍ" },
+      kinds: { template: "አብነት", site: "የሳምንቱ ድረ-ገጽ", demo: "ማሳያ፦ አንድ መልእክት፣ አንድ ድረ-ገጽ", tip: "ምክር", howto: "ደረጃ በደረጃ", myth: "የተሳሳተ ግምት እና እውነታው", question: "ጥያቄ", feature: "ባህሪ", idea: "ሐሳብ", story: "ታሪካችን", moment: "በዓል", custom: "ልጥፍ" },
       statuses: { draft: "ረቂቅ", approved: "ጸድቋል", posted: "ተልኳል", failed: "አልተሳካም", skipped: "ታልፏል" },
       captionEn: "ጽሑፍ በእንግሊዝኛ",
       hashtags: "ሃሽታጎች",

@@ -80,17 +80,19 @@ export function planDays(input: { from: string; days: number; taken: Set<string>
 
 /** The facts a caption is written from (English). */
 export function postFacts(post: Pick<SocialPost, "kind" | "subject">, ctx: PlanContext): string {
+  // True whether the post ends up with a picture or a video (videos are made after planning).
+  const shows = "Have a look at the real website.";
   if (post.kind === "template") {
     const t = ctx.templates.find((x) => x.id === post.subject);
-    return `A ready-made website design: "${t?.name ?? "Gojoline template"}". Start from it, then change anything by chatting. The video scrolls through the real website.`;
+    return `A ready-made website design: "${t?.name ?? "Gojoline template"}". Start from it, then change anything by chatting. ${shows}`;
   }
   if (post.kind === "demo") {
     const prompt = post.subject ? DEMO_PROMPTS[post.subject] : undefined;
-    return prompt ? `Someone typed one message into Gojoline: "${prompt}" Gojoline built the website in the video from it, in about a minute.` : "One message in a chat, and Gojoline builds the whole website in about a minute.";
+    return prompt ? `Type one message, like "${prompt}", and Gojoline builds a website like this one in about a minute. Then change anything by chatting.` : "Type one message, and Gojoline builds your website in about a minute.";
   }
   if (post.kind === "site") {
     const s = ctx.sites.find((x) => x.siteId === post.subject);
-    return `Site of the week: ${s?.name ?? "a website"}, built with Gojoline by its owner. The video scrolls through it.`;
+    return `Site of the week: ${s?.name ?? "a website"}, built with Gojoline by its owner. ${shows}`;
   }
   return libraryItem(post.subject)?.en ?? "Build your website by chatting, in Amharic or English.";
 }

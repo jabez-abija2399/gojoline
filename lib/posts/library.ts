@@ -14,7 +14,7 @@ export interface LibraryItem {
 export const TIPS: LibraryItem[] = [
   { id: "tip-photos", en: "Your own photos make the biggest difference to a website. Send them in the chat and say where they go." },
   { id: "tip-hours", en: "Put your opening hours and phone number on your website, so people can find you and call." },
-  { id: "tip-telegram", en: "Link your Telegram, and every booking or message from your website reaches your phone at once." },
+  { id: "tip-telegram", en: "On the Starter and Business plans, link your Telegram and every booking or message from your website reaches your phone at once." },
   { id: "tip-languages", en: "Your website can be in Amharic, English or both. Customers choose with one tap." },
   { id: "tip-change", en: "Changing your website is one chat message, like \"make the title bigger\" or \"add a price list\"." },
   { id: "tip-versions", en: "Every change is saved as a version. Didn't like it? Bring the old one back in one tap." },
@@ -25,8 +25,8 @@ export const TIPS: LibraryItem[] = [
 ];
 
 export const FEATURES: LibraryItem[] = [
-  { id: "feature-booking", en: "Booking and contact forms: answers arrive in your dashboard and on Telegram." },
-  { id: "feature-domain", en: "Use your own web address, like yourname.com, on the Starter and Business plans." },
+  { id: "feature-booking", en: "Booking and contact forms: answers arrive in your dashboard, and on Telegram with the Starter and Business plans." },
+  { id: "feature-domain", en: "Use your own web address, like yourname.com (bought separately), on the Starter and Business plans." },
   { id: "feature-birr", en: "Pay in Birr with Telebirr or a bank transfer. No card needed." },
   { id: "feature-phone", en: "Every website is made for phones first, and loads fast even on a slow connection." },
   { id: "feature-visits", en: "See how many people visit your website each day, and where they come from." },
@@ -50,7 +50,7 @@ export const MYTHS: LibraryItem[] = [
   { id: "myth-expensive", en: "Myth: a website is expensive. Fact: you can build and publish your website free on a Gojoline address, and pay in Birr only if you want more." },
   { id: "myth-big-business", en: "Myth: websites are only for big companies. Fact: cafés, salons, churches, schools, photographers and small shops all use one so people can find them." },
   { id: "myth-english", en: "Myth: a website has to be in English. Fact: your website can be in Amharic, English or both." },
-  { id: "myth-telegram", en: "Myth: a Telegram channel is enough. Fact: a website shows up on Google and on maps, and a customer can see your menu, prices and hours without joining anything." },
+  { id: "myth-telegram", en: "Myth: a Telegram channel is enough. Fact: people can find a website on Google, and a customer can see your menu, prices and hours without joining anything." },
   { id: "myth-time", en: "Myth: making a website takes weeks. Fact: Gojoline builds the first version in about a minute; you change anything after by chatting." },
 ];
 
@@ -69,14 +69,14 @@ export const HOWTOS: LibraryItem[] = [
   { id: "how-change", en: "How to change your website: open it, type what you want in the chat (\"add our new menu\"), and the preview updates by itself." },
   { id: "how-photos", en: "How to add your own photos: send them in the chat, say where they go (\"use this one at the top\"), done." },
   { id: "how-share", en: "How to get your first visitors: share your website's link on Telegram, put it in your bio, and print it on your receipts." },
-  { id: "how-bookings", en: "How to take bookings online: ask for a booking form in the chat, link your Telegram, and each request reaches your phone." },
+  { id: "how-bookings", en: "How to take bookings online: ask for a booking form in the chat, and each request arrives in your dashboard (and on your phone through Telegram on the Starter and Business plans)." },
 ];
 
 /** The story behind Gojoline (true facts only). */
 export const STORIES: LibraryItem[] = [
   { id: "story-name", en: "Why \"Gojoline\"? Gojo (ጎጆ) means home in Amharic: Gojoline is a home online for your business." },
-  { id: "story-made", en: "Gojoline is made in Ethiopia, for businesses here first: Amharic built in, payments in Birr, and websites that load fast on a phone." },
-  { id: "story-why", en: "We built Gojoline because many good businesses here have no website: not because they don't want one, but because it seemed hard and costly." },
+  { id: "story-made", en: "Gojoline is built for businesses in Ethiopia first: Amharic built in, payments in Birr, and websites that load fast on a phone." },
+  { id: "story-why", en: "With Gojoline, a website starts with a chat message: no designer, no code, and you can start free." },
 ];
 
 export const LIBRARY = { tip: TIPS, feature: FEATURES, idea: IDEAS, myth: MYTHS, question: QUESTIONS, howto: HOWTOS, story: STORIES } as const;
@@ -86,13 +86,17 @@ export const LIBRARY = { tip: TIPS, feature: FEATURES, idea: IDEAS, myth: MYTHS,
  * planned post; the caption greets people and connects the day to their business, warmly.
  */
 export const MOMENTS: (LibraryItem & { dates: string[] })[] = [
-  { id: "moment-genna", dates: ["01-07"], en: "Genna, Ethiopian Christmas: greetings to everyone celebrating. Businesses are busy this week; a website lets customers see your holiday hours and order ahead." },
-  { id: "moment-timket", dates: ["01-19"], en: "Timket, Epiphany: greetings to everyone celebrating." },
-  { id: "moment-adwa", dates: ["03-02"], en: "Adwa Victory Day: celebrating Ethiopian pride and what we build ourselves." },
-  { id: "moment-fasika", dates: ["2026-04-12", "2027-05-02", "2028-04-16"], en: "Fasika, Ethiopian Easter: greetings to everyone celebrating. Let customers know your holiday hours on your website." },
-  { id: "moment-new-year", dates: ["09-11"], en: "Enkutatash, Ethiopian New Year: a new year is a good time to start something new, like the website your business deserves." },
-  { id: "moment-meskel", dates: ["09-27"], en: "Meskel: greetings to everyone celebrating." },
-  { id: "moment-new-year-greg", dates: ["01-01"], en: "A new (Gregorian) year: a good moment to give your business a home online." },
+  { id: "moment-genna", dates: ["01-07"], en: "Melkam Genna! Greetings to everyone celebrating Ethiopian Christmas. A busy week for many businesses: a website lets customers see your holiday hours and send a request ahead." },
+  { id: "moment-timket", dates: ["2027-01-19", "2028-01-20"], en: "Melkam Timket! Greetings to everyone celebrating Epiphany." },
+  { id: "moment-adwa", dates: ["03-02"], en: "Adwa Victory Day: remembering the victory at Adwa in 1896 and those who won it. Proud to be Ethiopian." },
+  { id: "moment-fasika", dates: ["2026-04-12", "2027-05-02", "2028-04-16"], en: "Melkam Fasika! Greetings to everyone celebrating Ethiopian Easter." },
+  { id: "moment-new-year", dates: ["2026-09-11", "2027-09-12", "2028-09-11"], en: "Melkam Addis Amet! Happy Ethiopian New Year to everyone. A new year is a good time to start something new." },
+  { id: "moment-meskel", dates: ["2026-09-27", "2027-09-28", "2028-09-27"], en: "Melkam Meskel! Greetings to everyone celebrating." },
+  // Islamic holidays follow the moon: the admin checks the day before approving.
+  { id: "moment-eid-fitr", dates: ["2027-03-10", "2028-02-27"], en: "Eid Mubarak! Greetings to everyone celebrating Eid al-Fitr." },
+  { id: "moment-eid-adha", dates: ["2026-05-27", "2027-05-17", "2028-05-05"], en: "Eid Mubarak! Greetings to everyone celebrating Eid al-Adha (Arafa)." },
+  { id: "moment-mawlid", dates: ["2026-08-26", "2027-08-15", "2028-08-04"], en: "Greetings to everyone celebrating Mawlid." },
+  { id: "moment-new-year-greg", dates: ["01-01"], en: "Happy New Year! A good moment to give your business a home online." },
 ];
 
 /** The moment on this day (YYYY-MM-DD), if any. */
@@ -100,7 +104,7 @@ export function momentOn(day: string): (LibraryItem & { dates: string[] }) | nul
   return MOMENTS.find((m) => m.dates.some((d) => (d.length === 5 ? day.slice(5) === d : day === d))) ?? null;
 }
 
-/** Example messages that built a template's demo site ("one sentence → a website"). */
+/** Example messages, like the ones on the home page, shown beside a template of that kind ("one message → a website like this"). */
 export const DEMO_PROMPTS: Record<string, string> = {
   cafe: "We're a café in Bole: buna, macchiato and breakfast, open 7 am to 9 pm.",
   hotel: "A small hotel by Lake Tana with 20 rooms and airport pickup.",

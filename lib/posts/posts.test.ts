@@ -45,9 +45,14 @@ describe("planDays", () => {
     expect(plan.find((p) => p.kind === "question")?.subject).toMatch(/^q-/);
   });
 
-  it("a holiday takes its day", () => {
+  it("a holiday takes its day, on the right date in an Ethiopian leap year", () => {
     const plan = planDays({ ...base, from: "2027-01-04", days: 7 });
     expect(plan.find((p) => p.day === "2027-01-07")).toMatchObject({ kind: "moment", subject: "moment-genna", media: null });
+    // 2019 E.C. is a leap year: New Year falls on 12 September 2027, Meskel on the 28th.
+    const sept = planDays({ ...base, from: "2027-09-10", days: 20 });
+    expect(sept.find((p) => p.kind === "moment" && p.subject === "moment-new-year")?.day).toBe("2027-09-12");
+    expect(sept.find((p) => p.kind === "moment" && p.subject === "moment-meskel")?.day).toBe("2027-09-28");
+    expect(sept.find((p) => p.day === "2027-09-11")?.kind).not.toBe("moment");
   });
 
   it("uses an opted-in site on Wednesdays, skips days that have a post, and avoids recent subjects", () => {
