@@ -163,8 +163,7 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
           <span className="flex aspect-[4/5] w-32 items-center justify-center rounded-lg border border-dashed border-line text-center text-xs text-ink-muted">{t.noMedia}</span>
         )}
         <div className="flex min-w-0 flex-col gap-2">
-          <p lang="am" className="whitespace-pre-line">{p.captionAm}</p>
-          <p lang="en" className="whitespace-pre-line text-ink-muted">{p.captionEn}</p>
+          <p lang="en" className="whitespace-pre-line">{p.captionEn}</p>
           <p lang="en" className="text-sm text-ink-muted">{p.hashtags}</p>
           <Results post={p} t={t} />
         </div>
@@ -176,7 +175,7 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
         {action("rewrite", t.rewrite, Sparkles)}
         {p.status !== "skipped" && action("skip", t.skip, SkipForward)}
       </div>
-      {canFilm && (p.kind === "template" || p.kind === "site") && (
+      {canFilm && (p.kind === "template" || p.kind === "demo" || p.kind === "site") && (
         <form action={makePostVideo} className="flex flex-wrap items-end gap-2 rounded-lg border border-line p-3">
           {hidden}
           <label className="flex flex-col gap-1">
@@ -184,13 +183,6 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
             <select name="style" defaultValue="tour" className="min-h-11 max-w-full rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
               <option value="tour">{t.videoStyles.tour}</option>
               <option value="spotlight">{t.videoStyles.spotlight}</option>
-            </select>
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium">{t.videoLang}</span>
-            <select name="videoLang" defaultValue="am" className="min-h-11 rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
-              <option value="am" lang="am">አማርኛ</option>
-              <option value="en" lang="en">English</option>
             </select>
           </label>
           <PostSubmit label={`${p.media?.type === "video" ? t.remakeVideo : t.makeVideo}: ${title}`} working={t.makingVideo} className={button}>
@@ -209,10 +201,6 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
         </summary>
         <form action={savePost} className="flex flex-col gap-3 p-3">
           {hidden}
-          <label className="flex flex-col gap-1">
-            <span className="font-medium">{t.captionAm}</span>
-            <textarea name="captionAm" lang="am" defaultValue={p.captionAm} rows={4} maxLength={1500} className="rounded-lg border border-input bg-white p-2 text-base" />
-          </label>
           <label className="flex flex-col gap-1">
             <span className="font-medium">{t.captionEn}</span>
             <textarea name="captionEn" lang="en" defaultValue={p.captionEn} rows={4} maxLength={1500} className="rounded-lg border border-input bg-white p-2 text-base" />

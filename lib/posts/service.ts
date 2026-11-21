@@ -80,7 +80,7 @@ async function caption(deps: PostDeps, adminId: string, post: Pick<SocialPost, "
   } catch {
     // The AI failed: a plain caption the admin can edit, rather than no post.
     const { PlainCaptionWriter } = await import("./captions");
-    return new PlainCaptionWriter().write(facts);
+    return new PlainCaptionWriter().write(facts, { kind: post.kind });
   }
 }
 
@@ -164,7 +164,7 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
   const words = getMessages(lang).admin.posts.videoText;
   let url: string;
   let title: string;
-  if (post.kind === "template") {
+  if (post.kind === "template" || post.kind === "demo") {
     const t = ctx.templates.find((x) => x.id === post.subject);
     if (!t) return null;
     url = `${deps.appUrl}/demo/${t.id}/${lang === "am" ? "am/" : ""}`;
@@ -177,7 +177,8 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
     title = s.name;
   } else return null;
   const footer = new URL(deps.appUrl).host;
-  const data = await deps.video.render({ url, style: post.kind === "template" && style === "tour" ? "template" : style, lang, text: { kicker: post.kind === "template" ? words.template : words.site, title, outroTitle: words.outroTitle, outroSub: words.outroSub, site: title, footer } });
+  const kicker = post.kind === "site" ? words.site : post.kind === "demo" ? words.demo : words.template;
+  const data = await deps.video.render({ url, style: post.kind !== "site" && style === "tour" ? "template" : style, lang, text: { kicker, title, outroTitle: words.outroTitle, outroSub: words.outroSub, site: title, footer } });
   const key = `posts/${post.id}-${style}-${lang}.mp4`;
   await deps.files.put(key, data, { contentType: "video/mp4" });
   return deps.store.update(id, { media: { type: "video", key } });
@@ -208,9 +209,9 @@ export async function runDue(deps: PostDeps, now: number): Promise<{ sent: numbe
   // two days, so the admin sees the video before approving it. Approved posts keep what was approved.
   let videos = 0;
   if (deps.video) {
-    const soon = (await deps.store.between(day, addDays(day, 2))).find((p) => p.status === "draft" && (p.kind === "template" || p.kind === "site") && p.media?.type !== "video" && !p.results.video);
+    const soon = (await deps.store.between(day, addDays(day, 2))).find((p) => p.status === "draft" && (p.kind === "template" || p.kind === "demo" || p.kind === "site") && p.media?.type !== "video" && !p.results.video);
     if (soon) {
-      await makeVideo(deps, soon.id, "tour", "am").then(
+      await makeVideo(deps, soon.id, "tour", "en").then(
         () => videos++,
         // Remembered so the run doesn't retry it every 15 minutes; the picture is used instead.
         (e: unknown) => deps.store.saveResult(soon.id, "video", { ok: false, at: new Date(now).toISOString(), error: e instanceof Error ? e.message.slice(0, 200) : "failed" }),

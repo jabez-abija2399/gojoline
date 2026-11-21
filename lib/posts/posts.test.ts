@@ -35,21 +35,27 @@ describe("planDays", () => {
   // 2026-11-23 is a Monday.
   const base = { from: "2026-11-23", days: 7, taken: new Set<string>(), recent: [] as string[], ctx, channels: ["telegram" as const] };
 
-  it("follows the week's rhythm, rotating templates, with a template when no site opted in", () => {
-    const plan = planDays(base);
-    expect(plan.map((p) => p.kind)).toEqual(["template", "tip", "template", "feature", "template", "idea", "tip"]);
-    expect(plan.filter((p) => p.kind === "template").map((p) => p.subject)).toEqual(["cafe", "hotel", "cafe"]);
-    expect(plan[0].media).toEqual({ type: "template", id: "cafe" });
-    // Two tips in a week are different tips.
-    const tips = plan.filter((p) => p.kind === "tip").map((p) => p.subject);
-    expect(new Set(tips).size).toBe(2);
+  it("alternates two weekly rhythms of demos, templates, help and conversation, rotating subjects", () => {
+    const plan = planDays({ ...base, days: 14 });
+    expect(plan.map((p) => p.kind)).toEqual(["demo", "tip", "template", "myth", "template", "question", "idea", "template", "howto", "template", "feature", "demo", "question", "story"]);
+    // A demo shows the sentence that built its template; templates rotate.
+    expect(plan[0]).toMatchObject({ subject: "cafe", media: { type: "template", id: "cafe" } });
+    expect(plan.filter((p) => p.kind === "template").map((p) => p.subject)).toEqual(["cafe", "hotel", "cafe", "hotel"]);
+    expect(plan.find((p) => p.kind === "myth")?.subject).toMatch(/^myth-/);
+    expect(plan.find((p) => p.kind === "question")?.subject).toMatch(/^q-/);
+  });
+
+  it("a holiday takes its day", () => {
+    const plan = planDays({ ...base, from: "2027-01-04", days: 7 });
+    expect(plan.find((p) => p.day === "2027-01-07")).toMatchObject({ kind: "moment", subject: "moment-genna", media: null });
   });
 
   it("uses an opted-in site on Wednesdays, skips days that have a post, and avoids recent subjects", () => {
     const plan = planDays({ ...base, taken: new Set(["2026-11-24"]), recent: ["cafe"], ctx: { ...ctx, sites: [{ siteId: "s1", name: "Selam", url: "https://selam.example" }] } });
     expect(plan.map((p) => p.day)).not.toContain("2026-11-24");
     expect(plan.find((p) => p.day === "2026-11-25")).toMatchObject({ kind: "site", subject: "s1", media: { type: "site", siteId: "s1" } });
-    expect(plan[0].subject).toBe("hotel");
+    // "cafe" was posted recently: the next template is another one.
+    expect(plan.find((p) => p.kind === "template")?.subject).toBe("hotel");
   });
 });
 
@@ -57,8 +63,8 @@ describe("links and text", () => {
   it("tags each network's link for Admin → Analytics", () => {
     expect(trackedLink("https://gojoline.afridea.et", "telegram", "2026-11-23")).toBe("https://gojoline.afridea.et/en?utm_source=telegram&utm_medium=social&utm_campaign=post-2026-11-23");
     expect(trackedLink("https://gojoline.afridea.et", "instagram", "2026-11-23")).toContain("utm_source=facebook");
-    const text = postText({ captionAm: "ሰላም", captionEn: "Hello", hashtags: "#Gojoline", day: "2026-11-23" }, "tiktok", "https://g.example");
-    expect(text).toBe("ሰላም\n\nHello\n\nhttps://g.example/en?utm_source=tiktok&utm_medium=social&utm_campaign=post-2026-11-23\n\n#Gojoline");
+    const text = postText({ captionEn: "Hello", hashtags: "#Gojoline", day: "2026-11-23" }, "tiktok", "https://g.example");
+    expect(text).toBe("Hello\n\nhttps://g.example/en?utm_source=tiktok&utm_medium=social&utm_campaign=post-2026-11-23\n\n#Gojoline");
   });
 
   it("keeps hashtags tidy and always includes #Gojoline", () => {
@@ -72,7 +78,11 @@ describe("planAhead and publishing", () => {
     const d = deps();
     expect(await planAhead(d, "admin", "2026-11-23")).toBe(7);
     const posts = await d.store.between("2026-11-23", "2026-11-29");
-    expect(posts.every((p) => p.status === "draft" && p.captionEn.includes("Start free") && p.captionAm.length > 0 && p.channels.includes("telegram"))).toBe(true);
+    // English only: every caption is reviewed by an admin.
+    expect(posts.every((p) => p.status === "draft" && p.captionAm === "" && p.channels.includes("telegram"))).toBe(true);
+    // A call to action, except where a question or a greeting should have the last word.
+    expect(posts.filter((p) => p.kind !== "question" && p.kind !== "moment").every((p) => p.captionEn.includes("Start free"))).toBe(true);
+    expect(posts.find((p) => p.kind === "question")?.captionEn).toMatch(/\?$/);
     expect(await planAhead(d, "admin", "2026-11-23")).toBe(0);
   });
 

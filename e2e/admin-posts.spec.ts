@@ -28,12 +28,14 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
 
   // Edit the Amharic caption and save.
   await card.locator("summary").filter({ hasText: "Edit" }).click();
-  await card.getByLabel("Caption in Amharic").fill("ድረ-ገጽዎን በመጻፍ ይሥሩ።");
+  await card.getByLabel("Caption in English").fill("Your website, from one message. Start free.");
   await card.getByRole("button", { name: "Save" }).click();
   await expect(page.locator("main").getByRole("status").filter({ hasText: /^Saved\.$/ })).toBeVisible();
   const id = await card.getAttribute("id");
   const same = page.locator(`li#${id}`);
-  await expect(same).toContainText("ድረ-ገጽዎን በመጻፍ ይሥሩ።");
+  await expect(same).toContainText("Your website, from one message. Start free.");
+  // English only: there is no Amharic caption to review.
+  await expect(same.getByLabel("Caption in Amharic")).toHaveCount(0);
 
   // The posting kit has each network's text with its tracked link.
   await same.locator("summary").filter({ hasText: "Posting kit" }).click();
@@ -41,7 +43,6 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await expect(same.getByRole("link", { name: "Download the picture or video" })).toHaveAttribute("href", /\/api\/admin\/posts\/.+\/media\?download=1/);
 
   // A video of the template (the e2e stand-in renderer), kept as the post's media.
-  await same.getByLabel("Language of the video").selectOption("am");
   await same.getByRole("button", { name: /^Make video/ }).click();
   await expect(page.locator("main").getByRole("status").filter({ hasText: /^Done\.$/ })).toBeVisible();
   await expect(page.locator(`li#${id} video`)).toBeVisible();

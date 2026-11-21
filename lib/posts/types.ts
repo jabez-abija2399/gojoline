@@ -3,7 +3,7 @@
  * Amharic, approved by an admin, then sent to Gojoline's own channels (Telegram automatically;
  * the other networks from a posting kit until their APIs are connected).
  */
-export const POST_KINDS = ["template", "site", "tip", "feature", "idea", "custom"] as const;
+export const POST_KINDS = ["template", "site", "demo", "tip", "howto", "myth", "question", "feature", "idea", "story", "moment", "custom"] as const;
 export type PostKind = (typeof POST_KINDS)[number];
 
 export const POST_STATUSES = ["draft", "approved", "posted", "failed", "skipped"] as const;

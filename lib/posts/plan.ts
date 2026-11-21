@@ -1,4 +1,4 @@
-import { LIBRARY, libraryItem } from "./library";
+import { DEMO_PROMPTS, LIBRARY, libraryItem, momentOn } from "./library";
 import { DEFAULT_TIME, type Channel, type NewPost, type PostKind, type SocialPost } from "./types";
 
 /** What a post can be about: our templates and the live sites whose owners opted in. */
@@ -8,15 +8,22 @@ export interface PlanContext {
 }
 
 /**
- * The week's rhythm (Monday first): templates twice, a site of the week (a template when no owner
- * has opted in yet), tips twice, a feature and an idea. Varied, and never more selling than help.
+ * Two weeks that alternate (Monday first). Each has two videos (a demo or a template), one site of
+ * the week (a template while no owner has opted in), and useful or conversational posts between:
+ * tips and how-tos, a myth, a question, an idea or a feature, the story behind Gojoline. Help first,
+ * selling second; a holiday takes its day.
  */
-const WEEK: PostKind[] = ["template", "tip", "site", "feature", "template", "idea", "tip"];
+const WEEKS: PostKind[][] = [
+  ["demo", "tip", "site", "myth", "template", "question", "idea"],
+  ["template", "howto", "site", "feature", "demo", "question", "story"],
+];
 
 const DAY = 86_400_000;
 export const addDays = (day: string, n: number) => new Date(Date.parse(`${day}T00:00:00Z`) + n * DAY).toISOString().slice(0, 10);
 /** 0 = Monday. */
 const weekday = (day: string) => (new Date(`${day}T00:00:00Z`).getUTCDay() + 6) % 7;
+/** Which of the two weeks a day is in (counting Mondays since 2026-01-05). */
+const weekOf = (day: string) => Math.floor((Date.parse(`${day}T00:00:00Z`) - Date.parse("2026-01-05T00:00:00Z")) / (7 * DAY)) % 2 === 0 ? 0 : 1;
 
 /** The first of `items` not used recently, else the least recently used one. */
 function next<T>(items: T[], key: (x: T) => string, recent: string[]): T | null {
@@ -26,20 +33,32 @@ function next<T>(items: T[], key: (x: T) => string, recent: string[]): T | null 
   return [...items].sort((a, b) => recent.lastIndexOf(key(a)) - recent.lastIndexOf(key(b)))[0];
 }
 
+export type PlannedPost = Omit<NewPost, "captionEn" | "captionAm" | "hashtags">;
+
 /**
  * Draft posts for the days in [from, from + days) that have none yet. `recent` lists the subjects
  * of recent posts, oldest first, so subjects rotate instead of repeating.
  */
-export function planDays(input: { from: string; days: number; taken: Set<string>; recent: string[]; ctx: PlanContext; channels: Channel[] }): (Omit<NewPost, "captionEn" | "captionAm" | "hashtags">)[] {
-  const out: (Omit<NewPost, "captionEn" | "captionAm" | "hashtags">)[] = [];
+export function planDays(input: { from: string; days: number; taken: Set<string>; recent: string[]; ctx: PlanContext; channels: Channel[] }): PlannedPost[] {
+  const out: PlannedPost[] = [];
   const recent = [...input.recent];
   for (let i = 0; i < input.days; i++) {
     const day = addDays(input.from, i);
     if (input.taken.has(day)) continue;
-    let kind = WEEK[weekday(day)];
+    const moment = momentOn(day);
+    let kind: PostKind = moment ? "moment" : WEEKS[weekOf(day)][weekday(day)];
     if (kind === "site" && input.ctx.sites.length === 0) kind = "template";
-    let subject: string | null = null;
+    let subject: string | null = moment?.id ?? null;
     let media: NewPost["media"] = null;
+    if (kind === "demo") {
+      // A template that has the sentence that built it.
+      const t = next(input.ctx.templates.filter((x) => DEMO_PROMPTS[x.id]), (x) => `demo:${x.id}`, recent);
+      if (t) {
+        subject = t.id;
+        media = { type: "template", id: t.id };
+        recent.push(`demo:${t.id}`);
+      } else kind = "template";
+    }
     if (kind === "template") {
       const t = next(input.ctx.templates, (x) => x.id, recent);
       if (!t) kind = "tip";
@@ -52,32 +71,37 @@ export function planDays(input: { from: string; days: number; taken: Set<string>
       subject = s.siteId;
       media = { type: "site", siteId: s.siteId };
     }
-    if (kind === "tip" || kind === "feature" || kind === "idea") subject = next(LIBRARY[kind], (x) => x.id, recent)?.id ?? null;
-    if (subject) recent.push(subject);
+    if (kind in LIBRARY) subject = next([...LIBRARY[kind as keyof typeof LIBRARY]], (x) => x.id, recent)?.id ?? null;
+    if (subject && kind !== "demo") recent.push(subject);
     out.push({ day, time: DEFAULT_TIME, kind, subject, media, channels: input.channels });
   }
   return out;
 }
 
-/** The facts a caption is written from (English; the AI writes both languages from them). */
-export function postFacts(post: Pick<SocialPost, "kind" | "subject">, ctx: PlanContext): { en: string; am: string } {
+/** The facts a caption is written from (English). */
+export function postFacts(post: Pick<SocialPost, "kind" | "subject">, ctx: PlanContext): string {
   if (post.kind === "template") {
     const t = ctx.templates.find((x) => x.id === post.subject);
-    return { en: `A ready-made design: "${t?.name ?? "Gojoline template"}". Start from it, then change anything by chatting.`, am: `የተዘጋጀ ዲዛይን፦ «${t?.name ?? "የጎጆላይን አብነት"}»። ከሱ ይጀምሩ፣ ከዚያ ማንኛውንም ነገር በመጻፍ ይቀይሩ።` };
+    return `A ready-made website design: "${t?.name ?? "Gojoline template"}". Start from it, then change anything by chatting. The video scrolls through the real website.`;
+  }
+  if (post.kind === "demo") {
+    const prompt = post.subject ? DEMO_PROMPTS[post.subject] : undefined;
+    return prompt ? `Someone typed one message into Gojoline: "${prompt}" Gojoline built the website in the video from it, in about a minute.` : "One message in a chat, and Gojoline builds the whole website in about a minute.";
   }
   if (post.kind === "site") {
     const s = ctx.sites.find((x) => x.siteId === post.subject);
-    return { en: `Site of the week: ${s?.name ?? "a site"}, built with Gojoline by its owner.`, am: `የሳምንቱ ድረ-ገጽ፦ ${s?.name ?? "ድረ-ገጽ"}፣ ባለቤቱ በጎጆላይን የሠራው።` };
+    return `Site of the week: ${s?.name ?? "a website"}, built with Gojoline by its owner. The video scrolls through it.`;
   }
-  const item = libraryItem(post.subject);
-  return item ? { en: item.en, am: item.am } : { en: "Build your website by chatting, in Amharic or English.", am: "ድረ-ገጽዎን በመጻፍ ይሥሩ፣ በአማርኛ ወይም በእንግሊዝኛ።" };
+  return libraryItem(post.subject)?.en ?? "Build your website by chatting, in Amharic or English.";
 }
 
-export const DEFAULT_HASHTAGS = "#Gojoline #Ethiopia #AddisAbaba #website";
+export const DEFAULT_HASHTAGS = "#Gojoline #Ethiopia #AddisAbaba #SmallBusiness #website";
 
 /** A plain caption without the AI (no key, or the AI failed): the facts and the call to action. */
-export function plainCaption(facts: { en: string; am: string }): { captionEn: string; captionAm: string; hashtags: string } {
-  return { captionEn: `${facts.en}\n\nStart free, pay in Birr.`, captionAm: `${facts.am}\n\nበነጻ ይጀምሩ፣ በብር ይክፈሉ።`, hashtags: DEFAULT_HASHTAGS };
+export function plainCaption(facts: string, kind?: string): { captionEn: string; captionAm: string; hashtags: string } {
+  // A question ends with its question, a holiday with the greeting: no sales line after them.
+  const cta = kind === "question" || kind === "moment" ? "" : "\n\nStart free, pay in Birr.";
+  return { captionEn: `${facts}${cta}`, captionAm: "", hashtags: DEFAULT_HASHTAGS };
 }
 
 /** A link that tells Admin → Analytics which network and which post brought a visitor. */
@@ -90,7 +114,7 @@ export function trackedLink(appUrl: string, channel: Channel, day: string, lang:
   return u.toString();
 }
 
-/** The full text for one network: both languages, the tracked link and the hashtags. */
-export function postText(post: Pick<SocialPost, "captionEn" | "captionAm" | "hashtags" | "day">, channel: Channel, appUrl: string): string {
-  return [post.captionAm.trim(), post.captionEn.trim(), trackedLink(appUrl, channel, post.day), post.hashtags.trim()].filter(Boolean).join("\n\n");
+/** The full text for one network: the caption, the tracked link and the hashtags. */
+export function postText(post: Pick<SocialPost, "captionEn" | "hashtags" | "day">, channel: Channel, appUrl: string): string {
+  return [post.captionEn.trim(), trackedLink(appUrl, channel, post.day), post.hashtags.trim()].filter(Boolean).join("\n\n");
 }

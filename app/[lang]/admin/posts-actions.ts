@@ -37,7 +37,6 @@ export async function planWeek(form: FormData) {
 
 const edit = z.object({
   id: z.uuid(),
-  captionAm: z.string().trim().max(1500),
   captionEn: z.string().trim().max(1500),
   hashtags: z.string().trim().max(300),
   time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
@@ -91,7 +90,7 @@ export async function postAction(form: FormData) {
   back(l, done, `#post-${id}`);
 }
 
-const videoInput = z.object({ id: z.uuid(), style: z.enum(["tour", "spotlight"]), videoLang: z.enum(["en", "am"]) });
+const videoInput = z.object({ id: z.uuid(), style: z.enum(["tour", "spotlight"]) });
 
 /** Films the post's template or site into its video (about a minute). */
 export async function makePostVideo(form: FormData) {
@@ -101,7 +100,7 @@ export async function makePostVideo(form: FormData) {
   if (!parsed.success) return back(l, "invalid");
   let done: Done = "ok";
   try {
-    done = (await makeVideo(services().posts, parsed.data.id, parsed.data.style, parsed.data.videoLang)) ? "ok" : "not_found";
+    done = (await makeVideo(services().posts, parsed.data.id, parsed.data.style, "en")) ? "ok" : "not_found";
   } catch (e) {
     reportError("post video failed", e);
     done = "failed";
