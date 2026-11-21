@@ -11,6 +11,7 @@ import type { ChannelPublisher, MediaFile } from "./publishers";
 import type { ConnectionStore } from "./connections";
 import type { ConnectionVerifier } from "./verify";
 import { getMessages } from "@/lib/i18n";
+import { MOMENTS } from "./library";
 
 /** The networks Gojoline can post to by itself once connected (YouTube uses the posting kit). */
 export const AUTO_CHANNELS: readonly Channel[] = ["telegram", "facebook", "instagram", "tiktok"];
@@ -72,8 +73,9 @@ async function planLocked(deps: PostDeps, adminId: string, today: string, days: 
   const taken = new Set(existing.filter((p) => p.status !== "skipped").map((p) => p.day));
   const recent = recentPosts.map((p) => p.subject).filter((s): s is string => !!s);
   const ready = await readyChannels(deps);
-  // Text-only days skip the networks that need a picture or video.
-  const drafts = planDays({ from: today, days, taken, recent, ctx, channels: ready }).map((d) => (d.media ? d : { ...d, channels: d.channels.filter((c) => !NEEDS_MEDIA.includes(c)) }));
+  // Text-only days skip the networks that need a picture or video (holidays get a greeting video when the renderer is set up).
+  const filmed = (d: { media: unknown; kind: string }) => !!d.media || (d.kind === "moment" && !!deps.video);
+  const drafts = planDays({ from: today, days, taken, recent, ctx, channels: ready }).map((d) => (filmed(d) ? d : { ...d, channels: d.channels.filter((c) => !NEEDS_MEDIA.includes(c)) }));
   const written = await Promise.all(drafts.map(async (d) => ({ ...d, ...(await caption(deps, adminId, d, ctx)) })));
   return (await deps.store.createMany(written)).length;
 }
@@ -131,6 +133,11 @@ async function publishLocked(deps: PostDeps, id: string): Promise<SocialPost | n
   }
   const media = await deps.media(post.media).catch(() => null);
   for (const channel of pending) {
+    // A holiday post whose greeting video couldn't be made: networks that need media say so plainly.
+    if (!media && NEEDS_MEDIA.includes(channel)) {
+      post = (await deps.store.saveResult(id, channel, { ok: false, at: new Date().toISOString(), error: "needs a picture or video" })) ?? post;
+      continue;
+    }
     const result: ChannelResult = await sendTo(deps, channel, post, media).then(
       (ref) => ({ ok: true, at: new Date().toISOString(), ref }),
       (e: unknown) => ({ ok: false, at: new Date().toISOString(), error: e instanceof Error ? e.message.slice(0, 300) : "failed" }),
@@ -157,8 +164,8 @@ export const CONNECT_HINT: Record<Channel, string> = {
 
 
 /**
- * Films the post's template demo or opted-in site into a video, keeps it as the post's media
- * (posts/<id>-<style>-<lang>.mp4) and returns the post. Only template and site posts have a page.
+ * Films the post's template demo or opted-in site into a video (or, for a holiday, has its
+ * greeting card drawn), keeps it as the post's media (posts/<id>-<style>-<lang>.mp4) and returns the post.
  */
 export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, lang: "en" | "am"): Promise<SocialPost | null> {
   if (!deps.video) throw new Error("video renderer not set up (RENDERER_URL)");
@@ -180,6 +187,14 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
     if (!s) return null;
     url = s.url;
     title = s.name;
+  } else if (post.kind === "moment") {
+    // A holiday: the renderer draws the greeting card (no page to film).
+    const m = MOMENTS.find((x) => x.id === post.subject);
+    if (!m) return null;
+    const data = await deps.video.greeting({ lang, motif: m.motif, text: { kicker: words.greeting, title: m.title, sub: m.sub, footer: new URL(deps.appUrl).host } });
+    const key = `posts/${post.id}-greeting-${lang}.mp4`;
+    await deps.files.put(key, data, { contentType: "video/mp4" });
+    return deps.store.update(id, { media: { type: "video", key } });
   } else return null;
   const footer = new URL(deps.appUrl).host;
   const kicker = post.kind === "site" ? words.site : post.kind === "demo" ? words.demo : words.template;
@@ -188,6 +203,9 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
   await deps.files.put(key, data, { contentType: "video/mp4" });
   return deps.store.update(id, { media: { type: "video", key } });
 }
+
+/** Posts that can have a video: a template or site filmed, or a holiday's greeting card. */
+export const FILMABLE: SocialPost["kind"][] = ["template", "demo", "site", "moment"];
 
 /** Addis Ababa "now" as day and HH:MM. */
 export function addisNow(now: number): { day: string; time: string } {
@@ -210,11 +228,11 @@ export async function runDue(deps: PostDeps, now: number): Promise<{ sent: numbe
     if (after?.status === "posted") sent++;
     else failed++;
   }
-  // Then one video (they take a minute): for the next draft template or site post of the coming
+  // Then one video (they take a minute): for the next draft template, site or holiday post of the coming
   // two days, so the admin sees the video before approving it. Approved posts keep what was approved.
   let videos = 0;
   if (deps.video) {
-    const soon = (await deps.store.between(day, addDays(day, 2))).find((p) => p.status === "draft" && (p.kind === "template" || p.kind === "demo" || p.kind === "site") && p.media?.type !== "video" && !p.results.video);
+    const soon = (await deps.store.between(day, addDays(day, 2))).find((p) => p.status === "draft" && FILMABLE.includes(p.kind) && p.media?.type !== "video" && !p.results.video);
     if (soon) {
       await makeVideo(deps, soon.id, "tour", "en").then(
         () => videos++,

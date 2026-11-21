@@ -4,7 +4,7 @@ import { format } from "@/lib/i18n/format";
 import { services } from "@/lib/server/services";
 import { approveAllDrafts, makePostVideo, savePost, planWeek, postAction } from "@/app/[lang]/admin/posts-actions";
 import { addDays, postText } from "@/lib/posts/plan";
-import { addisToday, AUTO_CHANNELS, readyChannels } from "@/lib/posts/service";
+import { addisToday, AUTO_CHANNELS, FILMABLE, readyChannels } from "@/lib/posts/service";
 import { CHANNELS, type Channel, type SocialPost } from "@/lib/posts/types";
 import { CopyButton } from "@/components/billing/copy-button";
 import { FocusOnMount } from "./focus-on-mount";
@@ -262,7 +262,7 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
   );
   const manual = CHANNELS.filter((c) => !ready.includes(c));
   const mediaSrc = p.media ? `/api/admin/posts/${p.id}/media` : null;
-  const filmable = canFilm && (p.kind === "template" || p.kind === "demo" || p.kind === "site");
+  const filmable = canFilm && FILMABLE.includes(p.kind);
   return (
     <li id={`post-${p.id}`} className="flex scroll-mt-28 flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:p-5">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -342,13 +342,18 @@ function PostCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: S
           {filmable && (
             <form action={makePostVideo} className="flex flex-wrap items-end gap-2">
               {hidden}
-              <label className="flex flex-col gap-1">
-                <span className="text-sm font-medium">{t.videoStyle}</span>
-                <select name="style" defaultValue="tour" className="min-h-11 max-w-full rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
-                  <option value="tour">{t.videoStyles.tour}</option>
-                  <option value="spotlight">{t.videoStyles.spotlight}</option>
-                </select>
-              </label>
+              {p.kind === "moment" ? (
+                // A holiday's video is its greeting card: there is no style to choose.
+                <input type="hidden" name="style" value="tour" />
+              ) : (
+                <label className="flex flex-col gap-1">
+                  <span className="text-sm font-medium">{t.videoStyle}</span>
+                  <select name="style" defaultValue="tour" className="min-h-11 max-w-full rounded-lg border border-input bg-white px-2 text-base pointer-fine:min-h-9">
+                    <option value="tour">{t.videoStyles.tour}</option>
+                    <option value="spotlight">{t.videoStyles.spotlight}</option>
+                  </select>
+                </label>
+              )}
               <PostSubmit label={`${p.media?.type === "video" ? t.remakeVideo : t.makeVideo}: ${title}`} working={t.makingVideo} className={button}>
                 <Clapperboard aria-hidden="true" className="size-4" />
                 {p.media?.type === "video" ? t.remakeVideo : t.makeVideo}

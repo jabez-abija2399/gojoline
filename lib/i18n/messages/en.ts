@@ -1055,7 +1055,7 @@ export const en = {
       makeVideo: "Make video",
       remakeVideo: "Make the video again",
       makingVideo: "Making the video… about a minute",
-      videoText: { demo: "One message. One website.", template: "Template of the day", site: "Site of the week", outroTitle: "Build your website by chatting.", outroSub: "Start free. Pay in Birr." },
+      videoText: { greeting: "From all of us at Gojoline", demo: "One message. One website.", template: "Template of the day", site: "Site of the week", outroTitle: "Build your website by chatting.", outroSub: "Start free. Pay in Birr." },
       result: { ok: "Sent to {channel}", failed: "{channel} failed: {error}" },
       channels: { telegram: "Telegram", facebook: "Facebook", instagram: "Instagram", tiktok: "TikTok", youtube: "YouTube", video: "Video" },
       done: { ok: "Done.", invalid: "Please check the fields.", failed: "That didn't work. Please try again.", not_found: "That post no longer exists." },

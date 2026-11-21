@@ -19,7 +19,7 @@ import sharp from "sharp";
 // One render at a time: no image cache kept between videos, no thread per core.
 sharp.cache(false);
 sharp.concurrency(1);
-import { allowedUrl, cardHtml, FPS, H, isPrivateAddress, pickStops, timeline, W, WINDOW, type RenderRequest, type Style } from "./lib.ts";
+import { allowedUrl, cardHtml, FPS, GREETING_SECONDS, greetingHtml, H, isPrivateAddress, parseGreeting, pickStops, timeline, W, WINDOW, type GreetingRequest, type RenderRequest, type Style } from "./lib.ts";
 
 const SECRET = process.env.RENDERER_SECRET ?? "";
 const PORT = Number(process.env.PORT) || 7071;
@@ -245,6 +245,77 @@ async function render(req: RenderRequest, signal: AbortSignal): Promise<Buffer> 
   }
 }
 
+/**
+ * A holiday greeting: the card drawn in a browser with no network at all (every request is
+ * refused), filmed frame by frame as its picture grows in and the words appear, then held.
+ */
+async function greeting(req: GreetingRequest, signal: AbortSignal): Promise<Buffer> {
+  const t0 = Date.now();
+  const b = await launchBrowser();
+  const stop = () => void b.close().catch(() => undefined);
+  signal.addEventListener("abort", stop, { once: true });
+  const frames: Buffer[] = [];
+  // Drawn at 15 frames a second for the first 4.5 s (each used twice), then the last one held.
+  const moving = Math.round(4.5 * 15);
+  try {
+    const ctx = await b.newContext({ viewport: { width: W, height: H }, reducedMotion: "reduce", serviceWorkers: "block" });
+    await ctx.routeWebSocket(/.*/, (ws) => ws.close());
+    await ctx.route("**/*", (route) => (route.request().url().startsWith("data:") ? route.continue() : route.abort()));
+    const page = await ctx.newPage();
+    await page.setContent(greetingHtml(req, ASSETS[req.lang]), { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    for (let i = 0; i <= moving; i++) {
+      const t = i / moving;
+      const e = 1 - (1 - Math.min(1, t * 1.6)) ** 3;
+      await page.evaluate(([tt, ee]) => {
+        document.documentElement.style.setProperty("--t", String(tt));
+        document.documentElement.style.setProperty("--e", String(ee));
+      }, [t, e] as const);
+      frames.push(await sharp(await page.screenshot({ type: "jpeg", quality: 92 })).removeAlpha().raw().toBuffer());
+    }
+  } finally {
+    signal.removeEventListener("abort", stop);
+    await b.close().catch(() => undefined);
+  }
+  console.log(`greeting drawn in ${Date.now() - t0} ms`);
+  const total = GREETING_SECONDS * FPS;
+  const order: Buffer[] = [];
+  for (let i = 0; i < total; i++) order.push(frames[Math.min(frames.length - 1, Math.floor(i / 2))]);
+  return encode(order, signal);
+}
+
+/** Raw frames (rgb24, W×H, FPS) to an MP4 with the music under it, faded in and out. */
+async function encode(frames: Iterable<Buffer>, signal: AbortSignal): Promise<Buffer> {
+  const list = [...frames];
+  const seconds = list.length / FPS;
+  const dir = await mkdtemp(join(tmpdir(), "render-"));
+  const outFile = join(dir, "video.mp4");
+  const ff = spawn("nice", ["-n", "10", "ffmpeg", "-threads", "2",
+    "-v", "error", "-y",
+    "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", `${W}x${H}`, "-r", String(FPS), "-i", "-",
+    "-stream_loop", "-1", "-i", MUSIC,
+    "-filter_complex", `[0:v]fade=t=out:st=${(seconds - 0.5).toFixed(2)}:d=0.5[v];[1:a]atrim=0:${seconds.toFixed(2)},afade=t=in:d=1,afade=t=out:st=${(seconds - 2).toFixed(2)}:d=2,volume=0.8[a]`,
+    "-map", "[v]", "-map", "[a]",
+    "-c:v", "libx264", "-preset", "veryfast", "-crf", "27", "-maxrate", "3M", "-bufsize", "6M", "-pix_fmt", "yuv420p", "-profile:v", "high",
+    "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", "-shortest", outFile,
+  ], { stdio: ["pipe", "ignore", "pipe"], signal });
+  const err: Buffer[] = [];
+  ff.stderr.on("data", (d: Buffer) => err.push(d));
+  const done = new Promise<void>((resolve, reject) => ff.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`ffmpeg ${code}: ${Buffer.concat(err).toString().slice(-400)}`)))));
+  ff.stdin.on("error", () => undefined);
+  try {
+    for (const f of list) {
+      if (ff.exitCode !== null || ff.stdin.destroyed) break;
+      await new Promise<void>((resolve, reject) => ff.stdin.write(f, (e) => (e ? reject(e) : resolve())));
+    }
+    ff.stdin.end();
+    await done;
+    return await readFile(outFile);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
 /** For each row of the window, the visible columns (its corners are rounded). */
 function windowSpans(): [number, number][] {
   const { w, h, radius: r } = WINDOW;
@@ -280,7 +351,7 @@ let queue: Promise<unknown> = Promise.resolve();
 
 createServer(async (req: IncomingMessage, res: ServerResponse) => {
   if (req.method === "GET" && req.url === "/health") return void res.writeHead(200).end("ok");
-  if (req.method !== "POST" || req.url !== "/render") return void res.writeHead(404).end();
+  if (req.method !== "POST" || (req.url !== "/render" && req.url !== "/greeting")) return void res.writeHead(404).end();
   if (!authorized(req)) return void res.writeHead(401).end();
   const chunks: Buffer[] = [];
   let size = 0;
@@ -289,8 +360,23 @@ createServer(async (req: IncomingMessage, res: ServerResponse) => {
     if (size > 16_000) return void res.writeHead(413).end();
     chunks.push(c as Buffer);
   }
-  const input = parse(Buffer.concat(chunks).toString());
-  if (!input || !(await publicHost(new URL(input.url).hostname))) return void res.writeHead(400).end("bad request");
+  const body = Buffer.concat(chunks).toString();
+  let work: (signal: AbortSignal) => Promise<Buffer>;
+  if (req.url === "/greeting") {
+    let g: GreetingRequest | null = null;
+    try {
+      g = parseGreeting(JSON.parse(body));
+    } catch {
+      g = null;
+    }
+    if (!g) return void res.writeHead(400).end("bad request");
+    const input = g;
+    work = (signal) => greeting(input, signal);
+  } else {
+    const input = parse(body);
+    if (!input || !(await publicHost(new URL(input.url).hostname))) return void res.writeHead(400).end("bad request");
+    work = (signal) => render(input, signal);
+  }
   // One video at a time and at most one waiting: Chromium and ffmpeg share a small server with the app.
   if (running + waiting >= 2) return void res.writeHead(503).end("busy");
   const ac = new AbortController();
@@ -304,7 +390,7 @@ createServer(async (req: IncomingMessage, res: ServerResponse) => {
     const timer = setTimeout(() => ac.abort(new Error("render timed out")), 180_000);
     try {
       if (ac.signal.aborted) throw new Error("cancelled");
-      return await render(input, ac.signal);
+      return await work(ac.signal);
     } finally {
       clearTimeout(timer);
       running--;

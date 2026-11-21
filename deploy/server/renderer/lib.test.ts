@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allowedUrl, cardHtml, FPS, isPrivateAddress, pickStops, timeline, WINDOW, type RenderRequest } from "./lib.ts";
+import { allowedUrl, cardHtml, FPS, greetingHtml, isPrivateAddress, MOTIFS, parseGreeting, pickStops, timeline, WINDOW, type GreetingRequest, type RenderRequest } from "./lib.ts";
 
 const req: RenderRequest = { url: "https://gojoline.afridea.et/demo/cafe/", style: "tour", lang: "am", text: { kicker: "የዕለቱ <አብነት>", title: "ቦሌ ቡና ቤት", outroTitle: "ድረ-ገጽዎን በመጻፍ ይሥሩ።", outroSub: "በነጻ ይጀምሩ", site: "ቦሌ", footer: "gojoline.afridea.et" } };
 
@@ -53,5 +53,28 @@ describe("cards and stops", () => {
   it("prefers the useful sections (menu, booking, map) after the top", () => {
     const sections = [{ top: 0, text: "Hero" }, { top: 900, text: "Our story" }, { top: 1800, text: "Menu" }, { top: 2600, text: "Reserve a table" }, { top: 3400, text: "Gallery" }];
     expect(pickStops(sections, 2)).toEqual([1800, 3600, 5200]);
+  });
+});
+
+describe("holiday greetings", () => {
+  const assets = { logo: "data:image/svg+xml;base64,AA==", outfit: "data:font/woff2;base64,AA==", ethiopic: "data:font/woff2;base64,AA==" };
+  const ok = { lang: "en", motif: "meskel", text: { kicker: "From all of us", title: "Melkam <Meskel>!", sub: "Greetings", footer: "gojoline.com" } };
+
+  it("accepts only a known picture, a language and short texts", () => {
+    expect(parseGreeting(ok)).toEqual(ok);
+    expect(parseGreeting({ ...ok, motif: "../../etc" })).toBeNull();
+    expect(parseGreeting({ ...ok, lang: "fr" })).toBeNull();
+    expect(parseGreeting({ ...ok, text: { ...ok.text, title: "x".repeat(161) } })).toBeNull();
+    expect(parseGreeting({ ...ok, text: { ...ok.text, sub: 3 } })).toBeNull();
+    expect(parseGreeting(null)).toBeNull();
+  });
+
+  it("draws every holiday's picture, escapes the words, and loads nothing from the network", () => {
+    for (const motif of MOTIFS) {
+      const html = greetingHtml({ ...(ok as GreetingRequest), motif }, assets);
+      expect(html).toContain("<svg");
+      expect(html).toContain("Melkam &lt;Meskel&gt;!");
+      expect(html).not.toMatch(/(src|href)="https?:/);
+    }
   });
 });

@@ -1,3 +1,4 @@
+import type { GreetingMotif } from "./video";
 /**
  * Subjects for Gojoline's daily posts (English: every caption is reviewed by an admin before it
  * goes out). True statements only: the AI writes from these facts and may not add any.
@@ -85,18 +86,19 @@ export const LIBRARY = { tip: TIPS, feature: FEATURES, idea: IDEAS, myth: MYTHS,
  * Days worth a post of their own (Gregorian dates in Ethiopia). A moment replaces that day's
  * planned post; the caption greets people and connects the day to their business, warmly.
  */
-export const MOMENTS: (LibraryItem & { dates: string[] })[] = [
-  { id: "moment-genna", dates: ["01-07"], en: "Melkam Genna! Greetings to everyone celebrating Ethiopian Christmas. A busy week for many businesses: a website lets customers see your holiday hours and send a request ahead." },
-  { id: "moment-timket", dates: ["2027-01-19", "2028-01-20"], en: "Melkam Timket! Greetings to everyone celebrating Epiphany." },
-  { id: "moment-adwa", dates: ["03-02"], en: "Adwa Victory Day: remembering the victory at Adwa in 1896 and those who won it. Proud to be Ethiopian." },
-  { id: "moment-fasika", dates: ["2026-04-12", "2027-05-02", "2028-04-16"], en: "Melkam Fasika! Greetings to everyone celebrating Ethiopian Easter." },
-  { id: "moment-new-year", dates: ["2026-09-11", "2027-09-12", "2028-09-11"], en: "Melkam Addis Amet! Happy Ethiopian New Year to everyone. A new year is a good time to start something new." },
-  { id: "moment-meskel", dates: ["2026-09-27", "2027-09-28", "2028-09-27"], en: "Melkam Meskel! Greetings to everyone celebrating." },
+/** Holidays: their dates, the caption facts, and the greeting video's picture, title and line. */
+export const MOMENTS: (LibraryItem & { dates: string[]; motif: GreetingMotif; title: string; sub: string })[] = [
+  { id: "moment-genna", motif: "star", title: "Melkam Genna!", sub: "Greetings to everyone celebrating Ethiopian Christmas.", dates: ["01-07"], en: "Melkam Genna! Greetings to everyone celebrating Ethiopian Christmas. A busy week for many businesses: a website lets customers see your holiday hours and send a request ahead." },
+  { id: "moment-timket", motif: "water", title: "Melkam Timket!", sub: "Greetings to everyone celebrating Epiphany.", dates: ["2027-01-19", "2028-01-20"], en: "Melkam Timket! Greetings to everyone celebrating Epiphany." },
+  { id: "moment-adwa", motif: "stripes", title: "Adwa Victory Day", sub: "Remembering the victory at Adwa in 1896.", dates: ["03-02"], en: "Adwa Victory Day: remembering the victory at Adwa in 1896 and those who won it. Proud to be Ethiopian." },
+  { id: "moment-fasika", motif: "dawn", title: "Melkam Fasika!", sub: "Greetings to everyone celebrating Ethiopian Easter.", dates: ["2026-04-12", "2027-05-02", "2028-04-16"], en: "Melkam Fasika! Greetings to everyone celebrating Ethiopian Easter." },
+  { id: "moment-new-year", motif: "flowers", title: "Melkam Addis Amet!", sub: "Happy Ethiopian New Year to everyone.", dates: ["2026-09-11", "2027-09-12", "2028-09-11"], en: "Melkam Addis Amet! Happy Ethiopian New Year to everyone. A new year is a good time to start something new." },
+  { id: "moment-meskel", motif: "meskel", title: "Melkam Meskel!", sub: "Greetings to everyone celebrating.", dates: ["2026-09-27", "2027-09-28", "2028-09-27"], en: "Melkam Meskel! Greetings to everyone celebrating." },
   // Islamic holidays follow the moon: the admin checks the day before approving.
-  { id: "moment-eid-fitr", dates: ["2027-03-10", "2028-02-27"], en: "Eid Mubarak! Greetings to everyone celebrating Eid al-Fitr." },
-  { id: "moment-eid-adha", dates: ["2026-05-27", "2027-05-17", "2028-05-05"], en: "Eid Mubarak! Greetings to everyone celebrating Eid al-Adha (Arafa)." },
-  { id: "moment-mawlid", dates: ["2026-08-26", "2027-08-15", "2028-08-04"], en: "Greetings to everyone celebrating Mawlid." },
-  { id: "moment-new-year-greg", dates: ["01-01"], en: "Happy New Year! A good moment to give your business a home online." },
+  { id: "moment-eid-fitr", motif: "crescent", title: "Eid Mubarak!", sub: "Greetings to everyone celebrating Eid al-Fitr.", dates: ["2027-03-10", "2028-02-27"], en: "Eid Mubarak! Greetings to everyone celebrating Eid al-Fitr." },
+  { id: "moment-eid-adha", motif: "crescent", title: "Eid Mubarak!", sub: "Greetings to everyone celebrating Eid al-Adha (Arafa).", dates: ["2026-05-27", "2027-05-17", "2028-05-05"], en: "Eid Mubarak! Greetings to everyone celebrating Eid al-Adha (Arafa)." },
+  { id: "moment-mawlid", motif: "crescent", title: "Mawlid greetings", sub: "Greetings to everyone celebrating Mawlid.", dates: ["2026-08-26", "2027-08-15", "2028-08-04"], en: "Greetings to everyone celebrating Mawlid." },
+  { id: "moment-new-year-greg", motif: "sparkle", title: "Happy New Year!", sub: "Wishing everyone a good year ahead.", dates: ["01-01"], en: "Happy New Year! A good moment to give your business a home online." },
 ];
 
 /** The moment on this day (YYYY-MM-DD), if any. */

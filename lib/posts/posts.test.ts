@@ -248,8 +248,38 @@ describe("post videos", () => {
     expect(await makeVideo(d, site.id, "tour", "en")).toBeNull();
   });
 
+  it("a holiday gets its greeting video (picture, title and line from the library) and keeps Instagram and TikTok", async () => {
+    const video = new FakeVideoRenderer();
+    const fake = { channel: "instagram" as const, label: "x", publish: async () => "1" };
+    const d = deps({ video, publishers: async () => ({ telegram: new TelegramPublisher(new MemoryTelegramClient(), "@g"), instagram: fake }) });
+    // 27 Sep 2026 is Meskel.
+    await planAhead(d, "admin", "2026-09-27", 1);
+    const [meskel] = await d.store.between("2026-09-27", "2026-09-27");
+    expect(meskel).toMatchObject({ kind: "moment", subject: "moment-meskel", media: null, channels: ["telegram", "instagram"] });
+    // The timed run two days before makes its video.
+    expect(await runDue(d, Date.parse("2026-09-25T07:00:00Z"))).toMatchObject({ videos: 1 });
+    expect(video.greetings[0]).toEqual({ lang: "en", motif: "meskel", text: { kicker: "From all of us at Gojoline", title: "Melkam Meskel!", sub: "Greetings to everyone celebrating.", footer: "gojoline.afridea.et" } });
+    expect((await d.store.get(meskel.id))?.media).toEqual({ type: "video", key: `posts/${meskel.id}-greeting-en.mp4` });
+    // Without a renderer, a holiday is text only: no Instagram.
+    const e = deps({ publishers: d.publishers });
+    await planAhead(e, "admin", "2026-09-27", 1);
+    expect((await e.store.between("2026-09-27", "2026-09-27"))[0].channels).toEqual(["telegram"]);
+  });
+
+  it("a post without media is not sent to networks that need it, and says why", async () => {
+    let calls = 0;
+    const fake = { channel: "instagram" as const, label: "x", publish: async () => String(++calls) };
+    const d = deps({ publishers: async () => ({ telegram: new TelegramPublisher(new MemoryTelegramClient(), "@g"), instagram: fake }) });
+    const [p] = await d.store.createMany([{ day: "2026-09-27", time: "09:00", kind: "moment", subject: "moment-meskel", captionEn: "Melkam Meskel!", captionAm: "", hashtags: "", media: null, channels: ["telegram", "instagram"] }]);
+    await d.store.update(p.id, { status: "approved" });
+    const after = await publishPost(d, p.id);
+    expect(after?.results.telegram?.ok).toBe(true);
+    expect(after?.results.instagram).toMatchObject({ ok: false, error: "needs a picture or video" });
+    expect(calls).toBe(0);
+  });
+
   it("the timed run makes the next draft's video (seen before approval), never changes an approved post, and remembers a failure", async () => {
-    const failing: VideoRenderer = { render: async () => Promise.reject(new Error("renderer 502")) };
+    const failing: VideoRenderer = { render: async () => Promise.reject(new Error("renderer 502")), greeting: async () => Promise.reject(new Error("renderer 502")) };
     const d = deps({ video: new FakeVideoRenderer() });
     const [approved, draft] = await d.store.createMany([
       { day: "2026-11-24", time: "18:30", kind: "template", subject: "cafe", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "cafe" }, channels: ["telegram"] },
