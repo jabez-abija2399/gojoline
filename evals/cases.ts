@@ -15,6 +15,8 @@ export interface EvalCase {
   /** The site languages the owner picked before the build (sent as <site_languages>, as the builder does). */
   siteLanguages?: ("en" | "am")[];
   edit?: { prompt: string; mustContain: string[] };
+  /** Asked on an existing site (a follow-up): an off-topic message must get a short reply and no edit. */
+  offTopic?: string;
 }
 
 export const cases: EvalCase[] = [
@@ -51,4 +53,7 @@ export const cases: EvalCase[] = [
   { id: "am-tailor", lang: "am", industry: "tailor", prompt: "ጥበብ የልብስ ስፌት ቤት የሀበሻ ቀሚስ እና ሱፍ በትዕዛዝ ይሰፋል። ሽሮ ሜዳ እንገኛለን።", mustContain: [] },
   { id: "am-pharmacy", lang: "am", industry: "pharmacy", prompt: "ፈውስ ፋርማሲ ለ24 ሰዓት ክፍት ነው። ሳሪስ አቦ አካባቢ። ስልክ 0114 400 500።", mustContain: ["114\\D?400\\D?500"] },
   { id: "am-vague", lang: "am", industry: "unknown", prompt: "ድረ-ገጽ እፈልጋለሁ", mustContain: [] },
+  // 2026-11-21: questions that aren't about the website get a polite redirect and no edit.
+  { id: "en-offtopic", lang: "en", industry: "cafe", prompt: "Make a website for Selam Coffee in Piassa. Traditional buna and pastries. Phone 0911 223 344.", mustContain: ["Selam Coffee"], offTopic: "Who won the 2022 World Cup? And what's the capital of Australia?" },
+  { id: "am-offtopic", lang: "am", industry: "cafe", prompt: "ጀበና ካፌ እባላለሁ፣ ካዛንቺስ ነን። ባህላዊ ቡና እና ቁርስ። ስልክ 0911 765 432።", mustContain: ["ጀበና"], offTopic: "እኔ ማን ነኝ? የዛሬ ዜና ምንድን ነው?" },
 ];
