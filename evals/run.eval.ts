@@ -14,6 +14,7 @@ import { AnthropicLLMProvider } from "@/lib/providers/llm/anthropic";
 import { DEFAULT_MODEL, formatUsd } from "@/lib/providers/llm/pricing";
 import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
 import type { MessageParam } from "@/lib/providers/llm/types";
+import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { DockerSandboxProvider } from "@/lib/providers/sandbox/docker";
 import { VercelSandboxProvider } from "@/lib/providers/sandbox/vercel";
@@ -71,7 +72,8 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
   const llm = new AnthropicLLMProvider(env.SAYSITE_ANTHROPIC_API_KEY!);
   const usage = new MemoryUsageLogger();
   const t0 = Date.now();
-  const site = await sandboxes.open(`eval-${c.id}-${Date.now()}`, null);
+  // A fresh project id per case (the Docker runner accepts only UUIDs).
+  const site = await sandboxes.open(randomUUID(), null);
   const previewOpenMs = Date.now() - t0;
   try {
     const step = async (prompt: string, history: MessageParam[], must: string[], languages?: string[], siteLanguages?: ("en" | "am")[], expect: "build" | "answer" = "build") => {
