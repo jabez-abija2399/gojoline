@@ -94,3 +94,29 @@ Follow-ups from this run:
 
 Edits: about half of the remaining cost is writing the site (~2.7k tokens) to the prompt cache; the rest is output. Still open: the Amharic quality score needs a native-speaker review of `evals/.runs/`.
 
+
+## 2026-11-22: first builds from scratch, off-topic replies (on our own server)
+
+4 cases, `claude-opus-5-5`, run on the production server with the Docker runner (the same builder customers use), first builds framed as the builder does them (`<new_site/>` with the starter only as a format example).
+
+| Case | First try | Cost | Seconds | Follow-up | Follow-up cost |
+|---|---|---|---|---|---|
+| en-cafe | yes | $0.361 | 62 | edit: yes | $0.052 |
+| am-clinic | yes | $0.339 | 62 | – | – |
+| en-offtopic | yes | $0.146 | 61 | off-topic: answered, no edit | $0.028 |
+| am-offtopic | yes | $0.127 | 49 | off-topic: answered, no edit | $0.029 |
+
+| Metric | Result | Target |
+|---|---|---|
+| First try success | 100% | ≥ 90% |
+| Starter leftovers ("Bole Buna House", "ቦሌ ቡና ቤት") | none in any site | none |
+| Off-topic messages | 2/2 answered briefly, site unchanged | |
+| Median cost, first site | $0.339 (was $0.089 on 2026-11-15) | ≤ $0.50 |
+| Median seconds to preview | 62 | |
+| Total | $1.08 | |
+
+Off-topic replies, as sent:
+- EN ("Who won the 2022 World Cup? And what's the capital of Australia?"): "I'm Gojoline's website assistant, so I can only help you build and change your Selam Coffee site. You could ask me to add your opening hours, or send me your prices so I can make a full menu."
+- AM ("እኔ ማን ነኝ? የዛሬ ዜና ምንድን ነው?"): "ስለ እርስዎ የማውቀው ስለ ካፌዎ የነገሩኝን ብቻ ነው፤ ጀበና ካፌ፣ ካዛንቺስ። እኔ የጎጆላይን የድረ-ገጽ ረዳት ስለሆንኩ ዜና አላውቅም፤ የማግዘው ድረ-ገጽዎን በመሥራትና በመቀየር ብቻ ነው። የካፌውን የመክፈቻ ሰዓት ቢነግሩኝ ገጹ ላይ ልጨምረው እችላለሁ።"
+
+To watch: a full first build now costs about 3–4× more than before (writing the whole site from scratch instead of editing the starter, and the larger rich sites with menus, galleries and maps). Still inside the $0.50 budget; the format example could move to a cached system block (noted 2026-11-20) to save part of it. The small first sites in the off-topic cases ($0.13–0.15) show the cost follows how much the owner asks for.
