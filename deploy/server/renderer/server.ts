@@ -19,7 +19,7 @@ import sharp from "sharp";
 // One render at a time: no image cache kept between videos, no thread per core.
 sharp.cache(false);
 sharp.concurrency(1);
-import { allowedUrl, cardHtml, FPS, GREETING_SECONDS, greetingHtml, H, isPrivateAddress, parseGreeting, pickStops, timeline, W, WINDOW, type GreetingRequest, type RenderRequest, type Style } from "./lib.ts";
+import { allowedUrl, cardHtml, FPS, GREETING_SECONDS, greetingHtml, H, isPrivateAddress, parseGreeting, parseStory, pickStops, STORY_FPS, storyHtml, storyTiming, timeline, W, WINDOW, type GreetingRequest, type RenderRequest, type StoryRequest, type Style } from "./lib.ts";
 
 const SECRET = process.env.RENDERER_SECRET ?? "";
 const PORT = Number(process.env.PORT) || 7071;
@@ -257,39 +257,58 @@ async function render(req: RenderRequest, signal: AbortSignal): Promise<Buffer> 
  * the browser has closed, so Chromium and ffmpeg never share the container's memory.
  */
 async function greeting(req: GreetingRequest, signal: AbortSignal): Promise<Buffer> {
+  const DRAWN_FPS = 15;
+  const moving = Math.round(4.5 * DRAWN_FPS);
+  const frames = await drawFrames(greetingHtml(req, ASSETS[req.lang]), moving, (i) => {
+    const t = i / (moving - 1);
+    return { "--t": t, "--e": 1 - (1 - Math.min(1, t * 1.6)) ** 3 };
+  }, signal);
+  const hold = GREETING_SECONDS - frames.length / DRAWN_FPS;
+  return encode(["-f", "image2pipe", "-c:v", "mjpeg", "-framerate", String(DRAWN_FPS), "-i", "-"], `[0:v]tpad=stop_mode=clone:stop_duration=${hold.toFixed(2)},fps=${FPS},format=yuv420p`, GREETING_SECONDS, frames, signal);
+}
+
+/** A text video: the hook, then each line on its turn, then the ask; drawn at STORY_FPS and held. */
+async function story(req: StoryRequest, signal: AbortSignal): Promise<Buffer> {
+  const timing = storyTiming(req.lines.length);
+  const count = Math.ceil(timing.animated * STORY_FPS);
+  const frames = await drawFrames(storyHtml(req, ASSETS[req.lang]), count, (i) => ({ "--s": i / STORY_FPS }), signal);
+  const hold = timing.seconds - frames.length / STORY_FPS;
+  return encode(["-f", "image2pipe", "-c:v", "mjpeg", "-framerate", String(STORY_FPS), "-i", "-"], `[0:v]tpad=stop_mode=clone:stop_duration=${hold.toFixed(2)},fps=${FPS},format=yuv420p`, timing.seconds, frames, signal);
+}
+
+/**
+ * Draws a local card page frame by frame in a browser with no network at all (every request is
+ * refused), setting CSS variables per frame. Only the JPEG screenshots are kept, and the browser
+ * is closed before encoding, so Chromium and ffmpeg never share the container's memory.
+ */
+async function drawFrames(html: string, count: number, vars: (i: number) => Record<string, number>, signal: AbortSignal): Promise<Buffer[]> {
   const t0 = Date.now();
   const b = await launchBrowser();
   const stop = () => void b.close().catch(() => undefined);
   signal.addEventListener("abort", stop, { once: true });
   const frames: Buffer[] = [];
-  const DRAWN_FPS = 15;
-  const moving = Math.round(4.5 * DRAWN_FPS);
   try {
     if (signal.aborted) throw new Error("cancelled");
-    const ctx = await b.newContext({ viewport: { width: W, height: H }, reducedMotion: "reduce", serviceWorkers: "block" });
+    const ctx = await b.newContext({ viewport: { width: W, height: H }, reducedMotion: "reduce", serviceWorkers: "block", javaScriptEnabled: false });
     await ctx.routeWebSocket(/.*/, (ws) => ws.close());
     await ctx.route("**/*", (route) => (route.request().url().startsWith("data:") ? route.continue() : route.abort()));
     const page = await ctx.newPage();
-    await page.setContent(greetingHtml(req, ASSETS[req.lang]), { waitUntil: "load" });
+    await page.setContent(html, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
-    for (let i = 0; i < moving; i++) {
+    for (let i = 0; i < count; i++) {
       if (signal.aborted) throw new Error("cancelled");
-      const t = i / (moving - 1);
-      const e = 1 - (1 - Math.min(1, t * 1.6)) ** 3;
-      await page.evaluate(([tt, ee]) => {
-        document.documentElement.style.setProperty("--t", String(tt));
-        document.documentElement.style.setProperty("--e", String(ee));
-      }, [t, e] as const);
+      await page.evaluate((v) => {
+        for (const [k, val] of Object.entries(v)) document.documentElement.style.setProperty(k, String(val));
+      }, vars(i));
       frames.push(await page.screenshot({ type: "jpeg", quality: 92 }));
     }
   } finally {
     signal.removeEventListener("abort", stop);
     await b.close().catch(() => undefined);
   }
-  console.log(`greeting drawn in ${Date.now() - t0} ms`);
+  console.log(`${count} frames drawn in ${Date.now() - t0} ms`);
   if (signal.aborted) throw new Error("cancelled");
-  const hold = GREETING_SECONDS - frames.length / DRAWN_FPS;
-  return encode(["-f", "image2pipe", "-c:v", "mjpeg", "-framerate", String(DRAWN_FPS), "-i", "-"], `[0:v]tpad=stop_mode=clone:stop_duration=${hold.toFixed(2)},fps=${FPS},format=yuv420p`, GREETING_SECONDS, frames, signal);
+  return frames;
 }
 
 /** Frames into an MP4 with the music under it, faded in and out; never crashes the process on an abort or a dead ffmpeg. */
@@ -360,7 +379,7 @@ let queue: Promise<unknown> = Promise.resolve();
 
 createServer(async (req: IncomingMessage, res: ServerResponse) => {
   if (req.method === "GET" && req.url === "/health") return void res.writeHead(200).end("ok");
-  if (req.method !== "POST" || (req.url !== "/render" && req.url !== "/greeting")) return void res.writeHead(404).end();
+  if (req.method !== "POST" || (req.url !== "/render" && req.url !== "/greeting" && req.url !== "/story")) return void res.writeHead(404).end();
   if (!authorized(req)) return void res.writeHead(401).end();
   const chunks: Buffer[] = [];
   let size = 0;
@@ -371,7 +390,17 @@ createServer(async (req: IncomingMessage, res: ServerResponse) => {
   }
   const body = Buffer.concat(chunks).toString();
   let work: (signal: AbortSignal) => Promise<Buffer>;
-  if (req.url === "/greeting") {
+  if (req.url === "/story") {
+    let st: StoryRequest | null = null;
+    try {
+      st = parseStory(JSON.parse(body));
+    } catch {
+      st = null;
+    }
+    if (!st) return void res.writeHead(400).end("bad request");
+    const input = st;
+    work = (signal) => story(input, signal);
+  } else if (req.url === "/greeting") {
     let g: GreetingRequest | null = null;
     try {
       g = parseGreeting(JSON.parse(body));

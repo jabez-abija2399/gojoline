@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allowedUrl, cardHtml, FPS, greetingHtml, isPrivateAddress, MOTIFS, parseGreeting, pickStops, timeline, WINDOW, type GreetingRequest, type RenderRequest } from "./lib.ts";
+import { allowedUrl, cardHtml, FPS, greetingHtml, isPrivateAddress, MOTIFS, parseGreeting, parseStory, pickStops, storyHtml, storyTiming, timeline, WINDOW, type GreetingRequest, type RenderRequest, type StoryRequest } from "./lib.ts";
 
 const req: RenderRequest = { url: "https://gojoline.afridea.et/demo/cafe/", style: "tour", lang: "am", text: { kicker: "የዕለቱ <አብነት>", title: "ቦሌ ቡና ቤት", outroTitle: "ድረ-ገጽዎን በመጻፍ ይሥሩ።", outroSub: "በነጻ ይጀምሩ", site: "ቦሌ", footer: "gojoline.afridea.et" } };
 
@@ -76,5 +76,29 @@ describe("holiday greetings", () => {
       expect(html).toContain("Melkam &lt;Meskel&gt;!");
       expect(html).not.toMatch(/(src|href)="https?:/);
     }
+  });
+});
+
+describe("text videos", () => {
+  const assets = { logo: "data:image/svg+xml;base64,AA==", outfit: "data:font/woff2;base64,AA==", ethiopic: "data:font/woff2;base64,AA==" };
+  const ok = { lang: "en", kicker: "Website tip", title: "Show <your> prices", lines: ["People who know the price call", "Add a price list in one message"], cta: "Comment your business", footer: "gojoline.com" };
+
+  it("accepts 1–4 short lines and refuses anything else", () => {
+    expect(parseStory(ok)).toEqual(ok);
+    expect(parseStory({ ...ok, lines: [] })).toBeNull();
+    expect(parseStory({ ...ok, lines: ["a", "b", "c", "d", "e"] })).toBeNull();
+    expect(parseStory({ ...ok, lines: ["x".repeat(161)] })).toBeNull();
+    expect(parseStory({ ...ok, title: "" })).toBeNull();
+    expect(parseStory({ ...ok, lang: "fr" })).toBeNull();
+  });
+
+  it("shows each line on its turn, then the ask, and lasts long enough to read", () => {
+    const t = storyTiming(3);
+    expect(t.line(1) - t.line(0)).toBeGreaterThanOrEqual(2);
+    expect(t.cta).toBeGreaterThan(t.line(2));
+    expect(t.seconds).toBeGreaterThanOrEqual(t.cta + 3);
+    const html = storyHtml(ok as StoryRequest, assets);
+    expect(html).toContain("Show &lt;your&gt; prices");
+    expect(html).not.toMatch(/(src|href)="https?:/);
   });
 });

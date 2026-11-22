@@ -118,5 +118,19 @@ export function trackedLink(appUrl: string, channel: Channel, day: string, lang:
 
 /** The full text for one network: the caption, the tracked link and the hashtags. */
 export function postText(post: Pick<SocialPost, "captionEn" | "hashtags" | "day">, channel: Channel, appUrl: string): string {
+  // TikTok and Instagram don't make links in captions tappable: point to the profile's link instead,
+  // and keep hashtags to the few those networks reward.
+  if (channel === "tiktok" || channel === "instagram") {
+    const tags = post.hashtags.trim().split(/\s+/).filter(Boolean).slice(0, 5).join(" ");
+    return [post.captionEn.trim(), "Link in bio: start free, pay in Birr.", tags].filter(Boolean).join("\n\n");
+  }
   return [post.captionEn.trim(), trackedLink(appUrl, channel, post.day), post.hashtags.trim()].filter(Boolean).join("\n\n");
+}
+
+/** A YouTube Shorts title: the caption's hook, at most 100 characters, with #Shorts. */
+export function youtubeTitle(post: Pick<SocialPost, "captionEn">): string {
+  const hook = post.captionEn.trim().split("\n")[0].trim();
+  const room = 100 - " #Shorts".length;
+  const short = hook.length > room ? `${hook.slice(0, room - 1).replace(/\s+\S*$/, "")}…` : hook;
+  return `${short} #Shorts`;
 }

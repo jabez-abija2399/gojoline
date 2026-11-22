@@ -8,3 +8,6 @@ One video at a time, about 20 seconds long, made in roughly 30–90 seconds.
 
 Music: J.S. Bach, Prelude in C major (BWV 846), performed by Kimiko Ishizaka, from the Open
 Well-Tempered Clavier (CC0, archive.org item `bach-well-tempered-clavier-book-1`): the first 45 seconds.
+
+
+`POST /story` (2026-11-22) draws a text video for posts with no page to film (a tip, myth, how-to, question, feature, idea, story or a custom post): `{lang, kicker, title, lines: [1–4], cta, footer}`. The hook is on screen from the first frame; each line slides in about every 2.4 s, then the ask. 11–14 s long, drawn at 10 frames a second in a browser with no network and JavaScript off, then held; about 270 KB, made in about 12 s on one CPU.

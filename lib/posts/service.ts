@@ -12,6 +12,7 @@ import type { ConnectionStore } from "./connections";
 import type { ConnectionVerifier } from "./verify";
 import { getMessages } from "@/lib/i18n";
 import { MOMENTS } from "./library";
+import { STORY_KINDS, storyFor } from "./story";
 
 /** The networks Gojoline can post to by itself once connected (YouTube uses the posting kit). */
 export const AUTO_CHANNELS: readonly Channel[] = ["telegram", "facebook", "instagram", "tiktok"];
@@ -74,7 +75,7 @@ async function planLocked(deps: PostDeps, adminId: string, today: string, days: 
   const recent = recentPosts.map((p) => p.subject).filter((s): s is string => !!s);
   const ready = await readyChannels(deps);
   // Text-only days skip the networks that need a picture or video (holidays get a greeting video when the renderer is set up).
-  const filmed = (d: { media: unknown; kind: string }) => !!d.media || (d.kind === "moment" && !!deps.video);
+  const filmed = (d: { media: unknown; kind: SocialPost["kind"] }) => !!d.media || (FILMABLE.includes(d.kind) && !!deps.video);
   const drafts = planDays({ from: today, days, taken, recent, ctx, channels: ready }).map((d) => (filmed(d) ? d : { ...d, channels: d.channels.filter((c) => !NEEDS_MEDIA.includes(c)) }));
   const written = await Promise.all(drafts.map(async (d) => ({ ...d, ...(await caption(deps, adminId, d, ctx)) })));
   return (await deps.store.createMany(written)).length;
@@ -164,13 +165,15 @@ export const CONNECT_HINT: Record<Channel, string> = {
 
 
 /**
- * Films the post's template demo or opted-in site into a video (or, for a holiday, has its
- * greeting card drawn), keeps it as the post's media (posts/<id>-<style>-<lang>.mp4) and returns the post.
+ * Films the post's template demo or opted-in site into a video, or has its card drawn (a holiday
+ * greeting, or a text video for a tip, myth, how-to…), keeps it as the post's media
+ * (posts/<id>-<style>-<lang>.mp4) and returns the post. Every kind of post can have a video.
  */
 export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, lang: "en" | "am"): Promise<SocialPost | null> {
   if (!deps.video) throw new Error("video renderer not set up (RENDERER_URL)");
   const post = await deps.store.get(id);
-  if (!post || post.status === "posted" || !post.subject) return null;
+  // A custom post has no subject: its own words make the text video.
+  if (!post || post.status === "posted" || (!post.subject && post.kind !== "custom")) return null;
   const ctx = await deps.context();
   // What the video says, in its language (the renderer only draws it).
   const words = getMessages(lang).admin.posts.videoText;
@@ -187,6 +190,14 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
     if (!s) return null;
     url = s.url;
     title = s.name;
+  } else if (STORY_KINDS.includes(post.kind)) {
+    // A tip, myth, how-to, question…: a text video made from the post's own words.
+    const st = storyFor(post);
+    if (!st) return null;
+    const data = await deps.video.story({ lang, ...st, footer: new URL(deps.appUrl).host });
+    const key = `posts/${post.id}-story-${lang}.mp4`;
+    await deps.files.put(key, data, { contentType: "video/mp4" });
+    return deps.store.update(id, { media: { type: "video", key } });
   } else if (post.kind === "moment") {
     // A holiday: the renderer draws the greeting card (no page to film).
     const m = MOMENTS.find((x) => x.id === post.subject);
@@ -204,8 +215,8 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
   return deps.store.update(id, { media: { type: "video", key } });
 }
 
-/** Posts that can have a video: a template or site filmed, or a holiday's greeting card. */
-export const FILMABLE: SocialPost["kind"][] = ["template", "demo", "site", "moment"];
+/** Posts that can have a video: a template or site filmed, a holiday's greeting card, or a text video. */
+export const FILMABLE: SocialPost["kind"][] = ["template", "demo", "site", "moment", ...STORY_KINDS];
 
 /** Addis Ababa "now" as day and HH:MM. */
 export function addisNow(now: number): { day: string; time: string } {

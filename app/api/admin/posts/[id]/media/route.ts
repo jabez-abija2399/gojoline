@@ -3,6 +3,9 @@ import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { services } from "@/lib/server/services";
 import { templatePreview } from "@/lib/posts/service";
+import { sameOrigin } from "@/lib/builder/access";
+import { reportError } from "@/lib/observability/report";
+import { readVideoUpload, MAX_UPLOAD_BYTES } from "@/lib/posts/upload";
 
 /** A post's picture or video, for the admin's preview and the posting kit (?download=1 saves it). */
 export async function GET(request: Request, ctx: RouteContext<"/api/admin/posts/[id]/media">) {
@@ -41,4 +44,33 @@ export async function GET(request: Request, ctx: RouteContext<"/api/admin/posts/
       ...(download ? { "Content-Disposition": `attachment; filename="gojoline-${post!.day}-${file.name}"` } : {}),
     },
   });
+}
+
+/**
+ * Admin → Posts → Videos: replaces a post's media with a video the admin filmed (MP4 or an
+ * iPhone MOV, up to MAX_UPLOAD_BYTES). Our own pages only; the file must really be a video.
+ */
+export async function POST(request: Request, ctx: RouteContext<"/api/admin/posts/[id]/media">) {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) return new Response(null, { status: 404 });
+  if (!(await sameOrigin())) return Response.json({ error: "origin" }, { status: 403 });
+  const id = z.uuid().safeParse((await ctx.params).id);
+  if (!id.success) return new Response(null, { status: 404 });
+  const declared = Number(request.headers.get("content-length") ?? "0");
+  if (declared > MAX_UPLOAD_BYTES) return Response.json({ error: "too_big" }, { status: 413 });
+  const deps = services().posts;
+  const post = await deps.store.get(id.data);
+  if (!post) return new Response(null, { status: 404 });
+  if (post.status === "posted") return Response.json({ error: "posted" }, { status: 409 });
+  const upload = await readVideoUpload(request.body, MAX_UPLOAD_BYTES);
+  if ("error" in upload) return Response.json({ error: upload.error }, { status: upload.error === "too_big" ? 413 : 415 });
+  try {
+    const key = `posts/${post.id}-upload-${Date.now()}.${upload.ext}`;
+    await deps.files.put(key, upload.data, { contentType: upload.type });
+    await deps.store.update(post.id, { media: { type: "video", key } });
+    return Response.json({ ok: true });
+  } catch (e) {
+    reportError("post video upload failed", e);
+    return Response.json({ error: "failed" }, { status: 500 });
+  }
 }

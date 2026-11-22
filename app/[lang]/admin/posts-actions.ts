@@ -1,13 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { reportError } from "@/lib/observability/report";
 import { services } from "@/lib/server/services";
-import { addisNow, makeVideo, planAhead, publishPost, rewriteCaption } from "@/lib/posts/service";
+import { addisNow, FILMABLE, makeVideo, planAhead, publishPost, rewriteCaption } from "@/lib/posts/service";
 import { cleanHashtags } from "@/lib/posts/captions";
 import { CHANNELS } from "@/lib/posts/types";
 
@@ -106,7 +107,7 @@ export async function makePostVideo(form: FormData) {
     done = "failed";
   }
   revalidatePath(`/${l}/admin`);
-  back(l, done, `#post-${parsed.data.id}`);
+  back(l, done, form.get("back") === "videos" ? `&view=videos#video-${parsed.data.id}` : `#post-${parsed.data.id}`);
 }
 
 const connectInput = z.discriminatedUnion("network", [
@@ -199,4 +200,37 @@ export async function approveAllDrafts(form: FormData) {
   for (const p of drafts) await store.update(p.id, { status: "approved" });
   revalidatePath(`/${l}/admin`);
   redirect(`/${l}/admin?tab=posts&view=scheduled&pd=ok&approved=${drafts.length}`);
+}
+
+/**
+ * Admin → Posts → Videos: makes the video of every post in the next 7 days that has none, one
+ * after another in the background (each takes 10 s to a minute), so the page answers at once.
+ * One batch at a time; a post's own failure is saved on it and the batch goes on.
+ */
+export async function makeWeekVideos(form: FormData) {
+  await admin();
+  const l = lang(form);
+  const deps = services().posts;
+  if (!deps.video) return back(l, "failed", "&view=videos");
+  const today = addisNow(Date.now()).day;
+  const end = new Date(Date.parse(`${today}T00:00:00Z`) + 6 * 86_400_000).toISOString().slice(0, 10);
+  const todo = (await deps.store.between(today, end)).filter((p) => p.status !== "posted" && p.status !== "skipped" && FILMABLE.includes(p.kind) && p.media?.type !== "video");
+  const token = todo.length ? await deps.lock.acquire("posts:videos", 30 * 60_000) : null;
+  if (todo.length && !token) return redirect(`/${l}/admin?tab=posts&view=videos&vq=busy`);
+  if (token) {
+    after(async () => {
+      try {
+        for (const p of todo) {
+          await makeVideo(deps, p.id, "tour", "en").catch(async (e: unknown) => {
+            reportError("week video failed", e);
+            await deps.store.saveResult(p.id, "video", { ok: false, at: new Date().toISOString(), error: e instanceof Error ? e.message.slice(0, 200) : "failed" });
+          });
+        }
+      } finally {
+        await deps.lock.release("posts:videos", token);
+      }
+    });
+  }
+  revalidatePath(`/${l}/admin`);
+  redirect(`/${l}/admin?tab=posts&view=videos&vq=${todo.length}`);
 }

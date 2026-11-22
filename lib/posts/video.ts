@@ -22,9 +22,20 @@ export interface GreetingRequest {
   text: { kicker: string; title: string; sub: string; footer: string };
 }
 
+/** A text video: the hook, then up to four lines one by one, then the ask (no page to film). */
+export interface StoryRequest {
+  lang: "en" | "am";
+  kicker: string;
+  title: string;
+  lines: string[];
+  cta: string;
+  footer: string;
+}
+
 export interface VideoRenderer {
   render(req: VideoRequest): Promise<Buffer>;
   greeting(req: GreetingRequest): Promise<Buffer>;
+  story(req: StoryRequest): Promise<Buffer>;
 }
 
 /** The renderer on our server (RENDERER_URL, RENDERER_SECRET), over the private network. */
@@ -41,6 +52,10 @@ export class HttpVideoRenderer implements VideoRenderer {
 
   async greeting(req: GreetingRequest): Promise<Buffer> {
     return this.post("/greeting", req);
+  }
+
+  async story(req: StoryRequest): Promise<Buffer> {
+    return this.post("/story", req);
   }
 
   private async post(path: string, req: unknown): Promise<Buffer> {
@@ -61,8 +76,13 @@ export class HttpVideoRenderer implements VideoRenderer {
 export class FakeVideoRenderer implements VideoRenderer {
   readonly requests: VideoRequest[] = [];
   readonly greetings: GreetingRequest[] = [];
+  readonly stories: StoryRequest[] = [];
   async greeting(req: GreetingRequest): Promise<Buffer> {
     this.greetings.push(req);
+    return this.box();
+  }
+  async story(req: StoryRequest): Promise<Buffer> {
+    this.stories.push(req);
     return this.box();
   }
   async render(req: VideoRequest): Promise<Buffer> {

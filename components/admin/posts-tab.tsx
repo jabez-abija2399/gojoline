@@ -2,14 +2,15 @@ import { CalendarPlus, CheckCheck, CheckCircle2, ChevronDown, Clapperboard, Down
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import { services } from "@/lib/server/services";
-import { approveAllDrafts, makePostVideo, savePost, planWeek, postAction } from "@/app/[lang]/admin/posts-actions";
-import { addDays, postText } from "@/lib/posts/plan";
+import { approveAllDrafts, makePostVideo, makeWeekVideos, savePost, planWeek, postAction } from "@/app/[lang]/admin/posts-actions";
+import { addDays, postText, youtubeTitle } from "@/lib/posts/plan";
 import { addisToday, AUTO_CHANNELS, FILMABLE, readyChannels } from "@/lib/posts/service";
 import { CHANNELS, type Channel, type SocialPost } from "@/lib/posts/types";
 import { CopyButton } from "@/components/billing/copy-button";
 import { FocusOnMount } from "./focus-on-mount";
 import { PostSubmit } from "./post-submit";
 import { PostConnections } from "./post-connections";
+import { VideoUpload } from "./video-upload";
 import { reportError } from "@/lib/observability/report";
 import { cache, Suspense } from "react";
 import { summarize, type PostResult, type Results as Reach } from "@/lib/posts/results";
@@ -28,7 +29,7 @@ const chip: Record<SocialPost["status"], string> = {
 const button = "inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-line bg-white px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9";
 const solid = "inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-ink px-3.5 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9";
 
-const VIEWS = ["review", "scheduled", "sent", "connections"] as const;
+const VIEWS = ["review", "scheduled", "videos", "sent", "connections"] as const;
 type View = (typeof VIEWS)[number];
 
 /** A day's dot in the week strip: what state its post is in. */
@@ -65,7 +66,10 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
   const view: View = VIEWS.find((v) => v === sp.view) ?? (network ? "connections" : drafts.length > 0 ? "review" : "scheduled");
   const message = network && done ? { network, ok: done === "ok", why: typeof sp.why === "string" ? sp.why : done === "invalid" ? "invalid" : null } : null;
   const connected = views ? Object.values(views).filter((v) => v.connected).length : 0;
-  const counts: Record<View, string> = { review: String(drafts.length), scheduled: String(scheduled.length), sent: String(sent.length), connections: `${connected}/4` };
+  // The week's posts that go out (drafts and scheduled), each needing a video for TikTok, Reels and Shorts.
+  const weekPosts = upcoming.filter((p) => p.day <= addDays(today, 6) && p.status !== "skipped" && p.status !== "posted").sort((a, b) => a.day.localeCompare(b.day));
+  const withVideo = weekPosts.filter((p) => p.media?.type === "video").length;
+  const counts: Record<View, string> = { review: String(drafts.length), scheduled: String(scheduled.length), videos: `${withVideo}/${weekPosts.length}`, sent: String(sent.length), connections: `${connected}/4` };
   const href = (v: View) => `/${lang}/admin?tab=posts&view=${v}`;
   const viewOf = (p: SocialPost): View => (p.status === "draft" ? "review" : p.status === "posted" ? "sent" : "scheduled");
   const week = Array.from({ length: 7 }, (_, i) => addDays(today, i));
@@ -184,6 +188,38 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
       {view === "scheduled" && (
         <section aria-label={t.views.scheduled} className="flex flex-col gap-3">
           {scheduled.length === 0 ? <Empty text={t.emptyScheduled} /> : <ul className="flex flex-col gap-3">{scheduled.map(card)}</ul>}
+        </section>
+      )}
+
+      {view === "videos" && (
+        <section aria-labelledby="videos-head" className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col">
+              <h2 id="videos-head" className="text-base font-semibold">{t.videos.title}</h2>
+              <p className="text-sm text-ink-muted">{deps.video ? t.videos.hint : t.videos.noRenderer}</p>
+            </div>
+            {deps.video && weekPosts.length > withVideo && (
+              <form action={makeWeekVideos}>
+                <input type="hidden" name="lang" value={lang} />
+                <PostSubmit working={t.working} confirm={format(t.videos.makeAllConfirm, { n: weekPosts.length - withVideo })} className={`${solid} w-full justify-center whitespace-nowrap sm:w-auto`}>
+                  <Clapperboard aria-hidden="true" className="size-4" />
+                  {format(t.videos.makeAll, { n: weekPosts.length - withVideo })}
+                </PostSubmit>
+              </form>
+            )}
+          </div>
+          {typeof sp.vq === "string" && (
+            <p role="status" className="rounded-lg bg-paper px-3 py-2 text-sm">{sp.vq === "busy" ? t.videos.busy : Number(sp.vq) > 0 ? format(t.videos.queued, { n: Number(sp.vq) }) : t.videos.queuedNone}</p>
+          )}
+          {weekPosts.length === 0 ? (
+            <Empty text={t.videos.empty} />
+          ) : (
+            <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {weekPosts.map((p) => (
+                <VideoCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} canFilm={!!deps.video} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />
+              ))}
+            </ul>
+          )}
         </section>
       )}
 
@@ -484,5 +520,77 @@ async function ReachSummary({ today, lang, t }: { today: string; lang: "en" | "a
       )}
       <p className="text-xs text-ink-muted">{r.note}</p>
     </ReachBox>
+  );
+}
+
+/** Admin → Posts → Videos: one day's video, ready for TikTok, Reels and Shorts, and where it goes. */
+function VideoCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: SocialPost; lang: "en" | "am"; t: T; ready: Channel[]; appUrl: string; title: string; canFilm: boolean }) {
+  const v = t.videos;
+  const hasVideo = p.media?.type === "video";
+  const src = `/api/admin/posts/${p.id}/media`;
+  const auto = p.channels.filter((c) => AUTO_CHANNELS.includes(c) && ready.includes(c));
+  const byHand = CHANNELS.filter((c) => !auto.includes(c));
+  const pageKind = p.kind === "template" || p.kind === "demo" || p.kind === "site";
+  const failed = p.results.video && !p.results.video.ok ? p.results.video.error : null;
+  return (
+    <li id={`video-${p.id}`} className="flex scroll-mt-28 flex-col gap-3 rounded-2xl border border-line bg-white p-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2">
+        <h3 className="font-semibold">{title}</h3>
+        <span className="text-sm text-ink-muted tabular-nums">
+          {p.time} · {t.kinds[p.kind]} · {t.statuses[p.status]}
+        </span>
+      </div>
+      <div className="mx-auto aspect-[9/16] w-full max-w-[15rem] overflow-hidden rounded-xl border border-line bg-paper">
+        {hasVideo ? (
+          <video src={src} controls playsInline preload="metadata" aria-label={format(v.videoOf, { day: title })} className="size-full object-cover" />
+        ) : (
+          <div className="flex size-full flex-col items-center justify-center gap-2 p-4 text-center text-sm text-ink-muted">
+            <Clapperboard aria-hidden="true" className="size-6" />
+            {v.noVideo}
+          </div>
+        )}
+      </div>
+      {failed && <p className="rounded-lg bg-coral-soft px-3 py-2 text-xs text-destructive [overflow-wrap:anywhere]">{format(v.failed, { error: failed })}</p>}
+      <div className="flex flex-wrap items-start gap-2">
+        {canFilm && FILMABLE.includes(p.kind) && (
+          <form action={makePostVideo} className="flex flex-wrap items-center gap-2">
+            <input type="hidden" name="lang" value={lang} />
+            <input type="hidden" name="id" value={p.id} />
+            <input type="hidden" name="back" value="videos" />
+            {pageKind ? (
+              <select name="style" defaultValue="tour" aria-label={`${t.videoStyle}: ${title}`} className="min-h-11 max-w-[9rem] rounded-lg border border-input bg-white px-2 text-sm pointer-fine:min-h-9">
+                <option value="tour">{v.styleTour}</option>
+                <option value="spotlight">{v.styleSpotlight}</option>
+              </select>
+            ) : (
+              <input type="hidden" name="style" value="tour" />
+            )}
+            <PostSubmit label={`${hasVideo ? t.remakeVideo : t.makeVideo}: ${title}`} working={t.makingVideo} className={button}>
+              <Clapperboard aria-hidden="true" className="size-4" />
+              {hasVideo ? t.remakeVideo : t.makeVideo}
+            </PostSubmit>
+          </form>
+        )}
+        <VideoUpload postId={p.id} label={title} t={{ upload: v.upload, uploading: v.uploading, uploaded: v.uploaded, errors: v.errors }} />
+        {hasVideo && (
+          <a href={`${src}?download=1`} aria-label={`${t.download}: ${title}`} className={button}>
+            <Download aria-hidden="true" className="size-4" />
+            {t.download}
+          </a>
+        )}
+      </div>
+      <div className="flex flex-col gap-2 border-t border-line pt-3 text-sm">
+        <p>
+          <span className="font-medium">{v.goesTo}</span> {auto.length ? auto.map((c) => (c === "tiktok" ? v.tiktokInbox : t.channels[c])).join(", ") : v.nowhere}
+        </p>
+        <p className="text-ink-muted">
+          <span className="font-medium text-ink">{v.byHand}</span> {byHand.map((c) => t.channels[c]).join(", ")}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <CopyButton value={postText(p, "tiktok", appUrl)} what={`${v.tiktokCaption}: ${title}`} copy={v.tiktokCaption} copied={t.copied} />
+          <CopyButton value={youtubeTitle(p)} what={`${v.youtubeTitle}: ${title}`} copy={v.youtubeTitle} copied={t.copied} />
+        </div>
+      </div>
+    </li>
   );
 }

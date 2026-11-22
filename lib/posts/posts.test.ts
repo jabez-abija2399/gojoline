@@ -5,7 +5,7 @@ import { MemoryStorageProvider } from "@/lib/providers/storage/memory";
 import { MemoryLock } from "@/lib/lock";
 import { cleanHashtags, PlainCaptionWriter, type CaptionWriter } from "./captions";
 import { isDigestTime, weeklyDigest } from "./digest";
-import { addDays, planDays, postText, trackedLink, type PlanContext } from "./plan";
+import { addDays, planDays, postText, trackedLink, youtubeTitle, type PlanContext } from "./plan";
 import { addisNow, makeVideo, planAhead, publishPost, runDue, type PostDeps } from "./service";
 import { FakeVideoRenderer, type VideoRenderer } from "./video";
 import { MemoryPostStore } from "./store";
@@ -68,8 +68,13 @@ describe("links and text", () => {
   it("tags each network's link for Admin → Analytics", () => {
     expect(trackedLink("https://gojoline.afridea.et", "telegram", "2026-11-23")).toBe("https://gojoline.afridea.et/en?utm_source=telegram&utm_medium=social&utm_campaign=post-2026-11-23");
     expect(trackedLink("https://gojoline.afridea.et", "instagram", "2026-11-23")).toContain("utm_source=facebook");
-    const text = postText({ captionEn: "Hello", hashtags: "#Gojoline", day: "2026-11-23" }, "tiktok", "https://g.example");
-    expect(text).toBe("Hello\n\nhttps://g.example/en?utm_source=tiktok&utm_medium=social&utm_campaign=post-2026-11-23\n\n#Gojoline");
+    const text = postText({ captionEn: "Hello", hashtags: "#Gojoline", day: "2026-11-23" }, "telegram", "https://g.example");
+    expect(text).toBe("Hello\n\nhttps://g.example/en?utm_source=telegram&utm_medium=social&utm_campaign=post-2026-11-23\n\n#Gojoline");
+    // TikTok and Instagram: no link in the caption (it can't be tapped), at most 5 hashtags.
+    const tt = postText({ captionEn: "Hello", hashtags: "#Gojoline #a #b #c #d #e #f", day: "2026-11-23" }, "tiktok", "https://g.example");
+    expect(tt).toBe("Hello\n\nLink in bio: start free, pay in Birr.\n\n#Gojoline #a #b #c #d");
+    expect(youtubeTitle({ captionEn: "A website in one minute\n\nMore words" })).toBe("A website in one minute #Shorts");
+    expect(youtubeTitle({ captionEn: "x ".repeat(80) }).length).toBeLessThanOrEqual(100);
   });
 
   it("keeps hashtags tidy and always includes #Gojoline", () => {
@@ -233,7 +238,7 @@ describe("post videos", () => {
     expect(d.tg.posts[0].media).toMatchObject({ kind: "video" });
   });
 
-  it("films a site only while it is in the showcase, and tips have no page", async () => {
+  it("films a site only while it is in the showcase, and makes a text video for a tip", async () => {
     let sites = [{ siteId: "s1", name: "Selam", url: "https://selam.gojoline.site/" }];
     const video = new FakeVideoRenderer();
     const d = deps({ video, context: async () => ({ ...ctx, sites }) });
@@ -243,7 +248,9 @@ describe("post videos", () => {
     ]);
     expect((await makeVideo(d, site.id, "spotlight", "en"))?.media?.type).toBe("video");
     expect(video.requests[0]).toMatchObject({ url: "https://selam.gojoline.site/", style: "spotlight", text: { kicker: "Site of the week", title: "Selam" } });
-    expect(await makeVideo(d, tip.id, "tour", "en")).toBeNull();
+    // A tip has no page: it becomes a text video from its own words.
+    expect((await makeVideo(d, tip.id, "tour", "en"))?.media).toEqual({ type: "video", key: `posts/${tip.id}-story-en.mp4` });
+    expect(video.stories[0]).toMatchObject({ lang: "en", kicker: "Website tip", title: "Tip", cta: "Comment your business" });
     sites = [];
     expect(await makeVideo(d, site.id, "tour", "en")).toBeNull();
   });
@@ -279,7 +286,7 @@ describe("post videos", () => {
   });
 
   it("the timed run makes the next draft's video (seen before approval), never changes an approved post, and remembers a failure", async () => {
-    const failing: VideoRenderer = { render: async () => Promise.reject(new Error("renderer 502")), greeting: async () => Promise.reject(new Error("renderer 502")) };
+    const failing: VideoRenderer = { render: async () => Promise.reject(new Error("renderer 502")), greeting: async () => Promise.reject(new Error("renderer 502")), story: async () => Promise.reject(new Error("renderer 502")) };
     const d = deps({ video: new FakeVideoRenderer() });
     const [approved, draft] = await d.store.createMany([
       { day: "2026-11-24", time: "18:30", kind: "template", subject: "cafe", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "cafe" }, channels: ["telegram"] },

@@ -19,8 +19,8 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await signIn(page, { contact: `admin-e2e-posts-${info.project.name}@example.com` });
   await page.goto("/en/admin?tab=posts");
   await expect(page.getByRole("heading", { name: "Posts", level: 1 })).toBeVisible();
-  // One view at a time: To review, Scheduled, Sent, Connections.
-  await expect(page.getByRole("navigation", { name: "Posts" }).getByRole("link")).toHaveCount(4);
+  // One view at a time: To review, Scheduled, Videos, Sent, Connections.
+  await expect(page.getByRole("navigation", { name: "Posts" }).getByRole("link")).toHaveCount(5);
   await page.getByRole("navigation", { name: "Posts" }).getByRole("link", { name: /^Connections/ }).click();
   await expect(page).toHaveURL(/view=connections/);
   const tgCard = page.locator("#connect-telegram");
@@ -86,9 +86,10 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   // English only: there is no Amharic caption to review.
   await expect(same.getByLabel("Caption in Amharic")).toHaveCount(0);
 
-  // The posting kit has each network's text with its tracked link.
+  // The posting kit has each network's text: a tracked link where links work, "Link in bio" on TikTok.
   await same.locator("summary").filter({ hasText: "Edit and more" }).click();
-  await expect(same.getByLabel("Text for TikTok")).toHaveValue(/utm_source=tiktok/);
+  await expect(same.getByLabel("Text for Facebook")).toHaveValue(/utm_source=facebook/);
+  await expect(same.getByLabel("Text for TikTok")).toHaveValue(/Link in bio/);
   await expect(same.getByRole("link", { name: "Download the picture or video" })).toHaveAttribute("href", /\/api\/admin\/posts\/.+\/media\?download=1/);
 
   // A video of the template (the e2e stand-in renderer), kept as the post's media.
@@ -140,6 +141,38 @@ test("a visit from a post link shows in the Sent tab's results", async ({ page, 
   await page.goto("/en/admin?tab=posts&view=sent");
   const box = page.getByRole("heading", { name: /What posts brought in/ }).locator("..");
   await expect(box.getByRole("rowheader", { name: "Telegram" })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+});
+
+test("Videos: every day's video in one place, made here or uploaded, with captions per network", async ({ page }, info) => {
+  test.setTimeout(90_000);
+  await signIn(page, { contact: `admin-e2e-videos-${info.project.name}@example.com` });
+  await page.goto("/en/admin?tab=posts");
+  await planWeek(page, "Plan the next 7 days");
+  await page.goto("/en/admin?tab=posts&view=videos");
+  await expect(page.getByRole("heading", { name: "This week's videos" })).toBeVisible();
+  const cards = page.locator("li[id^=video-]");
+  await expect(cards.first()).toBeVisible();
+  // Make a video for a day without one (the demo renderer answers at once).
+  const without = cards.filter({ hasText: "No video yet" }).first();
+  const id = (await without.getAttribute("id"))!;
+  await without.getByRole("button", { name: /^(Make video|Remake video):/ }).click();
+  await expect(page).toHaveURL(/view=videos/);
+  await expect(page.locator(`#${id} video`)).toHaveCount(1);
+  // Upload a video the admin filmed (an MP4 by its bytes; a non-video is refused).
+  const target = page.locator("li[id^=video-]").filter({ hasText: "No video yet" }).first();
+  const targetId = (await target.getAttribute("id"))!;
+  const mp4 = Buffer.alloc(2048);
+  mp4.writeUInt32BE(24, 0);
+  mp4.write("ftypisom", 4);
+  await target.locator("input[type=file]").setInputFiles({ name: "not-a-video.mp4", mimeType: "video/mp4", buffer: Buffer.from("<html>hello</html>") });
+  await expect(target.getByText("That file isn't an MP4 or MOV video.")).toBeVisible();
+  await target.locator("input[type=file]").setInputFiles({ name: "my-build.mp4", mimeType: "video/mp4", buffer: mp4 });
+  await expect(page.locator(`#${targetId} video`)).toHaveCount(1);
+  // Captions for the networks posted by hand.
+  await expect(page.locator(`#${targetId}`).getByRole("button", { name: /Copy TikTok caption/ })).toBeVisible();
+  await expect(page.locator(`#${targetId}`).getByRole("button", { name: /Copy YouTube title/ })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 });
