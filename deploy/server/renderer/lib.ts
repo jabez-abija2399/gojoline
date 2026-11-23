@@ -147,6 +147,8 @@ export interface GreetingRequest {
 const SUN = "#FFD23F";
 const SUN_DEEP = "#D99A00";
 const CORAL = "#FF5B35";
+const PANEL = "#FFFFFF";
+const LINE = "#E9E4DC";
 const INK = "#121212";
 const WATER = "#2F80C9";
 const WATER_LIGHT = "#8DC3EC";
@@ -237,11 +239,15 @@ export function storyTiming(lines: number): { line: (i: number) => number; cta: 
 export function storyHtml(req: StoryRequest, assets: CardAssets): string {
   const timing = storyTiming(req.lines.length);
   const show = (from: number) => `opacity:calc(min(1, max(0, (var(--s) - ${from}) * 3)));transform:translateY(calc(max(0, 1 - (var(--s) - ${from}) * 3) * 36px))`;
-  const size = req.title.length > 60 ? 64 : req.title.length > 34 ? 76 : 92;
+  const size = req.title.length > 90 ? 56 : req.title.length > 60 ? 64 : req.title.length > 34 ? 76 : 92;
+  // Long lines get smaller type, so four of them and the hook always fit the safe area.
+  const total = req.lines.reduce((n, l) => n + l.length, 0);
+  const lineSize = total > 380 ? 34 : total > 260 ? 38 : total > 160 ? 42 : 46;
+  const tight = total > 260;
   const lines = req.lines
     .map((l, i) => `<li style="${show(timing.line(i))}"><span class="n">${i + 1}</span><span class="l">${esc(l)}</span></li>`)
     .join("");
-  return `<!doctype html><html lang="${req.lang}"><head><meta charset="utf-8"><style>${baseCss(assets)}:root{--s:0}body{justify-content:center;align-items:stretch;text-align:start;padding:150px 150px 420px 90px}.k{align-self:flex-start;background:${CORAL};color:${INK};font-size:38px;font-weight:700;padding:12px 30px;border-radius:999px}.t{font-size:${size}px;line-height:1.08;letter-spacing:-1px;margin-top:34px}ul{list-style:none;padding:0;margin:56px 0 0;display:flex;flex-direction:column;gap:26px}li{display:flex;gap:26px;align-items:flex-start;background:#fff;border:2px solid #E9E4DC;border-radius:28px;padding:30px 32px}.n{flex:none;width:64px;height:64px;border-radius:50%;background:${INK};color:${PAPER};font:700 36px/64px Outfit,sans-serif;text-align:center}.l{font-size:46px;line-height:1.3}.c{margin-top:56px;align-self:flex-start;background:${INK};color:${PAPER};font-size:44px;font-weight:700;padding:24px 40px;border-radius:999px;${show(timing.cta)}}.f{margin-top:40px;display:flex;align-items:center;gap:24px;${show(timing.cta)}}.f img{width:240px}.f span{font-size:32px;font-weight:600;color:${MUTED}}</style></head><body><p class="k">${esc(req.kicker)}</p><h1 class="t">${esc(req.title)}</h1><ul>${lines}</ul><p class="c">${esc(req.cta)}</p><div class="f"><img src="${assets.logo}" alt=""><span>${esc(req.footer)}</span></div></body></html>`;
+  return `<!doctype html><html lang="${req.lang}"><head><meta charset="utf-8"><style>${baseCss(assets)}:root{--s:0}body{justify-content:safe center;align-items:stretch;text-align:start;padding:${tight ? 110 : 150}px 150px 384px 90px}.k{align-self:flex-start;background:${CORAL};color:${INK};font-size:44px;font-weight:700;padding:12px 30px;border-radius:999px}.t{font-size:${size}px;line-height:1.08;letter-spacing:-1px;margin-top:34px}ul{list-style:none;padding:0;margin:${tight ? 36 : 56}px 0 0;display:flex;flex-direction:column;gap:${tight ? 16 : 26}px}li{display:flex;gap:26px;align-items:flex-start;background:${PANEL};border:2px solid ${LINE};border-radius:28px;padding:${tight ? "20px 26px" : "30px 32px"}}.n{flex:none;width:64px;height:64px;border-radius:50%;background:${INK};color:${PAPER};font:700 36px/64px Outfit,sans-serif;text-align:center}.l{font-size:${lineSize}px;line-height:1.3}.c{margin-top:${tight ? 36 : 56}px;align-self:flex-start;background:${INK};color:${PAPER};font-size:44px;font-weight:700;padding:24px 40px;border-radius:999px;${show(timing.cta)}}.f{margin-top:${tight ? 24 : 40}px;display:flex;align-items:center;gap:24px;${show(timing.cta)}}.f img{width:240px}.f span{font-size:32px;font-weight:600;color:${MUTED}}</style></head><body><p class="k">${esc(req.kicker)}</p><h1 class="t">${esc(req.title)}</h1><ul>${lines}</ul><p class="c">${esc(req.cta)}</p><div class="f"><img src="${assets.logo}" alt=""><span>${esc(req.footer)}</span></div></body></html>`;
 }
 
 /** Checks a text-video request from the app: a language, 1–4 lines, short texts. */
@@ -249,7 +255,8 @@ export function parseStory(v: unknown): StoryRequest | null {
   const r = v as Partial<StoryRequest> | null;
   const str = (x: unknown, max: number) => typeof x === "string" && x.trim().length > 0 && x.length <= max;
   if (!r || (r.lang !== "en" && r.lang !== "am")) return null;
-  if (!str(r.kicker, 40) || !str(r.title, 140) || !str(r.cta, 60) || !str(r.footer, 80)) return null;
-  if (!Array.isArray(r.lines) || r.lines.length < 1 || r.lines.length > 4 || !r.lines.every((l) => str(l, 160))) return null;
+  // The longest a story can be and still fit above the networks' caption area (measured).
+  if (!str(r.kicker, 40) || !str(r.title, 100) || !str(r.cta, 60) || !str(r.footer, 80)) return null;
+  if (!Array.isArray(r.lines) || r.lines.length < 1 || r.lines.length > 4 || !r.lines.every((l) => str(l, 120))) return null;
   return { lang: r.lang, kicker: r.kicker!, title: r.title!, lines: [...r.lines] as string[], cta: r.cta!, footer: r.footer! };
 }

@@ -36,6 +36,18 @@ export interface VideoRenderer {
   render(req: VideoRequest): Promise<Buffer>;
   greeting(req: GreetingRequest): Promise<Buffer>;
   story(req: StoryRequest): Promise<Buffer>;
+  /**
+   * An admin's own MP4, checked (a real H.264/HEVC video, at most 3 minutes) and re-written
+   * without metadata (no GPS location) before it is stored. Throws a CleanError.
+   */
+  clean(data: Buffer): Promise<Buffer>;
+}
+
+/** Why an uploaded video was refused, as a code the page words. */
+export class CleanError extends Error {
+  constructor(readonly code: "too_big" | "not_video" | "too_long" | "busy" | "failed") {
+    super(`clean: ${code}`);
+  }
 }
 
 /** The renderer on our server (RENDERER_URL, RENDERER_SECRET), over the private network. */
@@ -56,6 +68,21 @@ export class HttpVideoRenderer implements VideoRenderer {
 
   async story(req: StoryRequest): Promise<Buffer> {
     return this.post("/story", req);
+  }
+
+  async clean(data: Buffer): Promise<Buffer> {
+    const res = await this.fetchImpl(`${this.url.replace(/\/$/, "")}/clean`, {
+      method: "POST",
+      headers: { "Content-Type": "video/mp4", Authorization: `Bearer ${this.secret}` },
+      // A view of the same memory, not a copy.
+      body: new Uint8Array(data.buffer as ArrayBuffer, data.byteOffset, data.byteLength),
+      signal: AbortSignal.timeout(120_000),
+    });
+    if (!res.ok) {
+      const why = (await res.text().catch(() => "")).trim();
+      throw new CleanError(res.status === 413 ? "too_big" : res.status === 415 ? "not_video" : res.status === 503 ? "busy" : why === "too long" ? "too_long" : res.status === 422 ? "not_video" : "failed");
+    }
+    return Buffer.from(await res.arrayBuffer());
   }
 
   private async post(path: string, req: unknown): Promise<Buffer> {
@@ -84,6 +111,9 @@ export class FakeVideoRenderer implements VideoRenderer {
   async story(req: StoryRequest): Promise<Buffer> {
     this.stories.push(req);
     return this.box();
+  }
+  async clean(data: Buffer): Promise<Buffer> {
+    return data;
   }
   async render(req: VideoRequest): Promise<Buffer> {
     this.requests.push(req);

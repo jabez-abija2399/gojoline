@@ -11,7 +11,7 @@ export function PostSubmit({ children, working, confirm, className, label }: { c
   return (
     <button
       type="submit"
-      aria-label={label}
+      aria-label={pending ? undefined : label}
       aria-disabled={pending}
       onClick={(e) => {
         if (pending || (confirm && !window.confirm(confirm))) e.preventDefault();

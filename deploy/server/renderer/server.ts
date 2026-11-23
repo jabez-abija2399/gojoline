@@ -8,7 +8,7 @@ import { spawn } from "node:child_process";
 import { timingSafeEqual } from "node:crypto";
 import { lookup } from "node:dns/promises";
 import { readFileSync } from "node:fs";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import http, { createServer, type IncomingMessage, type ServerResponse } from "node:http";
@@ -271,7 +271,10 @@ async function greeting(req: GreetingRequest, signal: AbortSignal): Promise<Buff
 async function story(req: StoryRequest, signal: AbortSignal): Promise<Buffer> {
   const timing = storyTiming(req.lines.length);
   const count = Math.ceil(timing.animated * STORY_FPS);
-  const frames = await drawFrames(storyHtml(req, ASSETS[req.lang]), count, (i) => ({ "--s": i / STORY_FPS }), signal);
+  // Each part fades in over a third of a second and then stands still: only those moments are drawn.
+  const starts = [...req.lines.map((_, i) => timing.line(i)), timing.cta];
+  const moving = (i: number) => i === 0 || starts.some((from) => i / STORY_FPS > from && i / STORY_FPS < from + 0.4);
+  const frames = await drawFrames(storyHtml(req, ASSETS[req.lang]), count, (i) => ({ "--s": i / STORY_FPS }), signal, moving);
   const hold = timing.seconds - frames.length / STORY_FPS;
   return encode(["-f", "image2pipe", "-c:v", "mjpeg", "-framerate", String(STORY_FPS), "-i", "-"], `[0:v]tpad=stop_mode=clone:stop_duration=${hold.toFixed(2)},fps=${FPS},format=yuv420p`, timing.seconds, frames, signal);
 }
@@ -281,7 +284,7 @@ async function story(req: StoryRequest, signal: AbortSignal): Promise<Buffer> {
  * refused), setting CSS variables per frame. Only the JPEG screenshots are kept, and the browser
  * is closed before encoding, so Chromium and ffmpeg never share the container's memory.
  */
-async function drawFrames(html: string, count: number, vars: (i: number) => Record<string, number>, signal: AbortSignal): Promise<Buffer[]> {
+async function drawFrames(html: string, count: number, vars: (i: number) => Record<string, number>, signal: AbortSignal, moving: (i: number) => boolean = () => true): Promise<Buffer[]> {
   const t0 = Date.now();
   const b = await launchBrowser();
   const stop = () => void b.close().catch(() => undefined);
@@ -295,13 +298,21 @@ async function drawFrames(html: string, count: number, vars: (i: number) => Reco
     const page = await ctx.newPage();
     await page.setContent(html, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
+    let drawn = 0;
     for (let i = 0; i < count; i++) {
       if (signal.aborted) throw new Error("cancelled");
+      // A still frame repeats the previous picture (the same bytes, no new screenshot).
+      if (i > 0 && !moving(i)) {
+        frames.push(frames[i - 1]);
+        continue;
+      }
       await page.evaluate((v) => {
         for (const [k, val] of Object.entries(v)) document.documentElement.style.setProperty(k, String(val));
       }, vars(i));
       frames.push(await page.screenshot({ type: "jpeg", quality: 92 }));
+      drawn++;
     }
+    console.log(`${drawn} of ${count} frames drawn`);
   } finally {
     signal.removeEventListener("abort", stop);
     await b.close().catch(() => undefined);
@@ -344,6 +355,61 @@ async function encode(input: string[], video: string, seconds: number, frames: B
   }
 }
 
+/** An uploaded video: at most this size, this long. */
+const CLEAN_MAX_BYTES = 60 * 1024 * 1024;
+const CLEAN_MAX_SECONDS = 180;
+
+/**
+ * An admin's own video (Admin → Posts → Videos), before it is stored and posted: ffprobe must
+ * find an H.264 or HEVC video stream (images, audio and anything else are refused), and the file
+ * is re-written without any metadata (no GPS location, no device model) and with its index at
+ * the front, so it plays while downloading. The streams are copied, never re-encoded.
+ */
+async function cleanRequest(req: IncomingMessage, res: ServerResponse) {
+  if (running + waiting >= 2) return void res.writeHead(503).end("busy");
+  const dir = await mkdtemp(join(tmpdir(), "clean-"));
+  const input = join(dir, "in.mp4");
+  const output = join(dir, "out.mp4");
+  try {
+    let size = 0;
+    const parts: Buffer[] = [];
+    for await (const c of req) {
+      size += (c as Buffer).length;
+      if (size > CLEAN_MAX_BYTES) return void res.writeHead(413).end("too big");
+      parts.push(c as Buffer);
+    }
+    await writeFile(input, Buffer.concat(parts, size));
+    parts.length = 0;
+    const probe = await run("ffprobe", ["-v", "error", "-show_entries", "stream=codec_type,codec_name:format=duration", "-of", "json", input]);
+    const info = JSON.parse(probe || "{}") as { streams?: { codec_type?: string; codec_name?: string }[]; format?: { duration?: string } };
+    const video = info.streams?.find((st) => st.codec_type === "video" && (st.codec_name === "h264" || st.codec_name === "hevc"));
+    const seconds = Number(info.format?.duration ?? "0");
+    if (!video) return void res.writeHead(415).end("not a video");
+    if (!(seconds > 0 && seconds <= CLEAN_MAX_SECONDS)) return void res.writeHead(422).end("too long");
+    await run("ffmpeg", ["-v", "error", "-y", "-i", input, "-map", "0:v:0", "-map", "0:a:0?", "-map_metadata", "-1", "-map_chapters", "-1", "-dn", "-sn", "-c", "copy", "-movflags", "+faststart", output]);
+    const out = await readFile(output);
+    res.writeHead(200, { "Content-Type": "video/mp4", "Content-Length": out.length }).end(out);
+  } catch (e) {
+    console.error("clean failed:", e instanceof Error ? e.message : e);
+    if (!res.headersSent) res.writeHead(422).end("unreadable");
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+/** Runs ffmpeg or ffprobe (low priority, 60 s at most) and returns what it printed. */
+function run(cmd: string, args: string[]): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const p = spawn("nice", ["-n", "10", cmd, ...args], { stdio: ["ignore", "pipe", "pipe"], timeout: 60_000 });
+    const out: Buffer[] = [];
+    const err: Buffer[] = [];
+    p.stdout.on("data", (d: Buffer) => out.push(d));
+    p.stderr.on("data", (d: Buffer) => err.push(d));
+    p.on("error", reject);
+    p.on("close", (code) => (code === 0 ? resolve(Buffer.concat(out).toString()) : reject(new Error(`${cmd} ${code}: ${Buffer.concat(err).toString().slice(-300)}`))));
+  });
+}
+
 /** For each row of the window, the visible columns (its corners are rounded). */
 function windowSpans(): [number, number][] {
   const { w, h, radius: r } = WINDOW;
@@ -379,8 +445,9 @@ let queue: Promise<unknown> = Promise.resolve();
 
 createServer(async (req: IncomingMessage, res: ServerResponse) => {
   if (req.method === "GET" && req.url === "/health") return void res.writeHead(200).end("ok");
-  if (req.method !== "POST" || (req.url !== "/render" && req.url !== "/greeting" && req.url !== "/story")) return void res.writeHead(404).end();
+  if (req.method !== "POST" || (req.url !== "/render" && req.url !== "/greeting" && req.url !== "/story" && req.url !== "/clean")) return void res.writeHead(404).end();
   if (!authorized(req)) return void res.writeHead(401).end();
+  if (req.url === "/clean") return cleanRequest(req, res);
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const c of req) {

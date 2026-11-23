@@ -203,28 +203,44 @@ export async function approveAllDrafts(form: FormData) {
 }
 
 /**
- * Admin → Posts → Videos: makes the video of every post in the next 7 days that has none, one
+ * Admin → Posts → Videos: makes the video of every draft in the next 7 days that has none, one
  * after another in the background (each takes 10 s to a minute), so the page answers at once.
- * One batch at a time; a post's own failure is saved on it and the batch goes on.
+ * Approved posts keep what was approved. One batch at a time; a post that got a video meanwhile
+ * (an upload) is skipped; a busy video server is waited for; a post's own failure is noted on it.
  */
 export async function makeWeekVideos(form: FormData) {
   await admin();
   const l = lang(form);
   const deps = services().posts;
-  if (!deps.video) return back(l, "failed", "&view=videos");
+  const video = deps.video;
+  if (!video) return back(l, "failed", "&view=videos");
   const today = addisNow(Date.now()).day;
   const end = new Date(Date.parse(`${today}T00:00:00Z`) + 6 * 86_400_000).toISOString().slice(0, 10);
-  const todo = (await deps.store.between(today, end)).filter((p) => p.status !== "posted" && p.status !== "skipped" && FILMABLE.includes(p.kind) && p.media?.type !== "video");
-  const token = todo.length ? await deps.lock.acquire("posts:videos", 30 * 60_000) : null;
+  const todo = (await deps.store.between(today, end)).filter((p) => p.status === "draft" && FILMABLE.includes(p.kind) && p.media?.type !== "video");
+  // Long enough for every video at its slowest (the client waits up to 280 s each).
+  const token = todo.length ? await deps.lock.acquire("posts:videos", (todo.length * 300 + 60) * 1000) : null;
   if (todo.length && !token) return redirect(`/${l}/admin?tab=posts&view=videos&vq=busy`);
   if (token) {
     after(async () => {
       try {
         for (const p of todo) {
-          await makeVideo(deps, p.id, "tour", "en").catch(async (e: unknown) => {
-            reportError("week video failed", e);
-            await deps.store.saveResult(p.id, "video", { ok: false, at: new Date().toISOString(), error: e instanceof Error ? e.message.slice(0, 200) : "failed" });
-          });
+          const now = await deps.store.get(p.id).catch(() => null);
+          if (!now || now.status !== "draft" || now.media?.type === "video") continue;
+          for (let attempt = 0; ; attempt++) {
+            try {
+              await makeVideo(deps, p.id, "tour", "en");
+              break;
+            } catch (e) {
+              // The video server is busy with another video: wait and try again (3 times).
+              if (attempt < 3 && e instanceof Error && /renderer 503/.test(e.message)) {
+                await new Promise((r) => setTimeout(r, 20_000));
+                continue;
+              }
+              reportError("week video failed", e);
+              await deps.store.saveResult(p.id, "video", { ok: false, at: new Date().toISOString(), error: e instanceof Error ? e.message.slice(0, 200) : "failed" }).catch(() => undefined);
+              break;
+            }
+          }
         }
       } finally {
         await deps.lock.release("posts:videos", token);

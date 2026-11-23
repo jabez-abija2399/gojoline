@@ -3,10 +3,11 @@
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
+import { MAX_UPLOAD_BYTES } from "@/lib/posts/upload";
 
 /**
- * Admin → Posts → Videos: puts a video the admin filmed on a post (MP4 or an iPhone MOV, up to
- * 100 MB), with progress, then shows it. The server checks the file is a video.
+ * Admin → Posts → Videos: puts a video the admin filmed on a post (MP4, up to 60 MB), with
+ * progress, then shows it. The server checks it is a real video and strips its location data.
  */
 export function VideoUpload({ postId, label, t }: { postId: string; label: string; t: { upload: string; uploading: string; uploaded: string; errors: Record<string, string> } }) {
   const router = useRouter();
@@ -16,13 +17,14 @@ export function VideoUpload({ postId, label, t }: { postId: string; label: strin
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
   function send(file: File) {
-    if (file.size > 100 * 1024 * 1024) return setMessage({ ok: false, text: t.errors.too_big });
+    if (file.size > MAX_UPLOAD_BYTES) return setMessage({ ok: false, text: t.errors.too_big });
     setMessage(null);
     setProgress(0);
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `/api/admin/posts/${postId}/media`);
     xhr.setRequestHeader("Content-Type", file.type || "video/mp4");
-    xhr.upload.onprogress = (e) => e.lengthComputable && setProgress(Math.round((e.loaded / e.total) * 100));
+    // Progress in steps of 25%, so a screen reader hears it without a flood of numbers.
+    xhr.upload.onprogress = (e) => e.lengthComputable && setProgress(Math.floor((e.loaded / e.total) * 4) * 25);
     xhr.onload = () => {
       setProgress(null);
       let code = "failed";
@@ -48,7 +50,7 @@ export function VideoUpload({ postId, label, t }: { postId: string; label: strin
       <input
         ref={input}
         type="file"
-        accept="video/mp4,video/quicktime,.mp4,.mov"
+        accept="video/mp4,.mp4"
         className="sr-only"
         tabIndex={-1}
         aria-hidden="true"
@@ -60,7 +62,6 @@ export function VideoUpload({ postId, label, t }: { postId: string; label: strin
       />
       <button
         type="button"
-        aria-label={`${t.upload}: ${label}`}
         aria-describedby={status}
         aria-disabled={progress !== null}
         onClick={() => progress === null && input.current?.click()}
@@ -68,9 +69,10 @@ export function VideoUpload({ postId, label, t }: { postId: string; label: strin
       >
         <Upload aria-hidden="true" className="size-4" />
         {progress === null ? t.upload : `${t.uploading} ${progress}%`}
+        <span className="sr-only">: {label}</span>
       </button>
-      <p id={status} role="status" className={`text-xs ${message?.ok === false ? "text-destructive" : "text-ink-muted"}`}>
-        {message?.text ?? ""}
+      <p id={status} role="status" className={`text-sm ${message?.ok === false ? "text-destructive" : "text-ink-muted"}`}>
+        {progress !== null ? `${t.uploading} ${progress}%` : (message?.text ?? "")}
       </p>
     </div>
   );

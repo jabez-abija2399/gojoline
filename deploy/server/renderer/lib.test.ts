@@ -87,7 +87,8 @@ describe("text videos", () => {
     expect(parseStory(ok)).toEqual(ok);
     expect(parseStory({ ...ok, lines: [] })).toBeNull();
     expect(parseStory({ ...ok, lines: ["a", "b", "c", "d", "e"] })).toBeNull();
-    expect(parseStory({ ...ok, lines: ["x".repeat(161)] })).toBeNull();
+    expect(parseStory({ ...ok, lines: ["x".repeat(121)] })).toBeNull();
+    expect(parseStory({ ...ok, title: "x".repeat(101) })).toBeNull();
     expect(parseStory({ ...ok, title: "" })).toBeNull();
     expect(parseStory({ ...ok, lang: "fr" })).toBeNull();
   });

@@ -10,11 +10,12 @@ const mp4 = () => {
 const stream = (...parts: Uint8Array[]) => new ReadableStream<Uint8Array>({ start(c) { for (const p of parts) c.enqueue(p); c.close(); } });
 
 describe("video uploads", () => {
-  it("knows MP4 and MOV by their bytes, not their names", () => {
+  it("knows MP4 by its bytes, not its name, and turns MOV away (every network takes MP4)", async () => {
     expect(sniffVideo(mp4())).toEqual({ type: "video/mp4", ext: "mp4" });
     const mov = mp4();
     mov.write("qt  ", 8);
-    expect(sniffVideo(mov)).toEqual({ type: "video/quicktime", ext: "mov" });
+    expect(sniffVideo(mov)).toBe("mov");
+    expect(await readVideoUpload(stream(mov), 1000)).toEqual({ error: "mov" });
     expect(sniffVideo(Buffer.from("<html><script>alert(1)</script>"))).toBeNull();
   });
 

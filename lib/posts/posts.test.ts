@@ -286,7 +286,7 @@ describe("post videos", () => {
   });
 
   it("the timed run makes the next draft's video (seen before approval), never changes an approved post, and remembers a failure", async () => {
-    const failing: VideoRenderer = { render: async () => Promise.reject(new Error("renderer 502")), greeting: async () => Promise.reject(new Error("renderer 502")), story: async () => Promise.reject(new Error("renderer 502")) };
+    const failing: VideoRenderer = { render: async () => Promise.reject(new Error("renderer 502")), greeting: async () => Promise.reject(new Error("renderer 502")), story: async () => Promise.reject(new Error("renderer 502")), clean: async (b: Buffer) => b };
     const d = deps({ video: new FakeVideoRenderer() });
     const [approved, draft] = await d.store.createMany([
       { day: "2026-11-24", time: "18:30", kind: "template", subject: "cafe", captionEn: "Hi there", captionAm: "ሰላም", hashtags: "", media: { type: "template", id: "cafe" }, channels: ["telegram"] },

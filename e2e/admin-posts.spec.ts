@@ -157,7 +157,7 @@ test("Videos: every day's video in one place, made here or uploaded, with captio
   // Make a video for a day without one (the demo renderer answers at once).
   const without = cards.filter({ hasText: "No video yet" }).first();
   const id = (await without.getAttribute("id"))!;
-  await without.getByRole("button", { name: /^(Make video|Remake video):/ }).click();
+  await without.getByRole("button", { name: /^Make video/ }).click();
   await expect(page).toHaveURL(/view=videos/);
   await expect(page.locator(`#${id} video`)).toHaveCount(1);
   // Upload a video the admin filmed (an MP4 by its bytes; a non-video is refused).
@@ -167,12 +167,17 @@ test("Videos: every day's video in one place, made here or uploaded, with captio
   mp4.writeUInt32BE(24, 0);
   mp4.write("ftypisom", 4);
   await target.locator("input[type=file]").setInputFiles({ name: "not-a-video.mp4", mimeType: "video/mp4", buffer: Buffer.from("<html>hello</html>") });
-  await expect(target.getByText("That file isn't an MP4 or MOV video.")).toBeVisible();
+  await expect(target.getByText("That file isn't an MP4 video.")).toBeVisible();
   await target.locator("input[type=file]").setInputFiles({ name: "my-build.mp4", mimeType: "video/mp4", buffer: mp4 });
   await expect(page.locator(`#${targetId} video`)).toHaveCount(1);
   // Captions for the networks posted by hand.
   await expect(page.locator(`#${targetId}`).getByRole("button", { name: /Copy TikTok caption/ })).toBeVisible();
   await expect(page.locator(`#${targetId}`).getByRole("button", { name: /Copy YouTube title/ })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+  // The same view in Amharic.
+  await page.goto("/am/admin?tab=posts&view=videos");
+  await expect(page.locator("li[id^=video-]").first()).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 });

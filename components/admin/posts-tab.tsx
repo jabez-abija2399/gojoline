@@ -196,7 +196,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col">
               <h2 id="videos-head" className="text-base font-semibold">{t.videos.title}</h2>
-              <p className="text-sm text-ink-muted">{deps.video ? t.videos.hint : t.videos.noRenderer}</p>
+              <p className="max-w-prose text-base text-ink-muted">{deps.video ? t.videos.hint : t.videos.noRenderer}</p>
             </div>
             {deps.video && weekPosts.length > withVideo && (
               <form action={makeWeekVideos}>
@@ -209,14 +209,18 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
             )}
           </div>
           {typeof sp.vq === "string" && (
-            <p role="status" className="rounded-lg bg-paper px-3 py-2 text-sm">{sp.vq === "busy" ? t.videos.busy : Number(sp.vq) > 0 ? format(t.videos.queued, { n: Number(sp.vq) }) : t.videos.queuedNone}</p>
+            <FocusOnMount>
+              <p role="status" className={`rounded-lg px-4 py-2 font-medium ${sp.vq === "busy" ? "bg-sunken text-ink" : "border border-lagoon bg-white text-lagoon"}`}>
+                {sp.vq === "busy" ? t.videos.busy : Number(sp.vq) > 0 ? format(t.videos.queued, { n: Number(sp.vq) }) : t.videos.queuedNone}
+              </p>
+            </FocusOnMount>
           )}
           {weekPosts.length === 0 ? (
             <Empty text={t.videos.empty} />
           ) : (
             <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {weekPosts.map((p) => (
-                <VideoCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} canFilm={!!deps.video} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />
+                <VideoCard key={p.id} post={p} lang={lang} t={t} ready={ready} appUrl={deps.appUrl} canFilm={!!deps.video} canUpload={!!deps.video} title={dayFmt.format(new Date(`${p.day}T00:00:00Z`))} />
               ))}
             </ul>
           )}
@@ -524,33 +528,34 @@ async function ReachSummary({ today, lang, t }: { today: string; lang: "en" | "a
 }
 
 /** Admin → Posts → Videos: one day's video, ready for TikTok, Reels and Shorts, and where it goes. */
-function VideoCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: SocialPost; lang: "en" | "am"; t: T; ready: Channel[]; appUrl: string; title: string; canFilm: boolean }) {
+function VideoCard({ post: p, lang, t, ready, appUrl, title, canFilm, canUpload }: { post: SocialPost; lang: "en" | "am"; t: T; ready: Channel[]; appUrl: string; title: string; canFilm: boolean; canUpload: boolean }) {
   const v = t.videos;
   const hasVideo = p.media?.type === "video";
   const src = `/api/admin/posts/${p.id}/media`;
   const auto = p.channels.filter((c) => AUTO_CHANNELS.includes(c) && ready.includes(c));
   const byHand = CHANNELS.filter((c) => !auto.includes(c));
   const pageKind = p.kind === "template" || p.kind === "demo" || p.kind === "site";
-  const failed = p.results.video && !p.results.video.ok ? p.results.video.error : null;
+  const failed = !hasVideo && p.results.video && !p.results.video.ok;
+  const list = new Intl.ListFormat(lang === "am" ? "am" : "en", { type: "unit" });
   return (
     <li id={`video-${p.id}`} className="flex scroll-mt-28 flex-col gap-3 rounded-2xl border border-line bg-white p-3">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-2">
-        <h3 className="font-semibold">{title}</h3>
+      <div className="flex flex-col">
+        <h3 className="text-base font-semibold">{title}</h3>
         <span className="text-sm text-ink-muted tabular-nums">
           {p.time} · {t.kinds[p.kind]} · {t.statuses[p.status]}
         </span>
       </div>
-      <div className="mx-auto aspect-[9/16] w-full max-w-[15rem] overflow-hidden rounded-xl border border-line bg-paper">
-        {hasVideo ? (
-          <video src={src} controls playsInline preload="metadata" aria-label={format(v.videoOf, { day: title })} className="size-full object-cover" />
-        ) : (
-          <div className="flex size-full flex-col items-center justify-center gap-2 p-4 text-center text-sm text-ink-muted">
-            <Clapperboard aria-hidden="true" className="size-6" />
-            {v.noVideo}
-          </div>
-        )}
-      </div>
-      {failed && <p className="rounded-lg bg-coral-soft px-3 py-2 text-xs text-destructive [overflow-wrap:anywhere]">{format(v.failed, { error: failed })}</p>}
+      {hasVideo ? (
+        <div className="mx-auto aspect-[9/16] w-full max-w-[15rem] overflow-hidden rounded-xl border border-line bg-paper">
+          <video src={src} controls playsInline preload="none" aria-label={format(v.videoOf, { day: title })} className="size-full object-cover" />
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 rounded-xl border border-dashed border-faint bg-paper px-3 py-4 text-sm text-ink-muted">
+          <Clapperboard aria-hidden="true" className="size-5 shrink-0" />
+          {v.noVideo}
+        </div>
+      )}
+      {failed && <p className="rounded-lg bg-coral-soft px-3 py-2 text-sm text-destructive">{v.failed}</p>}
       <div className="flex flex-wrap items-start gap-2">
         {canFilm && FILMABLE.includes(p.kind) && (
           <form action={makePostVideo} className="flex flex-wrap items-center gap-2">
@@ -565,29 +570,33 @@ function VideoCard({ post: p, lang, t, ready, appUrl, title, canFilm }: { post: 
             ) : (
               <input type="hidden" name="style" value="tour" />
             )}
-            <PostSubmit label={`${hasVideo ? t.remakeVideo : t.makeVideo}: ${title}`} working={t.makingVideo} className={button}>
+            <PostSubmit working={t.makingVideo} className={button}>
               <Clapperboard aria-hidden="true" className="size-4" />
               {hasVideo ? t.remakeVideo : t.makeVideo}
+              <span className="sr-only">: {title}</span>
             </PostSubmit>
           </form>
         )}
-        <VideoUpload postId={p.id} label={title} t={{ upload: v.upload, uploading: v.uploading, uploaded: v.uploaded, errors: v.errors }} />
+        {canUpload && <VideoUpload postId={p.id} label={title} t={{ upload: v.upload, uploading: v.uploading, uploaded: v.uploaded, errors: v.errors }} />}
         {hasVideo && (
-          <a href={`${src}?download=1`} aria-label={`${t.download}: ${title}`} className={button}>
+          <a href={`${src}?download=1`} className={button}>
             <Download aria-hidden="true" className="size-4" />
-            {t.download}
+            {v.download}
+            <span className="sr-only">: {title}</span>
           </a>
         )}
       </div>
       <div className="flex flex-col gap-2 border-t border-line pt-3 text-sm">
         <p>
-          <span className="font-medium">{v.goesTo}</span> {auto.length ? auto.map((c) => (c === "tiktok" ? v.tiktokInbox : t.channels[c])).join(", ") : v.nowhere}
+          <span className="font-medium">{v.goesTo}</span> {auto.length ? list.format(auto.map((c) => (c === "tiktok" ? v.tiktokInbox : t.channels[c]))) : v.nowhere}
         </p>
         <p className="text-ink-muted">
-          <span className="font-medium text-ink">{v.byHand}</span> {byHand.map((c) => t.channels[c]).join(", ")}
+          <span className="font-medium text-ink">{v.byHand}</span> {list.format(byHand.map((c) => t.channels[c]))}
         </p>
         <div className="flex flex-wrap gap-2">
           <CopyButton value={postText(p, "tiktok", appUrl)} what={`${v.tiktokCaption}: ${title}`} copy={v.tiktokCaption} copied={t.copied} />
+          <CopyButton value={postText(p, "instagram", appUrl)} what={`${v.instagramCaption}: ${title}`} copy={v.instagramCaption} copied={t.copied} />
+          <CopyButton value={postText(p, "facebook", appUrl)} what={`${v.facebookCaption}: ${title}`} copy={v.facebookCaption} copied={t.copied} />
           <CopyButton value={youtubeTitle(p)} what={`${v.youtubeTitle}: ${title}`} copy={v.youtubeTitle} copied={t.copied} />
         </div>
       </div>

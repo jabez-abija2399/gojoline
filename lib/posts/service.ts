@@ -194,10 +194,11 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
     // A tip, myth, how-to, question…: a text video made from the post's own words.
     const st = storyFor(post);
     if (!st) return null;
-    const data = await deps.video.story({ lang, ...st, footer: new URL(deps.appUrl).host });
+    // Text videos are written in English (their words come from the English library and caption).
+    const data = await deps.video.story({ lang: "en", ...st, footer: new URL(deps.appUrl).host });
     const key = `posts/${post.id}-story-${lang}.mp4`;
     await deps.files.put(key, data, { contentType: "video/mp4" });
-    return deps.store.update(id, { media: { type: "video", key } });
+    return keepVideo(deps, id, key);
   } else if (post.kind === "moment") {
     // A holiday: the renderer draws the greeting card (no page to film).
     const m = MOMENTS.find((x) => x.id === post.subject);
@@ -205,14 +206,20 @@ export async function makeVideo(deps: PostDeps, id: string, style: VideoStyle, l
     const data = await deps.video.greeting({ lang, motif: m.motif, text: { kicker: words.greeting, title: lang === "am" ? m.titleAm : m.title, sub: lang === "am" ? m.subAm : m.sub, footer: new URL(deps.appUrl).host } });
     const key = `posts/${post.id}-greeting-${lang}.mp4`;
     await deps.files.put(key, data, { contentType: "video/mp4" });
-    return deps.store.update(id, { media: { type: "video", key } });
+    return keepVideo(deps, id, key);
   } else return null;
   const footer = new URL(deps.appUrl).host;
   const kicker = post.kind === "site" ? words.site : post.kind === "demo" ? words.demo : words.template;
   const data = await deps.video.render({ url, style: post.kind !== "site" && style === "tour" ? "template" : style, lang, text: { kicker, title, outroTitle: words.outroTitle, outroSub: words.outroSub, site: title, footer } });
   const key = `posts/${post.id}-${style}-${lang}.mp4`;
   await deps.files.put(key, data, { contentType: "video/mp4" });
-  return deps.store.update(id, { media: { type: "video", key } });
+  return keepVideo(deps, id, key);
+}
+
+/** Makes the video the post's media and clears an earlier failure note (the video works now). */
+export async function keepVideo(deps: PostDeps, id: string, key: string): Promise<SocialPost | null> {
+  await deps.store.update(id, { media: { type: "video", key } });
+  return deps.store.saveResult(id, "video", { ok: true, at: new Date().toISOString() });
 }
 
 /** Posts that can have a video: a template or site filmed, a holiday's greeting card, or a text video. */

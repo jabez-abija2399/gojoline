@@ -75,8 +75,8 @@ export function storyFor(post: Pick<SocialPost, "kind" | "subject" | "captionEn"
   if (lines.length === 0) lines = ["Describe your business in one message", "Gojoline builds your website in about a minute"];
   return {
     kicker,
-    title: cap(title, 120),
-    lines: lines.slice(0, 4).map((l) => cap(l, 150)),
+    title: cap(title, 90),
+    lines: lines.slice(0, 4).map((l) => cap(l, 110)),
     cta: post.kind === "question" ? "Answer in the comments" : "Comment your business",
   };
 }
