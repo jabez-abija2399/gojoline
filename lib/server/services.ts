@@ -52,6 +52,8 @@ import { FakeVideoRenderer, HttpVideoRenderer } from "@/lib/posts/video";
 import { FacebookPagePublisher, InstagramPublisher, TelegramPublisher, TikTokInboxPublisher } from "@/lib/posts/publishers";
 import { signedMediaUrl } from "@/lib/posts/media-url";
 import { ConnectionStore, type Resolved } from "@/lib/posts/connections";
+import { needsRenewal, renewInstagramToken } from "@/lib/posts/instagram-token";
+import { reportError } from "@/lib/observability/report";
 import { FakeVerifier, GraphVerifier } from "@/lib/posts/verify";
 import { PRESET_IDS, presetName } from "@/lib/template/presets";
 import { DbSiteStore } from "@/lib/sites/db-store";
@@ -350,7 +352,9 @@ function buildPublishers(r: Resolved, svc: Services, env: Env, connections: Conn
   if (isE2E(env)) return out;
   const version = env.META_GRAPH_VERSION || "v23.0";
   if (r.facebook) out.facebook = new FacebookPagePublisher(r.facebook.pageId, r.facebook.token, version);
-  if (r.instagram && r.facebook) out.instagram = new InstagramPublisher(r.instagram.userId, r.facebook.token, version);
+  // Instagram login (its own token, no Facebook Page) first; else through the Page.
+  if (r.instagram?.token) out.instagram = new InstagramPublisher(r.instagram.userId, r.instagram.token, version, fetch, undefined, "graph.instagram.com");
+  else if (r.instagram && r.facebook) out.instagram = new InstagramPublisher(r.instagram.userId, r.facebook.token, version);
   if (r.tiktok?.refreshToken) {
     out.tiktok = new TikTokInboxPublisher(r.tiktok.clientKey, r.tiktok.clientSecret, {
       get: async () => (await connections.load()).tiktok?.refreshToken ?? null,
@@ -358,6 +362,21 @@ function buildPublishers(r: Resolved, svc: Services, env: Env, connections: Conn
     });
   }
   return out;
+}
+
+/** Renews an Instagram login token saved in Admin once it is a week old (each lasts 60 days). */
+async function freshInstagram(r: Resolved, connections: ConnectionStore, env: Env): Promise<Resolved> {
+  const ig = r.instagram;
+  if (isE2E(env) || !ig?.token || !ig.refreshedAt || !needsRenewal(ig.refreshedAt, Date.now())) return r;
+  try {
+    const token = await renewInstagramToken(ig.token);
+    await connections.saveInstagramToken(token, "system");
+    return { ...r, instagram: { ...ig, token } };
+  } catch (e) {
+    // The old token still works until it expires; the next post tries again.
+    reportError("instagram token renewal failed", e);
+    return r;
+  }
 }
 
 /** Admin → Posts: captions by Claude Haiku when a key is set (plain ones otherwise), our Telegram channel when set. */
@@ -379,7 +398,7 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     // The renderer service on our server; a stand-in in e2e; none elsewhere.
     video: isE2E(env) ? new FakeVideoRenderer() : env.RENDERER_URL && env.RENDERER_SECRET ? new HttpVideoRenderer(env.RENDERER_URL, env.RENDERER_SECRET) : null,
     captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
-    publishers: async () => buildPublishers(await connections.load(), svc, env, connections),
+    publishers: async () => buildPublishers(await freshInstagram(await connections.load(), connections, env), svc, env, connections),
     connections,
     verify: isE2E(env) ? new FakeVerifier() : new GraphVerifier(env.META_GRAPH_VERSION || "v23.0"),
     mediaUrl: (id) => (env.CRON_SECRET ? signedMediaUrl((env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""), env.CRON_SECRET, id) : null),

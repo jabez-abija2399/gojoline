@@ -39,6 +39,19 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
     await expectNoSeriousA11yIssues(page);
     return;
   }
+  // Instagram on its own (Instagram login, no Facebook Page): the token alone connects it.
+  const ig = page.locator("#connect-instagram");
+  await expect(ig).toContainText("Not connected");
+  await ig.locator("summary").click();
+  await ig.getByLabel("Instagram access token").fill("wrong-token-0123456789abcdef");
+  await ig.getByRole("button", { name: "Check and save" }).click();
+  await expect(page.locator("#connect-instagram").getByRole("alert")).toContainText("Meta didn't accept the token");
+  await page.locator("#connect-instagram summary").click();
+  await page.locator("#connect-instagram").getByLabel("Instagram access token").fill("e2e-token-0123456789abcd");
+  await page.locator("#connect-instagram").getByRole("button", { name: "Check and save" }).click();
+  await expect(page.locator("#connect-instagram")).toContainText("@gojoline");
+  await expect(page.locator("#connect-instagram").getByRole("status")).toHaveText("Connected.");
+  await expect(page.locator("#connect-facebook")).toContainText("Not connected");
   // Connect Facebook from Admin: a wrong token is refused with Meta's reason, the right one connects.
   const fb = page.locator("#connect-facebook");
   await expect(fb).toContainText("Not connected");

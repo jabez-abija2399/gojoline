@@ -33,14 +33,14 @@ export function PostConnections({ lang, t, views, appUrl, message }: { lang: "en
       </div>
       <ul className="grid items-start gap-3 sm:grid-cols-2">
         {NETWORKS.map((n) => (
-          <NetworkCard key={n} network={n} lang={lang} t={t} view={views[n]} appUrl={appUrl} facebookReady={views.facebook.connected} message={message?.network === n ? message : null} />
+          <NetworkCard key={n} network={n} lang={lang} t={t} view={views[n]} appUrl={appUrl} message={message?.network === n ? message : null} />
         ))}
       </ul>
     </section>
   );
 }
 
-function NetworkCard({ network: n, lang, t, view, appUrl, facebookReady, message }: { network: Network; lang: "en" | "am"; t: T; view: ConnectionView; appUrl: string; facebookReady: boolean; message: { ok: boolean; why: string | null } | null }) {
+function NetworkCard({ network: n, lang, t, view, appUrl, message }: { network: Network; lang: "en" | "am"; t: T; view: ConnectionView; appUrl: string; message: { ok: boolean; why: string | null } | null }) {
   const c = t.connections;
   const { Icon, cls } = BADGE[n];
   const name = t.channels[n];
@@ -72,46 +72,42 @@ function NetworkCard({ network: n, lang, t, view, appUrl, facebookReady, message
         </Link>
       )}
 
-      {n === "instagram" && !facebookReady && !view.connected ? (
-        <p className="text-sm text-ink-muted">{c.facebookFirst}</p>
-      ) : (
-        <details className="group">
-          <summary className="flex min-h-11 w-fit cursor-pointer list-none items-center gap-1.5 rounded-lg border border-line px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9 [&::-webkit-details-marker]:hidden">
-            {view.connected || waiting ? c.change : c.connect}
-            <span className="sr-only">: {name}</span>
-            <ChevronDown aria-hidden="true" className="size-4 transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="mt-3 flex flex-col gap-3">
-            <ol className="flex list-decimal flex-col gap-1 ps-5 text-sm text-ink-muted [overflow-wrap:anywhere]">
-              {c.steps[n].map((s) => (
-                <li key={s}>{s.replace("{callback}", `${appUrl}/api/admin/tiktok/callback`)}</li>
-              ))}
-            </ol>
-            <form action={saveConnection} className="flex flex-col gap-3">
-              <input type="hidden" name="lang" value={lang} />
-              <input type="hidden" name="network" value={n} />
-              {n === "telegram" && <Field label={c.fields.channelId} name="channelId" placeholder="@gojoline" />}
-              {n === "facebook" && (
-                <>
-                  <Field label={c.fields.pageId} name="pageId" placeholder="123456789012345" inputMode="numeric" />
-                  <Field label={c.fields.pageToken} name="token" type="password" />
-                </>
-              )}
-              {n === "instagram" && <Field label={c.fields.igUserId} name="userId" placeholder="17841400000000000" inputMode="numeric" />}
-              {n === "tiktok" && (
-                <>
-                  <Field label={c.fields.clientKey} name="clientKey" />
-                  <Field label={c.fields.clientSecret} name="clientSecret" type="password" />
-                </>
-              )}
-              <p className="text-xs text-ink-muted">{c.private}</p>
-              <PostSubmit working={c.checking} className={`${primary} w-fit`}>
-                {n === "tiktok" ? c.saveTikTok : c.save}
-              </PostSubmit>
-            </form>
-          </div>
-        </details>
-      )}
+      <details className="group">
+        <summary className="flex min-h-11 w-fit cursor-pointer list-none items-center gap-1.5 rounded-lg border border-line px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9 [&::-webkit-details-marker]:hidden">
+          {view.connected || waiting ? c.change : c.connect}
+          <span className="sr-only">: {name}</span>
+          <ChevronDown aria-hidden="true" className="size-4 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="mt-3 flex flex-col gap-3">
+          <ol className="flex list-decimal flex-col gap-1 ps-5 text-sm text-ink-muted [overflow-wrap:anywhere]">
+            {c.steps[n].map((s) => (
+              <li key={s}>{s.replace("{callback}", `${appUrl}/api/admin/tiktok/callback`)}</li>
+            ))}
+          </ol>
+          <form action={saveConnection} className="flex flex-col gap-3">
+            <input type="hidden" name="lang" value={lang} />
+            <input type="hidden" name="network" value={n} />
+            {n === "telegram" && <Field label={c.fields.channelId} name="channelId" placeholder="@gojoline" />}
+            {n === "facebook" && (
+              <>
+                <Field label={c.fields.pageId} name="pageId" placeholder="123456789012345" inputMode="numeric" />
+                <Field label={c.fields.pageToken} name="token" type="password" />
+              </>
+            )}
+            {n === "instagram" && <Field label={c.fields.igToken} name="token" type="password" />}
+            {n === "tiktok" && (
+              <>
+                <Field label={c.fields.clientKey} name="clientKey" />
+                <Field label={c.fields.clientSecret} name="clientSecret" type="password" />
+              </>
+            )}
+            <p className="text-xs text-ink-muted">{c.private}</p>
+            <PostSubmit working={c.checking} className={`${primary} w-fit`}>
+              {n === "tiktok" ? c.saveTikTok : c.save}
+            </PostSubmit>
+          </form>
+        </div>
+      </details>
 
       {view.source === "admin" && (
         <form action={disconnectNetwork}>

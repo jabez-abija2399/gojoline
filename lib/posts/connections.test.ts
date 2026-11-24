@@ -50,4 +50,31 @@ describe("ConnectionStore", () => {
     await store.remove("telegram", "admin");
     expect((await store.view()).telegram.source).toBe("server");
   });
+
+  it("Instagram login: connected without Facebook, token sealed, renewed in place, and a save without a token drops it", async () => {
+    const settings = new MemorySettingsStore();
+    const store = new ConnectionStore(settings, SECRET);
+    await store.saveInstagram({ userId: "17841400000000000", username: "gojoline", token: "IGAA-secret-token" }, "admin", new Date("2026-11-24T10:00:00Z"));
+    expect(JSON.stringify(await settings.get("posts.connections"))).not.toContain("IGAA-secret");
+    expect((await store.load()).instagram).toEqual({ userId: "17841400000000000", username: "gojoline", token: "IGAA-secret-token", refreshedAt: "2026-11-24T10:00:00.000Z" });
+    const view = await store.view();
+    expect(view.facebook.connected).toBe(false);
+    expect(view.instagram).toEqual({ connected: true, label: "@gojoline", source: "admin" });
+    expect(JSON.stringify(view)).not.toContain("IGAA");
+
+    await store.saveInstagramToken("IGAA-renewed", "system", new Date("2026-12-01T10:00:00Z"));
+    expect((await store.load()).instagram).toMatchObject({ token: "IGAA-renewed", refreshedAt: "2026-12-01T10:00:00.000Z", username: "gojoline" });
+
+    await store.saveInstagram({ userId: "17841400000000000", username: "gojoline" }, "admin");
+    expect((await store.load()).instagram?.token).toBeUndefined();
+    expect((await store.view()).instagram.connected).toBe(false);
+  });
+
+  it("Instagram login from the server's settings (INSTAGRAM_TOKEN), and no renewal for a token not saved here", async () => {
+    const store = new ConnectionStore(new MemorySettingsStore(), SECRET, { INSTAGRAM_USER_ID: "1784", INSTAGRAM_TOKEN: "IGAA-env" });
+    expect((await store.load()).instagram).toEqual({ userId: "1784", username: undefined, token: "IGAA-env", refreshedAt: undefined });
+    expect((await store.view()).instagram).toMatchObject({ connected: true, source: "server" });
+    await store.saveInstagramToken("IGAA-new", "system");
+    expect((await store.load()).instagram?.token).toBe("IGAA-env");
+  });
 });
