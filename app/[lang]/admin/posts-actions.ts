@@ -114,7 +114,8 @@ const connectInput = z.discriminatedUnion("network", [
   // A public channel name (@name) or a private channel's numeric id (-100…).
   z.object({ network: z.literal("telegram"), channelId: z.string().trim().regex(/^(@[A-Za-z0-9_]{5,32}|-100\d{5,15})$/) }),
   z.object({ network: z.literal("facebook"), pageId: z.string().trim().regex(/^\d{5,25}$/), token: z.string().trim().min(20).max(1000) }),
-  z.object({ network: z.literal("instagram"), userId: z.string().trim().regex(/^\d{5,25}$/) }),
+  // Instagram login: the token alone (the account is found from it); no Facebook Page.
+  z.object({ network: z.literal("instagram"), token: z.string().trim().min(20).max(1000) }),
   z.object({ network: z.literal("tiktok"), clientKey: z.string().trim().min(5).max(100), clientSecret: z.string().trim().min(10).max(200) }),
 ]);
 
@@ -141,12 +142,8 @@ export async function saveConnection(form: FormData) {
       const name = await deps.verify!.facebook(v.pageId, v.token).catch((e: Error) => void (problem = e.message));
       if (!problem) await connections.saveFacebook({ pageId: v.pageId, token: v.token, name: name ?? undefined }, me.id);
     } else if (v.network === "instagram") {
-      const fb = (await connections.load()).facebook;
-      if (!fb) problem = "facebook_first";
-      else {
-        const username = await deps.verify!.instagram(v.userId, fb.token).catch((e: Error) => void (problem = e.message));
-        if (!problem) await connections.saveInstagram({ userId: v.userId, username: username ?? undefined }, me.id);
-      }
+      const who = await deps.verify!.instagramLogin(v.token).catch((e: Error) => void (problem = e.message));
+      if (!problem && who) await connections.saveInstagram({ userId: who.userId, username: who.username, token: v.token }, me.id);
     } else {
       await connections.saveTikTokApp({ clientKey: v.clientKey, clientSecret: v.clientSecret }, me.id);
     }
@@ -174,18 +171,20 @@ export async function disconnectNetwork(form: FormData) {
 }
 
 /** The reasons a connection can fail, as codes the page words in its own language. */
-export type ConnectProblem = "facebook_first" | "bot" | "chat_not_found" | "bot_not_admin" | "token" | "permission" | "not_found" | "other";
+export type ConnectProblem = "not_business" | "ig_permission" | "bot" | "chat_not_found" | "bot_not_admin" | "token" | "permission" | "not_found" | "other";
 
 function connectProblem(network: string, message: string): ConnectProblem {
-  if (message === "facebook_first" || message === "bot") return message;
+  if (message === "bot") return message;
+  if (/professional account/i.test(message)) return "not_business";
   if (network === "telegram") {
     if (/chat not found/i.test(message)) return "chat_not_found";
     if (/not enough rights|administrator|not a member|forbidden|kicked/i.test(message)) return "bot_not_admin";
     return "other";
   }
   if (/oauth|access token|session|expired|invalid token/i.test(message)) return "token";
-  if (/permission|does not have|requires|not authorized/i.test(message)) return "permission";
-  if (/does not exist|unsupported get request|cannot be loaded|not found/i.test(message)) return "not_found";
+  if (/permission|does not have|requires|not authorized/i.test(message)) return network === "instagram" ? "ig_permission" : "permission";
+  // The Instagram form has no ID to get wrong: an unknown account means the token is the problem.
+  if (/does not exist|unsupported get request|cannot be loaded|not found/i.test(message)) return network === "instagram" ? "token" : "not_found";
   return "other";
 }
 

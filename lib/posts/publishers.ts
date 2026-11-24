@@ -76,8 +76,10 @@ export class FacebookPagePublisher implements ChannelPublisher {
 }
 
 /**
- * Our Instagram professional account (INSTAGRAM_USER_ID, with the Page token): a photo, or a
- * video as a Reel. Instagram fetches the media from a public address, then publishes it.
+ * Our Instagram professional account: a photo, or a video as a Reel. Instagram fetches the media
+ * from a public address, then publishes it. Two ways in, same calls: with Instagram login (its own
+ * token, host graph.instagram.com, no Facebook Page) or through the Facebook Page (the Page token,
+ * host graph.facebook.com).
  */
 export class InstagramPublisher implements ChannelPublisher {
   readonly channel = "instagram" as const;
@@ -87,20 +89,21 @@ export class InstagramPublisher implements ChannelPublisher {
     private readonly version = "v23.0",
     private readonly fetchImpl: Fetch = fetch,
     private readonly wait = (ms: number) => new Promise((r) => setTimeout(r, ms)),
+    private readonly host: "graph.facebook.com" | "graph.instagram.com" = "graph.facebook.com",
   ) {}
   get label() {
     return `Account ${this.userId}`;
   }
   async publish({ text, media, mediaUrl }: PublishInput) {
     if (!media || !mediaUrl) throw new Error("Instagram needs a picture or video");
-    const base = `https://graph.facebook.com/${this.version}/${this.userId}`;
+    const base = `https://${this.host}/${this.version}/${this.userId}`;
     const params: Record<string, string> = media.kind === "video" ? { media_type: "REELS", video_url: mediaUrl, caption: text.slice(0, 2200), share_to_feed: "true" } : { image_url: mediaUrl, caption: text.slice(0, 2200) };
     const made = await graph<{ id: string }>(this.fetchImpl, `${base}/media`, { method: "POST", body: new URLSearchParams({ ...params, access_token: this.token }) });
     // A video is processed first: wait until it is ready (up to about two minutes).
     if (media.kind === "video") {
       for (let i = 0; ; i++) {
         // The token in a header, never in the address (addresses end up in logs).
-        const s = await graph<{ status_code?: string }>(this.fetchImpl, `https://graph.facebook.com/${this.version}/${made.id}?fields=status_code`, { method: "GET", headers: { Authorization: `Bearer ${this.token}` } });
+        const s = await graph<{ status_code?: string }>(this.fetchImpl, `https://${this.host}/${this.version}/${encodeURIComponent(made.id)}?fields=status_code`, { method: "GET", headers: { Authorization: `Bearer ${this.token}` } });
         if (s.status_code === "FINISHED") break;
         if (s.status_code === "ERROR" || i >= 40) throw new Error(`Instagram couldn't process the video (${s.status_code ?? "timeout"})`);
         await this.wait(3000);

@@ -53,6 +53,18 @@ describe("InstagramPublisher", () => {
     expect(new URLSearchParams(String(f.calls[3].body)).get("creation_id")).toBe("c1");
   });
 
+  it("with Instagram login, uses graph.instagram.com for every call", async () => {
+    const f = fakeFetch([{ json: { id: "c2" } }, { json: { status_code: "FINISHED" } }, { json: { id: "m8" } }]);
+    const ig = new InstagramPublisher("1784", "IGAA", "v23.0", f.impl, async () => undefined, "graph.instagram.com");
+    expect(await ig.publish({ text: "Reel", media: video, mediaUrl: "https://g.example/v.mp4" })).toBe("m8");
+    expect(f.calls.map((c) => c.url)).toEqual([
+      "https://graph.instagram.com/v23.0/1784/media",
+      "https://graph.instagram.com/v23.0/c2?fields=status_code",
+      "https://graph.instagram.com/v23.0/1784/media_publish",
+    ]);
+    expect(f.calls[1].url).not.toContain("IGAA");
+  });
+
   it("needs a picture or video, and stops when Instagram can't process the video", async () => {
     const ig = new InstagramPublisher("17", "T", "v23.0", fakeFetch([]).impl);
     await expect(ig.publish({ text: "x", media: null, mediaUrl: null })).rejects.toThrow("Instagram needs a picture or video");

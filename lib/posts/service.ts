@@ -49,6 +49,8 @@ export interface PostDeps {
   lock: PostLock;
   /** Films pages into post videos; null when the renderer isn't set up. */
   video: VideoRenderer | null;
+  /** Upkeep before a posting run (renews the Instagram token when due); never on page loads. */
+  maintain?(): Promise<void>;
 }
 
 /** Which automatic networks are ready (connected), for planning and the admin page. */
@@ -237,6 +239,7 @@ export const addisToday = () => addisNow(Date.now()).day;
 /** The timed run (every 15 minutes): sends approved posts whose day and time have come. */
 export async function runDue(deps: PostDeps, now: number): Promise<{ sent: number; failed: number; videos?: number }> {
   const { day, time } = addisNow(now);
+  await deps.maintain?.().catch(() => undefined);
   // Posts whose time has come go first: a video can wait, a 09:00 post can't.
   const due = (await deps.store.due(day)).filter((p) => p.day < day || p.time <= time);
   let sent = 0;
