@@ -11,6 +11,9 @@ describe("Instagram login token", () => {
     expect(needsRenewal("2026-11-17T12:00:00Z", now)).toBe(true);
     expect(needsRenewal(undefined, now)).toBe(true);
     expect(needsRenewal("not a date", now)).toBe(true);
+    // After a failed try: wait an hour, then try again.
+    expect(needsRenewal("2026-11-10T12:00:00Z", now, "2026-11-24T11:30:00Z")).toBe(false);
+    expect(needsRenewal("2026-11-10T12:00:00Z", now, "2026-11-24T10:59:00Z")).toBe(true);
   });
 
   it("renewal returns the new token, or Meta's reason without the token", async () => {

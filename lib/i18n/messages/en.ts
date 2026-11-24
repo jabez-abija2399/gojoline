@@ -1010,8 +1010,8 @@ export const en = {
         change: "Change",
         steps: {
           telegram: ["Open your channel → Administrators → Add admin → @gojoline_bot, with “Post messages”.", "Type the channel's username below and save. We send a short test message there."],
-          facebook: ["On developers.facebook.com, create an app of type Business.", "In Graph API Explorer, get a token with pages_manage_posts, pages_read_engagement and instagram_content_publish, then make it long-lived (Access Token Debugger → Extend).", "Run me/accounts and copy your Page's id and access_token here."],
-          instagram: ["Make your Instagram a Business or Creator account. No Facebook Page is needed.", "On developers.facebook.com, create an app (type Business) and add Instagram → API setup with Instagram login.", "Under “Generate access tokens”, add your Instagram account and press Generate token.", "Paste the token here. We find your account and renew the token by ourselves."],
+          facebook: ["On developers.facebook.com, create an app of type Business.", "In Graph API Explorer, get a token with pages_manage_posts and pages_read_engagement, then make it long-lived (Access Token Debugger → Extend).", "Run me/accounts and copy your Page's id and access_token here."],
+          instagram: ["In the Instagram app: Settings → Account type and tools → Switch to professional account (Business or Creator). No Facebook Page is needed.", "On developers.facebook.com, create an app (the Instagram use case, or type Business) and open Instagram → “API setup with Instagram login”.", "Under “Generate access tokens”, press “Add account”, sign in to Instagram, then press “Generate token”.", "Paste the token here. We find your account and keep the token fresh for you."],
           tiktok: ["On developers.tiktok.com, create an app with Login Kit and Content Posting API (scopes user.info.basic and video.upload).", "Set its redirect URI to {callback}.", "Paste the app's Client key and Client secret here, save, then sign in with TikTok."],
         },
         fields: { channelId: "Channel username", pageId: "Page ID", pageToken: "Page access token", igToken: "Instagram access token", clientKey: "Client key", clientSecret: "Client secret" },
@@ -1023,6 +1023,7 @@ export const en = {
         failed: "That didn't work. Check the details and try again.",
         errors: {
           not_business: "That token isn't for an Instagram Business or Creator account. Switch the account type, then make a new token.",
+          ig_permission: "This token can't post yet. In your app, open Instagram → “API setup with Instagram login”, make sure posting is allowed (instagram_business_content_publish), then make a new token.",
           bot: "The Telegram bot isn't set up on the server yet.",
           chat_not_found: "Telegram can't find that channel. Check the username (it starts with @).",
           bot_not_admin: "@gojoline_bot isn't an admin of that channel yet. Add it with “Post messages”, then try again.",

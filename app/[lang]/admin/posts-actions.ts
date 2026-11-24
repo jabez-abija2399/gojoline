@@ -171,7 +171,7 @@ export async function disconnectNetwork(form: FormData) {
 }
 
 /** The reasons a connection can fail, as codes the page words in its own language. */
-export type ConnectProblem = "not_business" | "bot" | "chat_not_found" | "bot_not_admin" | "token" | "permission" | "not_found" | "other";
+export type ConnectProblem = "not_business" | "ig_permission" | "bot" | "chat_not_found" | "bot_not_admin" | "token" | "permission" | "not_found" | "other";
 
 function connectProblem(network: string, message: string): ConnectProblem {
   if (message === "bot") return message;
@@ -182,8 +182,9 @@ function connectProblem(network: string, message: string): ConnectProblem {
     return "other";
   }
   if (/oauth|access token|session|expired|invalid token/i.test(message)) return "token";
-  if (/permission|does not have|requires|not authorized/i.test(message)) return "permission";
-  if (/does not exist|unsupported get request|cannot be loaded|not found/i.test(message)) return "not_found";
+  if (/permission|does not have|requires|not authorized/i.test(message)) return network === "instagram" ? "ig_permission" : "permission";
+  // The Instagram form has no ID to get wrong: an unknown account means the token is the problem.
+  if (/does not exist|unsupported get request|cannot be loaded|not found/i.test(message)) return network === "instagram" ? "token" : "not_found";
   return "other";
 }
 

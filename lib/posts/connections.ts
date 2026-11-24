@@ -14,7 +14,7 @@ export interface Resolved {
    * With `token`: connected with Instagram login (2026-11-24), no Facebook Page needed; the token
    * lasts 60 days and is renewed by itself (`refreshedAt`). Without it: posts with the Page's token.
    */
-  instagram?: { userId: string; username?: string; token?: string; refreshedAt?: string };
+  instagram?: { userId: string; username?: string; token?: string; refreshedAt?: string; renewTriedAt?: string };
   tiktok?: { clientKey: string; clientSecret: string; refreshToken?: string };
 }
 
@@ -32,7 +32,7 @@ export interface ConnectionView {
 type Stored = {
   telegram?: { channelId: string };
   facebook?: { pageId: string; token: string; name?: string };
-  instagram?: { userId: string; username?: string; token?: string; refreshedAt?: string };
+  instagram?: { userId: string; username?: string; token?: string; refreshedAt?: string; renewTriedAt?: string };
   tiktok?: { clientKey: string; clientSecret: string; refreshToken?: string };
 };
 
@@ -66,7 +66,7 @@ export class ConnectionStore {
     if (pageId && fbToken) out.facebook = { pageId, token: fbToken, name: s.facebook?.name };
     const userId = s.instagram?.userId ?? e.INSTAGRAM_USER_ID;
     const igToken = this.open(s.instagram?.token) ?? (s.instagram ? undefined : e.INSTAGRAM_TOKEN?.trim() || undefined);
-    if (userId) out.instagram = { userId, username: s.instagram?.username, ...(igToken ? { token: igToken, refreshedAt: s.instagram?.refreshedAt } : {}) };
+    if (userId) out.instagram = { userId, username: s.instagram?.username, ...(igToken ? { token: igToken, refreshedAt: s.instagram?.refreshedAt, renewTriedAt: s.instagram?.renewTriedAt } : {}) };
     const clientKey = s.tiktok?.clientKey ?? e.TIKTOK_CLIENT_KEY;
     const clientSecret = this.open(s.tiktok?.clientSecret) ?? (s.tiktok ? undefined : e.TIKTOK_CLIENT_SECRET);
     if (clientKey && clientSecret) out.tiktok = { clientKey, clientSecret, refreshToken: this.open(s.tiktok?.refreshToken) ?? e.TIKTOK_REFRESH_TOKEN };
@@ -101,11 +101,23 @@ export class ConnectionStore {
     await this.settings.merge(KEY, { instagram: { userId: v.userId, ...(v.username ? { username: v.username } : {}), ...token } }, [], by, {});
   }
 
-  /** After the Instagram token is renewed (every week or so; each lasts 60 days). */
-  async saveInstagramToken(token: string, by: string, now = new Date()) {
+  /**
+   * After the Instagram token is renewed (each lasts 60 days). Saved only if the stored token is
+   * still the one that was renewed: a reconnect meanwhile (another account) wins. Returns whether saved.
+   */
+  async saveInstagramToken(previous: string, token: string, by: string, now = new Date()): Promise<boolean> {
     const s = await this.stored();
-    if (!s.instagram?.token) return;
-    await this.settings.merge(KEY, { instagram: { ...s.instagram, token: seal(token, this.secret), refreshedAt: now.toISOString() } }, [], by, {});
+    if (!s.instagram?.token || this.open(s.instagram.token) !== previous) return false;
+    // A success clears an earlier failed try (undefined is left out of the stored JSON).
+    await this.settings.merge(KEY, { instagram: { ...s.instagram, token: seal(token, this.secret), refreshedAt: now.toISOString(), renewTriedAt: undefined } }, [], by, {});
+    return true;
+  }
+
+  /** A renewal failed: remember when, so it is tried again only after a while (same check as above). */
+  async saveInstagramRenewFailure(previous: string, by: string, now = new Date()): Promise<void> {
+    const s = await this.stored();
+    if (!s.instagram?.token || this.open(s.instagram.token) !== previous) return;
+    await this.settings.merge(KEY, { instagram: { ...s.instagram, renewTriedAt: now.toISOString() } }, [], by, {});
   }
 
   async saveTikTokApp(v: { clientKey: string; clientSecret: string }, by: string) {

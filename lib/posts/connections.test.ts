@@ -56,14 +56,24 @@ describe("ConnectionStore", () => {
     const store = new ConnectionStore(settings, SECRET);
     await store.saveInstagram({ userId: "17841400000000000", username: "gojoline", token: "IGAA-secret-token" }, "admin", new Date("2026-11-24T10:00:00Z"));
     expect(JSON.stringify(await settings.get("posts.connections"))).not.toContain("IGAA-secret");
-    expect((await store.load()).instagram).toEqual({ userId: "17841400000000000", username: "gojoline", token: "IGAA-secret-token", refreshedAt: "2026-11-24T10:00:00.000Z" });
+    expect((await store.load()).instagram).toEqual({ userId: "17841400000000000", username: "gojoline", token: "IGAA-secret-token", refreshedAt: "2026-11-24T10:00:00.000Z", renewTriedAt: undefined });
     const view = await store.view();
     expect(view.facebook.connected).toBe(false);
     expect(view.instagram).toEqual({ connected: true, label: "@gojoline", source: "admin" });
     expect(JSON.stringify(view)).not.toContain("IGAA");
 
-    await store.saveInstagramToken("IGAA-renewed", "system", new Date("2026-12-01T10:00:00Z"));
-    expect((await store.load()).instagram).toMatchObject({ token: "IGAA-renewed", refreshedAt: "2026-12-01T10:00:00.000Z", username: "gojoline" });
+    // A failed try is remembered; a later success clears it.
+    await store.saveInstagramRenewFailure("IGAA-secret-token", "system", new Date("2026-12-01T09:00:00Z"));
+    expect((await store.load()).instagram?.renewTriedAt).toBe("2026-12-01T09:00:00.000Z");
+    expect(await store.saveInstagramToken("IGAA-secret-token", "IGAA-renewed", "system", new Date("2026-12-01T10:00:00Z"))).toBe(true);
+    expect((await store.load()).instagram).toEqual({ userId: "17841400000000000", username: "gojoline", token: "IGAA-renewed", refreshedAt: "2026-12-01T10:00:00.000Z", renewTriedAt: undefined });
+
+    // A renewal that started before a reconnect never overwrites the new account's token.
+    await store.saveInstagram({ userId: "17841499999999999", username: "other", token: "IGAA-other" }, "admin");
+    expect(await store.saveInstagramToken("IGAA-renewed", "IGAA-stale", "system")).toBe(false);
+    await store.saveInstagramRenewFailure("IGAA-renewed", "system");
+    expect((await store.load()).instagram).toMatchObject({ userId: "17841499999999999", token: "IGAA-other", username: "other" });
+    expect((await store.load()).instagram?.renewTriedAt).toBeUndefined();
 
     await store.saveInstagram({ userId: "17841400000000000", username: "gojoline" }, "admin");
     expect((await store.load()).instagram?.token).toBeUndefined();
@@ -72,9 +82,9 @@ describe("ConnectionStore", () => {
 
   it("Instagram login from the server's settings (INSTAGRAM_TOKEN), and no renewal for a token not saved here", async () => {
     const store = new ConnectionStore(new MemorySettingsStore(), SECRET, { INSTAGRAM_USER_ID: "1784", INSTAGRAM_TOKEN: "IGAA-env" });
-    expect((await store.load()).instagram).toEqual({ userId: "1784", username: undefined, token: "IGAA-env", refreshedAt: undefined });
+    expect((await store.load()).instagram).toEqual({ userId: "1784", username: undefined, token: "IGAA-env", refreshedAt: undefined, renewTriedAt: undefined });
     expect((await store.view()).instagram).toMatchObject({ connected: true, source: "server" });
-    await store.saveInstagramToken("IGAA-new", "system");
+    expect(await store.saveInstagramToken("IGAA-env", "IGAA-new", "system")).toBe(false);
     expect((await store.load()).instagram?.token).toBe("IGAA-env");
   });
 });

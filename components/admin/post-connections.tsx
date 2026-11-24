@@ -72,7 +72,8 @@ function NetworkCard({ network: n, lang, t, view, appUrl, message }: { network: 
         </Link>
       )}
 
-      <details className="group">
+      {/* Open again after a failed save, so the founder sees the steps and form beside the reason. */}
+      <details className="group" open={message ? !message.ok : undefined}>
         <summary className="flex min-h-11 w-fit cursor-pointer list-none items-center gap-1.5 rounded-lg border border-line px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9 [&::-webkit-details-marker]:hidden">
           {view.connected || waiting ? c.change : c.connect}
           <span className="sr-only">: {name}</span>
@@ -94,7 +95,7 @@ function NetworkCard({ network: n, lang, t, view, appUrl, message }: { network: 
                 <Field label={c.fields.pageToken} name="token" type="password" />
               </>
             )}
-            {n === "instagram" && <Field label={c.fields.igToken} name="token" type="password" />}
+            {n === "instagram" && <Field label={c.fields.igToken} name="token" type="password" describedBy={`${n}-private`} invalid={!!message && !message.ok} />}
             {n === "tiktok" && (
               <>
                 <Field label={c.fields.clientKey} name="clientKey" />
@@ -128,11 +129,11 @@ function NetworkCard({ network: n, lang, t, view, appUrl, message }: { network: 
   );
 }
 
-function Field({ label, name, type = "text", placeholder, inputMode }: { label: string; name: string; type?: string; placeholder?: string; inputMode?: "numeric" }) {
+function Field({ label, name, type = "text", placeholder, inputMode, describedBy, invalid }: { label: string; name: string; type?: string; placeholder?: string; inputMode?: "numeric"; describedBy?: string; invalid?: boolean }) {
   return (
     <label className="flex flex-col gap-1">
       <span className="text-sm font-medium">{label}</span>
-      <input name={name} type={type} placeholder={placeholder} inputMode={inputMode} required autoComplete="off" spellCheck={false} className={input} />
+      <input name={name} type={type} placeholder={placeholder} inputMode={inputMode} required autoComplete="off" spellCheck={false} aria-describedby={describedBy} aria-invalid={invalid || undefined} className={input} />
     </label>
   );
 }

@@ -46,7 +46,8 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await ig.getByLabel("Instagram access token").fill("wrong-token-0123456789abcdef");
   await ig.getByRole("button", { name: "Check and save" }).click();
   await expect(page.locator("#connect-instagram").getByRole("alert")).toContainText("Meta didn't accept the token");
-  await page.locator("#connect-instagram summary").click();
+  // After a failure the form is open again, with the field marked as wrong.
+  await expect(page.locator("#connect-instagram").getByLabel("Instagram access token")).toHaveAttribute("aria-invalid", "true");
   await page.locator("#connect-instagram").getByLabel("Instagram access token").fill("e2e-token-0123456789abcd");
   await page.locator("#connect-instagram").getByRole("button", { name: "Check and save" }).click();
   await expect(page.locator("#connect-instagram")).toContainText("@gojoline");
@@ -60,7 +61,6 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await fb.getByLabel("Page access token").fill("wrong-token-0123456789abcdef");
   await fb.getByRole("button", { name: "Check and save" }).click();
   await expect(page.locator("#connect-facebook").getByRole("alert")).toContainText("Meta didn't accept the token");
-  await page.locator("#connect-facebook summary").click();
   await page.locator("#connect-facebook").getByLabel("Page ID").fill("123456789012345");
   await page.locator("#connect-facebook").getByLabel("Page access token").fill("e2e-token-0123456789abcd");
   await page.locator("#connect-facebook").getByRole("button", { name: "Check and save" }).click();

@@ -1007,8 +1007,8 @@ export const am: Messages = {
         change: "ይቀይሩ",
         steps: {
           telegram: ["ቻናልዎን ይክፈቱ → አስተዳዳሪዎች → አስተዳዳሪ ያክሉ → @gojoline_bot፣ «መልእክት መለጠፍ» ፈቃድ ጋር።", "የቻናሉን ስም ከታች ጽፈው ያስቀምጡ። ወደዚያ አጭር የሙከራ መልእክት እንልካለን።"],
-          facebook: ["በdevelopers.facebook.com የBusiness ዓይነት መተግበሪያ ይፍጠሩ።", "በGraph API Explorer በpages_manage_posts፣ pages_read_engagement እና instagram_content_publish ፈቃዶች ቶከን ያግኙ፣ ከዚያ ረጅም ዕድሜ ያለው ያድርጉት (Access Token Debugger → Extend)።", "me/accounts ያሂዱና የገጽዎን id እና access_token እዚህ ይቅዱ።"],
-          instagram: ["ኢንስታግራምዎን የBusiness ወይም የCreator አካውንት ያድርጉት። የፌስቡክ ገጽ አያስፈልግም።", "በdevelopers.facebook.com የBusiness ዓይነት መተግበሪያ ይፍጠሩና Instagram → API setup with Instagram login ያክሉ።", "በ«Generate access tokens» ስር የኢንስታግራም አካውንትዎን ያክሉና Generate token ይጫኑ።", "ቶከኑን እዚህ ይለጥፉ። አካውንትዎን እኛ እናገኛለን፤ ቶከኑንም በራሳችን እናድሳለን።"],
+          facebook: ["በdevelopers.facebook.com የBusiness ዓይነት መተግበሪያ ይፍጠሩ።", "በGraph API Explorer በpages_manage_posts እና pages_read_engagement ፈቃዶች ቶከን ያግኙ፣ ከዚያ ረጅም ዕድሜ ያለው ያድርጉት (Access Token Debugger → Extend)።", "me/accounts ያሂዱና የገጽዎን id እና access_token እዚህ ይቅዱ።"],
+          instagram: ["በኢንስታግራም መተግበሪያ፦ Settings → Account type and tools → Switch to professional account (Business ወይም Creator)። የፌስቡክ ገጽ አያስፈልግም።", "በdevelopers.facebook.com መተግበሪያ ይፍጠሩ (የInstagram አገልግሎትን ወይም የBusiness ዓይነትን ይምረጡ)፤ ከዚያ Instagram → «API setup with Instagram login» ይክፈቱ።", "በ«Generate access tokens» ስር «Add account» ይጫኑ፣ ወደ ኢንስታግራም ይግቡ፣ ከዚያ «Generate token» ይጫኑ።", "ቶከኑን እዚህ ይለጥፉ። አካውንትዎን እኛ እናገኛለን፤ ቶከኑንም በራሳችን እናድሳለን።"],
           tiktok: ["በdevelopers.tiktok.com Login Kit እና Content Posting API ያለው መተግበሪያ ይፍጠሩ (user.info.basic እና video.upload)።", "የመመለሻ አድራሻውን {callback} ያድርጉት።", "የመተግበሪያውን Client key እና Client secret እዚህ ለጥፈው ያስቀምጡ፣ ከዚያ በቲክቶክ ይግቡ።"],
         },
         fields: { channelId: "የቻናሉ ስም", pageId: "የገጽ መለያ (Page ID)", pageToken: "የገጽ ቶከን (Page access token)", igToken: "የኢንስታግራም ቶከን (access token)", clientKey: "Client key", clientSecret: "Client secret" },
@@ -1019,7 +1019,8 @@ export const am: Messages = {
         saved: "ተገናኝቷል።",
         failed: "አልሰራም። ዝርዝሩን ፈትሸው እንደገና ይሞክሩ።",
         errors: {
-          not_business: "ይህ ቶከን የኢንስታግራም Business ወይም Creator አካውንት አይደለም። የአካውንቱን ዓይነት ቀይረው አዲስ ቶከን ይሥሩ።",
+          not_business: "ይህ ቶከን የኢንስታግራም Business ወይም Creator አካውንት ቶከን አይደለም። የአካውንቱን ዓይነት ቀይረው አዲስ ቶከን ይሥሩ።",
+          ig_permission: "ይህ ቶከን ገና መለጠፍ አይችልም። በመተግበሪያዎ Instagram → «API setup with Instagram login» ይክፈቱ፣ መለጠፍ መፈቀዱን ያረጋግጡ (instagram_business_content_publish)፣ ከዚያ አዲስ ቶከን ይሥሩ።",
           bot: "የቴሌግራም ቦቱ በሰርቨሩ ላይ ገና አልተዘጋጀም።",
           chat_not_found: "ቴሌግራም ያንን ቻናል ማግኘት አልቻለም። ስሙን ይፈትሹ (በ@ ይጀምራል)።",
           bot_not_admin: "@gojoline_bot የዚያ ቻናል አስተዳዳሪ ገና አይደለም። «መልእክት መለጠፍ» ፈቃድ ሰጥተው ያክሉትና እንደገና ይሞክሩ።",

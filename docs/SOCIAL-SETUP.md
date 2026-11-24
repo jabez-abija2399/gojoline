@@ -24,10 +24,12 @@ Facebook Page is needed.
    product **Instagram** → **API setup with Instagram login**. The app can stay in Development mode:
    it only posts to your own account.
 3. Under **Generate access tokens**, press **Add account**, sign in to Instagram, then **Generate
-   token**. The token includes `instagram_business_basic` and `instagram_business_content_publish`.
+   token**. (Meta's dashboard changes: newer apps start from a use case such as "Manage messaging &
+   content on Instagram". If "Add account" asks for a tester, add the account under App roles →
+   Instagram testers and accept the invite in the Instagram app, then try again.) The token includes `instagram_business_basic` and `instagram_business_content_publish`.
 4. In Admin → Posts → Connections → Instagram, paste the token and press **Check and save**. We find
    the account from the token, keep the token encrypted, and renew it by ourselves once it is a week
-   old (each token lasts 60 days; renewing gives a fresh 60). On the server instead:
+   old, at the start of a posting run (each token lasts 60 days; renewing gives a fresh 60). On the server instead:
    `INSTAGRAM_USER_ID=<account id>` and `INSTAGRAM_TOKEN=<token>`; a server token is not renewed,
    so make a new one every 60 days or save it in Admin.
 

@@ -145,6 +145,13 @@ describe("planAhead and publishing", () => {
     expect((await d.store.get(b.id))?.status).toBe("approved");
   });
 
+  it("does its upkeep (token renewal) once at the start of a run, and a failing upkeep doesn't stop the run", async () => {
+    let upkeep = 0;
+    const d = deps({ publishers: async () => ({}), maintain: async () => { upkeep++; throw new Error("Meta is down"); } });
+    expect(await runDue(d, Date.parse("2026-11-23T15:00:00Z"))).toEqual({ sent: 0, failed: 0 });
+    expect(upkeep).toBe(1);
+  });
+
   it("never sends a site of the week whose owner stopped showing it, and never sends a post twice at once", async () => {
     let sites = [{ siteId: "s1", name: "Selam", url: "https://selam.example" }];
     const d = deps({ context: async () => ({ ...ctx, sites }) });

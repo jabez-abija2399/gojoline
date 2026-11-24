@@ -364,18 +364,21 @@ function buildPublishers(r: Resolved, svc: Services, env: Env, connections: Conn
   return out;
 }
 
-/** Renews an Instagram login token saved in Admin once it is a week old (each lasts 60 days). */
-async function freshInstagram(r: Resolved, connections: ConnectionStore, env: Env): Promise<Resolved> {
-  const ig = r.instagram;
-  if (isE2E(env) || !ig?.token || !ig.refreshedAt || !needsRenewal(ig.refreshedAt, Date.now())) return r;
+/**
+ * Renews an Instagram login token saved in Admin once it is a week old (each lasts 60 days). Runs
+ * once per posting run (under its lock), never on page loads; a failure waits an hour before the
+ * next try, and a reconnect made meanwhile is never overwritten.
+ */
+async function renewInstagram(connections: ConnectionStore, env: Env): Promise<void> {
+  if (isE2E(env)) return;
+  const ig = (await connections.load()).instagram;
+  if (!ig?.token || !ig.refreshedAt || !needsRenewal(ig.refreshedAt, Date.now(), ig.renewTriedAt)) return;
   try {
-    const token = await renewInstagramToken(ig.token);
-    await connections.saveInstagramToken(token, "system");
-    return { ...r, instagram: { ...ig, token } };
+    await connections.saveInstagramToken(ig.token, await renewInstagramToken(ig.token), "system");
   } catch (e) {
-    // The old token still works until it expires; the next post tries again.
+    // The old token still works until it expires; reported once per try (at most hourly).
     reportError("instagram token renewal failed", e);
-    return r;
+    await connections.saveInstagramRenewFailure(ig.token, "system").catch(() => undefined);
   }
 }
 
@@ -398,7 +401,8 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     // The renderer service on our server; a stand-in in e2e; none elsewhere.
     video: isE2E(env) ? new FakeVideoRenderer() : env.RENDERER_URL && env.RENDERER_SECRET ? new HttpVideoRenderer(env.RENDERER_URL, env.RENDERER_SECRET) : null,
     captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
-    publishers: async () => buildPublishers(await freshInstagram(await connections.load(), connections, env), svc, env, connections),
+    publishers: async () => buildPublishers(await connections.load(), svc, env, connections),
+    maintain: () => renewInstagram(connections, env),
     connections,
     verify: isE2E(env) ? new FakeVerifier() : new GraphVerifier(env.META_GRAPH_VERSION || "v23.0"),
     mediaUrl: (id) => (env.CRON_SECRET ? signedMediaUrl((env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""), env.CRON_SECRET, id) : null),
