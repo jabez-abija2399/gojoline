@@ -119,8 +119,9 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await expect(same.getByLabel("Text for TikTok")).toHaveValue(/Link in bio/);
   await expect(same.getByRole("link", { name: "Download the picture or video" })).toHaveAttribute("href", /\/api\/admin\/posts\/.+\/media\?download=1/);
 
-  // A video of the template (the e2e stand-in renderer), kept as the post's media.
-  await same.getByRole("button", { name: /^Make video/ }).click();
+  // A video of the template (the e2e stand-in renderer), kept as the post's media. Another test in the
+  // shared store may have filmed this post already: then it is made again.
+  await same.getByRole("button", { name: /^(Make video|Make the video again)/ }).first().click();
   await expect(page.locator("main").getByRole("status").filter({ hasText: /^Done\.$/ })).toBeVisible();
   await expect(page.locator(`li#${id} video`)).toBeVisible();
   await page.locator(`li#${id} summary`).filter({ hasText: "Edit and more" }).click();
