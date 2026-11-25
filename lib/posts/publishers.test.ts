@@ -112,7 +112,7 @@ describe("Connect TikTok", () => {
     const { tiktokAuthorizeUrl, tiktokExchange } = await import("./tiktok-auth");
     const u = new URL(tiktokAuthorizeUrl("key1", "https://g.example", "st"));
     expect(u.origin + u.pathname).toBe("https://www.tiktok.com/v2/auth/authorize/");
-    expect(Object.fromEntries(u.searchParams)).toEqual({ client_key: "key1", scope: "user.info.basic,video.upload", response_type: "code", redirect_uri: "https://g.example/api/admin/tiktok/callback", state: "st" });
+    expect(Object.fromEntries(u.searchParams)).toEqual({ client_key: "key1", scope: "user.info.basic,video.upload,video.publish", response_type: "code", redirect_uri: "https://g.example/api/admin/tiktok/callback", state: "st" });
     const f = fakeFetch([{ json: { access_token: "A", refresh_token: "R" } }]);
     expect(await tiktokExchange({ clientKey: "key1", clientSecret: "s", code: "c", appUrl: "https://g.example" }, f.impl)).toBe("R");
     expect(new URLSearchParams(String(f.calls[0].body)).get("grant_type")).toBe("authorization_code");

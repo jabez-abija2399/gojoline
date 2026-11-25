@@ -1,3 +1,4 @@
+import { tiktokAccessToken } from "./tiktok-direct";
 import { escapeHtml, type TelegramClient } from "@/lib/telegram/client";
 import type { Channel } from "./types";
 
@@ -135,19 +136,8 @@ export class TikTokInboxPublisher implements ChannelPublisher {
     private readonly fetchImpl: Fetch = fetch,
   ) {}
 
-  private async accessToken(): Promise<string> {
-    const refresh = await this.tokens.get();
-    if (!refresh) throw new Error("TikTok not connected (TIKTOK_REFRESH_TOKEN)");
-    const res = await this.fetchImpl("https://open.tiktokapis.com/v2/oauth/token/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ client_key: this.clientKey, client_secret: this.clientSecret, grant_type: "refresh_token", refresh_token: refresh }),
-      signal: AbortSignal.timeout(30_000),
-    });
-    const d = (await res.json().catch(() => null)) as { access_token?: string; refresh_token?: string; error_description?: string } | null;
-    if (!res.ok || !d?.access_token) throw new Error(`TikTok sign-in failed: ${d?.error_description?.slice(0, 120) ?? res.status}`);
-    if (d.refresh_token && d.refresh_token !== refresh) await this.tokens.set(d.refresh_token);
-    return d.access_token;
+  private accessToken(): Promise<string> {
+    return tiktokAccessToken(this.clientKey, this.clientSecret, this.tokens, this.fetchImpl);
   }
 
   async publish({ media }: PublishInput) {

@@ -61,16 +61,33 @@ other networks. Instagram fetches the media from a link that works for one hour.
 An Instagram account linked to the Page can still post through it (server setting
 `INSTAGRAM_USER_ID` without `INSTAGRAM_TOKEN`); Instagram login above is simpler.
 
-## 3. TikTok (about 15 minutes, plus TikTok's app review)
+## 3. TikTok (Direct Post, plus drafts)
 
-1. Go to developers.tiktok.com → **Manage apps** → **Connect an app**. Add the products **Login Kit**
-   and **Content Posting API**, with the scopes `user.info.basic` and `video.upload`.
-2. Redirect URI: `https://gojoline.afridea.et/api/admin/tiktok/callback`.
-3. Set `TIKTOK_CLIENT_KEY` and `TIKTOK_CLIENT_SECRET` from the app's page.
-4. In Admin → Posts, press **Connect TikTok** and sign in with Gojoline's TikTok account once.
+Two ways, both through TikTok's Content Posting API:
 
-Videos then arrive in that account's TikTok **inbox** as drafts (TikTok allows direct public
-posting only after it audits the app): open TikTok, add a sound if you like, and post.
+- **Direct Post** (Admin → Posts → Videos → **Post to TikTok**): TikTok's required screen. You see
+  the account you post as, write the caption, choose who can watch (TikTok's own options, nothing
+  chosen for you), turn on comments/duet/stitch if you want, disclose promotional content, see
+  TikTok's consent line, and post. Until TikTok **audits** the app, the only audience it allows is
+  **Only me**; after the audit, posts can be public.
+- **Drafts**: approved posts go to the TikTok app's inbox by themselves; you finish them there.
+
+Setup on developers.tiktok.com:
+
+1. App details: name **Gojoline**, icon 1024×1024, category Business (or Others), description,
+   Terms `https://gojoline.afridea.et/en/terms`, Privacy `https://gojoline.afridea.et/en/privacy`
+   (it has a section on our social accounts), platform **Web**, website `https://gojoline.afridea.et`.
+2. Products: **Login Kit** (redirect URI `https://gojoline.afridea.et/api/admin/tiktok/callback`)
+   and **Content Posting API** with **Direct Post** on. Nothing else.
+3. Scopes: `user.info.basic`, `video.upload`, `video.publish`.
+4. **Sandbox** (for the review's demo video): create a sandbox, add your TikTok account as a target
+   user, set the same redirect URI, products and scopes. Put the **sandbox** client key and secret in
+   Admin → Posts → Connections → TikTok, press **Sign in with TikTok**, then record the demo.
+5. Submit for review with the demo video and the explanation. After approval, replace the sandbox
+   key and secret with the **production** ones and sign in with TikTok again.
+
+Connected before 25 November? Sign in with TikTok again: direct posting needs the new
+`video.publish` permission.
 
 ## 4. YouTube
 

@@ -208,3 +208,42 @@ test("Videos: every day's video in one place, made here or uploaded, with captio
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 });
+
+test("Post to TikTok: TikTok's required screen, then a direct post", async ({ page }, info) => {
+  test.setTimeout(90_000);
+  await signIn(page, { contact: `admin-e2e-tt-${info.project.name}@example.com` });
+  await page.goto("/en/admin?tab=posts");
+  await planWeek(page, "Plan the next 7 days");
+  await page.goto("/en/admin?tab=posts&view=videos");
+  const cards = page.locator("li[id^=video-]");
+  await expect(cards.first()).toBeVisible();
+  // A card needs a video before it can go to TikTok.
+  const withVideo = cards.filter({ has: page.locator("video") });
+  if ((await withVideo.count()) === 0) await cards.filter({ hasText: "No video yet" }).first().getByRole("button", { name: /^Make video/ }).click();
+  await page.locator("li[id^=video-]").filter({ has: page.locator("video") }).first().getByRole("link", { name: /^Post to TikTok/ }).click();
+
+  const panel = page.locator("#tiktok-post");
+  await expect(panel.getByRole("heading", { name: /^Post to TikTok:/ })).toBeVisible();
+  await expect(panel).toContainText("Posting as");
+  await expect(panel).toContainText("Gojoline");
+  const post = panel.getByRole("button", { name: "Post to TikTok" });
+  // No audience is chosen for the admin, and nothing is allowed until turned on.
+  await expect(post).toBeDisabled();
+  await expect(panel.getByLabel("Comment")).not.toBeChecked();
+  await expect(panel.getByLabel("Stitch")).toBeDisabled();
+  await panel.getByLabel("Who can watch this video").selectOption("SELF_ONLY");
+  await expect(post).toBeEnabled();
+  // Disclosure needs a kind; a paid partnership can't be "Only me".
+  await panel.getByLabel("This video promotes a brand, product or service").check();
+  await expect(post).toBeDisabled();
+  await panel.getByLabel(/^Branded content/).check();
+  await expect(panel.getByText("Branded content can't be private. Choose another audience.")).toBeVisible();
+  await expect(panel.getByRole("link", { name: "Branded Content Policy" })).toBeVisible();
+  await panel.getByLabel(/^Branded content/).uncheck();
+  await panel.getByLabel(/^Your brand/).check();
+  await expect(panel.getByRole("link", { name: "Music Usage Confirmation" })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await expectNoHorizontalScroll(page);
+  await post.click();
+  await expect(page.locator("#tiktok-post").getByRole("status")).toHaveText("Posted. It can take a few minutes to appear on your TikTok profile.");
+});

@@ -53,6 +53,7 @@ import { FacebookPagePublisher, InstagramPublisher, TelegramPublisher, TikTokInb
 import { signedMediaUrl } from "@/lib/posts/media-url";
 import { ConnectionStore, type Resolved } from "@/lib/posts/connections";
 import { KitStore } from "@/lib/posts/kit-store";
+import { FakeTikTokDirect, TikTokDirectClient, tiktokAccessToken } from "@/lib/posts/tiktok-direct";
 import { needsRenewal, renewInstagramToken } from "@/lib/posts/instagram-token";
 import { reportError } from "@/lib/observability/report";
 import { FakeVerifier, GraphVerifier } from "@/lib/posts/verify";
@@ -236,7 +237,7 @@ function pickVisits(env: Env, ownerOf: (projectId: string) => Promise<string | n
   return { counter: redis ? new RedisVisitCounter(redis) : new MemoryVisitCounter(), daily: db ? new DbVisitsDailyStore(db) : new MemoryVisitsDailyStore(ownerOf) };
 }
 
-const globalForServices = globalThis as unknown as { gojoServices?: Services };
+const globalForServices = globalThis as unknown as { gojoServices?: Services; gojoFakeTikTok?: FakeTikTokDirect };
 
 export function services(): Services {
   if (!globalForServices.gojoServices) {
@@ -406,6 +407,13 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
     publishers: async () => buildPublishers(await connections.load(), svc, env, connections),
     maintain: () => renewInstagram(connections, env),
+    tiktokDirect: async () => {
+      if (isE2E(env)) return (globalForServices.gojoFakeTikTok ??= new FakeTikTokDirect());
+      const app = (await connections.load()).tiktok;
+      if (!app?.refreshToken) return null;
+      const tokens = { get: async () => (await connections.load()).tiktok?.refreshToken ?? null, set: (token: string) => connections.saveTikTokToken(token, "system") };
+      return new TikTokDirectClient(() => tiktokAccessToken(app.clientKey, app.clientSecret, tokens));
+    },
     connections,
     kit: new KitStore(settings),
     verify: isE2E(env) ? new FakeVerifier() : new GraphVerifier(env.META_GRAPH_VERSION || "v27.0"),

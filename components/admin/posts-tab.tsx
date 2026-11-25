@@ -8,6 +8,7 @@ import { addisToday, AUTO_CHANNELS, FILMABLE, readyChannels } from "@/lib/posts/
 import { CHANNELS, type Channel, type SocialPost } from "@/lib/posts/types";
 import { CopyButton } from "@/components/billing/copy-button";
 import { PostsKit } from "./posts-kit";
+import { TikTokPostPanel } from "./tiktok-post-panel";
 import { TELEGRAM_KIT } from "@/lib/posts/telegram-kit";
 import { shortUrl } from "@/lib/growth/short-links";
 import { FocusOnMount } from "./focus-on-mount";
@@ -74,6 +75,8 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
   // The week's posts that go out (drafts and scheduled), each needing a video for TikTok, Reels and Shorts.
   const weekPosts = upcoming.filter((p) => p.day <= addDays(today, 6) && p.status !== "skipped" && p.status !== "posted").sort((a, b) => a.day.localeCompare(b.day));
   const withVideo = weekPosts.filter((p) => p.media?.type === "video").length;
+  // Videos → Post to TikTok: the post asked for (this week's, or any upcoming one with a video).
+  const tiktokPost = typeof sp.tiktok === "string" ? (upcoming.find((p) => p.id === sp.tiktok && p.media?.type === "video") ?? null) : null;
   const counts: Record<View, string> = { review: String(drafts.length), scheduled: String(scheduled.length), videos: `${withVideo}/${weekPosts.length}`, sent: String(sent.length), kit: `${TELEGRAM_KIT.filter((k) => kitPosted[k.id]).length}/${TELEGRAM_KIT.length}`, connections: `${connected}/4` };
   const href = (v: View) => `/${lang}/admin?tab=posts&view=${v}`;
   const viewOf = (p: SocialPost): View => (p.status === "draft" ? "review" : p.status === "posted" ? "sent" : "scheduled");
@@ -220,6 +223,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
               </p>
             </FocusOnMount>
           )}
+          {tiktokPost && <TikTokPostPanel post={tiktokPost} lang={lang} t={t} title={dayFmt.format(new Date(`${tiktokPost.day}T00:00:00Z`))} result={typeof sp.tt === "string" ? sp.tt : null} />}
           {weekPosts.length === 0 ? (
             <Empty text={t.videos.empty} />
           ) : (
@@ -601,6 +605,12 @@ function VideoCard({ post: p, lang, t, ready, appUrl, title, canFilm, canUpload 
           <span className="font-medium text-ink">{v.byHand}</span> {list.format(byHand.map((c) => t.channels[c]))}
         </p>
         <div className="flex flex-wrap gap-2">
+          {hasVideo && (
+            <a href={`/${lang}/admin?tab=posts&view=videos&tiktok=${p.id}#tiktok-post`} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-ink px-3 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9">
+              {t.tiktokPost.open}
+              <span className="sr-only">: {title}</span>
+            </a>
+          )}
           <CopyButton value={postText(p, "tiktok", appUrl)} what={`${v.tiktokCaption}: ${title}`} copy={v.tiktokCaption} copied={t.copied} />
           <CopyButton value={postText(p, "instagram", appUrl)} what={`${v.instagramCaption}: ${title}`} copy={v.instagramCaption} copied={t.copied} />
           <CopyButton value={postText(p, "facebook", appUrl)} what={`${v.facebookCaption}: ${title}`} copy={v.facebookCaption} copied={t.copied} />

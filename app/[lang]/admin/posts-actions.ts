@@ -14,6 +14,7 @@ import { CHANNELS } from "@/lib/posts/types";
 import { KIT_IDS, TELEGRAM_KIT, kitMediaUrl, kitText } from "@/lib/posts/telegram-kit";
 import { shortUrl } from "@/lib/growth/short-links";
 import { escapeHtml } from "@/lib/telegram/client";
+import { PRIVACY_LEVELS, privacyAllowed } from "@/lib/posts/tiktok-direct";
 import { IG_ID_NEEDED, IG_TOKEN_EXPIRES } from "@/lib/posts/verify";
 
 type Done = "ok" | "invalid" | "failed" | "not_found";
@@ -324,4 +325,69 @@ export async function sendKitPost(form: FormData) {
   }
   revalidatePath(`/${l}/admin`);
   return failed ? back(l, "failed", `${here}&why=send${anchor}`) : back(l, "ok", `${here}&sent=1${anchor}`);
+}
+
+const tiktokInput = z.object({
+  id: z.string().uuid(),
+  title: z.string().trim().max(2200),
+  privacy: z.enum(PRIVACY_LEVELS),
+  comment: z.literal("on").optional(),
+  duet: z.literal("on").optional(),
+  stitch: z.literal("on").optional(),
+  disclose: z.literal("on").optional(),
+  yourBrand: z.literal("on").optional(),
+  branded: z.literal("on").optional(),
+});
+
+/**
+ * Videos → Post to TikTok: posts one video straight to our TikTok account with the settings the
+ * admin chose on TikTok's required screen (privacy from TikTok's own options, interactions the
+ * account allows, commercial content disclosure). Checked again here against the account.
+ */
+export async function postToTikTok(form: FormData) {
+  await admin();
+  const l = lang(form);
+  const parsed = tiktokInput.safeParse(Object.fromEntries(form));
+  const id = typeof form.get("id") === "string" ? String(form.get("id")) : "";
+  const here = (why: string) => `&view=videos&tiktok=${encodeURIComponent(/^[0-9a-f-]{36}$/.test(id) ? id : "")}&tt=${why}#tiktok-post`;
+  if (!parsed.success) return back(l, "invalid", here("invalid"));
+  const v = parsed.data;
+  // Disclosure on means saying what kind; a paid partnership can't be private (TikTok's rules).
+  if (v.disclose && !v.yourBrand && !v.branded) return back(l, "failed", here("disclose"));
+  if (!privacyAllowed(v.privacy, !!(v.disclose && v.branded))) return back(l, "failed", here("branded_private"));
+  const deps = services().posts;
+  const tiktok = await deps.tiktokDirect?.();
+  if (!tiktok) return back(l, "failed", here("not_connected"));
+  const post = await deps.store.get(v.id);
+  if (!post) return back(l, "not_found", "&view=videos");
+  const media = post.media?.type === "video" ? await deps.media(post.media) : null;
+  if (!media || media.kind !== "video") return back(l, "failed", here("no_video"));
+  const token = await deps.lock.acquire(`tiktok:${v.id}`, 180_000);
+  if (!token) return back(l, "failed", here("busy"));
+  let why = "sent";
+  try {
+    const creator = await tiktok.creator();
+    if (!creator.privacyOptions.includes(v.privacy)) why = "privacy";
+    else {
+      const ref = await tiktok.post({
+        video: media.data,
+        title: v.title,
+        privacy: v.privacy,
+        allowComment: !!v.comment && !creator.commentDisabled,
+        allowDuet: !!v.duet && !creator.duetDisabled,
+        allowStitch: !!v.stitch && !creator.stitchDisabled,
+        yourBrand: !!(v.disclose && v.yourBrand),
+        brandedContent: !!(v.disclose && v.branded),
+      });
+      await deps.store.saveResult(v.id, "tiktok", { ok: true, at: new Date().toISOString(), ref });
+    }
+  } catch (e) {
+    console.warn(`tiktok direct post failed: ${String((e as Error).message).replace(/[\r\n]+/g, " ").slice(0, 200)}`);
+    await deps.store.saveResult(v.id, "tiktok", { ok: false, at: new Date().toISOString(), error: String((e as Error).message).slice(0, 200) }).catch(() => null);
+    why = "failed";
+  } finally {
+    await deps.lock.release(`tiktok:${v.id}`, token);
+  }
+  revalidatePath(`/${l}/admin`);
+  back(l, why === "sent" ? "ok" : "failed", here(why));
 }

@@ -2,7 +2,8 @@
  * "Connect TikTok" (Admin → Posts): TikTok's sign-in for our own account, once. The refresh token
  * it returns is kept in the database (app_settings "posts.tiktok"); the publisher uses and renews it.
  */
-export const TIKTOK_SCOPES = "user.info.basic,video.upload";
+/** video.publish: Direct Post (Admin → Posts → Videos → Post to TikTok); video.upload: drafts in the inbox. */
+export const TIKTOK_SCOPES = "user.info.basic,video.upload,video.publish";
 
 export function tiktokRedirectUri(appUrl: string): string {
   return `${appUrl}/api/admin/tiktok/callback`;
