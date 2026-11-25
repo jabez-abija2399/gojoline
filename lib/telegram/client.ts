@@ -8,8 +8,10 @@ export interface TelegramClient {
    * message id, or throws with Telegram's reason.
    */
   post(chatId: string, input: { html: string; media?: { kind: "photo" | "video"; data: Buffer; name: string } | null }): Promise<string>;
-  /** Posts 2–10 photos as one album, the caption under the first. Returns the first message id. */
-  album(chatId: string, input: { html: string; photos: { data: Buffer; name: string }[] }): Promise<string>;
+  /** Posts a photo or video Telegram fetches from a public https address, with a caption. */
+  postUrl(chatId: string, input: { html: string; kind: "photo" | "video"; url: string }): Promise<string>;
+  /** Posts 2–10 photos (public https addresses Telegram fetches) as one album, the caption under the first. Returns the first message id. */
+  album(chatId: string, input: { html: string; urls: string[] }): Promise<string>;
   /** Posts a quiz poll (one right answer, shown with its explanation). Returns the message id. */
   quiz(chatId: string, input: Quiz): Promise<string>;
 }
@@ -89,15 +91,18 @@ export class BotApiClient implements TelegramClient {
     return String(r?.message_id ?? "");
   }
 
-  async album(chatId: string, input: { html: string; photos: { data: Buffer; name: string }[] }) {
-    const photos = input.photos.slice(0, 10);
-    const form = new FormData();
-    form.set("chat_id", chatId);
+  async postUrl(chatId: string, input: { html: string; kind: "photo" | "video"; url: string }) {
+    const captioned = input.html.length <= 1024;
+    const id = await this.send(input.kind === "photo" ? "sendPhoto" : "sendVideo", { chat_id: chatId, [input.kind]: input.url, ...(captioned ? { caption: input.html, parse_mode: "HTML" } : {}), ...(input.kind === "video" ? { supports_streaming: true } : {}) });
+    if (!captioned) await this.send("sendMessage", { chat_id: chatId, text: input.html, parse_mode: "HTML" });
+    return id;
+  }
+
+  async album(chatId: string, input: { html: string; urls: string[] }) {
     // A caption may be 1024 characters; a longer one follows as its own message.
     const captioned = input.html.length <= 1024;
-    form.set("media", JSON.stringify(photos.map((_, i) => ({ type: "photo", media: `attach://p${i}`, ...(i === 0 && captioned ? { caption: input.html, parse_mode: "HTML" } : {}) }))));
-    photos.forEach((p, i) => form.set(`p${i}`, new Blob([new Uint8Array(p.data)]), p.name));
-    const id = await this.send("sendMediaGroup", form);
+    const media = input.urls.slice(0, 10).map((url, i) => ({ type: "photo", media: url, ...(i === 0 && captioned ? { caption: input.html, parse_mode: "HTML" } : {}) }));
+    const id = await this.send("sendMediaGroup", { chat_id: chatId, media });
     if (!captioned) await this.send("sendMessage", { chat_id: chatId, text: input.html, parse_mode: "HTML" });
     return id;
   }
@@ -124,8 +129,12 @@ export class MemoryTelegramClient implements TelegramClient {
     this.posts.push({ chatId, html: input.html, media: input.media ? { kind: input.media.kind, name: input.media.name, bytes: input.media.data.length } : null });
     return String(this.posts.length);
   }
-  async album(chatId: string, input: { html: string; photos: { data: Buffer; name: string }[] }) {
-    this.posts.push({ chatId, html: input.html, media: { kind: `album:${input.photos.length}`, name: input.photos[0]?.name ?? "", bytes: input.photos.reduce((a, p) => a + p.data.length, 0) } });
+  async postUrl(chatId: string, input: { html: string; kind: "photo" | "video"; url: string }) {
+    this.posts.push({ chatId, html: input.html, media: { kind: input.kind, name: input.url, bytes: 0 } });
+    return String(this.posts.length);
+  }
+  async album(chatId: string, input: { html: string; urls: string[] }) {
+    this.posts.push({ chatId, html: input.html, media: { kind: `album:${input.urls.length}`, name: input.urls[0] ?? "", bytes: 0 } });
     return String(this.posts.length);
   }
   async quiz(chatId: string, q: Quiz) {

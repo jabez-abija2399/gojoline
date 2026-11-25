@@ -36,6 +36,11 @@ const nextConfig: NextConfig = {
         source: "/templates/:path(.+\\.(?:webp|png|jpe?g|avif))",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
       },
+      // Telegram starter media (public/kit/telegram): the same day-long caching.
+      {
+        source: "/kit/:path(.+\\.(?:webp|jpe?g|mp4))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
       // The guide's video, captions and screenshots (public/guide/, made by scripts/guide-assets.mts): same caching.
       {
         source: "/guide/:path(.+\\.(?:webp|avif|mp4|vtt))",

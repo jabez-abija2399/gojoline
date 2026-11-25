@@ -179,9 +179,10 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
   async function SourcesTab() {
     const day = (ago: number) => addisDay(Date.now() - ago * 86_400_000);
     const today = day(0);
+    let failed = false;
     const [rows, split] = await Promise.all([
-      svc.analyticsEvents.rows(day(29), today, "link_visit").catch((e: unknown) => (reportError("short link counts failed", e), [])),
-      svc.growth.sources.breakdown().catch((e: unknown) => (reportError("sign-up sources failed", e), { d7: emptySourceCounts(), d30: emptySourceCounts() })),
+      svc.analyticsEvents.rows(day(29), today, "link_visit").catch((e: unknown) => (reportError("short link counts failed", e), (failed = true), [])),
+      svc.growth.sources.breakdown().catch((e: unknown) => (reportError("sign-up sources failed", e), (failed = true), { d7: emptySourceCounts(), d30: emptySourceCounts() })),
     ]);
     const sum = (code: string, from: string) => rows.filter((r) => r.key === code && r.day >= from).reduce((a, r) => a + r.n, 0);
     const names = t.growth.sources.names as Record<string, string>;
@@ -195,7 +196,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
       d30: sum(code, day(29)),
     }));
     const signups = SOURCES.map((s) => ({ name: names[s] ?? s, d7: split.d7[s] ?? 0, d30: split.d30[s] ?? 0 })).sort((a, b) => b.d30 - a.d30);
-    return <SourcesView t={t.admin.sources} links={links} signups={signups} locale={lang === "am" ? "am" : "en"} copy={t.admin.posts.copy} copied={t.admin.posts.copied} />;
+    return <SourcesView t={t.admin.sources} links={links} signups={signups} locale={lang === "am" ? "am" : "en"} copy={t.admin.posts.copy} copied={t.admin.posts.copied} failed={failed} />;
   }
 
   async function AnalyticsTab() {

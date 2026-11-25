@@ -10,16 +10,16 @@ test("a short link goes home with its tags and counts in Admin → Sources", asy
   await signIn(page, { contact: `admin-e2e-src-${info.project.name}@example.com` });
   await page.goto("/en/admin?tab=sources");
   await expect(page.getByRole("heading", { name: "Sources", level: 1 })).toBeVisible();
-  const links = page.getByRole("table", { name: "Your short links" });
-  await expect(links.getByRole("rowheader", { name: "Instagram · profile link" })).toBeVisible();
-  await expect(links).toContainText("/r/ig");
+  // A table on wider screens, one card per link on phones.
+  await expect(page.getByText("Instagram · profile link", { exact: true }).filter({ visible: true })).toBeVisible();
+  await expect(page.locator("code").filter({ hasText: "/r/ig" }).filter({ visible: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Where new owners came from" })).toBeVisible();
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
 });
 
 test("Telegram start: the first posts, sent to the channel in one click and marked as posted", async ({ page }, info) => {
-  await signIn(page, { contact: `admin-e2e-src-${info.project.name}@example.com` });
+  await signIn(page, { contact: `admin-e2e-kit-${info.project.name}@example.com` });
   await page.goto("/en/admin?tab=posts&view=kit");
   await expect(page.getByRole("heading", { name: "Your channel's first posts" })).toBeVisible();
   const cards = page.locator("li[id^=kit-]");

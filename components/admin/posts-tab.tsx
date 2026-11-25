@@ -52,9 +52,9 @@ const DOT: Record<SocialPost["status"] | "none", string> = {
 export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: Record<string, string | string[] | undefined> }) {
   const deps = services().posts;
   const today = addisToday();
-  const loaded = await Promise.all([deps.store.between(today, addDays(today, 13)), deps.store.history(30), readyChannels(deps), deps.connections?.view(), deps.kit?.posted() ?? ({} as Record<string, string>), deps.connections?.load()]).catch((e: unknown) => (reportError("posts load failed", e), null));
+  const loaded = await Promise.all([deps.store.between(today, addDays(today, 13)), deps.store.history(30), readyChannels(deps), deps.connections?.view(), (deps.kit?.posted() ?? Promise.resolve({} as Record<string, string>)).catch((e: unknown) => (reportError("kit state failed", e), {} as Record<string, string>))]).catch((e: unknown) => (reportError("posts load failed", e), null));
   if (!loaded) return <p role="alert" className="rounded-xl bg-coral-soft p-4 text-destructive">{t.loadFailed}</p>;
-  const [upcoming, history, ready, views, kitPosted, resolved] = loaded;
+  const [upcoming, history, ready, views, kitPosted] = loaded;
   const done = DONE.find((d) => d === sp.pd) ?? null;
   const planned = typeof sp.planned === "string" ? Number(sp.planned) : null;
   const approvedN = typeof sp.approved === "string" ? Number(sp.approved) : null;
@@ -265,7 +265,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
         </section>
       )}
 
-      {view === "kit" && <PostsKit lang={lang} t={t} posted={kitPosted} link={shortUrl(deps.appUrl, "tg")} channel={resolved?.telegram?.channelId ?? null} message={kitMessage} />}
+      {view === "kit" && <PostsKit lang={lang} t={t} posted={kitPosted} link={shortUrl(deps.appUrl, "tg")} channel={views?.telegram.connected ? views.telegram.label : null} message={kitMessage} />}
 
       {view === "connections" && views && <PostConnections lang={lang} t={t} views={views} appUrl={deps.appUrl} message={message} />}
     </div>
