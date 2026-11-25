@@ -159,7 +159,7 @@ export async function saveConnection(form: FormData) {
   revalidatePath(`/${l}/admin`);
   // Only a fixed reason code goes back in the address (the page words it): never the network's text.
   // The network's own reason, server-side only (it never contains the token), for diagnosing.
-  if (problem) console.warn(`connect ${v.network} refused: ${String(problem).slice(0, 200)}`);
+  if (problem) console.warn(`connect ${v.network} refused: ${scrub(String(problem), v)}`);
   if (problem) return back(l, "failed", `&cn=${v.network}&why=${connectProblem(v.network, String(problem), v.network === "instagram" && !!v.userId)}${anchor}`);
   back(l, "ok", `&cn=${v.network}&connected=1${anchor}`);
 }
@@ -257,4 +257,11 @@ export async function makeWeekVideos(form: FormData) {
   }
   revalidatePath(`/${l}/admin`);
   redirect(`/${l}/admin?tab=posts&view=videos&vq=${todo.length}`);
+}
+
+/** A network's reason, safe to log: the secrets given removed, anything token-shaped hidden, one line. */
+function scrub(text: string, v: Record<string, unknown>): string {
+  let out = text;
+  for (const k of ["token", "clientSecret"]) if (typeof v[k] === "string" && (v[k] as string).length >= 8) out = out.split(v[k] as string).join("[secret]");
+  return out.replace(/\b(EAA|IG)[A-Za-z0-9_-]{16,}/g, "[secret]").replace(/[\r\n]+/g, " ").slice(0, 200);
 }
