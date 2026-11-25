@@ -52,6 +52,7 @@ import { FakeVideoRenderer, HttpVideoRenderer } from "@/lib/posts/video";
 import { FacebookPagePublisher, InstagramPublisher, TelegramPublisher, TikTokInboxPublisher } from "@/lib/posts/publishers";
 import { signedMediaUrl } from "@/lib/posts/media-url";
 import { ConnectionStore, type Resolved } from "@/lib/posts/connections";
+import { KitStore } from "@/lib/posts/kit-store";
 import { needsRenewal, renewInstagramToken } from "@/lib/posts/instagram-token";
 import { reportError } from "@/lib/observability/report";
 import { FakeVerifier, GraphVerifier } from "@/lib/posts/verify";
@@ -388,7 +389,8 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
   const db = getDb(env);
   // Admin-saved connections (tokens sealed with the server secret); the server's settings as a fallback.
-  const connections = new ConnectionStore(db ? new DbSettingsStore(db) : new MemorySettingsStore(), env.BETTER_AUTH_SECRET || (env.NODE_ENV !== "production" || (isE2E(env) && !env.APP_DOMAIN) ? "dev-only-secret-not-for-production-0123456789" : ""), isE2E(env) ? { TELEGRAM_CHANNEL_ID: "@gojoline_e2e" } : env);
+  const settings = db ? new DbSettingsStore(db) : new MemorySettingsStore();
+  const connections = new ConnectionStore(settings, env.BETTER_AUTH_SECRET || (env.NODE_ENV !== "production" || (isE2E(env) && !env.APP_DOMAIN) ? "dev-only-secret-not-for-production-0123456789" : ""), isE2E(env) ? { TELEGRAM_CHANNEL_ID: "@gojoline_e2e" } : env);
   // Rendered post videos (Step 3) live in R2 under posts/; memory without R2 (dev, e2e).
   const files: StorageProvider =
     !isE2E(env) && env.R2_ACCOUNT_ID && env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY
@@ -405,6 +407,7 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     publishers: async () => buildPublishers(await connections.load(), svc, env, connections),
     maintain: () => renewInstagram(connections, env),
     connections,
+    kit: new KitStore(settings),
     verify: isE2E(env) ? new FakeVerifier() : new GraphVerifier(env.META_GRAPH_VERSION || "v27.0"),
     mediaUrl: (id) => (env.CRON_SECRET ? signedMediaUrl((env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""), env.CRON_SECRET, id) : null),
     appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),

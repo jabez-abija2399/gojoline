@@ -14,7 +14,10 @@ import { format, getMessages } from "@/lib/i18n";
 import { adminStats, analytics, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, BadgePercent, ChartColumn, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Megaphone, MessageSquareHeart, Monitor, Moon, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgePercent, ChartColumn, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Megaphone, MessageSquareHeart, Monitor, Moon, Route, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { SourcesView } from "@/components/admin/sources-view";
+import { SHORT_CODES, SHORT_LINKS, shortUrl } from "@/lib/growth/short-links";
+import { addisDay } from "@/lib/dashboard/stats";
 import { FeedbackReplyForm } from "@/components/admin/feedback-reply-form";
 import { TYPE_ICONS } from "@/components/feedback/type-icons";
 import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
@@ -51,7 +54,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["overview", "analytics", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "posts", "settings"] as const;
+const TABS = ["overview", "analytics", "sources", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "posts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 type AdminUserPlan = (typeof PLAN_IDS)[number];
 
@@ -79,7 +82,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     svc.feedback.countByStatus().catch((e: unknown) => (reportError("feedback count failed", e), emptyCounts())),
   ]);
   const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports, feedback: fbCounts.new };
-  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, analytics: ChartColumn, discounts: BadgePercent, posts: Megaphone, settings: Settings2 };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, analytics: ChartColumn, sources: Route, discounts: BadgePercent, posts: Megaphone, settings: Settings2 };
   const navItem = (x: Tab, compact: boolean) => {
     const Icon = icons[x];
     return (
@@ -133,6 +136,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           )}
           {tab === "overview" && <Overview />}
           {tab === "analytics" && <AnalyticsTab />}
+          {tab === "sources" && <SourcesTab />}
           {tab === "payments" && <Payments />}
           {tab === "reports" && <Reports />}
           {tab === "feedback" && <FeedbackTab />}
@@ -169,6 +173,30 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
         </div>
       </form>
     );
+  }
+
+  /** Admin → Sources: visits from our short links (counted when opened) and sign-ups by first source. */
+  async function SourcesTab() {
+    const day = (ago: number) => addisDay(Date.now() - ago * 86_400_000);
+    const today = day(0);
+    let failed = false;
+    const [rows, split] = await Promise.all([
+      svc.analyticsEvents.rows(day(29), today, "link_visit").catch((e: unknown) => (reportError("short link counts failed", e), (failed = true), [])),
+      svc.growth.sources.breakdown().catch((e: unknown) => (reportError("sign-up sources failed", e), (failed = true), { d7: emptySourceCounts(), d30: emptySourceCounts() })),
+    ]);
+    const sum = (code: string, from: string) => rows.filter((r) => r.key === code && r.day >= from).reduce((a, r) => a + r.n, 0);
+    const names = t.growth.sources.names as Record<string, string>;
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://gojoline.afridea.et").replace(/\/$/, "");
+    const links = SHORT_CODES.map((code) => ({
+      code,
+      url: shortUrl(appUrl, code),
+      network: `${names[SHORT_LINKS[code].source] ?? SHORT_LINKS[code].source} · ${t.admin.sources.places[SHORT_LINKS[code].medium]}`,
+      today: sum(code, today),
+      d7: sum(code, day(6)),
+      d30: sum(code, day(29)),
+    }));
+    const signups = SOURCES.map((s) => ({ name: names[s] ?? s, d7: split.d7[s] ?? 0, d30: split.d30[s] ?? 0 })).sort((a, b) => b.d30 - a.d30);
+    return <SourcesView t={t.admin.sources} links={links} signups={signups} locale={lang === "am" ? "am" : "en"} copy={t.admin.posts.copy} copied={t.admin.posts.copied} failed={failed} />;
   }
 
   async function AnalyticsTab() {

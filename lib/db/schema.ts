@@ -548,8 +548,8 @@ export const signupSources = pgTable(
     userId: text("user_id")
       .primaryKey()
       .references(() => user.id, { onDelete: "cascade" }),
-    /** The overview's bucket: badge, referral, telegram, tiktok, facebook, linkedin, qr, other, direct. */
-    source: text("source", { enum: ["badge", "referral", "telegram", "tiktok", "facebook", "linkedin", "qr", "other", "direct"] }).notNull(),
+    /** The overview's bucket (lib/growth/attribution.ts SOURCES). Plain text in the database: new buckets need no migration. */
+    source: text("source", { enum: ["badge", "referral", "telegram", "instagram", "tiktok", "facebook", "youtube", "google", "linkedin", "qr", "other", "direct"] }).notNull(),
     ref: text("ref"),
     utmSource: text("utm_source"),
     utmMedium: text("utm_medium"),
@@ -646,7 +646,7 @@ export const analyticsDaily = pgTable(
   "analytics_daily",
   {
     day: date("day").notNull(),
-    event: text("event", { enum: ["click", "publish", "post_visit"] }).notNull(),
+    event: text("event", { enum: ["click", "publish", "post_visit", "link_visit"] }).notNull(),
     key: text("key").notNull(),
     n: integer("n").notNull().default(0),
   },

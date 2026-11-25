@@ -19,8 +19,8 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await signIn(page, { contact: `admin-e2e-posts-${info.project.name}@example.com` });
   await page.goto("/en/admin?tab=posts");
   await expect(page.getByRole("heading", { name: "Posts", level: 1 })).toBeVisible();
-  // One view at a time: To review, Scheduled, Videos, Sent, Connections.
-  await expect(page.getByRole("navigation", { name: "Posts" }).getByRole("link")).toHaveCount(5);
+  // One view at a time: To review, Scheduled, Videos, Sent, Telegram start, Connections.
+  await expect(page.getByRole("navigation", { name: "Posts" }).getByRole("link")).toHaveCount(6);
   await page.getByRole("navigation", { name: "Posts" }).getByRole("link", { name: /^Connections/ }).click();
   await expect(page).toHaveURL(/view=connections/);
   const tgCard = page.locator("#connect-telegram");
@@ -101,13 +101,14 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   // A template post shows the template's picture.
   await expect(page.locator("li[id^=post-] img").first()).toBeVisible();
 
-  // Edit the Amharic caption and save.
-  await card.locator("summary").filter({ hasText: "Edit and more" }).click();
-  await card.getByLabel("Caption in English").fill("Your website, from one message. Start free.");
-  await card.getByRole("button", { name: "Save" }).click();
-  await expect(page.locator("main").getByRole("status").filter({ hasText: /^Saved\.$/ })).toBeVisible();
+  // Edit the caption and save. The post's id is read first: after saving, "the first card with a
+  // picture" can be another post (the other run plans and changes posts at the same time).
   const id = await card.getAttribute("id");
   const same = page.locator(`li#${id}`);
+  await same.locator("summary").filter({ hasText: "Edit and more" }).click();
+  await same.getByLabel("Caption in English").fill("Your website, from one message. Start free.");
+  await same.getByRole("button", { name: "Save" }).click();
+  await expect(page.locator("main").getByRole("status").filter({ hasText: /^Saved\.$/ })).toBeVisible();
   await expect(same).toContainText("Your website, from one message. Start free.");
   // English only: there is no Amharic caption to review.
   await expect(same.getByLabel("Caption in Amharic")).toHaveCount(0);

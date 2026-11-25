@@ -7,6 +7,9 @@ import { addDays, postText, youtubeTitle } from "@/lib/posts/plan";
 import { addisToday, AUTO_CHANNELS, FILMABLE, readyChannels } from "@/lib/posts/service";
 import { CHANNELS, type Channel, type SocialPost } from "@/lib/posts/types";
 import { CopyButton } from "@/components/billing/copy-button";
+import { PostsKit } from "./posts-kit";
+import { TELEGRAM_KIT } from "@/lib/posts/telegram-kit";
+import { shortUrl } from "@/lib/growth/short-links";
 import { FocusOnMount } from "./focus-on-mount";
 import { PostSubmit } from "./post-submit";
 import { PostConnections } from "./post-connections";
@@ -29,7 +32,7 @@ const chip: Record<SocialPost["status"], string> = {
 const button = "inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-line bg-white px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9";
 const solid = "inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-ink px-3.5 text-sm font-semibold text-paper hover:bg-ink-hover pointer-fine:min-h-9";
 
-const VIEWS = ["review", "scheduled", "videos", "sent", "connections"] as const;
+const VIEWS = ["review", "scheduled", "videos", "sent", "kit", "connections"] as const;
 type View = (typeof VIEWS)[number];
 
 /** A day's dot in the week strip: what state its post is in. */
@@ -49,9 +52,9 @@ const DOT: Record<SocialPost["status"] | "none", string> = {
 export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: Record<string, string | string[] | undefined> }) {
   const deps = services().posts;
   const today = addisToday();
-  const loaded = await Promise.all([deps.store.between(today, addDays(today, 13)), deps.store.history(30), readyChannels(deps), deps.connections?.view()]).catch((e: unknown) => (reportError("posts load failed", e), null));
+  const loaded = await Promise.all([deps.store.between(today, addDays(today, 13)), deps.store.history(30), readyChannels(deps), deps.connections?.view(), (deps.kit?.posted() ?? Promise.resolve({} as Record<string, string>)).catch((e: unknown) => (reportError("kit state failed", e), {} as Record<string, string>))]).catch((e: unknown) => (reportError("posts load failed", e), null));
   if (!loaded) return <p role="alert" className="rounded-xl bg-coral-soft p-4 text-destructive">{t.loadFailed}</p>;
-  const [upcoming, history, ready, views] = loaded;
+  const [upcoming, history, ready, views, kitPosted] = loaded;
   const done = DONE.find((d) => d === sp.pd) ?? null;
   const planned = typeof sp.planned === "string" ? Number(sp.planned) : null;
   const approvedN = typeof sp.approved === "string" ? Number(sp.approved) : null;
@@ -64,12 +67,14 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
   const network = typeof sp.cn === "string" ? sp.cn : null;
   // Where to land: the view asked for; Connections after connecting; drafts first when there are any.
   const view: View = VIEWS.find((v) => v === sp.view) ?? (network ? "connections" : drafts.length > 0 ? "review" : "scheduled");
+  const kitId = typeof sp.kit === "string" && TELEGRAM_KIT.some((k) => k.id === sp.kit) ? sp.kit : null;
+  const kitMessage = kitId && done ? { id: kitId, ok: done === "ok", why: typeof sp.why === "string" ? sp.why : null, sent: sp.sent === "1" } : null;
   const message = network && done ? { network, ok: done === "ok", why: typeof sp.why === "string" ? sp.why : done === "invalid" ? "invalid" : null } : null;
   const connected = views ? Object.values(views).filter((v) => v.connected).length : 0;
   // The week's posts that go out (drafts and scheduled), each needing a video for TikTok, Reels and Shorts.
   const weekPosts = upcoming.filter((p) => p.day <= addDays(today, 6) && p.status !== "skipped" && p.status !== "posted").sort((a, b) => a.day.localeCompare(b.day));
   const withVideo = weekPosts.filter((p) => p.media?.type === "video").length;
-  const counts: Record<View, string> = { review: String(drafts.length), scheduled: String(scheduled.length), videos: `${withVideo}/${weekPosts.length}`, sent: String(sent.length), connections: `${connected}/4` };
+  const counts: Record<View, string> = { review: String(drafts.length), scheduled: String(scheduled.length), videos: `${withVideo}/${weekPosts.length}`, sent: String(sent.length), kit: `${TELEGRAM_KIT.filter((k) => kitPosted[k.id]).length}/${TELEGRAM_KIT.length}`, connections: `${connected}/4` };
   const href = (v: View) => `/${lang}/admin?tab=posts&view=${v}`;
   const viewOf = (p: SocialPost): View => (p.status === "draft" ? "review" : p.status === "posted" ? "sent" : "scheduled");
   const week = Array.from({ length: 7 }, (_, i) => addDays(today, i));
@@ -77,7 +82,7 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
 
   return (
     <div className="flex flex-col gap-5">
-      {done && !network && (
+      {done && !network && !kitId && (
         <FocusOnMount>
           <p role={done === "ok" ? "status" : "alert"} className={`rounded-lg px-4 py-2 font-medium ${done === "ok" ? "border border-lagoon bg-white text-lagoon" : "bg-coral-soft text-destructive"}`}>
             {done === "ok" && planned !== null
@@ -259,6 +264,8 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
           )}
         </section>
       )}
+
+      {view === "kit" && <PostsKit lang={lang} t={t} posted={kitPosted} link={shortUrl(deps.appUrl, "tg")} channel={views?.telegram.connected ? views.telegram.label : null} message={kitMessage} />}
 
       {view === "connections" && views && <PostConnections lang={lang} t={t} views={views} appUrl={deps.appUrl} message={message} />}
     </div>

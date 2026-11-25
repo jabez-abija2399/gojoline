@@ -63,7 +63,8 @@ export const config = {
   matcher: [
     {
       // Pages only: skip API routes, Next internals and files with an extension.
-      source: "/((?!api|demo|_next/static|_next/image|.*\\.[a-zA-Z0-9]+$).*)",
+      // Short links (/r/<code>) are route handlers that redirect by themselves.
+      source: "/((?!api|demo|r/|_next/static|_next/image|.*\\.[a-zA-Z0-9]+$).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },

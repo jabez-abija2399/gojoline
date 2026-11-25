@@ -81,3 +81,9 @@ API project stay private until Google audits the project.)
 
 Admin → Posts lists each network as connected or not. "Post now" on a post shows each network's
 result under the post (sent, or the network's reason).
+
+## Short links for bios and posts
+
+Use these instead of long tracking addresses (Admin → Sources lists them with their visits):
+`/r/tg` Telegram channel · `/r/tgg` Telegram groups · `/r/ig` Instagram bio · `/r/tt` TikTok bio ·
+`/r/fb` Facebook profile · `/r/yt` YouTube. Each lands on the home page with its utm tags.

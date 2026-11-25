@@ -11,6 +11,9 @@ import { services } from "@/lib/server/services";
 import { addisNow, FILMABLE, makeVideo, planAhead, publishPost, rewriteCaption } from "@/lib/posts/service";
 import { cleanHashtags } from "@/lib/posts/captions";
 import { CHANNELS } from "@/lib/posts/types";
+import { KIT_IDS, TELEGRAM_KIT, kitMediaUrl, kitText } from "@/lib/posts/telegram-kit";
+import { shortUrl } from "@/lib/growth/short-links";
+import { escapeHtml } from "@/lib/telegram/client";
 import { IG_ID_NEEDED, IG_TOKEN_EXPIRES } from "@/lib/posts/verify";
 
 type Done = "ok" | "invalid" | "failed" | "not_found";
@@ -264,4 +267,61 @@ function scrub(text: string, v: Record<string, unknown>): string {
   let out = text;
   for (const k of ["token", "clientSecret"]) if (typeof v[k] === "string" && (v[k] as string).length >= 8) out = out.split(v[k] as string).join("[secret]");
   return out.replace(/\b(EAA|IG)[A-Za-z0-9_-]{16,}/g, "[secret]").replace(/[\r\n]+/g, " ").slice(0, 200);
+}
+
+const kitInput = z.object({ id: z.enum(KIT_IDS as [string, ...string[]]), done: z.enum(["1", "0"]).optional(), again: z.literal("1").optional() });
+
+/** Telegram start: marks a starter post as posted (by hand) or not. */
+export async function markKitPost(form: FormData) {
+  const me = await admin();
+  const l = lang(form);
+  const parsed = kitInput.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return back(l, "invalid", "&view=kit");
+  await services().posts.kit?.mark(parsed.data.id, parsed.data.done !== "0", me.id);
+  revalidatePath(`/${l}/admin`);
+  back(l, "ok", `&view=kit&kit=${parsed.data.id}#kit-${parsed.data.id}`);
+}
+
+/** Telegram start: sends a starter post to the connected channel now (video, photo, album or quiz), then marks it posted. */
+export async function sendKitPost(form: FormData) {
+  const me = await admin();
+  const l = lang(form);
+  const parsed = kitInput.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return back(l, "invalid", "&view=kit");
+  const id = parsed.data.id;
+  const deps = services().posts;
+  const tg = services().telegram;
+  const channel = (await deps.connections?.load())?.telegram?.channelId;
+  const post = TELEGRAM_KIT.find((k) => k.id === id)!;
+  // Query first, then the card's anchor: anything after "#" never reaches the page.
+  const here = `&view=kit&kit=${id}`;
+  const anchor = `#kit-${id}`;
+  if (!tg || !channel) return back(l, "failed", `${here}&why=no_channel${anchor}`);
+  // One send at a time per post: a double click never posts twice.
+  const token = await deps.lock.acquire(`kit:${id}`, 180_000);
+  if (!token) return back(l, "failed", `${here}&why=busy${anchor}`);
+  // Already posted: only "Send again" (again=1) posts it a second time, never a repeated form.
+  if (!parsed.data.again && (await deps.kit?.posted())?.[id]) {
+    await deps.lock.release(`kit:${id}`, token);
+    return back(l, "failed", `${here}&why=already${anchor}`);
+  }
+  let failed = false;
+  try {
+    const html = escapeHtml(kitText(post, shortUrl(deps.appUrl, "tg")));
+    // Telegram fetches the media from our public address: nothing large passes through this server.
+    const url = (file: string) => `${deps.appUrl}${kitMediaUrl(file)}`;
+    const m = post.media[0];
+    if (post.quiz) await tg.client.quiz(channel, post.quiz);
+    else if (post.media.length > 1) await tg.client.album(channel, { html, urls: post.media.map((x) => url(x.file)) });
+    else if (m) await tg.client.postUrl(channel, { html, kind: m.kind, url: url(m.file) });
+    else await tg.client.post(channel, { html });
+    await deps.kit?.mark(id, true, me.id);
+  } catch (e) {
+    console.warn(`kit ${id} send failed: ${String((e as Error).message).replace(/[\r\n]+/g, " ").slice(0, 200)}`);
+    failed = true;
+  } finally {
+    await deps.lock.release(`kit:${id}`, token);
+  }
+  revalidatePath(`/${l}/admin`);
+  return failed ? back(l, "failed", `${here}&why=send${anchor}`) : back(l, "ok", `${here}&sent=1${anchor}`);
 }
