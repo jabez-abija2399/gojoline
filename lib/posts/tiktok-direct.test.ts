@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { privacyAllowed, TikTokDirectClient } from "./tiktok-direct";
+import { networkReason, privacyAllowed, TikTokDirectClient } from "./tiktok-direct";
 
 type Call = { url: string; body: unknown; headers: Record<string, string> };
 function fake(answers: { status?: number; json?: unknown }[]) {
@@ -40,6 +40,18 @@ describe("TikTok Direct Post", () => {
     expect(err).toContain("Unaudited client");
     expect(err).toContain("unaudited_client_can_only_post_to_private_accounts");
     expect(err).not.toContain("SECRET-TOKEN");
+  });
+
+  it("a dropped upload says which step and why, without the upload address", async () => {
+    const calls: string[] = [];
+    const impl = (async (url: string | URL) => {
+      calls.push(String(url));
+      if (calls.length === 1) return new Response(JSON.stringify({ data: { publish_id: "p_1", upload_url: "https://upload.tiktok.example/u?sig=SECRET" }, error: { code: "ok" } }));
+      throw new TypeError("fetch failed", { cause: Object.assign(new Error("other side closed https://upload.tiktok.example/u?sig=SECRET"), { code: "UND_ERR_SOCKET" }) });
+    }) as typeof fetch;
+    const err = await new TikTokDirectClient(async () => "T", impl).post({ video: Buffer.from("x"), title: "t", privacy: "SELF_ONLY", allowComment: false, allowDuet: false, allowStitch: false, yourBrand: false, brandedContent: false }).catch((e: Error) => e.message);
+    expect(err).toBe("TikTok upload: fetch failed: UND_ERR_SOCKET other side closed <url>");
+    expect(networkReason(new Error("plain"))).toBe("plain");
   });
 
   it("a paid partnership can't be private", () => {

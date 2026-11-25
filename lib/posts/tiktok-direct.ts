@@ -89,6 +89,8 @@ export class TikTokDirectClient implements TikTokDirect {
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json; charset=UTF-8" },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(this.timeoutMs),
+    }).catch((e: unknown) => {
+      throw new Error(`TikTok ${path}: ${networkReason(e)}`);
     });
     const d = (await res.json().catch(() => null)) as Envelope<T>;
     // TikTok's reason only, never the token.
@@ -133,16 +135,26 @@ export class TikTokDirectClient implements TikTokDirect {
       token,
     );
     if (!init.upload_url || !init.publish_id) throw new Error("TikTok: no upload address");
+    // A dropped connection says only "fetch failed": keep the step and the network reason (never the URL).
     const up = await this.fetchImpl(init.upload_url, {
       method: "PUT",
       headers: { "Content-Type": "video/mp4", "Content-Length": String(size), "Content-Range": `bytes 0-${size - 1}/${size}` },
       // The Buffer's own bytes (no copy of a video that can be tens of MB).
       body: new Uint8Array(input.video.buffer as ArrayBuffer, input.video.byteOffset, input.video.byteLength),
       signal: AbortSignal.timeout(120_000),
+    }).catch((e: unknown) => {
+      throw new Error(`TikTok upload: ${networkReason(e)}`);
     });
     if (!up.ok) throw new Error(`TikTok upload failed (${up.status})`);
     return init.publish_id;
   }
+}
+
+/** "fetch failed" plus its cause (code and message), for the log and the admin's error line. */
+export function networkReason(e: unknown): string {
+  const err = e as { message?: string; cause?: { code?: string; message?: string } };
+  const cause = [err?.cause?.code, err?.cause?.message].filter(Boolean).join(" ");
+  return [String(err?.message ?? e), cause].filter(Boolean).join(": ").replace(/\b[a-z][a-z0-9+.-]*:\/\/\S+/gi, "<url>").slice(0, 200);
 }
 
 /** E2E and dev: an account that allows every privacy level; posting returns a fake id. */
