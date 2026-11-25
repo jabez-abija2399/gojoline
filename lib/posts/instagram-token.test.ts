@@ -88,10 +88,29 @@ describe("finding the Instagram account from a token", () => {
     expect(lookups).toBe(5);
   });
 
-  it("an Instagram-login token never touches Facebook's side", async () => {
+  it("a token refused on both sides gives the hinted side's reason, trying the hinted side first", async () => {
     const m = meta({});
     await expect(new GraphVerifier("v23.0", m.f).instagramToken("IGAA-expired")).rejects.toThrow("Invalid OAuth access token.");
-    expect(m.asked).toEqual(["https://graph.instagram.com/v23.0/me?fields=user_id,username"]);
+    expect(m.asked[0]).toBe("https://graph.instagram.com/v23.0/me?fields=user_id,username");
+    expect(m.asked.some((u) => u.includes("graph.facebook.com"))).toBe(true);
+  });
+
+  it("a system-user token whose first letters aren't EAA still connects through Facebook's side, with the ID", async () => {
+    const m = meta({
+      "graph.facebook.com/v23.0/debug_token": { data: { is_valid: true, expires_at: 0, granular_scopes: [{ scope: "instagram_content_publish" }] } },
+      "graph.facebook.com/v23.0/17841452936927432?fields=username": { username: "gojoline", id: "17841452936927432" },
+    });
+    expect(await new GraphVerifier("v23.0", m.f).instagramToken("XYZ-system-user-token", "17841452936927432")).toEqual({ userId: "17841452936927432", username: "gojoline", host: "facebook" });
+  });
+
+  it("without the ID, a working system-user token whose grants apply to all objects asks for the ID", async () => {
+    const m = meta({ "graph.facebook.com/v23.0/debug_token": { data: { is_valid: true, expires_at: 0, granular_scopes: [{ scope: "instagram_content_publish" }] } } });
+    await expect(new GraphVerifier("v23.0", m.f).instagramToken("XYZ-system-user-token")).rejects.toThrow(IG_ID_NEEDED);
+  });
+
+  it("an Instagram-login token with an ID is checked on Instagram's side when Facebook's refuses it", async () => {
+    const m = meta({ "graph.instagram.com/v23.0/17841400000000000?fields=username": { username: "gojoline" } });
+    expect(await new GraphVerifier("v23.0", m.f).instagramToken("IGAA-tok", "17841400000000000")).toEqual({ userId: "17841400000000000", username: "gojoline", host: "instagram" });
   });
 
   it("refuses a Facebook-side token that expires (only lasting business tokens are kept), and tries posting accounts first", async () => {
