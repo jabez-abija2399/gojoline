@@ -7,9 +7,18 @@ export interface ConnectionVerifier {
   facebook(pageId: string, token: string): Promise<string>;
   /** The Instagram username, or throws with Meta's reason. */
   instagram(userId: string, token: string): Promise<string>;
-  /** Instagram login (no Facebook Page): the account the token belongs to, or throws with Meta's reason. */
-  instagramLogin(token: string): Promise<{ userId: string; username: string }>;
+  /**
+   * The Instagram account a token can post to, and through which host: an Instagram-login token
+   * (graph.instagram.com, renewed every 60 days) or a Unified-login / business token
+   * (graph.facebook.com, a system-user token that never expires). Throws with Meta's reason, or
+   * with IG_ID_NEEDED when the token works but no account could be found (the admin gives its ID).
+   */
+  instagramToken(token: string, userId?: string): Promise<InstagramAccount>;
 }
+
+export type InstagramAccount = { userId: string; username: string; host: "instagram" | "facebook" };
+export const IG_ID_NEEDED = "IG_ID_NEEDED";
+const IG_ID = /^\d{5,25}$/;
 
 export class GraphVerifier implements ConnectionVerifier {
   constructor(
@@ -30,12 +39,50 @@ export class GraphVerifier implements ConnectionVerifier {
     const d = await this.get(`${encodeURIComponent(userId)}?fields=username`, token);
     return String(d.username ?? userId);
   }
-  async instagramLogin(token: string) {
-    // `user_id` is the professional account's id, the one media is published to.
-    const d = await this.get("me?fields=user_id,username", token, "graph.instagram.com");
-    const userId = String(d.user_id ?? "");
-    if (!/^\d{5,25}$/.test(userId)) throw new Error("This token isn't for an Instagram professional account.");
-    return { userId, username: String(d.username ?? userId) };
+  async instagramToken(token: string, userId?: string): Promise<InstagramAccount> {
+    // 1. Instagram login (older apps): the token names its own professional account.
+    let first: Error | null = null;
+    if (!userId) {
+      try {
+        const d = await this.get("me?fields=user_id,username", token, "graph.instagram.com");
+        const id = String(d.user_id ?? "");
+        if (IG_ID.test(id)) return { userId: id, username: String(d.username ?? id), host: "instagram" };
+      } catch (e) {
+        first = e as Error;
+      }
+    }
+    // 2. Unified login (new apps) or a Page token: graph.facebook.com, with the account given or found.
+    if (userId) {
+      const d = await this.get(`${encodeURIComponent(userId)}?fields=username`, token);
+      return { userId, username: String(d.username ?? userId), host: "facebook" };
+    }
+    let found: string[] = [];
+    try {
+      // The token's own description lists the Instagram accounts it was granted (system-user tokens).
+      const d = await this.get(`debug_token?input_token=${encodeURIComponent(token)}`, token);
+      const scopes = ((d.data as { granular_scopes?: { scope?: string; target_ids?: string[] }[] } | undefined)?.granular_scopes ?? []);
+      found = scopes.filter((g) => /^instagram_(content_publish|basic)$/.test(g.scope ?? "")).flatMap((g) => g.target_ids ?? []);
+    } catch (e) {
+      first ??= e as Error;
+    }
+    try {
+      // A token with Pages: each Page's linked Instagram account.
+      const d = await this.get("me/accounts?fields=instagram_business_account", token);
+      for (const p of (d.data as { instagram_business_account?: { id?: string } }[] | undefined) ?? []) if (p.instagram_business_account?.id) found.push(p.instagram_business_account.id);
+    } catch {
+      // Not a token with Pages: fine.
+    }
+    for (const id of [...new Set(found)].filter((x) => IG_ID.test(x))) {
+      try {
+        const d = await this.get(`${id}?fields=username`, token);
+        return { userId: id, username: String(d.username ?? id), host: "facebook" };
+      } catch (e) {
+        first ??= e as Error;
+      }
+    }
+    // The token works on Facebook's side but names no account we could read: ask for the ID.
+    const works = await this.get("me?fields=id", token).then(() => true, (e: Error) => ((first ??= e), false));
+    throw works ? new Error(IG_ID_NEEDED) : (first ?? new Error("Invalid OAuth access token."));
   }
 }
 
@@ -49,8 +96,11 @@ export class FakeVerifier implements ConnectionVerifier {
     if (token !== "e2e-token-0123456789abcd") throw new Error("Invalid OAuth access token.");
     return "gojoline";
   }
-  async instagramLogin(token: string) {
-    if (token !== "e2e-token-0123456789abcd") throw new Error("Invalid OAuth access token.");
-    return { userId: "17841400000000000", username: "gojoline" };
+  /** "e2e-token-…" is an Instagram-login token; "e2e-business-…" a business token that needs the ID. */
+  async instagramToken(token: string, userId?: string): Promise<InstagramAccount> {
+    if (token === "e2e-token-0123456789abcd") return { userId: "17841400000000000", username: "gojoline", host: "instagram" };
+    if (token !== "e2e-business-0123456789abcd") throw new Error("Invalid OAuth access token.");
+    if (!userId) throw new Error(IG_ID_NEEDED);
+    return { userId, username: "gojoline", host: "facebook" };
   }
 }

@@ -353,7 +353,7 @@ function buildPublishers(r: Resolved, svc: Services, env: Env, connections: Conn
   const version = env.META_GRAPH_VERSION || "v23.0";
   if (r.facebook) out.facebook = new FacebookPagePublisher(r.facebook.pageId, r.facebook.token, version);
   // Instagram login (its own token, no Facebook Page) first; else through the Page.
-  if (r.instagram?.token) out.instagram = new InstagramPublisher(r.instagram.userId, r.instagram.token, version, fetch, undefined, "graph.instagram.com");
+  if (r.instagram?.token) out.instagram = new InstagramPublisher(r.instagram.userId, r.instagram.token, version, fetch, undefined, r.instagram.host === "facebook" ? "graph.facebook.com" : "graph.instagram.com");
   else if (r.instagram && r.facebook) out.instagram = new InstagramPublisher(r.instagram.userId, r.facebook.token, version);
   if (r.tiktok?.refreshToken) {
     out.tiktok = new TikTokInboxPublisher(r.tiktok.clientKey, r.tiktok.clientSecret, {
@@ -372,7 +372,8 @@ function buildPublishers(r: Resolved, svc: Services, env: Env, connections: Conn
 async function renewInstagram(connections: ConnectionStore, env: Env): Promise<void> {
   if (isE2E(env)) return;
   const ig = (await connections.load()).instagram;
-  if (!ig?.token || !ig.refreshedAt || !needsRenewal(ig.refreshedAt, Date.now(), ig.renewTriedAt)) return;
+  // Business (Unified login) tokens never expire: only Instagram-login tokens are renewed.
+  if (!ig?.token || ig.host === "facebook" || !ig.refreshedAt || !needsRenewal(ig.refreshedAt, Date.now(), ig.renewTriedAt)) return;
   try {
     await connections.saveInstagramToken(ig.token, await renewInstagramToken(ig.token), "system");
   } catch (e) {

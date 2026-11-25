@@ -14,7 +14,7 @@ export interface Resolved {
    * With `token`: connected with Instagram login (2026-11-24), no Facebook Page needed; the token
    * lasts 60 days and is renewed by itself (`refreshedAt`). Without it: posts with the Page's token.
    */
-  instagram?: { userId: string; username?: string; token?: string; refreshedAt?: string; renewTriedAt?: string };
+  instagram?: { userId: string; username?: string; token?: string; host?: "instagram" | "facebook"; refreshedAt?: string; renewTriedAt?: string };
   tiktok?: { clientKey: string; clientSecret: string; refreshToken?: string };
 }
 
@@ -32,7 +32,7 @@ export interface ConnectionView {
 type Stored = {
   telegram?: { channelId: string };
   facebook?: { pageId: string; token: string; name?: string };
-  instagram?: { userId: string; username?: string; token?: string; refreshedAt?: string; renewTriedAt?: string };
+  instagram?: { userId: string; username?: string; token?: string; host?: "instagram" | "facebook"; refreshedAt?: string; renewTriedAt?: string };
   tiktok?: { clientKey: string; clientSecret: string; refreshToken?: string };
 };
 
@@ -66,7 +66,7 @@ export class ConnectionStore {
     if (pageId && fbToken) out.facebook = { pageId, token: fbToken, name: s.facebook?.name };
     const userId = s.instagram?.userId ?? e.INSTAGRAM_USER_ID;
     const igToken = this.open(s.instagram?.token) ?? (s.instagram ? undefined : e.INSTAGRAM_TOKEN?.trim() || undefined);
-    if (userId) out.instagram = { userId, username: s.instagram?.username, ...(igToken ? { token: igToken, refreshedAt: s.instagram?.refreshedAt, renewTriedAt: s.instagram?.renewTriedAt } : {}) };
+    if (userId) out.instagram = { userId, username: s.instagram?.username, ...(igToken ? { token: igToken, host: s.instagram?.host ?? tokenHost(igToken), refreshedAt: s.instagram?.refreshedAt, renewTriedAt: s.instagram?.renewTriedAt } : {}) };
     const clientKey = s.tiktok?.clientKey ?? e.TIKTOK_CLIENT_KEY;
     const clientSecret = this.open(s.tiktok?.clientSecret) ?? (s.tiktok ? undefined : e.TIKTOK_CLIENT_SECRET);
     if (clientKey && clientSecret) out.tiktok = { clientKey, clientSecret, refreshToken: this.open(s.tiktok?.refreshToken) ?? e.TIKTOK_REFRESH_TOKEN };
@@ -94,10 +94,13 @@ export class ConnectionStore {
     await this.settings.merge(KEY, { facebook: { pageId: v.pageId, token: seal(v.token, this.secret), ...(v.name ? { name: v.name } : {}) } }, [], by, {});
   }
 
-  /** With `token` (Instagram login), the account posts on its own; without it, through the Page. */
-  async saveInstagram(v: { userId: string; username?: string; token?: string }, by: string, now = new Date()) {
+  /**
+   * With `token`, the account posts on its own: `host` "instagram" (Instagram login, renewed) or
+   * "facebook" (Unified login / business token, never expires). Without it, through the Page.
+   */
+  async saveInstagram(v: { userId: string; username?: string; token?: string; host?: "instagram" | "facebook" }, by: string, now = new Date()) {
     // The "instagram" key is replaced whole: a later save without a token drops the old one.
-    const token = v.token ? { token: seal(v.token, this.secret), refreshedAt: now.toISOString() } : {};
+    const token = v.token ? { token: seal(v.token, this.secret), host: v.host ?? tokenHost(v.token), refreshedAt: now.toISOString() } : {};
     await this.settings.merge(KEY, { instagram: { userId: v.userId, ...(v.username ? { username: v.username } : {}), ...token } }, [], by, {});
   }
 
@@ -141,4 +144,9 @@ export class ConnectionStore {
   async remove(channel: Exclude<Channel, "youtube">, by: string) {
     await this.settings.merge(KEY, {}, [channel], by, null);
   }
+}
+
+/** Instagram-login tokens start with "IG"; Facebook-side tokens (business, Page, user) with "EAA". */
+export function tokenHost(token: string): "instagram" | "facebook" {
+  return token.startsWith("EAA") ? "facebook" : "instagram";
 }

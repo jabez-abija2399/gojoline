@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { MemorySettingsStore } from "@/lib/billing/settings";
 import { seal, unseal } from "@/lib/security/seal";
-import { ConnectionStore } from "./connections";
+import { ConnectionStore, tokenHost } from "./connections";
 
 const SECRET = "test-server-secret-0123456789abcdefghij";
 
@@ -56,7 +56,7 @@ describe("ConnectionStore", () => {
     const store = new ConnectionStore(settings, SECRET);
     await store.saveInstagram({ userId: "17841400000000000", username: "gojoline", token: "IGAA-secret-token" }, "admin", new Date("2026-11-24T10:00:00Z"));
     expect(JSON.stringify(await settings.get("posts.connections"))).not.toContain("IGAA-secret");
-    expect((await store.load()).instagram).toEqual({ userId: "17841400000000000", username: "gojoline", token: "IGAA-secret-token", refreshedAt: "2026-11-24T10:00:00.000Z", renewTriedAt: undefined });
+    expect((await store.load()).instagram).toEqual({ userId: "17841400000000000", username: "gojoline", token: "IGAA-secret-token", host: "instagram", refreshedAt: "2026-11-24T10:00:00.000Z", renewTriedAt: undefined });
     const view = await store.view();
     expect(view.facebook.connected).toBe(false);
     expect(view.instagram).toEqual({ connected: true, label: "@gojoline", source: "admin" });
@@ -66,7 +66,7 @@ describe("ConnectionStore", () => {
     await store.saveInstagramRenewFailure("IGAA-secret-token", "system", new Date("2026-12-01T09:00:00Z"));
     expect((await store.load()).instagram?.renewTriedAt).toBe("2026-12-01T09:00:00.000Z");
     expect(await store.saveInstagramToken("IGAA-secret-token", "IGAA-renewed", "system", new Date("2026-12-01T10:00:00Z"))).toBe(true);
-    expect((await store.load()).instagram).toEqual({ userId: "17841400000000000", username: "gojoline", token: "IGAA-renewed", refreshedAt: "2026-12-01T10:00:00.000Z", renewTriedAt: undefined });
+    expect((await store.load()).instagram).toEqual({ userId: "17841400000000000", username: "gojoline", token: "IGAA-renewed", host: "instagram", refreshedAt: "2026-12-01T10:00:00.000Z", renewTriedAt: undefined });
 
     // A renewal that started before a reconnect never overwrites the new account's token.
     await store.saveInstagram({ userId: "17841499999999999", username: "other", token: "IGAA-other" }, "admin");
@@ -82,9 +82,19 @@ describe("ConnectionStore", () => {
 
   it("Instagram login from the server's settings (INSTAGRAM_TOKEN), and no renewal for a token not saved here", async () => {
     const store = new ConnectionStore(new MemorySettingsStore(), SECRET, { INSTAGRAM_USER_ID: "1784", INSTAGRAM_TOKEN: "IGAA-env" });
-    expect((await store.load()).instagram).toEqual({ userId: "1784", username: undefined, token: "IGAA-env", refreshedAt: undefined, renewTriedAt: undefined });
+    expect((await store.load()).instagram).toEqual({ userId: "1784", username: undefined, token: "IGAA-env", host: "instagram", refreshedAt: undefined, renewTriedAt: undefined });
     expect((await store.view()).instagram).toMatchObject({ connected: true, source: "server" });
     expect(await store.saveInstagramToken("IGAA-env", "IGAA-new", "system")).toBe(false);
     expect((await store.load()).instagram?.token).toBe("IGAA-env");
+  });
+
+  it("a business (Unified login) token is kept with its host, and the host is guessed for server tokens", async () => {
+    const store = new ConnectionStore(new MemorySettingsStore(), SECRET);
+    await store.saveInstagram({ userId: "17841411111111111", username: "gojoline", token: "EAAB-system", host: "facebook" }, "admin");
+    expect((await store.load()).instagram).toMatchObject({ token: "EAAB-system", host: "facebook" });
+    expect((await store.view()).instagram.connected).toBe(true);
+    const env = new ConnectionStore(new MemorySettingsStore(), SECRET, { INSTAGRAM_USER_ID: "1784", INSTAGRAM_TOKEN: "EAAB-from-server" });
+    expect((await env.load()).instagram?.host).toBe("facebook");
+    expect(tokenHost("IGAA-x")).toBe("instagram");
   });
 });

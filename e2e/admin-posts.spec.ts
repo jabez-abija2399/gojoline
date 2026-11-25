@@ -52,6 +52,15 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await page.locator("#connect-instagram").getByRole("button", { name: "Check and save" }).click();
   await expect(page.locator("#connect-instagram")).toContainText("@gojoline");
   await expect(page.locator("#connect-instagram").getByRole("status")).toHaveText("Connected.");
+  // A business token (Unified login, new Meta apps): asks for the account ID when it can't find it.
+  await page.locator("#connect-instagram summary").click();
+  await page.locator("#connect-instagram").getByLabel("Instagram access token").fill("e2e-business-0123456789abcd");
+  await page.locator("#connect-instagram").getByRole("button", { name: "Check and save" }).click();
+  await expect(page.locator("#connect-instagram").getByRole("alert")).toContainText("Paste the Instagram account ID too");
+  await page.locator("#connect-instagram").getByLabel("Instagram access token").fill("e2e-business-0123456789abcd");
+  await page.locator("#connect-instagram").getByLabel(/Instagram account ID/).fill("17841499999999999");
+  await page.locator("#connect-instagram").getByRole("button", { name: "Check and save" }).click();
+  await expect(page.locator("#connect-instagram").getByRole("status")).toHaveText("Connected.");
   await expect(page.locator("#connect-facebook")).toContainText("Not connected");
   // Connect Facebook from Admin: a wrong token is refused with Meta's reason, the right one connects.
   const fb = page.locator("#connect-facebook");
