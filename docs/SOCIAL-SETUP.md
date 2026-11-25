@@ -30,14 +30,15 @@ Steps for a new app (Unified login):
    accounts → **Add** your Instagram. The Meta app must belong to the same portfolio (App settings →
    Basic → Business portfolio); otherwise the Unified login setup does not appear.
 3. developers.facebook.com → your app → **App roles**: add the Instagram account as an
-   **Instagram Tester** and accept the invite in the Instagram app.
+   **Instagram Tester** and accept the invite on instagram.com (Settings → Apps and websites →
+   Tester invites).
 4. Use case **Instagram API** → **API setup with Unified login** → create a configuration: access
    token **System-user access token**, business asset your **Instagram account**, permissions at
    least `instagram_basic` and `instagram_content_publish`. If a redirect URL is required, use
    `https://gojoline.afridea.et/`. Then **Generate access tokens** for the account.
 5. Admin → Posts → Connections → Instagram: paste the token, press **Check and save**. Gojoline finds
    the account from the token's grants (Meta's `debug_token`) or the Page linked to it; if it can't,
-   it asks for the **Instagram account ID** (Business settings → Accounts → Instagram accounts).
+   it asks for the **Instagram account ID** (business.facebook.com → Settings → Accounts → Instagram accounts).
    On the server instead: `INSTAGRAM_USER_ID` and `INSTAGRAM_TOKEN` (a token starting with `EAA` is
    used through graph.facebook.com and never renewed).
 

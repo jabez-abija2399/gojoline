@@ -17,7 +17,7 @@ export async function register() {
     // (the Telegram API puts the bot token in the path).
     beforeBreadcrumb(crumb) {
       if (crumb.category === "console") return null;
-      if (crumb.data?.url) crumb.data.url = scrubUrl(String(crumb.data.url));
+      if (crumb.data) dropQuery(crumb.data);
       return crumb;
     },
     beforeSend(event) {
@@ -31,7 +31,7 @@ export async function register() {
       }
       const nextjs = event.contexts?.nextjs as { request_path?: string } | undefined;
       if (nextjs?.request_path) nextjs.request_path = nextjs.request_path.split("?")[0];
-      for (const crumb of event.breadcrumbs ?? []) if (crumb.data?.url) crumb.data.url = scrubUrl(String(crumb.data.url));
+      for (const crumb of event.breadcrumbs ?? []) if (crumb.data) dropQuery(crumb.data);
       delete event.user;
       return event;
     },
@@ -43,3 +43,14 @@ export const onRequestError: Instrumentation.onRequestError = async (...args) =>
   const Sentry = await import("@sentry/nextjs");
   Sentry.captureRequestError(...args);
 };
+
+/**
+ * A breadcrumb's address without secrets: the URL scrubbed, and the separate query fields dropped
+ * (Meta's token endpoints take the token in the query; we never rely on the SDK's own masking).
+ */
+function dropQuery(data: Record<string, unknown>) {
+  if (data.url) data.url = scrubUrl(String(data.url));
+  delete data["http.query"];
+  delete data["url.query"];
+  delete data["http.fragment"];
+}

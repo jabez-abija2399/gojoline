@@ -45,6 +45,10 @@ function NetworkCard({ network: n, lang, t, view, appUrl, message }: { network: 
   const { Icon, cls } = BADGE[n];
   const name = t.channels[n];
   const waiting = n === "tiktok" && view.needsSignIn;
+  // Instagram: mark only the field at fault (the ID when it is missing, unknown or not a number).
+  const failed = !!message && !message.ok;
+  const idBad = failed && n === "instagram" && idProblem(message?.why ?? null);
+  const tokenBad = failed && n === "instagram" && !idBad;
   return (
     <li id={`connect-${n}`} className="flex min-w-0 scroll-mt-28 flex-col gap-3 rounded-xl border border-line bg-white p-4">
       <div className="flex items-center gap-3">
@@ -61,7 +65,7 @@ function NetworkCard({ network: n, lang, t, view, appUrl, message }: { network: 
       </div>
 
       {message && (
-        <p role={message.ok ? "status" : "alert"} className={`rounded-lg px-3 py-2 text-sm ${message.ok ? "bg-paper text-ink" : "bg-coral-soft text-destructive [overflow-wrap:anywhere]"}`}>
+        <p id={`${n}-message`} role={message.ok ? "status" : "alert"} className={`rounded-lg px-3 py-2 text-sm ${message.ok ? "bg-paper text-ink" : "bg-coral-soft text-destructive [overflow-wrap:anywhere]"}`}>
           {message.ok ? c.saved : message.why === "invalid" ? t.done.invalid : (c.errors as Record<string, string>)[message.why ?? ""] ?? c.failed}
         </p>
       )}
@@ -96,18 +100,19 @@ function NetworkCard({ network: n, lang, t, view, appUrl, message }: { network: 
               </>
             )}
             {n === "instagram" && (
-                <>
-                  <Field label={c.fields.igToken} name="token" type="password" describedBy={`${n}-private`} invalid={!!message && !message.ok} />
-                  <Field label={c.fields.igUserId} name="userId" placeholder="17841400000000000" inputMode="numeric" optional invalid={message?.why === "ig_id_needed"} />
-                </>
-              )}
+              <>
+                <Field label={c.fields.igToken} name="token" type="password" describedBy={`${tokenBad ? `${n}-message ` : ""}${n}-private`} invalid={tokenBad} />
+                <p id={`${n}-private`} className="-mt-1 text-xs text-ink-muted">{c.private}</p>
+                <Field label={c.fields.igUserId} name="userId" inputMode="numeric" pattern="\d{5,25}" optional describedBy={idBad ? `${n}-message` : undefined} invalid={idBad} />
+              </>
+            )}
             {n === "tiktok" && (
               <>
                 <Field label={c.fields.clientKey} name="clientKey" />
                 <Field label={c.fields.clientSecret} name="clientSecret" type="password" />
               </>
             )}
-            <p className="text-xs text-ink-muted">{c.private}</p>
+            {n !== "instagram" && <p className="text-xs text-ink-muted">{c.private}</p>}
             <PostSubmit working={c.checking} className={`${primary} w-fit`}>
               {n === "tiktok" ? c.saveTikTok : c.save}
             </PostSubmit>
@@ -134,11 +139,16 @@ function NetworkCard({ network: n, lang, t, view, appUrl, message }: { network: 
   );
 }
 
-function Field({ label, name, type = "text", placeholder, inputMode, describedBy, invalid, optional }: { label: string; name: string; type?: string; placeholder?: string; inputMode?: "numeric"; describedBy?: string; invalid?: boolean; optional?: boolean }) {
+function Field({ label, name, type = "text", placeholder, inputMode, pattern, describedBy, invalid, optional }: { label: string; name: string; type?: string; placeholder?: string; inputMode?: "numeric"; pattern?: string; describedBy?: string; invalid?: boolean; optional?: boolean }) {
   return (
     <label className="flex flex-col gap-1">
       <span className="text-sm font-medium">{label}</span>
-      <input name={name} type={type} placeholder={placeholder} inputMode={inputMode} required={!optional} autoComplete="off" spellCheck={false} aria-describedby={describedBy} aria-invalid={invalid || undefined} className={input} />
+      <input name={name} type={type} placeholder={placeholder} inputMode={inputMode} pattern={pattern} required={!optional} autoComplete="off" spellCheck={false} aria-describedby={describedBy} aria-invalid={invalid || undefined} className={input} />
     </label>
   );
+}
+
+/** Instagram: problems caused by the account ID (missing, unknown or not a number), not the token. */
+function idProblem(why: string | null) {
+  return why === "ig_id_needed" || why === "not_found" || why === "ig_id_format";
 }

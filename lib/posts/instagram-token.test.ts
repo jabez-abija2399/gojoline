@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { GraphVerifier, IG_ID_NEEDED } from "./verify";
+import { GraphVerifier, IG_ID_NEEDED, IG_TOKEN_EXPIRES } from "./verify";
 import { needsRenewal, renewInstagramToken } from "./instagram-token";
 
 const now = Date.parse("2026-11-24T12:00:00Z");
@@ -69,6 +69,40 @@ describe("finding the Instagram account from a token", () => {
     const m = meta({ "debug_token": { data: {} }, "graph.facebook.com/v23.0/me?fields=id": { id: "sys" }, "17841433333333333?fields=username": { username: "gojoline" } });
     await expect(new GraphVerifier("v23.0", m.f).instagramToken("EAAB-system")).rejects.toThrow(IG_ID_NEEDED);
     expect(await new GraphVerifier("v23.0", m.f).instagramToken("EAAB-system", "17841433333333333")).toEqual({ userId: "17841433333333333", username: "gojoline", host: "facebook" });
+  });
+
+  it("tries at most 5 granted accounts, and stops at once when the token itself is refused", async () => {
+    const ids = Array.from({ length: 30 }, (_, i) => String(17841400000000100 + i));
+    const unreadable = meta({ "debug_token": { data: { is_valid: true, granular_scopes: [{ scope: "instagram_basic", target_ids: ids }] } } });
+    await expect(new GraphVerifier("v23.0", unreadable.f).instagramToken("EAAB-system")).rejects.toThrow("Invalid OAuth access token.");
+    // The token error from the first lookup ends the search.
+    expect(unreadable.asked.filter((u) => u.includes("?fields=username"))).toHaveLength(1);
+    let lookups = 0;
+    const notFound = (async (url: string | URL) => {
+      const u = String(url);
+      if (u.includes("debug_token")) return new Response(JSON.stringify({ data: { is_valid: true, granular_scopes: [{ scope: "instagram_basic", target_ids: ids }] } }));
+      if (u.includes("?fields=username")) lookups++;
+      return new Response(JSON.stringify({ error: { message: "Unsupported get request." } }), { status: 400 });
+    }) as typeof fetch;
+    await expect(new GraphVerifier("v23.0", notFound).instagramToken("EAAB-system")).rejects.toThrow(IG_ID_NEEDED);
+    expect(lookups).toBe(5);
+  });
+
+  it("an Instagram-login token never touches Facebook's side", async () => {
+    const m = meta({});
+    await expect(new GraphVerifier("v23.0", m.f).instagramToken("IGAA-expired")).rejects.toThrow("Invalid OAuth access token.");
+    expect(m.asked).toEqual(["https://graph.instagram.com/v23.0/me?fields=user_id,username"]);
+  });
+
+  it("refuses a Facebook-side token that expires (only lasting business tokens are kept), and tries posting accounts first", async () => {
+    const expiring = meta({ "debug_token": { data: { is_valid: true, expires_at: 1_800_000_000, granular_scopes: [{ scope: "instagram_content_publish", target_ids: ["17841455555555555"] }] } } });
+    await expect(new GraphVerifier("v23.0", expiring.f).instagramToken("EAAB-user")).rejects.toThrow(IG_TOKEN_EXPIRES);
+    await expect(new GraphVerifier("v23.0", expiring.f).instagramToken("EAAB-user", "17841455555555555")).rejects.toThrow(IG_TOKEN_EXPIRES);
+    const order = meta({
+      "debug_token": { data: { is_valid: true, expires_at: 0, granular_scopes: [{ scope: "instagram_basic", target_ids: ["17841466666666666"] }, { scope: "instagram_content_publish", target_ids: ["17841477777777777"] }] } },
+      "?fields=username": { username: "poster" },
+    });
+    expect((await new GraphVerifier("v23.0", order.f).instagramToken("EAAB-system")).userId).toBe("17841477777777777");
   });
 
   it("a token that works nowhere gives Meta's reason", async () => {
