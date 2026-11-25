@@ -48,43 +48,69 @@ export class GraphVerifier implements ConnectionVerifier {
     // One deadline for the whole check (8 s per call): the admin never waits more than ~25 s.
     const deadline = AbortSignal.timeout(25_000);
     const get = (path: string, host?: string) => this.get(path, token, host, deadline);
+    // The first letters only hint at the token's kind (Meta's system-user tokens don't always start
+    // with "EAA"), so both sides are tried, the hinted one first.
+    const hint = tokenHost(token);
 
-    // Instagram-login tokens ("IG…", older apps) name their own professional account.
-    if (tokenHost(token) === "instagram") {
+    // Facebook's side (Unified login / business, or a Page token). The token's own description says
+    // whether it expires and which Instagram accounts it was granted.
+    const viaFacebook = async (): Promise<InstagramAccount> => {
+      const [dbg, pages] = await Promise.allSettled([get(`debug_token?input_token=${encodeURIComponent(token)}`), userId ? Promise.resolve<Record<string, unknown>>({}) : get("me/accounts?fields=instagram_business_account&limit=25")]);
+      const info = dbg.status === "fulfilled" ? (dbg.value.data as { is_valid?: boolean; expires_at?: number; granular_scopes?: { scope?: string; target_ids?: string[] }[] } | undefined) : undefined;
+      // Posting stops when a token runs out and these are never renewed: only a lasting token is kept.
+      if (info?.is_valid !== false && typeof info?.expires_at === "number" && info.expires_at > 0) throw new Error(IG_TOKEN_EXPIRES);
+      if (userId) {
+        const d = await get(`${encodeURIComponent(userId)}?fields=username`);
+        return { userId, username: String(d.username ?? userId), host: "facebook" };
+      }
+      // Accounts granted posting first, then reading; then any Page's linked account.
+      const granted = (scope: string) => (info?.granular_scopes ?? []).filter((g) => g.scope === scope).flatMap((g) => g.target_ids ?? []);
+      const found = [...granted("instagram_content_publish"), ...granted("instagram_basic")];
+      if (pages.status === "fulfilled") for (const p of (pages.value.data as { instagram_business_account?: { id?: string } }[] | undefined) ?? []) if (p.instagram_business_account?.id) found.push(p.instagram_business_account.id);
+      let first: Error | null = null;
+      for (const id of [...new Set(found)].filter((x) => IG_ID.test(x)).slice(0, 5)) {
+        try {
+          const d = await get(`${id}?fields=username`);
+          return { userId: id, username: String(d.username ?? id), host: "facebook" };
+        } catch (e) {
+          if (fatal(e as Error)) throw e;
+          first ??= e as Error;
+        }
+      }
+      // Nothing readable: if the token works here, ask for the account's ID; else give Meta's reason.
+      const valid = info ? info.is_valid !== false : await get("me?fields=id").then(() => true, (e: Error) => ((first ??= e), false));
+      if (valid) throw new Error(IG_ID_NEEDED);
+      throw first ?? (dbg.status === "rejected" ? (dbg.reason as Error) : new Error("Invalid OAuth access token."));
+    };
+
+    // Instagram's side (Instagram login, older apps): the token names its own account.
+    const viaInstagram = async (): Promise<InstagramAccount> => {
+      if (userId) {
+        const d = await get(`${encodeURIComponent(userId)}?fields=username`, "graph.instagram.com");
+        return { userId, username: String(d.username ?? userId), host: "instagram" };
+      }
       const d = await get("me?fields=user_id,username", "graph.instagram.com");
       const id = String(d.user_id ?? "");
       if (!IG_ID.test(id)) throw new Error("This token isn't for an Instagram professional account.");
       return { userId: id, username: String(d.username ?? id), host: "instagram" };
-    }
-    // Facebook's side ("EAA…": Unified login / business, or a Page token). The token's own description
-    // tells whether it expires and which Instagram accounts it was granted; any Page's linked account too.
-    const [dbg, pages] = await Promise.allSettled([get(`debug_token?input_token=${encodeURIComponent(token)}`), userId ? Promise.resolve<Record<string, unknown>>({}) : get("me/accounts?fields=instagram_business_account&limit=25")]);
-    const info = dbg.status === "fulfilled" ? (dbg.value.data as { is_valid?: boolean; expires_at?: number; granular_scopes?: { scope?: string; target_ids?: string[] }[] } | undefined) : undefined;
-    // Posting stops when a token runs out and these are never renewed: only a lasting token is kept.
-    if (info?.is_valid !== false && typeof info?.expires_at === "number" && info.expires_at > 0) throw new Error(IG_TOKEN_EXPIRES);
-    if (userId) {
-      const d = await get(`${encodeURIComponent(userId)}?fields=username`);
-      return { userId, username: String(d.username ?? userId), host: "facebook" };
-    }
-    // Accounts granted posting first, then those granted reading.
-    const granted = (scope: string) => (info?.granular_scopes ?? []).filter((g) => g.scope === scope).flatMap((g) => g.target_ids ?? []);
-    const found = [...granted("instagram_content_publish"), ...granted("instagram_basic")];
-    if (pages.status === "fulfilled") for (const p of (pages.value.data as { instagram_business_account?: { id?: string } }[] | undefined) ?? []) if (p.instagram_business_account?.id) found.push(p.instagram_business_account.id);
-    let first: Error | null = null;
-    // Any granted account will do: try at most 5, and stop when the token itself is refused.
-    for (const id of [...new Set(found)].filter((x) => IG_ID.test(x)).slice(0, 5)) {
+    };
+
+    const [firstTry, secondTry] = hint === "instagram" ? [viaInstagram, viaFacebook] : [viaFacebook, viaInstagram];
+    try {
+      return await firstTry();
+    } catch (e) {
+      const err = e as Error;
+      // Answers that settle it: a lasting-token problem, a needed ID, or the time ran out.
+      if (err.message === IG_TOKEN_EXPIRES || err.message === IG_ID_NEEDED || err.name === "TimeoutError" || deadline.aborted) throw err;
       try {
-        const d = await get(`${id}?fields=username`);
-        return { userId: id, username: String(d.username ?? id), host: "facebook" };
-      } catch (e) {
-        if (fatal(e as Error)) throw e;
-        first ??= e as Error;
+        return await secondTry();
+      } catch (e2) {
+        const err2 = e2 as Error;
+        // The other side recognised the token (it needs an ID or is the wrong kind): that answer helps more.
+        if (err2.message === IG_TOKEN_EXPIRES || err2.message === IG_ID_NEEDED) throw err2;
+        throw err;
       }
     }
-    // Nothing readable: if the token works, ask for the account's ID; else give Meta's reason.
-    const valid = info ? info.is_valid !== false : await get("me?fields=id").then(() => true, (e: Error) => ((first ??= e), false));
-    if (valid) throw new Error(IG_ID_NEEDED);
-    throw first ?? (dbg.status === "rejected" ? (dbg.reason as Error) : new Error("Invalid OAuth access token."));
   }
 }
 

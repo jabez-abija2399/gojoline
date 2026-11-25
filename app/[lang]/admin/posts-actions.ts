@@ -158,6 +158,8 @@ export async function saveConnection(form: FormData) {
   }
   revalidatePath(`/${l}/admin`);
   // Only a fixed reason code goes back in the address (the page words it): never the network's text.
+  // The network's own reason, server-side only (it never contains the token), for diagnosing.
+  if (problem) console.warn(`connect ${v.network} refused: ${String(problem).slice(0, 200)}`);
   if (problem) return back(l, "failed", `&cn=${v.network}&why=${connectProblem(v.network, String(problem), v.network === "instagram" && !!v.userId)}${anchor}`);
   back(l, "ok", `&cn=${v.network}&connected=1${anchor}`);
 }
