@@ -390,10 +390,12 @@ export async function postToTikTok(form: FormData) {
     }
   } catch (e) {
     console.warn(`tiktok direct post failed: ${String((e as Error).message).replace(/[\r\n]+/g, " ").slice(0, 200)}`);
+    const reason = String((e as Error).message);
     // A failure never replaces an earlier success.
     const now = await deps.store.get(v.id).catch(() => null);
     if (!now?.results.tiktok?.ok) await deps.store.saveResult(v.id, "tiktok", { ok: false, at: new Date().toISOString(), error: String((e as Error).message).slice(0, 200) }).catch(() => null);
-    why = "failed";
+    // Reasons the admin can fix, from TikTok's error codes.
+    why = /unaudited_client_can_only_post_to_private_accounts|private_account/i.test(reason) ? "private_account" : /spam_risk|too_many|rate_limit/i.test(reason) ? "too_many" : /scope_not_authorized|scope/i.test(reason) ? "scope" : "failed";
   } finally {
     await deps.lock.release(`tiktok:${v.id}`, token);
   }

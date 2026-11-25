@@ -38,6 +38,7 @@ describe("TikTok Direct Post", () => {
     const f = fake([{ status: 403, json: { error: { code: "unaudited_client_can_only_post_to_private_accounts", message: "Unaudited client can only post to private accounts" } } }]);
     const err = await new TikTokDirectClient(async () => "SECRET-TOKEN", f.impl).post({ video: Buffer.from("x"), title: "t", privacy: "PUBLIC_TO_EVERYONE", allowComment: false, allowDuet: false, allowStitch: false, yourBrand: false, brandedContent: false }).catch((e: Error) => e.message);
     expect(err).toContain("Unaudited client");
+    expect(err).toContain("unaudited_client_can_only_post_to_private_accounts");
     expect(err).not.toContain("SECRET-TOKEN");
   });
 

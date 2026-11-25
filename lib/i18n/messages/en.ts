@@ -997,6 +997,9 @@ export const en = {
         cancel: "Cancel",
         sent: "Sent to TikTok. It can take a few minutes to appear on your profile.",
         errors: {
+          private_account: "Until TikTok audits Gojoline's app, TikTok only accepts posts to a private account. In the TikTok app: Settings and privacy → Privacy → turn on Private account, then post again.",
+          too_many: "TikTok says this account has posted too much for now. Try again later.",
+          scope: "TikTok hasn't allowed direct posting for this connection. In Connections, sign in with TikTok again and allow every permission.",
           already: "This video is already on TikTok, so it wasn't posted again.",
           too_long: "This video is longer than your TikTok account allows.",
           not_connected: "Connect TikTok first in Connections. If you connected it before 25 November, sign in with TikTok again so Gojoline may post directly.",
