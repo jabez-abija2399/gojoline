@@ -54,7 +54,7 @@ export class FacebookPagePublisher implements ChannelPublisher {
   constructor(
     private readonly pageId: string,
     private readonly token: string,
-    private readonly version = "v23.0",
+    private readonly version = "v27.0",
     private readonly fetchImpl: Fetch = fetch,
   ) {}
   get label() {
@@ -86,7 +86,7 @@ export class InstagramPublisher implements ChannelPublisher {
   constructor(
     private readonly userId: string,
     private readonly token: string,
-    private readonly version = "v23.0",
+    private readonly version = "v27.0",
     private readonly fetchImpl: Fetch = fetch,
     private readonly wait = (ms: number) => new Promise((r) => setTimeout(r, ms)),
     private readonly host: "graph.facebook.com" | "graph.instagram.com" = "graph.facebook.com",

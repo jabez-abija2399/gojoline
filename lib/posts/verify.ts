@@ -26,7 +26,7 @@ const IG_ID = /^\d{5,25}$/;
 
 export class GraphVerifier implements ConnectionVerifier {
   constructor(
-    private readonly version = "v23.0",
+    private readonly version = "v27.0",
     private readonly fetchImpl: typeof fetch = fetch,
   ) {}
   private async get(path: string, token: string, host = "graph.facebook.com", deadline?: AbortSignal): Promise<Record<string, unknown>> {

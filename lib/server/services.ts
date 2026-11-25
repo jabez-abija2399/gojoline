@@ -350,7 +350,7 @@ function buildPublishers(r: Resolved, svc: Services, env: Env, connections: Conn
   if (svc.telegram && r.telegram) out.telegram = new TelegramPublisher(svc.telegram.client, r.telegram.channelId);
   // Tests and dev never post to real networks.
   if (isE2E(env)) return out;
-  const version = env.META_GRAPH_VERSION || "v23.0";
+  const version = env.META_GRAPH_VERSION || "v27.0";
   if (r.facebook) out.facebook = new FacebookPagePublisher(r.facebook.pageId, r.facebook.token, version);
   // Instagram login (its own token, no Facebook Page) first; else through the Page.
   if (r.instagram?.token) out.instagram = new InstagramPublisher(r.instagram.userId, r.instagram.token, version, fetch, undefined, r.instagram.host === "facebook" ? "graph.facebook.com" : "graph.instagram.com");
@@ -405,7 +405,7 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
     publishers: async () => buildPublishers(await connections.load(), svc, env, connections),
     maintain: () => renewInstagram(connections, env),
     connections,
-    verify: isE2E(env) ? new FakeVerifier() : new GraphVerifier(env.META_GRAPH_VERSION || "v23.0"),
+    verify: isE2E(env) ? new FakeVerifier() : new GraphVerifier(env.META_GRAPH_VERSION || "v27.0"),
     mediaUrl: (id) => (env.CRON_SECRET ? signedMediaUrl((env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""), env.CRON_SECRET, id) : null),
     appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     context: async () => ({
