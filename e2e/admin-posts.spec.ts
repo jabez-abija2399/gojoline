@@ -19,8 +19,8 @@ test("admin plans a week of posts, edits one, posts it to Telegram, and has a po
   await signIn(page, { contact: `admin-e2e-posts-${info.project.name}@example.com` });
   await page.goto("/en/admin?tab=posts");
   await expect(page.getByRole("heading", { name: "Posts", level: 1 })).toBeVisible();
-  // One view at a time: To review, Scheduled, Videos, Sent, Connections.
-  await expect(page.getByRole("navigation", { name: "Posts" }).getByRole("link")).toHaveCount(5);
+  // One view at a time: To review, Scheduled, Videos, Sent, Telegram start, Connections.
+  await expect(page.getByRole("navigation", { name: "Posts" }).getByRole("link")).toHaveCount(6);
   await page.getByRole("navigation", { name: "Posts" }).getByRole("link", { name: /^Connections/ }).click();
   await expect(page).toHaveURL(/view=connections/);
   const tgCard = page.locator("#connect-telegram");

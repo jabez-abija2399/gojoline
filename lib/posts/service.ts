@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import sharp from "sharp";
+import type { KitStore } from "./kit-store";
 import type { CaptionWriter } from "./captions";
 import { addDays, planDays, postFacts, postText, type PlanContext } from "./plan";
 import type { PostStore } from "./store";
@@ -37,6 +38,8 @@ export interface PostDeps {
   mediaUrl(postId: string): string | null;
   /** Gojoline's own accounts, connected from Admin (tokens sealed); null in unit tests. */
   connections?: ConnectionStore;
+  /** Which Telegram starter posts are done (Admin → Posts → Telegram start); null in unit tests. */
+  kit?: KitStore;
   /** Checks a Facebook or Instagram connection before it is saved. */
   verify?: ConnectionVerifier;
   appUrl: string;

@@ -8,6 +8,18 @@ export interface TelegramClient {
    * message id, or throws with Telegram's reason.
    */
   post(chatId: string, input: { html: string; media?: { kind: "photo" | "video"; data: Buffer; name: string } | null }): Promise<string>;
+  /** Posts 2–10 photos as one album, the caption under the first. Returns the first message id. */
+  album(chatId: string, input: { html: string; photos: { data: Buffer; name: string }[] }): Promise<string>;
+  /** Posts a quiz poll (one right answer, shown with its explanation). Returns the message id. */
+  quiz(chatId: string, input: Quiz): Promise<string>;
+}
+
+export interface Quiz {
+  question: string;
+  options: string[];
+  /** Index of the right option. */
+  correct: number;
+  explanation: string;
 }
 
 export class BotApiClient implements TelegramClient {
@@ -64,6 +76,36 @@ export class BotApiClient implements TelegramClient {
     return send("sendMessage", { chat_id: chatId, text: input.html, parse_mode: "HTML" });
   }
 
+  private async send(method: string, body: FormData | object): Promise<string> {
+    const res = await this.fetchImpl(`https://api.telegram.org/bot${this.token}/${method}`, {
+      method: "POST",
+      ...(body instanceof FormData ? { body } : { headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
+      signal: AbortSignal.timeout(120_000),
+    });
+    const data = (await res.json().catch(() => null)) as { ok?: boolean; result?: { message_id?: number } | { message_id?: number }[]; description?: string } | null;
+    // Telegram's reason only, never the URL (it contains the token).
+    if (!data?.ok) throw new Error(`telegram ${method}: ${data?.description ?? res.status}`);
+    const r = Array.isArray(data.result) ? data.result[0] : data.result;
+    return String(r?.message_id ?? "");
+  }
+
+  async album(chatId: string, input: { html: string; photos: { data: Buffer; name: string }[] }) {
+    const photos = input.photos.slice(0, 10);
+    const form = new FormData();
+    form.set("chat_id", chatId);
+    // A caption may be 1024 characters; a longer one follows as its own message.
+    const captioned = input.html.length <= 1024;
+    form.set("media", JSON.stringify(photos.map((_, i) => ({ type: "photo", media: `attach://p${i}`, ...(i === 0 && captioned ? { caption: input.html, parse_mode: "HTML" } : {}) }))));
+    photos.forEach((p, i) => form.set(`p${i}`, new Blob([new Uint8Array(p.data)]), p.name));
+    const id = await this.send("sendMediaGroup", form);
+    if (!captioned) await this.send("sendMessage", { chat_id: chatId, text: input.html, parse_mode: "HTML" });
+    return id;
+  }
+
+  async quiz(chatId: string, q: Quiz) {
+    return this.send("sendPoll", { chat_id: chatId, question: q.question, options: q.options.map((text) => ({ text })), type: "quiz", correct_option_id: q.correct, explanation: q.explanation, is_anonymous: true });
+  }
+
   async downloadFile(fileId: string, maxBytes: number) {
     const file = await this.call<{ file_path?: string; file_size?: number }>("getFile", { file_id: fileId });
     if (!file?.file_path || (file.file_size ?? 0) > maxBytes || !/^[\w/.-]+$/.test(file.file_path)) return null;
@@ -80,6 +122,14 @@ export class MemoryTelegramClient implements TelegramClient {
   readonly posts: { chatId: string; html: string; media: { kind: string; name: string; bytes: number } | null }[] = [];
   async post(chatId: string, input: { html: string; media?: { kind: "photo" | "video"; data: Buffer; name: string } | null }) {
     this.posts.push({ chatId, html: input.html, media: input.media ? { kind: input.media.kind, name: input.media.name, bytes: input.media.data.length } : null });
+    return String(this.posts.length);
+  }
+  async album(chatId: string, input: { html: string; photos: { data: Buffer; name: string }[] }) {
+    this.posts.push({ chatId, html: input.html, media: { kind: `album:${input.photos.length}`, name: input.photos[0]?.name ?? "", bytes: input.photos.reduce((a, p) => a + p.data.length, 0) } });
+    return String(this.posts.length);
+  }
+  async quiz(chatId: string, q: Quiz) {
+    this.posts.push({ chatId, html: q.question, media: { kind: "quiz", name: q.options[q.correct] ?? "", bytes: 0 } });
     return String(this.posts.length);
   }
   async sendMessage(chatId: string, html: string) {
