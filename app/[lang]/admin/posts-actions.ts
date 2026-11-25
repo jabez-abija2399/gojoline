@@ -11,6 +11,7 @@ import { services } from "@/lib/server/services";
 import { addisNow, FILMABLE, makeVideo, planAhead, publishPost, rewriteCaption } from "@/lib/posts/service";
 import { cleanHashtags } from "@/lib/posts/captions";
 import { CHANNELS } from "@/lib/posts/types";
+import { IG_ID_NEEDED, IG_TOKEN_EXPIRES } from "@/lib/posts/verify";
 
 type Done = "ok" | "invalid" | "failed" | "not_found";
 const lang = (form: FormData) => (form.get("lang") === "am" ? "am" : "en");
@@ -114,8 +115,8 @@ const connectInput = z.discriminatedUnion("network", [
   // A public channel name (@name) or a private channel's numeric id (-100…).
   z.object({ network: z.literal("telegram"), channelId: z.string().trim().regex(/^(@[A-Za-z0-9_]{5,32}|-100\d{5,15})$/) }),
   z.object({ network: z.literal("facebook"), pageId: z.string().trim().regex(/^\d{5,25}$/), token: z.string().trim().min(20).max(1000) }),
-  // Instagram login: the token alone (the account is found from it); no Facebook Page.
-  z.object({ network: z.literal("instagram"), token: z.string().trim().min(20).max(1000) }),
+  // Instagram: a token (Instagram login or Unified login); the account is found from it, or given.
+  z.object({ network: z.literal("instagram"), token: z.string().trim().min(20).max(1000), userId: z.union([z.literal(""), z.string().trim().regex(/^\d{5,25}$/)]).optional() }),
   z.object({ network: z.literal("tiktok"), clientKey: z.string().trim().min(5).max(100), clientSecret: z.string().trim().min(10).max(200) }),
 ]);
 
@@ -126,7 +127,11 @@ export async function saveConnection(form: FormData) {
   const parsed = connectInput.safeParse(Object.fromEntries(form));
   const network = String(form.get("network") ?? "");
   const anchor = `#connect-${network.replace(/[^a-z]/g, "")}`;
-  if (!parsed.success) return back(l, "invalid", `&cn=${network}${anchor}`);
+  if (!parsed.success) {
+    // A mistyped Instagram account ID gets its own message (and only that field is marked).
+    const onlyId = network === "instagram" && parsed.error.issues.every((i) => i.path[0] === "userId");
+    return onlyId ? back(l, "failed", `&cn=instagram&why=ig_id_format${anchor}`) : back(l, "invalid", `&cn=${network}${anchor}`);
+  }
   const deps = services().posts;
   const connections = deps.connections;
   if (!connections) return back(l, "failed", anchor);
@@ -142,8 +147,8 @@ export async function saveConnection(form: FormData) {
       const name = await deps.verify!.facebook(v.pageId, v.token).catch((e: Error) => void (problem = e.message));
       if (!problem) await connections.saveFacebook({ pageId: v.pageId, token: v.token, name: name ?? undefined }, me.id);
     } else if (v.network === "instagram") {
-      const who = await deps.verify!.instagramLogin(v.token).catch((e: Error) => void (problem = e.message));
-      if (!problem && who) await connections.saveInstagram({ userId: who.userId, username: who.username, token: v.token }, me.id);
+      const who = await deps.verify!.instagramToken(v.token, v.userId || undefined).catch((e: Error) => void (problem = e.message));
+      if (!problem && who) await connections.saveInstagram({ userId: who.userId, username: who.username, token: v.token, host: who.host }, me.id);
     } else {
       await connections.saveTikTokApp({ clientKey: v.clientKey, clientSecret: v.clientSecret }, me.id);
     }
@@ -153,7 +158,7 @@ export async function saveConnection(form: FormData) {
   }
   revalidatePath(`/${l}/admin`);
   // Only a fixed reason code goes back in the address (the page words it): never the network's text.
-  if (problem) return back(l, "failed", `&cn=${v.network}&why=${connectProblem(v.network, String(problem))}${anchor}`);
+  if (problem) return back(l, "failed", `&cn=${v.network}&why=${connectProblem(v.network, String(problem), v.network === "instagram" && !!v.userId)}${anchor}`);
   back(l, "ok", `&cn=${v.network}&connected=1${anchor}`);
 }
 
@@ -171,10 +176,12 @@ export async function disconnectNetwork(form: FormData) {
 }
 
 /** The reasons a connection can fail, as codes the page words in its own language. */
-export type ConnectProblem = "not_business" | "ig_permission" | "bot" | "chat_not_found" | "bot_not_admin" | "token" | "permission" | "not_found" | "other";
+export type ConnectProblem = "not_business" | "ig_permission" | "ig_id_needed" | "ig_id_format" | "ig_expires" | "bot" | "chat_not_found" | "bot_not_admin" | "token" | "permission" | "not_found" | "other";
 
-function connectProblem(network: string, message: string): ConnectProblem {
+function connectProblem(network: string, message: string, gaveId = false): ConnectProblem {
   if (message === "bot") return message;
+  if (message === IG_ID_NEEDED) return "ig_id_needed";
+  if (message === IG_TOKEN_EXPIRES) return "ig_expires";
   if (/professional account/i.test(message)) return "not_business";
   if (network === "telegram") {
     if (/chat not found/i.test(message)) return "chat_not_found";
@@ -183,8 +190,8 @@ function connectProblem(network: string, message: string): ConnectProblem {
   }
   if (/oauth|access token|session|expired|invalid token/i.test(message)) return "token";
   if (/permission|does not have|requires|not authorized/i.test(message)) return network === "instagram" ? "ig_permission" : "permission";
-  // The Instagram form has no ID to get wrong: an unknown account means the token is the problem.
-  if (/does not exist|unsupported get request|cannot be loaded|not found/i.test(message)) return network === "instagram" ? "token" : "not_found";
+  // An unknown account: the ID typed, else (no ID on the Instagram form) the token.
+  if (/does not exist|unsupported get request|cannot be loaded|not found/i.test(message)) return network === "instagram" && !gaveId ? "token" : "not_found";
   return "other";
 }
 

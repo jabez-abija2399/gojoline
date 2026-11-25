@@ -13,25 +13,37 @@ on the server (never into the code); the app picks it up on the next deploy (or 
 3. Optional: the Monday summary to you. Send any message to `@gojoline_bot`, then ask us for your
    chat id, and set `TELEGRAM_ADMIN_CHAT_ID=<that number>`.
 
-## 2. Instagram on its own (about 15 minutes, no Facebook Page)
+## 2. Instagram on its own (about 20 minutes, no Facebook Page)
 
-Instagram login (2026-11-24): Gojoline posts photos and Reels with Instagram's own token, so no
-Facebook Page is needed.
+Gojoline takes either kind of Instagram token and works out which it is:
+
+- **Unified login** (all Meta apps made since about late October 2026): a system-user token of
+  your business portfolio. It never expires and posts through graph.facebook.com.
+- **Instagram login** (older apps only): an Instagram token that lasts 60 days; Gojoline renews it
+  by itself once it is a week old, at the start of a posting run.
+
+Steps for a new app (Unified login):
 
 1. In the Instagram app, make the account **Business** (or Creator): Settings → Account type and
    tools → Switch to professional account.
-2. Go to developers.facebook.com → **My Apps** → **Create app** → type **Business**. Add the
-   product **Instagram** → **API setup with Instagram login**. The app can stay in Development mode:
-   it only posts to your own account.
-3. Under **Generate access tokens**, press **Add account**, sign in to Instagram, then **Generate
-   token**. (Meta's dashboard changes: newer apps start from a use case such as "Manage messaging &
-   content on Instagram". If "Add account" asks for a tester, add the account under App roles →
-   Instagram testers and accept the invite in the Instagram app, then try again.) The token includes `instagram_business_basic` and `instagram_business_content_publish`.
-4. In Admin → Posts → Connections → Instagram, paste the token and press **Check and save**. We find
-   the account from the token, keep the token encrypted, and renew it by ourselves once it is a week
-   old, at the start of a posting run (each token lasts 60 days; renewing gives a fresh 60). On the server instead:
-   `INSTAGRAM_USER_ID=<account id>` and `INSTAGRAM_TOKEN=<token>`; a server token is not renewed,
-   so make a new one every 60 days or save it in Admin.
+2. On business.facebook.com, open (or create) your **business portfolio** → Accounts → Instagram
+   accounts → **Add** your Instagram. The Meta app must belong to the same portfolio (App settings →
+   Basic → Business portfolio); otherwise the Unified login setup does not appear.
+3. developers.facebook.com → your app → **App roles**: add the Instagram account as an
+   **Instagram Tester** and accept the invite on instagram.com (Settings → Apps and websites →
+   Tester invites).
+4. Use case **Instagram API** → **API setup with Unified login** → create a configuration: access
+   token **System-user access token**, business asset your **Instagram account**, permissions at
+   least `instagram_basic` and `instagram_content_publish`. If a redirect URL is required, use
+   `https://gojoline.afridea.et/`. Then **Generate access tokens** for the account.
+5. Admin → Posts → Connections → Instagram: paste the token, press **Check and save**. Gojoline finds
+   the account from the token's grants (Meta's `debug_token`) or the Page linked to it; if it can't,
+   it asks for the **Instagram account ID** (business.facebook.com → Settings → Accounts → Instagram accounts).
+   On the server instead: `INSTAGRAM_USER_ID` and `INSTAGRAM_TOKEN` (a token starting with `EAA` is
+   used through graph.facebook.com and never renewed).
+
+The app can stay in Development mode: it posts only to the portfolio's own account (Meta's App
+Review is for apps that act for other people's accounts).
 
 Instagram takes only posts with a picture or video (Reels for videos); text-only days go to the
 other networks. Instagram fetches the media from a link that works for one hour.
