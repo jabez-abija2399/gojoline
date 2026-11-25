@@ -217,10 +217,15 @@ test("Post to TikTok: TikTok's required screen, then a direct post", async ({ pa
   await page.goto("/en/admin?tab=posts&view=videos");
   const cards = page.locator("li[id^=video-]");
   await expect(cards.first()).toBeVisible();
-  // A card needs a video before it can go to TikTok.
-  const withVideo = cards.filter({ has: page.locator("video") });
-  if ((await withVideo.count()) === 0) await cards.filter({ hasText: "No video yet" }).first().getByRole("button", { name: /^Make video/ }).click();
-  await page.locator("li[id^=video-]").filter({ has: page.locator("video") }).first().getByRole("link", { name: /^Post to TikTok/ }).click();
+  // Each run makes its own video on a late day (the phone and desktop runs share the test store,
+  // and the first test edits the week's first post): the last or second-to-last day without one.
+  const fresh = cards.filter({ hasText: "No video yet" });
+  const n = await fresh.count();
+  const card = fresh.nth(info.project.name === "mobile" ? n - 1 : Math.max(0, n - 2));
+  const cardId = (await card.getAttribute("id"))!;
+  await card.getByRole("button", { name: /^Make video/ }).click();
+  await expect(page.locator(`#${cardId} video`)).toHaveCount(1);
+  await page.locator(`#${cardId}`).getByRole("link", { name: /^Post to TikTok/ }).click();
 
   const panel = page.locator("#tiktok-post");
   await expect(panel.getByRole("heading", { name: /^Post to TikTok:/ })).toBeVisible();
@@ -236,14 +241,22 @@ test("Post to TikTok: TikTok's required screen, then a direct post", async ({ pa
   // Disclosure needs a kind; a paid partnership can't be "Only me".
   await panel.getByLabel("This video promotes a brand, product or service").check();
   await expect(post).toBeDisabled();
-  await panel.getByLabel(/^Branded content/).check();
+  // With "Only me", a paid partnership can't be chosen (greyed out, with the reason).
+  await expect(panel.getByLabel(/^Branded content/)).toBeDisabled();
   await expect(panel.getByText("Branded content can't be private. Choose another audience.")).toBeVisible();
-  await expect(panel.getByRole("link", { name: "Branded Content Policy" })).toBeVisible();
+  await panel.getByLabel("Who can watch this video").selectOption("PUBLIC_TO_EVERYONE");
+  await panel.getByLabel(/^Branded content/).check();
+  await expect(panel.getByRole("link", { name: /Branded Content Policy/ })).toBeVisible();
   await panel.getByLabel(/^Branded content/).uncheck();
+  await panel.getByLabel("Who can watch this video").selectOption("SELF_ONLY");
   await panel.getByLabel(/^Your brand/).check();
-  await expect(panel.getByRole("link", { name: "Music Usage Confirmation" })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /Music Usage Confirmation/ })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
   await post.click();
-  await expect(page.locator("#tiktok-post").getByRole("status")).toHaveText("Posted. It can take a few minutes to appear on your TikTok profile.");
+  await expect(page.locator("#tiktok-post").getByRole("status")).toHaveText("Sent to TikTok. It can take a few minutes to appear on your profile.");
+  // A repeated form never posts the same video twice.
+  await page.goto(page.url().replace(/&tt=sent/, ""));
+  await expect(page.locator("#tiktok-post")).toContainText("This video is already on TikTok.");
+  await expect(page.locator("#tiktok-post").getByRole("button", { name: "Post to TikTok" })).toHaveCount(0);
 });

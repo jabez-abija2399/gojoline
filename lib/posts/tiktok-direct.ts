@@ -62,18 +62,33 @@ export async function tiktokAccessToken(clientKey: string, clientSecret: string,
 
 type Envelope<T> = { data?: T; error?: { code?: string; message?: string } } | null;
 
+/** TikTok's limit for a video uploaded in one piece. */
+export const TIKTOK_SINGLE_UPLOAD_MAX = 64 * 1024 * 1024;
+
 export class TikTokDirectClient implements TikTokDirect {
+  private access: Promise<string> | null = null;
   constructor(
-    private readonly token: () => Promise<string>,
+    private readonly getToken: () => Promise<string>,
     private readonly fetchImpl: Fetch = fetch,
+    /** Per call (reading the account is quick; the upload has its own longer limit). */
+    private readonly timeoutMs = 10_000,
   ) {}
+
+  /** One access token per client (they last about a day): one sign-in per page or post. */
+  private token(): Promise<string> {
+    this.access ??= this.getToken().catch((e: unknown) => {
+      this.access = null;
+      throw e;
+    });
+    return this.access;
+  }
 
   private async call<T>(path: string, body: unknown, token: string): Promise<T> {
     const res = await this.fetchImpl(`${API}${path}`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json; charset=UTF-8" },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(30_000),
+      signal: AbortSignal.timeout(this.timeoutMs),
     });
     const d = (await res.json().catch(() => null)) as Envelope<T>;
     // TikTok's reason only, never the token.
@@ -96,8 +111,9 @@ export class TikTokDirectClient implements TikTokDirect {
   }
 
   async post(input: DirectPostInput): Promise<string> {
-    const token = await this.token();
     const size = input.video.length;
+    if (size > TIKTOK_SINGLE_UPLOAD_MAX) throw new Error("TikTok: the video is larger than 64 MB");
+    const token = await this.token();
     const init = await this.call<{ publish_id?: string; upload_url?: string }>(
       "/post/publish/video/init/",
       {
@@ -119,7 +135,8 @@ export class TikTokDirectClient implements TikTokDirect {
     const up = await this.fetchImpl(init.upload_url, {
       method: "PUT",
       headers: { "Content-Type": "video/mp4", "Content-Length": String(size), "Content-Range": `bytes 0-${size - 1}/${size}` },
-      body: new Uint8Array(input.video),
+      // The Buffer's own bytes (no copy of a video that can be tens of MB).
+      body: new Uint8Array(input.video.buffer as ArrayBuffer, input.video.byteOffset, input.video.byteLength),
       signal: AbortSignal.timeout(120_000),
     });
     if (!up.ok) throw new Error(`TikTok upload failed (${up.status})`);

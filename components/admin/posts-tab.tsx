@@ -223,7 +223,12 @@ export async function PostsTab({ lang, t, sp }: { lang: "en" | "am"; t: T; sp: R
               </p>
             </FocusOnMount>
           )}
-          {tiktokPost && <TikTokPostPanel post={tiktokPost} lang={lang} t={t} title={dayFmt.format(new Date(`${tiktokPost.day}T00:00:00Z`))} result={typeof sp.tt === "string" ? sp.tt : null} />}
+          {tiktokPost && (
+            // TikTok is asked for the account in its own boundary: a slow TikTok never holds the page.
+            <Suspense fallback={<p role="status" className="rounded-2xl border-2 border-ink bg-white p-4 text-ink-muted">{t.tiktokPost.loading}</p>}>
+              <TikTokPostPanel post={tiktokPost} lang={lang} t={t} title={dayFmt.format(new Date(`${tiktokPost.day}T00:00:00Z`))} result={typeof sp.tt === "string" ? sp.tt : null} />
+            </Suspense>
+          )}
           {weekPosts.length === 0 ? (
             <Empty text={t.videos.empty} />
           ) : (

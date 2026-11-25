@@ -15,6 +15,7 @@ import { KIT_IDS, TELEGRAM_KIT, kitMediaUrl, kitText } from "@/lib/posts/telegra
 import { shortUrl } from "@/lib/growth/short-links";
 import { escapeHtml } from "@/lib/telegram/client";
 import { PRIVACY_LEVELS, privacyAllowed } from "@/lib/posts/tiktok-direct";
+import { mp4Seconds } from "@/lib/posts/mp4";
 import { IG_ID_NEEDED, IG_TOKEN_EXPIRES } from "@/lib/posts/verify";
 
 type Done = "ok" | "invalid" | "failed" | "not_found";
@@ -360,14 +361,20 @@ export async function postToTikTok(form: FormData) {
   if (!tiktok) return back(l, "failed", here("not_connected"));
   const post = await deps.store.get(v.id);
   if (!post) return back(l, "not_found", "&view=videos");
-  const media = post.media?.type === "video" ? await deps.media(post.media) : null;
-  if (!media || media.kind !== "video") return back(l, "failed", here("no_video"));
-  const token = await deps.lock.acquire(`tiktok:${v.id}`, 180_000);
+  if (post.media?.type !== "video") return back(l, "failed", here("no_video"));
+  // Already on TikTok (posted here or delivered as a draft): never a second time from a repeated form.
+  if (post.results.tiktok?.ok) return back(l, "failed", here("already"));
+  // Longer than every step together (sign-in, account, start, upload): one post of a video at a time.
+  const token = await deps.lock.acquire(`tiktok:${v.id}`, 300_000);
   if (!token) return back(l, "failed", here("busy"));
   let why = "sent";
   try {
+    // The choices are checked against the account before the video is fetched.
     const creator = await tiktok.creator();
+    const media = creator.privacyOptions.includes(v.privacy) ? await deps.media(post.media) : null;
     if (!creator.privacyOptions.includes(v.privacy)) why = "privacy";
+    else if (!media || media.kind !== "video") why = "no_video";
+    else if ((mp4Seconds(media.data) ?? 0) > creator.maxSeconds) why = "too_long";
     else {
       const ref = await tiktok.post({
         video: media.data,
@@ -383,7 +390,9 @@ export async function postToTikTok(form: FormData) {
     }
   } catch (e) {
     console.warn(`tiktok direct post failed: ${String((e as Error).message).replace(/[\r\n]+/g, " ").slice(0, 200)}`);
-    await deps.store.saveResult(v.id, "tiktok", { ok: false, at: new Date().toISOString(), error: String((e as Error).message).slice(0, 200) }).catch(() => null);
+    // A failure never replaces an earlier success.
+    const now = await deps.store.get(v.id).catch(() => null);
+    if (!now?.results.tiktok?.ok) await deps.store.saveResult(v.id, "tiktok", { ok: false, at: new Date().toISOString(), error: String((e as Error).message).slice(0, 200) }).catch(() => null);
     why = "failed";
   } finally {
     await deps.lock.release(`tiktok:${v.id}`, token);

@@ -411,7 +411,9 @@ function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger
       if (isE2E(env)) return (globalForServices.gojoFakeTikTok ??= new FakeTikTokDirect());
       const app = (await connections.load()).tiktok;
       if (!app?.refreshToken) return null;
-      const tokens = { get: async () => (await connections.load()).tiktok?.refreshToken ?? null, set: (token: string) => connections.saveTikTokToken(token, "system") };
+      // The refresh token already loaded; a rotated one is saved (and used by the next client).
+      let refresh = app.refreshToken;
+      const tokens = { get: async () => refresh, set: async (token: string) => ((refresh = token), await connections.saveTikTokToken(token, "system")) };
       return new TikTokDirectClient(() => tiktokAccessToken(app.clientKey, app.clientSecret, tokens));
     },
     connections,

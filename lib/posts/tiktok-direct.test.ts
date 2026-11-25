@@ -47,3 +47,22 @@ describe("TikTok Direct Post", () => {
     expect(privacyAllowed("PUBLIC_TO_EVERYONE", true)).toBe(true);
   });
 });
+
+describe("MP4 length", () => {
+  it("reads the movie header (version 0 and 1), or null when there is none", async () => {
+    const { mp4Seconds } = await import("./mp4");
+    const v0 = Buffer.alloc(64);
+    v0.write("mvhd", 4);
+    v0[8] = 0;
+    v0.writeUInt32BE(1000, 12 + 8);
+    v0.writeUInt32BE(27_500, 12 + 12);
+    expect(mp4Seconds(v0)).toBe(27.5);
+    const v1 = Buffer.alloc(64);
+    v1.write("mvhd", 4);
+    v1[8] = 1;
+    v1.writeUInt32BE(600, 12 + 16);
+    v1.writeBigUInt64BE(BigInt(36_000), 12 + 20);
+    expect(mp4Seconds(v1)).toBe(60);
+    expect(mp4Seconds(Buffer.from("not a video"))).toBeNull();
+  });
+});

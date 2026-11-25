@@ -15,7 +15,10 @@ export async function TikTokPostPanel({ post, lang, t, title, result }: { post: 
   const k = t.tiktokPost;
   const deps = services().posts;
   const cancel = `/${lang}/admin?tab=posts&view=videos#video-${post.id}`;
-  const tiktok = await deps.tiktokDirect?.().catch(() => null);
+  // Posted (just now, or earlier): the form isn't shown again and TikTok isn't called.
+  const ok = result === "sent";
+  const done = ok || !!post.results.tiktok?.ok;
+  const tiktok = done ? null : await deps.tiktokDirect?.().catch(() => null);
   let creator = null;
   let loadFailed = false;
   if (tiktok) {
@@ -25,23 +28,26 @@ export async function TikTokPostPanel({ post, lang, t, title, result }: { post: 
       return null;
     });
   }
-  const ok = result === "sent";
   return (
     <section id="tiktok-post" aria-labelledby="tiktok-post-title" className="flex scroll-mt-28 flex-col gap-3 rounded-2xl border-2 border-ink bg-white p-4">
       <h3 id="tiktok-post-title" className="text-base font-semibold">{format(k.heading, { day: title })}</h3>
       {result && (
         <FocusOnMount>
           <p role={ok ? "status" : "alert"} className={`rounded-lg px-3 py-2 text-sm ${ok ? "border border-lagoon text-lagoon" : "bg-coral-soft text-destructive"}`}>
-            {ok ? k.sent : (k.errors as Record<string, string>)[result] ?? k.errors.failed}
+            {ok ? k.sent : Object.hasOwn(k.errors, result) ? (k.errors as Record<string, string>)[result] : k.errors.failed}
           </p>
         </FocusOnMount>
       )}
       {post.media?.type === "video" && (
         <video src={`/api/admin/posts/${post.id}/media`} controls preload="metadata" playsInline aria-label={format(k.videoLabel, { day: title })} className="aspect-[9/16] w-full max-w-48 rounded-lg bg-ink" />
       )}
-      {!ok &&
+      {done && !result && <p className="rounded-lg border border-lagoon px-3 py-2 text-sm text-lagoon">{k.alreadyPosted}</p>}
+      {!done &&
         (!tiktok ? (
-          <p className="text-ink-muted">{k.errors.not_connected}</p>
+          <p className="text-ink-muted">
+            {k.errors.not_connected}{" "}
+            <a href={`/${lang}/admin?tab=posts&view=connections`} className="font-medium text-ink underline underline-offset-4">{k.toConnections}</a>
+          </p>
         ) : loadFailed || !creator ? (
           <p role="alert" className="text-destructive">{k.errors.load}</p>
         ) : (
