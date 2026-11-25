@@ -92,7 +92,8 @@ export class TikTokDirectClient implements TikTokDirect {
     });
     const d = (await res.json().catch(() => null)) as Envelope<T>;
     // TikTok's reason only, never the token.
-    if (!res.ok || !d?.data || (d.error?.code && d.error.code !== "ok")) throw new Error(`TikTok: ${d?.error?.message?.slice(0, 160) ?? d?.error?.code ?? res.status}`);
+    // TikTok's code first (it says what to fix), then its message.
+    if (!res.ok || !d?.data || (d.error?.code && d.error.code !== "ok")) throw new Error(`TikTok: ${[d?.error?.code, d?.error?.message?.slice(0, 160)].filter(Boolean).join(": ") || res.status}`);
     return d.data;
   }
 
