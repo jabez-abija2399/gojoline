@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import sharp from "sharp";
 import type { KitStore } from "./kit-store";
+import type { TikTokDirect } from "./tiktok-direct";
 import type { CaptionWriter } from "./captions";
 import { addDays, planDays, postFacts, postText, type PlanContext } from "./plan";
 import type { PostStore } from "./store";
@@ -52,6 +53,8 @@ export interface PostDeps {
   lock: PostLock;
   /** Films pages into post videos; null when the renderer isn't set up. */
   video: VideoRenderer | null;
+  /** TikTok Direct Post for our connected account; null until TikTok is connected (or with no app). */
+  tiktokDirect?(): Promise<TikTokDirect | null>;
   /** Upkeep before a posting run (renews the Instagram token when due); never on page loads. */
   maintain?(): Promise<void>;
 }
