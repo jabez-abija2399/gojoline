@@ -75,9 +75,9 @@
 # sites/<slug>/current -> the live deployment, resting.html while the owner has the site
 # offline, takedown.flag while an admin's notice is live (the notice always wins).
 *.{$PUBLISH_BASE_DOMAIN} {
-	tls {
-		on_demand
-	}
+	# On demand per site (caddy/tls.caddy), or one wildcard certificate by DNS-01 when the
+	# Cloudflare DNS token is set (caddy/tls-wildcard.caddy); compose picks SITES_TLS.
+	import sites-tls/{$SITES_TLS}.caddy
 	import site_name
 	import site_headers
 	encode zstd gzip

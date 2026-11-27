@@ -1,0 +1,5 @@
+# Customer sites without a DNS token: one certificate per site, issued on its first visit, only
+# for live sites (the runner's /ask). Let's Encrypt allows 50 new ones a week for the domain.
+tls {
+	on_demand
+}

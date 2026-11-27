@@ -25,7 +25,14 @@ describe("Caddyfile: customer sites", () => {
   it("serves sites read-only from the volume, with on-demand certificates checked by the runner", () => {
     expect(caddyfile).toMatch(/ask http:\/\/runner:7070\/ask/);
     const block = caddyfile.slice(caddyfile.indexOf("*.{$PUBLISH_BASE_DOMAIN} {"));
-    expect(block).toContain("on_demand");
+    expect(block).toContain("import sites-tls/{$SITES_TLS}.caddy");
+    const tls = (f: string) => readFileSync(new URL(`./caddy/${f}`, import.meta.url), "utf8");
+    expect(tls("tls.caddy")).toMatch(/tls \{\n\ton_demand\n\}/);
+    expect(tls("tls-wildcard.caddy")).toContain("dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}");
+    const compose = readFileSync(new URL("./compose.yml", import.meta.url), "utf8");
+    expect(compose).toContain("SITES_TLS: tls${CLOUDFLARE_DNS_API_TOKEN:+-wildcard}");
+    expect(compose).toContain("CADDY_FLAVOR: plain${CLOUDFLARE_DNS_API_TOKEN:+-dns}");
+    expect(tls("Dockerfile")).toMatch(/FROM caddy:2 AS plain-dns[\s\S]*FROM caddy:2 AS plain\n/);
     expect(block).toContain("import site_headers");
     expect(block).toContain("try_files /{site}/takedown.flag");
     expect(block).toContain("status 503");

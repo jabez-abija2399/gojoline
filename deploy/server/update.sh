@@ -19,10 +19,9 @@ git reset --quiet --hard "$TARGET"
 cd deploy/server
 echo "$(date -u +%FT%TZ) deploying ${TARGET:0:7}"
 # Build first, at low priority: the running version keeps serving until the new image is ready.
-nice -n 10 ionice -c3 docker compose build --pull app runner renderer
+nice -n 10 ionice -c3 docker compose build --pull app runner renderer caddy
 # The site workspaces' image (template + packages); running workspaces pick it up when they restart.
 nice -n 10 ionice -c3 docker build --pull -q -t gojoline-sandbox -f sandbox/Dockerfile ../../templates/site >/dev/null
-docker compose pull --quiet caddy
 docker compose up -d --remove-orphans
 # Healthy within 2 minutes, or say so loudly in the journal (journalctl -u gojoline-update).
 for _ in $(seq 1 24); do

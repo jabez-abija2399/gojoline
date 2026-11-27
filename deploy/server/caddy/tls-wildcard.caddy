@@ -1,0 +1,6 @@
+# Customer sites with CLOUDFLARE_DNS_API_TOKEN (Zone · DNS · Edit on the sites' zone only): one
+# wildcard certificate for *.<PUBLISH_BASE_DOMAIN>, proved with a DNS record (DNS-01). No limit per site.
+tls {
+	dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	resolvers 1.1.1.1
+}

@@ -59,7 +59,7 @@ export async function GET(request: Request) {
   const sites = await d.sites.recent(10_000);
   const live = await liveHere(d.publish.publisher, sites.filter((s) => s.status === "taken_down").map((s) => s.slug));
   // Without the wildcard certificate each new site needs its own (Let's Encrypt: 50 a week).
-  return Response.json({ host: d.publish.publisher.name, paused: Boolean(d.publish.paused), wildcardTls: Boolean(process.env.CLOUDFLARE_DNS_API_TOKEN), items: planRepublish(sites, d.publish.publisher.name, mode.data, live) }, { headers: NO_STORE });
+  return Response.json({ host: d.publish.publisher.name, paused: Boolean(d.publish.paused), wildcardTls: process.env.SITES_WILDCARD_TLS === "1", items: planRepublish(sites, d.publish.publisher.name, mode.data, live) }, { headers: NO_STORE });
 }
 
 export async function POST(request: Request) {

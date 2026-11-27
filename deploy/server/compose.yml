@@ -17,6 +17,9 @@ services:
       RENDERER_SECRET: ${RENDERER_SECRET:-}
       # Customer sites (with PUBLISH_PROVIDER=server in .env): written here, served by Caddy.
       SITES_DIR: /srv/sites
+      # The DNS token is Caddy's alone (kept out of the app); the app only learns it is set.
+      CLOUDFLARE_DNS_API_TOKEN: ""
+      SITES_WILDCARD_TLS: ${CLOUDFLARE_DNS_API_TOKEN:+1}
     volumes:
       - sites:/srv/sites
     restart: unless-stopped
@@ -25,7 +28,7 @@ services:
         condition: service_started
       renderer:
         condition: service_started
-      sites-init:
+      volumes-init:
         condition: service_completed_successfully
     networks: [default, render]
     expose:
@@ -38,19 +41,23 @@ services:
       driver: json-file
       options: { max-size: "10m", max-file: "5" }
 
-  # Gives the sites volume to the app's user (uid 1000) before the app starts; nothing else.
-  sites-init:
+  # Gives each volume to the user that writes it, before the services start; nothing else:
+  # the sites volume to the app (uid 1000), Caddy's certificates and settings to Caddy (10001,
+  # it no longer runs as root; certificates it got as root are kept).
+  volumes-init:
     image: gojoline-app
     pull_policy: never
     user: root
-    entrypoint: ["chown", "node:node", "/srv/sites"]
+    entrypoint: ["sh", "-c", "chown node:node /srv/sites && chown -R 10001:10001 /caddy/data /caddy/config"]
     volumes:
       - sites:/srv/sites
+      - caddy_data:/caddy/data
+      - caddy_config:/caddy/config
     restart: "no"
     network_mode: none
     security_opt: ["no-new-privileges:true"]
     cap_drop: [ALL]
-    cap_add: [CHOWN]
+    cap_add: [CHOWN, DAC_READ_SEARCH]
 
   # The only service with Docker access: starts and controls one workspace container per site
   # (deploy/server/runner). Reachable only on this private network, with a shared secret.
@@ -108,13 +115,28 @@ services:
       options: { max-size: "10m", max-file: "5" }
 
   caddy:
-    image: caddy:2
+    # The official Caddy, or with the Cloudflare DNS module when CLOUDFLARE_DNS_API_TOKEN is set
+    # (one wildcard certificate for customer sites); see caddy/Dockerfile.
+    build:
+      context: ./caddy
+      args:
+        CADDY_FLAVOR: plain${CLOUDFLARE_DNS_API_TOKEN:+-dns}
+    image: gojoline-caddy
+    pull_policy: build
     restart: unless-stopped
     mem_limit: 256m
+    # Not root: its own user (volumes given to it by volumes-init); ports 80/443 open to it
+    # through the container's own network setting, not a capability.
+    user: "10001:10001"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
     security_opt: ["no-new-privileges:true"]
     cap_drop: [ALL]
-    cap_add: [NET_BIND_SERVICE]
-    depends_on: [app]
+    depends_on:
+      app:
+        condition: service_started
+      volumes-init:
+        condition: service_completed_successfully
     networks: [default, previews]
     ports:
       - "80:80"
@@ -126,6 +148,9 @@ services:
       PUBLISH_BASE_DOMAIN: ${PUBLISH_BASE_DOMAIN:-sites.invalid}
       # Where sites' forms post (their CSP allows only this besides themselves): the app's own origin.
       SITES_API_ORIGIN: ${DATA_API_ORIGIN:-https://${APP_DOMAIN}}
+      # tls (on demand per site) or tls-wildcard (DNS-01 with the token below).
+      SITES_TLS: tls${CLOUDFLARE_DNS_API_TOKEN:+-wildcard}
+      CLOUDFLARE_DNS_API_TOKEN: ${CLOUDFLARE_DNS_API_TOKEN:-}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
