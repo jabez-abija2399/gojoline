@@ -213,6 +213,8 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
   if (req.method !== "POST" || !authorized(req)) return send(res, 404, { error: "not_found" });
   const body = await readJson(req);
   if (!body) return send(res, 400, { error: "invalid" });
+  // How many workspaces are open (moving sites waits while builders use them all).
+  if (url.pathname === "/status") return send(res, 200, { running: lastUsed.size, busy: busy().size, max: MAX_RUNNING });
   const name = containerName(String(body.project ?? ""));
   if (!name) return send(res, 400, { error: "invalid" });
 
