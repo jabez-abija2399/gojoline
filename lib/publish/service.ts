@@ -163,6 +163,12 @@ export async function republishLive(deps: PublishDeps, ownerId: string, projectI
   const existing = await deps.sites.getByProject(ownerId, projectId);
   if (existing?.status === "taken_down") return { ok: false, error: "taken_down" };
   if (!existing || existing.status !== "published" || existing.publishedVersion == null) return { ok: false, error: "no_version" };
+  // An address reserved since it was taken (a mail or DNS name on our domain) is never served here.
+  const problem = checkSlug(existing.slug);
+  if (problem) {
+    console.warn("republish skipped: reserved address", existing.slug, problem);
+    return { ok: false, error: problem === "format" ? "slug_format" : "slug_reserved" };
+  }
   const version = await deps.store.getVersion(ownerId, projectId, existing.publishedVersion);
   if (!version) return { ok: false, error: "no_version" };
   if (hasExampleDetails(version.files["src/site.json"] ?? "")) return { ok: false, error: "unfinished" };
