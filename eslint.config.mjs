@@ -25,6 +25,8 @@ const eslintConfig = defineConfig([
     "test-results/**",
     "coverage/**",
     ".lighthouseci/**",
+    // Agent worktrees (other branches checked out under .claude/worktrees).
+    ".claude/**",
   ]),
 ]);
 

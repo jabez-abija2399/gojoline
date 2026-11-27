@@ -10,7 +10,7 @@ import { DomainSection } from "@/components/builder/domain-section";
 import { Address } from "./address";
 import { CopyLink } from "./copy-link";
 import { Confirm } from "./dialog";
-import { TelegramPanel } from "./telegram-panel";
+import { TelegramPanel, type TelegramPlan } from "./telegram-panel";
 import { ShowcaseSection } from "./showcase-section";
 
 type T = Messages["dashboard"];
@@ -32,11 +32,11 @@ const outline = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border
 const input = "min-h-11 w-full rounded-lg border border-input bg-white px-3 text-base";
 
 /** Settings: Telegram alerts, address and own domain, the offline switch, the share preview, earlier versions. */
-export function SettingsPanel({ t, tb, locale, projectId, bot, s, showcase }: { t: T; tb: Messages["builder"]; locale: Locale; projectId: string; bot: string; s: SettingsState; showcase?: { t: Messages["growth"]["showcase"]; on: boolean | null } }) {
+export function SettingsPanel({ t, tb, locale, projectId, bot, telegram, s, showcase }: { t: T; tb: Messages["builder"]; locale: Locale; projectId: string; bot: string; telegram: TelegramPlan; s: SettingsState; showcase?: { t: Messages["growth"]["showcase"]; on: boolean | null } }) {
   return (
     <div className="flex flex-col gap-4">
       <div id="telegram" className="scroll-mt-4">
-        <TelegramPanel t={t} locale={locale} bot={bot} />
+        <TelegramPanel t={t} locale={locale} bot={bot} plan={telegram} />
       </div>
       <section id="address" aria-labelledby="dash-address-title" className={card}>
         <h2 id="dash-address-title" className="text-base font-semibold">{t.addressTitle}</h2>

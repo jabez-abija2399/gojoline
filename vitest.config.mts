@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["**/*.test.ts", "**/*.test.tsx"],
-    exclude: ["node_modules/**", "e2e/**", "templates/**", ".next/**"],
+    exclude: ["node_modules/**", "e2e/**", "templates/**", ".next/**", ".claude/**"],
     // `server-only` throws outside a React Server environment; stub it in tests.
     alias: { "server-only": new URL("./test/server-only-stub.ts", import.meta.url).pathname },
   },

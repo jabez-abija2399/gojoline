@@ -44,7 +44,7 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan,
   const dayNum = new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-GB", { day: "numeric", timeZone: "UTC" });
   const done = o.steps.filter((s) => s.done).length;
   const next = nextStep(o.steps);
-  const stepHref = (id: string) => (id === "info" ? tab("info") : id === "telegram" ? tab("settings", "#telegram") : id === "domain" ? (o.canOwnDomain ? tab("settings", "#address") : `/${locale}/billing`) : builder);
+  const stepHref = (id: string) => (id === "info" ? tab("info") : id === "telegram" ? (o.canTelegram ? tab("settings", "#telegram") : `/${locale}/billing`) : id === "domain" ? (o.canOwnDomain ? tab("settings", "#address") : `/${locale}/billing`) : builder);
   const visitsTotal = o.visits.perDay.reduce((n, d) => n + d.value, 0);
   const people = { visitors: weekTrend({ thisWeek: o.visits.thisWeek, lastWeek: o.visits.lastWeek, total: visitsTotal }), messages: weekTrend(o.messages) };
   const live = o.address && o.status !== "taken_down";
@@ -61,7 +61,7 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan,
                 {t.steps[s.id].title}
                 {s.done && <span className="sr-only"> ({t.setupDone})</span>}
               </span>
-              {!s.done && <span className="text-sm text-ink-muted">{s.id === "domain" && o.canOwnDomain ? t.domainHintPaid : t.steps[s.id].hint}</span>}
+              {!s.done && <span className="text-sm text-ink-muted">{s.id === "domain" && o.canOwnDomain ? t.domainHintPaid : s.id === "telegram" && !o.canTelegram ? t.telegramHintFree : t.steps[s.id].hint}</span>}
             </span>
           </Link>
         </li>

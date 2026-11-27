@@ -108,6 +108,8 @@ export async function handleSubmission(deps: SubmitDeps, input: SubmitInput): Pr
     data: checked.data,
     lang,
   });
-  if (plan?.telegramNotify ?? true) await deps.notifier?.notify(submission, form).catch((e: unknown) => console.error("notify failed", e instanceof Error ? e.message : "unknown"));
+  // Telegram alerts only on a plan that includes them (Free: the answer waits in Messages). A
+  // linked Free owner keeps the link, so alerts resume after an upgrade without relinking.
+  if (plan?.telegramNotify === true) await deps.notifier?.notify(submission, form).catch((e: unknown) => console.error("notify failed", e instanceof Error ? e.message : "unknown"));
   return { status: 201, body: { ok: true }, allowOrigin };
 }

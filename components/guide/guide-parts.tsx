@@ -2,7 +2,7 @@ import { Lightbulb, Play } from "lucide-react";
 import { DESKTOP, PHONE, shotSrc, shotSrcSet, type Shot } from "@/lib/guide/sections";
 
 /** A real screenshot: the phone picture on phones, the computer one on wider screens, AVIF or WebP. */
-/** Always lazy: no screenshot is above the fold (the video and contents come first). */
+/** Always lazy: no screenshot is above the fold; the video poster is the page's first picture (preloaded). */
 export function GuideShot({ shot, alt }: { shot: Shot; alt: string }) {
   const phone = shot.phone;
   return (

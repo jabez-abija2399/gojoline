@@ -83,6 +83,8 @@ export async function loadHome(ownerId: string, projectId: string, locale: "en" 
       ownDomain: !!(site?.customDomain && site.customDomainVerifiedAt),
     }),
     canOwnDomain: PLAN_FEATURES[allowance?.plan ?? "free"].customDomain,
+    /** Telegram alerts are on this plan (Free: the step leads to the plans instead). */
+    canTelegram: PLAN_FEATURES[allowance?.plan ?? "free"].telegramNotify,
   };
 }
 
