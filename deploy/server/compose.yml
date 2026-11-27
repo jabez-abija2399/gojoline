@@ -122,8 +122,11 @@ services:
       - "443:443/udp"
     environment:
       APP_DOMAIN: ${APP_DOMAIN}
-      # Customer sites at https://<slug>.<PUBLISH_BASE_DOMAIN> (a name that never resolves when unset).
-      PUBLISH_BASE_DOMAIN: ${PUBLISH_BASE_DOMAIN:-sites.invalid}
+      # Customer sites at https://<slug>.<SERVER_SITES_BASE_DOMAIN>, only when this server publishes
+      # them (README "Customer sites"). Its own variable, not PUBLISH_BASE_DOMAIN: that one is also set
+      # for Cloudflare publishing, and a `*.<domain>` block covering the app's host makes Caddy drop
+      # the app's own certificate (2026-11-27 outage). Unset: a name that never resolves.
+      PUBLISH_BASE_DOMAIN: ${SERVER_SITES_BASE_DOMAIN:-sites.invalid}
       # Where sites' forms post (their CSP allows only this besides themselves): the app's own origin.
       SITES_API_ORIGIN: ${DATA_API_ORIGIN:-https://${APP_DOMAIN}}
     volumes:
