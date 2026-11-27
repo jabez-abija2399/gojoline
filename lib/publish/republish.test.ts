@@ -62,6 +62,10 @@ describe("planRepublish (dry run)", () => {
     const plan = planRepublish([site({ slug: "moved", provider: "server", legacyProjectId: "prj_1" }), site({ slug: "done", provider: "server" }), site({ slug: "not-moved" })], "server", "forward");
     expect(plan.map((i) => [i.slug, i.action])).toEqual([["done", "skip"], ["moved", "forward"], ["not-moved", "skip"]]);
   });
+
+  it("never moves a reserved address (and says why)", () => {
+    expect(planRepublish([site({ slug: "webmail" })], "server", "move")[0]).toMatchObject({ action: "skip", note: "reserved address: the owner picks a new one" });
+  });
 });
 
 describe("runRepublish", () => {

@@ -16,6 +16,16 @@ const BRANDS = new Set([
   "abyssinia", "bunna", "zemen", "nibbank", "wegagen", "hibret", "chapa", "paypal", "visa", "mastercard",
 ]);
 
+/**
+ * Whole addresses that are host names with a meaning of their own on our domain (mail and DNS
+ * conventions, previews, the app): sites live at <slug>.afridea.et, so these are never a site.
+ * Matched only as the whole slug ("pop-art" stays free).
+ */
+const RESERVED_EXACT = new Set([
+  "preview", "autoconfig", "autodiscover", "smtp", "imap", "pop", "pop3", "mx", "webmail", "ns", "ns1", "ns2",
+  "mail", "email", "cpanel", "ftp", "admin", "app", "api", "www", "gojoline", "status", "docs", "help", "static", "cdn", "assets", "sites",
+]);
+
 export type SlugProblem = "format" | "reserved";
 
 export function checkSlug(slug: string): SlugProblem | null {
@@ -23,7 +33,7 @@ export function checkSlug(slug: string): SlugProblem | null {
   // Reserved words anywhere (as a dash-separated part, or inside longer words for brand names).
   const parts = slug.split("-");
   // Shown as the example address on the landing page: nobody may publish there.
-  if (slug === EXAMPLE_SLUG) return "reserved";
+  if (slug === EXAMPLE_SLUG || RESERVED_EXACT.has(slug)) return "reserved";
   if (parts.some((p) => RESERVED.has(p)) || [...BRANDS].some((b) => slug.includes(b))) return "reserved";
   return null;
 }
