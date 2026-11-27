@@ -83,6 +83,7 @@ export type PublishError =
   | "unfinished"
   | "form_invalid"
   | "paused"
+  | "disk_full"
   | "failed";
 
 export type PublishOutcome =
@@ -286,8 +287,9 @@ async function deployLocked(
       }
       return { ok: false, error: "taken_down" };
     }
-    reportError("publish failed", error, { projectId });
-    return { ok: false, error: msg === "slug_taken" ? "slug_taken" : "failed" };
+    // disk_full: the admin alert is this report (Sentry), named so it stands out.
+    reportError(msg === "disk_full" ? "publish refused: sites disk almost full" : "publish failed", error, { projectId });
+    return { ok: false, error: msg === "slug_taken" ? "slug_taken" : msg === "disk_full" ? "disk_full" : "failed" };
   } finally {
     await deps.lock.release(`project:${projectId}`, token);
   }
