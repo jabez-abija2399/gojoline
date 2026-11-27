@@ -28,11 +28,11 @@ for (const lang of ["en", "am"] as const) {
     await expect(video.locator('track[kind="captions"][srclang="en"]')).toHaveAttribute("src", "/guide/captions-en.vtt");
     await expect(video.locator('track[kind="captions"][srclang="am"]')).toHaveAttribute("src", "/guide/captions-am.vtt");
     await expect(video.locator('track[kind="chapters"]')).toHaveAttribute("src", `/guide/chapters-${lang}.vtt`);
-    // Captions in the page's language are on from the start.
-    await expect(video.locator(`track[kind="captions"][srclang="${lang}"]`)).toHaveAttribute("default", "");
-    await expect(video.locator(`track[kind="captions"][srclang="${lang === "en" ? "am" : "en"}"]`)).not.toHaveAttribute("default", /.*/);
-    // The poster (the first big picture) is fetched early.
-    await expect(page.locator('link[rel="preload"][as="image"][href="/guide/gojoline-guide-poster.webp"]')).toHaveAttribute("fetchpriority", "high");
+    // A silent video with English on screen: the Amharic page shows the Amharic captions without pressing CC.
+    const amDefault = video.locator('track[kind="captions"][srclang="am"]');
+    if (lang === "am") await expect(amDefault).toHaveAttribute("default", "");
+    else await expect(amDefault).not.toHaveAttribute("default", /.*/);
+    await expect(video.locator('track[kind="captions"][srclang="en"]')).not.toHaveAttribute("default", /.*/);
     // The captions file is real WebVTT.
     const vtt = await page.request.get("/guide/captions-am.vtt");
     expect(vtt.headers()["content-type"]).toContain("text/vtt");
@@ -83,12 +83,14 @@ test("guide: screenshots are responsive pictures, all lazy (the poster comes fir
   await page.goto("/en/guide");
   const imgs = page.locator("main picture img");
   expect(await imgs.count()).toBeGreaterThanOrEqual(15);
-  expect(await imgs.evaluateAll((all) => all.every((i) => i.getAttribute("loading") === "lazy"))).toBe(true);
+  for (const loading of await imgs.evaluateAll((els) => els.map((i) => i.getAttribute("loading")))) expect(loading).toBe("lazy");
+  // The poster (the LCP element) is preloaded at high priority instead.
+  await expect(page.locator('link[rel="preload"][as="image"][href="/guide/gojoline-guide-poster.webp"]')).toHaveAttribute("fetchpriority", "high");
   await expect(imgs.first()).toHaveAttribute("width", "1440");
   await expect(page.locator("main picture source[type='image/avif']").first()).toHaveAttribute("srcset", /\.avif 390w/);
   // The browser picks the phone picture on phones, the computer one on wide screens.
   await imgs.first().scrollIntoViewIfNeeded();
-  await expect.poll(() => imgs.first().evaluate((i: HTMLImageElement) => i.currentSrc)).not.toBe("");
+  await expect.poll(() => imgs.first().evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
   const src = await imgs.first().evaluate((i: HTMLImageElement) => i.currentSrc);
   expect(src).toMatch(info.project.name === "mobile" ? /phone-01-start-390\.(avif|webp)$/ : /01-start-(720|1440)\.(avif|webp)$/);
 });

@@ -18,7 +18,8 @@ export const guideEn = {
     label: "Video: how to use Gojoline, 4 minutes 48 seconds",
     length: "4 min 48 s · no sound needed, captions are on the screen",
     fallback: "Your browser can't play this video here.",
-    download: "Download the video (MP4, {size})",
+    download: "Download the video ({size})",
+    size: "{n} MB",
     captionsEn: "English",
     captionsAm: "Amharic",
     chaptersLabel: "Chapters",
@@ -61,12 +62,14 @@ export const guideEn = {
   },
   toc: {
     title: "On this page",
-    toggle: "Show the contents",
     faq: "Questions",
     playNamed: "{time}: play part {n}, {title}",
     watchPart: "Watch this part ({time})",
   },
   stepsLabel: "Steps",
+  stepsFor: "Steps: {title}",
+  tipLabel: "{label}:",
+  quoted: "“{text}”",
   tip: "Tip",
   sections: {
     start: {
@@ -211,8 +214,6 @@ export const guideEn = {
       plansTitle: "The plans",
       priceMonth: "{price} Birr a month",
       priceFree: "0 Birr",
-      offer: "{badge}",
-      was: "was {price} Birr",
       steps: [
         "Open {plan} in the menu and choose a plan (monthly or yearly), or extra changes.",
         "Send the amount shown to our Telebirr number or bank account. The page shows the number, the name and a Copy button.",
