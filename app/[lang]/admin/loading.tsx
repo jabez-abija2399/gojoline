@@ -1,8 +1,10 @@
 import { cookies } from "next/headers";
+import { readCookie } from "@/lib/security/cookies";
 
 /** Admin outline while a tab loads: sidebar, title, filter chips, a panel and table rows. */
 export default async function Loading() {
-  const saved = (await cookies()).get("gojo_admin_theme")?.value;
+  const jar = await cookies();
+  const saved = readCookie((n) => jar.get(n)?.value, "adminTheme");
   const theme = (["light", "dark", "system"] as const).find((x) => x === saved) ?? "system";
   const bar = (cls: string) => <div aria-hidden="true" className={`skeleton rounded-lg ${cls}`} />;
   return (

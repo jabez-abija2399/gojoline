@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { LOCALE_COOKIE, isLocale, localeFromAcceptLanguage } from "@/lib/i18n/config";
+import { isLocale, localeFromAcceptLanguage } from "@/lib/i18n/config";
 import { createNonce, cspFromEnv } from "@/lib/security/csp";
-import { ATTRIBUTION_COOKIE, ATTRIBUTION_MAX_AGE, attributionFromRequest, decodeAttribution, encodeAttribution, keepFirstTouch } from "@/lib/growth/attribution";
+import { cookieAttrs, cookieName, readCookie } from "@/lib/security/cookies";
+import { ATTRIBUTION_MAX_AGE, attributionFromRequest, decodeAttribution, encodeAttribution, keepFirstTouch } from "@/lib/growth/attribution";
 
 /**
  * First touch: where a visitor first came from (?ref=, utm tags or the referring site), in a
@@ -11,15 +12,14 @@ import { ATTRIBUTION_COOKIE, ATTRIBUTION_MAX_AGE, attributionFromRequest, decode
 function rememberFirstTouch(request: NextRequest, response: NextResponse) {
   const a = attributionFromRequest(request.nextUrl.searchParams, request.headers.get("referer"), request.nextUrl.hostname);
   // request.cookies holds decoded values; decodeAttribution expects the raw (encoded) form.
-  const raw = request.cookies.get(ATTRIBUTION_COOKIE)?.value;
+  const raw = readCookie((n) => request.cookies.get(n)?.value, "attribution");
   const kept = raw ? decodeAttribution(encodeURIComponent(raw)) : null;
   if (a && keepFirstTouch(kept, a) === a) {
-    response.cookies.set(ATTRIBUTION_COOKIE, encodeAttribution(a), {
-      path: "/",
+    response.cookies.set(cookieName("attribution"), encodeAttribution(a), {
+      ...cookieAttrs(),
       maxAge: ATTRIBUTION_MAX_AGE,
       sameSite: "lax",
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
     });
   }
   return response;
@@ -30,7 +30,7 @@ export function proxy(request: NextRequest) {
   const firstSegment = pathname.split("/")[1];
 
   if (!isLocale(firstSegment)) {
-    const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
+    const cookieLocale = readCookie((n) => request.cookies.get(n)?.value, "lang");
     const locale = isLocale(cookieLocale)
       ? cookieLocale
       : localeFromAcceptLanguage(request.headers.get("accept-language"));
@@ -48,12 +48,11 @@ export function proxy(request: NextRequest) {
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set("Content-Security-Policy", csp);
   // Remember the language the visitor last used.
-  if (request.cookies.get(LOCALE_COOKIE)?.value !== firstSegment) {
-    response.cookies.set(LOCALE_COOKIE, firstSegment, {
-      path: "/",
+  if (request.cookies.get(cookieName("lang"))?.value !== firstSegment) {
+    response.cookies.set(cookieName("lang"), firstSegment, {
+      ...cookieAttrs(),
       maxAge: 60 * 60 * 24 * 365,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
     });
   }
   return rememberFirstTouch(request, response);

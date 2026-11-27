@@ -4,7 +4,8 @@ import { after } from "next/server";
 import { ipFromHeaders } from "@/lib/server/request";
 import { reportError } from "@/lib/observability/report";
 import { services } from "@/lib/server/services";
-import { ATTRIBUTION_COOKIE, cookieValue, decodeAttribution } from "./attribution";
+import { COOKIE_BASES, cookieAttrs, cookieName, readCookie } from "@/lib/security/cookies";
+import { cookieValue, decodeAttribution } from "./attribution";
 import { signupHashes } from "./fingerprint";
 
 /**
@@ -13,11 +14,13 @@ import { signupHashes } from "./fingerprint";
  * after the response, so sign-up never waits for them.
  */
 export async function onSignup(user: { id: string; email: string; phoneNumber?: string | null }, headers: Headers | null): Promise<void> {
-  const a = decodeAttribution(cookieValue(headers?.get("cookie"), ATTRIBUTION_COOKIE));
+  const a = decodeAttribution(readCookie((n) => cookieValue(headers?.get("cookie"), n), "attribution"));
   const hashes = headers ? signupHashes({ ip: ipFromHeaders(headers), userAgent: headers.get("user-agent") }, process.env.BETTER_AUTH_SECRET || "dev-only-signup-hash-key") : null;
   if (a) {
     try {
-      (await cookies()).delete(ATTRIBUTION_COOKIE);
+      const jar = await cookies();
+      jar.set(cookieName("attribution"), "", { ...cookieAttrs(), maxAge: 0 });
+      jar.delete(COOKIE_BASES.attribution);
     } catch {
       // Outside a request that can set cookies: nothing to clear.
     }
