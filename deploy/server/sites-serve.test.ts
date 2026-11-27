@@ -47,7 +47,7 @@ const get = (slug: string, path: string, method = "GET") => fetch(`${base}${path
 
 beforeAll(async () => {
   dir = await mkdtemp(join(tmpdir(), "serve-"));
-  host = new ServerPublishProvider({ sitesDir: dir, baseDomain: "afridea.et" });
+  host = new ServerPublishProvider({ sitesDir: dir, baseDomain: "afridea.et", diskSpace: async () => ({ free: 1e12, total: 2e12 }) });
   server = createServer(async (req, res) => {
     const r = await serve(dir, String(req.headers["x-host"]), req.method ?? "GET", req.url ?? "/");
     res.writeHead(r.status, r.headers).end(req.method === "HEAD" ? undefined : r.body);

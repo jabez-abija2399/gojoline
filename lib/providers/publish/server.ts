@@ -1,6 +1,6 @@
 import "server-only";
 import { randomBytes } from "node:crypto";
-import { mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile, readlink } from "node:fs/promises";
+import { mkdir, readFile, readdir, readlink, rename, rm, stat, statfs, symlink, writeFile } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
 import { getMessages } from "@/lib/i18n";
 import { NOTICE_STYLE, escapeHtml } from "@/lib/publish/notice";
@@ -17,7 +17,18 @@ export interface ServerPublishConfig {
   sitesDir: string;
   /** Sites live at https://<slug>.<baseDomain>. */
   baseDomain: string;
+  /** Publishing stops while the volume has less free space than this (default 2 GB)… */
+  minFreeBytes?: number;
+  /** …or less than this share of it free (default 10%). */
+  minFreeRatio?: number;
+  /** Test hook: free and total bytes of the volume. */
+  diskSpace?: (dir: string) => Promise<{ free: number; total: number }>;
 }
+
+const volumeSpace = async (dir: string) => {
+  const s = await statfs(dir);
+  return { free: s.bavail * s.bsize, total: s.blocks * s.bsize };
+};
 
 interface State {
   deployment: string;
@@ -58,7 +69,7 @@ export class ServerPublishProvider implements PublishProvider {
   private root: string;
   private base: string;
 
-  constructor(config: ServerPublishConfig) {
+  constructor(private config: ServerPublishConfig) {
     this.root = resolve(config.sitesDir);
     this.base = config.baseDomain.toLowerCase().replace(/^\.+|\.+$/g, "");
   }
@@ -107,6 +118,15 @@ export class ServerPublishProvider implements PublishProvider {
       total += f.data.length;
     }
     if (total > MAX_TOTAL_BYTES + BADGE_ALLOWANCE) throw new Error("site_too_large");
+    // A full disk would break every site and the app with it: stop publishing well before.
+    // (A takedown notice is tiny and always goes through.)
+    if (!input.takedown) {
+      const { free, total: size } = await (this.config.diskSpace ?? volumeSpace)(this.root);
+      if (free - total < (this.config.minFreeBytes ?? 2e9) || free - total < size * (this.config.minFreeRatio ?? 0.1)) {
+        console.error(`sites disk almost full: ${Math.round(free / 1e6)} MB free of ${Math.round(size / 1e6)} MB`);
+        throw new Error("disk_full");
+      }
+    }
 
     const deployment = `${Date.now().toString(36)}${randomBytes(4).toString("hex")}`;
     // Written under a temporary name, then renamed: a half-written deployment is never served.

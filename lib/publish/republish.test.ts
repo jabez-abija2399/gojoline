@@ -77,7 +77,7 @@ describe("runRepublish", () => {
   beforeEach(async () => {
     dir = await mkdtemp(join(tmpdir(), "republish-"));
     vercel = Object.assign(new MemoryPublishProvider(), { name: "vercel", urlFor: (s: string) => `https://gojo-${s}.vercel.app` });
-    server = new ServerPublishProvider({ sitesDir: dir, baseDomain: "afridea.et" });
+    server = new ServerPublishProvider({ sitesDir: dir, baseDomain: "afridea.et", diskSpace: async () => ({ free: 1e12, total: 2e12 }) });
     const sites = new MemorySiteStore();
     deps = { store: new MemoryProjectStore(), sites, cloud: new MemoryCloudStore(sites), sandboxes: new MemorySandboxProvider({ "src/site.ts": "x" }), publisher: vercel, lock: new MemoryLock(), appUrl: "https://gojoline.afridea.et" };
   });
