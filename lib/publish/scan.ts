@@ -14,8 +14,8 @@ export interface ScanOptions {
   allowedFormOrigins?: string[];
 }
 
-const MAX_FILE_BYTES = 2_000_000;
-const MAX_TOTAL_BYTES = 15_000_000;
+export const MAX_FILE_BYTES = 2_000_000;
+export const MAX_TOTAL_BYTES = 15_000_000;
 /**
  * The only files a published site may contain. Anything else (api/, vercel.json, middleware,
  * config or data files) could turn into server code or routing rules on the host.
