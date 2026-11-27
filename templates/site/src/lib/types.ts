@@ -24,7 +24,11 @@ export type ArtName =
   | "home"
   | "mountains"
   | "portrait"
-  | "work";
+  | "work"
+  /** A software product: a desktop dashboard, a phone screen, a rising sales chart. */
+  | "dashboard"
+  | "mobile"
+  | "chart";
 
 export interface Image {
   /**
@@ -485,8 +489,40 @@ export interface Theme {
    * brutal: thick ink borders and hard offset shadows, bold labels on the highlight (training centres, tutors, youth).
    * calm: quiet and spacious: hairlines, generous space, no decoration (pharmacies, counselling, clinics).
    * kinetic: condensed capitals, huge stacked headlines with an outlined word, dark bands (gyms, sports, events).
+   * grand: luxury hospitality: oversized light serif titles with an italic turn, champagne hairlines and
+   * frames, asymmetric photos that open like curtains and drift as the page scrolls, quotes in large
+   * italic type (resorts, boutique hotels, fine dining, spas).
+   * avant: an experimental studio: black and white with one electric colour (`primary`), huge
+   * grotesque words that move apart as the page scrolls, a broken grid of grey photos that colour
+   * and bend on hover, overlapping titles, a cursor ring and buttons that lean towards the pointer
+   * (creative agencies, design and architecture studios, artists).
+   * precise: a software product in the Swiss manner: a strict grid drawn in hairlines, tight
+   * neutral type with one accent, product drawings that come alive, quiet cards with fine borders
+   * (apps, software, online services, fintech).
+   * monochrome: a fashion house's shop set like a magazine: black and white (the photos carry the
+   * colour), a light serif, small tracked capitals, the name centred over the page, products as tall
+   * portraits with the price beneath, categories as big titles (fashion, design shops, concept stores).
+   * drafting: set like a drawing sheet: warm paper, black ink, a faint drafting grid, projects
+   * numbered A-01, facts as a title block, large photographs, much space (architects, interior
+   * designers, engineers, furniture makers).
+   * noir: fine dining by candlelight: the page turns dark (the accent becomes the room, the
+   * background colour the ink, the primary the brass details), photos rise out of the dark, centred
+   * serif titles, a menu like a printed card (restaurants, bars, chef's tables, wine and coffee rooms).
+   * folio: a creative developer's notebook: a dot grid, labels in monospace like code comments, a
+   * huge name that moves as the page scrolls, work as an index whose picture follows the pointer,
+   * a cursor ring and leaning buttons (developers, designers, illustrators, freelancers).
+   * estate: a luxury property magazine: sand paper, deep forest ink (the accent), a heavy serif with
+   * large prices, the month's listing as a spread, listings in an uneven grid, filters as one search
+   * bar (property agencies, developers, holiday rentals, serviced apartments).
+   * voyage: a journey told as the page scrolls: full-screen photos as numbered chapters with words
+   * laid over them, destinations as staggered prints, the route beside a photo that stays (travel
+   * companies, tour operators, lodges, expeditions).
+   * museum: a gallery's white walls: a huge exhibition title, works hung on a pale wall with a wall
+   * label beneath (artist, title in italics, medium, size), an uneven hang, a red dot for sold works,
+   * events as a programme, the lights coming up on each work as it scrolls in (galleries, museums,
+   * art fairs, artists' collectives, cultural centres).
    */
-  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic";
+  style?: "warm" | "editorial" | "bold" | "clean" | "luxe" | "swiss" | "bento" | "organic" | "cinematic" | "brutal" | "calm" | "kinetic" | "grand" | "avant" | "precise" | "monochrome" | "drafting" | "noir" | "folio" | "estate" | "voyage" | "museum";
 }
 
 export interface Business {

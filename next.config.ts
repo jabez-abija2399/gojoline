@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   // Cache Components / PPR are off: a nonce-based CSP needs every page rendered per request.
   // See docs/DECISIONS.md (2026-11-14, CSP).
   poweredByHeader: false,
+  // Our own server (deploy/server, Docker): a self-contained build. Vercel builds are unchanged.
+  ...(process.env.NEXT_OUTPUT === "standalone" ? { output: "standalone" as const } : {}),
   // The agent reads the template guide and copies template files into sandboxes at runtime.
   // Explicit folders only: negated globs are ignored here, and the template's node_modules
   // (~90 MB) must never ship inside the app's functions.
@@ -32,6 +34,11 @@ const nextConfig: NextConfig = {
       // and serve a stale copy for a week while refreshing. Pictures only, never a page or a redirect.
       {
         source: "/templates/:path(.+\\.(?:webp|png|jpe?g|avif))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
+      // Telegram starter media (public/kit/telegram): the same day-long caching.
+      {
+        source: "/kit/:path(.+\\.(?:webp|jpe?g|mp4))",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
       },
       // The guide's video, captions and screenshots (public/guide/, made by scripts/guide-assets.mts): same caching.

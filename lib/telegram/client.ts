@@ -3,6 +3,25 @@ export interface TelegramClient {
   sendMessage(chatId: string, html: string): Promise<void>;
   /** Downloads a file the user sent (photos); null if missing or too large. */
   downloadFile(fileId: string, maxBytes: number): Promise<Buffer | null>;
+  /**
+   * Posts to a chat or channel (our own posts): text, or a photo/video with a caption. Returns the
+   * message id, or throws with Telegram's reason.
+   */
+  post(chatId: string, input: { html: string; media?: { kind: "photo" | "video"; data: Buffer; name: string } | null }): Promise<string>;
+  /** Posts a photo or video Telegram fetches from a public https address, with a caption. */
+  postUrl(chatId: string, input: { html: string; kind: "photo" | "video"; url: string }): Promise<string>;
+  /** Posts 2–10 photos (public https addresses Telegram fetches) as one album, the caption under the first. Returns the first message id. */
+  album(chatId: string, input: { html: string; urls: string[] }): Promise<string>;
+  /** Posts a quiz poll (one right answer, shown with its explanation). Returns the message id. */
+  quiz(chatId: string, input: Quiz): Promise<string>;
+}
+
+export interface Quiz {
+  question: string;
+  options: string[];
+  /** Index of the right option. */
+  correct: number;
+  explanation: string;
 }
 
 export class BotApiClient implements TelegramClient {
@@ -28,6 +47,70 @@ export class BotApiClient implements TelegramClient {
     await this.call("sendMessage", { chat_id: chatId, text: html, parse_mode: "HTML", link_preview_options: { is_disabled: true } });
   }
 
+  async post(chatId: string, input: { html: string; media?: { kind: "photo" | "video"; data: Buffer; name: string } | null }) {
+    const send = async (method: string, body: FormData | object) => {
+      const res = await this.fetchImpl(`https://api.telegram.org/bot${this.token}/${method}`, {
+        method: "POST",
+        ...(body instanceof FormData ? { body } : { headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
+        signal: AbortSignal.timeout(120_000),
+      });
+      const data = (await res.json().catch(() => null)) as { ok?: boolean; result?: { message_id?: number }; description?: string } | null;
+      // Telegram's reason only, never the URL (it contains the token).
+      if (!data?.ok) throw new Error(`telegram ${method}: ${data?.description ?? res.status}`);
+      return String(data.result?.message_id ?? "");
+    };
+    const m = input.media;
+    // A caption under a photo or video may be 1024 characters; longer text follows as its own message.
+    if (m && input.html.length <= 1024) {
+      const form = new FormData();
+      form.set("chat_id", chatId);
+      form.set("caption", input.html);
+      form.set("parse_mode", "HTML");
+      form.set(m.kind, new Blob([new Uint8Array(m.data)]), m.name);
+      return send(m.kind === "photo" ? "sendPhoto" : "sendVideo", form);
+    }
+    if (m) {
+      const form = new FormData();
+      form.set("chat_id", chatId);
+      form.set(m.kind, new Blob([new Uint8Array(m.data)]), m.name);
+      await send(m.kind === "photo" ? "sendPhoto" : "sendVideo", form);
+    }
+    return send("sendMessage", { chat_id: chatId, text: input.html, parse_mode: "HTML" });
+  }
+
+  private async send(method: string, body: FormData | object): Promise<string> {
+    const res = await this.fetchImpl(`https://api.telegram.org/bot${this.token}/${method}`, {
+      method: "POST",
+      ...(body instanceof FormData ? { body } : { headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
+      signal: AbortSignal.timeout(120_000),
+    });
+    const data = (await res.json().catch(() => null)) as { ok?: boolean; result?: { message_id?: number } | { message_id?: number }[]; description?: string } | null;
+    // Telegram's reason only, never the URL (it contains the token).
+    if (!data?.ok) throw new Error(`telegram ${method}: ${data?.description ?? res.status}`);
+    const r = Array.isArray(data.result) ? data.result[0] : data.result;
+    return String(r?.message_id ?? "");
+  }
+
+  async postUrl(chatId: string, input: { html: string; kind: "photo" | "video"; url: string }) {
+    const captioned = input.html.length <= 1024;
+    const id = await this.send(input.kind === "photo" ? "sendPhoto" : "sendVideo", { chat_id: chatId, [input.kind]: input.url, ...(captioned ? { caption: input.html, parse_mode: "HTML" } : {}), ...(input.kind === "video" ? { supports_streaming: true } : {}) });
+    if (!captioned) await this.send("sendMessage", { chat_id: chatId, text: input.html, parse_mode: "HTML" });
+    return id;
+  }
+
+  async album(chatId: string, input: { html: string; urls: string[] }) {
+    // A caption may be 1024 characters; a longer one follows as its own message.
+    const captioned = input.html.length <= 1024;
+    const media = input.urls.slice(0, 10).map((url, i) => ({ type: "photo", media: url, ...(i === 0 && captioned ? { caption: input.html, parse_mode: "HTML" } : {}) }));
+    const id = await this.send("sendMediaGroup", { chat_id: chatId, media });
+    if (!captioned) await this.send("sendMessage", { chat_id: chatId, text: input.html, parse_mode: "HTML" });
+    return id;
+  }
+
+  async quiz(chatId: string, q: Quiz) {
+    return this.send("sendPoll", { chat_id: chatId, question: q.question, options: q.options.map((text) => ({ text })), type: "quiz", correct_option_id: q.correct, explanation: q.explanation, is_anonymous: true });
+  }
+
   async downloadFile(fileId: string, maxBytes: number) {
     const file = await this.call<{ file_path?: string; file_size?: number }>("getFile", { file_id: fileId });
     if (!file?.file_path || (file.file_size ?? 0) > maxBytes || !/^[\w/.-]+$/.test(file.file_path)) return null;
@@ -41,6 +124,23 @@ export class BotApiClient implements TelegramClient {
 export class MemoryTelegramClient implements TelegramClient {
   readonly sent: { chatId: string; html: string }[] = [];
   readonly files = new Map<string, Buffer>();
+  readonly posts: { chatId: string; html: string; media: { kind: string; name: string; bytes: number } | null }[] = [];
+  async post(chatId: string, input: { html: string; media?: { kind: "photo" | "video"; data: Buffer; name: string } | null }) {
+    this.posts.push({ chatId, html: input.html, media: input.media ? { kind: input.media.kind, name: input.media.name, bytes: input.media.data.length } : null });
+    return String(this.posts.length);
+  }
+  async postUrl(chatId: string, input: { html: string; kind: "photo" | "video"; url: string }) {
+    this.posts.push({ chatId, html: input.html, media: { kind: input.kind, name: input.url, bytes: 0 } });
+    return String(this.posts.length);
+  }
+  async album(chatId: string, input: { html: string; urls: string[] }) {
+    this.posts.push({ chatId, html: input.html, media: { kind: `album:${input.urls.length}`, name: input.urls[0] ?? "", bytes: 0 } });
+    return String(this.posts.length);
+  }
+  async quiz(chatId: string, q: Quiz) {
+    this.posts.push({ chatId, html: q.question, media: { kind: "quiz", name: q.options[q.correct] ?? "", bytes: 0 } });
+    return String(this.posts.length);
+  }
   async sendMessage(chatId: string, html: string) {
     this.sent.push({ chatId, html });
   }

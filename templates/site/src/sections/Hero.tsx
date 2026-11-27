@@ -19,6 +19,8 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
   const asked = section.variant ?? "split";
   const variant = asked === "immersive" && !section.image?.src ? "banner" : asked;
   const Heading = first ? "h1" : "h2";
+  // folio narrows the portrait column (folio.css), so it asks for a smaller file on desktop.
+  const portraitSizes = site.theme.style === "folio" ? "(min-width: 1152px) 360px, (min-width: 768px) 30vw, 225px" : "(min-width: 768px) 40vw, 225px";
   const facts = section.facts?.length ? section.facts : undefined;
 
   const actions = (outline = "btn-outline") => (
@@ -38,7 +40,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
 
   if (variant === "immersive") {
     return (
-      <section id={section.id} className={`hero-immersive relative isolate overflow-hidden bg-black text-white ${section.frame ? "hero-frame" : ""}`}>
+      <section id={section.id} className={`hero-immersive relative isolate overflow-hidden bg-black text-white ${section.frame ? "hero-frame" : ""} ${first ? "" : "hero-later"}`}>
         {/* The photo settles in slowly and drifts as the page scrolls (motion.css). */}
         <div className="hero-parallax absolute inset-0 -z-10">
           <Picture image={section.image} priority={first} wide sizes={FULL} className="hero-photo size-full" />
@@ -162,7 +164,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
 
   if (variant === "centered") {
     return (
-      <section id={section.id} className="section hero-glow md:py-24">
+      <section id={section.id} className="hero-centered section hero-glow md:py-24">
         <div className="container-site flex flex-col items-center gap-6 text-center">
           {section.eyebrow && <p className="hero-eyebrow enter">{text(section.eyebrow)}</p>}
           <Heading className="headline split max-w-4xl">
@@ -172,7 +174,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           {actions()}
           {section.image && (
             <div className="zoom mt-8 w-full rounded-site shadow-2xl shadow-primary/10">
-              <Picture image={section.image} priority={first} wide sizes="(min-width: 1152px) 1104px, (min-width: 768px) 100vw, 225px" className="aspect-[4/3] w-full rounded-site sm:aspect-[16/9]" />
+              <Picture image={section.image} priority={first} wide sizes={site.theme.style === "museum" ? FULL : "(min-width: 1152px) 1104px, (min-width: 768px) 100vw, 225px"} className="aspect-[4/3] w-full rounded-site sm:aspect-[16/9]" />
             </div>
           )}
           {facts && <Facts facts={facts} className="mt-2 w-full justify-center border-t border-line pt-6" />}
@@ -183,7 +185,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
 
   if (variant === "portrait") {
     return (
-      <section id={section.id} className="section hero-glow md:py-20">
+      <section id={section.id} className="hero-portrait section hero-glow md:py-20">
         <div className="container-site grid items-end gap-10 md:grid-cols-[1.25fr_1fr] md:gap-14">
           <div className="flex flex-col gap-6 md:pb-6">
             {section.eyebrow && (
@@ -201,7 +203,7 @@ export function Hero({ section, first }: { section: HeroSection; first: boolean 
           </div>
           <div className="relative mx-auto w-full max-w-sm md:max-w-none">
             <div className="zoom rounded-site">
-              <Picture image={section.image} priority={first} sizes="(min-width: 768px) 40vw, 225px" className="aspect-[4/5] w-full rounded-site" />
+              <Picture image={section.image} priority={first} sizes={portraitSizes} className="aspect-[4/5] w-full rounded-site" />
             </div>
             {section.stamp && <Stamp text={text(section.stamp)} className="absolute start-2 -bottom-8 size-28 md:-start-8 md:size-32" />}
           </div>

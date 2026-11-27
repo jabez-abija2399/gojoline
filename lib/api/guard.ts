@@ -12,7 +12,7 @@ export function json(status: number, body: unknown) {
 type Guarded = { ok: true; owner: string; builder: BuilderDeps } | { ok: false; response: NextResponse };
 
 /** Access gate + CSRF check + rate limit for builder API routes. */
-export async function guardBuilder(opts: { mutating: boolean; limit?: { name: string; perHour: number } }): Promise<Guarded> {
+export async function guardBuilder(opts: { mutating: boolean; limit?: { name: string; perHour: number; fixed?: boolean } }): Promise<Guarded> {
   if (opts.mutating && !(await sameOrigin())) return { ok: false, response: json(403, { error: "forbidden" }) };
   if (!(await hasBuilderAccess())) return { ok: false, response: json(401, { error: "access" }) };
   const builder = services().builder;
@@ -20,7 +20,8 @@ export async function guardBuilder(opts: { mutating: boolean; limit?: { name: st
   const owner = await ownerId();
   if (!owner) return { ok: false, response: json(401, { error: "access" }) };
   if (opts.limit) {
-    const override = Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR);
+    // The test/ops override never lifts a `fixed` limit (each site download is a full build).
+    const override = opts.limit.fixed ? 0 : Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR);
     const max = override || opts.limit.perHour;
     const limiter = services().rateLimiter;
     const [byOwner, byIp] = await Promise.all([

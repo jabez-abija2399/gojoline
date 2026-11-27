@@ -26,6 +26,7 @@ export const COMPARE_ROWS = [
   "telegramNotify",
   "telegramEdits",
   "storage",
+  "download",
   "support",
 ] as const;
 export type CompareRow = (typeof COMPARE_ROWS)[number];
@@ -62,6 +63,8 @@ function cell(row: CompareRow, f: PlanFeatures): Cell {
       return yesNo(f.telegramEdits);
     case "storage":
       return { kind: "size", text: storageLabel(f.storageBytes) };
+    case "download":
+      return yesNo(f.siteDownload);
     case "support":
       return { kind: "support", value: f.support };
   }
@@ -74,7 +77,7 @@ export function planComparison(features: Record<PlanId, PlanFeatures> = PLAN_FEA
 
 /** Highlight keys for a plan card, most important first; each maps to a message with {n}/{size}. */
 export type Highlight =
-  | { key: "sitesOne" | "freeAddress" | "ownDomainGuide" | "ownDomainForYou" | "badge" | "noBadge" | "telegramNotify" | "telegramEdits" | "supportChannel" | "supportChat" | "supportPriority" }
+  | { key: "sitesOne" | "freeAddress" | "ownDomainGuide" | "ownDomainForYou" | "badge" | "noBadge" | "telegramNotify" | "telegramEdits" | "download" | "supportChannel" | "supportChat" | "supportPriority" }
   | { key: "sitesMany" | "changes" | "changesRollover" | "answers"; n: number }
   | { key: "storage"; size: string };
 
@@ -91,6 +94,7 @@ export function planHighlights(plan: PlanId, features: Record<PlanId, PlanFeatur
   if (f.telegramEdits) out.push({ key: "telegramEdits" });
   if (f.telegramNotify) out.push({ key: "telegramNotify" });
   out.push({ key: "storage", size: storageLabel(f.storageBytes) });
+  if (f.siteDownload) out.push({ key: "download" });
   out.push({ key: f.support === "priority" ? "supportPriority" : f.support === "chat" ? "supportChat" : "supportChannel" });
   return out;
 }

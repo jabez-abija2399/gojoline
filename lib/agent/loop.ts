@@ -104,6 +104,13 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
   let lastBuildOk: boolean | null = null;
   let editedSinceBuild = false;
   let cost = 0;
+  /**
+   * What counts against the budget: the real cost, except writing the fixed prompt (system prompt
+   * and tools) to the cache, which is priced as a cache read. That write is overhead of a cold
+   * cache (the first request after ~5 idle minutes), not of the owner's request; counting it made
+   * cold edits stop after one turn (2026-11-19). The real cost is still logged and returned.
+   */
+  let budgetCost = 0;
   let reply = "";
   let turns = 0;
   let stoppedForBudget = false;
@@ -114,6 +121,7 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
   const emit = (e: AgentEvent) => input.onEvent?.(e);
   const price = priceOf(input.model);
   const fixedChars = JSON.stringify(input.system).length + JSON.stringify(agentTools).length;
+  const fixedTokens = Math.ceil(fixedChars / CHARS_PER_TOKEN);
   let lastPromptTokens = 0;
   let lastChars = 0;
   /**
@@ -124,7 +132,8 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
    */
   const estimateInputCost = (cacheMiss: boolean) => {
     const chars = JSON.stringify(messages).length;
-    if (lastPromptTokens === 0) return Math.ceil(((chars + fixedChars) / CHARS_PER_TOKEN) * price.input);
+    // First turn: the fixed prompt is priced as a cache read (see budgetCost), the rest as input.
+    if (lastPromptTokens === 0) return Math.ceil(fixedTokens * price.cacheRead + (chars / CHARS_PER_TOKEN) * price.input);
     const fresh = Math.max(0, chars - lastChars) / CHARS_PER_TOKEN;
     const cached = cacheMiss ? Math.max(price.cacheRead, price.cacheWrite) : price.cacheRead;
     return Math.ceil((lastPromptTokens * cached + fresh * price.cacheWrite) * INPUT_MARGIN);
@@ -159,14 +168,14 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
     let maxTokens = MAX_OUTPUT_TOKENS;
     if (Number.isFinite(budget)) {
       // Strict: what is left if the cached prompt missed the cache; otherwise the expected cost.
-      const left = budget - cost - estimateInputCost(input.strictBudget === true);
+      const left = budget - budgetCost - estimateInputCost(input.strictBudget === true);
       if (left < 0) {
         stoppedForBudget = true;
         break;
       }
       // Nearly used (expected cost): tell the model to finish a coherent site now, while it can still afford to.
-      const expectedLeft = budget - cost - estimateInputCost(false);
-      if (turns > 0 && (cost >= budget * WRAP_UP_SHARE || expectedLeft < wrapUpTokens * price.output)) wrapUp();
+      const expectedLeft = budget - budgetCost - estimateInputCost(false);
+      if (turns > 0 && (budgetCost >= budget * WRAP_UP_SHARE || expectedLeft < wrapUpTokens * price.output)) wrapUp();
       maxTokens = Math.max(MIN_USEFUL_TOKENS, Math.min(MAX_OUTPUT_TOKENS, Math.floor(left / price.output)));
     }
     turns += 1;
@@ -195,6 +204,9 @@ export async function runAgent(input: AgentRunInput): Promise<AgentRunResult> {
       purpose: "agent",
     });
     cost += response.costNanoUsd;
+    // Only the first turn writes the fixed prompt; later writes are this request's own new content.
+    const prefixWrite = turns === 1 ? Math.min(response.usage.cacheWriteTokens, fixedTokens) : 0;
+    budgetCost += response.costNanoUsd - Math.floor(prefixWrite * Math.max(0, price.cacheWrite - price.cacheRead));
     lastPromptTokens = response.usage.inputTokens + response.usage.cacheReadTokens + response.usage.cacheWriteTokens;
     lastChars = JSON.stringify(messages).length;
     await input.usage.log(usageRecord(response, { ...input.context, purpose: "agent" }));

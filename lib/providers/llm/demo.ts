@@ -14,7 +14,9 @@ export class DemoLLMProvider implements LLMProvider {
     const lastText = typeof last?.content === "string" ? last.content : "";
     const isToolResult = Array.isArray(last?.content) && last.content.some((c) => c.type === "tool_result");
     const owner = /<owner_message>\n([\s\S]*?)\n<\/owner_message>/.exec(lastText)?.[1] ?? "";
-    const current = /<current_site_json>\n([\s\S]*?)\n<\/current_site_json>/.exec(lastText)?.[1] ?? "";
+    // A brand-new site sends the starter only as a format example; the demo writes from it.
+    const current = (/<current_site_json>\n([\s\S]*?)\n<\/current_site_json>/.exec(lastText) ?? /<format_example>\n([\s\S]*?)\n<\/format_example>/.exec(lastText))?.[1] ?? "";
+    const isNew = lastText.includes("<new_site/>");
 
     let content;
     if (isToolResult || !owner) {
@@ -32,7 +34,10 @@ export class DemoLLMProvider implements LLMProvider {
       // "slowly" also writes a working note first, as the real model does between tool calls:
       // e2e checks it never reaches the owner's screen.
       const note = /\bslowly\b/i.test(owner) ? [textBlock("Primary #B85C7A (contrast vs #FCF7F6 is 4.9:1).")] : [];
-      content = match
+      // A new site is written whole (as the real model does), an existing one edited in place.
+      content = match && isNew
+        ? [...note, toolUseBlock("write_file", { path: "src/site.json", content: current.replace(match[0], match[0].replace(match[1]!, name)) }), toolUseBlock("run_build", {})]
+        : match
         ? [...note, toolUseBlock("search_replace", { path: "src/site.json", old_string: match[0], new_string: match[0].replace(match[1]!, name) }), toolUseBlock("run_build", {})]
         : [textBlock("I could not find the site name.")];
     }

@@ -9,8 +9,8 @@ export interface LegalDoc {
   sections: { heading: string; body: string[] }[];
 }
 
-const UPDATED_EN = "Last updated: 15 November 2026";
-const UPDATED_AM = "መጨረሻ የተሻሻለው፦ ኅዳር 6 ቀን 2019 ዓ.ም. (15 November 2026)";
+const UPDATED_EN = "Last updated: 25 November 2026";
+const UPDATED_AM = "መጨረሻ የተሻሻለው፦ ኅዳር 16 ቀን 2019 ዓ.ም. (25 November 2026)";
 
 export const legal: Record<"en" | "am", { privacy: LegalDoc; terms: LegalDoc }> = {
   en: {
@@ -56,6 +56,14 @@ export const legal: Record<"en" | "am", { privacy: LegalDoc; terms: LegalDoc }> 
           heading: "How long we keep it",
           body: [
             "We keep your account and sites while your account is open. Payment records are kept as long as the law requires. You can ask us to delete your account and its data.",
+          ],
+        },
+        {
+          heading: "Gojoline's own social media accounts",
+          body: [
+            "Our team connects Gojoline's own accounts (Telegram, Instagram and TikTok) in our private admin area, only to publish Gojoline's own posts and videos to those accounts.",
+            "For TikTok we use TikTok's Login Kit and Content Posting API: we read our account's display name, username and profile picture to show who we post as, and we upload our own videos with the audience and settings we choose before each post. We don't read, collect or store data about other TikTok users or our viewers.",
+            "The sign-in tokens these services give us are stored encrypted on our server, used only for this, and deleted when we disconnect the account.",
           ],
         },
         {
@@ -169,6 +177,14 @@ export const legal: Record<"en" | "am", { privacy: LegalDoc; terms: LegalDoc }> 
           heading: "መረጃውን ለምን ያህል ጊዜ እንይዛለን",
           body: [
             "መለያዎ ክፍት እስከሆነ ድረስ መለያዎን እና ድረ-ገጾችዎን እንይዛለን። የክፍያ መዝገቦች ሕጉ በሚጠይቀው ጊዜ ይቀመጣሉ። መለያዎ እና መረጃው እንዲሰረዝ መጠየቅ ይችላሉ።",
+          ],
+        },
+        {
+          heading: "የጎጆላይን የራሱ የማኅበራዊ ሚዲያ መለያዎች",
+          body: [
+            "ቡድናችን የጎጆላይንን የራሱን መለያዎች (ቴሌግራም፣ ኢንስታግራም እና ቲክቶክ) በግል የአስተዳዳሪ ክፍላችን ያገናኛል፤ ይህም የጎጆላይንን የራሱን ልጥፎችና ቪዲዮዎች ወደ እነዚያ መለያዎች ለመለጠፍ ብቻ ነው።",
+            "ለቲክቶክ የቲክቶክን Login Kit እና Content Posting API እንጠቀማለን፦ በማን ስም እንደምንለጥፍ ለማሳየት የመለያችንን ስም፣ የተጠቃሚ ስም እና የመገለጫ ፎቶ እናነባለን፤ የራሳችንን ቪዲዮዎችም ከእያንዳንዱ ልጥፍ በፊት በምንመርጠው ተመልካችና ቅንብር እንጭናለን። ስለ ሌሎች የቲክቶክ ተጠቃሚዎች ወይም ስለ ተመልካቾቻችን መረጃ አናነብም፣ አንሰበስብም፣ አናስቀምጥም።",
+            "እነዚህ አገልግሎቶች የሚሰጡን የመግቢያ ቶከኖች በሰርቨራችን ላይ ተመስጥረው ይቀመጣሉ፤ ለዚህ ብቻ ይውላሉ፤ መለያውን ስናላቅቅም ይሰረዛሉ።",
           ],
         },
         {

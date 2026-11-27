@@ -7,8 +7,8 @@ async function sizeFor(page: Page, project: string) {
 }
 
 const TEXT = {
-  en: { h1: "How to use Gojoline", toc: "On this page", describe: "Describe your business", play: "0:17: play part 2, Describe your business", faq: "Questions" },
-  am: { h1: "ጎጆላይንን እንዴት መጠቀም እንደሚቻል", toc: "በዚህ ገጽ ላይ", describe: "ንግድዎን ይግለጹ", play: "0:17 ፦ ክፍል 2፣ ንግድዎን ይግለጹ፣ ከዚህ ጀምሮ አጫውት", faq: "ጥያቄዎች" },
+  en: { h1: "How to use Gojoline", toc: "On this page", describe: "Describe what you want", play: "0:17: play part 2, Describe what you want", faq: "Questions" },
+  am: { h1: "ጎጆላይንን እንዴት መጠቀም እንደሚቻል", toc: "በዚህ ገጽ ላይ", describe: "የሚፈልጉትን ይግለጹ", play: "0:17 ፦ ክፍል 2፣ የሚፈልጉትን ይግለጹ፣ ከዚህ ጀምሮ አጫውት", faq: "ጥያቄዎች" },
 } as const;
 
 for (const lang of ["en", "am"] as const) {
@@ -67,7 +67,8 @@ for (const lang of ["en", "am"] as const) {
     // Nothing of the video has loaded yet; a chapter click starts it there.
     expect(media).toEqual([]);
     await toc.getByRole("link", { name: t.play }).click();
-    await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBe(17);
+    // The video plays on after the jump, so it is at 17 s or a moment past it.
+    await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime >= 17 && v.currentTime < 18.5)).toBe(true);
     await expect.poll(() => media.length).toBeGreaterThan(0);
     await expect(video).toBeFocused();
     await expect(video).toBeInViewport();
@@ -111,7 +112,7 @@ test("guide is linked from public pages and the sitemap", async ({ page }) => {
 test("guide is linked from the start screen, the menu and a site's dashboard", async ({ page }, info) => {
   await signIn(page);
   // First visit, no sites yet: the start screen offers the guide.
-  const startLink = page.getByRole("link", { name: "New here? Watch the 5-minute guide" });
+  const startLink = page.getByRole("link", { name: "New here? Watch the 6-minute guide" });
   await expect(startLink).toHaveAttribute("href", "/en/guide");
   await startLink.click();
   await expect(page.getByRole("heading", { level: 1, name: "How to use Gojoline" })).toBeVisible();

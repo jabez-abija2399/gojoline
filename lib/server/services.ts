@@ -1,4 +1,10 @@
+import { addisDay } from "@/lib/dashboard/stats";
+import { DbAnalytics, MemoryAnalytics, type AnalyticsSource } from "@/lib/analytics/report";
+import { DbEventStore, MemoryEventStore, type EventStore } from "@/lib/analytics/store";
 import "server-only";
+import { PausedLLMProvider, PausedSandboxProvider } from "@/lib/providers/sandbox/paused";
+import { DockerSandboxProvider } from "@/lib/providers/sandbox/docker";
+import { PausedPublishProvider } from "@/lib/providers/publish/paused";
 import { DbAdminStats, MemoryAdminStats, type AdminStats } from "@/lib/admin/stats";
 import type { PaymentNoticeDeps } from "@/lib/billing/notify";
 import { emailSender } from "@/lib/providers/notify/pick";
@@ -36,12 +42,29 @@ import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { VercelPublishProvider } from "@/lib/providers/publish/vercel";
 import { CloudflarePublishProvider } from "@/lib/providers/publish/cloudflare";
 import { R2StorageProvider } from "@/lib/providers/storage/r2";
+import sharp from "sharp";
+import { MemoryStorageProvider } from "@/lib/providers/storage/memory";
+import type { StorageProvider } from "@/lib/providers/storage/types";
+import { LLMCaptionWriter, PlainCaptionWriter } from "@/lib/posts/captions";
+import { templatePicture, type PostDeps } from "@/lib/posts/service";
+import { DbPostStore, MemoryPostStore, type PostStore } from "@/lib/posts/store";
+import { FakeVideoRenderer, HttpVideoRenderer } from "@/lib/posts/video";
+import { FacebookPagePublisher, InstagramPublisher, TelegramPublisher, TikTokInboxPublisher } from "@/lib/posts/publishers";
+import { signedMediaUrl } from "@/lib/posts/media-url";
+import { ConnectionStore, type Resolved } from "@/lib/posts/connections";
+import { KitStore } from "@/lib/posts/kit-store";
+import { FakeTikTokDirect, TikTokDirectClient, tiktokAccessToken } from "@/lib/posts/tiktok-direct";
+import { needsRenewal, renewInstagramToken } from "@/lib/posts/instagram-token";
+import { reportError } from "@/lib/observability/report";
+import { FakeVerifier, GraphVerifier } from "@/lib/posts/verify";
+import { PRESET_IDS, presetName } from "@/lib/template/presets";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemorySiteStore } from "@/lib/sites/memory-store";
 import { DbCloudStore } from "@/lib/cloud/db-store";
 import { MemoryCloudStore } from "@/lib/cloud/memory-store";
 import type { CloudStore, SubmissionNotifier } from "@/lib/cloud/types";
 import { DbAssetStore, MemoryAssetStore } from "@/lib/cloud/assets";
+import { DbCardStore, MemoryCardStore } from "@/lib/projects/cards";
 import { BotApiClient, MemoryTelegramClient, type TelegramClient } from "@/lib/telegram/client";
 import { DbSiteSettingsStore, MemorySiteSettingsStore, type SiteSettingsStore } from "@/lib/site-info/store";
 import { MemoryVisitCounter, RedisVisitCounter } from "@/lib/visits/counter";
@@ -60,7 +83,8 @@ import { DbShowcaseStore, MemoryShowcaseStore, type ShowcaseStore } from "@/lib/
 // The single place that picks service implementations from the environment.
 type Env = NodeJS.ProcessEnv;
 const isE2E = (env: Env) => env.E2E === "1";
-const onVercelProd = (env: Env) => env.NODE_ENV === "production" && env.VERCEL === "1";
+/** Production on Vercel or on our own server (deploy/server sets GOJO_SERVER=1): fail closed there. */
+const onVercelProd = (env: Env) => env.NODE_ENV === "production" && (env.VERCEL === "1" || env.GOJO_SERVER === "1");
 
 function pickRateLimiter(env: Env): RateLimiter {
   if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
@@ -93,11 +117,20 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
   const db = getDb(env);
   const store = db ? new DbProjectStore(db) : new MemoryProjectStore();
   const assets = db ? new DbAssetStore(db) : new MemoryAssetStore();
+  const cards = db ? new DbCardStore(db) : new MemoryCardStore();
   if (isE2E(env)) {
-    return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock(), assets };
+    return { store, sandboxes: new MemorySandboxProvider(starterFiles()), llm: new DemoLLMProvider(), usage, model: DEFAULT_MODEL, lock: new MemoryLock(), assets, cards };
   }
   const key = env.SAYSITE_ANTHROPIC_API_KEY;
-  if (!key || !env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID || !env.VERCEL_PROJECT_ID) return null;
+  // Our own server (deploy/server): workspaces run in Docker through the runner.
+  if (key && db && env.SANDBOX_RUNNER_URL && env.SANDBOX_RUNNER_SECRET) {
+    return { store, sandboxes: new DockerSandboxProvider({ url: env.SANDBOX_RUNNER_URL, secret: env.SANDBOX_RUNNER_SECRET }), llm: new AnthropicLLMProvider(key), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets, cards };
+  }
+  if (!key || !env.VERCEL_TOKEN || !env.VERCEL_TEAM_ID || !env.VERCEL_PROJECT_ID) {
+    // With a database, owners still see their sites, dashboards and messages; building waits.
+    if (!db) return null;
+    return { paused: true, store, sandboxes: new PausedSandboxProvider(), llm: new PausedLLMProvider(), usage, model: env.AGENT_MODEL || DEFAULT_MODEL, lock: pickLock(env), assets, cards };
+  }
   return {
     store,
     sandboxes: new VercelSandboxProvider({
@@ -111,6 +144,7 @@ function pickBuilder(env: Env, usage: UsageLogger): BuilderDeps | null {
     model: env.AGENT_MODEL || DEFAULT_MODEL,
     lock: pickLock(env),
     assets,
+    cards,
   };
 }
 
@@ -120,13 +154,17 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   const sites = db ? new DbSiteStore(db) : new MemorySiteStore();
   const cloud: CloudStore = db ? new DbCloudStore(db) : new MemoryCloudStore(sites as MemorySiteStore);
   const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, assets: builder.assets, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined };
+  const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, assets: builder.assets, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined, paused: builder.paused };
   if (isE2E(env)) return { ...base, publisher: new MemoryPublishProvider() };
   const vercel = env.VERCEL_TOKEN && env.VERCEL_TEAM_ID ? new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) : null;
   const cloudflare = pickCloudflarePublish(env);
   // Cloudflare once it's configured; sites still on the Vercel fallback move on their next publish.
   if (cloudflare) return { ...base, publisher: cloudflare, legacy: vercel };
-  return vercel ? { ...base, publisher: vercel } : null;
+  if (vercel) return { ...base, publisher: vercel };
+  // No host yet (Cloudflare not set up, Vercel paused): site lists and live addresses still show,
+  // and publishing says it's paused. With a real host above, publishSite still refuses while
+  // building is paused, but takedowns, the offline switch and domains keep working.
+  return { ...base, paused: true, publisher: new PausedPublishProvider(env.PUBLISH_BASE_DOMAIN || "") };
 }
 
 /** Sites on R2 + the sites Worker at *.PUBLISH_BASE_DOMAIN (see scripts/cloudflare-setup.mjs). */
@@ -184,8 +222,12 @@ interface Services {
   publicSites: PublicSiteCache;
   /** Owner feedback and the team's replies. */
   feedback: FeedbackStore;
+  /** Admin analytics counters (link clicks, publishes); counts only. */
+  analyticsEvents: EventStore;
   /** Growth loops: sign-up sources, referrals, and the public showcase (null without publishing or a database). */
   growth: { sources: SignupSourceStore; referrals: Referrals; showcase: ShowcaseStore | null };
+  /** Gojoline's own daily social posts (Admin → Posts). */
+  posts: PostDeps;
 }
 
 /** `ownerOf` serves the memory store only (the database joins projects instead). */
@@ -195,7 +237,7 @@ function pickVisits(env: Env, ownerOf: (projectId: string) => Promise<string | n
   return { counter: redis ? new RedisVisitCounter(redis) : new MemoryVisitCounter(), daily: db ? new DbVisitsDailyStore(db) : new MemoryVisitsDailyStore(ownerOf) };
 }
 
-const globalForServices = globalThis as unknown as { gojoServices?: Services };
+const globalForServices = globalThis as unknown as { gojoServices?: Services; gojoFakeTikTok?: FakeTikTokDirect };
 
 export function services(): Services {
   if (!globalForServices.gojoServices) {
@@ -218,8 +260,10 @@ export function services(): Services {
       moderation: null,
       siteSettings: db ? new DbSiteSettingsStore(db) : new MemorySiteSettingsStore(),
       visits: { counter: new MemoryVisitCounter(), daily: new MemoryVisitsDailyStore(async () => null) },
+      analyticsEvents: db ? new DbEventStore(db) : new MemoryEventStore(),
       checkText: (texts, ctx) => checkOwnerText(texts, null, ctx),
       publicSites: new PublicSiteCache(async () => null),
+      posts: null as unknown as PostDeps,
       growth: {
         sources,
         referrals: new Referrals(
@@ -273,6 +317,7 @@ export function services(): Services {
     if (svc.publish) {
       svc.publish.entitlements = billing.entitlements;
       svc.publish.settings = svc.siteSettings;
+      svc.publish.countPublish = (kind) => svc.analyticsEvents.bump(addisDay(Date.now()), "publish", kind);
       // Keywords always; the AI check when an API key is set (never in e2e).
       const key = process.env.SAYSITE_ANTHROPIC_API_KEY;
       const classifier = key && !isE2E(process.env) ? new LLMContentClassifier(new AnthropicLLMProvider(key), usage, process.env.SAFETY_MODEL || "claude-haiku-5-5") : null;
@@ -295,9 +340,103 @@ export function services(): Services {
       };
     }
     svc.telegram = pickTelegram(process.env);
+    svc.posts = pickPosts(process.env, svc, db ? new DbPostStore(db) : new MemoryPostStore(), usage);
     if (svc.telegram && svc.builder) svc.notifier = new TelegramNotifier(svc.telegram.store, svc.telegram.client, svc.builder.store);
   }
   return globalForServices.gojoServices;
+}
+
+/** The networks Admin → Posts sends to by itself, from the connections saved in Admin (or on the server). */
+function buildPublishers(r: Resolved, svc: Services, env: Env, connections: ConnectionStore): Awaited<ReturnType<PostDeps["publishers"]>> {
+  const out: Awaited<ReturnType<PostDeps["publishers"]>> = {};
+  if (svc.telegram && r.telegram) out.telegram = new TelegramPublisher(svc.telegram.client, r.telegram.channelId);
+  // Tests and dev never post to real networks.
+  if (isE2E(env)) return out;
+  const version = env.META_GRAPH_VERSION || "v27.0";
+  if (r.facebook) out.facebook = new FacebookPagePublisher(r.facebook.pageId, r.facebook.token, version);
+  // Instagram login (its own token, no Facebook Page) first; else through the Page.
+  if (r.instagram?.token) out.instagram = new InstagramPublisher(r.instagram.userId, r.instagram.token, version, fetch, undefined, r.instagram.host === "facebook" ? "graph.facebook.com" : "graph.instagram.com");
+  else if (r.instagram && r.facebook) out.instagram = new InstagramPublisher(r.instagram.userId, r.facebook.token, version);
+  if (r.tiktok?.refreshToken) {
+    out.tiktok = new TikTokInboxPublisher(r.tiktok.clientKey, r.tiktok.clientSecret, {
+      get: async () => (await connections.load()).tiktok?.refreshToken ?? null,
+      set: (token) => connections.saveTikTokToken(token, "system"),
+    });
+  }
+  return out;
+}
+
+/**
+ * Renews an Instagram login token saved in Admin once it is a week old (each lasts 60 days). Runs
+ * once per posting run (under its lock), never on page loads; a failure waits an hour before the
+ * next try, and a reconnect made meanwhile is never overwritten.
+ */
+async function renewInstagram(connections: ConnectionStore, env: Env): Promise<void> {
+  if (isE2E(env)) return;
+  const ig = (await connections.load()).instagram;
+  // Business (Unified login) tokens never expire: only Instagram-login tokens are renewed.
+  if (!ig?.token || ig.host === "facebook" || !ig.refreshedAt || !needsRenewal(ig.refreshedAt, Date.now(), ig.renewTriedAt)) return;
+  try {
+    await connections.saveInstagramToken(ig.token, await renewInstagramToken(ig.token), "system");
+  } catch (e) {
+    // The old token still works until it expires; reported once per try (at most hourly).
+    reportError("instagram token renewal failed", e);
+    await connections.saveInstagramRenewFailure(ig.token, "system").catch(() => undefined);
+  }
+}
+
+/** Admin → Posts: captions by Claude Haiku when a key is set (plain ones otherwise), our Telegram channel when set. */
+function pickPosts(env: Env, svc: Services, store: PostStore, usage: UsageLogger): PostDeps {
+  const key = env.SAYSITE_ANTHROPIC_API_KEY;
+  const db = getDb(env);
+  // Admin-saved connections (tokens sealed with the server secret); the server's settings as a fallback.
+  const settings = db ? new DbSettingsStore(db) : new MemorySettingsStore();
+  const connections = new ConnectionStore(settings, env.BETTER_AUTH_SECRET || (env.NODE_ENV !== "production" || (isE2E(env) && !env.APP_DOMAIN) ? "dev-only-secret-not-for-production-0123456789" : ""), isE2E(env) ? { TELEGRAM_CHANNEL_ID: "@gojoline_e2e" } : env);
+  // Rendered post videos (Step 3) live in R2 under posts/; memory without R2 (dev, e2e).
+  const files: StorageProvider =
+    !isE2E(env) && env.R2_ACCOUNT_ID && env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY
+      ? new R2StorageProvider({ accountId: env.R2_ACCOUNT_ID, accessKeyId: env.R2_ACCESS_KEY_ID, secretAccessKey: env.R2_SECRET_ACCESS_KEY, bucket: env.R2_BUCKET || "gojoline" })
+      : new MemoryStorageProvider();
+  return {
+    store,
+    files,
+    // Shared with the builder (Redis on the server): one post, and one plan, at a time.
+    lock: svc.builder?.lock ?? new MemoryLock(),
+    // The renderer service on our server; a stand-in in e2e; none elsewhere.
+    video: isE2E(env) ? new FakeVideoRenderer() : env.RENDERER_URL && env.RENDERER_SECRET ? new HttpVideoRenderer(env.RENDERER_URL, env.RENDERER_SECRET) : null,
+    captions: key && !isE2E(env) ? new LLMCaptionWriter(new AnthropicLLMProvider(key), usage, env.POSTS_MODEL || "claude-haiku-5-5") : new PlainCaptionWriter(),
+    publishers: async () => buildPublishers(await connections.load(), svc, env, connections),
+    maintain: () => renewInstagram(connections, env),
+    tiktokDirect: async () => {
+      if (isE2E(env)) return (globalForServices.gojoFakeTikTok ??= new FakeTikTokDirect());
+      const app = (await connections.load()).tiktok;
+      if (!app?.refreshToken) return null;
+      // The refresh token already loaded; a rotated one is saved (and used by the next client).
+      let refresh = app.refreshToken;
+      const tokens = { get: async () => refresh, set: async (token: string) => ((refresh = token), await connections.saveTikTokToken(token, "system")) };
+      return new TikTokDirectClient(() => tiktokAccessToken(app.clientKey, app.clientSecret, tokens));
+    },
+    connections,
+    kit: new KitStore(settings),
+    verify: isE2E(env) ? new FakeVerifier() : new GraphVerifier(env.META_GRAPH_VERSION || "v27.0"),
+    mediaUrl: (id) => (env.CRON_SECRET ? signedMediaUrl((env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""), env.CRON_SECRET, id) : null),
+    appUrl: (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+    context: async () => ({
+      templates: PRESET_IDS.map((id) => ({ id, name: presetName(id, "en"), nameAm: presetName(id, "am") })),
+      sites: ((await svc.growth.showcase?.postable(60)) ?? []).map((e) => ({ siteId: e.siteId, name: e.name, url: e.url })),
+    }),
+    media: async (m) => {
+      if (!m) return null;
+      if (m.type === "template") return templatePicture(m.id);
+      if (m.type === "site") {
+        const entry = ((await svc.growth.showcase?.postable(60)) ?? []).find((e) => e.siteId === m.siteId);
+        const thumb = entry?.thumb ? await svc.growth.showcase?.thumb(entry.thumb.key) : null;
+        return thumb ? { kind: "photo", data: await sharp(thumb).jpeg({ quality: 88 }).toBuffer(), name: "site.jpg" } : null;
+      }
+      const data = /^posts\/[\w/-]+\.mp4$/.test(m.key) ? await files.get(m.key) : null;
+      return data ? { kind: "video", data, name: "gojoline.mp4" } : null;
+    },
+  };
 }
 
 /** Who to tell about payments, and how (email via Resend, Telegram when linked). */
@@ -321,6 +460,13 @@ function showcaseChanged(): void {
 /** Accounts in the in-memory auth store (development and e2e only). */
 function memoryAccounts(): { id: string; name: string; email: string; phoneNumber?: string | null; createdAt: Date }[] {
   return (globalThis as unknown as { gojoAuthMemory?: { user?: { id: string; name: string; email: string; phoneNumber?: string | null; createdAt: Date }[] } }).gojoAuthMemory?.user ?? [];
+}
+
+/** Admin analytics by day, week and month (database when available). */
+export function analytics(): AnalyticsSource {
+  const db = getDb(process.env);
+  const events = services().analyticsEvents;
+  return db ? new DbAnalytics(db, events) : new MemoryAnalytics(events, memoryAccounts);
 }
 
 /** Admin overview numbers and user list (database when available). */

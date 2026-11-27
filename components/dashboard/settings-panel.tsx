@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Moon, RotateCcw, Sun as Wake, UploadCloud } from "lucide-react";
+import { Download, Moon, RotateCcw, Sun as Wake, UploadCloud } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { format } from "@/lib/i18n/format";
@@ -23,6 +23,8 @@ export interface SettingsState {
   current: number | null;
   languages: Lang[];
   siteName: string;
+  /** The plan includes "Download your website" (Business). */
+  canDownload: boolean;
 }
 
 const card = "flex scroll-mt-4 flex-col gap-4 rounded-2xl border border-line bg-white p-4 sm:p-6";
@@ -52,6 +54,7 @@ export function SettingsPanel({ t, tb, locale, projectId, bot, s, showcase }: { 
       <SeoSection t={t} projectId={projectId} s={s} />
       {showcase && <ShowcaseSection t={showcase.t} locale={locale} projectId={projectId} on={s.status === "live" || s.status === "resting" ? showcase.on : null} />}
       <VersionsSection t={t} locale={locale} projectId={projectId} s={s} />
+      <DownloadSection t={t} locale={locale} projectId={projectId} status={s.status} canDownload={s.canDownload} />
     </div>
   );
 }
@@ -59,7 +62,7 @@ export function SettingsPanel({ t, tb, locale, projectId, bot, s, showcase }: { 
 /** Publishes the latest version again from the dashboard (no AI, no credits). */
 export function PublishNow({ t, projectId }: { t: T; projectId: string }) {
   const router = useRouter();
-  const [state, setState] = useState<"idle" | "busy" | "done" | "failed">("idle");
+  const [state, setState] = useState<"idle" | "busy" | "done" | "failed" | "paused">("idle");
   return (
     <div className="flex flex-col gap-2">
       <button
@@ -69,7 +72,8 @@ export function PublishNow({ t, projectId }: { t: T; projectId: string }) {
           if (state === "busy") return;
           setState("busy");
           const res = await fetch(`/api/projects/${projectId}/publish`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug: "" }) }).catch(() => null);
-          setState(res?.ok ? "done" : "failed");
+          const code = res && !res.ok ? ((await res.json().catch(() => null)) as { error?: string } | null)?.error : null;
+          setState(res?.ok ? "done" : code === "paused" ? "paused" : "failed");
           if (res?.ok) router.refresh();
         }}
         className={outline}
@@ -77,7 +81,7 @@ export function PublishNow({ t, projectId }: { t: T; projectId: string }) {
         <UploadCloud aria-hidden="true" className="size-4" />
         {state === "busy" ? t.publishing : t.publishNow}
       </button>
-      <p role={state === "failed" ? "alert" : "status"} className={state === "failed" ? "text-danger" : "text-ink"}>{state === "done" ? t.publishedNow : state === "failed" ? t.publishFailed : ""}</p>
+      <p role={state === "failed" ? "alert" : "status"} className={state === "failed" ? "text-danger" : "text-ink"}>{state === "done" ? t.publishedNow : state === "failed" ? t.publishFailed : state === "paused" ? t.publishPaused : ""}</p>
     </div>
   );
 }
@@ -328,6 +332,61 @@ function VersionsSection({ t, locale, projectId, s }: { t: T; locale: Locale; pr
         <button type="button" onClick={() => setAll(true)} className={outline}>{format(t.showMore, { n: s.versions.length - 5 })}</button>
       )}
       <Confirm open={ask !== null} onClose={() => setAsk(null)} onConfirm={() => void restore()} busy={busy} title={format(t.restoreTitle, { date: ask === null ? "" : dateOf(ask) })} body={t.restoreBody} confirmLabel={busy ? t.restoring : t.restoreConfirm} cancelLabel={t.cancel} closeLabel={t.close} labelId="dash-restore-title" />
+    </section>
+  );
+}
+
+/**
+ * "Download your website" (Business): the live site as a ZIP to host anywhere. Other plans see
+ * what it is and where to get it; a draft is told to publish first.
+ */
+function DownloadSection({ t, locale, projectId, status, canDownload }: { t: T; locale: Locale; projectId: string; status: SettingsState["status"]; canDownload: boolean }) {
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<{ text: string; alert?: boolean } | null>(null);
+  const live = status === "live" || status === "resting";
+  const run = async () => {
+    setBusy(true);
+    setNote({ text: t.downloadPreparing });
+    const res = await fetch(`/api/projects/${projectId}/download`, { method: "POST" }).catch(() => null);
+    if (!res?.ok) {
+      const code = ((await res?.json().catch(() => null)) as { error?: string } | null)?.error;
+      setBusy(false);
+      return setNote({ text: code === "busy" ? t.downloadBusy : code === "too_many" ? t.downloadTooMany : code === "too_large" ? t.downloadTooLarge : code === "blocked" ? t.downloadBlocked : t.downloadFailed, alert: true });
+    }
+    const blob = await res.blob();
+    const name = /filename="([^"]+)"/.exec(res.headers.get("Content-Disposition") ?? "")?.[1] ?? "website.zip";
+    const href = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement("a"), { href, download: name });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(href), 60_000);
+    setBusy(false);
+    setNote({ text: t.downloadDone });
+  };
+  return (
+    <section id="download" aria-labelledby="dash-download-title" className={card}>
+      <h2 id="dash-download-title" className="flex items-center gap-2 text-base font-semibold">
+        <Download aria-hidden="true" className="size-5" />
+        {t.downloadTitle}
+      </h2>
+      <p className="max-w-[60ch] text-ink-muted">{t.downloadBody}</p>
+      {!canDownload ? (
+        <>
+          <p className="max-w-[60ch] text-ink">{t.downloadPlan}</p>
+          <a href={`/${locale}/billing`} className={outline}>{t.downloadUpgrade}</a>
+        </>
+      ) : status === "taken_down" ? (
+        <p className="text-ink-muted">{t.downloadTakenDown}</p>
+      ) : !live ? (
+        <p className="text-ink-muted">{t.downloadDraft}</p>
+      ) : (
+        <button type="button" onClick={() => void run()} disabled={busy} aria-disabled={busy} className={outline}>
+          <Download aria-hidden="true" className="size-4" />
+          {busy ? t.downloadPreparingShort : t.downloadCta}
+        </button>
+      )}
+      <p role={note?.alert ? "alert" : "status"} className={note?.alert ? "text-danger" : "text-ink-muted"}>{note?.text}</p>
     </section>
   );
 }

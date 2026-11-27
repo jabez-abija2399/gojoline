@@ -1,0 +1,20 @@
+# Keep the image build small and free of secrets (Dockerfile, deploy/server).
+.git
+node_modules
+.next
+templates/site/node_modules
+templates/site/dist*
+coverage
+playwright-report
+test-results
+blob-report
+.lighthouseci
+evals/.runs
+scripts/.tmp
+.env
+.env.*
+!.env.example
+*.pem
+.vercel
+.claude
+deploy/server/.env

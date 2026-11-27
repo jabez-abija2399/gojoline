@@ -13,7 +13,7 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
   const other: Locale = locale === "en" ? "am" : "en";
   const theme = await readTheme();
   const logo = (
-    <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 items-center rounded-md">
+    <Link href={`/${locale}`} aria-label={t.common.homeLink} className="inline-flex min-h-11 shrink-0 items-center rounded-md">
       {/* The brand logo: dark letters on light pages, its reversed version in dark mode. */}
       <Image src={locale === "am" ? "/brand/logo-am.svg" : "/brand/logo.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority={theme !== "dark"} className={`logo-light ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
       <Image src={locale === "am" ? "/brand/logo-am-reversed.svg" : "/brand/logo-reversed.svg"} alt={t.common.logoAlt} width={locale === "am" ? 137 : 164} height={42} priority={theme === "dark"} className={`logo-dark ${nav ? "h-9 w-auto" : "h-[42px] w-auto"}`} />
@@ -48,21 +48,22 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
                 {t.landing.nav.signIn}
               </Link>
             )}
-            <span className="[&>a]:rounded-full [&>a]:border-0 [&>a]:px-3 [&>a]:hover:bg-sunken">{language}</span>
+            <span className="max-sm:hidden [&>a]:rounded-full [&>a]:border-0 [&>a]:px-3 [&>a]:hover:bg-sunken">{language}</span>
             <span className="max-md:hidden">
               <ThemeToggle initial={theme} label={t.landing.nav.darkMode} />
             </span>
-            <Link href={signIn} className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 font-medium text-white hover:bg-ink-hover max-md:hidden">
+            {/* Shown on phones too, so the way in is on the first screen. */}
+            <Link href={signIn} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full bg-ink px-4 font-medium text-white hover:bg-ink-hover max-md:px-3.5">
               {startLabel}
             </Link>
-            {/* Phones: the page links and Sign in live behind one button. */}
+            {/* Phones: the page links and Sign in live behind one icon button. */}
             <PhoneMenu
               label={
                 <>
                   <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
                     <path d="M4 7h16M4 12h16M4 17h16" />
                   </svg>
-                  {t.landing.nav.menu}
+                  <span className="sr-only">{t.landing.nav.menu}</span>
                 </>
               }
             >
@@ -72,10 +73,11 @@ export async function SiteHeader({ locale, t, nav = false, current }: { locale: 
                     {l.label}
                   </Link>
                 ))}
+                {/* Small phones: the language link lives here, so the logo keeps its size in the bar. */}
+                <span className="sm:hidden">
+                  <LanguageSwitch target={other} label={t.common.languageSwitch} ariaLabel={t.common.languageSwitchLabel} className="flex min-h-11 items-center rounded-full px-4 font-medium text-ink hover:bg-sunken" />
+                </span>
                 <ThemeToggle initial={theme} label={t.landing.nav.darkMode} row />
-                <Link href={signIn} className="flex min-h-11 items-center justify-center rounded-full bg-ink px-4 font-semibold text-white hover:bg-ink-hover">
-                  {startLabel}
-                </Link>
               </nav>
             </PhoneMenu>
           </div>

@@ -77,7 +77,7 @@ export function Schedule({ section }: { section: ScheduleSection }) {
               ))}
             </ul>
           ) : (
-            <ul className="border-t border-line">
+            <ul className="schedule-list border-t border-line">
               {section.items.map((item, i) => (
                 <li key={i} className="reveal grid grid-cols-[minmax(6.5rem,auto)_1fr] items-baseline gap-x-5 border-b border-line py-4">
                   <span className="time-value">{text(item.time)}</span>

@@ -1,14 +1,14 @@
 import { expect, test, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAccountMenu, signIn } from "./helpers";
 
 const newContext = async (browser: import("@playwright/test").Browser) => {
   const o = test.info().project.use;
   return browser.newContext({ viewport: o.viewport, userAgent: o.userAgent, isMobile: o.isMobile, hasTouch: o.hasTouch, baseURL: o.baseURL });
 };
 
-/** The sidebar's feedback link (behind Menu on phones). */
+/** The feedback link, in the account menu (behind Menu on phones). */
 async function feedbackLink(page: Page) {
-  await openAppMenu(page);
+  await openAccountMenu(page);
   return page.getByRole("link", { name: /Send feedback/ });
 }
 
@@ -96,6 +96,8 @@ test("an owner sends feedback; an admin replies and plans it; the owner sees the
   await page.goto("/en/build");
   const link = await feedbackLink(page);
   await expect(link).toHaveAccessibleName(/1 new reply/);
+  // The closed account menu says so too (a dot on the account button).
+  await expect(page.getByRole("button", { name: /Account menu/ })).toHaveAccessibleName(/new reply/);
   await link.click();
   await expect(mine).toContainText("Planned");
   await expect(mine).toContainText("New reply");

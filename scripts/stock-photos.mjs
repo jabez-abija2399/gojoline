@@ -36,6 +36,8 @@ for (const niche of readdirSync(src).sort()) {
     const base = (width) => sharp(input).rotate().resize(tall ? { width, height: Math.round(width * 1.25), fit: "cover", position: "attention" } : { width, withoutEnlargement: true });
     const info = await base(800).webp({ quality: 70, effort: 6 }).toFile(join(out, `${name}.webp`));
     await base(480).webp({ quality: 68, effort: 6 }).toFile(join(out, `${name}-480.webp`));
+    // Artworks are all texture: even 480 px files are heavy, so phones get a 320 px file too (Picture.tsx).
+    if (niche === "art" && p.role === "card") await base(320).webp({ quality: 68, effort: 6 }).toFile(join(out, `${name}-320.webp`));
     if (p.role === "hero") await base(1600).webp({ quality: 62, effort: 6 }).toFile(join(out, `${name}-1600.webp`));
     catalogue[name] = { src: `/stock/${name}.webp`, width: info.width, height: info.height, shows: p.description, by: p.photographer, licence: p.licence, source: p.source_page_url };
   }

@@ -3,7 +3,7 @@
 export const errorMessages = {
   en: {
     notFoundTitle: "Page not found",
-    notFoundBody: "We couldn't find that page.",
+    notFoundBody: "The address may have a typo, or the page has moved. Start again from the home page.",
     serverTitle: "Something went wrong",
     serverBody: "We're fixing it. Please try again in a moment.",
     retry: "Try again",
@@ -13,7 +13,7 @@ export const errorMessages = {
   },
   am: {
     notFoundTitle: "ገጹ አልተገኘም",
-    notFoundBody: "የፈለጉትን ገጽ ማግኘት አልቻልንም።",
+    notFoundBody: "አድራሻው ስህተት ሊኖርበት ወይም ገጹ ተዛውሮ ሊሆን ይችላል። ከመነሻ ገጹ እንደገና ይጀምሩ።",
     serverTitle: "የሆነ ችግር ተፈጥሯል",
     serverBody: "እያስተካከልነው ነው። እባክዎ ትንሽ ቆይተው እንደገና ይሞክሩ።",
     retry: "እንደገና ይሞክሩ",

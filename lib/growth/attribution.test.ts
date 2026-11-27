@@ -48,7 +48,9 @@ describe("classifySource", () => {
     expect(c({ h: "l.facebook.com" })).toBe("facebook");
     expect(c({ s: "linkedin" })).toBe("linkedin");
     expect(c({ h: "lnkd.in" })).toBe("linkedin");
-    expect(c({ h: "www.google.com" })).toBe("other");
+    expect(c({ h: "www.google.com" })).toBe("google");
+    expect(c({ h: "l.instagram.com" })).toBe("instagram");
+    expect(c({ s: "youtube" })).toBe("youtube");
     expect(c({ c: "launch" })).toBe("other");
   });
   it("finds the referral code", () => {

@@ -170,9 +170,11 @@ describe("code rules at approval", () => {
 
   it("a code that ended before the payment was sent isn't counted; one that ends after still is", async () => {
     const { b, make, pay, setClock } = await setup();
-    await make({ expiresAt: new Date("2026-11-21T00:00:00Z") });
+    // The payment's time comes from the database clock (real time), so the dates follow it too.
+    const day = 86_400_000;
+    await make({ expiresAt: new Date(Date.now() + day) });
     const p = await pay("dan", "END00001");
-    setClock(new Date("2026-11-25T00:00:00Z"));
+    setClock(new Date(Date.now() + 5 * day));
     expect(await b.review("admin", p.id, "approve", null)).toBe("ok");
     expect(await b.quote("eve", "topup", "SAVE10X")).toEqual({ ok: false, error: "not_found" });
   }, 30_000);

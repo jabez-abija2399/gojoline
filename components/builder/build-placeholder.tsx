@@ -69,7 +69,7 @@ function Bone({ className, i = 0 }: { className: string; i?: number }) {
   return <div className={`skeleton ${className}`} style={style} />;
 }
 
-function PhoneOutline() {
+export function PhoneOutline() {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
@@ -91,7 +91,7 @@ function PhoneOutline() {
   );
 }
 
-function DesktopOutline() {
+export function DesktopOutline() {
   return (
     <div className="flex flex-col gap-10 px-8 py-5">
       <div className="flex items-center justify-between gap-6">

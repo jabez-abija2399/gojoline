@@ -8,7 +8,7 @@ test("pricing: monthly and yearly prices, the full comparison, notes and extras"
   await expect(billing.getByRole("link", { name: "Monthly" })).toHaveAttribute("aria-current", "true");
   await expect(page.getByText("499 Birr", { exact: true })).toBeVisible();
   await expect(page.getByText("or 4,990 Birr a year (2 months free)")).toBeVisible();
-  await expect(page.getByText("Most popular")).toBeVisible();
+  await expect(page.getByText("Recommended")).toBeVisible();
 
   const table = page.getByRole("table", { name: "What each plan includes" });
   await expect(table.getByRole("columnheader", { name: "Business" })).toBeVisible();

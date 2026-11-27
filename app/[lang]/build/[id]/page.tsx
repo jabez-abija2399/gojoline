@@ -12,11 +12,13 @@ import { nextMonthlyGrant } from "@/lib/billing/credits";
 import { creditSettings, launchOffer, ownerAllowance, planFeatures } from "@/lib/app/shell-data";
 import { upgradeChoices, upgradeHref, upgradeMonth } from "@/lib/billing/upgrade";
 import { offerBadgeText } from "@/lib/billing/offer-text";
+import { setupSections } from "@/lib/builder/setup-steps";
 
 export const metadata: Metadata = { robots: { index: false } };
 
-export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[id]">) {
+export default async function ProjectPage({ params, searchParams }: PageProps<"/[lang]/build/[id]">) {
   const { lang, id } = await params;
+  const wantsSetup = (await searchParams).setup === "1";
   if (!isLocale(lang) || !z.uuid().safeParse(id).success) notFound();
   const user = await currentUser();
   if (!user) redirect(`/${lang}/sign-in?next=/${lang}/build/${id}`);
@@ -44,15 +46,20 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
   const choices = upgradeChoices(plan, { prices: settings.prices, offer, now, features, topupCredits: cs.topupCredits });
 
   const who = user.name || user.phone || user.email || "";
+  // Just started from a template (its only version, nothing asked yet): the editor plays the build of
+  // the template's own sections once, over the preview, before showing the site.
+  const fromTemplate = wantsSetup && messages.length === 0 && versions.length === 1 && versions[0]!.summary.startsWith("template:");
+  const setup = fromTemplate ? setupSections((await builder.store.latestVersion(owner, id))?.files["src/site.json"] ?? "", Object.keys(t.builder.tlSection)) : null;
 
   return (
     <div data-gojo-theme={theme} className="flex h-dvh flex-col overflow-hidden bg-paper leading-normal text-ink">
       <div className="flex min-h-0 flex-1 flex-col">
-        <h1 className="sr-only">{project.name || t.builder.untitled}</h1>
         <Builder
+          paused={builder.paused}
           locale={lang}
           projectId={id}
           t={t.builder}
+          showcaseText={{ label: t.growth.showcase.settingLabel, hint: t.growth.showcase.settingHint, saved: t.growth.showcase.saved, savedOff: t.growth.showcase.savedOff, failed: t.growth.showcase.failed }}
           siteName={project.name || t.builder.untitled}
           chrome={{
             home: t.common.homeLink,
@@ -81,6 +88,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/build/[
             loading: t.dashboard.loading,
           }}
           initialCredits={credits}
+          setup={setup}
           nextGrant={nextGrant}
           upgrade={{
             plan,

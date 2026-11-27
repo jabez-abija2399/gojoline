@@ -1,0 +1,391 @@
+/*
+ * noir: fine dining by candlelight. The whole page turns dark: the owner's accent (a deep charcoal or
+ * brown) becomes the room, their background colour becomes the ink, their primary (brass, copper)
+ * marks the details. Photographs rise out of the dark, a quiet serif tells the story, the menu reads
+ * like a printed card. The theme's colours stay light-first (so its contrast checks hold), and this
+ * file inverts them for the page. Outside the cascade layers so it wins over the utility classes;
+ * every rule is scoped to [data-style="noir"]. Built only into noir sites (scripts/only-used-styles.ts).
+ */
+
+/* The owner's own colours, read before the page turns them around (avoids a variable cycle). */
+body:has([data-style="noir"]) {
+  --noir-paper: var(--site-background);
+  --noir-ink: var(--site-text);
+  --noir-room: var(--site-accent);
+  background: color-mix(in oklab, var(--site-accent) 82%, #000);
+}
+[data-style="noir"] {
+  --site-background: color-mix(in oklab, var(--noir-room) 82%, #000);
+  --site-surface: color-mix(in oklab, var(--noir-room) 92%, #fff);
+  --site-text: var(--noir-paper);
+  --site-muted: color-mix(in oklab, var(--noir-paper) 74%, var(--noir-room));
+  --site-line: color-mix(in oklab, var(--noir-paper) 16%, transparent);
+  --site-primary-soft: color-mix(in oklab, var(--site-primary) 16%, transparent);
+  --site-accent: color-mix(in oklab, var(--noir-room) 70%, #000);
+  --site-on-accent: var(--noir-paper);
+  --site-focus: var(--noir-paper);
+  color-scheme: dark;
+}
+[data-style="noir"] .site-root {
+  background: var(--site-background);
+  color: var(--site-text);
+}
+
+/* ---- Type: a quiet serif, centred titles, small spaced capitals ---- */
+[data-style="noir"] :is(.headline, .section-title, .item-title, .pull-quote) {
+  font-weight: 500;
+}
+[data-style="noir"] .headline {
+  font-size: clamp(3rem, 1.4rem + 6.5vw, 8rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+[data-style="noir"] .section-title {
+  font-size: clamp(2.25rem, 1.4rem + 3.2vw, 4.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+:lang(am) [data-style="noir"] :is(.headline, .section-title) {
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+[data-style="noir"] :is(.section-title, .depth-frame)::before {
+  display: none;
+}
+[data-style="noir"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab) {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.875rem;
+}
+:lang(am) [data-style="noir"] :is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab),
+[data-style="noir"] :lang(am):is(.eyebrow, .hero-eyebrow, .btn, .nav-link, .badge, .menu-tab) {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1rem;
+}
+[data-style="noir"] .eyebrow {
+  color: var(--site-primary);
+}
+[data-style="noir"] .eyebrow::before {
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+}
+/* Titled sections are centred, like a menu card. */
+[data-style="noir"] :is(.section-head, main > section > .container-site > .flex.flex-col:first-child):not(.about-text):has(> .section-title) {
+  align-items: center;
+  text-align: center;
+}
+[data-style="noir"] .hero-eyebrow {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+[data-style="noir"] .brand-mark {
+  display: none;
+}
+/* The glow only: the class is also on the split, centred and portrait heroes themselves. */
+[data-style="noir"] .hero-glow {
+  background-image: none;
+}
+
+/* ---- The room: no boxes, fine lines, brass details ---- */
+[data-style="noir"] :is(.card, .pcard, .menu-card) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+[data-style="noir"] .pcard > div:last-child {
+  padding-inline: 0;
+}
+[data-style="noir"] :is(.btn, .badge, input, select, textarea, form, .menu-tab) {
+  border-radius: 0;
+}
+[data-style="noir"] .btn-outline {
+  border-width: 1px;
+  border-color: var(--site-line);
+  color: var(--site-text);
+}
+[data-style="noir"] .site-header.header-scroll {
+  border-bottom: 1px solid var(--site-line);
+  background: color-mix(in oklab, var(--site-background) 92%, transparent);
+}
+[data-style="noir"] .nav-link,
+[data-style="noir"] .nav-lang {
+  border: 0;
+  background: none;
+}
+[data-style="noir"] .nav-link:hover {
+  background: none;
+  color: var(--site-primary);
+}
+[data-style="noir"] main section:is(.bg-surface, .bg-primary-soft) {
+  background: transparent;
+}
+/* Fields on the dark room: dark wells, light text, a border that reads (3:1). */
+[data-style="noir"] :is(input, select, textarea) {
+  border-color: color-mix(in oklab, var(--noir-paper) 45%, transparent);
+  background: color-mix(in oklab, var(--site-background) 70%, #000);
+  color: var(--site-text);
+}
+[data-style="noir"] :is(input, textarea)::placeholder {
+  color: var(--site-muted);
+}
+/* The phone menu: a solid panel of the room. */
+[data-style="noir"] .site-header details > nav {
+  border-color: var(--site-line);
+  background: var(--site-background);
+}
+[data-style="noir"] .wordmark {
+  min-width: 2.75rem;
+}
+/* The page behind the room (overscroll, scrollbar) is the room too. */
+html:has([data-style="noir"]) {
+  background: color-mix(in oklab, var(--site-accent) 82%, #000);
+  color-scheme: dark;
+}
+/* One brass action per view: the phone call bar's button is outlined. */
+[data-style="noir"] .sticky-actions .btn-primary {
+  border: 1px solid var(--site-primary);
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="noir"] main > section + section {
+  border-top: 1px solid var(--site-line);
+}
+[data-style="noir"] .wordmark {
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* ---- Hero: the dish in the dark, the words centred beneath ---- */
+[data-style="noir"] .hero-immersive > .container-site {
+  min-height: min(58rem, calc(100svh - 1px));
+  align-items: center;
+  text-align: center;
+}
+[data-style="noir"] .hero-immersive .hero-shade {
+  background: radial-gradient(ellipse at 50% 40%, transparent 20%, rgb(0 0 0 / 0.55) 75%), linear-gradient(to top, rgb(0 0 0 / 0.85), transparent 55%);
+}
+[data-style="noir"] .hero-immersive .enter.flex {
+  justify-content: center;
+}
+[data-style="noir"] .hero-immersive .eyebrow {
+  justify-content: center;
+}
+/* Keep the dish (low in the frame) in view on tall phone screens. */
+[data-style="noir"] .hero-immersive .hero-photo {
+  object-position: 50% 78%;
+}
+
+/* ---- Philosophy: one sentence, centred ---- */
+[data-style="noir"] .quote-section {
+  background: transparent;
+}
+[data-style="noir"] .quote-section .pull-quote {
+  font-size: clamp(1.75rem, 1rem + 2.6vw, 3.25rem);
+  line-height: 1.25;
+}
+[data-style="noir"] .quote-section .quote-mark {
+  color: var(--site-primary);
+}
+
+/* ---- Signature dishes: photographs in vignettes, words beside them ---- */
+[data-style="noir"] .feature-photo {
+  position: relative;
+}
+[data-style="noir"] .feature-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 45%, rgb(0 0 0 / 0.45));
+  pointer-events: none;
+}
+[data-style="noir"] .feature-photo :is(img, .placeholder) {
+  aspect-ratio: 4 / 5;
+}
+@media (min-width: 768px) {
+  [data-style="noir"] .feature-row {
+    grid-template-columns: 5fr 6fr;
+    column-gap: clamp(3rem, 7vw, 7rem);
+  }
+  [data-style="noir"] .feature-row:nth-child(even) {
+    grid-template-columns: 6fr 5fr;
+  }
+}
+
+/* ---- The chef: a photograph and a story ---- */
+[data-style="noir"] .about-photo :is(img, .placeholder) {
+  aspect-ratio: 4 / 5;
+}
+[data-style="noir"] .depth-frame::before {
+  border: 1px solid var(--site-primary);
+  border-radius: 0;
+  background: none;
+}
+
+/* ---- The menu: a printed card, names and prices on dotted leaders ---- */
+[data-style="noir"] .menu-card {
+  padding-inline: 0;
+}
+[data-style="noir"] .menu-card .item-title {
+  border-color: var(--site-primary);
+  text-align: center;
+  font-size: 1.75rem;
+}
+[data-style="noir"] .menu-card li p.font-semibold {
+  font-family: var(--site-font-heading);
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+[data-style="noir"] .leader {
+  border-color: var(--site-line);
+}
+[data-style="noir"] .menu-card .font-heading {
+  color: var(--site-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+[data-style="noir"] .menu-card .font-heading > span {
+  color: var(--site-muted);
+  opacity: 1;
+}
+/* Tags (Fasting) in small spaced capitals of the body face, not the display serif. */
+[data-style="noir"] .menu-card li p.font-semibold > span {
+  font-family: var(--site-font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+:lang(am) [data-style="noir"] .menu-card li p.font-semibold > span {
+  font-size: 0.875rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+/* The price row wraps as one piece on narrow screens. */
+@media (max-width: 399px) {
+  [data-style="noir"] .leader {
+    display: none;
+  }
+}
+/* Menu tabs: words with a brass underline, no boxes. */
+[data-style="noir"] .menu-tab {
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+}
+[data-style="noir"] .menu-tab:is([aria-pressed="true"], [aria-selected="true"]) {
+  border-color: currentColor;
+  background: none;
+  color: var(--site-primary);
+}
+[data-style="noir"] .menu-card .rounded-full {
+  border-radius: 0;
+  background: none;
+  border: 1px solid var(--site-line);
+}
+
+/* ---- Guests: quotes without boxes ---- */
+[data-style="noir"] .testimonial {
+  border: 0;
+  border-top: 1px solid var(--site-primary);
+  border-radius: 0;
+  background: none;
+  padding: 1.5rem 0 0;
+}
+[data-style="noir"] .testimonial blockquote {
+  font-family: var(--site-font-heading);
+  font-size: 1.375rem;
+  line-height: 1.4;
+}
+:lang(am) [data-style="noir"] .testimonial blockquote {
+  font-family: var(--site-font-body);
+  font-size: 1.125rem;
+}
+
+/* ---- Reservation: a full-width photograph, centred words ---- */
+[data-style="noir"] .cta-section {
+  padding-block: 0;
+}
+[data-style="noir"] .cta-section > .container-site {
+  max-width: none;
+  padding-inline: 0;
+}
+[data-style="noir"] .cta-band {
+  min-height: min(40rem, 85svh);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  text-align: center;
+}
+[data-style="noir"] .cta-band > div:first-of-type {
+  align-items: center;
+}
+[data-style="noir"] .cta-band :is(h1, h2) {
+  font-size: clamp(2.5rem, 1.4rem + 4vw, 5.5rem);
+  font-weight: 500;
+}
+[data-style="noir"] .cta-band > div:last-child {
+  width: auto;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+[data-style="noir"] .cta-band .btn {
+  white-space: nowrap;
+}
+
+/* ---- Footer: the room continues ---- */
+[data-style="noir"] .site-footer {
+  border-top: 1px solid var(--site-line);
+  background: var(--site-background);
+  color: var(--site-text);
+}
+[data-style="noir"] .site-footer p.font-semibold {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--site-primary);
+}
+:lang(am) [data-style="noir"] .site-footer p.font-semibold {
+  text-transform: none;
+  letter-spacing: 0;
+}
+[data-style="noir"] .footer-wordmark::before {
+  font-weight: 500;
+  opacity: 0.08;
+}
+
+/* ---- Motion: pictures rise out of the dark ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-style="noir"] .zoom img {
+    transition-duration: 1600ms;
+  }
+  @supports (animation-timeline: view()) {
+    /* clip, not hidden, so the photo frames don't become their own scrollers. */
+    [data-style="noir"] .zoom {
+      overflow: clip;
+    }
+    /* The rise is the only reveal here: the shared clip-path wipe would repaint every frame. */
+    [data-style="noir"] .wipe {
+      animation: none;
+    }
+    [data-style="noir"] :is(.feature-photo, .about-photo, .zoom) img {
+      animation: noir-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+  }
+}
+@keyframes noir-rise {
+  from {
+    opacity: 0.15;
+    scale: 1.06;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}

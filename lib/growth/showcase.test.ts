@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Database } from "@/lib/db/client";
 import { makeUser, testDb } from "@/test/db";
+import { eq } from "drizzle-orm";
+import { abuseReports, sites as sitesTable } from "@/lib/db/schema";
 import { DbProjectStore } from "@/lib/projects/db-store";
 import { DbSiteStore } from "@/lib/sites/db-store";
 import { MemoryProjectStore } from "@/lib/projects/memory-store";
@@ -85,6 +87,56 @@ describe("DbShowcaseStore (PGlite)", () => {
   });
   it("lists only opted-in, live, unhidden sites", async () => {
     await scenario(new DbShowcaseStore(db), new DbSiteStore(db), new DbProjectStore(db));
+  });
+
+  it("posts only sites opted in under the wording that includes posts; an older showcase-only yes is not enough", async () => {
+    const store = new DbShowcaseStore(db);
+    const sites = new DbSiteStore(db);
+    const projects = new DbProjectStore(db);
+    const p = await projects.createProject("alice", { name: "Selam", locale: "en" });
+    await sites.reserve("alice", p.id, "selam", "memory");
+    await sites.savePublished("alice", { projectId: p.id, slug: "selam", provider: "memory", providerProjectId: "prj", url: "https://selam.sites.example", publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+    await store.savePublished("alice", p.id, { name: "Selam", thumb: null });
+    // An opt-in from before the posts wording: showcase yes, posts no.
+    await db.update(sitesTable).set({ showcase: true, postsConsentAt: null }).where(eq(sitesTable.projectId, p.id));
+    expect(await store.list(10)).toHaveLength(1);
+    expect(await store.postable(10)).toEqual([]);
+    // Opting in now agrees to both; opting out ends both.
+    await store.setOptIn("alice", p.id, true);
+    expect(await store.postable(10)).toHaveLength(1);
+    await store.setOptIn("alice", p.id, false);
+    expect(await store.postable(10)).toEqual([]);
+    expect(await store.list(10)).toEqual([]);
+  });
+
+  it("offers each live site without posts consent for one invitation, never twice", async () => {
+    const store = new DbShowcaseStore(db);
+    const sites = new DbSiteStore(db);
+    const projects = new DbProjectStore(db);
+    const live = async (owner: string, name: string, slug: string) => {
+      const p = await projects.createProject(owner, { name, locale: "en" });
+      await sites.reserve(owner, p.id, slug, "memory");
+      await sites.savePublished(owner, { projectId: p.id, slug, provider: "memory", providerProjectId: "prj", url: `https://${slug}.sites.example`, publishedVersion: 1, lastDeploymentId: "d", publishedAt: new Date() });
+      return p.id;
+    };
+    const a = await live("alice", "Selam Cafe", "selam");
+    const b = await live("bob", "Abebe Shop", "abebe");
+    const c = await live("bob", "Resting", "resting");
+    await db.update(sitesTable).set({ offlineAt: new Date() }).where(eq(sitesTable.projectId, c));
+    await store.setOptIn("bob", b, true); // already said yes
+    const list = await store.invitable(10);
+    // No published card yet: no name (never the draft project's), the address is used instead.
+    expect(list.map((x) => x.url)).toEqual(["https://selam.sites.example"]);
+    expect(list[0]).toMatchObject({ projectId: a, ownerId: "alice", name: "" });
+    // A claim is taken once: a parallel run gets nothing; a release offers the site again.
+    expect(await store.claimInvite([list[0].siteId])).toEqual([list[0].siteId]);
+    expect(await store.claimInvite([list[0].siteId])).toEqual([]);
+    expect(await store.invitable(10)).toEqual([]);
+    await store.releaseInvite([list[0].siteId]);
+    expect(await store.invitable(10)).toHaveLength(1);
+    // Not while a report about the site waits for review.
+    await db.insert(abuseReports).values({ siteId: list[0].siteId, reason: "scam", reporterKey: "k", status: "open" });
+    expect(await store.invitable(10)).toEqual([]);
   });
 });
 

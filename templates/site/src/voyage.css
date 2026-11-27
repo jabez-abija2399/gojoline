@@ -1,0 +1,342 @@
+/*
+ * voyage: a journey told as the page scrolls. Full-screen photographs as chapters (I, II, III) with a
+ * panel of words laid over each, destinations in a staggered grid like pinned prints, the route
+ * day by day beside a photograph that stays put, warm parchment and a deep teal (the accent), a
+ * terracotta for the actions (the primary). Outside the cascade layers so it wins over the utility
+ * classes; every rule is scoped to [data-style="voyage"]. Built only into voyage sites
+ * (scripts/only-used-styles.ts).
+ */
+
+/* ---- Type: a light serif for the story, small capitals for the facts ---- */
+[data-style="voyage"] :is(.headline, .section-title, .item-title) {
+  font-weight: 500;
+}
+[data-style="voyage"] .headline {
+  font-size: clamp(3rem, 1.2rem + 7vw, 8.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+[data-style="voyage"] .section-title {
+  font-size: clamp(2.25rem, 1.3rem + 3.4vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+:lang(am) [data-style="voyage"] :is(.headline, .section-title) {
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+[data-style="voyage"] :is(.section-title, .depth-frame)::before {
+  display: none;
+}
+[data-style="voyage"] :is(.eyebrow, .hero-eyebrow, .btn, .badge, .nav-link, .meta) {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+:lang(am) [data-style="voyage"] :is(.eyebrow, .hero-eyebrow, .btn, .badge, .nav-link, .meta),
+[data-style="voyage"] :lang(am):is(.eyebrow, .hero-eyebrow, .btn, .badge, .nav-link, .meta) {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1rem;
+}
+[data-style="voyage"] .eyebrow {
+  color: var(--site-accent);
+}
+[data-style="voyage"] :is(.on-dark, .bg-accent, .hero-immersive) .eyebrow {
+  color: inherit;
+}
+[data-style="voyage"] .eyebrow::before {
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+}
+[data-style="voyage"] .hero-eyebrow {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+[data-style="voyage"] .brand-mark {
+  display: none;
+}
+/* The glow only: the class is also on the split, centred and portrait heroes themselves. */
+[data-style="voyage"] .hero-glow {
+  background-image: none;
+}
+
+/* ---- Surfaces ---- */
+[data-style="voyage"] :is(.card, .pcard) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+[data-style="voyage"] .pcard > div:last-child {
+  padding-inline: 0;
+}
+[data-style="voyage"] :is(.btn, .badge, input, select, textarea) {
+  border-radius: 0;
+}
+[data-style="voyage"] .site-header.header-scroll {
+  border-bottom: 1px solid var(--site-line);
+  background: var(--site-background);
+  backdrop-filter: none;
+}
+[data-style="voyage"] .nav-link,
+[data-style="voyage"] .nav-lang {
+  border: 0;
+  background: none;
+}
+[data-style="voyage"] :is(.bg-surface, .bg-primary-soft):is(section) {
+  background: transparent;
+}
+
+/* ---- The opening: the land, the title low, the shade strong enough for the menu ---- */
+[data-style="voyage"] .hero-immersive > .container-site {
+  min-height: min(60rem, calc(100svh - 1px));
+}
+[data-style="voyage"] .hero-immersive .hero-shade {
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.6), transparent 26%),
+    linear-gradient(to top, rgb(0 0 0 / 0.8), rgb(0 0 0 / 0.45) 45%, transparent 75%);
+}
+[data-style="voyage"] .hero-immersive .headline {
+  max-width: 12ch;
+}
+
+/* ---- Chapters: each later full-screen photograph is a numbered chapter, its words on a panel ---- */
+[data-style="voyage"] main {
+  counter-reset: voyage-chapter;
+}
+[data-style="voyage"] .hero-later {
+  counter-increment: voyage-chapter;
+}
+[data-style="voyage"] .hero-later > .container-site {
+  min-height: min(52rem, 96svh);
+  justify-content: flex-end;
+}
+[data-style="voyage"] .hero-later > .container-site > :is(.eyebrow, .headline, p) {
+  max-width: 34rem;
+}
+[data-style="voyage"] .hero-later .hero-shade {
+  background: linear-gradient(to top, rgb(0 0 0 / 0.75), transparent 60%);
+}
+[data-style="voyage"] .hero-later .eyebrow::before {
+  content: counter(voyage-chapter, upper-roman) / "";
+  width: auto;
+  height: auto;
+  margin-inline-end: 0.75rem;
+  background: none;
+}
+:lang(am) [data-style="voyage"] .hero-later .eyebrow::before {
+  content: counter(voyage-chapter, ethiopic-numeric) / "";
+}
+[data-style="voyage"] .hero-later .headline {
+  font-size: clamp(2.5rem, 1.2rem + 5vw, 6rem);
+}
+
+/* ---- Destinations: a staggered grid of tall prints, the facts beneath ---- */
+[data-style="voyage"] .card-grid :is(img, .placeholder) {
+  aspect-ratio: 3 / 4;
+}
+[data-style="voyage"] .card-grid .item-title {
+  font-size: 1.75rem;
+}
+@media (min-width: 1024px) {
+  [data-style="voyage"] .card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 2.5rem;
+    row-gap: 3rem;
+    padding-bottom: 6rem;
+  }
+  [data-style="voyage"] .card-grid > li:nth-child(3n + 2) {
+    translate: 0 6rem;
+  }
+  [data-style="voyage"] .card-grid > li:nth-child(3n) {
+    translate: 0 2.5rem;
+  }
+}
+
+/* ---- Journeys: large photographs with the days and the price beside ---- */
+[data-style="voyage"] .feature-photo :is(img, .placeholder) {
+  aspect-ratio: 4 / 3;
+}
+[data-style="voyage"] .feature-text .item-title {
+  font-size: clamp(2.25rem, 1.4rem + 2.4vw, 3.75rem);
+  letter-spacing: -0.02em;
+}
+[data-style="voyage"] .meta-item {
+  border: 1px solid var(--site-line);
+  border-radius: 0;
+  background: none;
+}
+
+/* ---- The route, day by day, beside a photograph that stays ---- */
+[data-style="voyage"] .service-row {
+  border-top: 1px solid var(--site-line);
+}
+[data-style="voyage"] .service-row .numeral {
+  color: var(--site-accent);
+  font-weight: 500;
+}
+
+/* ---- Words from travellers, the closing call ---- */
+[data-style="voyage"] .testimonial {
+  border: 0;
+  border-top: 1px solid currentColor;
+  border-radius: 0;
+  background: none;
+  padding: 1.5rem 0 0;
+}
+[data-style="voyage"] .testimonial blockquote {
+  font-family: var(--site-font-heading);
+  font-size: 1.5rem;
+  line-height: 1.35;
+}
+:lang(am) [data-style="voyage"] .testimonial blockquote {
+  font-family: var(--site-font-body);
+  font-size: 1.125rem;
+}
+[data-style="voyage"] .cta-section {
+  padding-block: 0;
+}
+[data-style="voyage"] .cta-section > .container-site {
+  max-width: none;
+  padding-inline: 0;
+}
+[data-style="voyage"] .cta-band {
+  min-height: min(40rem, 85svh);
+  border-radius: 0;
+  padding-inline: max(1rem, calc((100% - 72rem) / 2));
+}
+[data-style="voyage"] .cta-band :is(h1, h2) {
+  font-size: clamp(2.5rem, 1.4rem + 4vw, 5.5rem);
+  font-weight: 500;
+}
+[data-style="voyage"] .cta-band > div:last-child {
+  width: auto;
+  flex-flow: row wrap;
+}
+
+/* ---- Motion: chapters' photographs drift as they pass ---- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-style="voyage"] .zoom img {
+    transition-duration: 1400ms;
+  }
+  @supports (animation-timeline: view()) {
+    [data-style="voyage"] .hero-immersive.hero-later .hero-parallax {
+      inset: -10% 0;
+      animation: voyage-drift linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+    [data-style="voyage"] .hero-immersive.hero-later .hero-photo {
+      animation: none;
+    }
+  }
+}
+@keyframes voyage-drift {
+  from {
+    translate: 0 -7%;
+  }
+  to {
+    translate: 0 7%;
+  }
+}
+
+/* ---- Review fixes ---- */
+/* Chapters: a stronger shade under the words, and the numeral large on its own line. */
+[data-style="voyage"] .hero-later .hero-shade {
+  background:
+    linear-gradient(to top, rgb(0 0 0 / 0.82), rgb(0 0 0 / 0.55) 50%, transparent 85%),
+    linear-gradient(to right, rgb(0 0 0 / 0.45), transparent 65%);
+}
+[data-style="voyage"] .hero-later .eyebrow {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+[data-style="voyage"] .hero-later .eyebrow::before {
+  display: block;
+  margin: 0;
+  font-family: var(--site-font-heading);
+  font-size: clamp(3rem, 2rem + 4vw, 6rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+/* Lines and fields that read: a warmer, darker rule; underlined fields; no white boxes. */
+[data-style="voyage"] {
+  --site-line: color-mix(in srgb, var(--site-text) 22%, var(--site-background));
+}
+[data-style="voyage"] main section :is(form, .card, dl) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding-inline: 0;
+}
+[data-style="voyage"] :is(input, select, textarea) {
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--site-text) 55%, transparent);
+  background: transparent;
+}
+/* Facts as plain small capitals, not chips that look like buttons. */
+[data-style="voyage"] .meta-item {
+  border: 0;
+  padding: 0;
+  color: var(--site-muted);
+}
+[data-style="voyage"] .meta-item:not(:last-child)::after {
+  content: "\00b7" / "";
+  margin-inline-start: 0.75rem;
+}
+/* Destination captions line up. */
+[data-style="voyage"] .card-grid .eyebrow {
+  min-height: 2lh;
+  text-wrap: balance;
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  [data-style="voyage"] .card-grid {
+    padding-bottom: 3rem;
+  }
+  [data-style="voyage"] .card-grid > li:nth-child(2n) {
+    translate: 0 3rem;
+  }
+}
+@media (max-width: 1023px) {
+  [data-style="voyage"] .feature-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* The closing band aligns with the page's own edge. */
+[data-style="voyage"] .cta-band {
+  padding-inline: max(1rem, calc((100% - 72rem) / 2 + 1rem));
+}
+@media (min-width: 640px) {
+  [data-style="voyage"] .cta-band {
+    padding-inline: max(1.5rem, calc((100% - 72rem) / 2 + 1.5rem));
+  }
+}
+/* One terracotta action per view: the contact section's call button is outlined. */
+[data-style="voyage"] main section:has(dl) .btn-primary {
+  border: 1px solid currentColor;
+  background: transparent;
+  color: var(--site-text);
+}
+/* Performance review fixes. The chapter drift needs a timeline that can advance: overflow:hidden made
+   the section its own scroll container and froze view() at 50%; clip keeps the crop without that. */
+[data-style="voyage"] .hero-immersive.hero-later {
+  overflow: clip;
+}
+/* Destinations are 3:2 on phones and tablets (tall crops blew the photos up 4x); tall prints on desktop. */
+@media (max-width: 1023px) {
+  [data-style="voyage"] .card-grid :is(img, .placeholder) {
+    aspect-ratio: 3 / 2;
+  }
+}
+/* The clip-path reveal repaints the photo every frame while it runs; a plain fade is enough here. */
+[data-style="voyage"] .wipe {
+  animation: none;
+}

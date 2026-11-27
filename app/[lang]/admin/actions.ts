@@ -18,6 +18,7 @@ import { noticeDecision } from "@/lib/billing/notify";
 import { adminStats, paymentNotices, services } from "@/lib/server/services";
 import { adminFeedbackInput } from "@/lib/feedback/schema";
 import { invalidateShowcase } from "@/lib/growth/showcase-cache";
+import { inviteOwners } from "@/lib/growth/feature-invites";
 import { FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
@@ -380,4 +381,34 @@ export async function setShowcaseHidden(form: FormData) {
   invalidateShowcase();
   revalidatePath(`/${lang}/admin`);
   redirect(`/${lang}/admin?tab=growth&done=${done}#showcase-title`);
+}
+
+/** Admin → Growth: sends the one-time "Would you like to be featured?" message to owners not yet asked (audited). */
+export async function inviteOwnersToFeature(form: FormData) {
+  const me = await currentUser();
+  if (!me || !isAdmin(me)) redirect("/");
+  const lang = form.get("lang") === "am" ? "am" : "en";
+  const svc = services();
+  const showcase = svc.growth.showcase;
+  let query = "fi=failed";
+  if (showcase) {
+    try {
+      const { email, telegram, appUrl } = paymentNotices();
+      const store = svc.billing.store();
+      const r = await inviteOwners({
+        showcase,
+        email,
+        telegram: telegram ?? null,
+        contactFor: (id) => store.contactFor(id),
+        appUrl,
+        // One row per owner messaged, written as it happens (a later failure can't lose it).
+        audit: ({ ownerId, siteIds, channel }) => store.audit({ actorId: me.id, action: "showcase.invited", targetType: "user", targetId: ownerId, data: { siteIds, channel } }),
+      });
+      query = `fi=ok&sent=${r.sent}&unreachable=${r.unreachable}`;
+    } catch (error) {
+      reportError("feature invites failed", error);
+    }
+  }
+  revalidatePath(`/${lang}/admin`);
+  redirect(`/${lang}/admin?tab=growth&${query}#invite-title`);
 }

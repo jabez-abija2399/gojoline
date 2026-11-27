@@ -2,13 +2,13 @@ import { expect, test } from "@playwright/test";
 import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, signIn } from "./helpers";
 
 
-/** Desktop shows the business chips; phones show one "Choose your business" picker instead. */
+/** Desktop shows the business chips; phones show one "Choose a kind of site" picker instead. */
 async function pickBusiness(page: import("@playwright/test").Page, label: string) {
-  if (test.info().project.name === "mobile") await page.getByLabel("Choose your business").selectOption({ label });
+  if (test.info().project.name === "mobile") await page.getByLabel("Choose a kind of site").selectOption({ label });
   else await page.getByRole("group", { name: "Gojoline for" }).getByRole("button", { name: label, exact: true }).click();
 }
 async function expectPicked(page: import("@playwright/test").Page, label: string, timeout?: number) {
-  if (test.info().project.name === "mobile") await expect(page.getByLabel("Choose your business").locator("option:checked")).toHaveText(label, { timeout });
+  if (test.info().project.name === "mobile") await expect(page.getByLabel("Choose a kind of site").locator("option:checked")).toHaveText(label, { timeout });
   else await expect(page.getByRole("group", { name: "Gojoline for" }).getByRole("button", { name: label, exact: true })).toHaveAttribute("aria-pressed", "true", { timeout });
 }
 
@@ -16,7 +16,9 @@ test.describe("landing page", () => {
   test("redirects / to a language and remembers the choice", async ({ page }) => {
     await page.goto("/");
     await expect(page).toHaveURL(/\/en$/);
-    await page.getByRole("banner").getByRole("link", { name: "አማርኛ" }).click();
+    // Phones keep the language link in the menu, so the logo keeps its size.
+    if (test.info().project.name === "mobile") await page.locator("summary", { hasText: "Menu" }).click();
+    await page.getByRole("banner").getByRole("link", { name: "አማርኛ" }).filter({ visible: true }).click();
     await expect(page).toHaveURL(/\/am$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "am");
     await page.goto("/");
@@ -51,7 +53,7 @@ test.describe("landing page", () => {
     await pickBusiness(page, "Clinic");
     await expectPicked(page, "Clinic");
     // The description is filled in for editing.
-    await expect(page.getByRole("textbox", { name: "Describe your business" })).toHaveValue(/A family clinic in Megenagna/);
+    await expect(page.getByRole("textbox", { name: "Describe your website" })).toHaveValue(/A family clinic in Megenagna/);
     // Features: picking one shows its description; the one before closes.
     const birr = page.getByRole("button", { name: "Pay in Birr", exact: true });
     await birr.click();
@@ -63,13 +65,13 @@ test.describe("landing page", () => {
     await expect(page.getByText(/send the transaction number/i)).toBeVisible();
     // Templates and prices have their own pages, reached from the menu (behind "Menu" on phones).
     const openMenu = async () => {
-      if (test.info().project.name === "mobile") await page.getByText("Menu", { exact: true }).click();
+      if (test.info().project.name === "mobile") await page.locator("summary", { hasText: "Menu" }).click();
     };
     await openMenu();
     await page.getByRole("navigation", { name: "Main" }).filter({ visible: true }).getByRole("link", { name: "Templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
     await expect(page.getByRole("heading", { level: 1, name: "Start from a real site" })).toBeVisible();
-    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(22);
+    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(32);
     await expectNoSeriousA11yIssues(page);
     await expectNoHorizontalScroll(page);
     await openMenu();
@@ -85,7 +87,7 @@ test.describe("landing page", () => {
 
   test("describe a business on the landing page, sign in, and the site builds itself", async ({ page }) => {
     await page.goto("/en");
-    await page.getByRole("textbox", { name: "Describe your business" }).fill("Kaldi Books in Piassa");
+    await page.getByRole("textbox", { name: "Describe your website" }).fill("Kaldi Books in Piassa");
     await page.getByRole("group", { name: "Site language" }).getByText("Both").click();
     await page.getByRole("button", { name: "Build my site" }).click();
     await expect(page).toHaveURL(/\/en\/sign-in\?next=/);
@@ -102,7 +104,7 @@ test.describe("landing page", () => {
     await code.fill(((await res.json()) as { code: string }).code);
     await page.getByRole("button", { name: "Continue" }).click();
     // No more clicks: the new site opens and builds from the description.
-    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
     await expect(page.getByText("Saved as version 1").first()).toBeVisible();
     expect(sent).toMatchObject({ text: "Kaldi Books in Piassa", languages: ["en", "am"] });
   });
@@ -111,14 +113,14 @@ test.describe("landing page", () => {
     await page.goto("/en");
     // The showcase opens on the café; picking another never overwrites what the visitor wrote.
     await expectPicked(page, "Café");
-    const box = page.getByRole("textbox", { name: "Describe your business" });
+    const box = page.getByRole("textbox", { name: "Describe your website" });
     await box.fill("My own words");
     await pickBusiness(page, "Hotel");
     await expect(box).toHaveValue("My own words");
     await expectPicked(page, "Hotel");
     await expect(page.getByRole("figure", { name: /builder with the site it made for Tana Shore Lodge/ })).toBeVisible();
 
-    await page.getByRole("link", { name: "See all 22 templates" }).click();
+    await page.getByRole("link", { name: "See all 32 templates" }).click();
     await expect(page).toHaveURL(/\/en\/templates$/);
     await page.getByRole("list", { name: "Example sites" }).getByRole("link", { name: /Clinic/ }).click();
     // Every section of the template first, then the choice.
@@ -135,7 +137,7 @@ test.describe("landing page", () => {
     await code.fill(((await res.json()) as { code: string }).code);
     await page.getByRole("button", { name: "Continue" }).click();
     // The clinic template opens as the new account's first site.
-    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
     await expect(page.getByText("Your Clinic site is ready").first()).toBeAttached();
   });
 
@@ -200,7 +202,7 @@ test("signed in: every way in leads to Your sites, never to the sign-in page", a
   // (no sites yet) starts building it at once, with no sign-in page in between.
   await page.locator("#hero-prompt").fill("Kaldi Books in Piassa");
   await page.locator("#hero-prompt").press("Control+Enter");
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   await expect(page.getByRole("log", { name: "Chat" }).getByText("Kaldi Books in Piassa")).toBeVisible();
 
   await page.goto("/en/pricing");
@@ -263,7 +265,7 @@ test("landing motion: the demo plays itself and can be paused; reduced motion ke
   await calm.goto("/en");
   await calm.waitForTimeout(7000);
   // Still on the first business (the picker on phones, the chips on larger screens).
-  if (test.info().project.name === "mobile") await expect(calm.getByLabel("Choose your business").locator("option:checked")).toHaveText("Café");
+  if (test.info().project.name === "mobile") await expect(calm.getByLabel("Choose a kind of site").locator("option:checked")).toHaveText("Café");
   else await expect(calm.getByRole("group", { name: "Gojoline for" }).getByRole("button", { name: "Café", exact: true })).toHaveAttribute("aria-pressed", "true");
   await still.close();
 });

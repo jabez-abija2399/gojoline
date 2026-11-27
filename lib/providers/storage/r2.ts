@@ -32,11 +32,12 @@ export class R2StorageProvider implements StorageProvider {
       { method, host: this.host, path, query: opts.query, headers: opts.headers, body: opts.body },
     );
     const qs = opts.query ? `?${new URLSearchParams(opts.query).toString().replace(/\+/g, "%20")}` : "";
-    return this.fetch(`https://${this.host}${path}${qs}`, { method, headers, body: opts.body ? new Uint8Array(opts.body) : undefined });
+    // A Buffer is already a Uint8Array: sent as it is, never copied (videos can be tens of MB).
+    return this.fetch(`https://${this.host}${path}${qs}`, { method, headers, body: opts.body ? new Uint8Array(opts.body.buffer as ArrayBuffer, opts.body.byteOffset, opts.body.byteLength) : undefined });
   }
 
   async put(key: string, data: Buffer | string, opts: { contentType?: string; cacheControl?: string } = {}) {
-    const body = Buffer.from(data);
+    const body = typeof data === "string" ? Buffer.from(data) : data;
     const headers: Record<string, string> = { "content-type": opts.contentType ?? "application/octet-stream" };
     if (opts.cacheControl) headers["cache-control"] = opts.cacheControl;
     for (let attempt = 0; ; attempt++) {

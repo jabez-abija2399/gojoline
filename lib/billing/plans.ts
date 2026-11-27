@@ -54,6 +54,7 @@ export const PLAN_FEATURES: Record<PlanId, PlanFeatures> = {
     telegramNotify: true,
     telegramEdits: false,
     storageBytes: 500 * MB,
+    siteDownload: false,
     support: "chat",
   },
   business: {
@@ -69,6 +70,7 @@ export const PLAN_FEATURES: Record<PlanId, PlanFeatures> = {
     telegramNotify: true,
     telegramEdits: true,
     storageBytes: 2048 * MB,
+    siteDownload: true,
     support: "priority",
   },
 };
@@ -76,7 +78,7 @@ export const PLAN_FEATURES: Record<PlanId, PlanFeatures> = {
 /** The limits the server enforces, without the display-only fields. */
 export function entitlementsOf(plan: PlanId): Entitlements {
   const f = PLAN_FEATURES[plan];
-  return { plan: f.plan, customDomain: f.customDomain, maxSites: f.maxSites, badge: f.badge, telegramNotify: f.telegramNotify, telegramEdits: f.telegramEdits, answersPerMonth: f.answersPerMonth, storageBytes: f.storageBytes };
+  return { plan: f.plan, customDomain: f.customDomain, maxSites: f.maxSites, badge: f.badge, telegramNotify: f.telegramNotify, telegramEdits: f.telegramEdits, answersPerMonth: f.answersPerMonth, storageBytes: f.storageBytes, siteDownload: f.siteDownload };
 }
 
 /** What a year costs compared with twelve months, in santim (never negative). */

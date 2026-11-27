@@ -1,0 +1,349 @@
+{
+  "name": { "en": "Ruth Mekonnen", "am": "ሩት መኮንን" },
+  "tagline": { "en": "Creative developer in Addis Ababa: interfaces, websites and the systems behind them", "am": "በአዲስ አበባ የፈጠራ ገንቢ፦ በይነገጾች፣ ድረ-ገጾችና ከኋላቸው ያሉ ሥርዓቶች" },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "theme": { "primary": "#141414", "accent": "#141414", "background": "#F5F3EE", "text": "#141414", "highlight": "#FF6B3D", "font": "grotesk", "radius": "small", "style": "folio" },
+  "business": {
+    "phone": "+251 911 000 000",
+    "telegram": "yourbusiness",
+    "address": { "en": "Addis Ababa, and remote", "am": "አዲስ አበባ፣ እና በርቀት" }
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": { "en": "Home", "am": "መነሻ" },
+      "nav": { "en": "Index", "am": "ማውጫ" },
+      "description": { "en": "Ruth Mekonnen, creative developer in Addis Ababa. Selected work, case studies and how to reach her.", "am": "ሩት መኮንን፣ በአዲስ አበባ የፈጠራ ገንቢ። የተመረጡ ሥራዎች፣ ዝርዝር ጥናቶችና እሷን የሚያገኙበት መንገድ።" },
+      "sections": [
+        {
+          "type": "hero",
+          "id": "top",
+          "variant": "portrait",
+          "eyebrow": { "en": "Available for work from March", "am": "ከመጋቢት ጀምሮ ለሥራ ዝግጁ" },
+          "heading": { "en": "I build interfaces people remember", "am": "ሰዎች የሚያስታውሷቸውን በይነገጾች እገነባለሁ" },
+          "subheading": { "en": "Creative developer in Addis Ababa. I design and build websites, products and the small details that make them feel alive.", "am": "በአዲስ አበባ የፈጠራ ገንቢ። ድረ-ገጾችን፣ ምርቶችንና ሕያው የሚያደርጓቸውን ትናንሽ ዝርዝሮች እነድፋለሁ፣ እገነባለሁም።" },
+          "image": {
+            "src": "/stock/personal-hero-woman-orange-blazer.webp",
+            "alt": { "en": "A smiling young woman with natural hair in an orange blazer against a pale teal wall", "am": "ብርቱካናማ ኮት የለበሰች፣ ፈገግ ያለች ወጣት ሴት በፈዛዛ አረንጓዴ-ሰማያዊ ግድግዳ ፊት" }
+          },
+          "stamp": { "en": "Creative developer", "am": "የፈጠራ ገንቢ · አዲስ አበባ" },
+          "primaryAction": {
+            "label": { "en": "See the work", "am": "ሥራዎቹን ይመልከቱ" },
+            "href": "/work"
+          },
+          "secondaryAction": {
+            "label": { "en": "Say hello", "am": "ሰላም ይበሉ" },
+            "href": "/contact"
+          }
+        },
+        {
+          "type": "cards",
+          "id": "work",
+          "layout": "index",
+          "eyebrow": { "en": "selected work", "am": "የተመረጡ ሥራዎች" },
+          "heading": { "en": "Work", "am": "ሥራዎች" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-card-website-laptop.webp",
+                "alt": { "en": "A laptop on a desk showing an architecture website", "am": "የሥነ ሕንፃ ድረ-ገጽ የሚያሳይ ላፕቶፕ በጠረጴዛ ላይ" }
+              },
+              "title": { "en": "Kuraz Studio site", "am": "የኩራዝ ስቱዲዮ ድረ-ገጽ" },
+              "subtitle": { "en": "Website and 3D", "am": "ድረ-ገጽና 3D" },
+              "meta": [
+                { "en": "2026", "am": "2018 ዓ.ም." },
+                { "en": "React, WebGL", "am": "React፣ WebGL" }
+              ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
+              "description": { "en": "A portfolio site that loads in under a second on a 3G phone.", "am": "በ3G ስልክ ከአንድ ሰከንድ ባነሰ ጊዜ የሚከፈት የሥራ ማሳያ ድረ-ገጽ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-logo-tablet.webp",
+                "alt": { "en": "A hand drawing a bear-head logo on a black tablet", "am": "በጥቁር ታብሌት ላይ የድብ ራስ አርማ የሚስል እጅ" }
+              },
+              "title": { "en": "Gebeta brand system", "am": "የገበታ ብራንድ ሥርዓት" },
+              "subtitle": { "en": "Identity and design system", "am": "መለያና የዲዛይን ሥርዓት" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "Figma, tokens", "am": "Figma፣ ቶክኖች" }
+              ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
+              "description": { "en": "One set of design tokens for an app, a website and the shop window.", "am": "ለመተግበሪያ፣ ለድረ-ገጽና ለሱቅ መስኮት አንድ የዲዛይን ቶክኖች ስብስብ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/business-card-analytics.webp",
+                "alt": { "en": "A person in a navy blazer working on a laptop that shows pie and bar charts", "am": "የፓይና የአሞሌ ሰንጠረዦች በሚያሳይ ላፕቶፕ ላይ የሚሠራ ሰው" }
+              },
+              "title": { "en": "Mesob dashboard", "am": "የመሶብ ዳሽቦርድ" },
+              "subtitle": { "en": "Product design", "am": "የምርት ዲዛይን" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "TypeScript, D3", "am": "TypeScript፣ D3" }
+              ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
+              "description": { "en": "Sales data for 300 shops, readable at a glance in Amharic or English.", "am": "ለ300 ሱቆች የሽያጭ መረጃ፣ በአማርኛ ወይም በእንግሊዝኛ በአንድ እይታ የሚነበብ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-brochure-layout.webp",
+                "alt": { "en": "An open printed brochure with a pink editorial layout", "am": "ሮዝ ገጽታ ያለው የተከፈተ የታተመ ብሮሸር" }
+              },
+              "title": { "en": "Lomi annual report", "am": "የሎሚ ዓመታዊ ሪፖርት" },
+              "subtitle": { "en": "Print and web", "am": "ኅትመትና ድረ-ገጽ" },
+              "meta": [
+                { "en": "2024", "am": "2016 ዓ.ም." },
+                { "en": "InDesign, Astro", "am": "InDesign፣ Astro" }
+              ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
+              "description": { "en": "A report people actually read, in print and as a scrolling story.", "am": "ሰዎች በእርግጥ የሚያነቡት ሪፖርት፣ በኅትመትና እንደ ተሸብላይ ታሪክ።" }
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "id": "cases",
+          "layout": "feature",
+          "eyebrow": { "en": "case studies", "am": "ዝርዝር ጥናቶች" },
+          "heading": { "en": "Two projects, up close", "am": "ሁለት ፕሮጀክቶች፣ በቅርበት" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/real-estate-hero-modern-apartment-corner-sky.webp",
+                "alt": { "en": "The top corner of a black-and-white apartment block against a pale sky", "am": "በፈዛዛ ሰማይ ፊት የጥቁርና ነጭ የመኖሪያ ሕንፃ የላይኛው ጥግ" }
+              },
+              "title": { "en": "Kuraz Studio site", "am": "የኩራዝ ስቱዲዮ ድረ-ገጽ" },
+              "subtitle": { "en": "Website and 3D", "am": "ድረ-ገጽና 3D" },
+              "meta": [
+                { "en": "2026", "am": "2018 ዓ.ም." },
+                { "en": "React, WebGL", "am": "React፣ WebGL" }
+              ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
+              "description": { "en": "The brief: show heavy 3D work without a heavy page. I built a viewer that streams each model only when you reach it, and a fallback image for slow phones. The site went from 9 MB to 600 KB on first load.", "am": "መመሪያው፦ ከባድ የ3D ሥራን ከባድ ባልሆነ ገጽ ማሳየት። እያንዳንዱን ሞዴል ሲደርሱበት ብቻ የሚያወርድ ማሳያና ለዝግተኛ ስልኮች ምትክ ምስል ሠራሁ። የመጀመሪያው ጭነት ከ9 MB ወደ 600 KB ወረደ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/business-hero-team-meeting.webp",
+                "alt": { "en": "Five people around a white table in a bright meeting room", "am": "በብሩህ የስብሰባ ክፍል ውስጥ በነጭ ጠረጴዛ ዙሪያ ያሉ አምስት ሰዎች" }
+              },
+              "title": { "en": "Mesob dashboard", "am": "የመሶብ ዳሽቦርድ" },
+              "subtitle": { "en": "Product design", "am": "የምርት ዲዛይን" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "TypeScript, D3", "am": "TypeScript፣ D3" }
+              ],
+              "action": {
+                "label": { "en": "See the project", "am": "ፕሮጀክቱን ይመልከቱ" },
+                "href": "/work"
+              },
+              "description": { "en": "Shop owners checked sales in a notebook. I sat with six of them for a week, then designed a dashboard that answers their three real questions on one screen.", "am": "የሱቅ ባለቤቶች ሽያጭን በደብተር ይከታተሉ ነበር። ከስድስቱ ጋር ለአንድ ሳምንት ተቀምጬ፣ ሦስቱን እውነተኛ ጥያቄዎቻቸውን በአንድ ስክሪን የሚመልስ ዳሽቦርድ ነደፍኩ።" }
+            }
+          ]
+        },
+        {
+          "type": "services",
+          "id": "skills",
+          "variant": "numbered",
+          "eyebrow": { "en": "what I do", "am": "የምሠራው" },
+          "heading": { "en": "Skills", "am": "ክህሎቶች" },
+          "items": [
+            {
+              "title": { "en": "Interfaces", "am": "በይነገጾች" },
+              "description": { "en": "React, TypeScript, CSS that moves without hurting the page.", "am": "React፣ TypeScript፣ ገጹን ሳይጎዳ የሚንቀሳቀስ CSS።" }
+            },
+            {
+              "title": { "en": "Design systems", "am": "የዲዛይን ሥርዓቶች" },
+              "description": { "en": "Tokens, components and documentation teams actually use.", "am": "ቡድኖች በእርግጥ የሚጠቀሙባቸው ቶክኖች፣ ክፍሎችና ሰነዶች።" }
+            },
+            {
+              "title": { "en": "Motion", "am": "እንቅስቃሴ" },
+              "description": { "en": "Small, purposeful animation, and none for those who ask for less.", "am": "ትንሽ፣ ዓላማ ያለው እንቅስቃሴ፣ ያነሰ ለሚፈልጉ ደግሞ ምንም።" }
+            },
+            {
+              "title": { "en": "Amharic on the web", "am": "አማርኛ በድረ-ገጽ" },
+              "description": { "en": "Ge'ez type that reads well on every screen.", "am": "በሁሉም ስክሪን ላይ በደንብ የሚነበብ የግዕዝ ፊደል።" }
+            }
+          ]
+        },
+        {
+          "type": "timeline",
+          "id": "experience",
+          "eyebrow": { "en": "experience", "am": "የሥራ ልምድ" },
+          "heading": { "en": "Where I have been", "am": "የሠራሁባቸው" },
+          "items": [
+            {
+              "period": { "en": "2023 – now", "am": "2015 – አሁን" },
+              "title": { "en": "Independent creative developer", "am": "ራሱን የቻለ የፈጠራ ገንቢ" },
+              "place": { "en": "Addis Ababa", "am": "አዲስ አበባ" }
+            },
+            {
+              "period": { "en": "2020 – 2023", "am": "2012 – 2015" },
+              "title": { "en": "Front-end lead", "am": "የፊት ገጽ መሪ" },
+              "place": { "en": "A fintech start-up", "am": "የፋይናንስ ቴክኖሎጂ ጀማሪ ድርጅት" }
+            },
+            {
+              "period": { "en": "2017 – 2020", "am": "2009 – 2012" },
+              "title": { "en": "Designer and developer", "am": "ዲዛይነርና ገንቢ" },
+              "place": { "en": "A creative agency", "am": "የፈጠራ ኤጀንሲ" }
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "id": "belief",
+          "quote": { "en": "The best interface is the one nobody has to think about, and everybody remembers.", "am": "ምርጡ በይነገጽ ማንም ሊያስብበት የማይገባው፣ ሁሉም ግን የሚያስታውሰው ነው።" }
+        },
+        {
+          "type": "cta",
+          "id": "contact",
+          "heading": { "en": "Have something to build?", "am": "የሚገነባ ነገር አለዎት?" },
+          "body": { "en": "Tell me about it. I take on a few projects at a time.", "am": "ይንገሩኝ። በአንድ ጊዜ ጥቂት ፕሮጀክቶችን ብቻ እይዛለሁ።" },
+          "primaryAction": {
+            "label": { "en": "Say hello", "am": "ሰላም ይበሉ" },
+            "href": "/contact"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/work",
+      "title": { "en": "Work", "am": "ሥራዎች" },
+      "nav": { "en": "Work", "am": "ሥራዎች" },
+      "description": { "en": "Websites, products and design systems by Ruth Mekonnen.", "am": "በሩት መኮንን የተሠሩ ድረ-ገጾች፣ ምርቶችና የዲዛይን ሥርዓቶች።" },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "all",
+          "layout": "index",
+          "eyebrow": { "en": "all work", "am": "ሁሉም ሥራዎች" },
+          "heading": { "en": "Everything, newest first", "am": "ሁሉም፣ አዲሱ በመጀመሪያ" },
+          "items": [
+            {
+              "image": {
+                "src": "/stock/personal-card-website-laptop.webp",
+                "alt": { "en": "A laptop on a desk showing an architecture website", "am": "የሥነ ሕንፃ ድረ-ገጽ የሚያሳይ ላፕቶፕ በጠረጴዛ ላይ" }
+              },
+              "title": { "en": "Kuraz Studio site", "am": "የኩራዝ ስቱዲዮ ድረ-ገጽ" },
+              "subtitle": { "en": "Website and 3D", "am": "ድረ-ገጽና 3D" },
+              "meta": [
+                { "en": "2026", "am": "2018 ዓ.ም." },
+                { "en": "React, WebGL", "am": "React፣ WebGL" }
+              ],
+              "description": { "en": "A portfolio site that loads in under a second on a 3G phone.", "am": "በ3G ስልክ ከአንድ ሰከንድ ባነሰ ጊዜ የሚከፈት የሥራ ማሳያ ድረ-ገጽ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-logo-tablet.webp",
+                "alt": { "en": "A hand drawing a bear-head logo on a black tablet", "am": "በጥቁር ታብሌት ላይ የድብ ራስ አርማ የሚስል እጅ" }
+              },
+              "title": { "en": "Gebeta brand system", "am": "የገበታ ብራንድ ሥርዓት" },
+              "subtitle": { "en": "Identity and design system", "am": "መለያና የዲዛይን ሥርዓት" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "Figma, tokens", "am": "Figma፣ ቶክኖች" }
+              ],
+              "description": { "en": "One set of design tokens for an app, a website and the shop window.", "am": "ለመተግበሪያ፣ ለድረ-ገጽና ለሱቅ መስኮት አንድ የዲዛይን ቶክኖች ስብስብ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/business-card-analytics.webp",
+                "alt": { "en": "A person in a navy blazer working on a laptop that shows pie and bar charts", "am": "የፓይና የአሞሌ ሰንጠረዦች በሚያሳይ ላፕቶፕ ላይ የሚሠራ ሰው" }
+              },
+              "title": { "en": "Mesob dashboard", "am": "የመሶብ ዳሽቦርድ" },
+              "subtitle": { "en": "Product design", "am": "የምርት ዲዛይን" },
+              "meta": [
+                { "en": "2025", "am": "2017 ዓ.ም." },
+                { "en": "TypeScript, D3", "am": "TypeScript፣ D3" }
+              ],
+              "description": { "en": "Sales data for 300 shops, readable at a glance in Amharic or English.", "am": "ለ300 ሱቆች የሽያጭ መረጃ፣ በአማርኛ ወይም በእንግሊዝኛ በአንድ እይታ የሚነበብ።" }
+            },
+            {
+              "image": {
+                "src": "/stock/personal-card-brochure-layout.webp",
+                "alt": { "en": "An open printed brochure with a pink editorial layout", "am": "ሮዝ ገጽታ ያለው የተከፈተ የታተመ ብሮሸር" }
+              },
+              "title": { "en": "Lomi annual report", "am": "የሎሚ ዓመታዊ ሪፖርት" },
+              "subtitle": { "en": "Print and web", "am": "ኅትመትና ድረ-ገጽ" },
+              "meta": [
+                { "en": "2024", "am": "2016 ዓ.ም." },
+                { "en": "InDesign, Astro", "am": "InDesign፣ Astro" }
+              ],
+              "description": { "en": "A report people actually read, in print and as a scrolling story.", "am": "ሰዎች በእርግጥ የሚያነቡት ሪፖርት፣ በኅትመትና እንደ ተሸብላይ ታሪክ።" }
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "next",
+          "heading": { "en": "Have something to build?", "am": "የሚገነባ ነገር አለዎት?" },
+          "primaryAction": {
+            "label": { "en": "Say hello", "am": "ሰላም ይበሉ" },
+            "href": "/contact"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "title": { "en": "Contact", "am": "አድራሻ" },
+      "nav": { "en": "Contact", "am": "አድራሻ" },
+      "description": { "en": "Write to Ruth Mekonnen about a project.", "am": "ስለ ፕሮጀክት ለሩት መኮንን ይጻፉ።" },
+      "sections": [
+        {
+          "type": "form",
+          "id": "hello",
+          "kind": "contact",
+          "eyebrow": { "en": "say hello", "am": "ሰላም ይበሉ" },
+          "heading": { "en": "Tell me about your project", "am": "ስለ ፕሮጀክትዎ ይንገሩኝ" },
+          "fields": [
+            {
+              "name": "name",
+              "label": { "en": "Your name", "am": "ስምዎ" },
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "email",
+              "label": { "en": "Email", "am": "ኢሜይል" },
+              "type": "email",
+              "required": true
+            },
+            {
+              "name": "message",
+              "label": { "en": "What are you making?", "am": "ምን እየሠሩ ነው?" },
+              "type": "textarea",
+              "required": true
+            }
+          ],
+          "submitLabel": { "en": "Send", "am": "ላክ" },
+          "successMessage": { "en": "Thank you. I will write back.", "am": "እናመሰግናለን። መልስ እጽፋለሁ።" }
+        },
+        {
+          "type": "contact",
+          "id": "elsewhere",
+          "eyebrow": { "en": "elsewhere", "am": "በሌላ መንገድ" },
+          "heading": { "en": "Or call or message", "am": "ወይም ይደውሉ ወይም መልእክት ይላኩ" }
+        }
+      ]
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 "use server";
 
+import { refreshCardSoon } from "@/lib/projects/cards";
 import { redirect } from "next/navigation";
 import { ownerId } from "@/lib/builder/access";
 import { isLocale } from "@/lib/i18n/config";
 import { clientIp } from "@/lib/server/request";
 import { services } from "@/lib/server/services";
-import { getMessages } from "@/lib/i18n";
 import { isPresetId, presetVersionFiles } from "@/lib/template/presets";
 
 export async function createProject(form: FormData) {
@@ -13,7 +13,7 @@ export async function createProject(form: FormData) {
   const owner = await ownerId();
   if (!owner) redirect(`/${lang}/sign-in?next=/${lang}/build`);
   const builder = services().builder;
-  if (!builder) redirect(`/${lang}/build`);
+  if (!builder || builder.paused) redirect(`/${lang}/build`);
   const perHour = Number(process.env.BUILDER_RATE_LIMIT_PER_HOUR) || 10;
   const limiter = services().rateLimiter;
   // Per owner and per IP: clearing the owner cookie must not reset the limit.
@@ -24,13 +24,18 @@ export async function createProject(form: FormData) {
   if (!byOwner.allowed || !byIp.allowed) redirect(`/${lang}/build?error=too_many`);
   // Starting from an industry template gives a ready site as version 1 (no AI cost).
   const preset = form.get("preset");
-  // Named after the kind of business until the owner gives the real name (not the example's).
+  // "New site" until the owner gives the real name (never the template's or its example business's).
   const project = await builder.store.createProject(owner, {
-    name: isPresetId(preset) ? getMessages(lang).builder.templates[preset] : "",
+    name: "",
     locale: lang,
     // Recorded so the templates page can say how many businesses use each one.
     templateId: isPresetId(preset) ? preset : null,
   });
-  if (isPresetId(preset)) await builder.store.addVersion(owner, { projectId: project.id, summary: `template:${preset}`, files: presetVersionFiles(preset) });
-  redirect(`/${lang}/build/${project.id}`);
+  if (isPresetId(preset)) {
+    await builder.store.addVersion(owner, { projectId: project.id, summary: `template:${preset}`, files: presetVersionFiles(preset) });
+    // Its card in "Your sites" (from the template's photo), made while the owner looks at the site.
+    refreshCardSoon(builder, owner, project);
+  }
+  // From a template: the editor plays the build of its sections once, then shows the site.
+  redirect(`/${lang}/build/${project.id}${isPresetId(preset) ? "?setup=1" : ""}`);
 }

@@ -1,16 +1,20 @@
 import { expect, test } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn, unfold } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, billingTab, payFor, signIn, unfold } from "./helpers";
 
 test("an owner sends a payment and an admin approves it", async ({ page, browser }) => {
   await signIn(page);
   // The changes left are in sight from the first screen.
   await openAppMenu(page);
   await expect(page.getByRole("link", { name: /10 changes left.*Free plan.*Upgrade/ })).toBeVisible();
+  // Plan and payments lives in the account menu (and behind the changes-left card).
+  await page.getByRole("button", { name: /Account menu/ }).click();
   await page.getByRole("link", { name: "Plan and payments", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Plan and payments", level: 1 })).toBeVisible();
   await expect(page.getByText("Your plan: Free")).toBeVisible();
   await expect(page.locator('li[aria-current="true"]')).toContainText("Your plan");
   // Payment in three steps; Telebirr and CBE come from the admin's settings.
+  // Paying has its own tab.
+  await billingTab(page, "Pay");
   for (const n of [1, 2, 3]) await expect(page.getByRole("heading", { name: new RegExp(`^Step ${n}:`) })).toBeVisible();
   await expect(page.getByText("Telebirr number").first()).toBeVisible();
   await expect(page.getByText("0911000000", { exact: true })).toBeVisible();
@@ -18,7 +22,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
 
-  await page.getByLabel("What are you paying for?").selectOption("starter_month");
+  await payFor(page, "starter_month");
   await page.getByRole("button", { name: "Send for checking" }).click();
   await expect(page.locator("main").getByRole("alert")).toContainText("transaction number");
   await expect(page.getByLabel("Transaction number")).toBeFocused();
@@ -38,7 +42,7 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
 
   // The same transaction number cannot be used twice, even typed differently.
   await page.getByRole("button", { name: "Send another payment" }).click();
-  await page.getByLabel("What are you paying for?").selectOption("starter_month");
+  await payFor(page, "starter_month");
   await page.getByLabel("Transaction number").fill(reference.toLowerCase().replace("E2E", "e2e-"));
   await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
   await page.getByRole("button", { name: "Send for checking" }).click();
@@ -61,7 +65,9 @@ test("an owner sends a payment and an admin approves it", async ({ page, browser
 
   await page.goto("/en/billing");
   await expect(page.getByText("Your plan: Starter")).toBeVisible();
-  // Phones fold the payment list away.
+  // A fresh approval says so at the top; the list is in the History tab (folded on phones).
+  await expect(page.getByRole("heading", { name: "Payment approved", level: 2 })).toBeVisible();
+  await billingTab(page, "History");
   await unfold(page, /Your payments/);
   await expect(page.getByText("Approved", { exact: true })).toBeVisible();
 });
@@ -78,10 +84,10 @@ test("payment steps: plan cards choose the product, Telebirr or CBE, copy button
   await expect(business).toContainText("a year");
   await expect(business).toContainText(/You save [\d,.]+ Birr a year/);
   await business.getByRole("link", { name: "Choose Business" }).click();
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("business_year");
+  await expect(page.locator("input[name=product]")).toHaveValue("business_year");
   await expect(page).toHaveURL(/product=business_year/);
-  await page.getByRole("link", { name: "Buy 30 changes" }).click();
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("topup");
+  await payFor(page, "topup");
+  await expect(page.locator("input[name=product]")).toHaveValue("topup");
 
   // The exact amount and the account number, ready to paste into Telebirr or the bank app.
   await page.getByRole("button", { name: "Copy Telebirr number" }).click();
@@ -108,6 +114,8 @@ test("Amharic Plan page at phone width, and dark mode", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await signIn(page, { lang: "am" });
   await page.goto("/am/billing");
+  await expectNoHorizontalScroll(page);
+  await billingTab(page, "ይክፈሉ");
   await expect(page.getByRole("heading", { name: /ደረጃ 1/ })).toBeVisible();
   await expect(page.getByText("የቴሌብር ቁጥር").first()).toBeVisible();
   await expectNoSeriousA11yIssues(page);
@@ -231,10 +239,30 @@ test("a pricing Choose button keeps the yearly choice through sign-in to the Pla
   await page.getByLabel("6-digit code").fill(code.code);
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/en\/billing\?product=business_year$/);
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("business_year");
+  await expect(page.locator("input[name=product]")).toHaveValue("business_year");
   // Signed in already: the same button goes straight to the Plan page.
   await page.goto("/en/pricing");
   await page.getByRole("link", { name: "Choose Starter" }).click();
   await expect(page).toHaveURL(/\/en\/billing\?product=starter_month$/);
-  await expect(page.getByLabel("What are you paying for?")).toHaveValue("starter_month");
+  await expect(page.locator("input[name=product]")).toHaveValue("starter_month");
+});
+
+test("a long transaction number wraps in the payments list; the page says the payment is being checked", async ({ page }) => {
+  await signIn(page);
+  await page.goto("/en/billing");
+  await payFor(page, "starter_month");
+  const reference = `LONG${Date.now().toString(36).toUpperCase()}${test.info().project.name.length}`.padEnd(40, "X");
+  await page.getByLabel("Transaction number").fill(reference);
+  await page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
+  await expect(page.getByRole("button", { name: /^Remove/ })).toBeVisible();
+  await page.getByRole("button", { name: "Send for checking" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Thank you" })).toBeVisible();
+  await page.goto("/en/billing");
+  await expect(page.getByRole("heading", { name: "We're checking your payment", level: 2 })).toBeVisible();
+  await expect(page.getByRole("link", { name: "See status" })).toHaveAttribute("href", "?tab=pay");
+  await billingTab(page, "History");
+  await unfold(page, /Your payments/);
+  await expect(page.getByText(`No. ${reference}`)).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  await expectNoSeriousA11yIssues(page);
 });

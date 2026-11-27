@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckCircle2, ExternalLink, Globe, Loader2, Rocket } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { DomainSection } from "./domain-section";
+import { ShowcaseOptIn } from "./showcase-opt-in";
 
 type Info = { slug: string; url: string | null; status: "pending" | "published" | "taken_down" | null; publishedVersion: number | null; prefix: string; suffix: string };
 type Phase = { kind: "idle" } | { kind: "publishing" } | { kind: "done"; url: string } | { kind: "error"; code: string };
@@ -17,11 +18,15 @@ interface Props {
   onLive?: (url: string | null) => void;
   /** "How was it?" after a publish: the feedback page, with where it came from. */
   feedback?: { href: string; label: string };
+  /** The Plan page, linked when the plan's live sites are all in use. */
+  planHref?: string;
+  /** "Show my site in the showcase and posts", offered once the site is live. */
+  showcase?: { label: string; hint: string; saved: string; savedOff: string; failed: string };
   /** Places the status line and the Publish button in the top bar. */
   children: (parts: { status: React.ReactNode; button: React.ReactNode }) => React.ReactNode;
 }
 
-export function PublishBar({ t, projectId, hasVersion, disabled, onLive, feedback, children }: Props) {
+export function PublishBar({ t, projectId, hasVersion, disabled, onLive, feedback, planHref, showcase, children }: Props) {
   const [info, setInfo] = useState<Info | null>(null);
   const [loading, setLoading] = useState(false);
   const [slug, setSlug] = useState("");
@@ -180,6 +185,7 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, feedbac
                   {copied ? t.publishedCopied : t.publishedCopy}
                 </button>
               </div>
+              {showcase && <ShowcaseOptIn projectId={projectId} {...showcase} />}
               {feedback && (
                 <a href={feedback.href} className="inline-flex min-h-11 w-fit items-center text-sm font-medium text-ink-muted underline underline-offset-4 hover:text-ink lg:min-h-9">
                   {feedback.label}
@@ -224,6 +230,12 @@ export function PublishBar({ t, projectId, hasVersion, disabled, onLive, feedbac
               {errorText && (
                 <p id="publish-error" ref={alertRef} tabIndex={-1} role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">
                   {errorText}
+                  {phase.kind === "error" && phase.code === "plan_limit" && planHref && (
+                    <>
+                      {" "}
+                      <a href={planHref} className="font-semibold text-ink underline underline-offset-4">{t.publishErrors.planLimitLink}</a>
+                    </>
+                  )}
                 </p>
               )}
               {phase.kind === "publishing" && (

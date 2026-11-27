@@ -383,6 +383,141 @@ export const TEMPLATE_INFO = {
       "languages",
     ],
   },
+  resort: {
+    category: "travel",
+    designedFor: {
+      en: ["Luxury and boutique hotels", "Resorts and lodges", "Spa retreats", "Private villas"],
+      am: ["ቅንጡና ልዩ ሆቴሎች", "ሪዞርቶችና ሎጆች", "የስፓ ማረፊያዎች", "የግል ቪላዎች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Suites with nightly rates", am: "ስዊቶች ከአዳር ዋጋ ጋር" } },
+      { key: "booking", label: { en: "Private reservations", am: "የግል ቦታ ማስያዣ" } },
+      { key: "cards", label: { en: "Journeys from the hotel", am: "ከሆቴሉ የሚደረጉ ጉዞዎች" } },
+      "reviews",
+      "faq",
+      "languages",
+    ],
+  },
+  agency: {
+    category: "business",
+    designedFor: {
+      en: ["Creative and branding agencies", "Design and architecture studios", "Production companies", "Artists and collectives"],
+      am: ["የፈጠራና የብራንዲንግ ኤጀንሲዎች", "የዲዛይንና የሥነ ሕንፃ ስቱዲዮዎች", "የፕሮዳክሽን ድርጅቶች", "አርቲስቶችና ቡድኖች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Selected work in a broken grid", am: "የተመረጡ ሥራዎች ባልተስተካከለ ፍርግርግ" } },
+      { key: "contactForm", label: { en: "Project enquiries", am: "የፕሮጀክት ጥያቄዎች" } },
+      "reviews",
+      "callTelegram",
+      "languages",
+    ],
+  },
+  software: {
+    category: "business",
+    designedFor: {
+      en: ["Software and apps", "Online services and platforms", "Fintech and payments", "Startups launching a product"],
+      am: ["ሶፍትዌርና መተግበሪያዎች", "የመስመር ላይ አገልግሎቶችና መድረኮች", "የፋይናንስ ቴክኖሎጂና ክፍያ", "ምርት የሚያስጀምሩ ጀማሪ ድርጅቶች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Plans side by side", am: "ጥቅሎች ጎን ለጎን" } },
+      { key: "registration", label: { en: "Free-trial sign-ups", am: "የነጻ ሙከራ ምዝገባ" } },
+      "numbers",
+      "reviews",
+      "faq",
+      "languages",
+    ],
+  },
+  boutique: {
+    category: "shops",
+    designedFor: {
+      en: ["Fashion labels and boutiques", "Concept and design stores", "Jewellery and accessories", "Designers selling abroad"],
+      am: ["የፋሽን ብራንዶችና ቡቲኮች", "የዲዛይን መደብሮች", "ጌጣጌጥና ተጨማሪዎች", "ወደ ውጭ የሚሸጡ ዲዛይነሮች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Pieces with prices", am: "ልብሶች ከዋጋ ጋር" } },
+      { key: "order", label: { en: "Orders from anywhere", am: "ከየትም ትዕዛዝ" } },
+      { key: "cards", label: { en: "Shop by category", am: "በምድብ ግዢ" } },
+      "callTelegram",
+      "languages",
+    ],
+  },
+  architect: {
+    category: "business",
+    designedFor: {
+      en: ["Architects", "Interior designers", "Engineering firms", "Furniture and joinery makers"],
+      am: ["አርክቴክቶች", "የውስጥ ዲዛይነሮች", "የምህንድስና ድርጅቶች", "የቤት ዕቃና የአናጢነት ሠሪዎች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Projects as numbered sheets", am: "ፕሮጀክቶች በቁጥር የተሰጣቸው ሉሆች" } },
+      { key: "contactForm", label: { en: "Project enquiries", am: "የፕሮጀክት ጥያቄዎች" } },
+      "numbers",
+      "map",
+      "languages",
+    ],
+  },
+  dining: {
+    category: "food",
+    designedFor: {
+      en: ["Fine dining restaurants", "Chef's tables and supper clubs", "Wine and cocktail bars", "Hotel restaurants"],
+      am: ["ቅንጡ ምግብ ቤቶች", "የሼፍ ገበታዎችና የእራት ክለቦች", "የወይንና የኮክቴል ቤቶች", "የሆቴል ምግብ ቤቶች"],
+    },
+    highlights: ["menu", { key: "booking", label: { en: "Table reservations", am: "የጠረጴዛ ቦታ ማስያዝ" } }, "gallery", "reviews", "hours", "map", "languages"],
+  },
+  folio: {
+    category: "business",
+    designedFor: {
+      en: ["Developers and engineers", "Product and UI designers", "Illustrators and motion designers", "Freelancers looking for clients"],
+      am: ["ገንቢዎችና መሐንዲሶች", "የምርትና የበይነገጽ ዲዛይነሮች", "ሠዓሊዎችና የእንቅስቃሴ ዲዛይነሮች", "ደንበኛ የሚፈልጉ ራሳቸውን የቻሉ ባለሙያዎች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Work as an index", am: "ሥራዎች እንደ ማውጫ" } },
+      "timeline",
+      { key: "contactForm", label: { en: "Project enquiries", am: "የፕሮጀክት ጥያቄዎች" } },
+      "languages",
+    ],
+  },
+  estate: {
+    category: "business",
+    designedFor: {
+      en: ["Luxury property agencies", "Property developers", "Serviced apartments", "Holiday and weekend homes"],
+      am: ["የቅንጡ ቤቶች ኤጀንሲዎች", "የቤት አልሚዎች", "አገልግሎት ያላቸው አፓርትመንቶች", "የዕረፍትና የሳምንት መጨረሻ ቤቶች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Homes with prices", am: "ቤቶች ከዋጋ ጋር" } },
+      { key: "booking", label: { en: "Private viewings", am: "የግል ጉብኝት" } },
+      "numbers",
+      "reviews",
+      "languages",
+    ],
+  },
+  exhibit: {
+    category: "faith",
+    designedFor: {
+      en: ["Art galleries", "Museums and cultural centres", "Artists' collectives and studios", "Art fairs and biennales"],
+      am: ["የሥዕል ማሳያ ቤቶች", "ሙዚየሞችና የባህል ማዕከላት", "የሠዓሊዎች ማኅበራትና የሥራ ቦታዎች", "የጥበብ ትርዒቶች"],
+    },
+    highlights: [
+      { key: "cards", label: { en: "Works with wall labels and prices", am: "ሥራዎች ከመግለጫና ከዋጋ ጋር" } },
+      { key: "times", label: { en: "Talks, tours and events", am: "ንግግሮች፣ ጉብኝቶችና ዝግጅቶች" } },
+      { key: "contactForm", label: { en: "Enquiries about works", am: "ስለ ሥራዎች ጥያቄዎች" } },
+      "gallery",
+      "languages",
+    ],
+  },
+  voyage: {
+    category: "travel",
+    designedFor: {
+      en: ["Travel companies", "Tour operators and expeditions", "Trekking and adventure guides", "Lodges with excursions"],
+      am: ["የጉዞ ድርጅቶች", "አስጎብኚዎችና ጉዞ አዘጋጆች", "የእግር ጉዞና የጀብዱ መሪዎች", "ጉብኝት የሚያዘጋጁ ሎጆች"],
+    },
+    highlights: [
+      { key: "prices", label: { en: "Journeys with days and prices", am: "ጉዞዎች ከቀናትና ከዋጋ ጋር" } },
+      { key: "booking", label: { en: "Journey enquiries", am: "የጉዞ ጥያቄዎች" } },
+      { key: "cards", label: { en: "Destinations", am: "መዳረሻዎች" } },
+      "reviews",
+      "languages",
+    ],
+  },
 } satisfies Record<PresetId, TemplateInfo>;
 
 export function templateInfo(id: PresetId): TemplateInfo {

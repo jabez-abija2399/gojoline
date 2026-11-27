@@ -6,7 +6,15 @@ import { invalidateShowcase } from "@/lib/growth/showcase-cache";
 
 const body = z.object({ on: z.boolean() }).strict();
 
-/** “Show my site in the Gojoline showcase” (the owner's own site only; off by default). */
+/** The owner's current choice (null when the project has no site yet). */
+export async function GET(_request: Request, ctx: RouteContext<"/api/projects/[id]/showcase">) {
+  const { id } = await ctx.params;
+  const r = await ownerRoute(id, { mutating: false });
+  if (!r.ok) return r.response;
+  return json(200, { on: (await services().growth.showcase?.optedIn(r.user.id, id)) ?? null });
+}
+
+/** “Show my site in the Gojoline showcase and posts” (the owner's own site only; off by default). */
 export async function POST(request: Request, ctx: RouteContext<"/api/projects/[id]/showcase">) {
   const { id } = await ctx.params;
   const r = await ownerRoute(id, { mutating: true, limit: { name: "showcase", perHour: 30 } });

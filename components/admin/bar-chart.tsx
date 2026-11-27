@@ -1,10 +1,10 @@
 import type { DayPoint } from "@/lib/admin/stats";
 
 /**
- * One measure over the last 30 days: thin bars with rounded tops, a 2 px gap, a quiet grid,
+ * One measure over a run of days, weeks or months: thin bars with rounded tops, a 2 px gap, a quiet grid,
  * a hover label on every bar (and a hit area taller than the bar), and a table for screen readers.
  */
-export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel, emptyLabel, formatDay, heading = false }: { title: string; data: DayPoint[]; format: (v: number) => string; tableLabel: string; dayLabel: string; valueLabel: string; emptyLabel: string; /** Words for a YYYY-MM-DD day (default MM/DD). */ formatDay?: (day: string) => string; /** Make the title a heading (h2) where the page's other cards have headings. */ heading?: boolean }) {
+export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel, emptyLabel, formatDay, heading = false, totalText, compact = false }: { title: string; data: DayPoint[]; format: (v: number) => string; tableLabel: string; dayLabel: string; valueLabel: string; emptyLabel: string; /** Words for a YYYY-MM-DD day (default MM/DD). */ formatDay?: (day: string) => string; /** Make the title a heading (h2) where the page's other cards have headings. */ heading?: boolean; /** Words around the total, e.g. "Total {value}" (default: the number alone). */ totalText?: (value: string) => string; /** Shorter on phones. */ compact?: boolean }) {
   const W = 600;
   const H = 140;
   const top = 8;
@@ -19,11 +19,13 @@ export function BarChart({ title, data, format, tableLabel, dayLabel, valueLabel
     <figure className="flex flex-col gap-2 rounded-xl border border-line bg-white p-4">
       <figcaption className="flex items-baseline justify-between gap-3">
         {heading ? <h2 className="text-base font-semibold">{title}</h2> : <span className="font-semibold">{title}</span>}
-        <span className="font-display text-lg font-bold tabular-nums">{format(total)}</span>
+        <span className="font-display text-lg font-bold tabular-nums">{totalText ? totalText(format(total)) : format(total)}</span>
       </figcaption>
       <div className="relative">
       {total === 0 && <p className="absolute inset-0 flex items-center justify-center text-ink-muted">{emptyLabel}</p>}
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={`${title}: ${format(total)}`} className="h-36 w-full">
+      {/* The scale: the top line's value (text outside the stretched svg, so it stays readable). */}
+      {total > 0 && <span aria-hidden="true" className="absolute end-0 -top-1 rounded bg-white px-1 text-xs text-ink-muted tabular-nums">{format(max)}</span>}
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={`${title}: ${totalText ? totalText(format(total)) : format(total)}`} className={`${compact ? "h-24 sm:h-36" : "h-36"} w-full`}>
         {[0.5, 1].map((f) => (
           <line key={f} x1={0} x2={W} y1={y(max * f)} y2={y(max * f)} className="stroke-line" strokeWidth={1} strokeDasharray="2 4" />
         ))}

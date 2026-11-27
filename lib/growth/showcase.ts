@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import sharp from "sharp";
 import type { Database } from "@/lib/db/client";
-import { projects, sites, siteShowcase } from "@/lib/db/schema";
+import { abuseReports, projects, sites, siteShowcase, telegramLinks, user } from "@/lib/db/schema";
 import type { ProjectStore } from "@/lib/projects/types";
 import type { Site, SiteAdminStore, SiteStore } from "@/lib/sites/types";
 
@@ -39,6 +39,19 @@ export interface PublishedCard {
   thumb: (ShowcaseThumb & { data: Buffer }) | null;
 }
 
+/** A live site whose owner could be asked to be featured (never agreed to posts, never asked). */
+export interface InviteCandidate {
+  siteId: string;
+  projectId: string;
+  ownerId: string;
+  name: string;
+  url: string;
+  /** The site's own language (for the link and the message when the owner has no Telegram). */
+  locale: "en" | "am";
+  /** The owner has a linked Telegram or a verified email: an invitation can reach them. */
+  reachable: boolean;
+}
+
 export interface ShowcaseStore {
   /** The owner's choice for one of their sites; null when the project has no site. */
   optedIn(ownerId: string, projectId: string): Promise<boolean | null>;
@@ -48,12 +61,20 @@ export interface ShowcaseStore {
   savePublished(ownerId: string, projectId: string, card: PublishedCard): Promise<void>;
   /** What the public page lists, newest first. */
   list(limit: number): Promise<ShowcaseEntry[]>;
+  /** Of those, the sites whose owners also agreed to Gojoline's posts and videos (current wording). */
+  postable(limit: number): Promise<ShowcaseEntry[]>;
   /** A thumbnail's bytes, only while a listed site uses it. */
   thumb(key: string): Promise<Buffer | null>;
   /** Every opted-in live site, hidden ones too (admin). */
   adminList(limit: number): Promise<AdminShowcaseEntry[]>;
   /** Admin: hide or show again. False when the site doesn't exist. */
   setHidden(siteId: string, hidden: boolean): Promise<boolean>;
+  /** Live, online, not hidden sites without posts consent whose owner was never invited, newest first. */
+  invitable(limit: number): Promise<InviteCandidate[]>;
+  /** Marks these sites as asked, before the message goes out; returns only those this call marked (a parallel run gets none). */
+  claimInvite(siteIds: string[]): Promise<string[]>;
+  /** Undoes a claim when the message couldn't be sent, so a later click tries again. */
+  releaseInvite(siteIds: string[]): Promise<void>;
 }
 
 type Text = string | { en?: string; am?: string } | undefined;
@@ -99,7 +120,8 @@ export class DbShowcaseStore implements ShowcaseStore {
   }
 
   async setOptIn(ownerId: string, projectId: string, on: boolean) {
-    const rows = await this.db.update(sites).set({ showcase: on }).where(and(eq(sites.ownerId, ownerId), eq(sites.projectId, projectId))).returning({ id: sites.id });
+    // Opting in now agrees to the current wording (showcase and posts); opting out ends both.
+    const rows = await this.db.update(sites).set({ showcase: on, postsConsentAt: on ? new Date() : null }).where(and(eq(sites.ownerId, ownerId), eq(sites.projectId, projectId))).returning({ id: sites.id });
     return rows.length > 0;
   }
 
@@ -127,6 +149,11 @@ export class DbShowcaseStore implements ShowcaseStore {
     return rows.map((r) => this.toEntry(r));
   }
 
+  async postable(limit: number) {
+    const rows = await this.select().where(and(listed, isNotNull(sites.postsConsentAt))).orderBy(desc(sites.publishedAt)).limit(limit);
+    return rows.map((r) => this.toEntry(r));
+  }
+
   async thumb(key: string) {
     const [r] = await this.db
       .select({ thumb: siteShowcase.thumb })
@@ -149,12 +176,57 @@ export class DbShowcaseStore implements ShowcaseStore {
     const rows = await this.db.update(sites).set({ showcaseHiddenAt: hidden ? new Date() : null }).where(eq(sites.id, siteId)).returning({ id: sites.id });
     return rows.length > 0;
   }
+
+  async invitable(limit: number) {
+    const rows = await this.db
+      .select({
+        siteId: sites.id,
+        projectId: sites.projectId,
+        ownerId: sites.ownerId,
+        url: sites.url,
+        card: siteShowcase.name,
+        locale: projects.locale,
+        reachable: sql<boolean>`(exists (select 1 from ${telegramLinks} where ${telegramLinks.userId} = ${sites.ownerId}) or (${user.emailVerified} and ${user.email} not like '%@phone.gojoline.invalid'))`,
+      })
+      .from(sites)
+      .innerJoin(projects, eq(projects.id, sites.projectId))
+      .innerJoin(user, eq(user.id, sites.ownerId))
+      .leftJoin(siteShowcase, eq(siteShowcase.siteId, sites.id))
+      .where(
+        and(
+          eq(sites.status, "published"),
+          isNull(sites.offlineAt),
+          isNull(sites.showcaseHiddenAt),
+          isNull(sites.postsConsentAt),
+          isNull(sites.featureInvitedAt),
+          isNotNull(sites.url),
+          // Not while a report about the site is waiting for review.
+          sql`not exists (select 1 from ${abuseReports} where ${abuseReports.siteId} = ${sites.id} and ${abuseReports.status} = 'open')`,
+        ),
+      )
+      .orderBy(desc(sites.publishedAt))
+      .limit(limit);
+    // The name only from the published card (never the draft project's name); else the address is used.
+    return rows.map((r) => ({ siteId: r.siteId, projectId: r.projectId, ownerId: r.ownerId, url: r.url ?? "", name: r.card ?? "", locale: r.locale, reachable: !!r.reachable }));
+  }
+
+  async claimInvite(siteIds: string[]) {
+    if (siteIds.length === 0) return [];
+    const rows = await this.db.update(sites).set({ featureInvitedAt: new Date() }).where(and(inArray(sites.id, siteIds), isNull(sites.featureInvitedAt))).returning({ id: sites.id });
+    return rows.map((r) => r.id);
+  }
+
+  async releaseInvite(siteIds: string[]) {
+    if (siteIds.length === 0) return;
+    await this.db.update(sites).set({ featureInvitedAt: null }).where(inArray(sites.id, siteIds));
+  }
 }
 
 /** Development and e2e: keeps the showcase fields beside the in-memory sites. */
 export class MemoryShowcaseStore implements ShowcaseStore {
   private on = new Set<string>();
   private hidden = new Set<string>();
+  private invited = new Set<string>();
   private cards = new Map<string, PublishedCard>();
   constructor(
     private sites: SiteStore & SiteAdminStore,
@@ -194,6 +266,10 @@ export class MemoryShowcaseStore implements ShowcaseStore {
   async list(limit: number) {
     return (await this.entries()).filter((e) => this.isListed(e)).slice(0, limit).map(({ siteId, name, url, templateId, thumb, publishedAt }) => ({ siteId, name, url, templateId, thumb, publishedAt }));
   }
+  async postable(limit: number) {
+    // Every opt-in here was made under the current wording.
+    return this.list(limit);
+  }
   async thumb(key: string) {
     return (await this.entries()).find((e) => this.isListed(e) && e.thumb?.key === key)?.data ?? null;
   }
@@ -205,5 +281,18 @@ export class MemoryShowcaseStore implements ShowcaseStore {
     if (hidden) this.hidden.add(siteId);
     else this.hidden.delete(siteId);
     return true;
+  }
+  async invitable(limit: number) {
+    const all = (await this.sites.recent(1000)).filter((s) => s.status === "published" && !s.offlineAt && !!s.url && !this.hidden.has(s.id) && !this.on.has(s.id) && !this.invited.has(s.id));
+    // Development and e2e have no real contacts: every owner counts as reachable here.
+    return all.slice(0, limit).map((s) => ({ siteId: s.id, projectId: s.projectId, ownerId: s.ownerId, url: s.url ?? "", name: this.cards.get(s.id)?.name ?? "", locale: "en" as const, reachable: true }));
+  }
+  async claimInvite(siteIds: string[]) {
+    const fresh = siteIds.filter((id) => !this.invited.has(id));
+    for (const id of fresh) this.invited.add(id);
+    return fresh;
+  }
+  async releaseInvite(siteIds: string[]) {
+    for (const id of siteIds) this.invited.delete(id);
   }
 }

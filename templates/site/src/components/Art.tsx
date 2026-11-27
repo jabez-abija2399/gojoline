@@ -1,4 +1,5 @@
 import type { ArtName } from "../lib/types";
+import { appScenes } from "./art-app";
 
 /**
  * Small poster-style drawings in the site's own colours, shown where a photo will go.
@@ -20,7 +21,7 @@ const sky = (
   </>
 );
 
-const scenes: Record<ArtName, React.ReactNode> = {
+const scenes: Partial<Record<ArtName, React.ReactNode>> = {
   // A jebena (clay coffee pot) with two small cups and steam.
   coffee: (
     <>
@@ -285,7 +286,7 @@ function pick(seed: string): number {
 export function Art({ name, seed = "" }: { name?: ArtName; seed?: string }) {
   return (
     <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full">
-      {name ? scenes[name] : abstracts[pick(seed)]}
+      {(name && (scenes[name] ?? appScenes[name])) || abstracts[pick(seed)]}
     </svg>
   );
 }

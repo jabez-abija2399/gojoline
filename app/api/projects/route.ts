@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   if (!g.ok) return g.response;
   const parsed = body.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return json(400, { error: "invalid" });
+  if (g.builder.paused) return json(503, { error: "paused" });
   const project = await g.builder.store.createProject(g.owner, { name: parsed.data.name || "", locale: parsed.data.locale });
   return json(201, { id: project.id });
 }

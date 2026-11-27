@@ -7,10 +7,12 @@ import { agentSystemPrompt, userTurn } from "@/lib/agent/prompt";
 import type { LLMProvider, MessageParam } from "@/lib/providers/llm/types";
 import type { UsageLogger } from "@/lib/providers/llm/usage-log";
 import type { Lock } from "@/lib/lock";
+import { refreshCardSoon, type CardStore } from "@/lib/projects/cards";
 import type { AssetStore } from "@/lib/cloud/assets";
 import { LazySiteSandbox } from "@/lib/providers/sandbox/lazy";
 import type { SandboxProvider } from "@/lib/providers/sandbox/types";
 import { templateFiles } from "@/lib/template/files";
+import { isPresetId, presetName } from "@/lib/template/presets";
 import type { ChatMessage, ProjectStore } from "@/lib/projects/types";
 import { biggerSize, DEFAULT_CAP_CENTS_PER_CREDIT, DEFAULT_FIRST_BUILD_CAP_CENTS, firstBuildCapNano, MAX_TURNS_BY_SIZE, sizeRank, type RequestSize } from "@/lib/billing/credits";
 import type { LedgerMeta } from "@/lib/billing/store";
@@ -26,6 +28,8 @@ export interface SizePricing {
 }
 
 export interface BuilderDeps {
+  /** No sandbox configured: owners see their sites, but nothing builds (and nothing is charged). */
+  paused?: boolean;
   store: ProjectStore;
   sandboxes: SandboxProvider;
   llm: LLMProvider;
@@ -33,6 +37,8 @@ export interface BuilderDeps {
   model: string;
   lock: Lock;
   assets?: AssetStore;
+  /** The pictures on the owner's site cards. */
+  cards?: CardStore;
   /**
    * AI changes (credits); when set, each request costs the changes for its size, given back
    * if the change fails on our side.
@@ -79,7 +85,7 @@ export type BuilderEvent =
       tooBig?: boolean;
     }
   /** no_credits: fewer changes left than this request needs (`cost`), or none at all. */
-  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked"; credits?: number; cost?: number };
+  | { type: "error"; code: "busy" | "not_found" | "failed" | "no_credits" | "blocked" | "paused"; credits?: number; cost?: number };
 
 const HISTORY_MESSAGES = 8;
 /** Longer than the longest agent run (route maxDuration is 300 s). */
@@ -143,6 +149,8 @@ export async function sendOwnerMessage(
   const { store } = deps;
   const project = await store.getProject(input.ownerId, input.projectId);
   if (!project) return input.onEvent({ type: "error", code: "not_found" });
+  // Before any lock, AI or charge: a paused builder costs the owner nothing.
+  if (deps.paused) return input.onEvent({ type: "error", code: "paused" });
   // Clearly harmful requests (phishing, scams...) never reach the agent and cost no credit.
   if (keywordCheck(input.text).length) return input.onEvent({ type: "error", code: "blocked" });
   const token = await deps.lock.acquire(`project:${project.id}`, LOCK_TTL_MS);
@@ -206,14 +214,14 @@ export async function sendOwnerMessage(
     });
     opening.then((sb) => input.onEvent({ type: "preview", url: sb.previewUrl })).catch(() => undefined);
     const lazy = new LazySiteSandbox(opening, project.id);
-    const siteJson = latest?.files["src/site.json"] ?? starterSiteJson();
+    const siteJson = latest?.files["src/site.json"] ?? null;
 
     const result = await runAgent({
       llm: deps.llm,
       workspace: lazy,
       system: agentSystemPrompt(),
       history: historyFrom(previous),
-      userContent: userTurn(input.text, siteJson, photos, input.languages),
+      userContent: userTurn(input.text, siteJson, photos, input.languages, siteJson ? undefined : starterSiteJson()),
       model: deps.model,
       usage: deps.usage,
       context: { userId: input.ownerId, projectId: project.id },
@@ -244,9 +252,12 @@ export async function sendOwnerMessage(
         files: await sandbox.snapshotFiles(),
       });
       versionNumber = version.number;
+      refreshCardSoon(deps, input.ownerId, project);
       if (!project.name) {
         const name = siteName(version.files["src/site.json"] ?? "", project.locale);
-        if (name) {
+        // A template's example business ("Bole Buna House") is not the owner's name: wait for theirs.
+        const example = isPresetId(project.templateId) ? presetName(project.templateId, project.locale) : null;
+        if (name && name !== example) {
           await store.renameProject(input.ownerId, project.id, name);
           siteNameNow = name;
         }
@@ -335,11 +346,14 @@ export async function restoreVersion(deps: BuilderDeps, input: { ownerId: string
     const sandbox = await deps.sandboxes.open(input.projectId, version.files);
     const build = await sandbox.runBuild();
     if (!build.ok) return null;
-    return await deps.store.addVersion(input.ownerId, {
+    const restored = await deps.store.addVersion(input.ownerId, {
       projectId: input.projectId,
       summary: `restore:${version.number}`,
       files: version.files,
     });
+    const project = await deps.store.getProject(input.ownerId, input.projectId);
+    if (project) refreshCardSoon(deps, input.ownerId, project);
+    return restored;
   } finally {
     await deps.lock.release(`project:${input.projectId}`, token);
   }

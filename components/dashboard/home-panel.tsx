@@ -11,6 +11,7 @@ import { Address } from "./address";
 import { Bars } from "./bars";
 import { DayColumns } from "./day-columns";
 import { LiveActions } from "./live-actions";
+import { PublishNow } from "./settings-panel";
 
 type T = Messages["dashboard"];
 const card = "rounded-2xl border border-line bg-white";
@@ -87,6 +88,14 @@ export function HomePanel({ o, t, locale, projectId, siteName, supportBot, scan,
           </h2>
           <p className="max-w-[60ch] text-ink-muted">{{ live: t.liveBody, resting: t.restingBody, draft: t.draftBody, taken_down: t.takenDownBody }[o.status]}</p>
         </div>
+        {o.moveTo && (
+          // Its old host is gone: say so plainly, with the new address and the one button that fixes it.
+          <div className="flex flex-col gap-3 rounded-xl border-2 border-coral bg-coral-soft p-4">
+            <p className="font-semibold text-ink">{t.moveTitle}</p>
+            <p className="max-w-[60ch] text-ink">{format(t.moveBody, { address: o.moveTo.replace(/^https:\/\//, "") })}</p>
+            <PublishNow t={t} projectId={projectId} />
+          </div>
+        )}
         {live && o.address && (
           <>
             <p className="rounded-xl bg-sunken px-3 py-2.5 font-medium text-ink"><Address text={o.address.text} /></p>

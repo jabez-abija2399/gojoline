@@ -1,0 +1,1 @@
+ALTER TABLE "sites" ADD COLUMN "feature_invited_at" timestamp with time zone;

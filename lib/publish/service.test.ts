@@ -141,7 +141,7 @@ describe("publishSite", () => {
   it("keeps to the plan's number of live sites", async () => {
     const a = await projectWithVersion();
     const b = await projectWithVersion();
-    deps.entitlements = async () => ({ plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 50 * 1024 * 1024 });
+    deps.entitlements = async () => ({ plan: "free", customDomain: false, maxSites: 1, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 50 * 1024 * 1024, siteDownload: false });
     expect((await publishSite(deps, alice, a.id, "site-one")).ok).toBe(true);
     expect(await publishSite(deps, alice, b.id, "site-two")).toEqual({ ok: false, error: "plan_limit" });
     // Republishing the existing site is always fine.
@@ -149,7 +149,7 @@ describe("publishSite", () => {
   });
 
   it("Free sites carry the badge linking to Gojoline's own address; paid plans don't", async () => {
-    const free = { plan: "free" as const, customDomain: false, maxSites: 3, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 1 };
+    const free = { plan: "free" as const, customDomain: false, maxSites: 3, badge: true, telegramNotify: false, telegramEdits: false, answersPerMonth: 100, storageBytes: 1, siteDownload: false };
     deps.appUrl = "https://gojoline.afridea.et";
     deps.entitlements = async () => free;
     const p = await projectWithVersion();
@@ -168,7 +168,7 @@ describe("publishSite", () => {
     expect(await publishSite(deps, alice, p.id, "selam-coffee")).toMatchObject({ ok: false, error: "blocked", issues: [{ rule: "badge-hidden" }] });
     expect(publisher.published.size).toBe(0);
     // A paid plan has no badge to protect.
-    deps.entitlements = async () => ({ plan: "starter", customDomain: true, maxSites: 1, badge: false, telegramNotify: true, telegramEdits: false, answersPerMonth: 100, storageBytes: 1 });
+    deps.entitlements = async () => ({ plan: "starter", customDomain: true, maxSites: 1, badge: false, telegramNotify: true, telegramEdits: false, answersPerMonth: 100, storageBytes: 1, siteDownload: false });
     expect((await publishSite(deps, alice, p.id, "selam-coffee")).ok).toBe(true);
   });
 
@@ -216,6 +216,152 @@ describe("publishSite", () => {
     expect(hasExampleDetails(JSON.stringify({ business: { telegram: "selamcoffee" } }))).toBe(false);
     expect(hasExampleDetails(JSON.stringify({ a: { label: { en: "Call 0911 000 000" } } }))).toBe(true);
   });
+  it("blocks the boutique starter's sample products, shown in strangers' photos at invented prices", () => {
+    const boutique = JSON.parse(presetSiteJson("boutique")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    boutique.business = { phone: "+251 911 234 567", telegram: "realshop" };
+    for (const p of boutique.pages) p.sections = p.sections.filter((s) => s.type !== "quote");
+    expect(hasExampleDetails(JSON.stringify(boutique))).toBe(true);
+  });
+
+  it("blocks the architect starter's sample projects (invented buildings)", () => {
+    const architect = JSON.parse(presetSiteJson("architect")) as { business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    architect.business = { phone: "+251 911 234 567", telegram: "realstudio" };
+    for (const p of architect.pages) p.sections = p.sections.filter((s) => !["quote", "stats", "cta"].includes(s.type));
+    expect(hasExampleDetails(JSON.stringify(architect))).toBe(true);
+    // Renamed projects that keep the sample's place, year and area still block.
+    const renamed = JSON.parse(JSON.stringify(architect)) as { pages: { sections: { type: string; items?: { title: unknown }[] }[] }[] };
+    for (const p of renamed.pages) for (const s of p.sections) if (s.type === "cards") s.items = s.items!.map((i, n) => ({ ...i, title: { en: `Our real project ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(renamed))).toBe(true);
+  });
+
+  it("blocks the dining starter's sample dishes, renamed or not", () => {
+    const dining = JSON.parse(presetSiteJson("dining")) as { business: Record<string, unknown>; pages: { sections: { type: string; categories?: { items: { name: unknown }[] }[] }[] }[] };
+    dining.business = { phone: "+251 911 234 567", telegram: "realplace" };
+    for (const p of dining.pages) p.sections = p.sections.filter((s) => !["testimonials", "quote", "cards", "cta"].includes(s.type));
+    expect(hasExampleDetails(JSON.stringify(dining))).toBe(true);
+    // Renamed dishes that keep the sample's description still block.
+    for (const p of dining.pages) for (const s of p.sections) if (s.type === "menu") for (const c of s.categories!) c.items = c.items.map((i, n) => ({ ...i, name: { en: `Our dish ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(dining))).toBe(true);
+    // A café keeping its own sample menu is judged as before (only these starters' menus are compared).
+    const cafe = JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "menu", categories: [{ name: { en: "Drinks" }, items: [{ name: { en: "Macchiato" }, price: { amountMinor: 4000, currency: "ETB" } }] }] }] }] });
+    expect(hasExampleDetails(cafe)).toBe(false);
+  });
+
+  it("blocks the folio starter's stand-in person: portrait photo, work history, projects and name", () => {
+    const folio = () => JSON.parse(presetSiteJson("folio")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; image?: unknown; items?: { title?: unknown; meta?: unknown; description?: unknown }[] }[] }[] };
+    const strip = (site: ReturnType<typeof folio>, keep: string[]) => {
+      site.business = { phone: "+251 911 234 567", telegram: "realperson" };
+      site.name = { en: "Abebe Kebede" };
+      for (const p of site.pages) p.sections = p.sections.filter((s) => keep.includes(s.type));
+      return JSON.stringify(site);
+    };
+    // The stock portrait under the owner's own name still blocks.
+    expect(hasExampleDetails(strip(folio(), ["hero"]))).toBe(true);
+    // The sample work history blocks.
+    expect(hasExampleDetails(strip(folio(), ["timeline"]))).toBe(true);
+    // Renamed projects that keep the sample's descriptions block.
+    const renamed = folio();
+    for (const p of renamed.pages) for (const s of p.sections) if (s.type === "cards") s.items = s.items!.map((i, n) => ({ ...i, title: { en: `My project ${n}` }, meta: undefined }));
+    expect(hasExampleDetails(strip(renamed, ["cards"]))).toBe(true);
+    // The sample person's name blocks on its own.
+    expect(hasExampleDetails(JSON.stringify({ name: { en: "Ruth Mekonnen" }, business: { phone: "+251 911 234 567" }, pages: [] }))).toBe(true);
+    // The owner's own portrait (not from the library) publishes.
+    expect(hasExampleDetails(JSON.stringify({ name: { en: "Abebe Kebede" }, business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "hero", variant: "portrait", image: { src: "/images/me.webp" } }] }] }))).toBe(false);
+  });
+
+  it("blocks the estate starter's sample listings by photo and price, but not real place names", () => {
+    const estate = () => JSON.parse(presetSiteJson("estate")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; layout?: string; items?: Record<string, unknown>[] }[] }[] };
+    const owner = (site: ReturnType<typeof estate>, keep: (s: { type: string; layout?: string }) => boolean) => {
+      site.name = { en: "Abebe Homes" };
+      site.business = { phone: "+251 912 345 678", telegram: "abebehomes" };
+      for (const p of site.pages) p.sections = p.sections.filter(keep);
+      return site;
+    };
+    // Renamed listings without facts or words, but with the sample photo and price, still block.
+    const kept = owner(estate(), (s) => s.type === "cards" && s.layout === "grid");
+    for (const p of kept.pages) for (const s of p.sections) s.items = s.items!.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Home ${n}` } }));
+    expect(hasExampleDetails(JSON.stringify(kept))).toBe(true);
+    // The untouched neighbourhood tiles block...
+    expect(hasExampleDetails(JSON.stringify(owner(estate(), (s) => s.layout === "scroll")))).toBe(true);
+    // ...but a real site's own "Bole" card does not.
+    const real = { name: { en: "Abebe Homes" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "scroll", items: [{ title: { en: "Bole" }, subtitle: { en: "Our office is here" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
+  });
+
+  it("blocks the voyage starter's sample journeys and tiles, but not a real operator's own cards", () => {
+    const voyage = () => JSON.parse(presetSiteJson("voyage")) as { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; layout?: string; items?: Record<string, unknown>[] }[] }[] };
+    const owner = (keep: (s: { type: string; layout?: string }) => boolean) => {
+      const site = voyage();
+      site.name = { en: "Abebe Tours" };
+      site.business = { phone: "+251 912 345 678", telegram: "abebetours" };
+      for (const p of site.pages) p.sections = p.sections.filter(keep);
+      return site;
+    };
+    // Renamed journeys keeping the sample photo and price block.
+    const kept = owner((s) => s.layout === "feature");
+    for (const p of kept.pages) for (const s of p.sections) s.items = s.items!.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Trip ${n}` }, description: { en: "Our own words" } }));
+    expect(hasExampleDetails(JSON.stringify(kept))).toBe(true);
+    // Kept destination tiles block, even with the languages written in another order.
+    const tiles = owner((s) => s.layout === "grid");
+    for (const p of tiles.pages) for (const s of p.sections) s.items = s.items!.map((i) => ({ ...i, title: { am: (i.title as { am: string }).am, en: (i.title as { en: string }).en } }));
+    expect(hasExampleDetails(JSON.stringify(tiles))).toBe(true);
+    // A real operator's own "The Historic Route" and "Lalibela" cards publish.
+    const real = { name: { en: "Abebe Tours" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "feature", items: [{ title: { en: "The Historic Route" }, description: { en: "Our ten-day tour of the north." }, price: { amountMinor: 5000000, currency: "ETB" } }] }, { type: "cards", layout: "grid", items: [{ title: { en: "Lalibela" }, subtitle: { en: "Where we started" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
+  });
+
+  it("blocks the gallery starter's sample works and artists, but not a real gallery's own works", () => {
+    type Site = { name: unknown; business: Record<string, unknown>; pages: { sections: { type: string; layout?: string; items?: Record<string, unknown>[] }[] }[] };
+    const owner = (edit: (items: Record<string, unknown>[]) => Record<string, unknown>[]) => {
+      const site = JSON.parse(presetSiteJson("exhibit")) as Site;
+      site.name = { en: "Addis Art Space" };
+      site.business = { phone: "+251 912 345 678", telegram: "addisartspace" };
+      for (const p of site.pages) p.sections = p.sections.filter((s) => s.type === "cards").map((s) => ({ ...s, items: edit(s.items!) }));
+      return site;
+    };
+    // Renamed works that keep a library photo and its sample price.
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i, n) => ({ image: i.image, price: i.price, title: { en: `Work ${n}` } })))))).toBe(true);
+    // The sample artist and title kept, with the photo removed.
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i) => Object.fromEntries(Object.entries(i).filter(([k]) => k !== "image"))))))).toBe(true);
+    // The library's artwork photos never publish, whatever the price, title or artist.
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i) => ({ image: i.image, title: { en: "My painting" }, subtitle: { en: "Me" }, price: { amountMinor: 18000100, currency: "ETB" } })))))).toBe(true);
+    expect(hasExampleDetails(JSON.stringify(owner((items) => items.map((i) => ({ image: i.image, title: { en: "My painting" }, subtitle: { en: "Me" } })))))).toBe(true);
+    const artwork = { name: { en: "My Studio" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "gallery", heading: { en: "Work" }, images: [{ src: "/stock/art-card-white-ring-sculpture.webp", alt: { en: "x" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(artwork))).toBe(true);
+    // The sample artist quoted with the owner's own words.
+    const quoted = { name: { en: "Addis Art Space" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "quote", quote: { en: "Our own words." }, name: { en: "Selam Tadesse" } }] }] };
+    expect(hasExampleDetails(JSON.stringify(quoted))).toBe(true);
+    // A tour operator's own "Meskel" package publishes.
+    const meskel = { name: { en: "Abebe Tours" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "grid", items: [{ title: { en: "Meskel", am: "መስቀል" }, description: { en: "The festival in Addis Ababa." }, price: { amountMinor: 900000, currency: "ETB" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(meskel))).toBe(false);
+    // A real gallery's own work, with its own photo, artist and price, publishes.
+    const real = { name: { en: "Addis Art Space" }, business: { phone: "+251 912 345 678" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "grid", items: [{ image: { src: "/uploads/work-1.webp", alt: { en: "A painting" } }, title: { en: "Blue hour" }, subtitle: { en: "Tigist Haile" }, meta: [{ en: "Oil on canvas, 2024" }], price: { amountMinor: 6000000, currency: "ETB" } }] }] }] };
+    expect(hasExampleDetails(JSON.stringify(real))).toBe(false);
+  });
+
+  it("blocks a template's sample numbers until the owner's own replace them", () => {
+    const software = JSON.parse(presetSiteJson("software")) as { pages: { sections: { type: string; items?: { value: unknown; label: unknown }[] }[] }[] };
+    const stats = software.pages[0]!.sections.find((s) => s.type === "stats")!;
+    const site = (items: unknown) => JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "stats", items }] }] });
+    expect(hasExampleDetails(site(stats.items))).toBe(true);
+    // The owner's own figures publish.
+    expect(hasExampleDetails(site([{ value: { en: "300" }, label: { en: "shops" } }]))).toBe(false);
+  });
+
+  it("blocks the agency starter's sample clients until the owner's own work replaces them", () => {
+    const agency = JSON.parse(presetSiteJson("agency")) as { name?: unknown; business: Record<string, unknown>; pages: { sections: { type: string }[] }[] };
+    // The owner's own phone and Telegram, and no reviews left: the sample projects still block.
+    agency.business = { phone: "+251 911 234 567", telegram: "realstudio" };
+    (agency as { name?: unknown }).name = { en: "Real Studio" };
+    for (const p of agency.pages) p.sections = p.sections.filter((s) => s.type !== "testimonials" && s.type !== "quote");
+    expect(hasExampleDetails(JSON.stringify(agency))).toBe(true);
+    // With the work replaced, it publishes; a café keeping its sample dish names is unaffected.
+    for (const p of agency.pages) p.sections = p.sections.filter((s) => s.type !== "cards");
+    expect(hasExampleDetails(JSON.stringify(agency).replaceAll("+251911000000", "+251911234567"))).toBe(false);
+    const hotel = JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections: [{ type: "cards", layout: "grid", items: [{ title: { en: "Garden Room" } }] }] }] });
+    expect(hasExampleDetails(hotel)).toBe(false);
+  });
+
   it("blocks a template's reviews and people, and named people on sample photos", () => {
     const site = (sections: unknown[]) => JSON.stringify({ business: { phone: "+251 911 234 567" }, pages: [{ path: "/", sections }] });
     const clinic = JSON.parse(presetSiteJson("clinic")) as { pages: { sections: { type: string; layout?: string; items?: { quote?: { en: string }; title?: { en: string } }[] }[] }[] };

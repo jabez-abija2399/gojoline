@@ -21,6 +21,8 @@ interface Props {
 /** Library photos: every one exists 480 and 800 px wide; "-hero-" ones also 1600 px wide. */
 const STOCK = /^\/stock\/[a-z0-9-]+\.webp$/;
 const HERO = /-hero-/;
+/** Library photos with a 320 px file too: textured artworks, heavy even at 480 px (scripts/stock-photos.mjs). */
+const SMALL = /^\/stock\/art-card-/;
 
 /**
  * A photo, or a drawing in the theme colours when no photo exists yet (`image.art` picks
@@ -38,7 +40,7 @@ export function Picture({ image, className = "", priority = false, sizes = "(min
   const stock = STOCK.test(image.src);
   const src = withBase(image.src);
   const base = src.replace(/\.webp$/, "");
-  const srcSet = stock ? `${base}-480.webp 480w, ${src} 800w${wide && HERO.test(image.src) ? `, ${base}-1600.webp 1600w` : ""}` : undefined;
+  const srcSet = stock ? `${SMALL.test(image.src) ? `${base}-320.webp 320w, ` : ""}${base}-480.webp 480w, ${src} 800w${wide && HERO.test(image.src) ? `, ${base}-1600.webp 1600w` : ""}` : undefined;
   return (
     <img
       src={src}

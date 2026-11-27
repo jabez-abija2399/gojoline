@@ -213,6 +213,23 @@ describe("runAgent cost budget", () => {
     expect(result.stoppedForBudget).toBe(false);
   });
 
+  it("a cold-cache paid edit isn't stopped by writing the fixed prompt to the cache (2026-11-19 recording)", async () => {
+    // "Change the colours to orange" after the cache went cold: the first turn wrote 38,787 tokens
+    // (mostly the system prompt and tools, ~US$0.19) and 318 out = US$0.20, over the 15-cent cap
+    // for one change, so the run stopped after one turn with the change half done. Writing the
+    // fixed prompt is overhead of the cold cache, not of the owner's request.
+    const ws = new MemoryWorkspace({ "src/styles.css": "--brand: teal;" });
+    const system = [{ type: "text" as const, text: "rules ".repeat(24_000) }];
+    const llm = new ScriptedLLMProvider([
+      { content: [toolUseBlock("search_replace", { path: "src/styles.css", old_string: "teal", new_string: "orange" }), toolUseBlock("run_build", {})], usage: { inputTokens: 4, outputTokens: 318, cacheReadTokens: 0, cacheWriteTokens: 38_787 } },
+      { content: [textBlock("Your colours are orange now.")], usage: { inputTokens: 2, outputTokens: 60, cacheReadTokens: 38_787, cacheWriteTokens: 600 } },
+    ]);
+    const result = await runAgent({ ...base, system, llm, workspace: ws, usage: new MemoryUsageLogger(), userContent: "Change the colours to orange", budgetNanoUsd: 15 * 10_000_000 });
+    expect(result).toMatchObject({ stoppedForBudget: false, status: "changed", reply: "Your colours are orange now.", turns: 2 });
+    // The real cost is still reported in full (it is logged and counted for the admin).
+    expect(result.costNanoUsd).toBeGreaterThan(15 * 10_000_000);
+  });
+
   it("a cold first build with the recorded token counts finishes (cache reads are not priced as writes)", async () => {
     // 2026-11-17 recording: the first turn wrote the whole site (cold cache: 28,608 tokens written,
     // 4,576 out = US$0.235); the closing reply reads that from the cache (~US$0.03). The old

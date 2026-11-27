@@ -9,7 +9,7 @@ export const ATTRIBUTION_COOKIE = "gojo_src";
 /** First touch is kept this long. */
 export const ATTRIBUTION_MAX_AGE = 60 * 60 * 24 * 90;
 
-export const SOURCES = ["badge", "referral", "telegram", "tiktok", "facebook", "linkedin", "qr", "other", "direct"] as const;
+export const SOURCES = ["badge", "referral", "telegram", "instagram", "tiktok", "facebook", "youtube", "google", "linkedin", "qr", "other", "direct"] as const;
 export type Source = (typeof SOURCES)[number];
 
 const token = z
@@ -97,8 +97,11 @@ export function classifySource(a: Attribution | null): Source {
   if (r === "qr" || s === "qr" || m === "qr") return "qr";
   const words = [r, s, h].filter(Boolean).join(" ");
   if (/\b(telegram|tg)\b|(^|[\s.])t\.me\b/.test(words)) return "telegram";
+  if (/\b(instagram|ig)\b|instagram\.com/.test(words)) return "instagram";
   if (/tiktok/.test(words)) return "tiktok";
   if (/\b(facebook|fb)\b|facebook\.com|fb\.com/.test(words)) return "facebook";
+  if (/\b(youtube|yt)\b|youtube\.com|youtu\.be/.test(words)) return "youtube";
+  if (/\bgoogle\b|(^|\.)google\.[a-z.]+/.test(words)) return "google";
   if (/linkedin|lnkd\.in/.test(words)) return "linkedin";
   return words || m || a.c ? "other" : "direct";
 }

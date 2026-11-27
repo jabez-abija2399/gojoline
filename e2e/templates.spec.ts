@@ -8,7 +8,7 @@ test("start from an industry template in Amharic: a ready site, no AI needed", a
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("button", { name: "ይጠቀሙ: ሆቴል ወይም የእንግዳ ማረፊያ" }).click();
-  await expect(page).toHaveURL(/\/am\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/am\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   // The chat says it's a ready example to personalise; publishing waits for real details.
   await expect(page.getByText("ድረ-ገጽዎ ዝግጁ ነው").first()).toBeAttached();
   await page.getByRole("button", { name: "ያትሙ", exact: true }).click();
@@ -19,8 +19,8 @@ test("start from an industry template in Amharic: a ready site, no AI needed", a
   await expect(page.getByRole("dialog").getByRole("alert")).toContainText("የምሳሌ መረጃዎች");
   await page.keyboard.press("Escape");
   await page.goto("/am/build");
-  // Named after the kind of business, not the example's made-up name.
-  await expect(page.getByRole("main").getByRole("link", { name: "ሆቴል ወይም የእንግዳ ማረፊያ", exact: true })).toBeVisible();
+  // "New site" until the owner gives the real name: not the template's, not the example's made-up name.
+  await expect(page.getByRole("main").getByRole("link", { name: "አዲስ ድረ-ገጽ", exact: true }).first()).toBeVisible();
 });
 
 test("a template's preview runs the real site and lists every page and section before it is picked", async ({ page }) => {
@@ -47,7 +47,7 @@ test("a template's preview runs the real site and lists every page and section b
   await signIn(page);
   await page.goto("/en/templates/hotel");
   await page.getByRole("button", { name: "Use this template" }).filter({ visible: true }).click();
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   await expect(page.getByText("Your Hotel or guest house site is ready").first()).toBeAttached();
 });
 
@@ -65,7 +65,7 @@ test("a live demo is served with the site's own strict headers and can't be fram
 test("the templates page: search and filters narrow the list, and a card opens the full preview", async ({ page }) => {
   await page.goto("/en/templates");
   const list = page.getByRole("list", { name: "Example sites" });
-  await expect(list.getByRole("listitem")).toHaveCount(22);
+  await expect(list.getByRole("listitem")).toHaveCount(32);
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("searchbox", { name: "Search templates" }).fill("prayer");
@@ -78,7 +78,7 @@ test("the templates page: search and filters narrow the list, and a card opens t
   await expect(list.getByRole("listitem")).toHaveCount(4);
   // Back and Forward follow the address.
   await page.goBack();
-  await expect(list.getByRole("listitem")).toHaveCount(22);
+  await expect(list.getByRole("listitem")).toHaveCount(32);
   await page.goForward();
   await expect(page.getByRole("navigation", { name: "Category" }).getByRole("link", { name: "Health and beauty" })).toHaveAttribute("aria-current", "page");
   await expect(list.getByRole("listitem")).toHaveCount(4);
@@ -89,7 +89,7 @@ test("the templates page: search and filters narrow the list, and a card opens t
   await expect(page.getByRole("heading", { name: /Health and beauty/ })).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).first().click();
   await expect(page).toHaveURL(/\/en\/templates$/);
-  await expect(list.getByRole("listitem")).toHaveCount(22);
+  await expect(list.getByRole("listitem")).toHaveCount(32);
   await list.getByRole("link", { name: /Salon or barber/ }).click();
   await expect(page).toHaveURL(/\/en\/templates\/salon$/);
 });
@@ -103,12 +103,12 @@ test.describe("templates without JavaScript", () => {
     await expect(chips.getByRole("link", { name: "Faith and community" })).toHaveAttribute("aria-current", "page");
     await expect(page.getByRole("heading", { level: 2, name: /Faith and community/ })).toBeVisible();
     const list = page.getByRole("list", { name: "Example sites" });
-    await expect(list.getByRole("listitem")).toHaveCount(3);
+    await expect(list.getByRole("listitem")).toHaveCount(4);
     // Each card says its category.
     await expect(list.getByRole("link", { name: /Mosque/ })).toContainText("Faith and community");
     // An unknown category shows everything.
     await page.goto("/en/templates?category=nope");
-    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(22);
+    await expect(page.getByRole("list", { name: "Example sites" }).getByRole("listitem")).toHaveCount(32);
   });
 });
 
@@ -116,7 +116,7 @@ test("the gallery in Amharic: category chips, accessible, no sideways scroll", a
   await page.goto("/am/templates?category=food");
   const chips = page.getByRole("navigation", { name: "ምድብ" });
   await expect(chips.getByRole("link", { name: "ምግብና መጠጥ" })).toHaveAttribute("aria-current", "page");
-  await expect(page.getByRole("list", { name: "የምሳሌ ድረ-ገጾች" }).getByRole("listitem")).toHaveCount(2);
+  await expect(page.getByRole("list", { name: "የምሳሌ ድረ-ገጾች" }).getByRole("listitem")).toHaveCount(3);
   await expectNoHorizontalScroll(page);
   await expectNoSeriousA11yIssues(page);
 });

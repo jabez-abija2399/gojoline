@@ -13,6 +13,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
 import { serif } from "@/lib/fonts-landing";
+import { Watch } from "@/components/landing/watch";
 import { HERO_IDS, showcaseSites } from "@/lib/landing/showcase";
 import { firstSections } from "@/lib/landing/hero-sections";
 import { services } from "@/lib/server/services";
@@ -89,6 +90,7 @@ export default async function LandingPage({ params, searchParams }: PageProps<"/
         <Proof t={t.landing} locale={lang} cafeName={{ en: cafe.en?.name ?? "", am: cafe.am?.name ?? "" }} />
         <Marquee title={t.landing.marquee.title} names={t.builder.templates} pause={t.landing.marquee.pause} />
         <Steps t={t.landing} prompt={t.landing.demo.prompts.cafe} buildTitle={b.tlTitle} buildSteps={[b.tlUnderstand, b.tlWriting, b.tlChecking, b.tlReady]} bot={bot} site={{ name: stageSites[0]?.name ?? "", shot: stageSites[0]?.shot ?? { src: "", width: 1, height: 1 } }} address={exampleAddress} languages={`${b.langEn} · ${b.langAm}`} />
+        <Watch t={t.landing.watch} g={t.guide.video} locale={lang} />
         <Features
           title={f.title}
           eyebrow={t.landing.eyebrows.features}

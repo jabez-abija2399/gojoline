@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { FocusOnMount } from "@/components/admin/focus-on-mount";
+import { SiteFiles } from "@/components/admin/site-files";
+import { PostsTab } from "@/components/admin/posts-tab";
 import { ModerateForm } from "@/components/admin/moderate-form";
 import { ReviewForm } from "@/components/admin/review-form";
 import { SettingsForm } from "@/components/admin/settings-form";
@@ -9,17 +11,25 @@ import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
-import { adminStats, services } from "@/lib/server/services";
+import { adminStats, analytics, services } from "@/lib/server/services";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, BadgePercent, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, MessageSquareHeart, Monitor, Moon, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgePercent, ChartColumn, CircleCheck, Cpu, Flag, Globe, LayoutDashboard, Megaphone, MessageSquareHeart, Monitor, Moon, Route, Settings2, Sun, Sprout, TrendingDown, TrendingUp, Users, Wallet, X } from "lucide-react";
+import { SourcesView } from "@/components/admin/sources-view";
+import { SHORT_CODES, SHORT_LINKS, shortUrl } from "@/lib/growth/short-links";
+import { addisDay } from "@/lib/dashboard/stats";
 import { FeedbackReplyForm } from "@/components/admin/feedback-reply-form";
 import { TYPE_ICONS } from "@/components/feedback/type-icons";
 import { emptyCounts, FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
 import { shortAgent } from "@/lib/feedback/agent";
 import { reportError } from "@/lib/observability/report";
 import { BarChart } from "@/components/admin/bar-chart";
-import { setAdminTheme, setShowcaseHidden, toggleDiscountCode } from "./actions";
+import { AnalyticsView } from "@/components/admin/analytics-view";
+import { PERIODS, type Period } from "@/lib/analytics/periods";
+import { isPresetId } from "@/lib/template/presets";
+import { inviteOwnersToFeature, setAdminTheme, setShowcaseHidden, toggleDiscountCode } from "./actions";
+import { INVITE_BATCH, invitable } from "@/lib/growth/feature-invites";
+import { PostSubmit } from "@/components/admin/post-submit";
 import { offerEndsAt, offerUntilLabel } from "@/lib/billing/discounts";
 import { offerProductsText } from "@/lib/billing/offer-text";
 import { CreditsForm } from "@/components/admin/credits-form";
@@ -44,7 +54,7 @@ const usd = (nano: number) => (nano > 0 && nano < 1e7 ? usdSmall : usdFmt).forma
 /** Text people typed may be in either language; screen readers need to know which. */
 const langOf = (s: string) => (/[\u1200-\u137F]/.test(s) ? "am" : "en");
 const DONE = ["ok", "deploy_failed", "failed", "not_found"] as const;
-const TABS = ["overview", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "settings"] as const;
+const TABS = ["overview", "analytics", "sources", "payments", "reports", "feedback", "sites", "users", "growth", "costs", "discounts", "posts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 type AdminUserPlan = (typeof PLAN_IDS)[number];
 
@@ -72,7 +82,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
     svc.feedback.countByStatus().catch((e: unknown) => (reportError("feedback count failed", e), emptyCounts())),
   ]);
   const badge: Partial<Record<Tab, number>> = { payments: counts.pendingPayments, reports: counts.openReports, feedback: fbCounts.new };
-  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, discounts: BadgePercent, settings: Settings2 };
+  const icons: Record<Tab, typeof LayoutDashboard> = { overview: LayoutDashboard, payments: Wallet, reports: Flag, feedback: MessageSquareHeart, sites: Globe, users: Users, growth: Sprout, costs: Cpu, analytics: ChartColumn, sources: Route, discounts: BadgePercent, posts: Megaphone, settings: Settings2 };
   const navItem = (x: Tab, compact: boolean) => {
     const Icon = icons[x];
     return (
@@ -125,6 +135,8 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             </FocusOnMount>
           )}
           {tab === "overview" && <Overview />}
+          {tab === "analytics" && <AnalyticsTab />}
+          {tab === "sources" && <SourcesTab />}
           {tab === "payments" && <Payments />}
           {tab === "reports" && <Reports />}
           {tab === "feedback" && <FeedbackTab />}
@@ -133,6 +145,7 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           {tab === "growth" && <GrowthTab />}
           {tab === "costs" && <Costs />}
           {tab === "discounts" && <Discounts />}
+          {tab === "posts" && <PostsTab lang={lang} t={t.admin.posts} sp={sp} />}
           {tab === "settings" && <Settings />}
         </main>
       </div>
@@ -159,6 +172,58 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
           ))}
         </div>
       </form>
+    );
+  }
+
+  /** Admin → Sources: visits from our short links (counted when opened) and sign-ups by first source. */
+  async function SourcesTab() {
+    const day = (ago: number) => addisDay(Date.now() - ago * 86_400_000);
+    const today = day(0);
+    let failed = false;
+    const [rows, split] = await Promise.all([
+      svc.analyticsEvents.rows(day(29), today, "link_visit").catch((e: unknown) => (reportError("short link counts failed", e), (failed = true), [])),
+      svc.growth.sources.breakdown().catch((e: unknown) => (reportError("sign-up sources failed", e), (failed = true), { d7: emptySourceCounts(), d30: emptySourceCounts() })),
+    ]);
+    const sum = (code: string, from: string) => rows.filter((r) => r.key === code && r.day >= from).reduce((a, r) => a + r.n, 0);
+    const names = t.growth.sources.names as Record<string, string>;
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://gojoline.afridea.et").replace(/\/$/, "");
+    const links = SHORT_CODES.map((code) => ({
+      code,
+      url: shortUrl(appUrl, code),
+      network: `${names[SHORT_LINKS[code].source] ?? SHORT_LINKS[code].source} · ${t.admin.sources.places[SHORT_LINKS[code].medium]}`,
+      today: sum(code, today),
+      d7: sum(code, day(6)),
+      d30: sum(code, day(29)),
+    }));
+    const signups = SOURCES.map((s) => ({ name: names[s] ?? s, d7: split.d7[s] ?? 0, d30: split.d30[s] ?? 0 })).sort((a, b) => b.d30 - a.d30);
+    return <SourcesView t={t.admin.sources} links={links} signups={signups} locale={lang === "am" ? "am" : "en"} copy={t.admin.posts.copy} copied={t.admin.posts.copied} failed={failed} />;
+  }
+
+  async function AnalyticsTab() {
+    const period: Period = PERIODS.includes(sp.period as Period) ? (sp.period as Period) : "day";
+    const a = t.admin.analytics;
+    const report = await analytics().report(period).catch((e: unknown) => {
+      reportError("admin analytics failed", e);
+      return null;
+    });
+    if (!report)
+      return (
+        <p role="alert" className="flex flex-wrap items-center gap-3 rounded-xl border border-line bg-white p-4 text-ink-muted">
+          {a.failed}
+          <Link href={`/${lang}/admin?tab=analytics&period=${period}`} className="inline-flex min-h-11 pointer-fine:min-h-9 items-center font-medium text-ink underline underline-offset-4">{a.retry}</Link>
+        </p>
+      );
+    const src = t.growth.sources.names as Record<string, string>;
+    return (
+      <AnalyticsView
+        r={report}
+        t={a}
+        locale={lang === "am" ? "am" : "en"}
+        birr={(minor) => format(t.billing.price, { price: amount(minor) })}
+        usd={usd}
+        templateName={(id) => (id === null ? a.fromChat : isPresetId(id) ? t.builder.templates[id] : id)}
+        sourceName={(s) => src[s] ?? s}
+      />
     );
   }
 
@@ -313,7 +378,9 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
 
   async function GrowthTab() {
     const g = t.growth.referralsAdmin;
-    const [list, show] = await Promise.all([svc.growth.referrals.store.recent(100), svc.growth.showcase?.adminList(200) ?? []]);
+    const showcase = svc.growth.showcase;
+    const [list, show, canInvite] = await Promise.all([svc.growth.referrals.store.recent(100), showcase?.adminList(200) ?? [], showcase ? invitable({ showcase }).catch(() => null) : null]);
+    const invited = sp.fi === "ok" ? { sent: Number(sp.sent) || 0, unreachable: Number(sp.unreachable) || 0 } : null;
     const sc = t.growth.showcase;
     const joinedFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium" });
     const who = (p: { name: string; contact: string }) => (
@@ -383,6 +450,32 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
             </ul>
           )}
         </section>
+        {showcase && (
+          <section aria-labelledby="invite-title" className="flex scroll-mt-28 flex-col gap-3 rounded-xl border border-line bg-white p-4">
+            <h2 id="invite-title" className="text-base font-semibold">{sc.inviteTitle}</h2>
+            <p className="text-sm text-ink-muted">{sc.inviteIntro}</p>
+            {invited && <p role="status" className="rounded-lg bg-paper px-3 py-2 text-sm">{format(sc.inviteDone, invited)}</p>}
+            {sp.fi === "failed" && <p role="alert" className="rounded-lg bg-coral-soft px-3 py-2 text-sm text-destructive">{sc.inviteFailed}</p>}
+            {canInvite === null ? (
+              <p className="text-sm text-ink-muted">{sc.inviteLoadError}</p>
+            ) : (
+              <>
+                {canInvite.reachable === 0 ? (
+                  <p className="text-sm text-ink-muted">{sc.inviteNone}</p>
+                ) : (
+                  <form action={inviteOwnersToFeature} className="flex flex-wrap items-center gap-3">
+                    <input type="hidden" name="lang" value={lang} />
+                    <span className="text-sm font-medium tabular-nums">{format(sc.inviteCount, { n: canInvite.reachable })}</span>
+                    <PostSubmit working={t.admin.posts.working} confirm={format(sc.inviteConfirm, { n: Math.min(canInvite.reachable, INVITE_BATCH) })} className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-3 text-sm font-medium hover:border-faint pointer-fine:min-h-9">
+                      {sc.inviteButton}
+                    </PostSubmit>
+                  </form>
+                )}
+                {canInvite.unreachable > 0 && <p className="text-xs text-ink-muted tabular-nums">{format(sc.inviteNotReachable, { n: canInvite.unreachable })}</p>}
+              </>
+            )}
+          </section>
+        )}
       </div>
     );
   }
@@ -777,6 +870,8 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
                 {site.url && site.status === "published" && (
                   <a href={site.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex min-h-11 pointer-fine:min-h-9 w-fit items-center font-medium text-ink underline underline-offset-4">{t.admin.openSite}</a>
                 )}
+                {/* For helping an owner: what the AI wrote (content and colours), read from the latest version. */}
+                <SiteFiles t={t.builder} label={t.admin.siteFiles} siteId={site.id} />
                 {site.takenDownReason && (
                   <p className="text-ink-muted">
                     {t.admin.reasonShown}: <span lang={langOf(site.takenDownReason)}>{site.takenDownReason}</span>

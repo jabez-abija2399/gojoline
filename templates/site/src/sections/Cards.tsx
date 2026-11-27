@@ -10,8 +10,22 @@ import type { CardItem, CardsSection } from "../lib/types";
 
 /** Cards with pictures: rooms, properties, tours, products, people, projects. */
 export function Cards({ section }: { section: CardsSection }) {
-  const { text, href, lang } = useSite();
+  const { site, text, href, lang } = useSite();
   const layout = section.layout ?? "grid";
+  // avant lays featured work across the page and grid tiles up to 7 of 12 columns: fetch photos to match.
+  const avant = site.theme.style === "avant";
+  // estate: one wide (4 of 6 columns) and one narrow, then three across, repeating.
+  const estate = site.theme.style === "estate";
+  const voyage = site.theme.style === "voyage";
+  const museum = site.theme.style === "museum";
+  // The painting is shown at 80% of its wall (museum.css), on a 7/4/4/6 hang from 1024 px, the page 72rem at most.
+  const museumSizes = (i: number) => {
+    const [px, vw] = ([[490, 42], [265, 23], [265, 23], [415, 36]] as const)[i % 4]!;
+    return `(min-width: 1152px) ${px}px, (min-width: 1024px) ${vw}vw, (min-width: 640px) 36vw, 160px`;
+  };
+  const estateSizes = (i: number) => (i % 5 === 0 ? "(min-width: 1280px) 720px, (min-width: 1024px) 62vw, (min-width: 640px) 92vw, 160px" : i % 5 === 1 ? "(min-width: 1024px) 34vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px");
+  // monochrome shows the first of exactly three pieces large (7 of 12 columns).
+  const bigFirst = site.theme.style === "monochrome" && section.items.length === 3;
   // Pills by badge ("For sale", "For rent", "Trek") when cards carry two or more kinds.
   const kinds = [...new Set(section.items.map((it) => (it.badge ? text(it.badge) : "")).filter(Boolean))];
   const filterable = section.filters !== false && kinds.length >= 2 && section.items.length >= 4 && layout !== "stack" && layout !== "index" && layout !== "pricing";
@@ -90,14 +104,14 @@ export function Cards({ section }: { section: CardsSection }) {
             ))}
           </ul>
         ) : layout === "feature" ? (
-          <ul className="flex flex-col gap-12 md:gap-20">
+          <ul className="feature-list flex flex-col gap-12 md:gap-20">
             {items.map((item, i) => (
-              <li key={section.items.indexOf(item)} className="reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
-                <div className={`zoom wipe relative rounded-site ${arch} ${i % 2 === 1 ? "md:order-last" : ""}`}>
-                  <Picture image={item.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
+              <li key={section.items.indexOf(item)} className="feature-row reveal grid items-center gap-6 md:grid-cols-2 md:gap-14">
+                <div className={`feature-photo zoom wipe relative rounded-site ${arch} ${i % 2 === 1 ? "md:order-last" : ""}`}>
+                  <Picture image={item.image} sizes={avant ? "(min-width: 768px) 92vw, 225px" : estate || voyage ? "(min-width: 1024px) 50vw, (min-width: 768px) 92vw, 160px" : "(min-width: 768px) 50vw, 160px"} className="aspect-[4/3] w-full rounded-site" />
                   <Badge item={item} />
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="feature-text flex flex-col gap-3">
                   <Body item={item} large />
                 </div>
               </li>
@@ -190,14 +204,14 @@ export function Cards({ section }: { section: CardsSection }) {
             ))}
           </ul>
         ) : (
-          <ul className={`dim-others grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
+          <ul className={`card-grid dim-others grid gap-6 sm:grid-cols-2 ${n === 2 || n === 4 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
             {items.map((item, i) => (
               <li key={section.items.indexOf(item)} style={{ "--i": i % 3 } as React.CSSProperties} className="card pcard reveal lift flex flex-col overflow-hidden">
                 <div className="zoom relative">
                   {item.photos && item.photos.length > 0 && item.image ? (
                     <CardPhotos title={text(item.title)} photos={[item.image, ...item.photos]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" />
                   ) : (
-                    <Picture image={item.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px" className="aspect-[4/3] w-full" />
+                    <Picture image={item.image} sizes={estate ? estateSizes(i) : museum ? museumSizes(i) : voyage ? "(min-width: 640px) 50vw, 160px" : avant ? "(min-width: 768px) 55vw, 160px" : bigFirst && i === 0 ? "(min-width: 1024px) 58vw, (min-width: 640px) 50vw, 160px" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 160px"} className="aspect-[4/3] w-full" />
                   )}
                   <Badge item={item} />
                 </div>
@@ -236,11 +250,15 @@ function PriceLine({ item }: { item: CardItem }) {
 }
 
 function Body({ item, large = false, quiet = false }: { item: CardItem; large?: boolean; /** A link, not a filled button: for cards that repeat the page's main action. */ quiet?: boolean }) {
-  const { text, href } = useSite();
+  const { text, href, site } = useSite();
+  // A wall label (museum): the title first for screen readers moving by heading, the artist shown above it.
+  const label = site.theme.style === "museum";
+  const subtitle = item.subtitle && <p className="eyebrow">{text(item.subtitle)}</p>;
   return (
     <>
-      {item.subtitle && <p className="eyebrow">{text(item.subtitle)}</p>}
+      {!label && subtitle}
       <ItemTitle className={large ? "font-heading text-3xl leading-tight md:text-4xl" : "text-xl leading-snug"}>{text(item.title)}</ItemTitle>
+      {label && subtitle}
       {item.meta && item.meta.length > 0 && (
         <ul className="meta flex flex-wrap gap-x-3 gap-y-1 text-muted">
           {item.meta.map((m, i) => (

@@ -15,6 +15,8 @@ import { isLocale } from "@/lib/i18n/config";
 import { format, getMessages } from "@/lib/i18n";
 import { showcaseSites } from "@/lib/landing/showcase";
 import { services } from "@/lib/server/services";
+import { ownerCards, type ProjectCard } from "@/lib/projects/cards";
+import { after } from "next/server";
 import { createProject } from "./actions";
 
 export async function generateMetadata({
@@ -39,16 +41,29 @@ export default async function ProjectsPage({
   const a = t.app;
   const b = t.builder;
   const builder = services().builder;
+  const paused = !!builder?.paused;
   const owned = await ownerSites(user.id);
   const tooMany = (await searchParams).error === "too_many";
   const name = greetingName(user.name);
 
+  // The pictures on the cards (made when a version is saved). Sites from before cards existed are
+  // filled in after this page has been sent, a few per visit.
+  const cardSet =
+    builder?.cards && owned.length > 0
+      ? await ownerCards({ store: builder.store, assets: builder.assets, cards: builder.cards }, user.id, owned.map(({ project }) => project)).catch(() => null)
+      : null;
+  if (cardSet) after(cardSet.fill);
+  const pictures = cardSet?.cards ?? new Map<string, ProjectCard>();
   const cards: SiteCard[] = owned.map(({ project, site }) => ({
     id: project.id,
     name: project.name || b.untitled,
     status: site?.status === "taken_down" ? "taken_down" : liveAddress(site) ? "live" : "draft",
     address: liveAddress(site),
     changed: format(a.edited, { when: ago(project.updatedAt, lang) }),
+    picture: (() => {
+      const c = pictures.get(project.id);
+      return c ? { src: c.thumbKey ? `/api/projects/${project.id}/card?k=${c.thumbKey}` : null, heading: c.heading, colors: c.colors } : null;
+    })(),
   }));
 
   const sitesPanel =
@@ -72,7 +87,8 @@ export default async function ProjectsPage({
               </span>
               <span className="flex flex-1 items-center gap-2 px-3 pt-3 text-sm font-medium">{b.templates[site.id]}</span>
             </Link>
-            <form action={createProject} data-preset={site.id} className="p-2 pt-1 sm:p-3 sm:pt-1">
+            {!paused && (
+            <form action={createProject} data-preset={site.id} data-track="use_template" className="p-2 pt-1 sm:p-3 sm:pt-1">
               <input type="hidden" name="lang" value={lang} />
               <input type="hidden" name="preset" value={site.id} />
               <PendingButton aria-label={`${b.useTemplate}: ${b.templates[site.id]}`} className="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-full border border-line px-3 text-sm font-medium whitespace-nowrap hover:border-faint">
@@ -80,6 +96,7 @@ export default async function ProjectsPage({
                 <ArrowRight aria-hidden="true" className="size-4" />
               </PendingButton>
             </form>
+            )}
           </li>
         ))}
       </ul>
@@ -89,10 +106,10 @@ export default async function ProjectsPage({
   return (
     <AppShell locale={lang} t={t} user={user}>
       <main id="main" className="relative flex w-full flex-1 flex-col overflow-x-clip">
-        {/* A warm glow behind the start box: the one place on the page that asks for something. */}
-        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(60%_70%_at_50%_0%,var(--gojo-coral-soft),transparent)]" />
+        {/* A warm glow behind the start box: the one place on the page that asks for something (none while building is paused). */}
+        {!paused && <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(60%_70%_at_50%_0%,var(--gojo-coral-soft),transparent)]" />}
         <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12">
-          {builder && <PresetStart autoStart={cards.length === 0} />}
+          {builder && !builder.paused && <PresetStart autoStart={cards.length === 0} />}
           {tooMany && (
             <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-destructive">
               {b.tooMany}
@@ -105,6 +122,12 @@ export default async function ProjectsPage({
             </>
           ) : (
             <>
+              {builder.paused ? (
+                <>
+                  <h1 className="font-display text-3xl font-bold tracking-tight text-balance sm:text-4xl">{name ? format(a.greetingBack, { name }) : a.greetingBackNoName}</h1>
+                  <p className="max-w-[65ch] rounded-xl border border-line bg-white p-4 text-ink-muted">{b.paused}</p>
+                </>
+              ) : (
               <StartBox
                 t={{ startBody: b.startBody, startPlaceholder: b.startPlaceholder, ideasLabel: b.ideasLabel, ideas: b.ideas, startLang: b.startLang, langEn: b.langEn, langAm: b.langAm, langBothShort: b.langBothShort, newSite: b.newSite }}
                 locale={lang}
@@ -112,14 +135,15 @@ export default async function ProjectsPage({
                 title={name ? format(a.greeting, { name }) : a.greetingNoName}
                 autoStart={cards.length === 0}
               />
-              {cards.length === 0 && (
+              )}
+              {cards.length === 0 && !builder.paused && (
                 // First visit: the short video and steps, for owners who'd like to see how it works first.
                 <Link href={`/${lang}/guide`} className="-mt-4 inline-flex min-h-11 w-fit items-center gap-2 self-center rounded-full px-3 text-sm font-medium text-ink underline underline-offset-4 hover:bg-white/60">
                   <PlayCircle aria-hidden="true" className="size-5 shrink-0" />
                   {t.guide.buildLink}
                 </Link>
               )}
-              <HomeTabs label={a.homeTabs} labels={{ sites: `${a.sites}${cards.length ? ` (${cards.length})` : ""}`, templates: a.templates }} initial={cards.length === 0 ? "templates" : "sites"} sites={sitesPanel} templates={templatesPanel} />
+              <HomeTabs label={a.homeTabs} labels={{ sites: `${a.sites}${cards.length ? ` (${cards.length})` : ""}`, templates: a.templates }} initial={cards.length === 0 && !paused ? "templates" : "sites"} sites={sitesPanel} templates={templatesPanel} />
             </>
           )}
         </div>

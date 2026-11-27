@@ -76,4 +76,9 @@ export class MemoryProjectStore implements ProjectStore {
     const list = this.versions.filter((v) => v.projectId === projectId);
     return list.at(-1) ?? null;
   }
+  async latestNumbers(ownerId: string) {
+    const out = new Map<string, number>();
+    for (const v of this.versions) if (this.owned(ownerId, v.projectId)) out.set(v.projectId, Math.max(out.get(v.projectId) ?? 0, v.number));
+    return out;
+  }
 }

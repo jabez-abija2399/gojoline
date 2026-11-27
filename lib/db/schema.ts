@@ -203,6 +203,13 @@ export const sites = pgTable(
     showcase: boolean("showcase").notNull().default(false),
     /** An admin hid it from the showcase (null = not hidden). */
     showcaseHiddenAt: timestamp("showcase_hidden_at", { withTimezone: true }),
+    /**
+     * When the owner opted in under the wording that includes Gojoline's social posts and videos
+     * (2026-11-21); null = not, or only to the showcase page under the earlier wording.
+     */
+    postsConsentAt: timestamp("posts_consent_at", { withTimezone: true }),
+    /** When an admin's "Invite owners to be featured" asked this site's owner (once per site). */
+    featureInvitedAt: timestamp("feature_invited_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -300,6 +307,25 @@ export const projectAssets = pgTable(
   },
   (t) => [uniqueIndex("project_assets_name_uq").on(t.projectId, t.name)],
 );
+
+/**
+ * The picture on a site's card in the owner's "Your sites" list, from the newest version: the home
+ * page photo (~640 px WebP), colours and headline. Remade when the project changes.
+ */
+export const projectCards = pgTable("project_cards", {
+  projectId: uuid("project_id")
+    .primaryKey()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  ownerId: text("owner_id").notNull(),
+  versionNumber: integer("version_number").notNull(),
+  heading: text("heading"),
+  primaryColor: text("primary_color"),
+  backgroundColor: text("background_color"),
+  textColor: text("text_color"),
+  thumb: bytea("thumb"),
+  thumbKey: text("thumb_key"),
+  updatedAt: updatedAt(),
+});
 
 /** An owner's Telegram chat, linked through a one-time code from the dashboard. */
 export const telegramLinks = pgTable("telegram_links", {
@@ -522,8 +548,8 @@ export const signupSources = pgTable(
     userId: text("user_id")
       .primaryKey()
       .references(() => user.id, { onDelete: "cascade" }),
-    /** The overview's bucket: badge, referral, telegram, tiktok, facebook, linkedin, qr, other, direct. */
-    source: text("source", { enum: ["badge", "referral", "telegram", "tiktok", "facebook", "linkedin", "qr", "other", "direct"] }).notNull(),
+    /** The overview's bucket (lib/growth/attribution.ts SOURCES). Plain text in the database: new buckets need no migration. */
+    source: text("source", { enum: ["badge", "referral", "telegram", "instagram", "tiktok", "facebook", "youtube", "google", "linkedin", "qr", "other", "direct"] }).notNull(),
     ref: text("ref"),
     utmSource: text("utm_source"),
     utmMedium: text("utm_medium"),
@@ -609,4 +635,46 @@ export const siteShowcase = pgTable(
     updatedAt: updatedAt(),
   },
   (t) => [index("site_showcase_thumb_idx").on(t.thumbKey)],
+);
+
+/**
+ * Admin analytics counters per Addis Ababa day: clicks on key builder links (`click`, key = the
+ * link's name from lib/analytics/clicks.ts) and publishes (`publish`, key `first` or `update`).
+ * Counts only: no user ids, no IPs (migration 0021).
+ */
+export const analyticsDaily = pgTable(
+  "analytics_daily",
+  {
+    day: date("day").notNull(),
+    event: text("event", { enum: ["click", "publish", "post_visit", "link_visit"] }).notNull(),
+    key: text("key").notNull(),
+    n: integer("n").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.event, t.key] })],
+);
+
+/**
+ * Gojoline's own daily social posts (Admin → Posts): planned per Addis day, captioned in both
+ * languages, approved by an admin, then sent to our channels. Results per network in `results`.
+ */
+export const socialPosts = pgTable(
+  "social_posts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    day: text("day").notNull(),
+    time: text("time").notNull(),
+    kind: text("kind").notNull(),
+    subject: text("subject"),
+    status: text("status").notNull().default("draft"),
+    captionEn: text("caption_en").notNull().default(""),
+    captionAm: text("caption_am").notNull().default(""),
+    hashtags: text("hashtags").notNull().default(""),
+    media: jsonb("media").$type<Record<string, string> | null>(),
+    channels: jsonb("channels").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
+    results: jsonb("results").$type<Record<string, unknown>>().notNull().default(sql`'{}'::jsonb`),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    postedAt: timestamp("posted_at", { withTimezone: true }),
+  },
+  (t) => [index("social_posts_day_idx").on(t.day), index("social_posts_due_idx").on(t.status, t.day)],
 );

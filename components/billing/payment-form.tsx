@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, ImagePlus, Landmark, Smartphone, Building2 } from "lucide-react";
+import { ChevronDown, ImagePlus, Landmark, Smartphone, Building2, ShieldCheck, X } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import { format } from "@/lib/i18n/format";
 import { productName } from "@/lib/billing/plans";
+import { shrinkImage } from "@/lib/billing/shrink-image";
 import { CopyButton } from "./copy-button";
+import { useBillingTabs } from "./billing-tabs";
 
 export const PAY_PRODUCTS = ["starter_month", "starter_year", "business_month", "business_year", "topup"] as const;
 export type ProductId = (typeof PAY_PRODUCTS)[number];
@@ -50,7 +52,6 @@ export function PaymentForm({
   prices,
   topupCredits,
   product,
-  onProduct,
   accounts,
   onSent,
 }: {
@@ -60,18 +61,22 @@ export function PaymentForm({
   /** Santim: the list price and the price now (launch offer included). */
   prices: Record<ProductId, { base: number; final: number }>;
   topupCredits: number;
-  /** What is being paid for (the plan cards above choose it too). */
+  /** What is being paid for: chosen on the plan cards above (one place to choose). */
   product: ProductId;
-  onProduct: (p: ProductId) => void;
   accounts: PayAccounts;
   /** The payment was received for checking. */
   onSent: () => void;
 }) {
   const p = t.pay;
+  const tabs = useBillingTabs();
   const methods: Method[] = [...(accounts.telebirrNumber ? (["telebirr"] as const) : []), ...(accounts.cbeAccount ? (["cbe", "other"] as const) : [])];
   const [method, setMethod] = useState<Method>(methods[0] ?? "telebirr");
   const [state, setState] = useState<State>({ kind: "idle" });
-  const [receipt, setReceipt] = useState<{ name: string; url: string } | null>(null);
+  // The photo as chosen (its name), and the smaller copy that is sent.
+  const [receipt, setReceipt] = useState<{ name: string; url: string; file: File } | null>(null);
+  const [shrinking, setShrinking] = useState(false);
+  // Each pick or Remove bumps this, so a slower earlier shrink can't overwrite a newer choice.
+  const pickRef = useRef(0);
   const [code, setCode] = useState<CodeState>({ kind: "none" });
   const [codeOpen, setCodeOpen] = useState(false);
   const refRef = useRef<HTMLInputElement>(null);
@@ -125,14 +130,15 @@ export function PaymentForm({
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (state.kind === "sending") return;
+    if (state.kind === "sending" || shrinking) return;
     const form = e.currentTarget;
     const data = new FormData(form);
     const reference = String(data.get("reference") ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "");
     if (reference.length < 6 || reference.length > 40) return fail("reference");
-    const file = data.get("receipt");
-    if (!(file instanceof File) || file.size === 0) return fail("receipt_missing");
+    const file = receipt?.file;
+    if (!file || file.size === 0) return fail("receipt_missing");
     if (file.size > MAX_RECEIPT_BYTES) return fail("receipt");
+    data.set("receipt", file, file.name);
     setState({ kind: "sending" });
     const res = await fetch("/api/billing/payments", { method: "POST", body: data }).catch(() => null);
     const d = res ? await res.json().catch(() => ({})) : {};
@@ -163,22 +169,17 @@ export function PaymentForm({
   return (
     <form onSubmit={submit} noValidate className="flex flex-col gap-4">
       <Step n={1} label={format(p.step, { n: 1 })} title={p.step1}>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="pay-product" className="font-medium">{t.product}</label>
-          <div className="relative">
-            <select
-              id="pay-product"
-              name="product"
-              value={product}
-              onChange={(e) => onProduct(e.target.value as ProductId)}
-              className="min-h-12 w-full appearance-none rounded-xl border border-ink-muted bg-white ps-4 pe-10 text-base font-medium"
-            >
-              {PAY_PRODUCTS.map((x) => (
-                <option key={x} value={x}>{`${productName(t.productNames, x, topupCredits)} · ${format(t.price, { price: birr(prices[x].final) })}`}</option>
-              ))}
-            </select>
-            <ChevronDown aria-hidden="true" className="pointer-events-none absolute end-3 top-1/2 size-5 -translate-y-1/2 text-ink-muted" />
+        <div className="flex items-center gap-3 rounded-xl border border-line px-4 py-3">
+          <div className="flex min-w-0 flex-1 flex-col">
+            <span className="text-sm text-ink-muted">{p.payingFor}</span>
+            <span id="pay-product" tabIndex={-1} className="font-semibold">{productName(t.productNames, product, topupCredits)}</span>
           </div>
+          {/* The plan cards are the one place to choose; this goes back to them. */}
+          <a href="?tab=plan" onClick={(e) => (e.preventDefault(), tabs.show("plan", "choose-title"))} className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center px-1 font-medium text-ink underline underline-offset-4 lg:min-h-9">
+            {p.change}
+            <span className="sr-only">: {productName(t.productNames, product, topupCredits)}</span>
+          </a>
+          <input type="hidden" name="product" value={product} />
         </div>
         <div className="flex flex-col gap-2">
           <button
@@ -269,6 +270,11 @@ export function PaymentForm({
             <div className="flex min-w-0 flex-col">
               <span className="text-sm font-medium text-ink-muted">{p.holder}</span>
               <span className="text-lg font-semibold break-words">{accounts.accountName}</span>
+              {/* The safety check people skip: the app shows the receiver's name before the PIN. */}
+              <span className="mt-2 flex items-start gap-2 text-sm text-ink">
+                <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-lagoon" />
+                {format(p.nameCheck, { name: accounts.accountName })}
+              </span>
             </div>
           )}
           <div className="flex flex-wrap items-end justify-between gap-2 border-t border-line pt-3">
@@ -317,19 +323,43 @@ export function PaymentForm({
                 aria-labelledby="pay-receipt-label"
                 aria-describedby={receiptError ? "pay-receipt-status pay-receipt-error" : "pay-receipt-status"}
                 aria-invalid={receiptError || undefined}
-                onChange={(e) => {
+                onChange={async (e) => {
                   const f = e.target.files?.[0];
-                  setReceipt(f ? { name: f.name, url: URL.createObjectURL(f) } : null);
+                  const pick = ++pickRef.current;
+                  if (!f) return (setShrinking(false), setReceipt(null));
+                  setShrinking(true);
+                  const small = await shrinkImage(f);
+                  if (pick !== pickRef.current) return;
+                  setShrinking(false);
+                  setReceipt({ name: f.name, url: URL.createObjectURL(small), file: small });
+                  if (state.kind === "error" && RECEIPT_ERRORS.has(state.code)) setState({ kind: "idle" });
                 }}
               />
             </label>
+            {receipt && (
+              <button
+                type="button"
+                onClick={() => {
+                  pickRef.current++;
+                  setShrinking(false);
+                  setReceipt(null);
+                  if (fileRef.current) fileRef.current.value = "";
+                  fileRef.current?.focus();
+                }}
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-ink-muted hover:bg-sunken hover:text-ink lg:min-h-9"
+              >
+                <X aria-hidden="true" className="size-4" />
+                {p.removePhoto}
+                <span className="sr-only">: {receipt.name}</span>
+              </button>
+            )}
           </div>
-          <p id="pay-receipt-status" className="text-sm break-all text-ink-muted">{receipt ? format(t.receiptSelected, { name: receipt.name }) : t.noReceiptYet}</p>
+          <p id="pay-receipt-status" aria-live="polite" className="text-sm break-all text-ink-muted">{shrinking ? p.shrinking : receipt ? format(t.receiptSelected, { name: receipt.name }) : t.noReceiptYet}</p>
           {receiptError && <p id="pay-receipt-error" role="alert" className="text-danger">{errorText}</p>}
         </div>
         {state.kind === "error" && !refError && !receiptError && <p role="alert" className="rounded-lg bg-coral-soft px-4 py-3 text-danger">{errorText}</p>}
-        <button type="submit" aria-disabled={state.kind === "sending"} className="min-h-12 rounded-xl bg-coral px-5 text-base font-semibold text-on-coral hover:bg-coral-hover aria-disabled:opacity-50">
-          {state.kind === "sending" ? t.submitting : t.submit}
+        <button type="submit" aria-disabled={state.kind === "sending" || shrinking} className="min-h-12 rounded-xl bg-coral px-5 text-base font-semibold text-on-coral hover:bg-coral-hover aria-disabled:opacity-50">
+          {state.kind === "sending" ? t.submitting : shrinking ? p.shrinking : t.submit}
         </button>
       </Step>
     </form>

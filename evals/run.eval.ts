@@ -14,11 +14,19 @@ import { AnthropicLLMProvider } from "@/lib/providers/llm/anthropic";
 import { DEFAULT_MODEL, formatUsd } from "@/lib/providers/llm/pricing";
 import { MemoryUsageLogger } from "@/lib/providers/llm/usage-log";
 import type { MessageParam } from "@/lib/providers/llm/types";
+import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { DockerSandboxProvider } from "@/lib/providers/sandbox/docker";
 import { VercelSandboxProvider } from "@/lib/providers/sandbox/vercel";
 import { cases, type EvalCase } from "./cases";
 
 const env = process.env;
-const ready = !!env.SAYSITE_ANTHROPIC_API_KEY && !!env.VERCEL_TOKEN && !!env.VERCEL_TEAM_ID && !!env.VERCEL_PROJECT_ID;
+// Sites are built where production builds them: our Docker runner when it is set, else Vercel Sandbox.
+const docker = !!env.SANDBOX_RUNNER_URL && !!env.SANDBOX_RUNNER_SECRET;
+const ready = !!env.SAYSITE_ANTHROPIC_API_KEY && (docker || (!!env.VERCEL_TOKEN && !!env.VERCEL_TEAM_ID && !!env.VERCEL_PROJECT_ID));
+/** The starter site: sent only as a format example on a first build, as the builder does; none of it may survive. */
+const STARTER = readFileSync(new URL("../templates/site/src/site.json", import.meta.url), "utf8");
+const STARTER_WORDS = ["Bole Buna House", "ቦሌ ቡና ቤት"];
 const only = env.EVAL_ONLY?.split(",").map((s) => s.trim());
 const selected = only ? cases.filter((c) => only.includes(c.id)) : cases;
 const CONCURRENCY = Number(env.EVAL_CONCURRENCY) || 5;
@@ -58,22 +66,27 @@ function check(siteTs: string, must: string[], languages?: string[]): string[] {
 }
 
 async function runCase(c: EvalCase): Promise<CaseResult> {
-  const sandboxes = new VercelSandboxProvider({ teamId: env.VERCEL_TEAM_ID!, projectId: env.VERCEL_PROJECT_ID!, token: env.VERCEL_TOKEN!, snapshotId: env.SANDBOX_SNAPSHOT_ID });
+  const sandboxes = docker
+    ? new DockerSandboxProvider({ url: env.SANDBOX_RUNNER_URL!, secret: env.SANDBOX_RUNNER_SECRET! })
+    : new VercelSandboxProvider({ teamId: env.VERCEL_TEAM_ID!, projectId: env.VERCEL_PROJECT_ID!, token: env.VERCEL_TOKEN!, snapshotId: env.SANDBOX_SNAPSHOT_ID });
   const llm = new AnthropicLLMProvider(env.SAYSITE_ANTHROPIC_API_KEY!);
   const usage = new MemoryUsageLogger();
   const t0 = Date.now();
-  const site = await sandboxes.open(`eval-${c.id}-${Date.now()}`, null);
+  // A fresh project id per case (the Docker runner accepts only UUIDs).
+  const site = await sandboxes.open(randomUUID(), null);
   const previewOpenMs = Date.now() - t0;
   try {
-    const step = async (prompt: string, history: MessageParam[], must: string[], languages?: string[], siteLanguages?: ("en" | "am")[]) => {
+    const step = async (prompt: string, history: MessageParam[], must: string[], languages?: string[], siteLanguages?: ("en" | "am")[], expect: "build" | "answer" = "build") => {
       const start = Date.now();
       const before = usage.records.length;
+      const beforeJson = (await site.readFile("src/site.json")) ?? "";
       const r = await runAgent({
         llm,
         workspace: site,
         system: agentSystemPrompt(),
         history,
-        userContent: userTurn(prompt, await site.readFile("src/site.json"), [], siteLanguages),
+        // A first build gets <new_site/> with the starter only as a format example (lib/builder does the same).
+        userContent: history.length ? userTurn(prompt, beforeJson, [], siteLanguages) : userTurn(prompt, null, [], siteLanguages, STARTER),
         model: env.AGENT_MODEL || DEFAULT_MODEL,
         usage,
         context: { userId: null, projectId: `eval-${c.id}` },
@@ -81,9 +94,13 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
       });
       const siteTs = (await site.readFile("src/site.json")) ?? "";
       const vague = c.industry === "unknown";
-      const missing = vague ? [] : check(siteTs, must, languages);
-      // A vague prompt should get questions, not a made-up site.
-      const success = vague ? r.status === "answered" : r.status === "changed" && missing.length === 0;
+      const answerOnly = vague || expect === "answer";
+      const missing = answerOnly ? [] : check(siteTs, must, languages);
+      // Nothing of the starter café may be left in the owner's site.
+      if (!answerOnly) for (const w of STARTER_WORDS) if (siteTs.includes(w)) missing.push(`starter:${w}`);
+      // A vague prompt should get questions, an off-topic one a short reply: no made-up site, no edit.
+      if (expect === "answer" && siteTs !== beforeJson) missing.push("edited on an off-topic message");
+      const success = answerOnly ? r.status === "answered" && missing.length === 0 : r.status === "changed" && missing.length === 0;
       const result: StepResult = {
         status: r.status,
         firstTry: success && r.fixAttempts === 0,
@@ -108,6 +125,13 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
         { role: "assistant", content: first.reply || "(no reply)" },
       ];
       edit = (await step(c.edit.prompt, history, c.edit.mustContain)).result;
+    }
+    if (c.offTopic) {
+      const history: MessageParam[] = [
+        { role: "user", content: `<owner_message>\n${c.prompt}\n</owner_message>` },
+        { role: "assistant", content: first.reply || "(no reply)" },
+      ];
+      edit = (await step(c.offTopic, history, [], undefined, undefined, "answer")).result;
     }
     return { id: c.id, lang: c.lang, industry: c.industry, first: first.result, edit, siteTs: (await site.readFile("src/site.json")) ?? "", previewOpenMs };
   } finally {
@@ -171,6 +195,8 @@ describe.skipIf(!ready)("agent eval set", () => {
     writeFileSync(file, JSON.stringify({ summary, results }, null, 2));
 
     console.log("\n" + JSON.stringify(summary, null, 2));
+    // The replies to off-topic messages, to read (and paste into RESULTS.md).
+    for (const r of results) if (selected.find((c) => c.id === r.id)?.offTopic && r.edit) console.log(`\n${r.id} off-topic reply (${r.edit.status}): ${r.edit.reply}`);
     console.log("\n| Case | First try | Success | Fixes | Cost | Seconds | Edit | Edit cost | Missing |\n|---|---|---|---|---|---|---|---|---|");
     for (const r of results) {
       console.log(

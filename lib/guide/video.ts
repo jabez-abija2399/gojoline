@@ -7,21 +7,21 @@
 /** The video's chapter list as the editor wrote it (m:ss, then the title). */
 export const CHAPTERS_TXT = `0:00  Intro
 0:03  1. Start
-0:17  2. Describe your business
-0:32  3. Watch it build
-0:48  4. Look around
-1:20  5. Change anything by chatting
-2:10  6. Your photos
-2:34  7. Versions
-3:02  8. Publish
-3:19  9. Your site dashboard
-4:13  10. Plan and payments
-4:44  Closing
+0:17.53  2. Describe what you want
+0:32.20  3. Watch it build
+0:53.57  4. Look around
+1:33.53  5. Change anything by chatting
+3:01.72  6. Your photos
+3:25.72  7. Versions
+3:53.72  8. Publish
+4:10.72  9. Your site dashboard
+5:04.72  10. Plan and payments
+5:35.72  Closing
 `;
 
-/** Length of public/guide/gojoline-guide-720.mp4, in seconds, and its size in bytes. */
-export const VIDEO_SECONDS = 288.37;
-export const VIDEO_BYTES = 5_651_309;
+/** Length of public/guide/gojoline-guide-720.mp4, in seconds, and its size in bytes (Lalibela Sky Lodge in steps 2-5, pointer and music, 2026-11-20). */
+export const VIDEO_SECONDS = 340.07;
+export const VIDEO_BYTES = 13_136_088;
 
 /**
  * The English captions are burned into the picture near the bottom; a captions track turned on
@@ -37,35 +37,35 @@ export const CAPTION_TIMES: readonly (readonly [number, number])[] = [
   [4.8, 12.1],
   [12.1, 14.8],
   [14.8, 17.5],
-  [19.3, 29.6],
-  [29.6, 32.3],
-  [34.1, 43.42],
-  [43.42, 48.52],
-  [50.32, 66.42],
-  [66.42, 80.82],
-  [82.62, 89.38],
-  [89.38, 99.38],
-  [99.38, 108.68],
-  [108.68, 117.25],
-  [117.25, 130.05],
-  [131.85, 143.35],
-  [143.35, 147.28],
-  [147.28, 154.38],
-  [156.18, 174.58],
-  [174.58, 182.93],
-  [184.73, 189.23],
-  [189.23, 193.33],
-  [193.33, 199.43],
-  [201.23, 209.43],
-  [209.43, 219.03],
-  [219.03, 229.93],
-  [229.93, 235.13],
-  [235.13, 249.43],
-  [249.43, 253.23],
-  [255.03, 267.43],
-  [267.43, 277.53],
-  [277.53, 280.13],
-  [280.13, 285.13],
+  [19.33, 28.3],
+  [28.3, 32.2],
+  [34.03, 50.02],
+  [50.02, 53.52],
+  [55.37, 75.96],
+  [75.96, 93.5],
+  [95.33, 110.44],
+  [110.44, 113.56],
+  [113.56, 132.93],
+  [132.93, 155.67],
+  [155.67, 178.25],
+  [183.57, 195.07],
+  [195.07, 199.0],
+  [199.0, 206.1],
+  [207.9, 226.3],
+  [226.3, 234.65],
+  [236.45, 240.95],
+  [240.95, 245.05],
+  [245.05, 251.15],
+  [252.95, 261.15],
+  [261.15, 270.75],
+  [270.75, 281.65],
+  [281.65, 286.85],
+  [286.85, 301.15],
+  [301.15, 304.95],
+  [306.75, 319.15],
+  [319.15, 329.25],
+  [329.25, 331.85],
+  [331.85, 336.85],
 ];
 
 export interface Chapter {
@@ -86,7 +86,7 @@ export function parseTimestamp(raw: string): number | null {
   return Number(h) * 3600 + Number(min) * 60 + Number(sec) + (frac ? Number(`0.${frac}`) : 0);
 }
 
-/** Reads a chapter list ("0:17  2. Describe your business" per line), sorted by time. Lines that don't parse are skipped. */
+/** Reads a chapter list ("0:17  2. Describe what you want" per line), sorted by time. Lines that don't parse are skipped. */
 export function parseChapters(text: string): Chapter[] {
   const out: Chapter[] = [];
   for (const line of text.split(/\r?\n/)) {

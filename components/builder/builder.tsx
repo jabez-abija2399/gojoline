@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Eye, FileText, History, Images, MessageCircle } from "lucide-react";
+import { Eye, History, Images, MessageCircle } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { nextTimeline, startTimeline, type Timeline } from "./build-timeline";
@@ -34,16 +34,18 @@ import { replyText } from "./reply-text";
 // Opened now and then, not on every visit: their code loads the first time they are shown.
 const VersionsPanel = dynamic(() => import("./versions-panel").then((m) => m.VersionsPanel));
 const PhotosPanel = dynamic(() => import("./photos-panel").then((m) => m.PhotosPanel));
-const CodePanel = dynamic(() => import("./code-panel").then((m) => m.CodePanel));
 // Shown only when an owner runs out: loaded after the page.
 const UpgradeDialog = dynamic(() => import("@/components/billing/upgrade-dialog").then((m) => m.UpgradeDialog), { ssr: false });
 
-type Tab = "chat" | "preview" | "photos" | "versions" | "code";
+type Tab = "chat" | "preview" | "photos" | "versions";
 type SideTab = Exclude<Tab, "chat">;
-const SIDE_TABS = ["preview", "photos", "versions", "code"] as const;
-const TAB_ICONS = { chat: MessageCircle, preview: Eye, photos: Images, versions: History, code: FileText };
+// No code view: owners change their site through the chat and the dashboard (admins can see files).
+const SIDE_TABS = ["preview", "photos", "versions"] as const;
+const TAB_ICONS = { chat: MessageCircle, preview: Eye, photos: Images, versions: History };
 
 interface Props {
+  /** Building is paused (no sandbox): the chat says so once; no preview is opened. */
+  paused?: boolean;
   noCredits: { text: string; action: string };
   /** When the next monthly changes arrive, e.g. "1 December". */
   nextGrant: string;
@@ -58,10 +60,14 @@ interface Props {
   initialVersions: UiVersion[];
   /** AI changes the owner has left when the page opens. */
   initialCredits: number;
+  /** Just started from a template: its home page sections, played as a build once in the preview. */
+  setup?: string[] | null;
   /** The "no changes left" dialog: prices, plans and the offer from the server. */
   upgrade: UpgradeInfo;
   upgradeText: Messages["upgrade"];
   installText: InstallSheetText;
+  /** "Show my site in the showcase and posts", offered after publishing. */
+  showcaseText?: { label: string; hint: string; saved: string; savedOff: string; failed: string };
 }
 
 /** The month the owner last closed the upgrade dialog; null when unknown or storage is blocked. */
@@ -85,7 +91,7 @@ export interface PendingConfirm {
   left: number;
 }
 
-export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, noCredits, nextGrant, upgrade, upgradeText, installText }: Props) {
+export function Builder({ locale, projectId, t, chrome, photoText, siteName, initialMessages, initialVersions, initialCredits, setup = null, noCredits, nextGrant, upgrade, upgradeText, installText, showcaseText, paused = false }: Props) {
   const [credits, setCredits] = useState<number | null>(initialCredits);
   const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
@@ -141,7 +147,8 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
   // Phones: a dot on the Preview tab when the site changed while the owner was elsewhere.
   const [previewFresh, setPreviewFresh] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewLoading, setPreviewLoading] = useState(initialVersions.length > 0);
+  // Paused: no preview is opened (the panel says building is paused).
+  const [previewLoading, setPreviewLoading] = useState(!paused && initialVersions.length > 0);
   const [previewError, setPreviewError] = useState(false);
   const [previewAttempt, setPreviewAttempt] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
@@ -164,7 +171,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
 
   // Wake the sandbox for an existing site so the preview shows straight away.
   useEffect(() => {
-    if (initialVersions.length === 0) return;
+    if (paused || initialVersions.length === 0) return;
     let cancelled = false;
     fetch(`/api/projects/${projectId}/preview`, { method: "POST" })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("preview"))))
@@ -176,7 +183,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
     return () => {
       cancelled = true;
     };
-  }, [projectId, initialVersions.length, previewAttempt]);
+  }, [projectId, initialVersions.length, previewAttempt, paused]);
 
   const addAssistant = useCallback((text: string, extra: Partial<UiMessage> = {}) => {
     setMessages((m) => [...m, { id: nextId(), role: "assistant", text, ...extra }]);
@@ -285,7 +292,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
                 }
                 // A refusal is a normal answer, not a system failure.
                 else if (event.code === "blocked") addAssistant(t.blocked);
-                else addAssistant(event.code === "busy" ? t.busy : t.failed, { tone: "error" });
+                else addAssistant(event.code === "busy" ? t.busy : event.code === "paused" ? t.paused : t.failed, { tone: "error" });
                 break;
             }
           }
@@ -304,14 +311,14 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
 
   // A description typed on "Your sites" starts the build as soon as the new site opens.
   useEffect(() => {
-    if (initialMessages.length > 0 || initialVersions.length > 0) return;
+    if (paused || initialMessages.length > 0 || initialVersions.length > 0) return;
     // After hydration, and only once: the prompt is removed from storage as it is read.
     const id = setTimeout(() => {
       const start = takeStartPrompt();
       if (start) void send(start.text, start.languages);
     }, 0);
     return () => clearTimeout(id);
-  }, [initialMessages.length, initialVersions.length, send]);
+  }, [initialMessages.length, initialVersions.length, send, paused]);
 
   const retryPreview = useCallback(() => {
     setPreviewError(false);
@@ -394,6 +401,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         setFocusChat((k) => k + 1);
       }, onSmaller: smaller, onDiscard: dropPending } : undefined}
       nextGrant={nextGrant}
+      paused={paused ? t.paused : undefined}
       onBeforeSend={() => !maybeUpgrade("send", credits, credits)}
       t={t}
       hasSite={versions.length > 0}
@@ -405,7 +413,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       focusKey={focusChat}
       onAttach={photos.upload}
       photoErrors={photoText.photoErrors}
-      onUndo={previous !== null ? undo : undefined}
+      onUndo={previous !== null && !paused ? undo : undefined}
       credits={{ left: credits, href: `/${locale}/billing` }}
       messages={messages}
       working={working}
@@ -415,7 +423,7 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       languages={versions.length === 0 && !working ? { value: siteLanguages, onChange: setSiteLanguages } : undefined}
     />
   );
-  const view = previewView({ hasVersion: versions.length > 0, working, firstBuildFailed, url: previewUrl, loading: previewLoading, error: previewError });
+  const view = previewView({ paused, hasVersion: versions.length > 0, working, firstBuildFailed, url: previewUrl, loading: previewLoading, error: previewError });
   const backToChat = useCallback(() => {
     setMobileTab("chat");
     setFocusChat((k) => k + 1);
@@ -435,13 +443,13 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
       onBackToChat={backToChat}
       reloadKey={reloadKey}
       warm={firstBuildWarm}
+      setup={setup}
     />
   );
-  const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working} onRestore={restore} />;
-  const code = <CodePanel t={t} projectId={projectId} refreshKey={current ?? 0} />;
+  const versionsPanel = <VersionsPanel t={t} locale={locale} versions={versions} current={current} disabled={working || paused} onRestore={restore} />;
   const photosPanel = <PhotosPanel t={t} tp={photoText} projectId={projectId} photos={photos} disabled={working} onUse={handPhoto} />;
-  const panels: Record<SideTab, React.ReactNode> = { preview, photos: photosPanel, versions: versionsPanel, code };
-  const tabLabels: Record<Tab, string> = { chat: t.tabChat, preview: t.tabPreview, photos: t.tabPhotos, versions: t.tabVersions, code: t.tabCode };
+  const panels: Record<SideTab, React.ReactNode> = { preview, photos: photosPanel, versions: versionsPanel };
+  const tabLabels: Record<Tab, string> = { chat: t.tabChat, preview: t.tabPreview, photos: t.tabPhotos, versions: t.tabVersions };
 
   // Each panel renders once; CSS decides what shows (mobile: one tab, desktop: chat + one tab).
   const panelClass = (tab: Tab) =>
@@ -453,25 +461,28 @@ export function Builder({ locale, projectId, t, chrome, photoText, siteName, ini
         t={t}
         projectId={projectId}
         hasVersion={versions.length > 0}
-        disabled={working}
+        disabled={working || paused}
+        planHref={`/${locale}/billing`}
         onLive={onLive}
+        showcase={showcaseText}
         feedback={{ href: `/${locale}/feedback?from=${encodeURIComponent(`/${locale}/build/${projectId}`)}`, label: chrome.feedbackAfterPublish }}
       >
         {({ status, button }) => <TopBar locale={locale} projectId={projectId} text={chrome} siteName={name} status={status} publish={button} />}
       </PublishBar>
-      <TabList
-        tabs={["chat", ...SIDE_TABS] as const}
-        labels={tabLabels}
-        icons={TAB_ICONS}
-        badges={{ preview: previewFresh && mobileTab !== "preview" }}
-        badgeLabel={t.tabNew}
-        active={mobileTab}
-        onChange={showTab}
-        label={t.viewsLabel}
-        idPrefix="tab-m"
-        className="flex overflow-x-auto border-b border-line bg-white p-1.5 lg:hidden"
-      />
       <main id="main" className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <h1 className="sr-only">{name || t.untitled}</h1>
+        <TabList
+          tabs={["chat", ...SIDE_TABS] as const}
+          labels={tabLabels}
+          icons={TAB_ICONS}
+          badges={{ preview: previewFresh && mobileTab !== "preview" }}
+          badgeLabel={t.tabNew}
+          active={mobileTab}
+          onChange={showTab}
+          label={t.viewsLabel}
+          idPrefix="tab-m"
+          className="flex overflow-x-auto border-b border-line bg-white p-1.5 lg:hidden"
+        />
         <section id="panel-chat" role="tabpanel" aria-label={t.tabChat} className={`${panelClass("chat")} bg-white lg:w-[420px] lg:flex-none lg:border-e lg:border-line xl:w-[460px]`}>
           {chat}
         </section>

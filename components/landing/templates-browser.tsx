@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
 import type { CatalogItem, TemplateFeature, TemplateStyle } from "@/lib/landing/catalog";
 import { isTemplateCategory, type TemplateCategory } from "@/lib/landing/template-categories";
 
@@ -62,6 +62,7 @@ export function TemplatesBrowser({ items, labels, about, locale, categories, sty
   const [pickedStyles, setStyles] = useState<TemplateStyle[]>([]);
   const [pickedFeatures, setFeatures] = useState<TemplateFeature[]>([]);
   const [open, setOpen] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
 
   // Everything matching the search and the other filters, in any category.
   const anyCategory = useMemo(() => {
@@ -96,25 +97,35 @@ export function TemplatesBrowser({ items, labels, about, locale, categories, sty
 
   const check = "size-5 shrink-0 rounded border-line accent-[var(--gojo-coral)]";
   const panel = (
-    <div className="flex flex-col gap-8">
-      <fieldset className="flex flex-col gap-1">
-        <legend className="mb-2 font-semibold">{t.style}</legend>
-        {styles.map((s) => (
-          <label key={s} className="flex min-h-10 cursor-pointer items-center gap-3 px-2 text-ink-muted hover:text-ink">
-            <input type="checkbox" className={check} checked={pickedStyles.includes(s)} onChange={() => setStyles((l) => toggle(l, s))} />
-            {t.styles[s]}
-          </label>
-        ))}
-      </fieldset>
+    <div className="flex flex-col gap-6">
       <fieldset className="flex flex-col gap-1">
         <legend className="mb-2 font-semibold">{t.includes}</legend>
         {features.map((f) => (
-          <label key={f} className="flex min-h-10 cursor-pointer items-center gap-3 px-2 text-ink-muted hover:text-ink">
+          <label key={f} className="flex min-h-11 cursor-pointer items-center gap-3 px-2 text-ink-muted hover:text-ink lg:min-h-10">
             <input type="checkbox" className={check} checked={pickedFeatures.includes(f)} onChange={() => setFeatures((l) => toggle(l, f))} />
             {t.features[f]}
           </label>
         ))}
       </fieldset>
+      {/* Practical filters first; the dozen looks stay folded until wanted. */}
+      <details open={styleOpen} onToggle={(e) => setStyleOpen(e.currentTarget.open)} className="group/style">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 font-semibold [&::-webkit-details-marker]:hidden">
+          <span>
+            {t.style}
+            {pickedStyles.length > 0 && <span className="font-normal text-ink-muted"> ({pickedStyles.length})</span>}
+          </span>
+          <ChevronDown aria-hidden="true" className="size-4 transition-transform group-open/style:rotate-180" />
+        </summary>
+        <fieldset className="mt-1 flex flex-col gap-1">
+          <legend className="sr-only">{t.style}</legend>
+          {styles.map((s) => (
+            <label key={s} className="flex min-h-11 cursor-pointer items-center gap-3 px-2 text-ink-muted hover:text-ink lg:min-h-10">
+              <input type="checkbox" className={check} checked={pickedStyles.includes(s)} onChange={() => setStyles((l) => toggle(l, s))} />
+              {t.styles[s]}
+            </label>
+          ))}
+        </fieldset>
+      </details>
       {filtered && (
         <button type="button" onClick={clear} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-line px-4 font-medium hover:border-faint">
           <X aria-hidden="true" className="size-4" />

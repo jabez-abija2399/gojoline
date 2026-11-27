@@ -1,5 +1,5 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
-import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAppMenu, signIn, unfold } from "./helpers";
+import { expectNoHorizontalScroll, expectNoSeriousA11yIssues, openAccountMenu, billingTab, payFor, signIn, unfold } from "./helpers";
 
 /** A second browser on the same device as the test's own page. */
 async function newPage(browser: Browser, opts: { userAgent?: string } = {}) {
@@ -59,6 +59,14 @@ test("the Made with Gojoline badge links home on a Free site and is gone on a pa
   await page.getByRole("button", { name: "Publish", exact: true }).click();
   await page.getByRole("button", { name: "Publish my latest changes" }).click();
   await expect(page.getByRole("heading", { name: "Your site is live!" })).toBeVisible();
+  // The showcase-and-posts choice is offered here, off by default, and saves.
+  const share = page.getByRole("dialog").getByRole("checkbox", { name: /Show my site in the Gojoline showcase and posts/ });
+  await expect(share).not.toBeChecked();
+  await share.check();
+  await expect(page.getByRole("dialog").getByText("Saved", { exact: false })).toBeVisible();
+  expect((await (await page.request.get(`/api/projects/${projectId}/showcase`)).json()).on).toBe(true);
+  await share.uncheck();
+  await expect.poll(async () => (await (await page.request.get(`/api/projects/${projectId}/showcase`)).json()).on).toBe(false);
   const paid = await (await page.request.get(`/api/test/published?projectId=${projectId}`)).text();
   expect(paid).not.toContain("data-gojoline-badge");
 });
@@ -66,7 +74,7 @@ test("the Made with Gojoline badge links home on a Free site and is gone on a pa
 test("a business joins through an invite link; when the admin approves its first payment both are thanked", async ({ page, browser }) => {
   // The inviter finds the link from the sidebar.
   await signIn(page);
-  await openAppMenu(page);
+  await openAccountMenu(page);
   await page.getByRole("link", { name: "Invite a business" }).click();
   await expect(page.getByRole("heading", { name: "Invite a business" })).toBeVisible();
   const link = await page.getByLabel("Your invite link").inputValue();
@@ -84,7 +92,7 @@ test("a business joins through an invite link; when the admin approves its first
   // Another business: a different email domain (the same company's domain counts as inviting yourself).
   await signIn(invited.page, { contact: `invited-${Date.now()}-${test.info().project.name}@example.org` });
   await invited.page.goto("/en/billing");
-  await invited.page.getByLabel("What are you paying for?").selectOption("starter_month");
+  await payFor(invited.page, "starter_month");
   const reference = `REF${Date.now().toString(36).toUpperCase()}${test.info().project.name.length}`;
   await invited.page.getByLabel("Transaction number").fill(reference);
   await invited.page.getByLabel("Photo of the receipt or SMS").setInputFiles("e2e/fixtures/photo.jpg");
@@ -113,13 +121,14 @@ test("a business joins through an invite link; when the admin approves its first
 
   // Both see the thank-you in their history of changes.
   for (const p of [page, invited.page]) {
-    await p.goto("/en/billing");
+    await p.goto("/en/billing?tab=history");
     // Folded on phones; unfold again if a late render folded it back.
     await expect(async () => {
       await unfold(p, /History of your changes/);
       await expect(p.getByText("Thank-you for an invite")).toBeVisible({ timeout: 1000 });
     }).toPass();
   }
+  await billingTab(page, "Invite");
   await expect(page.getByText(/1 invited · 1 thanked so far/)).toBeVisible();
   await invited.close();
 });
@@ -182,4 +191,23 @@ test("sector pages render in English and Amharic, accessible and without sideway
   await page.getByRole("link", { name: "ካፌዎች" }).click();
   await expect(page).toHaveURL(/\/am\/website-for\/cafe$/);
   expect((await page.goto("/en/website-for/casino"))?.status()).toBe(404);
+});
+
+test("an admin invites owners of live sites to be featured, once", async ({ page, browser }) => {
+  await signIn(page);
+  await publishNewSite(page, `Invite Cafe ${Date.now().toString(36)}`);
+
+  const admin = await newPage(browser);
+  await signIn(admin.page, { contact: `admin-e2e-invite-${test.info().project.name}@example.com` });
+  await admin.page.goto("/en/admin?tab=growth");
+  const box = admin.page.getByRole("region", { name: "Invite owners to be featured" });
+  await expect(box.getByText(/Owners to invite: \d+/)).toBeVisible();
+  admin.page.once("dialog", (d) => d.accept());
+  await box.getByRole("button", { name: "Send invitations" }).click();
+  await expect(admin.page).toHaveURL(/fi=ok/);
+  // Without a linked Telegram or verified email here, owners are counted as not reached (and tried again later).
+  await expect(admin.page.getByRole("region", { name: "Invite owners to be featured" }).getByRole("status")).toContainText(/Invitations sent: \d+/);
+  await expectNoSeriousA11yIssues(admin.page);
+  await expectNoHorizontalScroll(admin.page);
+  await admin.close();
 });

@@ -4,17 +4,18 @@ import { SectionHead } from "../components/SectionHead";
 import { useSite } from "../lib/context";
 import type { AboutSection } from "../lib/types";
 
-export function About({ section }: { section: AboutSection }) {
+/** `eager`: the picture is on the first screen (it follows a hero with no photo), so it loads first. */
+export function About({ section, eager = false }: { section: AboutSection; eager?: boolean }) {
   const { text, href } = useSite();
   return (
     <section id={section.id ?? "about"} className="section bg-surface">
-      <div className="container-site grid items-center gap-10 md:grid-cols-2 md:gap-14">
-        <div className={`reveal depth-frame me-3.5 mb-3.5 ${section.imageSide === "end" ? "md:order-last" : ""}`}>
+      <div className="about-grid container-site grid items-center gap-10 md:grid-cols-2 md:gap-14">
+        <div className={`about-photo reveal depth-frame me-3.5 mb-3.5 ${section.imageSide === "end" ? "md:order-last" : ""}`}>
           <div className={`zoom wipe rounded-site ${section.imageShape === "arch" ? "arch" : ""}`}>
-            <Picture image={section.image} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
+            <Picture image={section.image} priority={eager} sizes="(min-width: 768px) 50vw, 160px" className="aspect-[4/3] w-full rounded-site" />
           </div>
         </div>
-        <div className="reveal flex flex-col gap-4">
+        <div className="about-text reveal flex flex-col gap-4">
           <SectionHead eyebrow={section.eyebrow} heading={section.heading} />
           {text(section.body)
             .split(/\n{2,}/)

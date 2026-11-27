@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { memo, useEffect, useMemo, useState } from "react";
-import { Check, FileCode2, Loader2, Lock, Monitor, Send, Smartphone, Sparkles } from "lucide-react";
+import { Check, Loader2, Lock, Monitor, Send, Smartphone, Sparkles } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 
 type Live = Messages["landing"]["live"];
@@ -27,8 +27,6 @@ const BOOKED = READY + 700;
 export const BUILD_DONE = BOOKED + 1;
 /** A build plus a moment to look at the result, before the next business. */
 export const BUILD_CYCLE_MS = BOOKED + 3400;
-/** Which files each step "edits", as the real agent does (src/site.json, src/styles.css). */
-const FILES: (string | null)[] = ["styles.css", "site.json", "site.json", "site.json", "site.json", null];
 /** The step that checks the site on a phone: from then on the preview shows phone width. */
 const PHONE_STEP = 5;
 
@@ -176,12 +174,6 @@ function Steps({ live, stepsDone, working, ms, compact }: { live: Live; stepsDon
               {s === "done" ? <Check className="size-2.5" strokeWidth={3} /> : s === "now" ? <Loader2 className="size-2.5 animate-spin" /> : null}
             </span>
             <span className={`min-w-0 truncate ${s === "now" ? "font-medium text-ink" : "text-ink-muted"}`}>{label}</span>
-            {!compact && s !== "todo" && FILES[i] && (
-              <span className="ms-auto hidden shrink-0 items-center gap-1 rounded bg-sunken px-1 py-px font-mono text-[11px] text-ink-muted @[19rem]:inline-flex">
-                <FileCode2 className="size-2.5" />
-                {FILES[i]}
-              </span>
-            )}
           </li>
         );
       })}

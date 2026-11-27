@@ -34,8 +34,9 @@ test("create a site, edit it by chat, see versions and restore", async ({ page }
   await expect(page.getByText("Version 3", { exact: true }).filter({ visible: true })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 
-  await page.getByRole("tab", { name: "Files" }).filter({ visible: true }).click();
-  await expect(page.locator("pre:visible")).toContainText('"en": "Selam Coffee"');
+  // No code view for owners: they change the site through the chat and the dashboard.
+  await expect(page.getByRole("tab", { name: "Advanced" })).toHaveCount(0);
+  expect((await page.request.get(`/api/projects/${page.url().split("/").pop()}/files`)).status()).toBe(404);
 
   // The project is named after the site.
   await page.goto("/en/build");
@@ -62,7 +63,8 @@ test("the progress card follows the AI's real steps, and replies show bold and l
   // The chat's card (the preview's first-build placeholder has the same name).
   const card = page.getByRole("tabpanel", { name: "Chat" }).getByRole("group", { name: "Building your site" });
   await expect(card).toContainText("Understanding your request (done)");
-  await expect(card).toContainText("Writing your site (done)");
+  // A new site is written whole, so the step names the sections as they are written.
+  await expect(card).toContainText(/Writing your .+ sections and \d+ more \(done\)/);
   await expect(card).toContainText("Checking everything works (in progress)");
   // Screen readers hear only the current step, from one quiet status line.
   await expect(card.getByRole("status")).toHaveText("Checking everything works");
@@ -115,7 +117,7 @@ test("projects are private to their owner", async ({ page, browser, request }) =
   await newSite(stranger);
   const res = await stranger.goto(url);
   expect(res?.status()).toBe(404);
-  const api = await other.request.get(`/api/projects/${id}/files`);
+  const api = await other.request.get(`/api/projects/${id}/publish`);
   expect([401, 404]).toContain(api.status());
   // Cross-site POSTs are refused.
   const csrf = await request.post(`/api/projects/${id}/messages`, { data: { text: "hi" }, headers: { origin: "https://evil.example" } });
@@ -155,7 +157,7 @@ test("describe the business on Your sites: the new site opens and builds itself"
     if (r.url().endsWith("/messages") && r.method() === "POST") sent = r.postDataJSON();
   });
   await page.getByRole("button", { name: "Start a new site" }).click();
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   await expect(page.getByText("Saved as version 1").first()).toBeVisible();
   expect(sent).toMatchObject({ text: "Kaldi Books", languages: ["en", "am"] });
   await expect(page.getByText("Your site is ready!")).toBeVisible();
@@ -253,21 +255,32 @@ test("undo the newest change for free; the changes left are shown and the menu o
   await expectNoHorizontalScroll(page);
 });
 
-test("on a short window the recent sites scroll and never cover the changes-left card", async ({ page }, info) => {
+test("on a short window the recent sites scroll on their own; the changes-left card and account row stay put", async ({ page }, info) => {
   test.skip(info.project.name === "mobile", "the desktop sidebar");
   await signIn(page);
   for (const id of ["cafe", "hotel", "clinic", "school", "shop"]) {
     await page.goto("/en/build#templates");
     await page.locator(`form[data-preset=${id}] button`).click();
-    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+    await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   }
   await page.setViewportSize({ width: 1280, height: 560 });
   await page.goto("/en/build");
-  const { listBottom, cardTop } = await page.evaluate(() => ({
-    listBottom: document.querySelector("[aria-labelledby=recent-title]")!.getBoundingClientRect().bottom,
-    cardTop: document.getElementById("credits-title")!.closest("a")!.getBoundingClientRect().top,
-  }));
-  expect(listBottom).toBeLessThanOrEqual(cardTop);
+  const box = await page.evaluate(() => {
+    const list = document.querySelector<HTMLElement>("[aria-labelledby=recent-title]")!;
+    return {
+      list: list.getBoundingClientRect(),
+      scrolls: list.scrollHeight > list.clientHeight,
+      cardBottom: document.getElementById("side-credits-title")!.closest("a")!.getBoundingClientRect().bottom,
+      accountTop: document.querySelector<HTMLElement>("[aria-controls=account-menu]")!.getBoundingClientRect().top,
+    };
+  });
+  // The card sits above the list, the account row below it, and the list scrolls in between.
+  expect(box.list.top).toBeGreaterThanOrEqual(box.cardBottom);
+  expect(box.list.bottom).toBeLessThanOrEqual(box.accountTop);
+  expect(box.scrolls).toBe(true);
+  await page.locator("[aria-labelledby=recent-title]").hover();
+  await page.mouse.wheel(0, 400);
+  await expect(page.locator("[aria-labelledby=recent-title] li").last()).toBeInViewport();
 });
 
 test("dark mode: chosen in the account menu, remembered, readable everywhere", async ({ page }, info) => {
@@ -296,7 +309,7 @@ test("dark mode: chosen in the account menu, remembered, readable everywhere", a
   await expectNoSeriousA11yIssues(page);
   await page.getByRole("tab", { name: "Templates" }).click();
   await page.locator("form[data-preset=cafe] button").click();
-  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/en\/build\/[0-9a-f-]{36}(\?setup=1)?$/);
   await expect(page.locator("[data-gojo-theme]").first()).toHaveAttribute("data-gojo-theme", "dark");
   await expectNoSeriousA11yIssues(page);
   await page.goto("/en/billing");

@@ -4,9 +4,11 @@
  *   - with --shots <dir>: each screenshot in lib/guide/sections.ts as AVIF and WebP at the
  *     widths listed there;
  *   - with --video <file.mp4>: a 720p H.264 copy for slow connections (needs ffmpeg) and the
- *     poster picture.
+ *     poster picture. Then run scripts/guide-video-polish.py on it for the pointer and music.
  *
- *   node --experimental-strip-types scripts/guide-assets.mts [--shots <dir>] [--video <file>]
+ *   - with --edits <polished.mp4>: the burned-in review edits (VIDEO_EDITS) on the final video.
+ *
+ *   node --experimental-strip-types scripts/guide-assets.mts [--shots <dir>] [--video <file>] [--edits <file>]
  *
  * One-off authoring tool: outputs are committed. Re-run after changing captions or titles
  * (lib/guide/vtt.test.ts fails until the files match).
@@ -66,25 +68,38 @@ if (shots) {
 }
 
 /**
- * Edits burned into the video (2026-11-19 review): the sign-in caption no longer mentions phone
- * numbers (codes by SMS aren't open yet), and the sample customer's phone number in the booking
- * form and in Messages is painted over with an obviously fake one. Times are seconds in the
- * source; positions are 1080p pixels.
+ * Edits burned into the finished 720p video (2026-11-19 review, redone 2026-11-27 for the
+ * re-recorded Lalibela video): the sign-in caption no longer mentions phone numbers (codes by SMS
+ * aren't open yet), the Settings caption says Telegram alerts are on Starter and Business, and the
+ * sample customer's phone number in the booking form and in Messages is painted over with an
+ * obviously fake one. Times are seconds in the polished video; positions are 720p pixels.
+ * Run with --edits <polished.mp4> after scripts/guide-video-polish.py (keeps the music).
  */
 const VIDEO_EDITS = [
-  `drawbox=x=0:y=985:w=1920:h=70:color=0xFAF8F4@1:t=fill:enable='between(t,12.05,14.85)'`,
-  `drawtext=fontfile=${FONT}/Inter-SemiBold.otf:text='Sign in with your email. We send you a 6-digit code.':fontsize=40:fontcolor=0x121212:x=(w-text_w)/2:y=1000:enable='between(t,12.05,14.85)'`,
-  `drawbox=x=1008:y=460:w=150:h=40:color=white@1:t=fill:enable='between(t,206,215)'`,
-  `drawtext=fontfile=${FONT}/Inter-Regular.otf:text='${FAKE_PHONE}':fontsize=21:fontcolor=0x222222:x=1018:y=470:enable='between(t,206,215)'`,
-  `drawbox=x=800:y=407:w=132:h=34:color=white@1:t=fill:enable='between(t,228,237)'`,
-  `drawtext=fontfile=${FONT}/Inter-Regular.otf:text='${FAKE_PHONE}':fontsize=21:fontcolor=0x121212:x=804:y=419:enable='between(t,228,237)'`,
+  `drawbox=x=0:y=652:w=1280:h=50:color=0xF7F5F1@1:t=fill:enable='between(t,12.05,14.85)'`,
+  `drawtext=fontfile=${FONT}/Inter-SemiBold.otf:text='Sign in with your email. We send you a 6-digit code.':fontsize=27:fontcolor=0x121212:x=(w-text_w)/2:y=667:enable='between(t,12.05,14.85)'`,
+  `drawbox=x=0:y=652:w=1280:h=50:color=0xF7F5F1@1:t=fill:enable='between(t,301.1,305.0)'`,
+  `drawtext=fontfile=${FONT}/Inter-SemiBold.otf:text='Settings\\: on Starter or Business, get every booking on Telegram.':fontsize=27:fontcolor=0x121212:x=(w-text_w)/2:y=667:enable='between(t,301.1,305.0)'`,
+  `drawbox=x=675:y=309:w=92:h=19:color=0xFDFBFC@1:t=fill:enable='between(t,261.85,265.1)'`,
+  `drawtext=fontfile=${FONT}/Inter-Regular.otf:text='${FAKE_PHONE}':fontsize=14:fontcolor=0x222222:x=679:y=313:enable='between(t,262.4,265.1)'`,
+  `drawbox=x=533:y=277:w=84:h=17:color=white@1:t=fill:enable='between(t,281.4,284.15)'`,
+  `drawtext=fontfile=${FONT}/Inter-Regular.otf:text='${FAKE_PHONE}':fontsize=12.5:fontcolor=0x121212:x=536:y=280:enable='between(t,281.4,284.15)'`,
+  `drawbox=x=531:y=294:w=84:h=17:color=white@1:t=fill:enable='between(t,284.15,286.7)'`,
+  `drawtext=fontfile=${FONT}/Inter-Regular.otf:text='${FAKE_PHONE}':fontsize=12.5:fontcolor=0x121212:x=534:y=297:enable='between(t,284.15,286.7)'`,
 ];
+
+const edits = arg("--edits");
+if (edits) {
+  const out = join(PUBLIC, VIDEO_FILE);
+  execFileSync("ffmpeg", ["-y", "-v", "error", "-i", edits, "-vf", VIDEO_EDITS.join(","), "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-maxrate", "450k", "-bufsize", "900k", "-profile:v", "high", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-c:a", "copy", out]);
+  console.log(VIDEO_FILE, `${(statSync(out).size / 1e6).toFixed(1)} MB`);
+}
 
 const video = arg("--video");
 if (video) {
   const out = join(PUBLIC, VIDEO_FILE);
   // 720p, no sound track (the video has none), small enough for slow connections; starts playing before it has all loaded.
-  execFileSync("ffmpeg", ["-y", "-v", "error", "-i", video, "-vf", [...VIDEO_EDITS, "scale=1280:720:flags=lanczos"].join(","), "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-maxrate", "450k", "-bufsize", "900k", "-profile:v", "high", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an", out]);
+  execFileSync("ffmpeg", ["-y", "-v", "error", "-i", video, "-vf", "scale=1280:720:flags=lanczos", "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-maxrate", "450k", "-bufsize", "900k", "-profile:v", "high", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an", out]);
   const frame = execFileSync("ffmpeg", ["-v", "error", "-ss", "1", "-i", out, "-frames:v", "1", "-f", "image2pipe", "-vcodec", "png", "-"]);
   await sharp(frame).webp({ quality: 75 }).toFile(join(PUBLIC, POSTER_FILE));
   console.log(VIDEO_FILE, `${(statSync(out).size / 1e6).toFixed(1)} MB`);

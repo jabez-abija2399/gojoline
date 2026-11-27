@@ -33,6 +33,28 @@
   --gojo-font-body: "Inter", system-ui, sans-serif;
   --gojo-font-ethiopic: "Noto Sans Ethiopic", "Inter", sans-serif;
 
+  /* Spacing: one 4 px-based scale (the Tailwind steps 1, 2, 3, 4, 6, 8, 12, 18). Side margins
+     are space-4 on phones and space-6 from tablets; space-6 between cards; space-12 to space-18
+     between page sections. Anything tappable is at least 44 px tall on phones (36 on desktop). */
+  --gojo-space-1: 4px;
+  --gojo-space-2: 8px;
+  --gojo-space-3: 12px;
+  --gojo-space-4: 16px;
+  --gojo-space-6: 24px;
+  --gojo-space-8: 32px;
+  --gojo-space-12: 48px;
+  --gojo-space-18: 72px;
+
+  /* Type sizes (Tailwind sm, base, lg, xl/2xl, 3xl, 4xl, 5xl). Body text is 16 px; 14 px is for
+     notes and labels only. */
+  --gojo-text-sm: 14px;
+  --gojo-text-base: 16px;
+  --gojo-text-lg: 18px;
+  --gojo-text-xl: 22px;
+  --gojo-text-2xl: 28px;
+  --gojo-text-3xl: 36px;
+  --gojo-text-4xl: 48px;
+
   /* Shape */
   --gojo-radius-sm: 8px;
   --gojo-radius-md: 12px;

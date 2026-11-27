@@ -93,3 +93,313 @@ describe("art directions (organic, cinematic, brutal, calm, kinetic)", () => {
     expect(text(html(site))).toMatch(/Responsible pharmacist/);
   });
 });
+
+describe("art direction (grand)", () => {
+  it("resort is valid and readable, with the gold readable as small text", () => {
+    const site = preset("resort");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("grand");
+    expect(themeWarnings(site.theme)).toEqual([]);
+    // grand sets labels in the primary colour: a pale gold is refused.
+    expect(themeWarnings({ ...site.theme, primary: "#C9A96E" }).join(" ")).toMatch(/small text on theme.background \(grand\)/);
+  });
+
+  it("a full-screen photo further down the page is a second heading, not a second h1", () => {
+    const out = html(preset("resort"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(1);
+    expect(out).toMatch(/<h2 class="headline split[^"]*"><span[^>]*>.*The/s);
+    // The header sits on the first photo only.
+    expect(out.match(/header-overlay/g)).toHaveLength(1);
+  });
+
+  it("suites, experiences, guests and the closing call carry the hooks the art direction styles", () => {
+    const out = html(preset("resort"));
+    expect(out.match(/class="feature-row /g)).toHaveLength(3);
+    expect(out).toContain("about-grid");
+    expect(out.match(/class="testimonial reveal/g)).toHaveLength(3);
+    expect(out).toContain('class="cta-section section"');
+    expect(out).toContain("footer-wordmark");
+    expect(text(out)).toMatch(/The Acacia Suite.*28,000/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("resort");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (avant)", () => {
+  it("agency is valid and readable, with the electric colour readable as small text", () => {
+    const site = preset("agency");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("avant");
+    expect(themeWarnings(site.theme)).toEqual([]);
+    expect(themeWarnings({ ...site.theme, primary: "#7B7BFF" }).join(" ")).toMatch(/small text on theme.background \(avant\)/);
+  });
+
+  it("the home page carries the hooks the style composes: words-only hero, broken grid, index, showcase, statement", () => {
+    const out = html(preset("agency"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain('class="hero-centered section');
+    expect(out).not.toMatch(/class="hero-centered[^"]*"[^>]*>(?:(?!<\/section>).)*<img/s);
+    expect(out.match(/class="card pcard/g)).toHaveLength(4);
+    expect(out).toContain("card-grid");
+    expect(out.match(/class="service-row /g)).toHaveLength(4);
+    expect(out.match(/class="feature-row /g)).toHaveLength(2);
+    expect(out).toContain('class="quote-section section');
+    expect(out).toContain("footer-wordmark");
+  });
+
+  it("names no client in the ribbon, and the philosophy quote names no person", () => {
+    const site = preset("agency");
+    const home = site.pages[0]!.sections;
+    const ribbon = home.find((s) => s.type === "marquee");
+    expect(ribbon && "items" in ribbon && ribbon.items.map((i) => i.en)).toEqual(["Identity", "Campaigns", "Web", "Motion", "Type", "Film"]);
+    const quote = home.find((s) => s.type === "quote");
+    expect(quote && "name" in quote ? quote.name : undefined).toBeUndefined();
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("agency");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (precise)", () => {
+  it("software is valid and readable", () => {
+    const site = preset("software");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("precise");
+    expect(themeWarnings(site.theme)).toEqual([]);
+    expect(themeWarnings({ ...site.theme, primary: "#7FD1B5" }).join(" ")).toMatch(/small text on theme.background \(precise\)/);
+  });
+
+  it("shows the product as drawings in the site's colours, hidden from screen readers", () => {
+    const out = html(preset("software"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    // The hero's product picture is a drawing, not a photo.
+    expect(out).toMatch(/class="hero-centered[^"]*"(?:(?!<\/section>).)*<div aria-hidden="true" class="placeholder/s);
+    expect(out).toContain("app-bar");
+    expect(out).toContain("services-bento");
+    expect(out).not.toContain("<img");
+  });
+
+  it("puts plans side by side with one chosen, and FAQ on the pricing page", () => {
+    const site = preset("software");
+    const out = html(site, "en", site.pages.findIndex((p) => p.path === "/pricing"));
+    expect(out.match(/tier-featured/g)).toHaveLength(1);
+    expect(text(out)).toMatch(/Shop.*Most chosen.*450/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("software");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (monochrome)", () => {
+  it("boutique is valid and readable", () => {
+    const site = preset("boutique");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("monochrome");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("is a shop: the season to swipe with prices, categories as titles, a one-field newsletter, an order form", () => {
+    const site = preset("boutique");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain('class="rail"');
+    expect(text(out)).toMatch(/Meskel dress.*9,800/);
+    expect(out).toContain("index-list");
+    const letter = site.pages[0]!.sections.at(-1)!;
+    expect(letter.type === "form" && letter.fields.map((f) => f.type)).toEqual(["email"]);
+    const order = html(site, "en", site.pages.findIndex((p) => p.path === "/order"));
+    expect(order).toMatch(/name="size"/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("boutique");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (drafting)", () => {
+  it("architect is valid and readable", () => {
+    const site = preset("architect");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("drafting");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("projects carry place, year and area for the title block, and the page has one h1", () => {
+    const site = preset("architect");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(1);
+    expect(text(out)).toMatch(/Entoto Ridge House.*Entoto.*2025.*420 m²/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("architect");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (noir)", () => {
+  it("dining is valid and readable as a light-first theme (the style turns it dark)", () => {
+    const site = preset("dining");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("noir");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("has signature dishes, a priced menu, the room and a booking form", () => {
+    const site = preset("dining");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="feature-row /g)).toHaveLength(3);
+    expect(text(out)).toMatch(/Ember tibs.*1,450/);
+    const reserve = html(site, "en", site.pages.findIndex((p) => p.path === "/reserve"));
+    expect(reserve).toMatch(/name="guests"/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("dining");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (folio)", () => {
+  it("folio is valid and readable", () => {
+    const site = preset("folio");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("folio");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("puts the statement first, then work as an index, case studies, skills and experience", () => {
+    const site = preset("folio");
+    const out = html(site);
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain("hero-portrait");
+    expect(out).toContain("index-list");
+    expect(out.match(/class="feature-row /g)).toHaveLength(2);
+    expect(text(out)).toMatch(/Front-end lead/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("folio");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (estate)", () => {
+  it("estate is valid and readable", () => {
+    const site = preset("estate");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("estate");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("shows the listing of the month, homes with prices and a sale/rent filter", () => {
+    const out = html(preset("estate"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="feature-row /g)).toHaveLength(1);
+    expect(out).toContain("card-grid");
+    expect(out).toContain('class="menu-tabs"');
+    expect(text(out)).toMatch(/The Ridge Villa.*48,500,000/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("estate");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (voyage)", () => {
+  it("voyage is valid and readable", () => {
+    const site = preset("voyage");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("voyage");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("tells the journey in chapters: later full-screen heroes, one h1", () => {
+    const out = html(preset("voyage"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out.match(/class="hero-immersive[^"]*hero-later/g)).toHaveLength(3);
+    expect(out).toContain("card-grid");
+    expect(text(out)).toMatch(/The Meda Northern Circle.*198,000/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("voyage");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
+
+describe("art direction (museum)", () => {
+  it("exhibit is valid and readable", () => {
+    const site = preset("exhibit");
+    expect(siteSchema.safeParse(site).success).toBe(true);
+    expect(site.theme.style).toBe("museum");
+    expect(themeWarnings(site.theme)).toEqual([]);
+  });
+
+  it("opens on the exhibition, hangs the works with wall labels and shows the programme", () => {
+    const out = html(preset("exhibit"));
+    expect(out.match(/<h1/g)).toHaveLength(1);
+    expect(out).toContain("hero-centered");
+    expect(out).toContain("card-grid");
+    expect(out).toContain("schedule-list");
+    expect(text(out)).toMatch(/Dry season, Afar.*Selam Tadesse.*Oil on canvas, 2025.*180,000/);
+    expect(text(out)).toMatch(/Sold/);
+  });
+
+  it("reads in Amharic on every page", () => {
+    const site = preset("exhibit");
+    site.pages.forEach((_, i) => {
+      const out = text(html(site, "am", i));
+      expect(out).toMatch(/[ሀ-፿]/);
+      expect(out).not.toMatch(/\bundefined\b/);
+    });
+  });
+});
