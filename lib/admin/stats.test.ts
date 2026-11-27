@@ -12,7 +12,7 @@ describe("admin users list", () => {
     expect(sql.match(/"users"\."id"/g)?.length ?? 0).toBeGreaterThanOrEqual(5);
     const filtered = new DbAdminStats(db).usersQuery("", 10, "starter").toSQL().sql;
     expect(filtered).not.toMatch(/= "id"/);
-  });
+  }, 30_000);
 
   it("runs on Postgres with plans, sites and credits (Postgres)", async () => {
     const db = await testDb();

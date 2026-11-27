@@ -16,6 +16,8 @@ let sites: DbSiteStore;
 let projectId: string;
 let siteKey: string;
 const notified: Submission[] = [];
+/** The owner's plan includes Telegram alerts (Starter, Business). */
+let alerts = true;
 
 beforeEach(async () => {
   const db = await testDb();
@@ -30,7 +32,8 @@ beforeEach(async () => {
   siteKey = site.siteKey!;
   await cloud.saveForms(site.id, extractForms(readFileSync("templates/site/src/site.json", "utf8")));
   notified.length = 0;
-  deps = { cloud, limiter: new MemoryRateLimiter(), notifier: { notify: async (s) => void notified.push(s) } };
+  alerts = true;
+  deps = { cloud, limiter: new MemoryRateLimiter(), notifier: { notify: async (s) => void notified.push(s) }, entitlements: async () => ({ answersPerMonth: 2_000, telegramNotify: alerts }) };
 }, 30_000);
 
 const good = () => ({ answers: { name: "Abebe", phone: "0911234567", date: "2026-12-01", guests: "2" }, lang: "am", _hp: "", _ms: 5000 });
@@ -50,6 +53,24 @@ describe("handleSubmission", () => {
     expect(await cloud.setStatus("mallory", projectId, [list[0]!.id], "replied")).toBe(0);
     expect(await cloud.setStatus("alice", projectId, [list[0]!.id], "replied")).toBe(1);
     expect((await cloud.listSubmissions("alice", projectId))[0]).toMatchObject({ status: "replied", readAt: expect.any(Date) });
+  });
+
+  it("sends Telegram alerts only on a plan that includes them; the answer is stored either way", async () => {
+    alerts = false;
+    expect((await call()).status).toBe(201);
+    expect(notified).toHaveLength(0);
+    expect(await cloud.listSubmissions("alice", projectId)).toHaveLength(1);
+    // After an upgrade the same owner is alerted again, nothing to relink.
+    alerts = true;
+    expect((await call({ ip: "2.2.2.2" })).status).toBe(201);
+    expect(notified).toHaveLength(1);
+    expect(await cloud.listSubmissions("alice", projectId)).toHaveLength(2);
+  });
+
+  it("sends no alert when the plan can't be read (fails closed)", async () => {
+    delete deps.entitlements;
+    expect((await call()).status).toBe(201);
+    expect(notified).toHaveLength(0);
   });
 
   it("refuses answers while the owner has the site offline", async () => {

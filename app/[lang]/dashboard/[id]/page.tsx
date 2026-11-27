@@ -12,6 +12,8 @@ const MessagesPanel = dynamic(() => import("@/components/dashboard/messages-pane
 const BusinessPanel = dynamic(() => import("@/components/dashboard/business-panel").then((m) => m.BusinessPanel));
 const SettingsPanel = dynamic(() => import("@/components/dashboard/settings-panel").then((m) => m.SettingsPanel));
 import { currentUser } from "@/lib/auth/session";
+import { FREE } from "@/lib/billing/entitlements";
+import { PLAN_FEATURES, PLAN_IDS } from "@/lib/billing/plans";
 import { readLists } from "@/lib/cloud/lists";
 import { isLocale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n";
@@ -47,13 +49,15 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
   if (!project) notFound();
   // Only the open section's data is read (every read is scoped to this owner).
   const showcaseStore = services().growth.showcase;
-  const [home, versions, latest, showcaseOn, canDownload] = await Promise.all([
+  const [home, versions, latest, showcaseOn, plan] = await Promise.all([
     tab === "home" ? loadHome(user.id, id, lang) : null,
     tab === "settings" ? builder.store.listVersions(user.id, id).catch(() => []) : null,
     tab === "settings" ? builder.store.latestVersion(user.id, id).catch(() => null) : null,
     tab === "settings" && showcaseStore ? showcaseStore.optedIn(user.id, id).catch(() => null) : null,
-    tab === "settings" ? services().entitlements(user.id).then((e) => e.siteDownload).catch(() => false) : false,
+    // The plan's switches for this tab; a failed read shows the Free view (nothing paid is offered for free).
+    tab === "settings" ? services().entitlements(user.id).catch(() => FREE) : FREE,
   ]);
+  const canDownload = plan.siteDownload;
   const t = getMessages(lang);
   const d = t.dashboard;
   const labels: Record<Tab, string> = { home: d.tabHome, messages: d.tabMessages, info: d.tabInfo, settings: d.tabSettings };
@@ -126,6 +130,12 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
               locale={lang}
               projectId={id}
               bot={bot}
+              telegram={{
+                alerts: plan.telegramNotify,
+                edits: plan.telegramEdits,
+                plans: new Intl.ListFormat(lang, { type: "conjunction" }).format(PLAN_IDS.filter((p) => PLAN_FEATURES[p].telegramNotify).map((p) => t.billing.plans[p])),
+                upgradeHref: `/${lang}/billing`,
+              }}
               s={{
                 status: header.status,
                 address: header.address,

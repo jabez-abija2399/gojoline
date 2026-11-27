@@ -41,6 +41,11 @@ for (const lang of ["en", "am"] as const) {
     await expect(page.getByRole("heading", { level: 2 })).toHaveCount(12); // ten sections, the questions and the call to action
     await expect(page.getByRole("heading", { level: 2, name: t.describe })).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: t.faq })).toBeVisible();
+    // Rules read from the plans: Telegram alerts only where the plan has them, email sign-in only.
+    if (lang === "en") {
+      await expect(page.getByText("connect Telegram to get every booking on your phone (on Starter and Business)", { exact: false })).toBeVisible();
+      await expect(page.getByText("Signing in with a phone number is coming soon", { exact: false })).toBeVisible();
+    }
     // Real prices from the billing settings (defaults in e2e).
     await expect(page.getByText(lang === "en" ? "499 Birr a month" : "በወር 499 ብር", { exact: true })).toBeVisible();
 
@@ -53,6 +58,12 @@ for (const lang of ["en", "am"] as const) {
     await expect(toc).toBeVisible();
     await toc.getByRole("link", { name: t.describe, exact: true }).click();
     await expect(page).toHaveURL(/#guide-describe$/);
+    // The reader lands on the section's heading; on phones the contents fold away again.
+    await expect(page.getByRole("heading", { level: 2, name: t.describe })).toBeFocused();
+    if (info.project.name === "mobile") {
+      await expect(toc).toBeHidden();
+      await page.locator("details summary", { hasText: t.toc }).click();
+    }
     // Nothing of the video has loaded yet; a chapter click starts it there.
     expect(media).toEqual([]);
     await toc.getByRole("link", { name: t.play }).click();
@@ -68,7 +79,7 @@ for (const lang of ["en", "am"] as const) {
   });
 }
 
-test("guide: screenshots are responsive pictures, all lazy (none is above the fold)", async ({ page }, info) => {
+test("guide: screenshots are responsive pictures, all lazy (the poster comes first)", async ({ page }, info) => {
   await sizeFor(page, info.project.name);
   await page.goto("/en/guide");
   const imgs = page.locator("main picture img");
@@ -105,16 +116,16 @@ test("guide is linked from the start screen, the menu and a site's dashboard", a
   await expect(startLink).toHaveAttribute("href", "/en/guide");
   await startLink.click();
   await expect(page.getByRole("heading", { level: 1, name: "How to use Gojoline" })).toBeVisible();
-  // Signed in, it opens inside the app with the menu, and the menu marks it.
-  await openAppMenu(page);
-  const guide = page.locator("#app-sidebar").getByRole("link", { name: "Guide", exact: true });
-  await expect(guide).toHaveAttribute("aria-current", "page");
-  if (info.project.name === "mobile") await page.keyboard.press("Escape");
-  // A signed-in "Build your website" goes straight to the start screen.
+  // Signed in, the page keeps the public frame (no app code for visitors) with direct links.
   await expect(page.getByRole("link", { name: "Build your website" })).toHaveAttribute("href", "/en/build");
 
-  // A site's dashboard Home links to it too.
+  // The app's menu links to it.
   await page.goto("/en/build");
+  await openAppMenu(page);
+  await expect(page.locator("#app-sidebar").getByRole("link", { name: "Guide", exact: true })).toHaveAttribute("href", "/en/guide");
+  if (info.project.name === "mobile") await page.keyboard.press("Escape");
+
+  // A site's dashboard Home links to it too.
   await page.getByRole("button", { name: "Start a new site" }).click();
   const chat = page.getByRole("textbox", { name: "Your message" });
   await chat.fill("Bole Buna");
