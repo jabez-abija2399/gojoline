@@ -116,6 +116,7 @@ team is paused. This moves them to `https://<name>.afridea.et`, served by Caddy 
    ```
    PUBLISH_PROVIDER=server
    PUBLISH_BASE_DOMAIN=afridea.et
+   SERVER_SITES_BASE_DOMAIN=afridea.et   # only with PUBLISH_PROVIDER=server; never with Cloudflare publishing
    ```
    Keep `VERCEL_TOKEN` and `VERCEL_TEAM_ID` if you have them (old addresses forward later, step 5).
 3. **Deploy** (once this change is on `main`): `sudo gojoline-update --force`

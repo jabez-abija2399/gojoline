@@ -85,8 +85,8 @@ if [ -n "$missing" ]; then
   exit 1
 fi
 # Customer sites on this server (README.md, 8c) need their domain.
-if grep -q '^PUBLISH_PROVIDER=server' .env && ! grep -q '^PUBLISH_BASE_DOMAIN=.\+' .env; then
-  echo "PUBLISH_PROVIDER=server needs PUBLISH_BASE_DOMAIN (e.g. afridea.et) in .env"
+if grep -q '^PUBLISH_PROVIDER=server' .env && { ! grep -q '^PUBLISH_BASE_DOMAIN=.\+' .env || ! grep -q '^SERVER_SITES_BASE_DOMAIN=.\+' .env; }; then
+  echo "PUBLISH_PROVIDER=server needs PUBLISH_BASE_DOMAIN and SERVER_SITES_BASE_DOMAIN (e.g. afridea.et) in .env"
   exit 1
 fi
 
