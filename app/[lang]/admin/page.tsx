@@ -41,6 +41,7 @@ import { monthlyRevenueMinor, type PlanFilter } from "@/lib/admin/stats";
 import { PLAN_IDS, PRODUCTS, productName } from "@/lib/billing/plans";
 import { SOURCES } from "@/lib/growth/attribution";
 import { emptySourceCounts } from "@/lib/growth/sources";
+import { readCookie } from "@/lib/security/cookies";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/admin">): Promise<Metadata> {
   const { lang } = await params;
@@ -74,7 +75,8 @@ export default async function AdminPage({ params, searchParams }: PageProps<"/[l
   const svc = services();
   const dateFmt = new Intl.DateTimeFormat(lang === "am" ? "am-ET" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
 
-  const savedTheme = (await cookies()).get("gojo_admin_theme")?.value;
+  const jar = await cookies();
+  const savedTheme = readCookie((n) => jar.get(n)?.value, "adminTheme");
   const theme = (["light", "dark", "system"] as const).find((x) => x === savedTheme) ?? "system";
   const [counts, fbCounts] = await Promise.all([
     adminStats().overview(),

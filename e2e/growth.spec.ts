@@ -99,7 +99,7 @@ test("a business joins through an invite link; when the admin approves its first
   await invited.page.getByRole("button", { name: "Send for checking" }).click();
   await expect(invited.page.getByRole("status").filter({ hasText: "Thank you" })).toBeVisible();
   // The first-touch cookie has done its job.
-  expect((await invited.ctx.cookies()).some((c) => c.name === "gojo_src")).toBe(false);
+  expect((await invited.ctx.cookies()).some((c) => c.name.endsWith("gojo_src"))).toBe(false);
 
   // The admin approves it, then sees the invite and where the sign-up came from.
   const admin = await newPage(browser);

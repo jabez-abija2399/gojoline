@@ -1,5 +1,6 @@
-import { timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { checkTikTokState } from "@/lib/posts/tiktok-state";
+import { cookieAttrs, cookieName } from "@/lib/security/cookies";
 import { currentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/billing/service";
 import { reportError } from "@/lib/observability/report";
@@ -20,11 +21,10 @@ export async function GET(request: Request) {
   const back = (done: string) => Response.redirect(`${appUrl}/en/admin?tab=posts&pd=${done}`, 302);
   const q = new URL(request.url).searchParams;
   const jar = await cookies();
-  const want = Buffer.from(jar.get("gojo_tiktok_state")?.value ?? "");
-  const given = Buffer.from(q.get("state") ?? "");
-  jar.delete({ name: "gojo_tiktok_state", path: "/api/admin/tiktok" });
+  const nonce = jar.get(cookieName("tiktokState"))?.value;
+  jar.set(cookieName("tiktokState"), "", { ...cookieAttrs(), httpOnly: true, sameSite: "lax", maxAge: 0 });
   const code = q.get("code");
-  if (!code || want.length === 0 || want.length !== given.length || !timingSafeEqual(want, given)) return back("invalid");
+  if (!code || !checkTikTokState(process.env.BETTER_AUTH_SECRET ?? "", me.id, nonce, q.get("state"))) return back("invalid");
   try {
     const refreshToken = await tiktokExchange({ clientKey: key, clientSecret: secret, code, appUrl });
     await connections.saveTikTokToken(refreshToken, me.id);

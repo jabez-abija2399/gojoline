@@ -20,6 +20,7 @@ import { adminFeedbackInput } from "@/lib/feedback/schema";
 import { invalidateShowcase } from "@/lib/growth/showcase-cache";
 import { inviteOwners } from "@/lib/growth/feature-invites";
 import { FEEDBACK_STATUSES, FEEDBACK_TYPES } from "@/lib/feedback/types";
+import { cookieAttrs, cookieName } from "@/lib/security/cookies";
 
 const input = z.object({ id: z.uuid(), decision: z.enum(["approve", "reject"]), note: z.string().trim().max(300).optional(), lang: z.enum(["en", "am"]) });
 
@@ -322,7 +323,7 @@ export async function setAdminTheme(form: FormData) {
   const lang = form.get("lang") === "am" ? "am" : "en";
   const tab = String(form.get("tab") ?? "overview").replace(/[^a-z]/g, "").slice(0, 20);
   if (theme === "light" || theme === "dark" || theme === "system") {
-    (await cookies()).set("gojo_admin_theme", theme, { path: `/`, maxAge: 60 * 60 * 24 * 365, sameSite: "lax", httpOnly: true, secure: process.env.NODE_ENV === "production" });
+    (await cookies()).set(cookieName("adminTheme"), theme, { ...cookieAttrs(), maxAge: 60 * 60 * 24 * 365, sameSite: "lax", httpOnly: true });
   }
   redirect(`/${lang}/admin?tab=${tab}`);
 }
