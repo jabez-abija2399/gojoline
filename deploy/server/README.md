@@ -118,14 +118,21 @@ team is paused. This moves them to `https://<name>.afridea.et`, served by Caddy 
    PUBLISH_BASE_DOMAIN=afridea.et
    ```
    Keep `VERCEL_TOKEN` and `VERCEL_TEAM_ID` if you have them (old addresses forward later, step 5).
-3. **Deploy** (once this change is on `main`): `sudo gojoline-update --force`
-4. **Move the sites.** First a dry run (lists every site and what would happen, changes nothing):
+   Recommended: also do 8d (one certificate for all sites) before step 4.
+3. **Deploy** (once this change is on `main`): `sudo bash /opt/gojoline/deploy/server/setup.sh`
+   (installs the new update script, then builds and starts everything; Caddy now runs as its own
+   user, not root). Check: `curl -s https://gojoline.afridea.et/api/health` prints `{"ok":true}`.
+4. **Move the sites, off-peak** (late evening Addis time: each site is a build on the server
+   builders use). First a dry run (lists every site and what would happen, changes nothing):
    ```bash
    cd /opt/gojoline && sudo docker run --rm -v "$PWD/scripts:/s:ro" -v "$PWD/deploy/server/.env:/env:ro" node:22-bookworm-slim node /s/republish-all.mts --env /env --dry-run
    ```
    Then the same command without `--dry-run`. Each site is published again from the version that
-   is live now (the same checks, badge and forms as a normal publish), about a minute per site, one
-   line per site. Offline sites stay offline; taken-down sites only get the notice. Dashboards, QR
+   is live now (the same checks, badge and forms as a normal publish), about a minute per site plus
+   a 30 s pause (`--delay <seconds>`), one line per site; `--limit 10` moves 10 and stops. While
+   builders use both workspaces it waits (up to 10 minutes per site) instead of stopping their
+   previews. Without 8d it warns when more than 35 sites would need a new certificate this week
+   (Let's Encrypt allows 50 a week for afridea.et, previews included): then use `--limit 35` per week. Offline sites stay offline; taken-down sites only get the notice. Dashboards, QR
    codes and share links show the new address at once. Safe to run again: moved sites are skipped,
    failed ones are retried. A site that fails a check today (e.g. an example phone number left in)
    is listed with the reason; its owner fixes it and publishes.
@@ -136,7 +143,27 @@ team is paused. This moves them to `https://<name>.afridea.et`, served by Caddy 
 seconds while its certificate is issued; only live sites can get one).
 **Logs:** `sudo docker compose -f /opt/gojoline/deploy/server/compose.yml logs --tail 50 caddy`.
 **Files:** the Docker volume `gojoline-sites` (never delete it; it is the live sites).
+**Disk:** publishing stops by itself (owners see "try again later", Sentry gets
+"publish refused: sites disk almost full") when less than 2 GB or 10% of the disk is free. Check
+with `df -h /` and `sudo docker system df`; free space with `sudo docker system prune -f` or grow
+the EC2 volume (EC2 → Volumes → Modify). Add an alert once: CloudWatch needs the agent for disk,
+so the simple way is a daily look at `df -h /`, or a Sentry alert on that error message.
 Not yet: owners' own domains (connect again after the move; see `docs/ROADMAP.md`).
+
+## 8d. One certificate for all sites (recommended, free)
+
+Without this, each site gets its own certificate on its first visit, and Let's Encrypt allows only
+50 new ones a week for afridea.et (previews use them too). With it, one `*.afridea.et` certificate
+covers every site.
+
+1. Cloudflare → **My Profile → API Tokens → Create Token → Custom token**. Name `gojoline caddy dns`.
+   Permissions: **Zone · DNS · Edit**. Zone resources: **Include · Specific zone · afridea.et**.
+   Create, copy the token (no card needed).
+2. `sudo nano /opt/gojoline/deploy/server/.env` and add `CLOUDFLARE_DNS_API_TOKEN=<the token>`.
+   It is given only to Caddy, never to the app.
+3. `sudo gojoline-update --force` (builds Caddy with the Cloudflare module, a few minutes once).
+4. Check: `sudo docker compose -f /opt/gojoline/deploy/server/compose.yml logs caddy | grep -i "certificate obtained"`.
+   To go back, empty the line and run step 3 again.
 
 ## 9. Stop automatically when the free credit ends
 
