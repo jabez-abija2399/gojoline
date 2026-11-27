@@ -84,6 +84,11 @@ if [ -n "$missing" ]; then
   echo "Fill these in .env first:$missing"
   exit 1
 fi
+# Customer sites on this server (README.md, 8c) need their domain.
+if grep -q '^PUBLISH_PROVIDER=server' .env && ! grep -q '^PUBLISH_BASE_DOMAIN=.\+' .env; then
+  echo "PUBLISH_PROVIDER=server needs PUBLISH_BASE_DOMAIN (e.g. afridea.et) in .env"
+  exit 1
+fi
 
 echo "== 6/6 Build, start, then automatic updates (every 5 minutes), weekly refresh and the daily job"
 # The scripts that run as root are copied out of the repo: a commit can't change them.

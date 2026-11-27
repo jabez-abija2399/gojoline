@@ -132,6 +132,38 @@ export function toStop(lastUsed: Map<string, number>, now: number, idleMs: numbe
   return [...stop];
 }
 
+/**
+ * Caddy asks before getting a customer site's certificate: only `<slug>.<base>` (exactly one
+ * label, a valid site address, never the app's own name) qualifies, and only while that site is
+ * live (the caller checks its folder on the sites volume). Returns the slug, or null.
+ */
+export function siteHostSlug(host: string, base: string, appDomain = ""): string | null {
+  if (!base || host === appDomain || !host.endsWith(`.${base}`)) return null;
+  const label = host.slice(0, -(base.length + 1));
+  return /^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])$/.test(label) && !label.includes("--") ? label : null;
+}
+
+/** Answers from memory for a short while: a handshake storm never turns into a disk storm. */
+export class TtlCache {
+  // Plain fields (Node runs this file with type stripping: no parameter properties).
+  private map = new Map<string, { at: number; value: boolean }>();
+  private ttlMs: number;
+  private max: number;
+  constructor(ttlMs: number, max = 5000) {
+    this.ttlMs = ttlMs;
+    this.max = max;
+  }
+  async get(key: string, now: number, load: () => Promise<boolean>): Promise<boolean> {
+    const hit = this.map.get(key);
+    if (hit && now - hit.at < this.ttlMs) return hit.value;
+    const value = await load();
+    this.map.delete(key);
+    while (this.map.size >= this.max) this.map.delete(this.map.keys().next().value!);
+    this.map.set(key, { at: now, value });
+    return value;
+  }
+}
+
 /** Caddy asks before getting a preview certificate: only hosts of running workspaces qualify. */
 export function previewHostName(host: string, base: string): string | null {
   const suffix = `.preview.${base}`;

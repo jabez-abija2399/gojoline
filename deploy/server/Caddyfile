@@ -1,9 +1,32 @@
 # HTTPS certificates from Let's Encrypt, renewed automatically. DNS records must be "DNS only"
 # (grey cloud) in Cloudflare so the visitor's real address reaches us.
 {
-	# Preview certificates are issued on first visit, only for workspaces that are running.
+	# Preview and customer-site certificates are issued on first visit, only for workspaces that
+	# are running and sites that are live (the runner checks both; see runner/lib.ts).
 	on_demand_tls {
 		ask http://runner:7070/ask
+	}
+}
+
+# The security headers every customer site gets: the same as publishing sets on other hosts
+# (lib/publish/scan.ts publishedSiteHeaders; a unit test keeps them equal).
+(site_headers) {
+	header {
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' {$SITES_API_ORIGIN}; form-action 'self' {$SITES_API_ORIGIN}; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "DENY"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		Strict-Transport-Security "max-age=63072000"
+		-Server
+	}
+}
+
+# {site}: the slug, from a host that is exactly <slug>.<PUBLISH_BASE_DOMAIN>; "-" (never a folder) otherwise.
+(site_name) {
+	map {host} {site} {
+		~^([a-z0-9][a-z0-9-]{1,38}[a-z0-9])\. "${1}"
+		default "-"
 	}
 }
 
@@ -44,5 +67,88 @@
 	}
 	handle {
 		respond 404
+	}
+}
+
+# Customer sites: https://<slug>.<PUBLISH_BASE_DOMAIN>, each its own origin (never the app's),
+# from the sites volume the app writes (lib/providers/publish/server.ts; read-only here):
+# sites/<slug>/current -> the live deployment, resting.html while the owner has the site
+# offline, takedown.flag while an admin's notice is live (the notice always wins).
+*.{$PUBLISH_BASE_DOMAIN} {
+	tls {
+		on_demand
+	}
+	import site_name
+	import site_headers
+	encode zstd gzip
+	route {
+		@fromWorkspace remote_ip 172.30.240.0/24
+		respond @fromWorkspace 403
+		@write not method GET HEAD
+		respond @write 405
+		# Same addresses as before: no trailing slash.
+		@slash path_regexp slash ^(/.*[^/])/+$
+		redir @slash {re.slash.1} 308
+
+		@nosite not file {
+			root /srv/sites
+			try_files /{site}/current/index.html
+		}
+		route @nosite {
+			header Content-Type "text/html; charset=utf-8"
+			header Cache-Control "no-store"
+			header X-Robots-Tag "noindex"
+			respond `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>There's no site at this address</title><style>body{font-family:system-ui,"Noto Sans Ethiopic",sans-serif;max-width:36rem;margin:0 auto;padding:3rem 1rem;color:#121212;background:#FBF9F6;line-height:1.6}h1,h2{font-size:1.5rem;margin:0 0 .5rem}section{margin-bottom:2.5rem}a{color:#C2370F;display:inline-block;min-height:44px;line-height:44px}</style></head><body><main><section><h1>There's no site at this address</h1><p>Check the address, or make your own site with Gojoline.</p><a href="https://{$APP_DOMAIN}/en">Make a site with Gojoline</a></section><section lang="am"><h2>በዚህ አድራሻ ድረ-ገጽ የለም</h2><p>አድራሻውን ያረጋግጡ፣ ወይም በጎጆላይን የራስዎን ድረ-ገጽ ይሥሩ።</p><a href="https://{$APP_DOMAIN}/am">በጎጆላይን ድረ-ገጽ ይሥሩ</a></section></main></body></html>` 404
+		}
+
+		# Resting (the owner's offline switch): pages answer 503 with the resting page, so search
+		# engines keep the site; files still load. Never over a takedown notice.
+		@resting {
+			file {
+				root /srv/sites
+				try_files /{site}/resting.html
+			}
+			not file {
+				root /srv/sites
+				try_files /{site}/takedown.flag
+			}
+			path_regexp page (?:/[^/.]*|\.html)$
+		}
+		route @resting {
+			header Cache-Control "no-store"
+			header Retry-After "86400"
+			root * /srv/sites/{site}
+			rewrite * /resting.html
+			file_server {
+				status 503
+			}
+		}
+
+		root * /srv/sites/{site}/current
+		# Pages stay fresh (a new publish or a takedown shows at once); hashed files last a year.
+		header Cache-Control "public, max-age=0, must-revalidate"
+		header /assets/* Cache-Control "public, max-age=31536000, immutable"
+		@library path /fonts/* /stock/*
+		header @library Cache-Control "public, max-age=2592000, stale-while-revalidate=604800"
+		@icons path_regexp icons ^/(?:favicon\.|apple-touch-icon|icon-)
+		header @icons Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+		header /images/* Cache-Control "public, max-age=3600, stale-while-revalidate=86400"
+		# Clean URLs: /about -> about/index.html (how the template writes pages), about, about.html.
+		try_files {path} {path}/index.html {path}.html
+		file_server {
+			hide .*
+			disable_canonical_uris
+		}
+	}
+	# A missing page: the site's own 404 page, with status 404.
+	handle_errors 404 {
+		import site_name
+		import site_headers
+		header Cache-Control "public, max-age=0, must-revalidate"
+		root * /srv/sites/{site}/current
+		rewrite * /404.html
+		file_server {
+			disable_canonical_uris
+		}
 	}
 }

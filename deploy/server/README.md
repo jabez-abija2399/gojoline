@@ -8,7 +8,8 @@ Time: about 1 to 2 hours. Cost: about $1 a day of AWS credit (`t4g.medium`).
 **Works:** everything, including building and changing sites with AI. Each site being worked on
 runs in its own container on this server (no internet, capped memory), started by a small
 "runner"; its live preview is at `https://gojo-<id>.preview.gojoline.afridea.et`.
-**Publishing** needs the Cloudflare setup in `docs/ROADMAP.md` ("Blocked"); until then it says paused.
+**Published sites** are served from this server too, at `https://<name>.afridea.et`
+(section "Customer sites" below: one DNS record, two lines in `.env`, one script).
 
 ---
 
@@ -101,6 +102,41 @@ Telegram and Google sign-in keep working: the address didn't change.
 Cloudflare → `afridea.et` → **DNS** → **Add record**: type **A**, name **`*.preview.gojoline`**,
 IPv4 = the Elastic IP, proxy **DNS only (grey cloud)**. Save. Each preview gets its own
 certificate automatically the first time it opens.
+
+## 8c. Customer sites (once): bring the published sites back
+
+Published sites used to live at `gojo-<name>.vercel.app`, which shows an error while the Vercel
+team is paused. This moves them to `https://<name>.afridea.et`, served by Caddy on this server.
+
+1. **DNS** (Cloudflare → `afridea.et` → **DNS**): a record of type **A**, name **`*`**, IPv4
+   **3.66.202.79**, proxy **DNS only (grey cloud)**. If a `*` record already exists (it pointed at
+   Vercel), edit it to this. Records with their own name (`gojoline`, `askaddis`, `*.preview.gojoline`,
+   mail records, …) keep working: a named record always wins over `*`.
+2. **Settings:** `sudo nano /opt/gojoline/deploy/server/.env` and make sure these lines are there:
+   ```
+   PUBLISH_PROVIDER=server
+   PUBLISH_BASE_DOMAIN=afridea.et
+   ```
+   Keep `VERCEL_TOKEN` and `VERCEL_TEAM_ID` if you have them (old addresses forward later, step 5).
+3. **Deploy** (once this change is on `main`): `sudo gojoline-update --force`
+4. **Move the sites.** First a dry run (lists every site and what would happen, changes nothing):
+   ```bash
+   cd /opt/gojoline && sudo docker run --rm -v "$PWD/scripts:/s:ro" -v "$PWD/deploy/server/.env:/env:ro" node:22-bookworm-slim node /s/republish-all.mts --env /env --dry-run
+   ```
+   Then the same command without `--dry-run`. Each site is published again from the version that
+   is live now (the same checks, badge and forms as a normal publish), about a minute per site, one
+   line per site. Offline sites stay offline; taken-down sites only get the notice. Dashboards, QR
+   codes and share links show the new address at once. Safe to run again: moved sites are skipped,
+   failed ones are retried. A site that fails a check today (e.g. an example phone number left in)
+   is listed with the reason; its owner fixes it and publishes.
+5. **After 2026-12-19** (Vercel answers again), forward the old addresses to the new ones: the same
+   command with `--forward-old` instead of `--dry-run` (needs `VERCEL_TOKEN`/`VERCEL_TEAM_ID`).
+
+**Check:** `curl -sI https://<name>.afridea.et` shows `200` (the first visit to a site takes a few
+seconds while its certificate is issued; only live sites can get one).
+**Logs:** `sudo docker compose -f /opt/gojoline/deploy/server/compose.yml logs --tail 50 caddy`.
+**Files:** the Docker volume `gojoline-sites` (never delete it; it is the live sites).
+Not yet: owners' own domains (connect again after the move; see `docs/ROADMAP.md`).
 
 ## 9. Stop automatically when the free credit ends
 
