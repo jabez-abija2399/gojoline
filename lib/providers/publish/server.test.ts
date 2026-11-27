@@ -11,7 +11,7 @@ const exists = (p: string) => stat(p).then(() => true, () => false);
 
 beforeEach(async () => {
   dir = await mkdtemp(join(tmpdir(), "sites-"));
-  host = new ServerPublishProvider({ sitesDir: dir, baseDomain: "afridea.et" });
+  host = new ServerPublishProvider({ sitesDir: dir, baseDomain: "afridea.et", diskSpace: async () => ({ free: 1e12, total: 2e12 }) });
 });
 afterEach(async () => {
   await rm(dir, { recursive: true, force: true });
@@ -63,6 +63,17 @@ describe("ServerPublishProvider", () => {
     const many = Array.from({ length: 9 }, (_, i) => ({ path: `p${i}.bin`, data: Buffer.alloc(1_900_000) }));
     await expect(host.publish({ slug: "big-site", files: many, headers: [] })).rejects.toThrow("site_too_large");
     expect(await exists(join(dir, "big-site", "current"))).toBe(false);
+  });
+
+  it("stops publishing when the volume runs low, but a takedown notice still goes up", async () => {
+    let free = 5e9;
+    const low = new ServerPublishProvider({ sitesDir: dir, baseDomain: "afridea.et", diskSpace: async () => ({ free, total: 30e9 }) });
+    await expect(low.publish({ slug: "bole-cafe", files: [page("v1")], headers: [] })).resolves.toBeTruthy();
+    free = 2.5e9; // under 10% of 30 GB
+    await expect(low.publish({ slug: "bole-cafe", files: [page("v2")], headers: [], providerProjectId: "srv:bole-cafe" })).rejects.toThrow("disk_full");
+    free = 1e9;
+    await expect(low.publish({ slug: "bole-cafe", files: [page("notice")], headers: [], providerProjectId: "srv:bole-cafe", takedown: true })).resolves.toBeTruthy();
+    expect(await readFile(join(dir, "bole-cafe", "current", "index.html"), "utf8")).toBe("notice");
   });
 
   it("rests and wakes the site, and a new publish keeps it resting", async () => {

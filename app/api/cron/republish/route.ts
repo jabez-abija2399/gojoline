@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 import { reportError } from "@/lib/observability/report";
 import { planRepublish, runRepublish, type RepublishMode } from "@/lib/publish/republish";
+import { RunnerClient } from "@/lib/providers/sandbox/docker";
 import { services } from "@/lib/server/services";
 
 export const maxDuration = 300;
@@ -34,15 +35,31 @@ async function liveHere(publisher: unknown, slugs: string[]): Promise<Set<string
  * a run would do (the dry run); POST runs it for one site, so each request stays short and a
  * run can be stopped and started again at any point.
  */
+/** Site workspaces open on the runner right now (null without a runner). */
+async function workspaces(): Promise<{ running: number; max: number } | null> {
+  const url = process.env.SANDBOX_RUNNER_URL;
+  const secret = process.env.SANDBOX_RUNNER_SECRET;
+  if (!url || !secret) return null;
+  try {
+    const s = await new RunnerClient({ url, secret }).call<{ running: number; max: number }>("/status", {}, 5000);
+    return { running: Number(s.running) || 0, max: Number(s.max) || 2 };
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(request: Request) {
   if (!authorized(request)) return new Response(null, { status: 401 });
+  // ?status=1: only whether builders are using the workspaces (the script waits while they are).
+  if (new URL(request.url).searchParams.get("status") === "1") return Response.json({ workspaces: await workspaces() }, { headers: NO_STORE });
   const d = deps();
   if (!d) return Response.json({ error: "unavailable" }, { status: 503, headers: NO_STORE });
   const mode = modeSchema.safeParse(new URL(request.url).searchParams.get("mode") ?? "move");
   if (!mode.success) return Response.json({ error: "invalid" }, { status: 400, headers: NO_STORE });
   const sites = await d.sites.recent(10_000);
   const live = await liveHere(d.publish.publisher, sites.filter((s) => s.status === "taken_down").map((s) => s.slug));
-  return Response.json({ host: d.publish.publisher.name, paused: Boolean(d.publish.paused), items: planRepublish(sites, d.publish.publisher.name, mode.data, live) }, { headers: NO_STORE });
+  // Without the wildcard certificate each new site needs its own (Let's Encrypt: 50 a week).
+  return Response.json({ host: d.publish.publisher.name, paused: Boolean(d.publish.paused), wildcardTls: Boolean(process.env.CLOUDFLARE_DNS_API_TOKEN), items: planRepublish(sites, d.publish.publisher.name, mode.data, live) }, { headers: NO_STORE });
 }
 
 export async function POST(request: Request) {

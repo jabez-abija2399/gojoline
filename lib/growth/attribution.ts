@@ -5,7 +5,6 @@ import { z } from "zod";
  * URL (?ref=, utm_*) or, without those, the referring site's host; kept in a first-party cookie
  * on Gojoline's own domain (no third-party trackers) and stored on the account at sign-up.
  */
-export const ATTRIBUTION_COOKIE = "gojo_src";
 /** First touch is kept this long. */
 export const ATTRIBUTION_MAX_AGE = 60 * 60 * 24 * 90;
 

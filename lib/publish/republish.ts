@@ -1,5 +1,6 @@
 import "server-only";
 import { takenDownPage } from "@/lib/safety/takedown";
+import { checkSlug } from "@/lib/sites/slug";
 import type { Site } from "@/lib/sites/types";
 import { publishedSiteHeaders } from "./scan";
 import { forwardOldAddress, republishLive, type PublishDeps } from "./service";
@@ -40,6 +41,7 @@ export function planRepublish(sites: Site[], host: string, mode: RepublishMode, 
       if (s.status === "taken_down") return liveOnHost.has(s.slug) ? { ...base, action: "skip", note: "taken down, notice already here" } : { ...base, action: "notice", note: "taken down: notice only" };
       if (s.status !== "published") return { ...base, action: "skip", note: s.status };
       if (s.publishedVersion == null) return { ...base, action: "skip", note: "no published version" };
+      if (checkSlug(s.slug)) return { ...base, action: "skip", note: "reserved address: the owner picks a new one" };
       return { ...base, action: "republish", note: `version ${s.publishedVersion}${s.offlineAt ? ", stays offline" : ""}` };
     })
     .sort((a, b) => a.slug.localeCompare(b.slug));
