@@ -41,6 +41,7 @@ import { DbBillingStore, MemoryBillingStore } from "@/lib/billing/store";
 import { MemoryPublishProvider } from "@/lib/providers/publish/memory";
 import { VercelPublishProvider } from "@/lib/providers/publish/vercel";
 import { CloudflarePublishProvider } from "@/lib/providers/publish/cloudflare";
+import { ServerPublishProvider } from "@/lib/providers/publish/server";
 import { R2StorageProvider } from "@/lib/providers/storage/r2";
 import sharp from "sharp";
 import { MemoryStorageProvider } from "@/lib/providers/storage/memory";
@@ -157,6 +158,11 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   const base = { store: builder.store, sandboxes: builder.sandboxes, lock: builder.lock, assets: builder.assets, sites, cloud, appUrl, dataApiOrigin: env.DATA_API_ORIGIN || undefined, paused: builder.paused };
   if (isE2E(env)) return { ...base, publisher: new MemoryPublishProvider() };
   const vercel = env.VERCEL_TOKEN && env.VERCEL_TEAM_ID ? new VercelPublishProvider({ token: env.VERCEL_TOKEN, teamId: env.VERCEL_TEAM_ID }) : null;
+  // Our own server (deploy/server): sites on the sites volume, served by Caddy. Chosen explicitly,
+  // so it wins over everything below. Sites still on Vercel move with scripts/republish-all.mts
+  // (or their next publish); their old address forwards once Vercel is reachable again.
+  const server = pickServerPublish(env);
+  if (server) return { ...base, publisher: server, legacy: vercel };
   const cloudflare = pickCloudflarePublish(env);
   // Cloudflare once it's configured; sites still on the Vercel fallback move on their next publish.
   if (cloudflare) return { ...base, publisher: cloudflare, legacy: vercel };
@@ -165,6 +171,12 @@ function pickPublish(env: Env, builder: BuilderDeps | null): PublishDeps | null 
   // and publishing says it's paused. With a real host above, publishSite still refuses while
   // building is paused, but takedowns, the offline switch and domains keep working.
   return { ...base, paused: true, publisher: new PausedPublishProvider(env.PUBLISH_BASE_DOMAIN || "") };
+}
+
+/** Sites on the server's own disk: PUBLISH_PROVIDER=server, SITES_DIR and PUBLISH_BASE_DOMAIN. */
+export function pickServerPublish(env: Env): ServerPublishProvider | null {
+  if (env.PUBLISH_PROVIDER !== "server" || !env.SITES_DIR || !env.PUBLISH_BASE_DOMAIN) return null;
+  return new ServerPublishProvider({ sitesDir: env.SITES_DIR, baseDomain: env.PUBLISH_BASE_DOMAIN });
 }
 
 /** Sites on R2 + the sites Worker at *.PUBLISH_BASE_DOMAIN (see scripts/cloudflare-setup.mjs). */
