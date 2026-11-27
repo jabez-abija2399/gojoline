@@ -77,6 +77,9 @@ function uiLabels(t: Messages): Record<string, string> {
     sites: t.app.sites,
     plan: t.app.plan,
     submit: t.billing.submit,
+    tabPay: t.billing.tabs.pay,
+    tabHistory: t.billing.tabs.history,
+    tabInvite: t.billing.tabs.invite,
     invite: t.growth.invite.nav,
     feedback: t.feedback.navLabel,
     report: t.footer.report,
@@ -259,7 +262,7 @@ function GuideContent({ locale, t, signedIn, prices, features, credits, offer, b
                 {id === "plan" && (
                   <ul className="flex max-w-[65ch] list-disc flex-col gap-2 ps-5">
                     <li>{g.sections.plan.receipt}</li>
-                    <li>{g.sections.plan.checking}</li>
+                    <li>{f(g.sections.plan.checking)}</li>
                     <li>{format(g.sections.plan.topup, { n: credits.topupCredits, price: formatBirr(topupOffer ?? prices.topup) })}</li>
                     <li>{f(g.sections.plan.invite, { n: credits.monthly.starter, cap: REFERRAL_MONTHLY_CAP })}</li>
                   </ul>
