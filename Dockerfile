@@ -28,6 +28,8 @@ ENV NODE_ENV=production \
 COPY --from=build --chown=node:node /app/.next/standalone ./
 COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
+# The sites volume's mount point, owned by the app's user (a new volume copies this ownership).
+RUN mkdir -p /srv/sites && chown node:node /srv/sites
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \

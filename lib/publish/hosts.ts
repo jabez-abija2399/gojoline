@@ -18,19 +18,22 @@ export function noticeTargets(
   site: { slug: string; provider: string; providerProjectId: string | null; legacyProjectId?: string | null },
   publisher: PublishProvider,
   legacy: PublishProvider | null | undefined,
-  opts: { includeCurrent?: boolean } = {},
+  opts: { includeCurrent?: boolean; missing?: string[] } = {},
 ): { host: PublishProvider; projectId: string | null }[] {
   const out: { host: PublishProvider; projectId: string | null }[] = [];
   if (site.providerProjectId) out.push({ host: publisherFor(site, publisher, legacy), projectId: site.providerProjectId });
   if (site.legacyProjectId) {
-    if (!legacy) throw new Error("no_host:legacy");
-    out.push({ host: legacy, projectId: site.legacyProjectId });
+    // With `missing`, an unconfigured old host is noted there instead of stopping the notice
+    // from reaching the hosts that are configured (a takedown always reaches the live address).
+    if (!legacy && opts.missing) opts.missing.push("legacy");
+    else if (!legacy) throw new Error("no_host:legacy");
+    else out.push({ host: legacy, projectId: site.legacyProjectId });
   }
   // The publish may have written to the new host before the record changed; a non-matching
   // saved ID lets that host adopt the slug's files (see CloudflarePublishProvider.publish).
   if (opts.includeCurrent && !out.some((t) => t.host === publisher)) {
-    // A first publish has no saved ID yet; Cloudflare's is derived from the slug.
-    const id = site.providerProjectId ?? (publisher.name === "cloudflare" ? `cf:${site.slug}` : null);
+    // A first publish has no saved ID yet; Cloudflare's and the server's derive from the slug.
+    const id = site.providerProjectId ?? (publisher.name === "cloudflare" ? `cf:${site.slug}` : publisher.name === "server" ? `srv:${site.slug}` : null);
     if (id) out.push({ host: publisher, projectId: id });
   }
   return out;

@@ -78,16 +78,18 @@ async function deployNotice(deps: ModerationDeps, adminId: string, siteId: strin
   const now = (await deps.sites.byId(siteId)) ?? site;
   if (!deps.publisher || (!now.providerProjectId && !now.legacyProjectId)) return done();
   let targets;
+  const missing: string[] = [];
   try {
-    targets = noticeTargets(now, deps.publisher, deps.legacy);
+    targets = noticeTargets(now, deps.publisher, deps.legacy, { missing });
   } catch (error) {
     reportError("takedown deploy failed", error, { siteId });
     return "deploy_failed";
   }
   // Every host the content could be on (the old one too while a move isn't confirmed); one
-  // host failing doesn't stop the others.
+  // host failing (or not being configured) doesn't stop the others.
   const page = Buffer.from(takenDownPage());
-  let failed = false;
+  let failed = missing.length > 0;
+  if (failed) reportError("takedown deploy failed", new Error(`no_host:${missing.join(",")}`), { siteId });
   for (const t of targets) {
     try {
       const r = await t.host.publish({

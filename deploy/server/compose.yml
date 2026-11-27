@@ -15,8 +15,18 @@ services:
       # Admin → Posts videos (deploy/server/renderer), with their own secret (setup.sh makes it).
       RENDERER_URL: http://renderer:7071
       RENDERER_SECRET: ${RENDERER_SECRET:-}
+      # Customer sites (with PUBLISH_PROVIDER=server in .env): written here, served by Caddy.
+      SITES_DIR: /srv/sites
+    volumes:
+      - sites:/srv/sites
     restart: unless-stopped
-    depends_on: [runner, renderer]
+    depends_on:
+      runner:
+        condition: service_started
+      renderer:
+        condition: service_started
+      sites-init:
+        condition: service_completed_successfully
     networks: [default, render]
     expose:
       - "3000"
@@ -27,6 +37,20 @@ services:
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "5" }
+
+  # Gives the sites volume to the app's user (uid 1000) before the app starts; nothing else.
+  sites-init:
+    image: gojoline-app
+    pull_policy: never
+    user: root
+    entrypoint: ["chown", "node:node", "/srv/sites"]
+    volumes:
+      - sites:/srv/sites
+    restart: "no"
+    network_mode: none
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    cap_add: [CHOWN]
 
   # The only service with Docker access: starts and controls one workspace container per site
   # (deploy/server/runner). Reachable only on this private network, with a shared secret.
@@ -41,8 +65,12 @@ services:
       SANDBOX_NETWORK: gojoline-previews
       SANDBOX_MAX_RUNNING: "2"
       SANDBOX_MEMORY: 700m
+      # Caddy's certificate check for customer sites: only live ones (read-only look at the volume).
+      SITES_DIR: /srv/sites
+      PUBLISH_BASE_DOMAIN: ${PUBLISH_BASE_DOMAIN:-}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - sites:/srv/sites:ro
     expose:
       - "7070"
     mem_limit: 128m
@@ -94,10 +122,15 @@ services:
       - "443:443/udp"
     environment:
       APP_DOMAIN: ${APP_DOMAIN}
+      # Customer sites at https://<slug>.<PUBLISH_BASE_DOMAIN> (a name that never resolves when unset).
+      PUBLISH_BASE_DOMAIN: ${PUBLISH_BASE_DOMAIN:-sites.invalid}
+      # Where sites' forms post (their CSP allows only this besides themselves): the app's own origin.
+      SITES_API_ORIGIN: ${DATA_API_ORIGIN:-https://${APP_DOMAIN}}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
+      - sites:/srv/sites:ro
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "5" }
@@ -122,3 +155,6 @@ networks:
 volumes:
   caddy_data:
   caddy_config:
+  # Published customer sites (lib/providers/publish/server.ts). Never delete it: it is the live sites.
+  sites:
+    name: gojoline-sites

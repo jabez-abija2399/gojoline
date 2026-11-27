@@ -7,8 +7,10 @@
  */
 import { spawn } from "node:child_process";
 import { timingSafeEqual } from "node:crypto";
+import { stat } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { containerName, execArgs, PREVIEW_COOKIE, PREVIEW_PARAM, previewHostName, runArgs, safeSitePath, tarFiles, toStop, verifyPreview } from "./lib.ts";
+import { join } from "node:path";
+import { containerName, execArgs, PREVIEW_COOKIE, PREVIEW_PARAM, previewHostName, runArgs, safeSitePath, siteHostSlug, tarFiles, toStop, TtlCache, verifyPreview } from "./lib.ts";
 
 const SECRET = process.env.RUNNER_SECRET ?? "";
 const IMAGE = process.env.SANDBOX_IMAGE ?? "gojoline-sandbox";
@@ -21,6 +23,10 @@ const MAX_BODY = 30 * 1024 * 1024;
 const MAX_OUTPUT = 4 * 1024 * 1024;
 /** At most this many `docker` processes at once (the runner has little memory). */
 const MAX_DOCKER = 6;
+/** Customer sites (read-only mount of the sites volume) and their domain, for `/ask`. */
+const SITES_DIR = process.env.SITES_DIR ?? "";
+const SITES_BASE = (process.env.PUBLISH_BASE_DOMAIN ?? "").toLowerCase();
+const liveSites = new TtlCache(30_000);
 
 if (SECRET.length < 24) {
   // Not set up yet (run setup.sh once): stay idle instead of restarting in a loop.
@@ -194,8 +200,13 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
   const url = new URL(req.url ?? "/", "http://runner");
   // Caddy's on-demand TLS check: answered from memory (no process per handshake).
   if (req.method === "GET" && url.pathname === "/ask") {
-    const name = previewHostName(url.searchParams.get("domain") ?? "", BASE);
-    return send(res, name && lastUsed.has(name) ? 200 : 404, {});
+    const domain = (url.searchParams.get("domain") ?? "").toLowerCase();
+    const name = previewHostName(domain, BASE);
+    if (name) return send(res, lastUsed.has(name) ? 200 : 404, {});
+    // A customer site (deploy/server/Caddyfile): only while it has a live deployment.
+    const slug = SITES_DIR ? siteHostSlug(domain, SITES_BASE, BASE) : null;
+    const live = slug ? await liveSites.get(slug, Date.now(), () => stat(join(SITES_DIR, slug, "current", "index.html")).then(() => true, () => false)) : false;
+    return send(res, live ? 200 : 404, {});
   }
   if (url.pathname === "/gate") return gate(req, res);
   if (req.method === "GET" && url.pathname === "/health") return send(res, 200, { ok: true });

@@ -150,11 +150,51 @@ export async function publishSite(deps: PublishDeps, user: PublishUser, projectI
   }
 }
 
+/**
+ * Publishes a live site again, from the version that is live now (not the newest draft), to the
+ * current host: the same checks, badge and form registration as an owner's publish. Used to move
+ * sites between hosts (scripts/republish-all.mts). The owner's resting switch carries over; a
+ * taken-down site is never republished. The old host isn't touched here (see forwardOldAddress).
+ */
+export async function republishLive(deps: PublishDeps, ownerId: string, projectId: string): Promise<PublishOutcome> {
+  const project = await deps.store.getProject(ownerId, projectId);
+  if (!project) return { ok: false, error: "not_found" };
+  if (deps.paused) return { ok: false, error: "paused" };
+  const existing = await deps.sites.getByProject(ownerId, projectId);
+  if (existing?.status === "taken_down") return { ok: false, error: "taken_down" };
+  if (!existing || existing.status !== "published" || existing.publishedVersion == null) return { ok: false, error: "no_version" };
+  const version = await deps.store.getVersion(ownerId, projectId, existing.publishedVersion);
+  if (!version) return { ok: false, error: "no_version" };
+  if (hasExampleDetails(version.files["src/site.json"] ?? "")) return { ok: false, error: "unfinished" };
+  const formScan = scanForms(version.files["src/site.json"] ?? "");
+  if (formScan.invalid.length) return { ok: false, error: "form_invalid" };
+  const plan = deps.entitlements ? await deps.entitlements(ownerId) : null;
+  return deployLocked({ ...deps, legacy: null }, { id: ownerId, verified: true }, projectId, { existing, slug: existing.slug, latest: version, plan, project, formScan, count: false });
+}
+
+/**
+ * The old address forwards to the new one (same path) and stops showing old content. A failure
+ * is retried on the next publish; until then takedowns also reach the old host.
+ */
+export async function forwardOldAddress(deps: Pick<PublishDeps, "legacy" | "sites">, ownerId: string, site: { projectId: string; slug: string; legacyProjectId: string; url: string }): Promise<boolean> {
+  if (!deps.legacy) return false;
+  const page = Buffer.from(movedPage(site.url));
+  try {
+    await deps.legacy.publish({ slug: site.slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: site.legacyProjectId, redirectTo: site.url });
+    await deps.legacy.restrictOldDeployments?.(site.legacyProjectId);
+    await deps.sites.clearLegacy(ownerId, site.projectId);
+    return true;
+  } catch (e) {
+    reportError("old host forward failed", e, { projectId: site.projectId });
+    return false;
+  }
+}
+
 async function deployLocked(
   deps: PublishDeps,
   user: PublishUser,
   projectId: string,
-  ctx: { existing: Site | null; slug: string; latest: NonNullable<Awaited<ReturnType<ProjectStore["latestVersion"]>>>; plan: Awaited<ReturnType<EntitlementsResolver>> | null; project: NonNullable<Awaited<ReturnType<ProjectStore["getProject"]>>>; formScan: ReturnType<typeof scanForms> },
+  ctx: { existing: Site | null; slug: string; latest: NonNullable<Awaited<ReturnType<ProjectStore["latestVersion"]>>>; plan: Awaited<ReturnType<EntitlementsResolver>> | null; project: NonNullable<Awaited<ReturnType<ProjectStore["getProject"]>>>; formScan: ReturnType<typeof scanForms>; count?: boolean },
 ): Promise<PublishOutcome> {
   const { existing, slug, latest, plan, project, formScan } = ctx;
   // Claim the address in our database before anything is deployed (atomic, unique).
@@ -209,21 +249,10 @@ async function deployLocked(
       runtimeVersion: SITE_RUNTIME,
     });
     // Counted in the background: a slow analytics write never holds up a publish.
-    void deps.countPublish?.(existing?.publishedAt ? "update" : "first").catch(() => undefined);
+    if (ctx.count !== false) void deps.countPublish?.(existing?.publishedAt ? "update" : "first").catch(() => undefined);
     // Resting sites stay resting: the new deployment replaced the host's flag.
     if (site.offlineAt) await deps.publisher.setResting?.(result.providerProjectId, true, result.deploymentId).catch((e: unknown) => reportError("resting switch failed", e, { projectId }));
-    if (legacyProjectId && deps.legacy) {
-      // The old address forwards to the new one (same path) and stops showing old content.
-      // A failure is retried on the next publish; until then takedowns also reach the old host.
-      const page = Buffer.from(movedPage(result.url));
-      try {
-        await deps.legacy.publish({ slug, files: [{ path: "index.html", data: page }, { path: "404.html", data: page }], headers: publishedSiteHeaders(), providerProjectId: legacyProjectId, redirectTo: result.url });
-        await deps.legacy.restrictOldDeployments?.(legacyProjectId);
-        await deps.sites.clearLegacy(user.id, projectId);
-      } catch (e) {
-        reportError("old host forward failed", e, { projectId });
-      }
-    }
+    if (legacyProjectId && deps.legacy) await forwardOldAddress(deps, user.id, { projectId, slug, legacyProjectId, url: result.url });
     await saveShowcaseCard(deps, user.id, projectId, project.locale, latest.files["src/site.json"], build.files).catch((e: unknown) => reportError("showcase card failed", e, { projectId }));
     // Forms on the live site accept answers only in the shape published here.
     await deps.cloud?.saveForms(site.id, formScan.forms);
@@ -237,7 +266,9 @@ async function deployLocked(
         // The files just went to deps.publisher (whatever the record says), and the site may
         // still live on the old host too: the notice goes everywhere it could be seen.
         const files = [{ path: "index.html", data: Buffer.from(takenDownPage()) }, { path: "404.html", data: Buffer.from(takenDownPage()) }];
-        const targets = noticeTargets(site, deps.publisher, deps.legacy, { includeCurrent: true });
+        const missing: string[] = [];
+        const targets = noticeTargets(site, deps.publisher, deps.legacy, { includeCurrent: true, missing });
+        if (missing.length) reportError("takedown redeploy failed", new Error(`no_host:${missing.join(",")}`), { projectId });
         for (const t of targets) {
           try {
             const r = await t.host.publish({ slug, files, headers: publishedSiteHeaders(), providerProjectId: t.projectId });

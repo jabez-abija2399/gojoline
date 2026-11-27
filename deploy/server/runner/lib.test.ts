@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { containerName, execArgs, previewHostName, runArgs, safeSitePath, signPreview, tarFiles, toStop, verifyPreview } from "./lib.ts";
+import { containerName, execArgs, previewHostName, runArgs, safeSitePath, signPreview, siteHostSlug, tarFiles, toStop, TtlCache, verifyPreview } from "./lib.ts";
 
 const ID = "0f8fad5b-d9cb-469f-a165-70867728950e";
 
@@ -59,6 +59,40 @@ describe("sandbox runner helpers", () => {
   it("lets Caddy certify only workspace preview hosts", () => {
     expect(previewHostName(`gojo-${ID}.preview.afridea.et`, "afridea.et")).toBe(`gojo-${ID}`);
     for (const bad of ["gojoline.afridea.et", `app.preview.afridea.et`, `gojo-${ID}.preview.evil.et`, `x.gojo-${ID}.preview.afridea.et`]) expect(previewHostName(bad, "afridea.et")).toBeNull();
+  });
+
+  it("lets Caddy certify only live customer sites' own addresses", () => {
+    expect(siteHostSlug("bole-cafe.afridea.et", "afridea.et", "gojoline.afridea.et")).toBe("bole-cafe");
+    for (const bad of [
+      "gojoline.afridea.et", // the app itself
+      "afridea.et",
+      "a.b.afridea.et", // deeper names (previews have their own rule)
+      "evil.com",
+      "bole-cafe.afridea.et.evil.com",
+      "xafridea.et",
+      "-bad.afridea.et",
+      "ab.afridea.et",
+      "a--b.afridea.et",
+      "../x.afridea.et",
+      `${"a".repeat(41)}.afridea.et`,
+    ])
+      expect(siteHostSlug(bad, "afridea.et", "gojoline.afridea.et")).toBeNull();
+    expect(siteHostSlug("bole-cafe.afridea.et", "", "")).toBeNull();
+  });
+
+  it("answers the live check from memory for a while", async () => {
+    const cache = new TtlCache(30_000, 2);
+    let loads = 0;
+    const load = async () => (++loads, true);
+    expect(await cache.get("a", 0, load)).toBe(true);
+    expect(await cache.get("a", 29_000, load)).toBe(true);
+    expect(loads).toBe(1);
+    await cache.get("a", 31_000, load);
+    expect(loads).toBe(2);
+    await cache.get("b", 31_000, load);
+    await cache.get("c", 31_000, load);
+    await cache.get("a", 31_001, load);
+    expect(loads).toBe(5); // bounded: the oldest entry went
   });
 
   it("never stops a workspace in the middle of a command, even past the limit", () => {
