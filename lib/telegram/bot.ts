@@ -23,7 +23,7 @@ export interface BotDeps {
   limiter: RateLimiter;
   /** Publishing needs a verified account; without this check the bot never republishes. */
   isVerified?: (userId: string) => Promise<boolean>;
-  /** Editing by Telegram is a Business feature; without this check it's allowed. */
+  /** Editing by Telegram is a Business feature (telegramEdits); without this check it is refused. */
   canEditByTelegram?: (userId: string) => Promise<boolean>;
 }
 
@@ -88,7 +88,8 @@ export async function handleUpdate(deps: BotDeps, raw: unknown): Promise<void> {
   }
 
   const project = projects.find((p) => p.id === link.activeProjectId) ?? projects[0]!;
-  if (deps.canEditByTelegram && !(await deps.canEditByTelegram(link.userId))) return say(t.planEdits);
+  // Bot edits only on a plan with telegramEdits (Business); without the check, no edits.
+  if (!deps.canEditByTelegram || !(await deps.canEditByTelegram(link.userId))) return say(t.planEdits);
 
   // A photo (with or without a caption) is a new message: anything waiting for "yes" is dropped.
   if (msg.photo?.length && link.pendingEdit) await deps.store.setPendingEdit(link.userId, null);

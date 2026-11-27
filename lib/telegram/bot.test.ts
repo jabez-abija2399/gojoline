@@ -49,7 +49,7 @@ beforeEach(() => {
     assets: new MemoryAssetStore(),
   };
   publish = { store: projects, sites: new MemorySiteStore(), sandboxes: builder.sandboxes, publisher: new MemoryPublishProvider(), lock: builder.lock, appUrl: "https://gojoline.com", assets: builder.assets };
-  deps = { store, client, builder, publish, limiter: new MemoryRateLimiter(), isVerified: async () => true };
+  deps = { store, client, builder, publish, limiter: new MemoryRateLimiter(), isVerified: async () => true, canEditByTelegram: async () => true };
 });
 
 async function linked(locale: "en" | "am" = "en") {
@@ -82,6 +82,20 @@ describe("telegram bot", () => {
     deps.builder = { ...builder, sandboxes: { open: async () => { throw new Error("boom"); } } };
     await handleUpdate(deps, msg("make it blue"));
     expect(last()).toContain("couldn't make that change");
+  });
+
+  it("refuses edits on a plan without Telegram edits, and when the plan can't be checked", async () => {
+    await linked();
+    await builder.store.createProject("alice", { name: "A", locale: "en" });
+    const versions = async () => (await builder.store.listVersions("alice", (await builder.store.listProjects("alice"))[0]!.id)).length;
+    const before = await versions();
+    deps.canEditByTelegram = async () => false;
+    await handleUpdate(deps, msg("make it blue"));
+    expect(last()).toContain("part of the Business plan");
+    delete deps.canEditByTelegram;
+    await handleUpdate(deps, msg("make it green"));
+    expect(last()).toContain("part of the Business plan");
+    expect(await versions()).toBe(before);
   });
 
   it("ignores repeated updates and group chats", async () => {

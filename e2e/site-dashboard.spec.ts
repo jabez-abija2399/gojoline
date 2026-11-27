@@ -77,7 +77,9 @@ test("home: live card, share sheet, QR poster, private visitor numbers and the n
   await expect(next.getByText("Add your phone and opening hours").first()).toBeVisible();
   await expect(next.getByRole("link", { name: "Do it now" })).toHaveAttribute("href", /tab=info/);
   await next.getByText(/All steps \(2 of 6 done\)/).click();
-  await expect(next.getByRole("link", { name: /Get messages on Telegram/ })).toHaveAttribute("href", /tab=settings#telegram/);
+  // Telegram alerts are on Starter and Business: on Free the step leads to the plans.
+  await expect(next.getByRole("link", { name: /Get messages on Telegram/ })).toHaveAttribute("href", "/en/billing");
+  await expect(next.getByText("Every booking and order on your phone, on a paid plan.")).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await expectNoHorizontalScroll(page);
 });

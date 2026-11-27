@@ -13,7 +13,7 @@ Ethiopian small businesses (cafés, restaurants, shops, salons, clinics, hotels,
 3. The AI asks 2 to 3 clarifying questions (name, services, contact, colours).
 4. Live preview appears; the user edits by chat ("make the header green", "add a menu page").
 5. Publish to `name.gojoline.site`, or a custom domain on a paid plan.
-6. Visitors submit forms; the owner gets a Telegram message and sees entries in the dashboard.
+6. Visitors submit forms; the owner sees entries in the dashboard and, on Starter and Business, gets a Telegram message.
 
 ## Phase 1 features
 
@@ -23,7 +23,7 @@ Ethiopian small businesses (cafés, restaurants, shops, salons, clinics, hotels,
 | Websites | Mobile-first multi-page sites, Ge'ez + Latin fonts, language switch, SEO basics (prerendered pages, meta, sitemap) |
 | Simple full-stack (Gojoline Cloud) | Contact, booking, order and registration forms saved to the database; owner login; editable lists (menu, products, rooms, events); image upload |
 | Owner dashboard | Four sections with plain names, built for phones: **Home** (live card with Open, Share and a printable QR poster; one next step; people who visited, messages and messages waiting in the last 7 days against the week before; 14-day visitor bars; where visitors came from and phone vs computer; drafts lead with publishing), **Messages** (New → Replied → Done, one-tap Call/SMS/WhatsApp/Telegram, filters, delete, spreadsheet), **Business info** (phone, WhatsApp, Telegram, address, hours per weekday, closed today/for now, a banner; live on the site within a minute, no AI), **Settings** (Telegram alerts, address and own domain, take the site offline, Google and share preview, earlier versions). Visitors are counted privately (no cookies, no IPs kept). Content (menus, products, lists, photos) changes only through the AI builder, which uses changes (credits); Home's next steps point there (“Ask the AI to add your photos”). |
-| Telegram | Form notifications to the owner; basic bot edits (text, prices, photos) |
+| Telegram | Form notifications to the owner on Starter and Business (Free sees the feature with an Upgrade link; a link made earlier is kept and alerts resume after an upgrade); basic bot edits (text, prices, photos) on Business |
 | Payments in sites | Chapa payment button (sandbox until licensed) |
 | Publishing | Free subdomain; custom domains on paid plans |
 | Templates | Café/restaurant, hotel, clinic, school, shop, church/mosque, events, NGO, real estate, tour operator |
